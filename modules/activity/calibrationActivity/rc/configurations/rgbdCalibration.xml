@@ -4,6 +4,9 @@
         <param name="WID_PARENT" />
     </parameters>
     <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="frameTLColor" type="::arData::FrameTL" />
         <object uid="depthTL" type="::arData::FrameTL" />
         <object uid="exportTLColor" type="::arData::FrameTL" />
@@ -26,7 +29,8 @@
             </colors>
         </object>
 
-        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -89,8 +93,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="distanceMapRender" start="yes" />
-                <view sid="videoViewRender" start="yes" />
+                <view sid="gsDistanceMapSrv" start="yes" />
+                <view sid="gsVideoSrv" start="yes" />
             </registry>
         </service>
 
@@ -104,126 +108,142 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="depthRender" start="yes" />
-                <view sid="colorRender" start="yes" />
-                <view sid="irRender" start="yes" />
+                <view sid="gsDepthSrv" start="yes" />
+                <view sid="gsColorSrv" start="yes" />
+                <view sid="gsInfraRedSrv" start="yes" />
             </registry>
         </service>
 
-        <!-- ***************************************** End layouts declaration ***************************************** -->
-        <!-- ***************************************** Begin render scenes declarations ***************************************** -->
-        <!-- scanning related render scenes -->
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- ************************************* Action ************************************ -->
 
-        <service uid="distanceMapRender" type="::fwRenderVTK::SRender">
+        <service uid="startVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>startVideo/setInexecutable</slot>
+                <slot>scanner/startCamera</slot>
+                <slot>stopVideo/setExecutable</slot>
+                <slot>startSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideo" type="::gui::action::SSlotCaller">
+            <state executable="false" />
+            <slots>
+                <slot>stopVideo/setInexecutable</slot>
+                <slot>scanner/stopCamera</slot>
+                <slot>startVideo/setExecutable</slot>
+                <slot>stopSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>depthRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>rgbRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>irRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>scanner/takeSnapshot</slot>
+                <slot>actionRecord/update</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Distance map)******************************* -->
+
+        <service uid="gsDistanceMapSrv" type="::fwRenderOgre::SRender" >
             <scene>
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="depthVideo" />
-                <adaptor uid="depthVideoInteractor" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoDMAdp" />
             </scene>
         </service>
 
-        <service uid="depthVideo" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="imageDepth" />
+        <service uid="videoDMAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="imageDepth" />
             <in key="tf" uid="tfDepth" />
-            <config renderer="default" />
+            <config layer="default" />
         </service>
 
-        <service uid="depthVideoInteractor" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="FixedInteractorStyle" />
-        </service>
+        <!-- ******************************* Begin Generic Scene (Video) ******************************* -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="videoViewRender" type="::fwRenderVTK::SRender">
-            <scene renderMode="timer">
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="imageVideoAdaptor" />
-                <adaptor uid="imageVideoInteractor" />
-            </scene>
-        </service>
-
-        <service uid="imageVideoAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="imageVideo" />
-            <config renderer="default" />
-        </service>
-
-        <service uid="imageVideoInteractor" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="depthRender" type="::fwRenderVTK::SRender">
+        <service uid="gsVideoSrv" type="::fwRenderOgre::SRender" >
             <scene>
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="depthNegato" />
-                <adaptor uid="depthNegatoInteractor" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="depthNegato" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <inout key="image" uid="snapshotDepth" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="imageVideo" />
+            <config layer="default" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Depth) ******************************* -->
+
+        <service uid="gsDepthSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoDAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoDAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotDepth" />
             <in key="tf" uid="tfDepth" />
-            <config renderer="default" />
+            <config layer="default" />
         </service>
 
-        <service uid="depthNegatoInteractor" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
+        <!-- ******************************* Begin Generic Scene (Color) ******************************* -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="colorRender" type="::fwRenderVTK::SRender">
+        <service uid="gsColorSrv" type="::fwRenderOgre::SRender" >
             <scene>
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="colorVideo" />
-                <adaptor uid="colorInteractor" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoCAdp" />
             </scene>
         </service>
 
-        <service uid="colorVideo" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="snapshotColor" />
-            <config renderer="default" />
+        <service uid="videoCAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotColor" />
+            <config layer="default" />
         </service>
 
-        <service uid="colorInteractor" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
+        <!-- ******************************* Begin Generic Scene (IR) ******************************* -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="irRender" type="::fwRenderVTK::SRender">
+        <service uid="gsInfraRedSrv" type="::fwRenderOgre::SRender" >
             <scene>
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="irVideo" />
-                <adaptor uid="irInteractor" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoIRAdp" />
             </scene>
         </service>
 
-        <service uid="irVideo" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="snapshotIR" />
-            <config renderer="default" />
+        <service uid="videoIRAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotIR" />
+            <config layer="default" />
         </service>
 
-        <service uid="irInteractor" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
+        <!-- ************************************* Services ************************************ -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- ***************************************** End render scenes declaration ***************************************** -->
-        <!-- ***************************************** Begin scanning services declarations ***************************************** -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="frameTLColor" />
@@ -280,81 +300,21 @@
             <in key="data" uid="exportTLIR" />
         </service>
 
-        <!-- ***************************************** End scanning services declarations ***************************************** -->
-        <!-- ***************************************** Begin action services declarations ***************************************** -->
-        <!-- Mesh computation actions -->
-        <service uid="startVideo" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>startVideo/setInexecutable</slot>
-                <slot>scanner/startCamera</slot>
-                <slot>stopVideo/setExecutable</slot>
-                <slot>startSlots/update</slot>
-            </slots>
-        </service>
+        <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <service uid="stopVideo" type="::gui::action::SSlotCaller">
-            <state executable="false" />
-            <slots>
-                <slot>stopVideo/setInexecutable</slot>
-                <slot>scanner/stopCamera</slot>
-                <slot>startVideo/setExecutable</slot>
-                <slot>stopSlots/update</slot>
-            </slots>
-        </service>
-
-        <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>depthRecorder/configureWithIHM</slot>
-            </slots>
-        </service>
-
-        <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>rgbRecorder/configureWithIHM</slot>
-            </slots>
-        </service>
-
-        <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>irRecorder/configureWithIHM</slot>
-            </slots>
-        </service>
-
-        <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>scanner/takeSnapshot</slot>
-                <slot>actionRecord/update</slot>
-            </slots>
-        </service>
-
-        <!-- ***************************************** End action services declarations ***************************************** -->
-        <!-- ***************************************** Begin connections declarations ***************************************** -->
-        <!-- ***************************************** End connections declarations ***************************************** -->
-        <!-- layouts -->
         <start uid="mainView" />
-        <!-- reconstruction services -->
         <start uid="synchronizer" />
         <start uid="snapshotSynchronizer" />
         <start uid="scanner" />
         <start uid="actionRecord" />
-        <!-- recording service -->
         <start uid="depthRecorder" />
         <start uid="rgbRecorder" />
         <start uid="irRecorder" />
-        <!-- VTK scene 'distanceMapRender' -->
-        <start uid="depthVideo" />
-        <start uid="depthVideoInteractor" />
-        <!-- VTK scene 'videoViewRender' -->
-        <start uid="imageVideoAdaptor" />
-        <start uid="imageVideoInteractor" />
-        <!-- VTK scene 'depthRender' -->
-        <start uid="depthNegato" />
-        <start uid="depthNegatoInteractor" />
-        <!-- VTK scene 'colorRender' -->
-        <start uid="colorVideo" />
-        <start uid="colorInteractor" />
-        <!-- VTK scene 'irRender' -->
-        <start uid="irVideo" />
-        <start uid="irInteractor" />
+        <start uid="videoDMAdp" />
+        <start uid="videoAdp" />
+        <start uid="videoDAdp" />
+        <start uid="videoCAdp" />
+        <start uid="videoIRAdp" />
+
     </config>
 </extension>

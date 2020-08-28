@@ -270,6 +270,12 @@ void Utils::destroyOgreRoot()
 
     delete s_overlaySystem;
 
+    // Processes all dirty and pending deletion passes, needs to be done before the root deletion.
+    //
+    // Actually in some case, the deletion of the Ogre root may cause a crash when material resources are deleted.
+    // This function deletes items in the graveyard and allows to delete the root properly.
+    ::Ogre::Pass::processPendingPassUpdates();
+
     delete root;
 }
 

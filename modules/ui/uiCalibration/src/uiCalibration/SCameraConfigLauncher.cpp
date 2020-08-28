@@ -150,6 +150,8 @@ void SCameraConfigLauncher::starting()
 
         m_extrinsicButton->setEnabled(moreThanOneCamera);
         m_removeButton->setEnabled(moreThanOneCamera);
+
+        this->startIntrinsicConfig(0);
     }
 
     QObject::connect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));
@@ -157,8 +159,6 @@ void SCameraConfigLauncher::starting()
     QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(onImportClicked()));
     QObject::connect(m_removeButton, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
     QObject::connect(m_extrinsicButton, SIGNAL(toggled(bool)), this, SLOT(onExtrinsicToggled(bool)));
-
-    this->startIntrinsicConfig(0);
 }
 
 //------------------------------------------------------------------------------

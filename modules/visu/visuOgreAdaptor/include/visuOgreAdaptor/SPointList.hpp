@@ -80,10 +80,6 @@ namespace visuOgreAdaptor
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the STransform adaptor.
  *      Either of the following (whether a material is configured in the XML scene or not) :
- * - \b materialName (optional, string, default=""): name of the Ogre material, as defined in the
- *      ::visuOgreAdaptor::SMaterial you want to be bound to.
- *      Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
- *      template, the texture adaptor and the shading mode).
  * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created SMaterial.
  * - \b textureName (optional, string, default=""): the name of the Ogre texture that the mesh will use.
@@ -219,7 +215,7 @@ private:
     /// Contains the mesh support used to render the pointlist.
     ::fwRenderOgre::Mesh::sptr m_meshGeometry { nullptr };
 
-    /// Defines the billboards scale.
+    /// Defines the billboards radius.
     float m_radius { 1.f };
 
     /// Defines if label numbers are displayed.
