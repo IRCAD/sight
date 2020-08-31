@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,203 +28,143 @@
 
 #include <fwIO/IReader.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwPacsIO/data/PacsConfiguration.hpp>
-#include <fwPacsIO/SeriesEnquirer.hpp>
 #include <fwPacsIO/SeriesRetriever.hpp>
 
 #include <fwServices/IController.hpp>
+#include <fwServices/IHasServices.hpp>
 
 #include <fwThread/Worker.hpp>
 
-#include <filesystem>
-
 #include <vector>
-
-namespace fwMedData
-{
-class DicomSeries;
-}
 
 namespace ioPacs
 {
 
 /**
- * @brief   This service is used to pull series from a PACS.
+ * @brief This service is used to pull series from a PACS.
  *
  * @section Signals Signals
- * - \b progressed(std::string) : Signal to start the progress (bar id).
- * - \b startedProgress(std::string, float, std::string) :  Signal to update the progress (bar id, percentage, message).
- * - \b stoppedProgress(std::string) : Signal to stop the progress (bar id).
-
- * @section XML XML Configuration
+ * - \b progressed(std::string): sent when the process start (bar id).
+ * - \b startedProgress(std::string, float, std::string): sent when the process is update (bar id, percentage,
+ *                                                        message).
+ * - \b stoppedProgress(std::string): sent when the process is end (bar id).
  *
+ * @section XML XML Configuration
  * @code{.xml}
-        <service type="::namespace::classname">
-            <in key="pacsConfig" uid="..." />
-            <in key="selectedSeries" uid="..." />
-            <inout key="seriesDB" uid="..." />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
-       </service>
+    <service type="::ioPacs::SSeriesPuller">
+        <in key="pacsConfig" uid="..." />
+        <in key="selectedSeries" uid="..." />
+        <inout key="seriesDB" uid="..." />
+        <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
+    </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
- * - \b selectedSeries [::fwData::Vector]: List of DICOM series to pull from the PACS..
+ * - \b selectedSeries [::fwData::Vector]: list of DICOM series to pull from the PACS.
+ *
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * - \b seriesDB [::fwMedData::SeriesDB]: series DB where to put the retrieved dicom series.
+ *
  * @subsection Configuration Configuration:
- * - \b dicomReader Reader type to use.
- * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
+ * - \b dicomReader (mandatory, string): reader type to use.
+ * - \b dicomReaderConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
-
-class IOPACS_CLASS_API SSeriesPuller : public ::fwServices::IController
+class IOPACS_CLASS_API SSeriesPuller final :
+    public ::fwServices::IController,
+    public ::fwServices::IHasServices
 {
+
 public:
 
-    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController );
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController)
 
-    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
-    typedef std::vector< std::string > InstanceUIDContainerType;
-    typedef std::map < std::string, unsigned int > InstanceCountMapType;
-    typedef std::map < std::string, WPTR(::fwMedData::DicomSeries) > DicomSeriesMapType;
-
-    IOPACS_API static const ::fwCom::Slots::SlotKeyType s_READ_SLOT;
-    typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-
-    IOPACS_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
-
-    /// Signal to start the progress (bar id)
-    typedef ::fwCom::Signal< void ( std::string ) > StartedProgressSignalType;
-    /// Signal to update the progress (bar id, percentage, message)
-    typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
-    /// Signal to stop the progress (bar id)
-    typedef ::fwCom::Signal< void ( std::string ) > StoppedProgressSignalType;
-
-    /// Key in m_signals map of signal m_sigProgressed
-    static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG;
-    static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG;
-    static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG;
-
-    /**
-     * @brief Constructor
-     */
+    /// Creates the service and slots.
     IOPACS_API SSeriesPuller() noexcept;
 
-    /**
-     * @brief Destructor
-     */
+    /// Destroys the service.
     IOPACS_API virtual ~SSeriesPuller() noexcept;
 
 protected:
 
-    /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring() override;
+    /// Configures the service.
+    IOPACS_API void configuring() override;
 
-    /// Override
-    IOPACS_API virtual void starting() override;
+    /// Creates the DICOM reader.
+    IOPACS_API void starting() override;
 
-    /// Override
-    IOPACS_API virtual void stopping() override;
+    /// Stops the DICOM reader.
+    IOPACS_API void stopping() override;
 
-    /// Override
+    /// Pulls the series if nothing is pull it in background.
     IOPACS_API void updating() override;
 
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
+private:
 
-protected:
+    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
+    typedef ::fwCom::Signal< void ( std::string ) > StartedProgressSignalType;
+    typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
+    typedef ::fwCom::Signal< void ( std::string ) > StoppedProgressSignalType;
 
-    /// Pull Series
-    IOPACS_API void pullSeries();
-
-    /**
-     * @brief Read local series
-     * @param[in] selectedSeries Dicom Series that must be read
-     */
-    IOPACS_API void readLocalSeries(DicomSeriesContainerType selectedSeries);
+    /// Pulls a series from the PACS.
+    void pullSeries();
 
     /**
-     * @brief Display an error message
-     * @param[in] message Error message to display
+     * @brief Reads a local series.
+     * @param _selectedSeries DICOM series that must be read.
      */
-    IOPACS_API void displayErrorMessage(const std::string& message) const;
+    void readLocalSeries(DicomSeriesContainerType _selectedSeries);
 
     /**
-     * @brief Store instance callback
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] instanceNumber Instance number
-     * @param[in] filePath File path
+     * @brief Stores instance callback.
+     * @param _seriesInstanceUID series instance UID.
+     * @param _instanceNumber instance number.
+     * @param _filePath file path.
      */
-    IOPACS_API void storeInstanceCallback(const std::string& seriesInstanceUID, unsigned int instanceNumber,
-                                          const std::string& filePath);
+    void storeInstanceCallback(const std::string& _seriesInstanceUID, unsigned _instanceNumber,
+                               const std::string& _filePath);
 
-    /// Slot to call readLocalSeries method
-    ReadDicomSlotType::sptr m_slotReadLocalSeries;
+    /// Defines the DICOM reader implementation.
+    std::string m_dicomReaderImplementation { "" };
 
-    /// Slot to call displayErrorMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
+    /// Contains the optional configuration to set to reader implementation.
+    std::string m_readerConfig { "" };
 
-    /// Slot to call storeInstanceCallback method using C-MOVE Requests
-    ::fwPacsIO::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingMoveRequests;
+    /// Contains the DICOM reader.
+    ::fwIO::IReader::sptr m_dicomReader { nullptr };
 
-    /// Slot to call storeInstanceCallback method using C-GET Requests
-    ::fwPacsIO::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingGetRequests;
+    /// Contains the seriesDB where the DICOM reader sets is output.
+    ::fwMedData::SeriesDB::sptr m_seriesDB { nullptr };
 
-    /// Signal emitted when the bar is progressing
-    ProgressedSignalType::sptr m_sigProgressed;
+    /// Contains the sloat to call storeInstanceCallback method using C-MOVE requests.
+    ::fwPacsIO::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingMoveRequests { nullptr };
 
-    /// Signal emitted when the bar is starting
-    StartedProgressSignalType::sptr m_sigStartedProgress;
+    /// Contains the signal emitted when the progress bar is starting.
+    StartedProgressSignalType::sptr m_sigStartedProgress { nullptr };
 
-    /// Signal emitted when the bar is stopping
-    StoppedProgressSignalType::sptr m_sigStoppedProgress;
+    /// Contains the signal emitted when the progress bar is updating.
+    ProgressedSignalType::sptr m_sigProgressed { nullptr };
 
-    /// Series enquirer
-    ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
+    /// Contains the signal emitted when the progress bar is stopping.
+    StoppedProgressSignalType::sptr m_sigStoppedProgress { nullptr };
 
-    /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
+    /// Stores local series.
+    std::vector< std::string > m_localSeries;
 
-    /// Reader
-    ::fwIO::IReader::sptr m_dicomReader;
+    /// Defines the progress bar ID.
+    std::string m_progressbarId { "pullDicomProgressBar" };
 
-    /// Reader Config
-    std::string m_dicomReaderSrvConfig;
+    /// Defines the total number of instances that must be downloaded.
+    std::size_t m_instanceCount { 0 };
 
-    /// IOPACS Reader
-    std::string m_dicomReaderType;
+    /// Stores a map of DICOM series being pulled.
+    std::map < std::string, ::fwMedData::DicomSeries::wptr > m_pullingDicomSeriesMap;
 
-    /// Temporary SeriesDB
-    ::fwMedData::SeriesDB::sptr m_tempSeriesDB;
-
-    /// Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
-
-    /// Pull Worker
-    ::fwThread::Worker::sptr m_pullSeriesWorker;
-
-    /// Local Series
-    InstanceUIDContainerType m_localSeries;
-
-    /// Is pulling is set to true when we are pulling series
-    bool m_isPulling;
-
-    /// Progress Bar ID
-    std::string m_progressbarId;
-
-    /// Total number of downloaded series
-    long unsigned int m_seriesCount;
-
-    /// Index of the series being downloaded
-    unsigned int m_seriesIndex;
-
-    /// Total number of instances that must be downloaded
-    std::size_t m_instanceCount;
-
-    /// Map of Dicom series being pulled
-    DicomSeriesMapType m_pullingDicomSeriesMap;
 };
 
-} // namespace ioPacs
+} // namespace ioPacs.
