@@ -77,19 +77,21 @@ public:
     /// Destroyes the service.
     IOPACS_API virtual ~SPacsConfigurationEditor() noexcept;
 
-private:
+protected:
 
     /// Configures the editor.
-    virtual void configuring() override;
+    IOPACS_API void configuring() override;
 
     /// Creates the UI.
-    virtual void starting() override;
+    IOPACS_API void starting() override;
 
     /// Does nothing.
-    void updating() override;
+    IOPACS_API void updating() override;
 
     /// Destroyes the UI.
-    virtual void stopping() override;
+    IOPACS_API void stopping() override;
+
+private:
 
     /**
      * @brief Sends a modified signal on the configuration.
