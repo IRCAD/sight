@@ -133,7 +133,7 @@ void SLight::starting()
         this->setPhiOffset(m_phiOffset);
     }
 
-    if(m_lightName != ::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME)
+    if(m_lightName != ::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME)
     {
         // Creates the visual feedback
         // Creates the material
@@ -254,7 +254,7 @@ void SLight::stopping()
     this->unregisterServices();
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
-    if(m_lightName != ::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME)
+    if(m_lightName != ::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME)
     {
         m_lightNode->removeAndDestroyChild(this->getID() + "_lineNode");
         m_lightNode->removeAndDestroyChild(this->getID() + "_coneNode");

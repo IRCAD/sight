@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,8 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -69,7 +71,6 @@ class ValueView;
  * - \b showReconstructions(bool): slot called to show or hide all the reconstructions
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service ::uiMedDataQt::editor::SModelSeriesList">
        <inout key="modelSeries" uid="..." autoConnect="yes" />
@@ -80,112 +81,158 @@ class ValueView;
        </columns>
    </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b modelSeries [::fwMedData::ModelSeries]: model series containing the organs to list
- * @subsection Configuration Configuration
- * \b enable_hide_all: if 'true', allows to hide all models through a single checkbox displayed in UI (default
- * value is 'true', allowed values are 'true' and 'false').
  *
- * \b column: defines colums to be shown in reconstruction list. XML child element names follow
- * ::fwData::Reconstruction serialization attribute names. The name of the tag will be used as the column name.
- * The attribute 'view' is optional and has the following values:
+ * @subsection Configuration Configuration
+ * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
+ *      displayed in UI.
+ * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
+ *      displayed in UI.
+ * - \b column (optional, string, default=""): defines colums to be shown in reconstruction list. XML child element
+ *      names follow ::fwData::Reconstruction serialization attribute names.
+ *      The name of the tag will be used as the column name.
+ *      The attribute 'view' is optional and has the following values:
  *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
-class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
-                                                public ::fwGui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SModelSeriesList final :
+    public QObject,
+    public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SModelSeriesList, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initializes the slot and signals.
     UIMEDDATAQT_API SModelSeriesList() noexcept;
 
-    /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SModelSeriesList() noexcept;
+    /// Cleans ressources.
+    UIMEDDATAQT_API ~SModelSeriesList() noexcept override;
 
 protected:
 
-    ///This method launches the IEditor::starting method.
-    virtual void starting() override;
-
-    ///This method launches the IEditor::stopping method.
-    virtual void stopping() override;
-
-    virtual void updating() override;
-
-    virtual void swapping() override;
-
     /// Configures the editor.
-    virtual void configuring() override;
+    void configuring() override;
+
+    /// Creates layouts.
+    void starting() override;
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
      *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwMedData::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
-    typedef std::map< std::string, ValueView* > DisplayedInformation;
+    /**
+     * @brief Refreshs the editor.
+     * @see updateReconstructions().
+     * @see refreshVisibility().
+     */
+    void updating() override;
 
-    void updateReconstructions();
-
-    void fillTree();
-
-    static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
-    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
-    typedef ::fwCom::Signal< void () > EmptiedSelectionSignalType;
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
-    typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
-
-protected Q_SLOTS:
-
-    /// Slot called when new current item is setted in m_organChoice
-    void onCurrentItemChanged ( QTreeWidgetItem* current, QTreeWidgetItem* previous );
-
-    void onCurrentItemChanged ( QTreeWidgetItem* current, int column );
-
-    void onShowReconstructions(int state);
-
-    void onOrganChoiceVisibility(QTreeWidgetItem* item, int column);
-
-    void onCheckAllCheckBox();
-    void onUnCheckAllCheckBox();
+    /// Disconnects connections.
+    void stopping() override;
 
 private:
 
-    /// SLOT: Show (or hide) reconstructions
-    void showReconstructions(bool show);
+    /// Updates reconstructions.
+    void updateReconstructions();
 
+    /// Fills the editor tree.
+    void fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries);
+
+    /// SLOT: Shows (or hide) reconstructions.
+    void showReconstructions(bool _show);
+
+    /// Refreshs reconstructions visibility on the editor.
     void refreshVisibility();
 
-    void onCheckAllBoxes(bool visible);
+    /**
+     * @brief Checks or unchecks reconstructions.
+     * @param _visible the checked status.
+     * @see onCheckAllCheckBox().
+     * @see onUnCheckAllCheckBox().
+     */
+    void onCheckAllBoxes(bool _visible);
 
+private Q_SLOTS:
+
+    /// Changes the current item, called when new current item is setted in m_organChoice.
+    void onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem*);
+
+    /// Changes the current item, called when new current item is setted in m_organChoice.
+    void onCurrentItemChanged(QTreeWidgetItem* _current, int _column);
+
+    /// Shows reconstructions, called when m_showCheckBox is clicked.
+    void onShowReconstructions(int state);
+
+    /// Shows a reconstruction, called when new current item is setted in m_organChoice.
+    void onOrganChoiceVisibility(QTreeWidgetItem* _item, int);
+
+    /// Shows reconstructions, called when m_checkAllButton is clicked.
+    void onCheckAllCheckBox();
+
+    /// Shows reconstructions, called when m_unCheckAllButton is clicked.
+    void onUnCheckAllCheckBox();
+
+    /// Deletes all reconstructions, called when m_deleteAllButton is clicked.
+    void onDeleteAllCheckBox();
+
+    /// Opens a context menu to deletes a specific reconstruction.
+    void onCustomContextMenuRequested(const QPoint& _pos);
+
+private:
+
+    /// Contains the button to check all reconstructions.
     QPointer<QPushButton> m_checkAllButton;
+
+    /// Contains the button to uncheck all reconstructions.
     QPointer<QPushButton> m_unCheckAllButton;
 
+    /// Contains the button to delete all reconstructions.
+    QPointer<QPushButton> m_deleteAllButton;
+
+    /// Contains the button to hide or show all reconstructions.
     QPointer< QCheckBox > m_showCheckBox;
+
+    /// Contains the reconstructions tree:
     QPointer< QTreeWidget > m_tree;
+
+    /// Defines informations.
+    typedef std::map< std::string, ValueView* > DisplayedInformation;
     DisplayedInformation m_displayedInfo;
 
-    bool m_enableHideAll;
+    /// Enables m_showCheckBox.
+    bool m_enableHideAll { true };
 
+    /// Enables m_deleteAllButton.
+    bool m_enableDelete { false };
+
+    /// Defines the header of the tree.
     QStringList m_headers;
 
-    /// Signal emitted when a reconstruction is selected
+    /// Contains the signal emitted when a reconstruction is selected.
+    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 
-    /// Signal emitted when we clean the list
+    /// Contains the signal emitted when we clean the list.
+    typedef ::fwCom::Signal< void () > EmptiedSelectionSignalType;
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
-    /// Slot to show (or hide) reconstructions
+    /// Contains the slot to show (or hide) reconstructions.
+    typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
+
 };
 
-} // namespace editor
-} // namespace uiMedDataQt
+} // namespace editor.
+} // namespace uiMedDataQt.

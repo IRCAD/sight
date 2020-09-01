@@ -43,13 +43,15 @@ namespace visuOgreAdaptor
  * @brief This adaptor displays distances retrieved from an image fields.
  *
  * @section Slots Slots
- * - \b addDistance(): Adds distances contained in the image from the scene manager.
- * - \b removeDistance(): Removes distances contained in the image from the scene manager.
- * - \b updateVisibilityFromField(): Updates the visibility of distances from the field status.
- * - \b updateVisibility(bool): Updates the visibility of distances.
+ * - \b addDistance(): adds distances contained in the image from the scene manager.
+ * - \b removeDistance(): removes distances contained in the image from the scene manager.
+ * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
+ * - \b updateVisibility(bool): sets whether distances are shown or not.
+ * - \b toggleVisibility(): toggles whether distances are shown or not.
+ * - \b show(): shows distance.
+ * - \b hide(): hides distance.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
         <inout key="image" uid="..." />
@@ -61,29 +63,61 @@ namespace visuOgreAdaptor
  * - \b image [::fwData::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : Defines distance's layer.
+ * - \b layer (mandatory, string) : defines distance's layer.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, int, default=16): Font size in points.
- * - \b radius (optional, float, default=4.5): Size of the distances spheres.
- * - \b interactive (optional, bool, default=true): Enables interactions with distances.
- * - \b priority (optional, int, default=3): Priority of the interactor.
- * - \b queryMask (optional, uint32, default=0xFFFFFFFF): Mask used to filter out entities when the distance is auto
- * snapped.
- * - \b distanceQueryFlags (optional, uint32, default=0x40000000): Mask apply to distances spheres.
+ * - \b fontSize (optional, int, default=16): font size in points.
+ * - \b radius (optional, float, default=4.5): size of the distances spheres.
+ * - \b interactive (optional, bool, default=true): enables interactions with distances.
+ * - \b priority (optional, int, default=3): priority of the interactor.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
+ *      snapped.
+ * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
  */
 class SImageMultiDistances final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::interactor::IInteractor
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor)
 
     /// Initialize slots.
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SImageMultiDistances() noexcept override;
+    VISUOGREADAPTOR_API ~SImageMultiDistances() noexcept override;
+
+protected:
+
+    /// Configures the service.
+    VISUOGREADAPTOR_API void configuring() override;
+
+    /// Adds the interactor to the layer and creates the material.
+    VISUOGREADAPTOR_API void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     *
+     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     */
+    VISUOGREADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
+
+    /// Updates materials and all distances.
+    VISUOGREADAPTOR_API void updating() override;
+
+    /// Removes the interactor from the layer and destroys Ogre resources.
+    VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets distances visibility.
+     * @param _visible the visibility status of distances.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
 
@@ -146,28 +180,6 @@ private:
      */
     static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
 
-    /// Configures the service.
-    virtual void configuring() override;
-
-    /// Adds the interactor to the layer and creates the material.
-    virtual void starting() override;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     *
-     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
-     */
-    virtual KeyConnectionsMap getAutoConnections() const override;
-
-    /// Updates materials and all distances.
-    virtual void updating() override;
-
-    /// Removes the interactor from the layer and destroys Ogre resources.
-    virtual void stopping() override;
-
     /// Retrieves distances from the image and adds them to the scene.
     void addDistances();
 
@@ -176,12 +188,6 @@ private:
 
     /// Updates distances visibility from the image field.
     void updateVisibilityFromField();
-
-    /**
-     * @brief Updates distances visibility.
-     * @param _visibility Sets to true to show distances.
-     */
-    void updateVisibility(bool _visibility);
 
     /**
      * @brief Gets the nearest picked position if there is one.
@@ -231,9 +237,6 @@ private:
 
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius { 3.5f };
-
-    /// Enables the visibility of distances.
-    bool m_visibility { true };
 
     /// Defines the TrueType font source file.
     std::string m_fontSource { "DejaVuSans.ttf" };

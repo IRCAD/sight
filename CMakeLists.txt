@@ -98,6 +98,17 @@ set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
 ########################################################################################################################
+# Warn user of install dir isn't empty
+########################################################################################################################
+
+file(GLOB_RECURSE INSTALL_DIR_CONTENT ${CMAKE_INSTALL_PREFIX}/*)
+list(LENGTH INSTALL_DIR_CONTENT CONTENT)
+if(NOT CONTENT EQUAL 0)
+    # DIR isn't empty, warn user.
+    message(WARNING "CMAKE_INSTALL_PREFIX (${CMAKE_INSTALL_PREFIX}) isn't empty, please select another folder or clean it before running install command.")
+endif()
+
+########################################################################################################################
 # External libraries management
 ########################################################################################################################
 

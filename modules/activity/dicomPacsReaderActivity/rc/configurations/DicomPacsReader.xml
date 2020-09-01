@@ -21,7 +21,7 @@
         <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
-                    <view align="top"/>
+                    <view caption="DICOM Query" align="left"/>
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                 </layout>
@@ -30,7 +30,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
-                <view sid="topView" start="yes" />
+                <view sid="leftView" start="yes" />
                 <view sid="centerView" start="yes" />
                 <view sid="bottomView" start="yes" />
             </registry>
@@ -51,15 +51,27 @@
             </registry>
         </service>
 
-        <service uid="topView" type="::gui::view::SDefaultView" >
+        <service uid="leftView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
-                    <view caption="DICOM Query" align="center" minWidth="200" />
+                    <view align="top" minWidth="350" />
+                    <view align="center" />
                 </layout>
             </gui>
             <registry>
                 <view sid="queryEditor" start="yes" />
+                <view sid="queryEditorSpacerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="queryEditorSpacerView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                </layout>
+            </gui>
+            <registry>
             </registry>
         </service>
 
@@ -116,7 +128,7 @@
 
         <!-- PACS CONFIGURATION -->
         <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer">
-            <inout key="config" uid="pacsConfiguration" />
+            <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
             <config
                 localApplicationTitle="${APP_NAME}"
                 pacsHostName="mypacs.mycompany.com"

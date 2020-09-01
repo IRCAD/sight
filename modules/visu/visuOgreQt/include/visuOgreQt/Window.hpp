@@ -52,6 +52,7 @@ class Window final :
 Q_OBJECT
 
 public:
+
     /**
      * @brief Initializes members and connect screenChanged to onScreenChanged.
      * @param _parent the parent container of the widget.

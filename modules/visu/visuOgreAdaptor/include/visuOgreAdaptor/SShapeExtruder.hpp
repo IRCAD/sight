@@ -62,21 +62,23 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
-        <config layer="..." />
+        <config layer="..." priority="2" extrude="true" />
     </service>
    @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b extrudedMeshes [::fwMedData::ModelSeries]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines the layer.
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
- *
- * @subsection In-Out In-Out
- * - \b extrudedMeshes [::fwMedData::ModelSeries]: model series where all extruded meshes are stored.
+ * - \b priority (optional, int, default=2): interaction priority, higher priority interactions are performed first.
  */
 class VISUOGREADAPTOR_CLASS_API SShapeExtruder final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::interactor::IInteractor
 {
+
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -86,7 +88,21 @@ public:
     VISUOGREADAPTOR_API SShapeExtruder() noexcept;
 
     /// Destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SShapeExtruder() noexcept;
+    VISUOGREADAPTOR_API ~SShapeExtruder() noexcept override;
+
+protected:
+
+    /// Configures the service.
+    VISUOGREADAPTOR_API void configuring() override;
+
+    /// Creates Ogre resources and materials.
+    VISUOGREADAPTOR_API void starting() override;
+
+    /// Does nothing.
+    VISUOGREADAPTOR_API void updating() override;
+
+    /// Destroyes all Ogre resources.
+    VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
@@ -185,18 +201,6 @@ private:
 
     /// Computes the camera direction vector.
     static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
-
-    /// Configures the service.
-    virtual void configuring() override;
-
-    /// Creates Ogre resources and materials.
-    virtual void starting() override;
-
-    /// Does nothing.
-    virtual void updating() override;
-
-    /// Destroyes all Ogre resources.
-    virtual void stopping() override;
 
     /// Sets if the tool is enabled or not.
     void enableTool(bool _enable);

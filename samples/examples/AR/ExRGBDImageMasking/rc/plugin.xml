@@ -226,9 +226,9 @@
             <!-- *************************** Begin generic scene *************************** -->
             <service uid="genericScene" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <layer id="video" depth="1" />
-                    <layer id="default" depth="2" />
-                    <layer id="ar" depth="3" />
+                    <layer id="video" order="1" />
+                    <layer id="default" order="2" />
+                    <layer id="ar" order="3" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="videoARAdpt" />
                     <adaptor uid="cameraAdpt" />
@@ -264,7 +264,7 @@
                 <inout key="offScreen" uid="offscreenImage" />
                 <scene width="1280" height="720">
                     <background topColor="#000000" bottomColor="#000000" />
-                    <layer id="default" depth="1"/>
+                    <layer id="default" order="1"/>
                     <adaptor uid="cameraOffscreenAdpt" />
                     <adaptor uid="meshOffscreenAdaptor" />
                 </scene>

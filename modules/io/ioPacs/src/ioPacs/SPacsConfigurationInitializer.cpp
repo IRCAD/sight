@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,47 +35,6 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SPacsConfigurationInitializer,
-                         ::fwPacsIO::data::PacsConfiguration );
-
-static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
-
-//------------------------------------------------------------------------------
-
-SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SPacsConfigurationInitializer::info(std::ostream& _sstream )
-{
-    _sstream << "SPacsConfigurationInitializer::info";
-}
-
-//------------------------------------------------------------------------------
-
-void SPacsConfigurationInitializer::starting()
-{
-    SLM_TRACE_FUNC();
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SPacsConfigurationInitializer::stopping()
-{
-    SLM_TRACE_FUNC();
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 template<typename T, typename CAST_T = T>
 struct SetFromConfig
 {
@@ -95,69 +54,68 @@ struct SetFromConfig
     }
 };
 
+static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
+
+fwServicesRegisterMacro(::fwServices::IController, ::ioPacs::SPacsConfigurationInitializer)
+
+//------------------------------------------------------------------------------
+
+SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept
+{
+}
+
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationInitializer::configuring()
 {
-    SLM_TRACE_FUNC();
+    const ConfigType configTree = this->getConfigTree();
+    const auto config           = configTree.get_child("config.<xmlattr>");
 
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have a \"config\" element.",
-               config);
+    // Local application title.
+    m_SCUAppEntityTitle = config.get< std::string >("localApplicationTitle");
 
-    bool success;
+    // Pacs host name.
+    m_SCPHostName = config.get< std::string >("pacsHostName");
 
-    /// Local application title
-    std::tie(success, m_localApplicationTitle) = config->getSafeAttributeValue("localApplicationTitle");
-    SLM_ASSERT("It should be a \"localApplicationTitle\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
+    // Pacs application title.
+    m_SCPAppEntityTitle = config.get< std::string >("pacsApplicationTitle");
 
-    /// Pacs host name
-    std::tie(success, m_pacsHostName) = config->getSafeAttributeValue("pacsHostName");
-    SLM_ASSERT("It should be a \"pacsHostName\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
+    // Pacs port.
+    const std::string pacsApplicationPort = config.get< std::string >("pacsApplicationPort");
+    m_SCPPort = static_cast < decltype(m_SCPPort) >(std::stoi(pacsApplicationPort));
 
-    /// Pacs application title
-    std::tie(success, m_pacsApplicationTitle) = config->getSafeAttributeValue("pacsApplicationTitle");
-    SLM_ASSERT("It should be a \"pacsApplicationTitle\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
+    // Retrieve Method.
+    const std::string retrieveMethod = config.get< std::string >("retrieveMethod");
+    m_retrieveMethod = (retrieveMethod == "MOVE") ?
+                       (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD):
+                       (::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD);
 
-    /// Pacs port
-    std::string pacsApplicationPort;
-    std::tie(success, pacsApplicationPort) = config->getSafeAttributeValue("pacsApplicationPort");
-    SLM_ASSERT("It should be a \"pacsApplicationPort\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
-    m_pacsApplicationPort = ::boost::lexical_cast< unsigned short >(pacsApplicationPort.c_str());
+    // Move application title.
+    m_moveAppEntityTitle = config.get<std::string>("moveApplicationTitle");
 
-    /// Move application title
-    std::tie(success, m_moveApplicationTitle) = config->getSafeAttributeValue("moveApplicationTitle");
-    SLM_ASSERT("It should be a \"moveApplicationTitle\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
+    // Move application port.
+    const std::string moveApplicationPort = config.get< std::string >("moveApplicationPort");
+    m_movePort = static_cast < decltype(m_movePort) >(std::stoi(moveApplicationPort));
 
-    /// Move application port
-    std::string moveApplicationPort;
-    std::tie(success, moveApplicationPort) = config->getSafeAttributeValue("moveApplicationPort");
-    SLM_ASSERT("It should be a \"moveApplicationPort\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
-    m_moveApplicationPort = ::boost::lexical_cast< unsigned short >(moveApplicationPort.c_str());
+    // Preference Key.
+    m_preferenceKey = config.get< std::string >("preferenceKey", m_preferenceKey);
+}
 
-    /// Retrieve Method
-    std::string retrieveMethod;
-    std::tie(success, retrieveMethod) = config->getSafeAttributeValue("retrieveMethod");
-    SLM_ASSERT("It should be a \"retrieveMethod\" tag in the "
-               "::ioPacs::SPacsConfigurationInitializer config element.", success);
-    m_retrieveMethod = (retrieveMethod == "GET") ?
-                       (::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD):
-                       (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD);
+//------------------------------------------------------------------------------
 
-    /// Preference Key
-    m_preferenceKey = config->getAttributeValue("preferenceKey");
+void SPacsConfigurationInitializer::starting()
+{
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
-
-    // Set information from xml and update PacsConfiguration
+    // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
     {
         ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
@@ -169,50 +127,61 @@ void SPacsConfigurationInitializer::configuring()
             SetFromConfig< unsigned short > setFromConfigShort;
             SetFromConfig< ::fwPacsIO::data::PacsConfiguration::RETRIEVE_METHOD, int > setFromConfigEnum;
 
-            setFromConfig(config, "LocalApplicationTitle", m_localApplicationTitle);
-            setFromConfig(config, "PacsHostName", m_pacsHostName);
-            setFromConfig(config, "PacsApplicationTitle", m_pacsApplicationTitle);
-            setFromConfigShort(config, "PacsApplicationPort", m_pacsApplicationPort);
-            setFromConfig(config, "MoveApplicationTitle", m_moveApplicationTitle);
-            setFromConfigShort(config, "MoveApplicationPort", m_moveApplicationPort);
+            setFromConfig(config, "LocalApplicationTitle", m_SCUAppEntityTitle);
+            setFromConfig(config, "PacsHostName", m_SCPHostName);
+            setFromConfig(config, "PacsApplicationTitle", m_SCPAppEntityTitle);
+            setFromConfigShort(config, "PacsApplicationPort", m_SCPPort);
+            setFromConfig(config, "MoveApplicationTitle", m_moveAppEntityTitle);
+            setFromConfigShort(config, "MoveApplicationPort", m_movePort);
             setFromConfigEnum(config, "RetrieveMethod", m_retrieveMethod);
         }
     }
 
-    pacsConfiguration->setLocalApplicationTitle(m_localApplicationTitle);
-    pacsConfiguration->setPacsHostName(m_pacsHostName);
-    pacsConfiguration->setPacsApplicationTitle(m_pacsApplicationTitle);
-    pacsConfiguration->setPacsApplicationPort(m_pacsApplicationPort);
-    pacsConfiguration->setMoveApplicationTitle(m_moveApplicationTitle);
-    pacsConfiguration->setMoveApplicationPort(m_moveApplicationPort);
+    pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitle);
+    pacsConfiguration->setPacsHostName(m_SCPHostName);
+    pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitle);
+    pacsConfiguration->setPacsApplicationPort(m_SCPPort);
+    pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitle);
+    pacsConfiguration->setMoveApplicationPort(m_movePort);
     pacsConfiguration->setRetrieveMethod(m_retrieveMethod);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+
+    connections.push(s_CONFIG_INOUT, ::fwPacsIO::data::PacsConfiguration::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationInitializer::updating()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
     // Check if the user has changed the Pacs configuration and update the local var
-    if(pacsConfiguration->getLocalApplicationTitle() != m_localApplicationTitle
-       || pacsConfiguration->getPacsHostName() != m_pacsHostName
-       || pacsConfiguration->getPacsApplicationTitle() != m_pacsApplicationTitle
-       || pacsConfiguration->getPacsApplicationPort() != m_pacsApplicationPort
-       || pacsConfiguration->getMoveApplicationTitle() != m_moveApplicationTitle
-       || pacsConfiguration->getMoveApplicationPort() != m_moveApplicationPort
+    if(pacsConfiguration->getLocalApplicationTitle() != m_SCUAppEntityTitle
+       || pacsConfiguration->getPacsHostName() != m_SCPHostName
+       || pacsConfiguration->getPacsApplicationTitle() != m_SCPAppEntityTitle
+       || pacsConfiguration->getPacsApplicationPort() != m_SCPPort
+       || pacsConfiguration->getMoveApplicationTitle() != m_moveAppEntityTitle
+       || pacsConfiguration->getMoveApplicationPort() != m_movePort
        || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod
        )
     {
-        m_localApplicationTitle = pacsConfiguration->getLocalApplicationTitle();
-        m_pacsHostName          = pacsConfiguration->getPacsHostName();
-        m_pacsApplicationTitle  = pacsConfiguration->getPacsApplicationTitle();
-        m_pacsApplicationPort   = pacsConfiguration->getPacsApplicationPort();
-        m_moveApplicationTitle  = pacsConfiguration->getMoveApplicationTitle();
-        m_moveApplicationPort   = pacsConfiguration->getMoveApplicationPort();
-        m_retrieveMethod        = pacsConfiguration->getRetrieveMethod();
+        m_SCUAppEntityTitle  = pacsConfiguration->getLocalApplicationTitle();
+        m_SCPHostName        = pacsConfiguration->getPacsHostName();
+        m_SCPAppEntityTitle  = pacsConfiguration->getPacsApplicationTitle();
+        m_SCPPort            = pacsConfiguration->getPacsApplicationPort();
+        m_moveAppEntityTitle = pacsConfiguration->getMoveApplicationTitle();
+        m_movePort           = pacsConfiguration->getMoveApplicationPort();
+        m_retrieveMethod     = pacsConfiguration->getRetrieveMethod();
     }
 
     // If a preference key is set, save the local var to the preferences
@@ -226,19 +195,26 @@ void SPacsConfigurationInitializer::updating()
         if(prefs)
         {
             ::fwData::Composite::sptr config   = ::fwData::Composite::dynamicCast((*prefs)[m_preferenceKey]);
-            (*config)["LocalApplicationTitle"] = ::fwData::String::New(m_localApplicationTitle);
-            (*config)["PacsHostName"         ] = ::fwData::String::New(m_pacsHostName);
-            (*config)["PacsApplicationTitle" ] = ::fwData::String::New(m_pacsApplicationTitle);
+            (*config)["LocalApplicationTitle"] = ::fwData::String::New(m_SCUAppEntityTitle);
+            (*config)["PacsHostName"         ] = ::fwData::String::New(m_SCPHostName);
+            (*config)["PacsApplicationTitle" ] = ::fwData::String::New(m_SCPAppEntityTitle);
             (*config)["PacsApplicationPort"  ] =
-                ::fwData::String::New(::boost::lexical_cast<std::string>(m_pacsApplicationPort));
-            (*config)["MoveApplicationTitle" ] = ::fwData::String::New(m_moveApplicationTitle);
+                ::fwData::String::New(::boost::lexical_cast<std::string>(m_SCPPort));
+            (*config)["MoveApplicationTitle" ] = ::fwData::String::New(m_moveAppEntityTitle);
             (*config)["MoveApplicationPort"  ] =
-                ::fwData::String::New(::boost::lexical_cast<std::string>(m_moveApplicationPort));
+                ::fwData::String::New(::boost::lexical_cast<std::string>(m_movePort));
             (*config)["RetrieveMethod"       ] =
                 ::fwData::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
         }
         ::fwPreferences::savePreferences();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SPacsConfigurationInitializer::stopping()
+{
+    this->updating();
 }
 
 } // namespace ioPacs

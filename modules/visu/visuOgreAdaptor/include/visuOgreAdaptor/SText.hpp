@@ -62,10 +62,10 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b object (optional) : "GenericField" object that can be casted to a text string.
+ * - \b object (optional): "GenericField" object that can be casted to a text string.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : not really used but it is needed to be bound to a render service.
+ * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, usinged int, default=16): font size in points.
@@ -77,23 +77,25 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SText final : public ::fwRenderOgre::IAdaptor
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SText, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SText() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SText() noexcept;
+    VISUOGREADAPTOR_API ~SText() noexcept override;
 
-private:
+protected:
 
     /// Configures the service.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the text object and adds it to the scene.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -101,13 +103,15 @@ private:
      *
      * Connect ::fwData::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the displayed text from the input object.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Removes the text from the ogre scene and deletes it.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Defines the text string.
     void setText(std::string str);

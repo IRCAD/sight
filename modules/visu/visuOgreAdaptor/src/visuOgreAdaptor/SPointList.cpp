@@ -52,9 +52,6 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
 static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
 
@@ -76,8 +73,6 @@ static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 SPointList::SPointList() noexcept
 {
     m_material = ::fwData::Material::New();
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SPointList::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,27 +88,18 @@ SPointList::~SPointList() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SPointList::updateVisibility(bool _isVisible)
+void SPointList::setVisible(bool _visible)
 {
-    m_isVisible = _isVisible;
-
     if(m_entity)
     {
         this->getRenderService()->makeCurrent();
 
-        m_entity->setVisible(_isVisible);
+        m_entity->setVisible(_visible);
 
-        m_meshGeometry->setVisible(_isVisible);
+        m_meshGeometry->setVisible(_visible);
 
         this->requestRender();
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SPointList::toggleVisibility()
-{
-    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +151,7 @@ void SPointList::configuring()
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
-    m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
+    m_radius       = config.get(s_RADIUS_CONFIG, m_radius);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
 
     const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");

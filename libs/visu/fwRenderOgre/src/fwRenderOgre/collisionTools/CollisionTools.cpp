@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -334,7 +334,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         // We do not have faces, we simply check all vertices and compute the distance from the picked
                         // point
                         const ::Ogre::Camera* const camera = mSceneMgr->getCamera(
-                            ::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+                            ::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
                         const ::Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
                         const ::Ogre::Matrix4 projMatrix = camera->getProjectionMatrixWithRSDepth();
 

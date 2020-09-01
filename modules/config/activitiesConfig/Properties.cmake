@@ -14,4 +14,5 @@ set( REQUIREMENTS
         uiMedDataQt
         uiActivitiesQt
         media
+        flatIcon
     )

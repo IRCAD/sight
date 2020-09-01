@@ -3,6 +3,10 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="guiQt" />
+    <requirement id="visuOgre" />
+    
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExRealSense</id>
         <config>
@@ -213,8 +217,8 @@
 
             <service uid="distanceMapRender" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <layer id="video" depth="1"/>
-                    <layer id="AR" depth="2"/>
+                    <layer id="video" order="1"/>
+                    <layer id="AR" order="2"/>
                     <adaptor uid="depthAdaptor" />
                     <adaptor uid="pointcloudAdptARD" />
                     <adaptor uid="cameraAdaptorARD" />
@@ -242,8 +246,8 @@
 
             <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <layer id="video" depth="1"/>
-                    <layer id="AR"    depth="2" />
+                    <layer id="video" order="1"/>
+                    <layer id="AR"    order="2" />
                     <adaptor uid="videoAdaptor" />
                     <adaptor uid="pointcloudAdptAR" />
                     <adaptor uid="cameraAdaptorAR" />
@@ -268,7 +272,7 @@
 
             <service uid="3D" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <layer id="default" depth="1" />
+                    <layer id="default" order="1" />
                     <adaptor uid="pointcloudAdpt" />
                     <adaptor uid="cameraAdaptor" />
                 </scene>

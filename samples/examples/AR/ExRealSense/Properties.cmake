@@ -24,6 +24,7 @@ set( REQUIREMENTS
     visuOgre
     visuOgreQt
     visuOgreAdaptor
+    material
 
     videoRealSense
     videoTools

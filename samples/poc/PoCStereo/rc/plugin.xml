@@ -120,9 +120,9 @@
 
             <!-- Begin Generic Scene ***************************************** -->
             <service uid="stereoScene" type="::fwRenderOgre::SRender" >
-                <scene overlays="LogoOverlay" fullscreen="true" >
+                <scene fullscreen="true" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                    <layer id="default" depth="1" stereoMode="Stereo" />
+                    <layer id="default" order="1" stereoMode="Stereo" overlays="IrcadIHU_Right_Bottom" />
                     <adaptor uid="interactorAdaptor" />
                     <adaptor uid="modelSeriesAdaptor" />
                     <adaptor uid="volumeAdaptor" />

@@ -40,8 +40,12 @@ namespace visuOgreAdaptor
  * @brief This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
  *
  * @section Slots Slots
- * - \b showReconstructions(bool): update all reconstructions visibility.
  * - \b changeField(): update all reconstructions visibility.
+ * - \b updateVisibility(bool): sets whether all reconstructions are shown or not.
+ * - \b toggleVisibility(): toggle whether all reconstructions are shown or not.
+ * - \b show(): shows all reconstructions.
+ * - \b hide(): hides all reconstructions.
+ * - @deprecated - \b showReconstructions(bool): update all reconstructions visibility.
  *
  * @section XML XML Configuration
  *
@@ -58,18 +62,15 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the modelSeries's layer
- * - \b transform (optional, string, default="") : the transformation matrix to associate to the adaptor.
+ * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
- * - \b dynamic (optional, yes/no, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is
- * a
- * performance hint that will choose a specific GPU memory pool accordingly.
- * - \b dynamicVertices (optional, yes/no, default=no) : if the modelSeries geometry is likely to be updated frequently.
- * This
- * is a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b queryFlags (optional, uint32, default=0x40000000) : Used for picking. Picked only by pickers whose mask that
- * match the
- * flag.
+ * - \b dynamic (optional, yes/no, default=no): if the modelSeries topolgy is likely to be updated frequently. This is
+ *      a performance hint that will choose a specific GPU memory pool accordingly.
+ * - \b dynamicVertices (optional, yes/no, default=no): if the modelSeries geometry is likely to be updated frequently.
+ *      This is a performance hint that will choose a specific GPU memory pool accordingly.
+ * - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ *      match the flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries final :
     public ::fwRenderOgre::IAdaptor,
@@ -78,21 +79,22 @@ class VISUOGREADAPTOR_CLASS_API SModelSeries final :
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor)
 
     /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
+    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starts the service and updates it.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -105,21 +107,31 @@ private:
      * Connect ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Redraws all (stops then restarts sub services).
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Closes connections and unregisters service.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the model series visibility.
+     * @param _visible the visibility status of the model series.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /**
      * @brief SOT: updates all reconstructions visibility.
      * @param _show use true to show reconstructions.
+     * @deprecated use updateVisibility(bool)
      */
-    void showReconstructions(bool _show);
+    [[deprecated("will be removed in sight 21.0")]]
+    void showReconstructionsDeprecatedSlot(bool _show);
 
-    /// SLOT: updates all reconstructions by calling @ref showReconstructions(bool).
+    /// SLOT: updates all reconstructions visibility from the input data field.
     void showReconstructionsOnFieldChanged();
 
     /// Defines if the camera must be reset automatically

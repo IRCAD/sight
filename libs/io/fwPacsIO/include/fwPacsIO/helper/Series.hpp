@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWPACSIO_HELPER_SERIES_HPP__
-#define __FWPACSIO_HELPER_SERIES_HPP__
-
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/scu.h>
+#pragma once
 
 #include "fwPacsIO/config.hpp"
 #include "fwPacsIO/data/PacsConfiguration.hpp"
 
 #include <fwData/Vector.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmnet/scu.h>
 
 namespace fwMedData
 {
@@ -48,9 +48,7 @@ namespace fwPacsIO
 namespace helper
 {
 
-/**
- * @brief Series Helper
- */
+/// Series Helper.
 class FWPACSIO_CLASS_API Series
 {
 public:
@@ -60,33 +58,30 @@ public:
     typedef std::map < std::string, unsigned int > InstanceCountMap;
 
     /**
-     * @brief Release the responses
-     * @param[in] responses Responses to free
+     * @brief Releases the responses.
+     * @param _responses the responses to free.
      */
-    FWPACSIO_API static void releaseResponses(OFList< QRResponse* > responses);
+    FWPACSIO_API static void releaseResponses(OFList< QRResponse* > _responses);
 
     /**
-     * @brief Convert DCMTK series to ::fwMedData::DicomSeries
-     * @param[in] responses DCMTK responses from the pacs that must be converted
+     * @brief Converts DCMTK series to ::fwMedData::DicomSeries.
+     * @param _responses the DCMTK responses from the pacs that must be converted.
      */
-    FWPACSIO_API static DicomSeriesContainer toFwMedData(OFList< QRResponse* > responses);
+    FWPACSIO_API static DicomSeriesContainer toFwMedData(OFList< QRResponse* > _responses);
 
     /**
-     * @brief Convert DCMTK series to instance uid vector
-     * @param[in] responses DCMTK responses from the pacs that must be converted
+     * @brief Converts DCMTK series to instance uid vector.
+     * @param _responses the DCMTK responses from the pacs that must be converted.
      */
-    FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(OFList< QRResponse* > responses);
+    FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(OFList< QRResponse* > _responses);
 
     /**
-     * @brief Convert std::vector< ::fwMedData::DicomSeries > to series instance uid container
-     * @param[in] series Series vector used to extract the series instance uids
+     * @brief Converts std::vector< ::fwMedData::DicomSeries > to series instance uid container.
+     * @param _series the series vector used to extract the series instance uids.
      */
-    FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
+    FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);
 
 };
 
 } //helper
 } //fwPacsIO
-
-
-#endif /* __FWPACSIO_HELPER_SERIES_HPP__ */

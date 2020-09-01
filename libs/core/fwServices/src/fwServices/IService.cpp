@@ -84,6 +84,27 @@ IService::IService() :
 
 IService::~IService()
 {
+    // check if the service manage outputs that are not maintained by someone else.
+    if (!m_outputsMap.empty())
+    {
+        std::string objectKeys;
+        for (const auto& obj: m_outputsMap)
+        {
+            const ::fwData::Object::wptr output = obj.second.get_shared();
+            if (output.use_count() == 1)
+            {
+                if (!objectKeys.empty())
+                {
+                    objectKeys += ", ";
+                }
+                objectKeys += "'" + obj.first + "'(nbRef: " + std::to_string(output.use_count()) + ")";
+            }
+        }
+        SLM_WARN_IF(
+            "Service "+ this->getID() + " still contains registered outputs: " + objectKeys + ". They will no "
+            "longer be maintained. You should call setOutput(key, nullptr) before stopping the service to inform "
+            "AppManager and other services that the object will be destroyed.", !objectKeys.empty());
+    }
 }
 
 //-----------------------------------------------------------------------------

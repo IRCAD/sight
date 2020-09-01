@@ -57,40 +57,43 @@ namespace visuOgreAdaptor
  * - \b parameter [::fwData::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
- * - \b materialName (mandatory, string) : the name of the associated Ogre material
- * - \b parameter (mandatory, string) : name of the shader parameter to set
- * - \b technique (optional, string, default="") : name of the technique, default to the first in the material
- * - \b shaderType (optional, vertex/geometry/fragment, default=vertex) : the type of the shader.
+ * - \b materialName (mandatory, string): the name of the associated Ogre material
+ * - \b parameter (mandatory, string): name of the shader parameter to set
+ * - \b technique (optional, string, default=""): name of the technique, default to the first in the material
+ * - \b shaderType (optional, vertex/geometry/fragment, default=vertex): the type of the shader.
  */
 class VISUOGREADAPTOR_CLASS_API SShaderParameter final : public ::fwRenderOgre::IParameter
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SShaderParameter, ::fwRenderOgre::IParameter)
 
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;
 
     /// Does nothing
-    VISUOGREADAPTOR_API virtual ~SShaderParameter() noexcept;
+    VISUOGREADAPTOR_API ~SShaderParameter() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Finds the material on which this service works.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the shader parameter with the input.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Does nothing.
-    virtual void swapping() override;
+    VISUOGREADAPTOR_API void swapping() override;
 
     /// Clears resources.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Defines the material name.
     std::string m_materialName;

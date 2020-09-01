@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,10 +73,12 @@ class Layer;
  * @code{.xml}
     <service uid="..." type="::fwRenderOgre::SRender" autoconnect="yes">
         <scene renderMode="auto">
-            <layer id="..." depth="1">
+            <background topColor="#000000" bottomColor="#FFFFFF" topScale="0.7" bottomScale="1.0"/>
+
+            <layer id="..." order="1">
                 <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
             </layer>
-            <layer id="..." depth="2" compositors="Invert;Laplace;Posterize" defaultLight="no" overlays="..."/>
+            <layer id="..." order="2" compositors="Invert;Laplace;Posterize" defaultLight="no" overlays="..."/>
 
             <adaptor uid="..."/>
             <adaptor uid="..."/>
@@ -86,46 +88,54 @@ class Layer;
  *
  * @subsection In-Out In-Out
  * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
- * and not in a window.
+ *      and not in a window.
  *
  * @subsection Configuration Configuration
- *  - \b scene
- *    - \b renderMode (optional): 'auto' (only when something has changed), 'always' (render continuously) or 'sync'
- *        (only when the slot "requestRender" is called). Default is 'auto'.
- *    - \b width (optional, "1280" by default): width for off-screen rendering
- *    - \b height (optional, "720" by default): height for off-screen rendering
- *  - \b layer : mandatory, defines the scene's layer
- *    - \b viewport (optional):
- *      - \b hAlign (optional, values=left|center|right, default=left): defines the horizontal origin of the viewport.
- *      - \b vAlign (optional, values=top|center|bottom, default=top): defines the vertical origin of the viewport.
- *      - \b hOffset (optional, float, default=0.f): horizontal offset from the origin relatively to the window.
- *      - \b vOffset (optional, float, default=0.f): vertical offset from the origin relatively to the window.
- *      - \b width (optional, float, default=1.f): viewport width relatively to the window.
- *      - \b height (optional, float, default=1.f): viewport height relatively to the window.
- *    - \b id (mandatory): the identifier of the layer
- *    - \b depth (mandatory): the depth of the layer, starting from 1
- *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
- *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
- *    - \b numPeels (optional): number of peels for the selected transparency technique.
- *                              Not used for WeightedBlended OIT
- *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
- *    - \b fullscreen (optional, yes/no, default="no"): Show the scene in full screen.
- *    - \b stereoMode (optional, yes/no, default="no"): Sets the mode used for stereoscopic 3D rendering,
- *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
- *    - \b defaultLight (optional, yes/no, default="yes"): Sets if a default light is created in the layer.
- *    - \b overlays (optional): list of overlay names (separated by semicolons) rendered on top of the layer's viewport.
+ *  - \b scene (mandatory)
+ *      - \b renderMode (optional, auto/always/sync, default=auto): 'auto' (only when something has changed), 'always'
+ *           (render continuously) or 'sync' (only when the slot "requestRender" is called).
+ *      - \b width (optional, int, default=1280): width for off-screen rendering.
+ *      - \b height (optional, int, default=720): height for off-screen rendering.
+ *  - \b background (optional): defines the scene background color.
+ *      - \b topColor (optional, hexadecimal, default=#000000): top color of the background.
+ *      - \b bottomColor (optional, hexadecimal, default=#000000): top color of the background.
+ *      - \b topScale (optional, float, default=0): top background scale.
+ *      - \b bottomScale (optional, float, default=1): bottom background scale.
+ *  - \b layer (mandatory): defines the scene's layer.
+ *      - \b viewport (optional):
+ *          - \b hAlign (optional, left|center|right, default=left): defines the horizontal origin of the viewport.
+ *          - \b vAlign (optional, top|center|bottom, default=top): defines the vertical origin of the viewport.
+ *          - \b hOffset (optional, float, default=0.f): horizontal offset from the origin relatively to the window.
+ *          - \b vOffset (optional, float, default=0.f): vertical offset from the origin relatively to the window.
+ *          - \b width (optional, float, default=1.f): viewport width relatively to the window.
+ *          - \b height (optional, float, default=1.f): viewport height relatively to the window.
+ *    - \b id (mandatory, string): the identifier of the layer
+ *    - @deprecated- \b depth (mandatory, int): deprecated, please use order instead.
+ *    - \b order (mandatory, int): layer order to stack, starting from 1. The layer with the lowest order will be
+ *         rendered first, and so the layer with the highest order will be displayed on top.
+ *    - \b transparency (optional, DepthPeeling/DualDepthPeeling/WeightedBlended/HybridTransparency/
+ *         CelShadingDepthPeeling, default=""): the transparency technique to use.
+ *    - \b numPeels (optional, string, default=""): number of peels for the selected transparency technique.
+ *         Not used for WeightedBlended OIT
+ *    - \b compositors (optional, string): defines the default compositor chain. Compositors are separated by semicolons
+ *    - \b fullscreen (optional, bool, default=false): Show the scene in full screen.
+ *    - \b stereoMode (optional, no/AutoStereo5/AutoStereo8/Stereo, default=no): Sets the mode used for stereoscopic 3D
+ *         rendering.
+ *    - \b defaultLight (optional, yes/no, default=yes): Sets if a default light is created in the layer.
+ *    - \b overlays (optional, string): list of overlay names (separated by semicolons) rendered on top of the layer's
+ *         viewport.
  *  - \b adaptor
- *    - \b uid (mandatory): the identifier of the adaptor
+ *    - \b uid (mandatory): the identifier of the adaptor.
  */
-class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
-
+class FWRENDEROGRE_CLASS_API SRender final : public ::fwRender::IRender
 {
+
 public:
+
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SRender, ::fwRender::IRender)
 
-    FWRENDEROGRE_API SRender() noexcept;
-    FWRENDEROGRE_API virtual ~SRender() noexcept;
-
+    /// Represents all possible render modes.
     enum class RenderMode
     {
         ALWAYS,
@@ -133,54 +143,52 @@ public:
         SYNC
     };
 
+    /// Defines the type of apdators ID.
     typedef std::string AdaptorIdType;
+
+    /// Defines the type of object ID.
     typedef std::string OgreObjectIdType;
+
+    /// Defines the type of scene ID.
     typedef std::string SceneIdType;
 
-    /// Actives layouts in the scene.
+    /// Defines actives layouts in the scene.
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
-    FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    /// Signal: sent when the compositor chain has been modified.
+    /// Contains the signal sent when the compositor chain has been modified.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
-    /// Signal: sent when fullscreen was enabled/disabled.
+    /// Contains the signal sent when fullscreen was enabled/disabled.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
     using FullscreenSetSignalType = ::fwCom::Signal< void(bool) >;
-    /** @} */
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    typedef ::fwCom::Slot< void () > ComputeCameraOrigSlotType;
-    /// Slot: Computes the parameters to reset the camera.
+    /// Contains the slot name that computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
-    typedef ::fwCom::Slot< void () > ComputeCameraClippingSlotType;
-    /// Slot: Computes the parameters to reset the camera.
+    /// Contains the slot name that computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
-    /// Slot: Request the picker to do a ray cast according to the passed position.
+    /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
 
-    typedef ::fwCom::Slot< void () > RequestRenderSlotType;
-    /// Slot: Request a rendering.
+    /// Contains the slot name that requests a rendering.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
 
-    /// Slot: Disables fullscreen rendering if it was enabled.
+    /// Contains the slot name that disables fullscreen rendering if it was enabled.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DISABLE_FULLSCREEN;
 
-    /// Slot: Enables fullscreen rendering on a specific screen.
+    /// Contains the slot name that enables fullscreen rendering on a specific screen.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
 
-    /** @} */
+    /// Defines the layer ID of the background.
+    FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
+
+    /// Initialiazes slots.
+    FWRENDEROGRE_API SRender() noexcept;
+
+    /// Destroys the service.
+    FWRENDEROGRE_API ~SRender() noexcept override;
 
     /// Sets this render service as the current OpenGL context.
     FWRENDEROGRE_API void makeCurrent();
@@ -188,19 +196,19 @@ public:
     /// Requests a render from the Ogre render engine.
     FWRENDEROGRE_API void requestRender();
 
-    /// Returns true if the scene is shown on screen.
+    /// @returns true if the scene is shown on screen.
     FWRENDEROGRE_API bool isShownOnScreen();
 
-    /// Returns the scene manager corresponding to the sceneID.
+    /// @returns the scene manager corresponding to the sceneID.
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
-    /// Returns the layer corresponding to the sceneID.
+    /// @returns the layer corresponding to the sceneID.
     FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
-    /// Returns this render layers.
+    /// @returns this render layers.
     FWRENDEROGRE_API LayerMapType getLayers();
 
-    /// Returns m_interactorManager.
+    /// @returns m_interactorManager.
     FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
     /// Resets camera parameters with the actual global bounding box.
@@ -217,15 +225,13 @@ public:
 
 protected:
 
-    /// Renders the scene.
-    FWRENDEROGRE_API void render();
+    /// Configures adaptors and connections.
+    FWRENDEROGRE_API void starting() override;
 
-    /// Configures the adaptors and the connections
-    FWRENDEROGRE_API virtual void starting() override;
-    /// Stops all the adaptors
-    FWRENDEROGRE_API virtual void stopping() override;
+    /// Stops all adaptors
+    FWRENDEROGRE_API void stopping() override;
 
-    ///Configures the adaptor
+    /// Configures the adaptor.
     FWRENDEROGRE_API virtual void configuring() override;
 
     /// Does nothing.
@@ -233,33 +239,34 @@ protected:
 
 private:
 
-    /// Configuration element shared pointer
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    /// Renders the scene.
+    void render();
 
-    /// Configure background layer of the scene
-    void configureBackgroundLayer( const ConfigType& _cfg );
-    /// Configure each layer of the scene
-    void configureLayer(const ConfigType& _cfg );
+    /// Configures background layer of the scene.
+    void configureBackgroundLayer(const ConfigType& _cfg);
+
+    /// Configures each layer of the scene.
+    void configureLayer(const ConfigType& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
     static Layer::ViewportConfigType configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg);
 
-    /// Render the scene in fullscreen on the screen with the given index.
-    void enableFullscreen(int screen);
+    /**
+     * @brief Renders the scene in fullscreen on the screen with the given index.
+     * @param screen the index of the screen where the fullscreen is enabled.
+     */
+    void enableFullscreen(int _screen);
 
-    /// Switch back to windowed rendering if fullscreen is on.
+    /// Switchs back to windowed rendering if fullscreen is on.
     void disableFullscreen();
 
-    /// Contains all the layers of the scene
+    /// Contains all the layers of the scene.
     LayerMapType m_layers;
 
-    /// Signal/ Slot connection
-    ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// Signal sent when fullscreen is enabled/disabled.
+    /// Contains the signal sent when fullscreen is enabled/disabled.
     FullscreenSetSignalType::sptr m_fullscreenSetSig;
 
-    /// Ogre window interactor manager
+    /// Contains the Ogre window interactor manager.
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
 
     /// Maps viewports to their overlays. Needed by the viewport listener.
@@ -268,26 +275,28 @@ private:
     /// Listens for render target updates for all viewports and enables the required overlays.
     overlay::ViewportListener m_viewportListener { m_viewportOverlaysMap };
 
-    /// Ogre root
+    /// Contains the Ogre root.
     ::Ogre::Root* m_ogreRoot { nullptr };
 
-    /// How the rendering is triggered ?
+    /// Defines how the rendering is triggered.
     RenderMode m_renderMode { RenderMode::AUTO };
 
-    /// True if the render window is in fullscreen.
+    /// Defines if the render window is in fullscreen.
     bool m_fullscreen { false };
 
-    /// Width for off-screen rendering
+    /// Defines the width for off-screen rendering.
     unsigned int m_width { 0 };
 
-    /// Height for off-screen rendering
+    /// Defines the height for off-screen rendering.
     unsigned int m_height { 0 };
 
-    /// If true, scene is rendered off-screen
+    /// Defines if the scene is rendered off-screen.
     bool m_offScreen { false };
 
-    /// If true and doing offscreen rendering, the scene will be rendered upside down.
+    /// Defines if the scene will be rendered upside down.
+    /// @warning the scene must be rendered off-screen.
     bool m_flip { false };
+
 };
 
 //-----------------------------------------------------------------------------

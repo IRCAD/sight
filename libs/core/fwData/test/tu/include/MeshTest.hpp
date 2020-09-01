@@ -31,6 +31,7 @@ namespace ut
 
 class MeshTest : public CPPUNIT_NS::TestFixture
 {
+
 private:
     CPPUNIT_TEST_SUITE( MeshTest );
     CPPUNIT_TEST( deprecatedAllocation );
@@ -38,7 +39,10 @@ private:
     CPPUNIT_TEST( allocationTest );
     CPPUNIT_TEST( insertion );
     CPPUNIT_TEST( iteratorTest );
+    CPPUNIT_TEST( iteratorCopyTest );
     CPPUNIT_TEST_SUITE_END();
+
+    const float EPSILON = std::numeric_limits<float>::epsilon();
 
 public:
     // interface
@@ -50,6 +54,7 @@ public:
     void allocationTest();
     void insertion();
     void iteratorTest();
+    void iteratorCopyTest();
 };
 } //namespace ut
 } //namespace fwData

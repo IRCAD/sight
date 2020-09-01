@@ -951,5 +951,30 @@ void ImageTest::setISStreamTest()
 
 //------------------------------------------------------------------------------
 
+void ImageTest::emptyIteratorTest()
+{
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+
+    const auto dumpLock = image->lock();
+
+    auto iter      = image->begin< std::int16_t>();
+    const auto end = image->end< std::int16_t>();
+
+    ::fwData::iterator::ImageIteratorBase<std::int16_t> maxIter;
+
+    std::int16_t maxValue = *iter;
+
+    for (; iter != end; ++iter)
+    {
+        if (*iter > maxValue)
+        {
+            maxIter  = iter;
+            maxValue = *iter;
+        }
+    }
+    CPPUNIT_ASSERT_EQUAL(*maxIter, maxValue);
+}
+
 } //namespace ut
 } //namespace fwData

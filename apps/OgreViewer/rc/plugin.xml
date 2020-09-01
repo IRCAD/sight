@@ -50,6 +50,7 @@
             <object uid="image" type="::fwData::Image" />
             <object uid="histogram" type="::fwData::Histogram" />
             <object uid="extrudedModelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="landmarks" type="::fwData::Landmarks" />
 
             <object uid="volumeTFPools" type="::fwData::Composite" />
             <object uid="volumeCurrentTFPool" type="::fwData::Composite" src="deferred" />
@@ -148,12 +149,14 @@
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
+                        <view proportion="0" spacing="0" />
                     </layout>
                 </gui>
                 <registry>
                     <toolBar sid="parameterToolBarView" start="yes" />
                     <view sid="volumeParameterView" start="yes" />
                     <view wid="organsParameterView" />
+                    <view sid="landmarksParameterView" start="yes" />
                     <view sid="lightParameterView" start="yes" />
                     <view wid="extrudedMeshesParameterView" />
                 </registry>
@@ -164,6 +167,7 @@
                     <layout>
                         <menuItem name="Show volume parameters" icon="flatIcon-0.1/icons/Volume.svg" style="check" />
                         <menuItem name="Show organs manager" icon="flatIcon-0.1/icons/Stomach.svg" style="check" />
+                        <menuItem name="Show landmarks manager" icon="flatIcon-0.1/icons/YellowLandmarks.svg" style="check" />
                         <menuItem name="Show light manager" icon="flatIcon-0.1/icons/Light.svg" style="check" />
                         <menuItem name="Show extruded meshes manager" icon="flatIcon-0.1/icons/Extrude.svg" style="check" />
                         <spacer/>
@@ -173,6 +177,7 @@
                 <registry>
                     <menuItem sid="volumeManagerAct" start="yes" />
                     <menuItem sid="organsManagerAct" start="yes" />
+                    <menuItem sid="landmarksManagerAct" start="yes" />
                     <menuItem sid="lightManagerAct" start="yes" />
                     <menuItem sid="extrudedMeshesManagerAct" start="yes" />
                     <menuItem sid="hideParameterAct" start="yes" />
@@ -191,6 +196,19 @@
                 </gui>
                 <registry>
                     <view sid="volumeParameterSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="landmarksParameterView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="landmarksParameterSrv" start="yes" />
                 </registry>
             </service>
 
@@ -232,9 +250,6 @@
                         <menuItem name="Remove distance" icon="flatIcon-0.1/icons/RemoveDistance.svg" />
                         <menuItem name="Hide/show distance" icon="flatIcon-0.1/icons/Distance.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide points" icon="flatIcon-0.1/icons/Points.svg" style="check" />
-                        <menuItem name="Reset points" icon="flatIcon-0.1/icons/RedResetPoints.svg" />
-                        <separator/>
                         <menuItem name="Show/hide axis" icon="flatIcon-0.1/icons/Axis.svg" style="check" />
                     </layout>
                 </gui>
@@ -252,8 +267,6 @@
                     <menuItem sid="addDistanceAct" start="yes" />
                     <menuItem sid="removeDistanceAct" start="yes" />
                     <menuItem sid="hideDistanceAct" start="yes" />
-                    <menuItem sid="pointListVisibilityAct" start="yes" />
-                    <menuItem sid="pointListResetAct" start="yes" />
                     <menuItem sid="axisVisibilityAct" start="yes" />
                 </registry>
             </service>
@@ -282,6 +295,7 @@
                 <config>
                     <show sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
                     <hide wid="extrudedMeshesParameterView" />
                 </config>
@@ -291,6 +305,17 @@
                 <config>
                     <hide sid="volumeParameterView" />
                     <show wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
+                    <hide sid="lightParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
+                </config>
+            </service>
+
+            <service uid="landmarksManagerAct" type="::gui::action::SModifyLayout" >
+                <config>
+                    <hide sid="volumeParameterView" />
+                    <hide wid="organsParameterView" />
+                    <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
                     <hide wid="extrudedMeshesParameterView" />
                 </config>
@@ -300,6 +325,7 @@
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
                     <hide wid="extrudedMeshesParameterView" />
                 </config>
@@ -309,6 +335,7 @@
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
                     <show wid="extrudedMeshesParameterView" />
                 </config>
@@ -370,14 +397,6 @@
                 <state executable="true" />
             </service>
 
-            <service uid="pointListVisibilityAct" type="::gui::action::SSignal" >
-                <state executable="false" />
-            </service>
-
-            <service uid="pointListResetAct" type="::gui::action::SSignal" >
-                <state executable="false" />
-            </service>
-
             <service uid="axisVisibilityAct" type="::gui::action::SSignal" />
 
             <!-- Manage distance -->
@@ -413,25 +432,27 @@
                 <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="BOX_WIDGET_RESET_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
-                <parameter replace="POINTLIST_VISIBILITY_RECEIVER_CHANNEL" by="POINTLIST_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="POINTLIST_RESET_RECEIVER_CHANNEL" by="POINTLIST_RESET_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
+                <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
                 <inout key="volumeTF" uid="volumeTF" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
+                <inout key="landmarks" uid="landmarks" />
             </service>
 
             <service uid="organManagerCfg"  type="::fwServices::SConfigController" >
                 <appConfig id="OgreOrganManager" />
-                <inout key="organManagerModelSeries" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
+                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
+                <inout key="organManagerModelSeries" uid="modelSeries" />
             </service>
 
             <service uid="extrudedMeshesManagerCfg"  type="::fwServices::SConfigController" >
                 <appConfig id="OgreOrganManager" />
-                <inout key="organManagerModelSeries" uid="extrudedModelSeries" />
                 <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
+                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
+                <inout key="organManagerModelSeries" uid="extrudedModelSeries" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -473,6 +494,12 @@
                     <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
                 </parameters>
                 <config sendAtStart="false" />
+            </service>
+
+            <!-- Parameters for landmarks -->
+            <service uid="landmarksParameterSrv" type="::uiMeasurementQt::editor::SLandmarks" >
+                <inout key="landmarks" uid="landmarks" />
+                <advanced>yes</advanced>
             </service>
 
             <!-- Light editor -->
@@ -522,14 +549,6 @@
                 <slot>shapeExtruderAct/deactivate</slot>
             </connect>
 
-            <connect channel="POINTLIST_VISIBILITY_SENDER_CHANNEL" >
-                <signal>pointListVisibilityAct/triggered</signal>
-            </connect>
-
-            <connect channel="POINTLIST_RESET_SENDER_CHANNEL" >
-                <signal>pointListResetAct/triggered</signal>
-            </connect>
-
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >
                 <signal>axisVisibilityAct/triggered</signal>
             </connect>
@@ -549,9 +568,6 @@
                 <signal>modelSeries/modified</signal>
                 <slot>meshVisibilityAct/setExecutable</slot>
                 <slot>meshVisibilityAct/activate</slot>
-                <slot>pointListVisibilityAct/setExecutable</slot>
-                <slot>pointListVisibilityAct/activate</slot>
-                <slot>pointListResetAct/setExecutable</slot>
             </connect>
 
             <connect>
@@ -592,6 +608,7 @@
                 <signal>volumeManagerAct/updated</signal>
                 <slot>volumeManagerAct/activate</slot>
                 <slot>organsManagerAct/deactivate</slot>
+                <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/deactivate</slot>
                 <slot>extrudedMeshesManagerAct/deactivate</slot>
             </connect>
@@ -600,6 +617,16 @@
                 <signal>organsManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
                 <slot>organsManagerAct/activate</slot>
+                <slot>landmarksManagerAct/deactivate</slot>
+                <slot>lightManagerAct/deactivate</slot>
+                <slot>extrudedMeshesManagerAct/deactivate</slot>
+            </connect>
+
+            <connect>
+                <signal>landmarksManagerAct/updated</signal>
+                <slot>volumeManagerAct/deactivate</slot>
+                <slot>organsManagerAct/deactivate</slot>
+                <slot>landmarksManagerAct/activate</slot>
                 <slot>lightManagerAct/deactivate</slot>
                 <slot>extrudedMeshesManagerAct/deactivate</slot>
             </connect>
@@ -608,6 +635,7 @@
                 <signal>lightManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
                 <slot>organsManagerAct/deactivate</slot>
+                <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/activate</slot>
                 <slot>extrudedMeshesManagerAct/deactivate</slot>
             </connect>
@@ -616,8 +644,14 @@
                 <signal>extrudedMeshesManagerAct/updated</signal>
                 <slot>volumeManagerAct/deactivate</slot>
                 <slot>organsManagerAct/deactivate</slot>
+                <slot>landmarksManagerAct/deactivate</slot>
                 <slot>lightManagerAct/deactivate</slot>
                 <slot>extrudedMeshesManagerAct/activate</slot>
+            </connect>
+
+            <!-- Manage landmarks -->
+            <connect channel="PICKER_RECEIVER_CHANNEL" >
+                <slot>landmarksParameterSrv/pick</slot>
             </connect>
 
             <!-- ******************************* Start/Stop services ***************************************** -->

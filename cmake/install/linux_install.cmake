@@ -8,8 +8,8 @@ macro(linux_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
 
-        set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
-        set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
+        set(LAUNCHER_PATH "bin/fwlauncher.bin-${fwlauncher_VERSION}")
+        set(LAUNCHER "fwlauncher.bin-${fwlauncher_VERSION}")
         set(PROFILE_PATH "${PRJ_NAME}-${PROJECT_VERSION}/profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
@@ -18,8 +18,8 @@ macro(linux_install PRJ_NAME)
         endif()
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
 
-        set(LAUNCHER_PATH "bin/${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
-        set(LAUNCHER "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
+        set(LAUNCHER "${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
         set(PROFILE_PATH "")
 
     elseif()
@@ -52,7 +52,7 @@ macro(linux_install PRJ_NAME)
     if(NOT USE_SYSTEM_LIB)
         if(${PRJ_NAME} STREQUAL "sight")
             # Needed for fixup_bundle first argument
-            set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
+            set(LAUNCHER_PATH "bin/fwlauncher.bin-${fwlauncher_VERSION}")
         endif()
 
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
@@ -71,13 +71,13 @@ macro(linux_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
     include(CPack)

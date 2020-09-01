@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,9 @@ void SlotBase::run(A1 a1, A2 a2, A3 a3) const
     }
     else
     {
-        OSLM_ERROR( "failed to run : " << m_signature << " with " << SlotBase::getTypeName< void(A1, A2, A3) >() );
+        OSLM_INFO( "Failed to run the slot with three parameters : "
+                   << m_signature << " != " << SlotBase::getTypeName< void(A1, A2, A3) >()
+                   << ". Trying to run the slot with two parameters.");
         this->run(a1, a2);
     }
 }
@@ -72,7 +74,9 @@ void SlotBase::run(A1 a1, A2 a2) const
     }
     else
     {
-        OSLM_ERROR(  "failed to run : " << m_signature << " with " << SlotBase::getTypeName< void(A1, A2) >() );
+        OSLM_INFO( "Failed to run the slot with two parameters : "
+                   << m_signature << " != " << SlotBase::getTypeName< void(A1, A2) >()
+                   << ". Trying to run the slot with one parameter.");
         this->run(a1);
     }
 }
@@ -90,7 +94,9 @@ void SlotBase::run(A1 a1) const
     }
     else
     {
-        OSLM_ERROR(  "failed to run : " << m_signature << " with " << SlotBase::getTypeName< void(A1) >() );
+        OSLM_INFO( "Failed to run the slot with one parameter : "
+                   << m_signature << " != " << SlotBase::getTypeName< void(A1) >()
+                   << ". Trying to run the slot without parameter.");
         return this->run();
     }
 }
@@ -108,7 +114,9 @@ R SlotBase::call(A1 a1, A2 a2, A3 a3) const
     }
     else
     {
-        OSLM_ERROR(  "failed to call : " << m_signature << " with " << SlotBase::getTypeName< R(A1, A2, A3) >() );
+        OSLM_INFO( "Failed to call the slot with three parameters : "
+                   << m_signature << " != " << SlotBase::getTypeName< R(A1, A2, A3) >()
+                   << ". Trying to call the slot with two parameters.");
         return this->call<R>(a1, a2);
     }
 }
@@ -126,7 +134,9 @@ R SlotBase::call(A1 a1, A2 a2) const
     }
     else
     {
-        OSLM_ERROR(  "failed to call : " << m_signature << " with " << SlotBase::getTypeName< R(A1, A2) >() );
+        OSLM_INFO( "Failed to call the slot with two parameters : "
+                   << m_signature << " != " << SlotBase::getTypeName< R(A1, A2) >()
+                   << ". Trying to call the slot with one parameter.");
         return this->call<R>(a1);
     }
 }
@@ -144,7 +154,9 @@ R SlotBase::call(A1 a1) const
     }
     else
     {
-        OSLM_ERROR(  "failed to call : " << m_signature << " with " << SlotBase::getTypeName< R(A1) >() );
+        OSLM_INFO( "Failed to call the slot with one parameter : "
+                   << m_signature << " != " << SlotBase::getTypeName< R( A1) >()
+                   << ". Trying to call the slot without parameter.");
         return this->call<R>();
     }
 }
@@ -160,7 +172,7 @@ R SlotBase::call() const
     {
         return fun->call();
     }
-    OSLM_ERROR( "failed to call : " + m_signature + " with " + SlotBase::getTypeName< R() >() );
+    OSLM_ERROR( "Failed to call : " + m_signature + " with " + SlotBase::getTypeName< R() >() );
     FW_RAISE_EXCEPTION( ::fwCom::exception::BadCall( "Failed to find right signature for call" ) );
 }
 
@@ -177,8 +189,9 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2, A3 a3) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncRun : " << m_signature << " with " <<
-                     SlotBase::getTypeName< void(A1, A2, A3) >() );
+        OSLM_INFO("Failed to asyncRun the slot with three parameters : "
+                  << m_signature << " != " << SlotBase::getTypeName< void(A1, A2, A3) >()
+                  << ". Trying to asyncRun the slot with two parameters.");
         return this->asyncRun(a1, a2);
     }
 }
@@ -196,7 +209,9 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncRun : " << m_signature << " with " << SlotBase::getTypeName< void(A1, A2) >() );
+        OSLM_INFO("Failed to asyncRun the slot with two parameters : "
+                  << m_signature << " != " << SlotBase::getTypeName< void(A1, A2) >()
+                  << ". Trying to asyncRun the slot with one parameter.");
         return this->asyncRun(a1);
     }
 }
@@ -214,7 +229,9 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncRun : " << m_signature << " with " << SlotBase::getTypeName< void(A1) >() );
+        OSLM_INFO("Failed to asyncRun the slot with one parameter : "
+                  << m_signature << " != " << SlotBase::getTypeName< void(A1) >()
+                  << ". Trying to asyncRun the slot without parameter.");
         return this->asyncRun();
     }
 }
@@ -232,7 +249,9 @@ std::shared_future< R > SlotBase::asyncCall(A1 a1, A2 a2, A3 a3) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncCall : " << m_signature << " with " << SlotBase::getTypeName< R(A1, A2, A3) >() );
+        OSLM_INFO("Failed to asyncCall the slot with three parameters : "
+                  << m_signature << " != " << SlotBase::getTypeName< R(A1, A2, A3) >()
+                  << ". Trying to asyncCall the slot with two parameters.");
         return this->asyncCall<R>(a1, a2);
     }
 }
@@ -250,7 +269,9 @@ std::shared_future< R > SlotBase::asyncCall(A1 a1, A2 a2) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncCall : " << m_signature << " with " << SlotBase::getTypeName< R(A1, A2) >() );
+        OSLM_INFO("Failed to asyncCall the slot with two parameters : "
+                  << m_signature << " != " << SlotBase::getTypeName< R(A1, A2) >()
+                  << ". Trying to asyncCall the slot with one parameter.");
         return this->asyncCall<R>(a1);
     }
 }
@@ -268,7 +289,9 @@ std::shared_future< R > SlotBase::asyncCall(A1 a1) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncCall : " << m_signature << " with " << SlotBase::getTypeName< R(A1) >() );
+        OSLM_INFO("Failed to asyncCall the slot with one parameters : "
+                  << m_signature << " != " << SlotBase::getTypeName< R(A1) >()
+                  << ". Trying to asyncCall the slot without parameter.");
         return this->asyncCall<R>();
     }
 }

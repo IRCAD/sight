@@ -44,11 +44,11 @@ namespace visuOgreAdaptor
  * @brief This adaptor shows a simple vector.
  *
  * @section Slots Slots
- * -\b updateVisibility(bool): Sets whether the vector is shown or not.
- * -\b toggleVisibility(): Toggle whether the vector is shown or not.
- * -\b updateLength(float): set the length of the vector.
- * -\b show(): Shows the vector.
- * -\b hide(): Hides the vector.
+ * - \b updateVisibility(bool): Sets whether the vector is shown or not.
+ * - \b toggleVisibility(): Toggle whether the vector is shown or not.
+ * - \b updateLength(float): set the length of the vector.
+ * - \b show(): Shows the vector.
+ * - \b hide(): Hides the vector.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -60,49 +60,48 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
- * was specified
- * in the STransform adaptor.
+ *      was specified in the STransform adaptor.
  * - \b length (optional, float, default=1.): axis length in mm.
  * - \b color (optional, hexadecimal, default=#FFFFFF): color of the vector.
  * - \b visible (optional, bool, default=true): visibility of the vector.
- *
  */
 class VISUOGREADAPTOR_CLASS_API SVector final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SVector() noexcept;
+    VISUOGREADAPTOR_API ~SVector() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Initialize the main node and the material.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Deletes resources.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Create with the specified length the vector.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /**
-     * @brief SLOT: sets whether the vector is to be seen or not.
-     * @param _isVisible Set to true to show the vector.
+     * @brief Sets the vector visibility.
+     * @param _visible the visibility status of the vector.
      */
-    void updateVisibility(bool _isVisible);
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
-    /// SLOT: toogles the vector visibility.
-    void toggleVisibility();
+private:
 
     /**
      * @brief Updates the length of the vector.
@@ -115,12 +114,6 @@ private:
 
     /// Deletes the vector resources.
     void deleteVector();
-
-    /// Shows the vector.
-    void show();
-
-    /// Hides the vector.
-    void hide();
 
     /// Contains the material data.
     ::fwData::Material::sptr m_material {nullptr};

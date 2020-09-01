@@ -118,7 +118,7 @@ void SReconstruction::updating()
         {
             // Updates the mesh adaptor according to the reconstruction
             meshAdaptor->setMaterial(reconstruction->getMaterial());
-            meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+            meshAdaptor->setVisible(reconstruction->getIsVisible());
         }
     }
     else
@@ -161,7 +161,7 @@ void SReconstruction::createMeshService()
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
         meshAdaptor->setTransformId(this->getTransformId());
-        meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        meshAdaptor->setVisible(reconstruction->getIsVisible());
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
         meshAdaptor->setQueryFlags(m_queryFlags);
@@ -177,7 +177,7 @@ void SReconstruction::createMeshService()
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::setForceHide(bool _hide)
+void SReconstruction::setVisible(bool _hide)
 {
     if (!m_meshAdaptor.expired())
     {
@@ -188,9 +188,17 @@ void SReconstruction::setForceHide(bool _hide)
             auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
             SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
 
-            meshAdaptor->updateVisibility(_hide ? false : reconstruction->getIsVisible());
+            meshAdaptor->setVisible(_hide ? false : reconstruction->getIsVisible());
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SReconstruction::setForceHide(bool _hide)
+{
+    FW_DEPRECATED_MSG("::visuOgreAdaptor::SReconstruction::setForceHide is no longer supported", "21.0")
+    this->updateVisibility(_hide);
 }
 
 //------------------------------------------------------------------------------
@@ -219,7 +227,7 @@ void SReconstruction::modifyVisibility()
         auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
 
-        this->setForceHide(!reconstruction->getIsVisible());
+        this->updateVisibility(!reconstruction->getIsVisible());
     }
 }
 

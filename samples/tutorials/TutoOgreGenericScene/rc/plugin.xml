@@ -147,7 +147,7 @@
             <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
                 <scene>
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                    <layer id="default" depth="1"/>
+                    <layer id="default" order="1"/>
                     <adaptor uid="interactorAdaptor" />
                     <adaptor uid="cameraAdaptor" />
                     <adaptor uid="meshAdaptor" />
@@ -198,7 +198,7 @@
                 <inout key="offScreen" uid="texture" />
                 <scene width="1920" height="1080">
                     <background topColor="#0000ff" bottomColor="#ff0000" topScale="0.7" bottomScale="1.0" />
-                    <layer id="default" depth="1" />
+                    <layer id="default" order="1" />
                     <adaptor uid="meshOffscreenAdaptor" />
                 </scene>
             </service>

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,17 +40,42 @@ namespace fwPacsIO
 {
 
 /**
- * @brief Reads DICOM series from pacs.
+ * @brief Reads DICOM series from PACS.
+ *
+ * Example:
+ * @code{.cpp}
+    ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer= ::fwPacsIO::SeriesEnquirer::New();
+    try
+    {
+        seriesEnquirer->initialize(
+            "AET,
+            "192.168.0.1",
+            "104",
+            "ORTHANC";
+        seriesEnquirer->connect();
+        OFList< QRResponse* > responses = seriesEnquire->findSeriesByModality("CT");
+        ::fwMedData::SeriesDB::ContainerType series = ::fwPacsIO::helper::Series::toFwMedData(responses);
+        ::fwPacsIO::helper::Series::releaseResponses(responses);
+    }
+    catch(::fwPacsIO::exceptions::Base& _e)
+    {
+        SLM_ERROR("Can't execute query: " + std::string(_e.what()));
+    }
+    seriesEnquirer->disconnect();
+   @endcode
  */
-class FWPACSIO_CLASS_API SeriesEnquirer : public ::fwCore::BaseObject,
-                                          protected DcmSCU
+class FWPACSIO_CLASS_API SeriesEnquirer :
+    public ::fwCore::BaseObject,
+    protected DcmSCU
 {
 
 public:
-    fwCoreClassMacro(SeriesEnquirer, ::fwPacsIO::SeriesEnquirer, new SeriesEnquirer);
+
+    fwCoreClassMacro(SeriesEnquirer, ::fwPacsIO::SeriesEnquirer, new SeriesEnquirer)
     fwCoreAllowSharedFromThis();
 
     FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
+
     typedef ::fwCom::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
     typedef std::vector< std::string > InstanceUIDContainer;
@@ -59,173 +84,212 @@ public:
 
     typedef std::vector< CSPTR(DcmDataset) > DatasetContainer;
 
-    /// Constructor
+    /// Initializes memnbers.
     FWPACSIO_API SeriesEnquirer();
 
-    /// Destructor
-    FWPACSIO_API ~SeriesEnquirer();
+    /// Destroyes the instance.
+    FWPACSIO_API virtual ~SeriesEnquirer();
 
     /**
-     * @brief Initialize the connection
-     * @param[in] applicationTitle Local application title
-     * @param[in] peerHostName Pacs host name
-     * @param[in] peerPort Pacs port
-     * @param[in] peerApplicationTitle Pacs application title
-     * @param[in] path Local dicom folder path
-     * @param[in] moveApplicationTitle Move application title
-     * @param[in] progressCallback Progress callback
+     * @brief Initializes the connection.
+     * @param _applicationTitle The local application title.
+     * @param _peerHostName The pacs host name.
+     * @param _peerPort The pacs port.
+     * @param _peerApplicationTitle The pacs application title.
+     * @param _path The local dicom folder path.
+     * @param _moveApplicationTitle The move application title.
+     * @param _progressCallback The progress callback.
      */
-    FWPACSIO_API void initialize(const std::string& applicationTitle,
-                                 const std::string& peerHostName, unsigned short peerPort,
-                                 const std::string& peerApplicationTitle,
-                                 const std::string& moveApplicationTitle         = "",
-                                 ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr());
+    FWPACSIO_API void initialize(const std::string& _applicationTitle,
+                                 const std::string& _peerHostName,
+                                 unsigned short _peerPort,
+                                 const std::string& _peerApplicationTitle,
+                                 const std::string& _moveApplicationTitle         = "",
+                                 ProgressCallbackSlotType::sptr _progressCallback = ProgressCallbackSlotType::sptr());
 
-    /// Negotiate Association
+    /// Initializes the network and negotiates association.
     FWPACSIO_API bool connect();
-
-    /// Release association
-    FWPACSIO_API void disconnect();
-
-    /// Assemble and send C-ECHO request
-    FWPACSIO_API bool pingPacs();
 
     /// Return true if there is an existing association
     FWPACSIO_API bool isConnectedToPacs() const;
 
-    /**
-     * @brief Find series by patient name
-     * @param[in] name Patient name
-     * @return dcmtk response list
-     */
-    FWPACSIO_API OFList< QRResponse* > findSeriesByPatientName(const std::string& name);
+    /// Assembles and send C-ECHO request.
+    FWPACSIO_API bool pingPacs();
+
+    /// Releases association.
+    FWPACSIO_API void disconnect();
 
     /**
-     * @brief Find series by study date
-     * @param[in] fromDate Beginning date
-     * @param[in] toDate Ending date
-     * @return dcmtk response list
+     * @brief Finds series by patient name.
+     * @param _name The patient name.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API OFList< QRResponse* > findSeriesByDate(const std::string& fromDate, const std::string& toDate);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByPatientName(const std::string& _name);
 
     /**
-     * @brief Find series by series UID
-     * @param[in] uid Series UID
-     * @return dcmtk response list
+     * @brief Finds series by patient UID.
+     * @param _uid The patient UID.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API OFList< QRResponse* > findSeriesByUID(const std::string& uid);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByPatientUID(const std::string& _uid);
 
     /**
-     * @brief Find SOPInstanceUID of the specified instance
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] instanceNumber Instance number
-     * @return SOPInstanceUID corresponding to the instanceNumber
+     * @brief Finds series by study date.
+     * @param _fromDate The beginning date.
+     * @param _toDate The ending date.
+     * @return The dcmtk response list.
+     *
+     * @pre _fromDate and _toDate must match the format YYYYMMDD.
      */
-    FWPACSIO_API std::string findSOPInstanceUID(const std::string& seriesInstanceUID, unsigned int instanceNumber);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByDate(const std::string& _fromDate, const std::string& _toDate);
 
     /**
-     * @brief Pull series using C-MOVE requests
-     * @param[in] instanceUIDContainer Series instance UID container
+     * @brief Finds series by series UID.
+     * @param _uid The series UID.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API void pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer instanceUIDContainer);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByUID(const std::string& _uid);
 
     /**
-     * @brief Pull series using C-GET requests
-     * @param[in] instanceUIDContainer Series instance UID container
+     * @brief Finds series by modality.
+     * @param _modality The modality.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API void pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer instanceUIDContainer);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByModality(const std::string& _modality);
 
     /**
-     * @brief Pull instance using C-MOVE requests
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] sopInstanceUID SOP Instance UID
+     * @brief Finds series by description.
+     * @param _description The desription.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API void pullInstanceUsingMoveRetrieveMethod(const std::string& seriesInstanceUID,
-                                                          const std::string& sopInstanceUID);
+    FWPACSIO_API OFList< QRResponse* > findSeriesByDescription(const std::string& _description);
 
     /**
-     * @brief Pull instance using C-GET requests
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] sopInstanceUID SOP Instance UID
+     * @brief Finds SOPInstanceUID of the specified instance.
+     * @param _seriesInstanceUID The series instance UID.
+     * @param _instanceNumber The instance number.
+     * @return The SOPInstanceUID corresponding to the instanceNumber.
      */
-    FWPACSIO_API void pullInstanceUsingGetRetrieveMethod(const std::string& seriesInstanceUID,
-                                                         const std::string& sopInstanceUID);
+    FWPACSIO_API std::string findSOPInstanceUID(const std::string& _seriesInstanceUID, unsigned int _instanceNumber);
 
     /**
-     * @brief Push instances using C-STORE requests
-     * @param[in] pathContainer Instance paths container
+     * @brief Pulls series using C-MOVE requests.
+     * @param _instanceUIDContainer The series instance UID container.
      */
-    FWPACSIO_API void pushSeries(const InstancePathContainer& pathContainer);
+    FWPACSIO_API void pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instanceUIDContainer);
 
     /**
-     * @brief Push instances using C-STORE requests
-     * @param[in] DatasetContainer DICOM dataset container
+     * @brief Pulls series using C-GET requests.
+     * @param _instanceUIDContainer The series instance UID container.
      */
-    FWPACSIO_API void pushSeries(const DatasetContainer& datasetContainer);
+    FWPACSIO_API void pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instanceUIDContainer);
+
+    /**
+     * @brief Pulls instance using C-MOVE requests.
+     * @param _seriesInstanceUID The series instance UID.
+     * @param _sopInstanceUID The sOP Instance UID.
+     */
+    FWPACSIO_API void pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
+                                                          const std::string& _sopInstanceUID);
+
+    /**
+     * @brief Pulls instance using C-GET requests.
+     * @param _seriesInstanceUID The series instance UID.
+     * @param _sopInstanceUID The sOP Instance UID.
+     */
+    FWPACSIO_API void pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
+                                                         const std::string& _sopInstanceUID);
+
+    /**
+     * @brief Pushs instances using C-STORE requests.
+     * @param _pathContainer The instance paths container.
+     */
+    FWPACSIO_API void pushSeries(const InstancePathContainer& _pathContainer);
+
+    /**
+     * @brief Pushs instances using C-STORE requests.
+     * @param _DatasetContainer The dICOM dataset container.
+     */
+    FWPACSIO_API void pushSeries(const DatasetContainer& _datasetContainer);
 
 protected:
 
     /**
-     * @brief Send Find Request
-     * @param[in] dataset Request dataset
-     * @return dcmtk response list
+     * @brief Sends a C-FIND Request.
+     * @param _dataset The request dataset.
+     * @return The dcmtk response list.
      */
-    FWPACSIO_API OFList< QRResponse* > sendFindRequest(DcmDataset dataset);
+    FWPACSIO_API OFList< QRResponse* > sendFindRequest(DcmDataset _dataset);
 
     /**
-     * @brief Send Move Request
-     * @param[in] dataset Request dataset
-     * @return OFTrue on success
+     * @brief Sends a C-MOVE Request.
+     * @param _dataset The request dataset.
+     * @return OFTrue on success.
      */
-    FWPACSIO_API OFCondition sendMoveRequest(DcmDataset dataset);
+    FWPACSIO_API OFCondition sendMoveRequest(DcmDataset _dataset);
 
     /**
-     * @brief Send Get Request
-     * @param[in] dataset Request dataset
-     * @return OFTrue on success
+     * @brief Sends a C-GET Request.
+     * @param _dataset The request dataset.
+     * @return OFTrue on success.
      */
-    FWPACSIO_API OFCondition sendGetRequest(DcmDataset dataset);
+    FWPACSIO_API OFCondition sendGetRequest(DcmDataset _dataset);
 
     /**
-     * @brief Send Store Request
-     * @param[in] path File path
-     * @return OFTrue on success
+     * @brief Sends a C-STORE Request.
+     * @param _path The file path.
+     * @return OFTrue on success.
      */
-    FWPACSIO_API OFCondition sendStoreRequest(const std::filesystem::path& path);
+    FWPACSIO_API OFCondition sendStoreRequest(const std::filesystem::path& _path);
 
     /**
-     * @brief Send Store Request
-     * @param[in] dataset Dicom dataset
-     * @return OFTrue on success
+     * @brief Sends a C-STORE Request.
+     * @param _dataset The dicom dataset.
+     * @return OFTrue on success.
      */
-    FWPACSIO_API OFCondition sendStoreRequest(const CSPTR(DcmDataset)& dataset);
-
-    /// Handle MOVE Response (Override)
-    FWPACSIO_API virtual OFCondition handleMOVEResponse(
-        const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse) override;
-
-    /// Handle STORE Request (Override)
-    FWPACSIO_API virtual OFCondition handleSTORERequest (
-        const T_ASC_PresentationContextID presID, DcmDataset* incomingObject,
-        OFBool& continueCGETSession, Uint16& cStoreReturnStatus) override;
+    FWPACSIO_API OFCondition sendStoreRequest(const CSPTR(DcmDataset)& _dataset);
 
     /**
-     * @brief Find uncompressed presentation context
-     * @param[in] sopClass SOP class which needs the presentation context
+     * @brief Handles a C-MOVE response.
+     * @param _presID
+     * @param _response
+     * @param _waitForNextResponse
+     * @return
      */
-    FWPACSIO_API Uint8 findUncompressedPC(const OFString& sopClass);
+    FWPACSIO_API virtual OFCondition handleMOVEResponse(const T_ASC_PresentationContextID _presID,
+                                                        RetrieveResponse* _response,
+                                                        OFBool& _waitForNextResponse) override;
 
-    /// MOVE destination AE Title
+    /**
+     * @brief Handles a C-STORE response.
+     * @param _presID
+     * @param _incomingObject
+     * @param _continueCGETSession
+     * @param _cStoreReturnStatus
+     * @return
+     */
+    FWPACSIO_API virtual OFCondition handleSTORERequest(const T_ASC_PresentationContextID,
+                                                        DcmDataset* _incomingObject,
+                                                        OFBool&,
+                                                        Uint16&) override;
+
+    /**
+     * @brief Finds uncompressed presentation context.
+     * @param _sopClass The sOP class which needs the presentation context.
+     */
+    FWPACSIO_API Uint8 findUncompressedPC(const OFString& _sopClass);
+
+    /// Defines the MOVE destination AE Title.
     std::string m_moveApplicationTitle;
 
-    /// Path where the files must be saved
+    /// Defines the path where the files must be saved.
     std::filesystem::path m_path;
 
-    /// Progress callback slot
+    /// Contains the progress callback slot.
     ProgressCallbackSlotType::sptr m_progressCallback;
 
-    /// Dowloaded instance index
-    unsigned int m_instanceIndex;
+    /// Sets the dowloaded instance index.
+    unsigned int m_instanceIndex {0};
 };
 
 } // namespace fwPacsIO

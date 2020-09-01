@@ -11,67 +11,68 @@
         <param name="videoDurationModifiedChannel" default="videoDurationModified" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="timeLine" type="::arData::FrameTL" />
         <object uid="frame" type="::fwData::Image" />
+
         <!-- ******************************* UI declaration *********************************** -->
-        <service uid="cameraView" type="::gui::view::SDefaultView">
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
+                <toolBar/>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
-                <toolBar/>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="camera" start="yes" />
+                <toolBar sid="toolBarView" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="media-0.1/icons/configuration.svg" />
+                    <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
                 </layout>
             </gui>
             <registry>
-                <editor sid="CameraSelector" start="yes" />
-                <menuItem sid="ActionEdition" start="yes" />
+                <editor sid="videoSelectorSrv" start="yes" />
+                <menuItem sid="editionAct" start="yes" />
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
-        <service uid="ActionEdition" type="::gui::action::SSlotCaller">
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="editionAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>intrinsicEdition/update</slot>
+                <slot>intrinsicEditionSrv/update</slot>
             </slots>
         </service>
 
-        <!-- ******************************* Services ***************************************** -->
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="camera" type="::fwRenderVTK::SRender">
-            <scene renderMode="timer">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdapter" />
-                <adaptor uid="interactorStyle" />
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="videoAdapter" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="frame" />
-            <config renderer="default" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="frame" />
+            <config layer="default" />
         </service>
 
-        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
+        <!-- ************************************* Services ************************************ -->
 
         <service uid="${videoGrabber}" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
@@ -81,21 +82,47 @@
             </config>
         </service>
 
-        <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
+        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameUpdater">
             <in key="frameTL" uid="timeLine" autoConnect="yes" />
             <inout key="frame" uid="frame" />
         </service>
 
-        <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>yes</videoSupport>
+            <label></label>
         </service>
 
-        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 
-        <!-- ******************************* Connections ************************************** -->
+        <!-- ******************************* Connections ***************************************** -->
+
+<connect>
+    <signal>videoSelectorSrv/configuredCameras</signal>
+    <slot>videoGrabberSrv/reconfigure</slot>
+</connect>
+
+<connect>
+    <signal>videoGrabberSrv/cameraStarted</signal>
+    <slot>pauseVideoAct/show</slot>
+    <slot>startVideoAct/hide</slot>
+    <slot>stopVideoAct/setExecutable</slot>
+    <slot>loopVideoAct/setExecutable</slot>
+</connect>
+
+<connect>
+    <signal>${camera}/idModified</signal>
+    <slot>videoGrabberSrv/stopCamera</slot>
+</connect>
+
+<connect>
+    <signal>${camera}/modified</signal>
+    <slot>startVideoAct/setExecutable</slot>
+    <slot>stopVideoAct/update</slot>
+</connect>
+
         <connect channel="${cameraModifiedChannel}">
             <slot>${videoGrabber}/stopCamera</slot>
         </connect>
@@ -112,12 +139,13 @@
             <signal>${videoGrabber}/durationModified</signal>
         </connect>
 
-        <start uid="cameraView" />
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
         <start uid="${videoGrabber}" />
-        <start uid="FrameUpdater" />
-        <start uid="intrinsicEdition" />
-        <!-- VTK scene 'camera' -->
-        <start uid="videoAdapter" />
-        <start uid="interactorStyle" />
+        <start uid="frameSynchronizerSrv" />
+        <start uid="intrinsicEditionSrv" />
+        <start uid="videoAdp" />
+
     </config>
 </extension>

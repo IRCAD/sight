@@ -55,8 +55,11 @@ namespace visuOgreAdaptor
  * - \b sliceType(int, int): update image slice index .
  * - \b sliceIndex(int, int, int): update image slice type.
  * - \b updateOpacity(): sets the planes's opacity.
- * - \b updateVisibility(): updates the negato visibility from the image field.
- * - \b setVisibility(bool): sets the image visibility fields.
+ * - \b updateVisibility(bool): sets whether the negato is shown or not.
+ * - \b toggleVisibility(): toggle whether the negato is shown or not.
+ * - \b show(): shows the negato.
+ * - \b hide(): hides the negato.
+ * - @deprecated - \b setVisibility(bool): sets the image visibility fields.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -80,35 +83,37 @@ namespace visuOgreAdaptor
  * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
- * was specified
- *      in the STransform adaptor.
+ *      was specified in the STransform adaptor.
  * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
+ * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable,
     public ::fwRenderOgre::interactor::IInteractor
 {
+
 public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor)
 
     /// Creates slots.
     VISUOGREADAPTOR_API SNegato3D() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SNegato3D() noexcept;
+    VISUOGREADAPTOR_API ~SNegato3D() noexcept override;
 
-private:
+protected:
 
     /// Configures the service.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starts the service.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -121,19 +126,27 @@ private:
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Requests rendering of the scene.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /**
      * @brief Notifies that the TF is swapped.
      * @param _key key of the swapped data.
      */
-    virtual void swapping(const KeyType& key) override;
+    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Stops the service, disconnects connections.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the negato visibility.
+     * @param _visible the visibility status of the negato.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /// Update the displayed transfer function.
     void updateTF();
@@ -153,7 +166,7 @@ private:
      * @param _dx the cursor's width displacement since the last event.
      * @param _dy the cursor's height displacement since the last event.
      */
-    virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
+    void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
 
     /**
      * @brief Attempts to pick the negato and starts interactions if picking was successful.
@@ -161,10 +174,10 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /// Ends all interactions, regardless of the input.
-    virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
+    void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
 
     /**
      * @brief Sets the slice intersection at the (_x, _y) screen position if possible.
@@ -211,12 +224,6 @@ private:
     /// SLOT: sets the planes's opacity.
     void setPlanesOpacity();
 
-    /**
-     * @brief SLOT: sets the negato's visibility.
-     * @param _visibility visibility status of the negato.
-     */
-    void setVisibility(bool _visibility);
-
     /// Sets the picking flags on all three negato planes.
     void setPlanesQueryFlags(std::uint32_t _flags);
 
@@ -225,6 +232,13 @@ private:
 
     /// Updates the intensity picking widget's position.
     void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
+
+    /**
+     * @brief Sets the negato visibility.
+     * @param _visible the visibility status of the negato.
+     */
+    [[deprecated("will be removed in sight 21.0")]]
+    void setVisibilityDeprecatedSlot(bool _visible);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };

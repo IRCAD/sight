@@ -61,11 +61,15 @@ Item{
                     background: Rectangle {
                         color: {
                             var color = Material.background
-                            if (activitySequencer.currentSelection === index)
+                            if(activitySequencer.currentSelection === index)
                             {
                                 color = Material.accent
                             }
-                            toolButton.hovered? Qt.lighter(color) : color
+                            if(toolButton.hovered)
+                            {
+                                color = elevation
+                            }
+                            toolButton.enabled? color : Material.foreground
                         }
                         radius: 10
                     }
@@ -75,6 +79,7 @@ Item{
 
                         Rectangle {
                             id: activityIndex
+                            opacity: enabled ? 1.0 : 0.3
                             color: Material.primary
                             radius: 15
                             width: 30
@@ -84,8 +89,7 @@ Item{
                                 anchors.fill: parent
                                 text: index + 1
                                 font: toolButton.font
-                                opacity: enabled ? 1.0 : 0.3
-                                color: Material.background
+                                color: enabled? Material.background : Material.foreground
                                 elide: Text.ElideRight
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -294,12 +294,15 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-void Writer::write( const ::fwZip::IWriteArchive::sptr& archive,
-                    const std::filesystem::path& rootFilename,
-                    FormatType format ) const
+std::filesystem::path Writer::write( const ::fwZip::IWriteArchive::sptr _archive,
+                                     const std::filesystem::path& _rootFilename,
+                                     FormatType _format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format == JSON) ? "json" : "xml"));
+    const std::filesystem::path newRootFileName = _rootFilename.stem().string() + "-" +
+                                                  ((_format == JSON) ? "json" : "xml");
+    const std::string nrfnStr = newRootFileName.u8string();
+    AtomVisitor visitor(_archive, nrfnStr);
 
     root = visitor.visit(m_atom);
 
@@ -309,8 +312,8 @@ void Writer::write( const ::fwZip::IWriteArchive::sptr& archive,
 
     root.add_child("versions", versions);
 
-    SPTR(std::ostream) os = archive->createFile(rootFilename);
-    switch(format)
+    SPTR(std::ostream) os = _archive->createFile(_rootFilename);
+    switch(_format)
     {
         case JSON:
             ::boost::property_tree::json_parser::write_json(*os, root, false);
@@ -322,9 +325,11 @@ void Writer::write( const ::fwZip::IWriteArchive::sptr& archive,
             break;
         }
         default:
-            FW_RAISE("Archive format '"<<format<<"' is not supported");
+            FW_RAISE("Archive format '" << _format << "' is not supported");
             break;
     }
+
+    return newRootFileName;
 }
 
 }

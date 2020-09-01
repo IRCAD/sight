@@ -6,44 +6,44 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwActivities
+    fwRuntime
 )
 set( REQUIREMENTS
-    ctrlCamp
+    preferences             # Start the module, load file location or window preferences
+    visuOgre                # Start the module, allow to use fwRenderOgre
+    material                # Start the module, load Ogre's materials
+    visuOgreQt              # Enable Ogre to render things in Qt window.
+    validators
+    activities
 
-    servicesReg
-    dataReg
-    arDataReg
+    # Objects declaration
+    dataReg                 # fwData
+    servicesReg             # fwService
+    arDataReg               # arData
 
+    # UI declaration/Actions
     gui
-
-    ioData
-    ioCalibration
-
-    visuVTKQt
-    visuVTKAdaptor
-    visuVTKARAdaptor
-
     media
-
     uiTools
     uiIO
     uiCalibration
     uiPreferences
     uiMedDataQt
 
+    # Reader
+    ioData
+    ioCalibration
+    videoQt
+
+    # Services
     videoCalibration
     videoCharucoCalibration
     videoOpenCV
     videoOpenni
-    videoRealSense
-    videoQt
     videoTools
-
     registrationCV
+    ctrlCamp
 
-    trackerAruco
-
-    validators
-
-    preferences
+    # Generic Scene
+    visuOgreAdaptor
 )

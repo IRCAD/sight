@@ -26,6 +26,7 @@ set( REQUIREMENTS
     uiImageQt
     uiTF
     flatIcon
+    uiMeasurementQt
 
     # Reader
     ioVtkGdcm
@@ -36,7 +37,6 @@ set( REQUIREMENTS
     scene2D
     ctrlCamp
     ctrlTF
-    ctrlPicking
     uiMeasurement
     opImageFilter
 

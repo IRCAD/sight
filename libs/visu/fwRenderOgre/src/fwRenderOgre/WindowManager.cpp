@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,15 +46,14 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 {
     m_windows.erase(_window);
 
-    ::Ogre::Root* root = ::fwRenderOgre::Utils::getOgreRoot();
-
     if(_window != m_firstWindow)
     {
+        ::Ogre::Root* root = ::fwRenderOgre::Utils::getOgreRoot();
         SLM_ASSERT("Ogre root not found", root);
         root->destroyRenderTarget(_window);
     }
 
-    // If we are the last opened window, we shutdown Ogre completely
+    // If we are the last opened window, we shutdown Ogre completely.
     if(m_windows.empty())
     {
         // We don't need to destroy the ogre target, it is done when shutting down ogre.

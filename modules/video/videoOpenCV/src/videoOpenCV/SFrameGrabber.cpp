@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,12 +41,11 @@
 
 #include <fwTools/Type.hpp>
 
-#include <filesystem>
-
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include <chrono>
+#include <filesystem>
 #include <regex>
 
 namespace videoOpenCV
@@ -72,8 +71,6 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_stepChanged(1),
     m_videoFramesNb(0)
 {
-    m_worker = ::fwThread::Worker::New();
-
     newSlot(s_SET_STEP_SLOT, &SFrameGrabber::setStep, this);
 }
 
@@ -87,6 +84,7 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
+    m_worker = ::fwThread::Worker::New();
 }
 
 // -----------------------------------------------------------------------------
@@ -94,6 +92,9 @@ void SFrameGrabber::starting()
 void SFrameGrabber::stopping()
 {
     this->stopCamera();
+
+    m_worker->stop();
+    m_worker.reset();
 }
 
 // -----------------------------------------------------------------------------
@@ -509,6 +510,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
             m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
         else

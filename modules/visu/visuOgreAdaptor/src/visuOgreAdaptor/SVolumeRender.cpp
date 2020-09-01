@@ -63,7 +63,6 @@ static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWi
 static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT    = "updateVisibility";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
@@ -100,7 +99,6 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVolumeRender::updateVisibility, this);
     newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
 }
 
@@ -178,7 +176,6 @@ void SVolumeRender::starting()
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
     ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
     m_volumeSceneNode                = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
-    m_volumeSceneNode->setVisible(true, false);
 
     m_camera = this->getLayer()->getDefaultCamera();
 
@@ -210,6 +207,8 @@ void SVolumeRender::starting()
                                                                         m_preIntegrationTable,
                                                                         m_ambientOcclusion,
                                                                         m_colorBleeding);
+
+    m_volumeSceneNode->setVisible(m_isVisible);
 
     // Initially focus on the image center.
     this->setFocalDistance(50);
@@ -939,7 +938,7 @@ void SVolumeRender::updateClippingTM3D()
         const auto sig =
             clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
+        ::fwCom::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
 
         sig->asyncEmit();
     }
@@ -952,15 +951,15 @@ void SVolumeRender::updateClippingTM3D()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateVisibility(bool _visibility)
+void SVolumeRender::setVisible(bool _visible)
 {
     if(m_volumeSceneNode)
     {
-        m_volumeSceneNode->setVisible(_visibility);
+        m_volumeSceneNode->setVisible(_visible);
 
         if(m_widget)
         {
-            m_widget->setBoxVisibility(_visibility && m_widgetVisibilty);
+            m_widget->setBoxVisibility(_visible && m_widgetVisibilty);
         }
 
         this->requestRender();

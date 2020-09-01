@@ -46,6 +46,7 @@ private:
     CPPUNIT_TEST( testBGRIterator );
     CPPUNIT_TEST( imageDeepCopy );
     CPPUNIT_TEST( setISStreamTest );
+    CPPUNIT_TEST( emptyIteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,6 +67,7 @@ public:
     void testBGRAIterator();
     void imageDeepCopy();
     void setISStreamTest();
+    void emptyIteratorTest();
 };
 
 } //namespace ut

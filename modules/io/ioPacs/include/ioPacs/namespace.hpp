@@ -23,7 +23,6 @@
 #pragma once
 
 /**
- * @ingroup apprequirement
  * @brief ioPacs contains services use to deal with PACS using DCMTK library.
  *
  * It's also used to load fwPacsIO library. So, if you want to use a

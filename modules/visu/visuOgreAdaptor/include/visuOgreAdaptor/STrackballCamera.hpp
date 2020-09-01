@@ -55,27 +55,30 @@ class VISUOGREADAPTOR_CLASS_API STrackballCamera final : public ::fwRenderOgre::
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(STrackballCamera, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API STrackballCamera() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~STrackballCamera() noexcept;
+    VISUOGREADAPTOR_API ~STrackballCamera() noexcept override;
 
-private:
+protected:
 
     /// Configures the layer and the interaction priority.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Adds trackball interactions to the layer.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the service. Unused here.
-    virtual void updating() noexcept override;
+    VISUOGREADAPTOR_API void updating() noexcept override;
 
     /// Removes trackball interactions from the layer.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Contains the interaction handler.
     std::shared_ptr< ::fwRenderOgre::interactor::TrackballInteractor > m_trackball;

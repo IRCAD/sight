@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,8 +71,6 @@ SMatricesReader::SMatricesReader() noexcept :
     m_step(1),
     m_stepChanged(1)
 {
-
-    m_worker = ::fwThread::Worker::New();
     newSlot(s_START_READING, &SMatricesReader::startReading, this);
     newSlot(s_STOP_READING, &SMatricesReader::stopReading, this);
     newSlot(s_PAUSE, &SMatricesReader::pause, this);
@@ -126,7 +124,7 @@ void SMatricesReader::configuring()
 
 void SMatricesReader::starting()
 {
-
+    m_worker = ::fwThread::Worker::New();
 }
 
 //------------------------------------------------------------------------------
@@ -168,6 +166,7 @@ void SMatricesReader::configureWithIHM()
 void SMatricesReader::stopping()
 {
     this->stopReading();
+    m_worker->stop();
 }
 
 //------------------------------------------------------------------------------
@@ -316,12 +315,17 @@ void SMatricesReader::startReading()
 
             m_filestream->close();
         }
+        else
+        {
+            OSLM_ERROR("The csv file '" + this->getFile().string() +"' can not be openned.");
+        }
 
         if(m_oneShot)
         {
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
             m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
+            m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
         else
@@ -373,12 +377,26 @@ void SMatricesReader::stopReading()
         m_timer.reset();
     }
 
+    if(nullptr != m_filestream)
+    {
+        m_filestream->close();
+        delete m_filestream;
+        m_filestream = nullptr;
+    }
+
     if(!m_tsMatrices.empty())
     {
         m_tsMatrices.clear();
     }
 
     m_tsMatricesCount = 0;
+
+    //clear the timeline
+    auto matrixTL = this->getLockedInOut< ::arData::MatrixTL>(s_MATRIXTL);
+    matrixTL->clearTimeline();
+
+    auto sig = matrixTL->signal< ::arData::TimeLine::ObjectClearedSignalType >(::arData::TimeLine::s_CLEARED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

@@ -11,7 +11,6 @@ set( REQUIREMENTS
     scene2D
     guiQt
     qtSceneConfig
-    ioVTK
     uiImageQt
     uiVisuOgre
     uiMedDataQt

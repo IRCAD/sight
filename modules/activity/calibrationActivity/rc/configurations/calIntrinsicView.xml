@@ -7,19 +7,22 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="detectionFrame" type="::fwData::Image" />
         <object uid="videoFrame" type="::fwData::Image" />
+        <object uid="distortedFrame" type="::fwData::Image" />
 
         <object uid="detectedChessboard" type="::fwData::PointList" />
         <object uid="chessboardModel" type="::fwData::PointList" src="deferred" />
         <object uid="cameraPoseMx" type="::fwData::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
-        <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -44,21 +47,7 @@
             </gui>
             <registry>
                 <view sid="toolboxView" start="yes" />
-                <view sid="errorLabel" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="cameraView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="cameraScene" start="yes" />
-                <view sid="videoSlider" start="yes" />
+                <view sid="errorLabelSrv" start="yes" />
             </registry>
         </service>
 
@@ -72,9 +61,34 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="videoToolbar" start="yes" />
+                <toolBar sid="videoToolbarView" start="yes" />
                 <view sid="calibrationDataView" start="yes" />
-                <view sid="cameraInfo" start="yes" />
+                <view sid="cameraInfoSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="videoToolbarView" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <editor />
+                    <separator />
+                    <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                    <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
+                    <separator />
+                    <menuItem name="Undistort video" icon="flatIcon-0.1/icons/YellowDistortion.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="videoSelectorSrv" start="yes" />
+                <menuItem sid="startVideoAct" start="yes" />
+                <menuItem sid="pauseVideoAct" start="yes" />
+                <menuItem sid="resumeVideoAct" start="yes" />
+                <menuItem sid="stopVideoAct" start="yes" />
+                <menuItem sid="loopVideoAct" start="yes" />
+                <menuItem sid="distortionAct" start="yes" />
             </registry>
         </service>
 
@@ -89,179 +103,273 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="intrinsicCamera" start="yes" />
-                <view sid="calibrationInfoEditor" start="yes" />
+                <toolBar sid="intrinsicCameraView" start="yes" />
+                <view sid="calibrationInfoEditorSrv" start="yes" />
             </registry>
         </service>
 
-        <service uid="videoToolbar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="intrinsicCameraView" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start camera" icon="media-0.1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="media-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="media-0.1/icons/pause-cam.svg" style="check" shortcut="Space" />
-                    <menuItem name="Loop video" icon="media-0.1/icons/loop-cam.svg" style="check" />
-                    <separator />
-                    <menuItem name="Undistort video" icon="media-0.1/icons/distortion.svg" style="check" />
+                    <menuItem name="Add" icon="flatIcon-0.1/icons/GreenPlus.svg"  shortcut="A" />
+                    <menuItem name="Remove" icon="flatIcon-0.1/icons/RedMinus.svg" />
+                    <menuItem name="Calibrate" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
+                    <menuItem name="Display" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
+                    <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
+                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
+                    <menuItem name="Save calibration images" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Load calibration images" icon="flatIcon-0.1/icons/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>
-                <editor sid="cameraSelector" start="yes" />
-                <menuItem sid="actionStartCamera" start="yes" />
-                <menuItem sid="actionStopCamera" start="yes" />
-                <menuItem sid="actionPauseVideo" start="yes" />
-                <menuItem sid="actionLoopVideo" start="yes" />
-                <menuItem sid="actionDistortion" start="yes" />
+                <editor sid="detectionStatusSrv" start="yes" />
+                <menuItem sid="addAct" start="yes" />
+                <menuItem sid="removeAct" start="yes" />
+                <menuItem sid="goOpenCVAct" start="yes" />
+                <menuItem sid="displayImageAct" start="yes" />
+                <menuItem sid="editionAct" start="yes" />
+                <menuItem sid="resetAct" start="yes" />
+                <menuItem sid="saveInputsAct" start="yes" />
+                <menuItem sid="loadInputsAct" start="yes" />
             </registry>
         </service>
 
-        <service uid="intrinsicCamera" type="::gui::aspect::SDefaultToolBar">
+        <service uid="cameraView" type="::gui::view::SDefaultView">
             <gui>
-                <layout>
-                    <editor/>
-                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" shortcut="A" />
-                    <menuItem name="Remove" icon="media-0.1/icons/remove.svg" />
-                    <menuItem name="Reset" icon="media-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="media-0.1/icons/CheckButton.svg" shortcut="Return"/>
-                    <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
-                    <menuItem name="Edit" icon="media-0.1/icons/configuration.svg" />
-                    <menuItem name="Save calibration images" icon="media-0.1/icons/save.svg" />
-                    <menuItem name="Load calibration images" icon="media-0.1/icons/LoadActivity.svg" />
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
                 </layout>
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar QWidget {
+                            background-color: none;
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
             </gui>
             <registry>
-                <editor sid="detectionStatus" start="yes" />
-                <menuItem sid="actionAdd" start="yes" />
-                <menuItem sid="actionRemove" start="yes" />
-                <menuItem sid="actionReset" start="yes" />
-                <menuItem sid="actionGoOpenCV" start="yes" />
-                <menuItem sid="actionDisplayImage" start="yes" />
-                <menuItem sid="actionEdition" start="yes" />
-                <menuItem sid="actionSaveInputs" start="yes" />
-                <menuItem sid="actionLoadInputs" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
+                <slideView sid="videoSliderView" start="yes" />
             </registry>
         </service>
 
-        <!-- ******************************* actions ****************************************** -->
-        <service uid="actionStartCamera" type="::gui::action::SSlotCaller">
+        <service uid="videoSliderView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="videoSliderSrv" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <!-- Start the frame grabber -->
+        <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
             <slots>
-                <slot>videoGrabber/startCamera</slot>
-                <slot>actionStartCamera/hide</slot>
-                <slot>actionStopCamera/show</slot>
+                <slot>videoGrabberSrv/startCamera</slot>
             </slots>
+            <state executable="false" />
         </service>
 
-        <service uid="actionStopCamera" type="::gui::action::SSlotCaller">
+        <!-- Pause the frame grabber -->
+        <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </slots>
             <state visible="false" />
+        </service>
+
+        <!-- Resume the frame grabber -->
+        <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
             <slots>
-                <slot>videoGrabber/stopCamera</slot>
-                <slot>actionStopCamera/hide</slot>
-                <slot>actionStartCamera/show</slot>
-                <slot>actionPauseVideo/deactivate</slot>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </slots>
+            <state visible="false" />
+        </service>
+
+        <!-- Stop the frame grabber -->
+        <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/setInexecutable</slot>
+                <slot>loopVideoAct/setInexecutable</slot>
+                <slot>loopVideoAct/deactivate</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <!-- Loop the frame grabber -->
+        <service uid="loopVideoAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <service uid="distortionAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>distorterSrv/changeState</slot>
+                <slot>chessboardReprojectionSrv/toggleDistortion</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <service uid="addAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>chessboardDetectorSrv/recordPoints</slot>
             </slots>
         </service>
 
-        <service uid="actionPauseVideo" type="::gui::action::SSlotCaller">
+        <service uid="resetAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber/pauseCamera</slot>
+                <slot>calibrationInfoEditorSrv/reset</slot>
             </slots>
         </service>
 
-        <service uid="actionLoopVideo" type="::gui::action::SSlotCaller">
+        <service uid="removeAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber/loopVideo</slot>
+                <slot>calibrationInfoEditorSrv/remove</slot>
             </slots>
         </service>
 
-        <service uid="actionDistortion" type="::gui::action::SSlotCaller">
-            <state active="false" visible="false" />
+        <service uid="editionAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>distorter/changeState</slot>
-                <slot>chessboardReprojection/toggleDistortion</slot>
+                <slot>intrinsicEditionSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="actionAdd" type="::gui::action::SSlotCaller">
+        <service uid="goOpenCVAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>chessboardDetector/recordPoints</slot>
+                <slot>intrinsicCalibrationSrv/update</slot>
+                <slot>detectionStatusSrv/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="actionReset" type="::gui::action::SSlotCaller">
+        <service uid="displayImageAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>calibrationInfoEditor/reset</slot>
+                <slot>calibrationInfoEditorSrv/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="actionRemove" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>calibrationInfoEditor/remove</slot>
-            </slots>
-        </service>
-
-        <service uid="actionEdition" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>intrinsicEdition/update</slot>
-            </slots>
-        </service>
-
-        <service uid="actionGoOpenCV" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>intrinsicCalibration/update</slot>
-                <slot>detectionStatus/changeToOrange</slot>
-            </slots>
-        </service>
-
-        <service uid="actionDisplayImage" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>calibrationInfoEditor/getSelection</slot>
-            </slots>
-        </service>
-
-        <service uid="actionSaveInputs" type="::gui::action::SSlotCaller">
+        <service uid="saveInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataWriter/configureWithIHM</slot>
-                <slot>calibrationDataWriter/update</slot>
+                <slot>calibrationDataWriterSrv/configureWithIHM</slot>
+                <slot>calibrationDataWriterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="actionLoadInputs" type="::gui::action::SSlotCaller">
+        <service uid="loadInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataReader/configureWithIHM</slot>
-                <slot>calibrationDataReader/update</slot>
+                <slot>calibrationDataReaderSrv/configureWithIHM</slot>
+                <slot>calibrationDataReaderSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="videoSlider" type="::videoQt::editor::SSlider" />
+        <!-- ************************************* Services ************************************ -->
 
-        <!-- ******************************* Services ***************************************** -->
-        <service uid="detectionStatus" type="::uiTools::editor::SStatus">
+        <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
+
+        <service uid="detectionStatusSrv" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-            <label>Reprojection Error (RMSE)</label>
+        <service uid="errorLabelSrv" type="::uiTools::editor::STextStatus">
+            <label>Reprojection error (RMSE)</label>
+            <color>#D25252</color>
         </service>
 
-        <service uid="detectionFrameUpdater" type="::videoTools::SFrameMatrixSynchronizer">
+        <service uid="displayCalibrationInfoSrv" type="::uiCalibration::SDisplayCalibrationInfo">
+            <in key="calInfo1" uid="${calibrationInfo}" />
+        </service>
+
+        <service uid="calibrationInfoEditorSrv" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+            <inout key="calInfo1" uid="${calibrationInfo}" />
+        </service>
+
+        <service uid="intrinsicCalibrationSrv" type="::videoCalibration::SOpenCVIntrinsic">
+            <in key="calibrationInfo" uid="${calibrationInfo}" />
+            <inout key="camera" uid="${camera}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+        </service>
+
+        <service uid="computeCameraPoseSrv" type="::registrationCV::SSolvePnP" worker="intr_chess_checker">
+            <in key="pointList2d" uid="detectedChessboard" />
+            <in key="pointList3d" uid="chessboardModel" />
+            <in key="calibration" uid="${camera}" />
+            <inout key="matrix" uid="cameraPoseMx" />
+            <config inverse="false" />
+        </service>
+
+        <service uid="cameraInfoSrv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+            <in key="camera" uid="${camera}" />
+        </service>
+
+        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
+            <inout key="camera" uid="${camera}" />
+        </service>
+
+        <service uid="calibrationDataWriterSrv" type="::ioCalibration::SCalibrationImagesWriter">
+            <in key="data" uid="${calibrationInfo}" />
+            <format>.tiff</format>
+        </service>
+
+        <service uid="calibrationDataReaderSrv" type="::ioCalibration::SCalibrationInfoReader">
+            <inout key="data" uid="${calibrationInfo}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+        </service>
+
+        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>yes</videoSupport>
+            <label></label>
+        </service>
+
+        <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="frameTL" />
+        </service>
+
+        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameMatrixSynchronizer">
             <in group="frameTL">
-                <key uid="frameTL" autoConnect="yes"/>
+                <key uid="frameTL" autoConnect="yes" />
             </in>
             <inout group="image">
-                <key uid="detectionFrame" />
+                <key uid="videoFrame" />
             </inout>
             <tolerance>200</tolerance>
             <framerate>0</framerate>
         </service>
 
-        <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
+        <service uid="distorterSrv" type="::videoCalibration::SDistortion" >
+            <in key="camera" uid="${camera}" autoConnect="yes" />
+            <in key="input" uid="videoFrame" />
+            <inout key="output" uid="distortedFrame" />
+            <mode>undistort</mode>
+        </service>
+
+        <service uid="chessboardDetectorSrv" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
             <in group="image" autoConnect="yes">
-                <key uid="detectionFrame" />
+                <key uid="videoFrame" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
@@ -272,168 +380,143 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
 
-        <service uid="displayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
-            <in key="calInfo1" uid="${calibrationInfo}" />
-        </service>
-
-        <service uid="calibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
-            <inout key="calInfo1" uid="${calibrationInfo}" />
-        </service>
-
-        <service uid="intrinsicCalibration" type="::videoCalibration::SOpenCVIntrinsic">
-            <in key="calibrationInfo" uid="${calibrationInfo}" />
-            <inout key="camera" uid="${camera}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
-        </service>
-
-        <service uid="chessboardReprojection" type="::videoCalibration::SChessboardReprojection" >
+        <service uid="chessboardReprojectionSrv" type="::videoCalibration::SChessboardReprojection" >
             <in key="transform" uid="cameraPoseMx" />
-            <in key="camera" uid="${camera}"/>
+            <in key="camera" uid="${camera}" />
             <in key="detectedChessboard" uid="detectedChessboard" />
-            <inout key="videoImage" uid="videoFrame" />
+            <inout key="videoImage" uid="distortedFrame" />
             <out key="chessboardModel" uid="chessboardModel" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
             <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
         </service>
 
-        <service uid="computeCameraPose" type="::registrationCV::SSolvePnP" worker="intr_chess_checker">
-            <in key="pointList2d" uid="detectedChessboard" />
-            <in key="pointList3d" uid="chessboardModel" />
-            <in key="calibration" uid="${camera}" />
-            <inout key="matrix" uid="cameraPoseMx" />
-            <config inverse="false"/>
-        </service>
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="distorter" type="::videoCalibration::SDistortion" >
-            <in key="camera" uid="${camera}" autoConnect="yes" />
-            <in key="input" uid="detectionFrame" />
-            <inout key="output" uid="videoFrame" />
-            <mode>undistort</mode>
-        </service>
-
-        <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
-            <in key="camera" uid="${camera}" />
-        </service>
-
-        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
-            <inout key="camera" uid="${camera}" />
-        </service>
-
-        <service uid="calibrationDataWriter" type="::ioCalibration::SCalibrationImagesWriter">
-            <in key="data" uid="${calibrationInfo}" />
-            <format>.tiff</format>
-        </service>
-
-        <service uid="calibrationDataReader" type="::ioCalibration::SCalibrationInfoReader">
-            <inout key="data" uid="${calibrationInfo}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
-        </service>
-
-        <service uid="videoGrabber" type="::videoTools::SGrabberProxy">
-            <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="frameTL" />
-        </service>
-
-        <service uid="cameraSelector" type="::videoQt::editor::SCamera">
-            <inout key="camera" uid="${camera}" />
-            <videoSupport>yes</videoSupport>
-        </service>
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="cameraScene" type="::fwRenderVTK::SRender">
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
             <scene renderMode="sync">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdaptor" />
-                <adaptor uid="interactorStyle" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo">
-            <in key="frame" uid="videoFrame" />
-            <config renderer="default" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" >
+            <in key="image" uid="distortedFrame" />
+            <config layer="default" />
         </service>
 
-        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
+        <!-- ******************************* Connections ***************************************** -->
 
-        <!-- *************************** End generic scene *************************** -->
+        <connect>
+            <signal>videoSelectorSrv/configuredCameras</signal>
+            <slot>videoGrabberSrv/reconfigure</slot>
+        </connect>
 
+        <connect>
+            <signal>videoSelectorSrv/configuredFile</signal>
+            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configuredDevice</signal>
+            <slot>startVideoAct/update</slot>
+        </connect>
 
-        <!-- ******************************* Connections ************************************** -->
+        <connect>
+            <signal>videoGrabberSrv/cameraStarted</signal>
+            <slot>pauseVideoAct/show</slot>
+            <slot>startVideoAct/hide</slot>
+            <slot>stopVideoAct/setExecutable</slot>
+            <slot>loopVideoAct/setExecutable</slot>
+        </connect>
+
         <connect>
             <signal>${camera}/idModified</signal>
-            <slot>videoGrabber/stopCamera</slot>
+            <slot>videoGrabberSrv/stopCamera</slot>
         </connect>
 
         <connect>
-            <signal>videoSlider/positionChanged</signal>
-            <slot>videoGrabber/setPositionVideo</slot>
+            <signal>${camera}/modified</signal>
+            <slot>startVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/update</slot>
+        </connect>
+
+        <!-- Manage the video slider -->
+        <connect>
+            <signal>videoSliderSrv/positionChanged</signal>
+            <slot>videoGrabberSrv/setPositionVideo</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabber/positionModified</signal>
-            <slot>videoSlider/setPositionSlider</slot>
+            <signal>videoGrabberSrv/positionModified</signal>
+            <slot>videoSliderSrv/setPositionSlider</slot>
         </connect>
 
         <connect>
-            <signal>videoGrabber/durationModified</signal>
-            <slot>videoSlider/setDurationSlider</slot>
+            <signal>videoGrabberSrv/durationModified</signal>
+            <slot>videoSliderSrv/setDurationSlider</slot>
         </connect>
 
         <connect>
-            <signal>cameraSelector/configuredCameras</signal>
-            <slot>videoGrabber/reconfigure</slot>
+            <signal>videoSelectorSrv/configuredFile</signal>
+            <slot>videoSliderView/show</slot>
+        </connect>
+
+        <connect>
+            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configuredDevice</signal>
+            <slot>videoSliderView/hide</slot>
         </connect>
 
         <connect>
             <signal>${camera}/intrinsicCalibrated</signal>
-            <slot>actionDistortion/show</slot>
+            <slot>distortionAct/setExecutable</slot>
         </connect>
 
         <connect>
-            <signal>chessboardDetector/chessboardDetected</signal>
-            <slot>detectionStatus/toggleGreenRed</slot>
+            <signal>chessboardDetectorSrv/chessboardDetected</signal>
+            <slot>detectionStatusSrv/toggleGreenRed</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo}/getRecord</signal>
-            <slot>displayCalibrationInfo/displayImage</slot>
+            <slot>displayCalibrationInfoSrv/displayImage</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo}/addedRecord</signal>
             <signal>${calibrationInfo}/removedRecord</signal>
             <signal>${calibrationInfo}/resetRecord</signal>
-            <slot>calibrationInfoEditor/update</slot>
+            <slot>calibrationInfoEditorSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>intrinsicCalibration/errorComputed</signal>
-            <slot>errorLabel/setDoubleParameter</slot>
+            <signal>intrinsicCalibrationSrv/errorComputed</signal>
+            <slot>errorLabelSrv/setDoubleParameter</slot>
         </connect>
 
         <connect>
-            <signal>chessboardDetector/updated</signal>
-            <slot>computeCameraPose/update</slot>
+            <signal>chessboardDetectorSrv/updated</signal>
+            <slot>computeCameraPoseSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>computeCameraPose/updated</signal>
-            <slot>distorter/update</slot>
+            <signal>computeCameraPoseSrv/updated</signal>
+            <slot>distorterSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>distorter/updated</signal>
-            <slot>chessboardReprojection/update</slot>
+            <signal>distorterSrv/updated</signal>
+            <slot>chessboardReprojectionSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>chessboardReprojection/updated</signal>
-            <slot>videoAdaptor/updateImage</slot>
-            <slot>cameraScene/requestRender</slot>
-            <slot>detectionFrameUpdater/synchronize</slot>
+            <signal>chessboardReprojectionSrv/updated</signal>
+            <slot>videoAdp/update</slot>
+        </connect>
+
+        <connect>
+            <signal>videoAdp/updated</signal>
+            <slot>genericSceneSrv/requestRender</slot>
+            <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
         <connect>
@@ -441,29 +524,28 @@
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">
-            <slot>intrinsicCalibration/updateChessboardSize</slot>
-            <slot>chessboardDetector/updateChessboardSize</slot>
-            <slot>chessboardReprojection/updateChessboardSize</slot>
-            <slot>calibrationDataReader/updateChessboardSize</slot>
-            <slot>detectionFrameUpdater/synchronize</slot>
+            <slot>intrinsicCalibrationSrv/updateChessboardSize</slot>
+            <slot>chessboardDetectorSrv/updateChessboardSize</slot>
+            <slot>chessboardReprojectionSrv/updateChessboardSize</slot>
+            <slot>calibrationDataReaderSrv/updateChessboardSize</slot>
+            <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
-        <start uid="intrinsicCameraView" />
-        <start uid="intrinsicCalibration" />
-        <start uid="chessboardDetector" />
-        <start uid="chessboardReprojection" />
-        <start uid="displayCalibrationInfo" />
-        <start uid="intrinsicEdition" />
-        <start uid="calibrationDataWriter" />
-        <start uid="calibrationDataReader" />
-        <start uid="videoGrabber" />
-        <start uid="detectionFrameUpdater" />
-        <start uid="distorter" />
-        <!-- VTK scene 'camera' -->
-        <start uid="videoAdaptor" />
-        <start uid="interactorStyle" />
+        <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="computeCameraPose" />
+        <start uid="mainView" />
+        <start uid="intrinsicCalibrationSrv" />
+        <start uid="chessboardDetectorSrv" />
+        <start uid="chessboardReprojectionSrv" />
+        <start uid="displayCalibrationInfoSrv" />
+        <start uid="intrinsicEditionSrv" />
+        <start uid="calibrationDataWriterSrv" />
+        <start uid="calibrationDataReaderSrv" />
+        <start uid="videoGrabberSrv" />
+        <start uid="frameSynchronizerSrv" />
+        <start uid="distorterSrv" />
+        <start uid="computeCameraPoseSrv" />
+        <start uid="videoAdp" />
 
     </config>
 </extension>

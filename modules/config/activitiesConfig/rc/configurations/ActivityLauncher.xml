@@ -115,8 +115,7 @@
                 <view sid="activitySequencer" start="yes" />
                 <view sid="openButton" start="yes" />
                 <view sid="saveButton" start="yes" />
-                <view sid="ihuLogoView" start="yes" />
-                <view sid="ircadLogoView" start="yes" />
+                <view sid="ircadIhuLogoView" start="yes" />
             </registry>
         </service>
 
@@ -143,13 +142,8 @@
             <height>70</height>
         </service>
 
-        <service uid="ihuLogoView" type="::guiQt::editor::SImage" >
-            <path>media-0.1/icons/ihu_logo.png</path>
-            <height>70</height>
-        </service>
-
-        <service uid="ircadLogoView" type="::guiQt::editor::SImage" >
-            <path>media-0.1/icons/ircad_logo.png</path>
+        <service uid="ircadIhuLogoView" type="::guiQt::editor::SImage" >
+            <path>flatIcon-0.1/icons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
@@ -174,6 +168,7 @@
                 <parameter replace="previousActivityChannel" by="previousActivityChannel" />
                 <parameter replace="nextActivityChannel" by="nextActivityChannel" />
                 <parameter replace="validationChannel" by="validationChannel" />
+                <parameter replace="goToChannel" by="goToChannel" />
             </parameters>
         </service>
 
@@ -251,6 +246,11 @@
         <!-- The activity sequencer should receive the call from the "previous" action. -->
         <connect channel="validationChannel">
             <slot>activitySequencer/checkNext</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "goTo" action. -->
+        <connect channel="goToChannel">
+            <slot>activitySequencer/goTo</slot>
         </connect>
 
 

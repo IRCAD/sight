@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -97,7 +97,7 @@ private:
     /// SLOT: Start recording
     void startRecord();
 
-    /// SLOT: Strop recording
+    /// SLOT: Stop recording
     void stopRecord();
 
     /// opencv video writer
@@ -111,6 +111,15 @@ private:
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
     std::vector< ::fwCore::HiResClock::HiResClockType > m_timestamps;
+
+    /// Extension selected in file dialog
+    std::string m_selectedExtension;
+
+    ///  static string containing the file extension
+    static const std::string s_MP4_EXTENSION;
+
+    ///  static string containing the codec to use
+    static const std::string s_AVC1_CODEC;
 
 };
 

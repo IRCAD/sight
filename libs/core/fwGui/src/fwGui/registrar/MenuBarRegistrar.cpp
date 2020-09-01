@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,8 @@ MenuBarRegistrar::~MenuBarRegistrar()
 ::fwGui::container::fwMenu::sptr MenuBarRegistrar::getFwMenu(std::string menuSid,
                                                              std::vector< ::fwGui::container::fwMenu::sptr > menus)
 {
-    SLM_ASSERT("menu not found", m_menuSids.find(menuSid) != m_menuSids.end());
+    SLM_ASSERT("The menu '" + menuSid + "'declared in '"+ m_sid +"' is not found",
+               m_menuSids.find(menuSid) != m_menuSids.end());
     ::fwGui::container::fwMenu::sptr menu = menus.at( m_menuSids[menuSid].first );
     return menu;
 }
@@ -70,8 +71,9 @@ MenuBarRegistrar::~MenuBarRegistrar()
 
 void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be registry",
-                configuration->getName() == "registry");
+    SLM_ASSERT(
+        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
+        configuration->getName() == "registry");
 
     // index represents associated menu with position in menus vector
     unsigned int index = 0;
@@ -79,7 +81,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     for( ConfigurationType menu :  vectMenus)
     {
-        SLM_ASSERT("<menu> tag must have sid attribute", menu->hasAttribute("sid"));
+        SLM_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
 
         if(menu->hasAttribute("sid"))
         {
@@ -87,8 +89,8 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             if(menu->hasAttribute("start"))
             {
                 std::string startValue = menu->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: "
+                           + startValue +"'", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menu->getAttributeValue("sid");
@@ -105,13 +107,15 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
     ::fwGui::container::fwMenu::sptr menu;
     for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
-        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
+        OSLM_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+                                    << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
                     sid.second.first < menus.size());
         menu = menus.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->start();
         }
@@ -134,9 +138,10 @@ void MenuBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
     }
