@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,9 +43,8 @@ namespace widget
 
 //-----------------------------------------------------------------------------
 
-Selector::Selector(QWidget* parent) :
-    QTreeView(parent),
-    m_allowedRemove(true)
+Selector::Selector(QWidget* _parent) :
+    QTreeView(_parent)
 {
     m_model = new SelectorModel();
     this->setModel(m_model);
@@ -70,17 +69,17 @@ void Selector::clear()
 
 //-----------------------------------------------------------------------------
 
-void Selector::setInsertMode(bool insert)
+void Selector::setInsertMode(bool _insert)
 {
-    m_model->setInsertMode(insert);
+    m_model->setInsertMode(_insert);
 }
 
 //-----------------------------------------------------------------------------
 
-void Selector::addSeries(::fwMedData::Series::sptr series)
+void Selector::addSeries(::fwMedData::Series::sptr _series)
 {
-    m_model->addSeries(series);
-    QStandardItem* studyItem = m_model->findStudyItem(series->getStudy());
+    m_model->addSeries(_series);
+    QStandardItem* studyItem = m_model->findStudyItem(_series->getStudy());
     this->expand(m_model->indexFromItem(studyItem));
 
     for (int i = 0; i < m_model->columnCount(); ++i)
@@ -91,48 +90,48 @@ void Selector::addSeries(::fwMedData::Series::sptr series)
 
 //-----------------------------------------------------------------------------
 
-void Selector::removeSeries(::fwMedData::Series::sptr series)
+void Selector::removeSeries(::fwMedData::Series::sptr _series)
 {
-    m_model->removeSeries(series);
+    m_model->removeSeries(_series);
 }
 
 //-----------------------------------------------------------------------------
 
-void Selector::setAllowedRemove(bool allowed)
+void Selector::setAllowedRemove(bool _allowed)
 {
-    m_allowedRemove = allowed;
+    m_allowedRemove = _allowed;
 }
 
 //-----------------------------------------------------------------------------
 
-void Selector::selectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
+void Selector::selectionChanged(const QItemSelection& _selected, const QItemSelection& _deselected)
 {
-    QTreeView::selectionChanged(selected, deselected);
+    QTreeView::selectionChanged(_selected, _deselected);
 
-    SeriesVectorType selectedSeries = this->getSeries(selected);
+    SeriesVectorType selectedSeries = this->getSeries(_selected);
 
-    SeriesVectorType deselectedSeries = this->getSeries(deselected);
+    SeriesVectorType deselectedSeries = this->getSeries(_deselected);
 
     Q_EMIT selectSeries(selectedSeries, deselectedSeries);
 }
 
 //-----------------------------------------------------------------------------
 
-Selector::SeriesVectorType Selector::getSeries( const QItemSelection& selection  )
+Selector::SeriesVectorType Selector::getSeries(const QItemSelection& _selection)
 {
     SeriesVectorType vSeries;
 
-    QModelIndexList selectedIndexes = selection.indexes();
+    QModelIndexList selectedIndexes = _selection.indexes();
     vSeries = this->getSeries(selectedIndexes);
     return vSeries;
 }
 
 //-----------------------------------------------------------------------------
 
-Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& indexList)
+Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& _indexList)
 {
     SeriesVectorType vSeries;
-    for(QModelIndex index :  indexList)
+    for(QModelIndex index : _indexList)
     {
         std::string uid = index.data(SelectorModel::UID).toString().toStdString();
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
@@ -148,10 +147,10 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& indexList)
 
 //-----------------------------------------------------------------------------
 
-QModelIndexList Selector::getStudyIndexes(const QModelIndexList& indexList)
+QModelIndexList Selector::getStudyIndexes(const QModelIndexList& _indexList)
 {
     QModelIndexList studiesIndex;
-    for(QModelIndex index :  indexList)
+    for(QModelIndex index : _indexList)
     {
         if (index.data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
         {
@@ -163,10 +162,10 @@ QModelIndexList Selector::getStudyIndexes(const QModelIndexList& indexList)
 
 //-----------------------------------------------------------------------------
 
-Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& index )
+Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& _index)
 {
     SeriesVectorType vSeries;
-    QStandardItem* item = m_model->itemFromIndex(index);
+    QStandardItem* item = m_model->itemFromIndex(_index);
     int nbRow           = item->rowCount();
     for(int row = 0; row < nbRow; ++row)
     {
@@ -182,23 +181,23 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
 
 //-----------------------------------------------------------------------------
 
-SelectorModel::ItemType Selector::getItemType(const QModelIndex& index)
+SelectorModel::ItemType Selector::getItemType(const QModelIndex& _index)
 {
-    return m_model->getItemType(index);
+    return m_model->getItemType(_index);
 }
 
 //-----------------------------------------------------------------------------
 
-void Selector::keyPressEvent(QKeyEvent* event)
+void Selector::keyPressEvent(QKeyEvent* _event)
 {
-    if(event->matches(QKeySequence::Delete) && m_allowedRemove)
+    if(_event->matches(QKeySequence::Delete) && m_allowedRemove)
     {
         this->deleteSelection();
-        event->accept();
+        _event->accept();
     }
     else
     {
-        QTreeView::keyPressEvent(event);
+        QTreeView::keyPressEvent(_event);
     }
 }
 
@@ -224,12 +223,12 @@ void Selector::deleteSelection()
 
 //-----------------------------------------------------------------------------
 
-void Selector::setSeriesIcons(const SeriesIconType& seriesIcons)
+void Selector::setSeriesIcons(const SeriesIconType& _seriesIcons)
 {
-    m_model->setSeriesIcons(seriesIcons);
+    m_model->setSeriesIcons(_seriesIcons);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace widget
-} // namespace uiMedDataQt
+} // namespace widget.
+} // namespace uiMedDataQt.

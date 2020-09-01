@@ -831,7 +831,7 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
 
         newItem->setText(int(ColumnSeriesType::STUDY_DESC),
                          QString::fromStdString(series->getStudy()->getDescription()));
-        std::string date = series->getStudy()->getDate();
+        std::string date = series->getDate();
         if(!date.empty())
         {
             date.insert(4, "/");
@@ -839,7 +839,7 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         }
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
 
-        std::string time = series->getStudy()->getTime();
+        std::string time = series->getTime();
         if(!time.empty())
         {
             time.insert(2, ":");
