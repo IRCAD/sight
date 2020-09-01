@@ -1,3 +1,239 @@
+# sight 20.1.0
+
+## Bug fixes:
+
+### build
+
+*Remove ".sh" extension from launcher scripts.*
+
+Both build and install targets are impacted.
+
+Adds `.bin` extension to executable target such as utilities/tests or fwlauncher to distinguish executable targets from shell scripts launcher
+
+*Ninja install issue on linux.*
+
+Test if the install directory ( `CMAKE_INSTALL_PREFIX`) is empty, if not print a warning at configure time.
+
+### ci
+
+*Build on master branch on Windows.*
+
+Fix quoting of branch name while cloning
+
+### core
+
+*Crashes when closing OgreViewer.*
+
+OgreViewer crash at closing, this crash happens because the action `openSeriesDBAct` is working on a thread.
+
+Now we wait until services are properly stopped after `service->stop()` in XXRegistrar class.
+
+*Replace misleading error logs in SlotBase.*
+
+When trying to call/run a slot, an error log was displayed if the signatures don't match, but it is allowed to call a slot with less parameters.
+Now, an improved information message is displayed if the slot cannot be launched with the given parameters, then we try to call the slot removing the last parameter. The error is only raised if the slot cannot be called without parameter.
+
+### graphics
+
+*Fix screen selection for Ogre scene.*
+
+Enable the full screen of Ogre scene on the right monitor.
+
+For more informations: https://stackoverflow.com/questions/3203095/display-window-full-screen-on-secondary-monitor-using-qt.
+
+*Slice outline colors are inverted between axial and sagittal in OgreViewer.*
+
+Use blue outline color for Ogre's sagittal view, and red outline color the axial one.
+
+### io
+
+*Change the overwrite method when saving using ioAtoms.*
+
+Change the overwrite method of `ioAtoms::SWriter`. Previously, when a file was overwritten, it was deleted then saved. But if the saving failed, the old one was still deleted.
+
+Now, the file is saved with a temporary name, then the old one is deleted and the temporary name is renamed with the real one.
+
+*Realsense doesn't work on latest 5.4 linux kernel.*
+
+Update the version of librealsense package to latest (2.35.2). This fix issue of using realsense camera on linux kernel > 5.3
+
+*Remove useless requirement in ogreConfig.*
+
+Remove `ioVTK` module from `ogreConfig`. No reader, writer or selector was used in the configurations.
+
+*Change realsense camera timestamp to milliseconds.*
+
+Correct the Realsense grabber timestamp from microseconds to milliseconds
+
+*Allow to re-start reading a csv without re-selecting the file path.*
+
+Update 'SMatricesReader' to properly close the file stream when calling `stopReading` slot and clear the timeline.
+Properly stop the worker to avoid a crash when closing the application.
+Also remove the default delay of 1s when using one shot mode.
+
+*Remove hard-coded codec and only offer mp4 as extension available in SVideoWriter.*
+
+* Limits extension selection to only `.mp4` for now.
+* Limits FOURCC codec to `avc1`. This codec is also linked to the `.mp4` extension.
+
+*Fix a crash with OpenCV grabber.*
+
+- Start/stop the worker of OpenCV grabber when service start/stop
+
+### ui
+
+*Notifications crashes when no active window was found.*
+
+Avoid crash of app when notifications were displayed without active window (focus lost).
+If no active window is found, print an error message and discard the current notification.
+
+*Prevent dead lock when opening organ manager.*
+
+Block Qt signals in SModelSeriesList when changing the state of the "hide all organs" checkbox.
+
+## Enhancement:
+
+### ci
+
+*Re-enable slow tests and remove ITKRegistrationTest.*
+
+### core
+
+*Add empty constructor to Array iterator.*
+
+* Add empty constructor to Array BaseIterator, to make it compatible with std::minmax_element
+
+### doc
+
+*Improve IService doxygen about output management.*
+
+Describe how to properly remove the service's outputs and why and when we should do it.
+
+Add a check when the service is unregistered and destroyed to verify if it owns an output that will also be destroyed (if the output pointer is only maintained by this service). Currently only an error log is displayed, but it may be replaced by an assert later. Other services may work on this object but didn't maintained the pointer (they used a weak pointer).
+
+*Update the screenshots in README.md.*
+
+Update README.md with more up-to-date screenshots/animations
+
+### graphics
+
+*Use ogre to display videos in ARCalibration.*
+
+* Use Ogre for `ARCalibration`.
+* Properly clean ogre resources before root deletion.
+
+*Manage default visibility of `SNegato3D` from XML configuration.*
+
+Call `setVisible` method at the end of the starting method.
+
+### io
+
+*Improve ioPacs module.*
+
+* Improves connection/disconnection management.
+* Improves the UI and request forms.
+* Use new disconnection method of dcmtk.
+* Fills new `medData` attributes.
+
+### ui
+
+*Add goTo channel in ActivityLauncher.*
+
+Add `goToChannel`in `ActivityLauncher.xml` in order to call `goTo` slot from an activity.
+
+*Replace Ircad and Ihu logos by the unique Ircad/Ihu logo in the sequencer view.*
+
+Modify ActivityLauncher configuration to replace Ircad and Ihu logos by the new version of Ircad/Ihu logo.
+
+*Improve assert messages in fwGui.*
+
+Add as much information as possible in the assertion messages: service uid, why the error occurs, ...
+
+*Add check/uncheck slot in SSignalButton.*
+
+These two new slots allow to easily check/uncheck the button without using a boolean parameter. They can be connected to a SSlotCaller or any signal.
+
+Update TutoGui to show an example with these two new slots.
+
+*Allow to delete all reconstructions or one from a right click.*
+
+- Allow to delete all reconstructions from `SModelSeriesList`
+- Delete specific reconstruction from a right click.
+
+*Improve Qt sequencer colors management.*
+
+Allow to manage more colors in the Qt sequencer.
+
+## New features:
+
+### core
+
+*Implements copy for mesh iterators.*
+
+Implement `operator=()` and `operator==()` on mesh iterator's internal structs (PointInfo and CellInfo).
+It allows to use `std`::copy``(or other std algorithms) with Mesh iterators.
+Update Mesh unit tests to check using `std::copy`, `std`::equal``and `std::fill`.
+
+### graphics
+
+*Add new experimental Qt3D renderer.*
+
+A new experimental renderer based on Qt3D has been integrated, providing basic support for mesh visualization.
+
+Three samples are provided to show how Qt3D could be integrated into a classic XML application, a pure c++ application
+or a QML application:
+* TutoSceneQt3D
+* TutoSceneQt3DCpp
+* TutoSceneQt3DQml
+
+The following classes and services have been introduced:
+* `::fwRenderQt3D`::GenericScene``object handling a qt3d scene
+* `::fwRenderQt3D`::FrameGraph``object to attach to a GenericScene, allowing to define custom qt3d framegraphs
+* `::fwRenderQt3D`::SRender``service used to define a GenericScene object within Sight context and attach adaptors to it
+* `::fwRenderQt3D`::Mesh``object creating a mesh from sight data using qt3d geometry renderer
+* `::fwRenderQt3D`::IAdaptor``class providing base functionalities for Qt3D adaptors.
+* `::visuQt3DAdaptor`::SMesh``adaptor used to create a qt3d mesh from sight data and attach it to the render service
+
+*Improve Ogre's SLandmarks for 2D scenes.*
+
+Improve Ogre resources management in '::visuOgreAdaptor::SLandmark' and display the landmarks in 2D negato scenes only on the slice of the landmark.
+
+*Add Ircad-IHU logo overlay in Ogre Scene.*
+
+- 8 positions are supported: left-top, left-center, left-bottom, center-top, center-bottom, right-top, right-center and rght-bottom.
+
+### io
+
+*Allow to save and load multiple TF with TF editor.*
+
+* Add new buttons to export and import a TF pool to `SMultipleTF`
+* Use the new API in `SMultipleTF`.
+
+## Refactor:
+
+### core
+
+*Manage pixel format in FrameTL.*
+
+Manage pixel formats: Gray Scale, RGB, BGR, RGBA and BGRA.
+Now, to initialize the frame timeline, the format must be specified, the previous initialization method (with number of components)is deprecated.
+Also improve the unit tests to check timeline initialization and copy.
+
+Update `SFrameMatrixSynchronizer`: use the new pixel format to initialize the image, but still support the old API when the format is undefined. Also use the new service's API with locked and weak pointers.
+
+### graphics
+
+*Rename the layer "depth" to "order".*
+
+Replace `depth` attribute of Ogre layer by `order`.
+
+### ui
+
+*Factorize visibility slots in Ogre3D renderer.*
+
+- Factorise `updateVisibility`, `toggleVisibility`, `show` and `hide`. `setVisible` is the only method to reimplement in subclasses.
+
+
 # sight 20.0.0
 
 ## Bug fixes:
