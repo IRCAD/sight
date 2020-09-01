@@ -256,6 +256,14 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
+    # On linux add ".bin" suffix, to distinguish executable (.bin) from launcher script(.sh).
+    if(UNIX)
+        set_target_properties( ${FWPROJECT_NAME}
+            PROPERTIES
+            SUFFIX ".bin"
+        )
+    endif()
+
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
@@ -272,8 +280,9 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
     # Configure launcher script
     if(UNIX)
-        string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
-        set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
+
+        string(TOLOWER ${FWPROJECT_NAME} ${FWPROJECT_NAME}_SCRIPT)
+        set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}.bin-${PROJECT_VERSION}")
 
         # Use the right path separator on unix
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
@@ -286,6 +295,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
     elseif(WIN32)
         string(TOLOWER ${FWPROJECT_NAME}.bat ${FWPROJECT_NAME}_SCRIPT)
         set(PROJECT_EXECUTABLE ${FWPROJECT_NAME})
@@ -353,6 +363,15 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
+
+    # On linux add ".bin" suffix, to distinguish executable (.bin) from launcher script(.sh).
+    if(UNIX)
+    set_target_properties( ${FWPROJECT_NAME}
+        PROPERTIES
+        SUFFIX ".bin"
+    )
+    endif()
+
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
     target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
@@ -378,8 +397,9 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     # Configure launcher script
     if(UNIX)
-        string(TOLOWER ${FWPROJECT_NAME}.sh ${FWPROJECT_NAME}_SCRIPT)
-        set(PROJECT_EXECUTABLE ${${FWPROJECT_NAME}_FULLNAME})
+        string(TOLOWER ${FWPROJECT_NAME} ${FWPROJECT_NAME}_SCRIPT)
+        
+        set(PROJECT_EXECUTABLE ${FWPROJECT_NAME}.bin)
 
         # Use the right path separator on unix
         string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
@@ -722,7 +742,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
-            set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
+            set(LAUNCHER "fwlauncher.bin-${fwlauncher_VERSION}")
             set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}")
