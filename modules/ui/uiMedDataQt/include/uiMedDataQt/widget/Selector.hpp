@@ -81,7 +81,7 @@ public:
     /// Returns the type of the item (SERIES or STUDY)
     UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
 
-    /// Catchs the delete key event and remove the selected items.
+    /// Catches the delete key event and remove the selected items.
     UIMEDDATAQT_API void keyPressEvent(QKeyEvent* _event);
 
     /**

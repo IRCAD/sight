@@ -104,7 +104,7 @@ protected:
      */
     IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Updates slider informations and retreive the image.
+    /// Updates slider informations and retrieve the image.
     IOPACS_API void updating() override;
 
     /// Destroys the slider.
@@ -160,7 +160,7 @@ private:
     /// Contains the DICOM reader.
     ::fwIO::IReader::sptr m_dicomReader;
 
-    /// Contains the seriesDB where the DICOM reader sets is output.
+    /// Contains the seriesDB where the DICOM reader sets its output.
     ::fwMedData::SeriesDB::sptr m_seriesDB;
 
 };

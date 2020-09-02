@@ -91,7 +91,7 @@ protected:
     /// Configures the editor.
     IOPACS_API void configuring() override;
 
-    /// Creates the GUI and connect widget to updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
+    /// Creates the GUI and connects widget to updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
     IOPACS_API void starting() override;
 
     /// Executes a query with last settings.
@@ -114,8 +114,8 @@ private:
     /// Contains the enquirer worker.
     ::fwThread::Worker::sptr m_executeQueryWorker { nullptr };
 
-    /// Defines if the service is executing quer.
-    std::atomic< bool > m_isquerying { false };
+    /// Defines if the service is executing query.
+    std::atomic< bool > m_isQuerying { false };
 
     /// Defines if advanced fields are displayed.
     bool m_advanced { true };

@@ -170,7 +170,7 @@ private:
     /// Contains the slider informations.
     QPointer< QLineEdit > m_sliceIndexLineEdit;
 
-    /// Defines the number of slice.
+    /// Defines the number of slices.
     std::size_t m_numberOfSlices;
 
     /// Defines the UID of the PACS configuration data.
@@ -188,10 +188,10 @@ private:
     /// Defines the image key.
     std::string m_imageKey;
 
-    /// Contains the seriesDB where the DICOM reader sets is output.
+    /// Contains the seriesDB where the DICOM reader sets its output.
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
-    /// Contains the worker that pull series from the PACS.
+    /// Contains the worker that pulls series from the PACS.
     ::fwThread::Worker::sptr m_pullSeriesWorker;
 
     /// Contains the timer used to generate the new slice selection delay.

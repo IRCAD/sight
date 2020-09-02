@@ -385,17 +385,17 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
     auto imgSize = image->getSize2();
 
-    // Sometime, the image can have only one slice,
-    // it result to a divide by 0 when the range is transform between [0-1].
-    // So we increase to image size to 2 to divide by 1.
+    // Sometimes, the image can contain only one slice,
+    // it results into a division by 0 when the range is transformed between [0-1].
+    // So we increase the image size to 2 to divide by 1.
     imgSize[0] = imgSize[0] == 1 ? 2 : imgSize[0];
     imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
     imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
     const ::Ogre::Vector3 sliceIndices = {
-        static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
-        static_cast<float>(_frontalIndex  ) / (static_cast<float>(imgSize[1] - 1)),
-        static_cast<float>(_axialIndex    ) / (static_cast<float>(imgSize[2] - 1))
+        static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
+        static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
+        static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
     };
 
     for (std::uint8_t i = 0; i < 3; ++i)

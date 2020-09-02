@@ -244,7 +244,7 @@ void SQueryEditor::stopping()
 
 void SQueryEditor::executeQueryAsync()
 {
-    if(!m_isquerying)
+    if(!m_isQuerying)
     {
         m_executeQueryWorker->post(std::bind(&::ioPacs::SQueryEditor::executeQuery, this));
     }
@@ -261,7 +261,7 @@ void SQueryEditor::executeQueryAsync()
 
 void SQueryEditor::executeQuery()
 {
-    m_isquerying = true;
+    m_isQuerying = true;
 
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -283,7 +283,7 @@ void SQueryEditor::executeQuery()
         const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't connect to the PACS");
-        m_isquerying = false;
+        m_isQuerying = false;
         return;
     }
 
@@ -333,7 +333,7 @@ void SQueryEditor::executeQuery()
         {
             responses = seriesEnquirer->findSeriesByModality(modalitySearchValue);
         }
-        // By default, check by date if the advance mode is enable.
+        // By default, check by date if the advanced mode is enable.
         else if(m_advanced)
         {
             responses = seriesEnquirer->findSeriesByDate(beginDataSearchValue, endDateSearchValue);
@@ -374,7 +374,7 @@ void SQueryEditor::executeQuery()
 
                     response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, ofValue);
                     QDate seriesDate = QDate::fromString(ofValue.c_str(), "yyyyMMdd");
-                    // Check date if the advance mode is enable.
+                    // Check date if the advanced mode is enabled.
                     if(m_advanced)
                     {
                         if(seriesDate <= m_beginStudyDateEdit->date() || seriesDate >= m_endStudyDateEdit->date())
@@ -482,7 +482,7 @@ void SQueryEditor::executeQuery()
         seriesEnquirer->disconnect();
     }
 
-    m_isquerying = false;
+    m_isQuerying = false;
 }
 
 //------------------------------------------------------------------------------

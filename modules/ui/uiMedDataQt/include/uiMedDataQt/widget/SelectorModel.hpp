@@ -168,7 +168,7 @@ private:
     /// Initializes model. Sets headers of the selector.
     void init();
 
-    /// Defines the number of study rows in the tree.
+    /// Defines the number of studies rows in the tree.
     int m_studyRowCount { 0 };
 
     /**

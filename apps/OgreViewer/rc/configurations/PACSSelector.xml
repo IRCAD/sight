@@ -95,9 +95,9 @@
             </registry>
         </service>
 
-        <service uid="advancedQueryEditorSliderView" type="::gui::view::SDefaultView">
+        <service uid="advancedQueryEditorSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -108,9 +108,9 @@
             </registry>
         </service>
 
-        <service uid="configurePACSSliderView" type="::gui::view::SDefaultView">
+        <service uid="configurePACSSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -149,12 +149,12 @@
             </registry>
         </service>
 
-        <service uid="previewSceneSliderView" type="::gui::view::SDefaultView">
+        <service uid="previewSceneSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
-                    <view proportion="0" backgroundColor="#00000000"/>
+                    <view proportion="0" backgroundColor="#00000000" />
                 </layout>
             </gui>
             <registry>
@@ -162,9 +162,9 @@
             </registry>
         </service>
 
-        <service uid="previewDICOMSliderView" type="::gui::view::SDefaultView">
+        <service uid="previewDICOMSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -204,12 +204,12 @@
             </registry>
         </service>
 
-        <service uid="localSceneSliderView" type="::gui::view::SDefaultView">
+        <service uid="localSceneSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
-                    <view proportion="0" backgroundColor="#00000000"/>
+                    <view proportion="0" backgroundColor="#00000000" />
                 </layout>
             </gui>
             <registry>
@@ -217,9 +217,9 @@
             </registry>
         </service>
 
-        <service uid="localSliderView" type="::gui::view::SDefaultView">
+        <service uid="localSliderView" type="::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer />
                     <view proportion="0" />
@@ -274,13 +274,13 @@
             <config layer="defaultLayer" priority="0" />
         </service>
 
-        <service uid="lTextAdp" type="::visuOgreAdaptor::SText">
+        <service uid="lTextAdp" type="::visuOgreAdaptor::SText" >
             <config layer="defaultLayer" x="0.025" y="0.025" hAlign="left" vAlign="top" color="#D25252" />
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="seriesPullerAct" type="::guiQt::editor::SSignalButton">
+        <service uid="seriesPullerAct" type="::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
@@ -289,7 +289,7 @@
             </config>
         </service>
 
-        <service uid="exportImageAct" type="::guiQt::editor::SSignalButton">
+        <service uid="exportImageAct" type="::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
@@ -338,7 +338,7 @@
 
         <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
         <service uid="notifierSrv" type="::guiQt::SNotifier" >
-            <parent uid="mainview"/>
+            <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
             <maxNotifications>6</maxNotifications>
@@ -346,7 +346,7 @@
         </service>
 
         <service uid="resetPreviewSrv" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="previewImageReset"/>
+            <in key="source" uid="previewImageReset" />
             <inout key="target" uid="previewImage" />
             <mode>copyOnUpdate</mode>
         </service>
@@ -363,7 +363,7 @@
             <inout key="image" uid="localImage" />
         </service>
 
-        <service uid="configurePACSInitializerSrv" type="::ioPacs::SPacsConfigurationInitializer">
+        <service uid="configurePACSInitializerSrv" type="::ioPacs::SPacsConfigurationInitializer" >
             <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
             <config
                 localApplicationTitle="OgreViewer"
@@ -377,24 +377,24 @@
                 />
         </service>
 
-        <service uid="configurePACSEditorSrv" type="::ioPacs::SPacsConfigurationEditor">
+        <service uid="configurePACSEditorSrv" type="::ioPacs::SPacsConfigurationEditor" >
             <inout key="config" uid="pacsConfiguration" />
             <config showDialog="false" />
         </service>
 
-        <service uid="queryEditorSrv" type="::ioPacs::SQueryEditor">
+        <service uid="queryEditorSrv" type="::ioPacs::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" advanced="false" />
         </service>
 
-        <service uid="advancedQueryEditorSrv" type="::ioPacs::SQueryEditor">
+        <service uid="advancedQueryEditorSrv" type="::ioPacs::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" />
         </service>
 
-        <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <selectionMode>extended</selectionMode>
@@ -404,7 +404,7 @@
         </service>
 
         <service uid="extractPreviewSrv" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="previewSelections">
+            <in key="source" uid="previewSelections" >
               <extract from="@values.0" />
             </in>
             <inout key="target" uid="previewDicom" />
@@ -425,7 +425,7 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" />
         </service>
 
-        <service uid="localSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="localSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <selectionMode>extended</selectionMode>
@@ -435,7 +435,7 @@
         </service>
 
         <service uid="extractLocalSrv" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="localSelections">
+            <in key="source" uid="localSelections" >
               <extract from="@values.0.image" />
             </in>
             <inout key="target" uid="localImage" />

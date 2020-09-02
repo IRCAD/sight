@@ -198,7 +198,7 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 
 void SSliceIndexDicomEditor::retrieveSlice() const
 {
-    // Check if the slice already exist.
+    // Check if the slice already exists.
     const auto dicomSeries          = this->getLockedInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
     const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
@@ -293,7 +293,7 @@ void SSliceIndexDicomEditor::pullSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
         notif->asyncEmit("Unable to execute query");
     }
 
-    // Disconnect the series enquire.
+    // Disconnect the series enquirer.
     if(seriesEnquirer->isConnectedToPacs())
     {
         seriesEnquirer->disconnect();
@@ -350,7 +350,7 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
 
     if(m_seriesDB->getContainer().size() > 0)
     {
-        // Copy the readed serie to the image.
+        // Copy the read serie to the image.
         const ::fwMedData::ImageSeries::sptr imageSeries =
             ::fwMedData::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const ::fwData::Image::sptr newImage = imageSeries->getImage();

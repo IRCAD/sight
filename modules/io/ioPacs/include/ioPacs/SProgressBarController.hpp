@@ -60,7 +60,7 @@ public:
     /// Initializes slots.
     IOPACS_API SProgressBarController() noexcept;
 
-    /// Destroy the service.
+    /// Destroys the service.
     IOPACS_API virtual ~SProgressBarController() noexcept;
 
 protected:
@@ -79,19 +79,19 @@ protected:
 
 private:
 
-    /// Starts a progress bar wih the given id.
+    /// Starts a progress bar with the given id.
     void startProgress(std::string _id);
 
-    /// Starts a progress bar wih the given id with a new message.
+    /// Starts a progress bar with the given id with a new message.
     void updateProgress(std::string _id, float _percentage, std::string _message);
 
-    /// Stops a progress bar wih the given id.
+    /// Stops a progress bar with the given id.
     void stopProgress(std::string _id);
 
     /// Stores progress bars.
     std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > m_progressDialogs;
 
-    /// Syncs progrsse bars access.
+    /// Synchronizes progress bars access.
     ::fwCore::mt::Mutex m_mutex;
 
 };

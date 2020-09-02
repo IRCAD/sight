@@ -48,9 +48,8 @@ namespace ioPacs
  *
  * @section Signals Signals
  * - \b progressed(std::string): sent when the process start (bar id).
- * - \b startedProgress(std::string, float, std::string): sent when the process is update (bar id, percentage,
- *                                                        message).
- * - \b stoppedProgress(std::string): sent when the process is end (bar id).
+ * - \b progressStarted(std::string, float, std::string): sent when the process is updated (bar id,percentage,message).
+ * - \b progressStopped(std::string): sent when the process ended (bar id).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -100,22 +99,22 @@ protected:
     /// Stops the DICOM reader.
     IOPACS_API void stopping() override;
 
-    /// Pulls the series if nothing is pull it in background.
+    /// Pulls series.
     IOPACS_API void updating() override;
 
 private:
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-    typedef ::fwCom::Signal< void ( std::string ) > StartedProgressSignalType;
+    typedef ::fwCom::Signal< void ( std::string ) > ProgressStartedSignalType;
     typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
-    typedef ::fwCom::Signal< void ( std::string ) > StoppedProgressSignalType;
+    typedef ::fwCom::Signal< void ( std::string ) > ProgressStoppedSignalType;
 
-    /// Pulls a series from the PACS.
+    /// Pulls series from the PACS.
     void pullSeries();
 
     /**
-     * @brief Reads a local series.
+     * @brief Reads local series.
      * @param _selectedSeries DICOM series that must be read.
      */
     void readLocalSeries(DicomSeriesContainerType _selectedSeries);
@@ -138,20 +137,20 @@ private:
     /// Contains the DICOM reader.
     ::fwIO::IReader::sptr m_dicomReader { nullptr };
 
-    /// Contains the seriesDB where the DICOM reader sets is output.
+    /// Contains the seriesDB where the DICOM reader sets its output.
     ::fwMedData::SeriesDB::sptr m_seriesDB { nullptr };
 
-    /// Contains the sloat to call storeInstanceCallback method using C-MOVE requests.
+    /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
     ::fwPacsIO::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingMoveRequests { nullptr };
 
-    /// Contains the signal emitted when the progress bar is starting.
-    StartedProgressSignalType::sptr m_sigStartedProgress { nullptr };
+    /// Contains the signal emitted when the progress bar is started.
+    ProgressStartedSignalType::sptr m_sigProgressStarted { nullptr };
 
-    /// Contains the signal emitted when the progress bar is updating.
+    /// Contains the signal emitted when the progress bar is updated.
     ProgressedSignalType::sptr m_sigProgressed { nullptr };
 
-    /// Contains the signal emitted when the progress bar is stopping.
-    StoppedProgressSignalType::sptr m_sigStoppedProgress { nullptr };
+    /// Contains the signal emitted when the progress bar is stopped.
+    ProgressStoppedSignalType::sptr m_sigProgressStopped { nullptr };
 
     /// Stores local series.
     std::vector< std::string > m_localSeries;

@@ -192,11 +192,11 @@
             <slot>progressBarController/updateProgress</slot>
         </connect>
         <connect>
-            <signal>pullSeriesController/startedProgress</signal>
+            <signal>pullSeriesController/progressStarted</signal>
             <slot>progressBarController/startProgress</slot>
         </connect>
         <connect>
-            <signal>pullSeriesController/stoppedProgress</signal>
+            <signal>pullSeriesController/progressStopped</signal>
             <slot>progressBarController/stopProgress</slot>
          </connect>
 

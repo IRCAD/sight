@@ -237,11 +237,11 @@ void SPacsConfigurationEditor::pingPACS()
         messageBox.setTitle("Ping Pacs");
         if(success)
         {
-            messageBox.setMessage("Ping succeed !");
+            messageBox.setMessage("Ping succeeded!");
         }
         else
         {
-            messageBox.setMessage("Ping failed !");
+            messageBox.setMessage("Ping failed!");
         }
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
@@ -252,14 +252,14 @@ void SPacsConfigurationEditor::pingPACS()
     {
         const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
             ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
-        notif->asyncEmit("Ping succeed !");
-        SLM_INFO("Ping succeed")
+        notif->asyncEmit("Ping succeeded!");
+        SLM_INFO("Ping succeeded")
     }
     else
     {
         const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
-        notif->asyncEmit("Ping failed !");
+        notif->asyncEmit("Ping failed!");
         SLM_INFO("Ping failed")
     }
 }

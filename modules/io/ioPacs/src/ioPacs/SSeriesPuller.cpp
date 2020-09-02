@@ -48,8 +48,8 @@ namespace ioPacs
 static const ::fwCom::Slots::SlotKeyType s_READ_SLOT = "readDicom";
 
 static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
-static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "startedProgress";
-static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "stoppedProgress";
+static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
+static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
@@ -65,8 +65,8 @@ SSeriesPuller::SSeriesPuller() noexcept
                                                            &SSeriesPuller::storeInstanceCallback, this);
 
     m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
-    m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
-    m_sigStoppedProgress = newSignal<StoppedProgressSignalType>(s_STOPPED_PROGRESS_SIG);
+    m_sigProgressStarted = newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
+    m_sigProgressStopped = newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ void SSeriesPuller::pullSeries()
         infoNotif->asyncEmit("Start of download");
 
         // Notify Progress Dialog.
-        m_sigStartedProgress->asyncEmit(m_progressbarId);
+        m_sigProgressStarted->asyncEmit(m_progressbarId);
 
         // Retrieve informations.
         const auto pacsConfig = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
@@ -262,14 +262,14 @@ void SSeriesPuller::pullSeries()
         worker->stop();
         worker.reset();
 
-        // Disconnect the series enquire.
+        // Disconnect the series enquirer.
         if(seriesEnquirer->isConnectedToPacs())
         {
             seriesEnquirer->disconnect();
         }
 
         // Notify Progress Dialog.
-        m_sigStoppedProgress->asyncEmit(m_progressbarId);
+        m_sigProgressStopped->asyncEmit(m_progressbarId);
     }
     else
     {

@@ -57,7 +57,7 @@ namespace ioPacs
  * - \b config [::fwPacsIO::data::PacsConfiguration]: pacs configuration.
  *
  * @subsection Configuration Configuration:
- * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just sent the
+ * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just send the
  *                                                 notification.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
@@ -130,7 +130,7 @@ private:
     /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
 
-    /// Defines if the dialog message must be show or not for the ping result.
+    /// Defines whether or not the dialog message should be displayed for the ping result.
     bool m_showDialog { true };
 
 private Q_SLOTS:
