@@ -426,7 +426,7 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
         }
         else
         {
-            OSLM_WARN("This type of series is not defined (" << series->getClassname() << ")");
+            OSLM_WARN("This type of series is not defined (" << _series->getClassname() << ")");
         }
     }
 }

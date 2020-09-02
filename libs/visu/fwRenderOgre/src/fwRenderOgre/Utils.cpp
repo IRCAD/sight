@@ -670,7 +670,7 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     if( _texture->getWidth() != _image->getSize2()[0] ||
         _texture->getHeight() != _image->getSize2()[1] ||
         _texture->getDepth() != _image->getSize2()[2] ||
-        _texture->getFormat() != ::Ogre::TEX_TYPE_3D ||
+        _texture->getTextureType() != ::Ogre::TEX_TYPE_3D ||
         _texture->getFormat() != ::Ogre::PF_L16 ||
         _texture->getUsage() != ::Ogre::TU_STATIC_WRITE_ONLY)
     {
