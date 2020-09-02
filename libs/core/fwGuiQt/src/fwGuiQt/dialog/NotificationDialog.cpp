@@ -54,6 +54,12 @@ void NotificationDialog::show()
     // Checks if we have a Parent widget.
     QWidget* parent = qApp->activeWindow();
 
+    // If the activie window is a slide bar, we need to retrieve the nativ parent.
+    if(parent->objectName() == "SlideBar")
+    {
+        parent = parent->nativeParentWidget();
+    }
+
     ::fwGuiQt::container::QtContainer::csptr parentContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(m_parentContainer);
 
