@@ -52,6 +52,8 @@ namespace editor
  * - \b setChecked(bool): This slot allows to check/uncheck the button
  * - \b check(): This slot allows to check the button
  * - \b uncheck(): This slot allows to uncheck the button
+ * - \b show(): This slot shows the button
+ * - \b hide(): This slot hides the button
  *
  * @section XML XML configuration
  * @code{.xml}
@@ -154,6 +156,12 @@ private:
 
     /// Slot: uncheck the button
     void uncheck();
+
+    /// Slot: show the button
+    void show();
+
+    /// Slot: hide he button
+    void hide();
     /**
      * @}
      */

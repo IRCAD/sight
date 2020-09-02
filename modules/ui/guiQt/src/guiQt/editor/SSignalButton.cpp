@@ -56,6 +56,8 @@ static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
 static const ::fwCom::Slots::SlotKeyType s_CHECK_SLOT       = "check";
 static const ::fwCom::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT        = "show";
+static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT        = "hide";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSignalButton )
 
@@ -73,6 +75,8 @@ SSignalButton::SSignalButton() noexcept :
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
+    newSlot(s_SHOW_SLOT, &SSignalButton::show, this);
+    newSlot(s_HIDE_SLOT, &SSignalButton::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,5 +280,18 @@ void SSignalButton::info( std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
+void SSignalButton::show()
+{
+    m_button->show();
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::hide()
+{
+    m_button->hide();
+}
+
+//-----------------------------------------------------------------------------
 } // namespace editor
 } // namespace gui
