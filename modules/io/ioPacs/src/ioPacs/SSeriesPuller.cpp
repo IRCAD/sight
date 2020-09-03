@@ -320,9 +320,12 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             m_dicomReader->update();
 
             // Merge series.
-            ::fwMedDataTools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
-            seriesHelper.merge(m_seriesDB);
-            seriesHelper.notify();
+            if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+            {
+                ::fwMedDataTools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
+                seriesHelper.merge(m_seriesDB);
+                seriesHelper.notify();
+            }
         }
     }
 }

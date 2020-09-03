@@ -154,7 +154,7 @@ public:
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
 
-    /// Returns if reading has been cancelled by user
+    /// Returns if reading has failed.
     FWIO_API bool hasFailed() const;
 
     //@}

@@ -134,6 +134,8 @@ void SSeriesDBReader::configureWithIHM()
         ::fwServices::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
+
+        m_readFailed = false;
     }
     else
     {
@@ -344,6 +346,8 @@ void SSeriesDBReader::updating()
             }
 
             ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+
+            m_readFailed = false;
 
             auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
                 ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);

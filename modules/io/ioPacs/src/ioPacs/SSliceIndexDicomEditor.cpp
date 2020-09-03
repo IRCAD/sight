@@ -348,7 +348,7 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
     m_dicomReader->setFolder(tmpPath);
     m_dicomReader->update();
 
-    if(m_seriesDB->getContainer().size() > 0)
+    if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
     {
         // Copy the read serie to the image.
         const ::fwMedData::ImageSeries::sptr imageSeries =

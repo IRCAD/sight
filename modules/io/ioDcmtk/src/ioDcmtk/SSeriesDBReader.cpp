@@ -252,6 +252,8 @@ void SSeriesDBReader::updating()
             cursor.setCursor(::fwGui::ICursor::BUSY);
             this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
+
+            m_readFailed = false;
         }
         else
         {
