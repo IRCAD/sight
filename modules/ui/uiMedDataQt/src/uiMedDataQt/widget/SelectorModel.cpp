@@ -264,11 +264,11 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         {
             // Code string can contains leading or trailing spaces, we removed it first.
             const std::string::const_iterator forward
-                = std::remove_if( patientPosition.begin(), patientPosition.end(), [&](unsigned char _c)
+                = std::remove_if(patientPosition.begin(), patientPosition.end(), [&](unsigned char _c)
                     {
                         return _c == ' ';
                     });
-            patientPosition.erase(forward);
+            patientPosition.erase(forward, patientPosition.end());
             if(patientPosition.compare("HFP") == 0)
             {
                 patientPosition = "Head First-Prone";
