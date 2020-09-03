@@ -72,7 +72,7 @@ void RuntimeTest::testPosix()
     auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
 
     auto nativeLibrary = std::make_unique<dl::Posix>("dataReg");
-    nativeLibrary->setModule(module.get());
+    nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
     CPPUNIT_ASSERT( std::regex_match("libdataReg.so.0.1", nativeName));
@@ -99,7 +99,7 @@ void RuntimeTest::testWin32()
     auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
 
     auto nativeLibrary = std::make_unique<dl::Win32>("dataReg");
-    nativeLibrary->setModule(module.get());
+    nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
     CPPUNIT_ASSERT( std::regex_match("dataReg.dll", nativeName));

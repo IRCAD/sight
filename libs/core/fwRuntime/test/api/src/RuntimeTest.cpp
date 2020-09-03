@@ -63,6 +63,20 @@ void RuntimeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+void RuntimeTest::testLibrary()
+{
+    bool success = ::fwRuntime::loadLibrary(std::string("fwData"));
+    CPPUNIT_ASSERT_EQUAL(true, success);
+
+    success = ::fwRuntime::loadLibrary(std::string("fwData"));
+    CPPUNIT_ASSERT_EQUAL(true, success);
+
+    success = ::fwRuntime::loadLibrary(std::string("foo"));
+    CPPUNIT_ASSERT_EQUAL(false, success);
+}
+
+//------------------------------------------------------------------------------
+
 void RuntimeTest::testModule()
 {
     auto module = ::fwRuntime::loadModule(std::string("dataReg"));
@@ -80,7 +94,7 @@ void RuntimeTest::testModule()
     CPPUNIT_ASSERT_EQUAL(rcLocation / "dataReg-0.1",  module->getResourcesLocation());
 
     const auto extensions = module->getExtensions();
-    CPPUNIT_ASSERT_EQUAL(true, extensions.empty());
+    CPPUNIT_ASSERT_EQUAL(false, extensions.empty());
 
     CPPUNIT_ASSERT_EQUAL(std::string("::dataReg::Plugin"), module->getClass());
     auto plugin = module->getPlugin();

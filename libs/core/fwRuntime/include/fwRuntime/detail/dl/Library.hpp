@@ -34,7 +34,6 @@ namespace fwRuntime
 
 namespace detail
 {
-class Module;
 
 namespace dl
 {
@@ -117,13 +116,13 @@ public:
     }
 
     /**
-     * @brief       Sets the module the library is attached to.
+     * @brief       Set the initial path from which the library will be loaded.
      *
-     * @param[in]   module  a pointer to a module instance
+     * @param[in]   path  search path
      */
-    void setModule(const ::fwRuntime::detail::Module* module) noexcept
+    void setSearchPath( const std::filesystem::path& path ) noexcept
     {
-        m_implementor->setModule(module);
+        m_implementor->setSearchPath(path);
     }
 
     /**

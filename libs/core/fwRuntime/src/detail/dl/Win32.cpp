@@ -38,7 +38,7 @@ namespace dl
 //------------------------------------------------------------------------------
 
 Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
-    Native(modulePath),
+    Native(modulePath.string()),
     m_handle( 0 )
 {
 }

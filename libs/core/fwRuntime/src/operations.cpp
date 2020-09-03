@@ -23,6 +23,7 @@
 #include "fwRuntime/operations.hpp"
 
 #include "fwRuntime/ConfigurationElement.hpp"
+#include "fwRuntime/detail/dl/Library.hpp"
 #include "fwRuntime/detail/ExtensionPoint.hpp"
 #include "fwRuntime/detail/io/ProfileReader.hpp"
 #include "fwRuntime/detail/Module.hpp"
@@ -324,6 +325,36 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
     }
 
     return module;
+}
+
+//------------------------------------------------------------------------------
+
+bool loadLibrary(const std::string& identifier)
+{
+    static std::map<std::string, std::shared_ptr<detail::dl::Library> > s_LIBRARIES;
+
+    // Even if dlopen does not actually load twice the same library, we avoid this
+    if( s_LIBRARIES.find(identifier) != std::end(s_LIBRARIES) )
+    {
+        return true;
+    }
+
+    auto library = std::make_shared<detail::dl::Library>(identifier);
+    ::fwRuntime::Runtime& rntm = ::fwRuntime::Runtime::get();
+    library->setSearchPath(rntm.getWorkingPath() / MODULE_LIB_PREFIX);
+
+    try
+    {
+        library->load();
+    }
+    catch (const RuntimeException& )
+    {
+        return false;
+    }
+
+    s_LIBRARIES[identifier] = library;
+
+    return true;
 }
 
 //------------------------------------------------------------------------------

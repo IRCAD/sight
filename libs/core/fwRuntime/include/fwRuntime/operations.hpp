@@ -318,6 +318,16 @@ FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier,
 FWRUNTIME_API std::shared_ptr<Module> loadModule( const std::string& identifier, const Version& version = Version() );
 
 /**
+ * @brief   Load a library.
+ *
+ * @param   identifier  a string containing a module identifier
+ * @param   version     a version (none by default)
+ *
+ * @return  success
+ */
+FWRUNTIME_API bool loadLibrary( const std::string& identifier );
+
+/**
  * @brief   Starts the given module set profile.
  *
  * @param   path    a path to an xml profile file
