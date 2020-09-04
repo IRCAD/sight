@@ -24,8 +24,6 @@
 
 #include "ioPacs/config.hpp"
 
-#include <fwCom/Slot.hpp>
-
 #include <fwIO/IReader.hpp>
 
 #include <fwMedData/DicomSeries.hpp>

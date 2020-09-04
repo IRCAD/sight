@@ -22,9 +22,7 @@
 
 #include "ioPacs/SSeriesPuller.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
@@ -45,8 +43,6 @@
 namespace ioPacs
 {
 
-static const ::fwCom::Slots::SlotKeyType s_READ_SLOT = "readDicom";
-
 static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
 static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
 static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
@@ -61,12 +57,12 @@ static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
 
 SSeriesPuller::SSeriesPuller() noexcept
 {
-    m_slotStoreInstanceCallbackUsingMoveRequests = newSlot(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
-                                                           &SSeriesPuller::storeInstanceCallback, this);
+    m_slotStoreInstanceCallbackUsingMoveRequests = this->newSlot(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
+                                                                 &SSeriesPuller::storeInstanceCallback, this);
 
-    m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
-    m_sigProgressStarted = newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
-    m_sigProgressStopped = newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
+    m_sigProgressed      = this->newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
+    m_sigProgressStarted = this->newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
+    m_sigProgressStopped = this->newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +181,7 @@ void SSeriesPuller::pullSeries()
     {
         const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
             ::fwServices::IService::s_INFO_NOTIFIED_SIG);
-        infoNotif->asyncEmit("Start of download");
+        infoNotif->asyncEmit("Downloading series...");
 
         // Notify Progress Dialog.
         m_sigProgressStarted->asyncEmit(m_progressbarId);
@@ -276,12 +272,24 @@ void SSeriesPuller::pullSeries()
         const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
             ::fwServices::IService::s_INFO_NOTIFIED_SIG);
         infoNotif->asyncEmit("Series already downloaded");
+
+        return;
     }
 
     // Read series if there is no error.
     if(success)
     {
+        const auto sucessNotif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+            ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+        sucessNotif->asyncEmit("Series downloaded");
+
         this->readLocalSeries(selectedSeriesVector);
+    }
+    else
+    {
+        const auto failNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        failNotif->asyncEmit("Series download failed");
     }
 }
 
@@ -298,20 +306,23 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
     // Create temporary series helper.
     ::fwMedDataTools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
+    const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+        ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+    const auto failNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+        ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+    const auto sucessNotif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+
     for(const ::fwMedData::Series::sptr& series: _selectedSeries)
     {
         const std::string selectedSeriesUID = series->getInstanceUID();
-
-        // Add the series to the local series vector.
-        if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
-        {
-            m_localSeries.push_back(selectedSeriesUID);
-        }
 
         // Check if the series is loaded.
         if(std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
                      selectedSeriesUID) == alreadyLoadedSeries.end())
         {
+            infoNotif->asyncEmit("Reading serie...");
+
             // Clear temporary series.
             readerSeriesHelper.clear();
 
@@ -322,9 +333,21 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             // Merge series.
             if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
             {
+                sucessNotif->asyncEmit("Serie read");
+
+                // Add the series to the local series vector.
+                if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+                {
+                    m_localSeries.push_back(selectedSeriesUID);
+                }
+
                 ::fwMedDataTools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
                 seriesHelper.merge(m_seriesDB);
                 seriesHelper.notify();
+            }
+            else
+            {
+                failNotif->asyncEmit("Serie read failed");
             }
         }
     }

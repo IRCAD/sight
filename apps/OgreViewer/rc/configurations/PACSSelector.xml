@@ -343,7 +343,7 @@
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
-            <maxNotifications>6</maxNotifications>
+            <maxNotifications>10</maxNotifications>
             <duration>5000</duration>
         </service>
 
@@ -351,7 +351,7 @@
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_RIGHT</position>
-            <maxNotifications>6</maxNotifications>
+            <maxNotifications>10</maxNotifications>
             <duration>5000</duration>
         </service>
 
@@ -428,7 +428,7 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500" />
         </service>
 
-        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" worker="PACS_THREAD" >
+        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />
@@ -517,6 +517,7 @@
         <!-- connection from IService notify signals to the SNotifier,you can add as many services as you need -->
         <connect>
             <signal>configurePACSEditorSrv/successNotified</signal>
+            <signal>seriesPullerSrv/successNotified</signal>
             <slot>rightNotifierSrv/popSuccess</slot>
         </connect>
 
