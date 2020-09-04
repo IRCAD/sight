@@ -139,7 +139,7 @@ private:
     /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
 
-    /// Ping PACS worker.
+    /// Contains the worker used to ping the PACS.
     ::fwThread::Worker::sptr m_PingPACSWorker;
 
     /// Defines whether or not the dialog message should be displayed for the ping result.

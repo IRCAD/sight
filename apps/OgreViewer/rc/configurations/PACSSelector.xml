@@ -286,6 +286,7 @@
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
+               <toolTip>Pull selected series</toolTip>
             </config>
         </service>
 
@@ -295,6 +296,7 @@
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
+               <toolTip>Load the image</toolTip>
             </config>
         </service>
 
