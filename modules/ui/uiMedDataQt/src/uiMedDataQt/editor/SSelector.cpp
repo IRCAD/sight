@@ -274,15 +274,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
     ::fwData::Vector::sptr selectionVector = this->getSelection();
 
-    if (m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::STUDY)
-    {
-        std::stringstream str;
-        str << "Selected study. TODO";
-
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
-                                                          str.str());
-    }
-    else if (m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
+    if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
         ::fwData::Object::sptr obj       = selectionVector->front();
