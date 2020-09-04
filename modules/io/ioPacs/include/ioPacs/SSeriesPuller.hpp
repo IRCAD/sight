@@ -36,8 +36,6 @@
 #include <fwServices/IController.hpp>
 #include <fwServices/IHasServices.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include <vector>
 
 namespace ioPacs

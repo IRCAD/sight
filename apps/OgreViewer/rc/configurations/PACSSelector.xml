@@ -342,7 +342,7 @@
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
             <maxNotifications>6</maxNotifications>
-            <duration>3000</duration>
+            <duration>5000</duration>
         </service>
 
         <service uid="resetPreviewSrv" type="::ctrlCamp::SCopy" >

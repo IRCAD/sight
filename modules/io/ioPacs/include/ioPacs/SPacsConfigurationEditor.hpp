@@ -29,6 +29,8 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
@@ -99,6 +101,13 @@ private:
      */
     void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration);
 
+    /**
+     * @brief Displays an information dialog.
+     * @param _title title of the dialog.
+     * @param _message message of the dialog.
+     */
+    void showDialog(const std::string _title, const std::string _message);
+
     /// Contains the AET of the SCU (client name) editor.
     QPointer< QLineEdit > m_SCUAppEntityTitleEdit;
 
@@ -130,8 +139,14 @@ private:
     /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
 
+    /// Ping PACS worker.
+    ::fwThread::Worker::sptr m_PingPACSWorker;
+
     /// Defines whether or not the dialog message should be displayed for the ping result.
     bool m_showDialog { true };
+
+    /// Contains the slot to show a dialog in the main thread.
+    ::fwCom::Slot< void(const std::string, const std::string) >::sptr m_slotShowDialog { nullptr };
 
 private Q_SLOTS:
 
