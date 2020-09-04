@@ -337,10 +337,18 @@
         </service>
 
         <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
-        <service uid="notifierSrv" type="::guiQt::SNotifier" >
+        <service uid="leftNotifierSrv" type="::guiQt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
+            <maxNotifications>6</maxNotifications>
+            <duration>5000</duration>
+        </service>
+
+        <service uid="rightNotifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview" />
+            <message>Default Message</message>
+            <position>BOTTOM_RIGHT</position>
             <maxNotifications>6</maxNotifications>
             <duration>5000</duration>
         </service>
@@ -507,21 +515,30 @@
         <!-- connection from IService notify signals to the SNotifier,you can add as many services as you need -->
         <connect>
             <signal>configurePACSEditorSrv/successNotified</signal>
-            <slot>notifierSrv/popSuccess</slot>
+            <slot>rightNotifierSrv/popSuccess</slot>
+        </connect>
+
+        <connect>
+            <signal>queryEditorSrv/failureNotified</signal>
+            <slot>leftNotifierSrv/popFailure</slot>
         </connect>
 
         <connect>
             <signal>configurePACSEditorSrv/failureNotified</signal>
-            <signal>queryEditorSrv/failureNotified</signal>
             <signal>sliderIndexDicomPullerEditorSrv/failureNotified</signal>
-            <slot>notifierSrv/popFailure</slot>
+            <signal>seriesPullerSrv/failureNotified</signal>
+            <slot>rightNotifierSrv/popFailure</slot>
         </connect>
 
         <connect>
-            <signal>seriesPullerSrv/infoNotified</signal>
-            <signal>sliderIndexDicomPullerEditorSrv/infoNotified</signal>
             <signal>queryEditorSrv/infoNotified</signal>
-            <slot>notifierSrv/popInfo</slot>
+            <slot>leftNotifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>sliderIndexDicomPullerEditorSrv/infoNotified</signal>
+            <signal>seriesPullerSrv/infoNotified</signal>
+            <slot>rightNotifierSrv/popInfo</slot>
         </connect>
 
         <connect>
@@ -558,7 +575,8 @@
 
         <start uid="configurePACSInitializerSrv" />
         <start uid="mainView" />
-        <start uid="notifierSrv" />
+        <start uid="leftNotifierSrv" />
+        <start uid="rightNotifierSrv" />
         <start uid="resetPreviewSrv" />
         <start uid="negatoStoperSrv" />
         <start uid="negatoStarterSrv" />
