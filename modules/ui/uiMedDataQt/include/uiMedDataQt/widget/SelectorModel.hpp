@@ -122,8 +122,6 @@ public:
     /// Sets if the selector must be in insert mode.
     UIMEDDATAQT_API void setInsertMode(bool _insert);
 
-private:
-
     /// Defines header columns used in the tree widget of all series.
     enum class ColumnSeriesType : int
     {
@@ -146,6 +144,8 @@ private:
         ACQUISITION_TIME,
         CONTRAST_BOLUS_START_TIME
     };
+
+private:
 
     typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
 

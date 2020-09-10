@@ -100,6 +100,14 @@ protected:
 
 private:
 
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connects ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
+     */
+    IOPACS_API virtual KeyConnectionsMap getAutoConnections() const override;
+
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
     typedef ::fwCom::Signal< void ( std::string ) > ProgressStartedSignalType;
@@ -123,6 +131,9 @@ private:
      */
     void storeInstanceCallback(const std::string& _seriesInstanceUID, unsigned _instanceNumber,
                                const std::string& _filePath);
+
+    ///SLOT: removes series from m_localSeries, when deleted in a gui Selector for instance.
+    void removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries);
 
     /// Defines the DICOM reader implementation.
     std::string m_dicomReaderImplementation { "" };

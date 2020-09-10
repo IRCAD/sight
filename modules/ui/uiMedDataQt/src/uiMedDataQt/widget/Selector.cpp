@@ -166,11 +166,14 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
 {
     SeriesVectorType vSeries;
     QStandardItem* item = m_model->itemFromIndex(_index);
-    int nbRow           = item->rowCount();
+    SLM_ASSERT("Item shouldn't be null", item);
+    const int nbRow = item->rowCount();
     for(int row = 0; row < nbRow; ++row)
     {
-        QStandardItem* child = item->child(row);
-        std::string uid      = child->data(SelectorModel::UID).toString().toStdString();
+        // Retrieve UID of the series using the DESCRIPTION column.
+        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::DESCRIPTION));
+        SLM_ASSERT("Child is null", child);
+        const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SLM_ASSERT("UID must not be empty.", !uid.empty());
         ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(uid);
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);

@@ -227,6 +227,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     QStandardItem* seriesModality    = new QStandardItem(QString::fromStdString(_series->getModality()));
     QStandardItem* seriesDescription = new QStandardItem(QString::fromStdString(_series->getDescription()));
     seriesDescription->setData(QVariant((int)ItemType::SERIES), Role::ITEM_TYPE);
+    // /!\ Series Description is used as UID to retrieve object
     seriesDescription->setData(QVariant(QString::fromStdString(_series->getID())), Role::UID);
 
     std::string seriesDate = _series->getDate();
@@ -249,7 +250,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     const int nbRow = studyRootItem->rowCount();
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::BIRTHDATE), seriesIcon);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::MODALITY), seriesModality);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription);
+    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription); // Used also as UID.
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::DATE), seriesDateItem);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::TIME), seriesTimeItem);
 

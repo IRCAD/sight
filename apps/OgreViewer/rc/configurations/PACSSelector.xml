@@ -428,7 +428,7 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500" />
         </service>
 
-        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" >
+        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />

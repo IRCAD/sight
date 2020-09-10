@@ -47,6 +47,8 @@ static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG       = "progresse
 static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
 static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
 
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
@@ -63,6 +65,8 @@ SSeriesPuller::SSeriesPuller() noexcept
     m_sigProgressed      = this->newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
     m_sigProgressStarted = this->newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
     m_sigProgressStopped = this->newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
+
+    newSlot(s_REMOVE_SERIES_SLOT, &SSeriesPuller::removeSeries, this);
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +148,7 @@ void SSeriesPuller::pullSeries()
     // Set pulling boolean to true.
     bool success = true;
 
-    // Clear map of Dicom series being pulled
+    // Clear map of Dicom series being pulled.
     m_pullingDicomSeriesMap.clear();
 
     // Reset Counters
@@ -154,7 +158,7 @@ void SSeriesPuller::pullSeries()
     const auto selectedSeries = this->getLockedInput< const ::fwData::Vector >(s_SELECTED_INPUT);
     const auto localEnd       = m_localSeries.end();
 
-    // Find which selected series must be pulled
+    // Find which selected series must be pulled.
     DicomSeriesContainerType pullSeriesVector;
     DicomSeriesContainerType selectedSeriesVector;
     ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
@@ -355,6 +359,28 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 
 //------------------------------------------------------------------------------
 
+void SSeriesPuller::removeSeries( ::fwMedData::SeriesDB::ContainerType _removedSeries)
+{
+    // Find which series to delete
+    if(!m_localSeries.empty())
+    {
+        for(const auto series : _removedSeries)
+        {
+            const auto it = std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID());
+            if(it != m_localSeries.end())
+            {
+                m_localSeries.erase(it);
+
+                const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+                    ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+                infoNotif->asyncEmit("Local series deleted");
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUID, unsigned int _instanceNumber,
                                           const ::std::string& _filePath)
 {
@@ -374,6 +400,16 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
     ss << "Downloading file " << _instanceNumber << "/" << m_instanceCount;
     float percentage = static_cast<float>(_instanceNumber)/static_cast<float>(m_instanceCount);
     m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
