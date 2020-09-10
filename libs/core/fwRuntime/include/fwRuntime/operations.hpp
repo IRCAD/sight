@@ -321,7 +321,6 @@ FWRUNTIME_API std::shared_ptr<Module> loadModule( const std::string& identifier,
  * @brief   Load a library.
  *
  * @param   identifier  a string containing a module identifier
- * @param   version     a version (none by default)
  *
  * @return  success
  */

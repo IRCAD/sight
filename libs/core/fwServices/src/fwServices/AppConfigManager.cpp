@@ -303,7 +303,11 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
         if( std::regex_match(type.first, match, reg ) && match.size() == 2)
         {
             const std::string libName = match[1].str();
-            ::fwRuntime::loadLibrary(libName);
+            const bool loaded         = ::fwRuntime::loadLibrary(libName);
+            if(!loaded)
+            {
+                return nullptr;
+            }
         }
         else
         {

@@ -339,16 +339,17 @@ bool loadLibrary(const std::string& identifier)
         return true;
     }
 
-    auto library = std::make_shared<detail::dl::Library>(identifier);
-    ::fwRuntime::Runtime& rntm = ::fwRuntime::Runtime::get();
+    auto library                     = std::make_shared<detail::dl::Library>(identifier);
+    const ::fwRuntime::Runtime& rntm = ::fwRuntime::Runtime::get();
     library->setSearchPath(rntm.getWorkingPath() / MODULE_LIB_PREFIX);
 
     try
     {
         library->load();
     }
-    catch (const RuntimeException& )
+    catch (const RuntimeException& e)
     {
+        SLM_ERROR("Could not load library '" + identifier + "': " + e.what() )
         return false;
     }
 
