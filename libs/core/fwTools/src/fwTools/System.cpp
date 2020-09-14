@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -325,6 +325,40 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
         }
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+void System::robustRename(const std::filesystem::path& _p1, const std::filesystem::path& _p2)
+{
+    std::error_code renameError;
+    // First try a basic rename.
+    std::filesystem::rename(_p1, _p2, renameError);
+    if(renameError) // Error
+    {
+        // Handle the Invalid cross-device link case: _p1 & _p2 are not on the same disk/volume.
+        if(renameError == std::make_error_code(std::errc::cross_device_link))
+        {
+            // Use a copy-remove scenario instead of the rename.
+            std::error_code copyError;
+            std::filesystem::copy(_p1, _p2, copyError);
+            if(!copyError) // Success
+            {
+                //Remove old file.
+                std::filesystem::remove(_p1); // throw an exception if it fails.
+            }
+            else // Error
+            {
+                throw std::filesystem::filesystem_error(copyError.message(), copyError);
+            }
+
+            // Early return, copy-remove is done.
+            return;
+        }
+
+        // Throw all others errors.
+        throw std::filesystem::filesystem_error(renameError.message(), renameError);
+    }
 }
 
 //------------------------------------------------------------------------------

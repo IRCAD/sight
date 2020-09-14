@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,7 @@ class SystemTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( SystemTest );
 CPPUNIT_TEST( genTempFilenameTest );
+CPPUNIT_TEST( robustRenameTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,6 +42,7 @@ public:
     void tearDown();
 
     void genTempFilenameTest();
+    void robustRenameTest();
 };
 
 } // namespace ut

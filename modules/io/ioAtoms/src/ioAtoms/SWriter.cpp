@@ -490,10 +490,12 @@ void SWriter::updating()
             }
 
             // Rename the temporary file with the real name and move it to the right folder.
-            std::filesystem::rename(tmpFilePath, filePath);
+
+            ::fwTools::System::robustRename(tmpFilePath, filePath);
+
             if(std::filesystem::exists(tmpFolderPath/folderDirName))
             {
-                std::filesystem::rename(tmpFolderPath/folderDirName, folderPath/folderDirName);
+                ::fwTools::System::robustRename(tmpFolderPath/folderDirName, folderPath/folderDirName);
             }
 
             runningJob.done();
