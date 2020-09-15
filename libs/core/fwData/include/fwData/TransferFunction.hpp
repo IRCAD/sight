@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API)
+fwCampAutoDeclareDataMacro((fwData)(TransferFunction))
 
 namespace fwData
 {

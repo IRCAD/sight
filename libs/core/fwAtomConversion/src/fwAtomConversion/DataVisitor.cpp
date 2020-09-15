@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,11 +35,11 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
-#include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwCamp/factory/new.hpp>
+#include <fwCamp/Mapper/ValueMapper.hpp>
 
 #include <fwData/Array.hpp>
-#include <fwData/camp/mapper.hpp>
+#include <fwData/reflection/mapper.hpp>
 
 #include <fwDataCamp/Version.hpp>
 
@@ -54,7 +54,6 @@
 #include <camp/class.hpp>
 
 #include <string>
-
 
 namespace fwAtomConversion
 {
@@ -71,9 +70,12 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 {
     DataVisitor::AtomCacheType& m_cache;
 
-    DataConversionValueVisitor( DataVisitor::AtomCacheType& cache ) : m_cache(cache)
+    DataConversionValueVisitor( DataVisitor::AtomCacheType& cache ) :
+        m_cache(cache)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwAtoms::Base::sptr operator()(camp::NoType value)
     {
@@ -83,30 +85,42 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
         return val;
     }
 
+    //------------------------------------------------------------------------------
+
     ::fwAtoms::Base::sptr operator()(bool value)
     {
         return ::fwAtoms::Boolean::New( value );
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwAtoms::Base::sptr operator()(long value)
     {
         return ::fwAtoms::Numeric::New( value );
     }
 
+    //------------------------------------------------------------------------------
+
     ::fwAtoms::Base::sptr operator()(double value)
     {
         return ::fwAtoms::Numeric::New( value );
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwAtoms::Base::sptr operator()(std::string value)
     {
         return ::fwAtoms::String::New( value );
     }
 
+    //------------------------------------------------------------------------------
+
     ::fwAtoms::Base::sptr operator()(const camp::EnumObject& value)
     {
         return ::fwAtoms::String::New( value.name() );
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwAtoms::Base::sptr operator()(const camp::UserObject& value)
     {
@@ -137,8 +151,9 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
 //-----------------------------------------------------------------------------
 
-DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType& cache )
-    : m_campDataObj( dataObj.get() ), m_cache( cache )
+DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType& cache ) :
+    m_campDataObj( dataObj.get() ),
+    m_cache( cache )
 {
 
     // Create atom object
@@ -171,8 +186,8 @@ DataVisitor::~DataVisitor()
 
 void DataVisitor::visit(const camp::SimpleProperty& property)
 {
-    const std::string& name ( property.name() );
-    const ::camp::Value& val ( property.get( m_campDataObj ) );
+    const std::string& name( property.name() );
+    const ::camp::Value& val( property.get( m_campDataObj ) );
 
     /// ACH Hack !
     if( val.type() != camp::intType )
@@ -192,8 +207,8 @@ void DataVisitor::visit(const camp::SimpleProperty& property)
 
 void DataVisitor::visit(const camp::EnumProperty& property)
 {
-    const std::string& name ( property.name() );
-    const ::camp::Value& val ( property.get( m_campDataObj ) );
+    const std::string& name( property.name() );
+    const ::camp::Value& val( property.get( m_campDataObj ) );
 
     DataConversionValueVisitor visitor(m_cache);
     ::fwAtoms::Base::sptr atom = val.visit( visitor );
@@ -204,7 +219,7 @@ void DataVisitor::visit(const camp::EnumProperty& property)
 
 void DataVisitor::visit(const camp::MapProperty& property)
 {
-    const std::string name ( property.name() );
+    const std::string name( property.name() );
     ::fwAtoms::Map::sptr atom = ::fwAtoms::Map::New();
 
     std::pair< ::camp::Value, ::camp::Value > value;
@@ -238,7 +253,7 @@ void DataVisitor::visit(const camp::MapProperty& property)
 
 void DataVisitor::visit(const camp::ArrayProperty& property)
 {
-    const std::string name ( property.name() );
+    const std::string name( property.name() );
     ::fwAtoms::Sequence::sptr atom = ::fwAtoms::Sequence::New();
 
     ::camp::Value val;
@@ -260,8 +275,8 @@ void DataVisitor::visit(const camp::ArrayProperty& property)
 
 void DataVisitor::visit(const camp::UserProperty& property)
 {
-    const std::string& name ( property.name() );
-    const ::camp::Value& val ( property.get( m_campDataObj ) );
+    const std::string& name( property.name() );
+    const ::camp::Value& val( property.get( m_campDataObj ) );
 
     DataConversionValueVisitor visitor(m_cache);
     ::fwAtoms::Base::sptr atom = val.visit( visitor );

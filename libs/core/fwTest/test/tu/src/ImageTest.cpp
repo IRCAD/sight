@@ -40,10 +40,10 @@ namespace ut
 
 void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 {
-    ::fwDataCamp::visitor::CompareObjects visitor;
+    ::fwData::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
