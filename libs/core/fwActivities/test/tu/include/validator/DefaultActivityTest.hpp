@@ -24,11 +24,11 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <fwCore/macros.hpp>
 
 #include <fwRuntime/Module.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwActivities
 {
@@ -61,7 +61,7 @@ public:
 
 private:
 
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp modules
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp modules
     /// Recent GCC versions (>= 5.4) strip local variables with -O2
     int m_fwDataCampVersion;
     int m_fwMedDataCampVersion;

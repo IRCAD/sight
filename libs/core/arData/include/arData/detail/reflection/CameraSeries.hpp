@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATACAMP_AUTOLOAD_HPP__
-#define __ARDATACAMP_AUTOLOAD_HPP__
+#pragma once
 
-#include "arDataCamp/Camera.hpp"
-#include "arDataCamp/CameraSeries.hpp"
-#include "arDataCamp/config.hpp"
-
-#include <fwCamp/macros.hpp>
+#include "config.hpp"
 
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
-#include <arData/CalibrationInfo.hpp>
 
-namespace arDataCamp
-{
+#include <fwCamp/macros.hpp>
 
-struct runner
-{
-    runner()
-    {
-        localDeclarearDataCameraSourceType();
-        localDeclarearDataCameraPixelFormat();
-        localDeclarearDataCamera();
-        localDeclarearDataCameraSeries();
-        localDeclarearDataCalibrationInfo();
-    }
+#include <fwData/TransformationMatrix3D.hpp>
 
-    static runner r;
-};
-
-} //end namespace arDataCamp
-
-#endif //__ARDATACAMP_AUTOLOAD_HPP__
+fwCampDeclareAccessor((arData)(CameraSeries), (arData)(Camera));
+fwCampDeclareAccessor((arData)(CameraSeries), (fwData)(TransformationMatrix3D));

@@ -24,12 +24,6 @@
 
 #include <arData/Camera.hpp>
 
-#include <arDataCamp/Version.hpp>
-
-#include <fwDataCamp/Version.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace arDataReg

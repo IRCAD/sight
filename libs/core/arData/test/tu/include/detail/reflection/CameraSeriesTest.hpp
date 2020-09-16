@@ -20,21 +20,34 @@
  *
  ***********************************************************************/
 
-#include "arDataCamp/CameraSeries.hpp"
+#pragma once
 
-#include <arData/CameraSeries.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <fwCamp/UserObject.hpp>
-
-//------------------------------------------------------------------------------
-
-fwCampImplementDataMacro((arData)(CameraSeries))
+namespace arData
 {
-    builder
-    .tag("object_version", "3")
-    .tag("lib_name", "arData")
-    .base< ::fwMedData::Series>()
-    .property("cameras", &::arData::CameraSeries::m_cameras)
-    .property("extrinsic_matrices", &::arData::CameraSeries::m_extrinsicMatrices)
-    ;
-}
+namespace detail
+{
+namespace reflection
+{
+namespace ut
+{
+
+class CameraSeriesTest : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( CameraSeriesTest );
+CPPUNIT_TEST( propertiesTest );
+CPPUNIT_TEST_SUITE_END();
+
+public:
+    // interface
+    void setUp();
+    void tearDown();
+
+    void propertiesTest();
+
+};
+} // namespace reflection
+} // namespace detail
+} // namespace ut
+} // namespace ardata

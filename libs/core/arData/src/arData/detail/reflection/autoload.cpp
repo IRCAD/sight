@@ -20,35 +20,17 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "arData/detail/reflection/autoload.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
-
-namespace arDataCamp
+namespace ardata
 {
-namespace ut
+namespace detail
+{
+namespace reflection
 {
 
-class CalibrationInfoTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE( CalibrationInfoTest );
-CPPUNIT_TEST( propertiesTest );
-CPPUNIT_TEST_SUITE_END();
+runner runner::r;
 
-public:
-    // interface
-    void setUp();
-    void tearDown();
-
-    void propertiesTest();
-
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp modules
-    /// Recent GCC versions (>= 5.4) strip local variables with -O2
-    int m_fwDataVersion;
-    int m_fwMedDataVersion;
-    int m_arDataVersion;
-
-};
-
-} //namespace ut
-} //namespace arDataCamp
+} // namespace reflection
+} // namespace detail
+}

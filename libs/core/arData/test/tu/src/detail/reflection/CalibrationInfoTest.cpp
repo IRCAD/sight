@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,27 +20,25 @@
  *
  ***********************************************************************/
 
-#include "CalibrationInfoTest.hpp"
+#include "detail/reflection/CalibrationInfoTest.hpp"
 
-#include "DataCampHelper.hpp"
-
-#include <arDataCamp/Version.hpp>
+#include "detail/reflection/DataCampHelper.hpp"
 
 #include <arData/CalibrationInfo.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwDataCamp/Version.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
-
 #include <fwTest/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::arDataCamp::ut::CalibrationInfoTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::detail::reflection::ut::CalibrationInfoTest );
 
-namespace arDataCamp
+namespace arData
+{
+namespace detail
+{
+namespace reflection
 {
 namespace ut
 {
@@ -59,16 +57,6 @@ void CalibrationInfoTest::tearDown()
     //Hack: force link with arData
     ::arData::CalibrationInfo::sptr obj = ::arData::CalibrationInfo::New();
     obj->getClassname();
-
-    //Force link with fwDataCamp
-    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwDataVersion);
-    //Force link with fwMedDataCamp
-    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwMedDataVersion);
-    //Force link with arDataCamp
-    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_arDataVersion);
 }
 
 //------------------------------------------------------------------------------
@@ -92,20 +80,21 @@ void CalibrationInfoTest::propertiesTest()
 
     calInfo->addRecord(img, pl);
 
-    const DataCampHelper::PropertiesNameType dataProperties = { "fields",
-                                                                "image_container",
-                                                                "pointlist_container"};
+    const ::arData::ut::DataCampHelper::PropertiesNameType dataProperties = { "fields",
+                                                                              "image_container",
+                                                                              "pointlist_container"};
 
-    DataCampHelper::visitProperties(calInfo->getClassname(), dataProperties);
-    DataCampHelper::compareObjectPropertyValue(calInfo, "@image_container.0", img);
-    DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0", pl);
-    DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.0", pt1);
-    DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.1", pt2);
-    DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.2", pt3);
+    ::arData::ut::DataCampHelper::visitProperties(calInfo->getClassname(), dataProperties);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(calInfo, "@image_container.0", img);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0", pl);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.0", pt1);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.1", pt2);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(calInfo, "@pointlist_container.0.points.2", pt3);
 
 }
 
 //------------------------------------------------------------------------------
-
-} //namespace ut
-} //namespace arDataCamp
+} // namespace reflection
+} // namespace detail
+} // namespace ut
+} // namespace ardata

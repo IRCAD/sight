@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "arDataCamp/Camera.hpp"
+#include "arData/detail/reflection/Camera.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

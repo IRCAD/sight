@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,34 @@
  *
  ***********************************************************************/
 
+#pragma once
 
-#ifndef __ARDATACAMP_CAMERASERIES_HPP__
-#define __ARDATACAMP_CAMERASERIES_HPP__
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "arDataCamp/config.hpp"
+namespace arData
+{
+namespace detail
+{
+namespace reflection
+{
+namespace ut
+{
 
-#include <fwCamp/macros.hpp>
+class CalibrationInfoTest : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( CalibrationInfoTest );
+CPPUNIT_TEST( propertiesTest );
+CPPUNIT_TEST_SUITE_END();
 
-#include <fwData/TransformationMatrix3D.hpp>
+public:
+    // interface
+    void setUp();
+    void tearDown();
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
+    void propertiesTest();
+};
 
-fwCampDeclareAccessor((arData)(CameraSeries), (arData)(Camera));
-fwCampDeclareAccessor((arData)(CameraSeries), (fwData)(TransformationMatrix3D));
-
-#endif /* __ARDATACAMP_CAMERASERIES_HPP__ */
+} // namespace reflection
+} // namespace detail
+} // namespace ut
+} // namespace ardata

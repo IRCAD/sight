@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,6 @@
  *
  ***********************************************************************/
 
-
-#ifndef __ARDATACAMP_CAMERA_HPP__
-#define __ARDATACAMP_CAMERA_HPP__
-
-#include "arDataCamp/config.hpp"
-
-#include <arData/Camera.hpp>
-
-#include <fwCamp/macros.hpp>
-
-
-fwCampAutoDeclareEnumMacro((arData)(Camera)(SourceType));
-fwCampAutoDeclareEnumMacro((arData)(Camera)(PixelFormat));
-
-#endif /* __ARDATACAMP_CAMERA_HPP__ */
+void empty()
+{
+}

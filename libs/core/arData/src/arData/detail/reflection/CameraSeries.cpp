@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,32 +20,21 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATACAMP_UT_CAMERATEST_HPP__
-#define __ARDATACAMP_UT_CAMERATEST_HPP__
+#include "arData/detail/reflection/CameraSeries.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <arData/CameraSeries.hpp>
 
-namespace arDataCamp
+#include <fwCamp/UserObject.hpp>
+
+//------------------------------------------------------------------------------
+
+fwCampImplementDataMacro((arData)(CameraSeries))
 {
-namespace ut
-{
-
-class CameraTest : public CPPUNIT_NS::TestFixture
-{
-    CPPUNIT_TEST_SUITE( CameraTest );
-    CPPUNIT_TEST( propertiesTest );
-    CPPUNIT_TEST_SUITE_END();
-
-public:
-    // interface
-    void setUp();
-    void tearDown();
-
-    void propertiesTest();
-
-};
-
-} //namespace ut
-} //namespace arDataCamp
-
-#endif // __ARDATACAMP_UT_CAMERATEST_HPP__
+    builder
+    .tag("object_version", "3")
+    .tag("lib_name", "arData")
+    .base< ::fwMedData::Series>()
+    .property("cameras", &::arData::CameraSeries::m_cameras)
+    .property("extrinsic_matrices", &::arData::CameraSeries::m_extrinsicMatrices)
+    ;
+}

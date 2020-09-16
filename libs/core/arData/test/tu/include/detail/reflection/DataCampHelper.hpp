@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,31 +20,28 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATACAMP_UT_DATACAMPHELPER_HPP__
-#define __ARDATACAMP_UT_DATACAMPHELPER_HPP__
+#pragma once
 
 #include <fwData/Object.hpp>
 
-namespace arDataCamp
+namespace arData
 {
 namespace ut
 {
 
 namespace DataCampHelper
 {
-    typedef std::vector<std::string> PropertiesNameType;
+typedef std::vector<std::string> PropertiesNameType;
 
-    void visitProperties(const std::string& className, const PropertiesNameType& vecProp);
+void visitProperties(const std::string& className, const PropertiesNameType& vecProp);
 
-    void compareSimplePropertyValue(::fwData::Object::sptr obj,
-                                           const std::string& propertyPath,
-                                           const std::string& value);
+void compareSimplePropertyValue(::fwData::Object::sptr obj,
+                                const std::string& propertyPath,
+                                const std::string& value);
 
-    void compareObjectPropertyValue(::fwData::Object::sptr obj,
-                                           const std::string& propertyPath,
-                                           ::fwData::Object::sptr value);
+void compareObjectPropertyValue(::fwData::Object::sptr obj,
+                                const std::string& propertyPath,
+                                ::fwData::Object::sptr value);
 } // namespace DataCampHelper
 } // namespace ut
-} // namespace arDataCamp
-
-#endif // __ARDATACAMP_UT_DATACAMPHELPER_HPP__
+} // namespace ardata

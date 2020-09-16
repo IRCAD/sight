@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,38 @@
  *
  ***********************************************************************/
 
-#include "arDataCamp/autoload.hpp"
+#pragma once
 
-#include <fwDataCamp/Version.hpp>
+#include "arData/detail/reflection/Camera.hpp"
+#include "arData/detail/reflection/CameraSeries.hpp"
 
-#include <fwMedDataCamp/Version.hpp>
+#include "config.hpp"
 
+#include <arData/CalibrationInfo.hpp>
+#include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
 
-namespace arDataCamp
+#include <fwCamp/macros.hpp>
+
+namespace ardata
 {
+namespace detail
+{
+namespace reflection
+{
+struct runner
+{
+    runner()
+    {
+        localDeclarearDataCameraSourceType();
+        localDeclarearDataCameraPixelFormat();
+        localDeclarearDataCamera();
+        localDeclarearDataCameraSeries();
+        localDeclarearDataCalibrationInfo();
+    }
 
-//Force link with fwDataCamp
-static const int fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-
-//Force link with fwMedDataCamp
-static const int fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-
-runner runner::r;
-
-}
+    static runner r;
+};
+} // namespace reflection
+} // namespace detail
+} //end namespace ardata

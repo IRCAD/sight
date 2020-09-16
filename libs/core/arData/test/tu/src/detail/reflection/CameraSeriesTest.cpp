@@ -20,17 +20,21 @@
  *
  ***********************************************************************/
 
-#include "CameraSeriesTest.hpp"
+#include "detail/reflection/CameraSeriesTest.hpp"
 
-#include "DataCampHelper.hpp"
+#include "detail/reflection/DataCampHelper.hpp"
 
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::arDataCamp::ut::CameraSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::detail::reflection::ut::CameraSeriesTest );
 
-namespace arDataCamp
+namespace arData
+{
+namespace detail
+{
+namespace reflection
 {
 namespace ut
 {
@@ -86,7 +90,7 @@ void CameraSeriesTest::propertiesTest()
     series->addCamera(camera2);
     series->setExtrinsicMatrix(1, mat);
 
-    const DataCampHelper::PropertiesNameType dataProperties = {
+    const ::arData::ut::DataCampHelper::PropertiesNameType dataProperties = {
         { "fields" },
         { "patient" },
         { "study" },
@@ -114,13 +118,14 @@ void CameraSeriesTest::propertiesTest()
         { "extrinsic_matrices"}
     };
 
-    DataCampHelper::visitProperties(series->getClassname(), dataProperties);
-    DataCampHelper::compareObjectPropertyValue(series, "@cameras.0", camera1);
-    DataCampHelper::compareObjectPropertyValue(series, "@cameras.1", camera2);
-    DataCampHelper::compareObjectPropertyValue(series, "@extrinsic_matrices.1", mat);
+    ::arData::ut::DataCampHelper::visitProperties(series->getClassname(), dataProperties);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(series, "@cameras.0", camera1);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(series, "@cameras.1", camera2);
+    ::arData::ut::DataCampHelper::compareObjectPropertyValue(series, "@extrinsic_matrices.1", mat);
 }
 
 //------------------------------------------------------------------------------
-
-} //namespace ut
-} //namespace arDataCamp
+} // namespace reflection
+} // namespace detail
+} // namespace ut
+} // namespace ardata

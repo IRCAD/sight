@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,32 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATACAMP_UT_CAMERASERIESTEST_HPP__
-#define __ARDATACAMP_UT_CAMERASERIESTEST_HPP__
+#include <arData/CalibrationInfo.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <fwCamp/UserObject.hpp>
 
-namespace arDataCamp
+//------------------------------------------------------------------------------
+
+fwCampImplementDataMacro((arData)(CalibrationInfo))
 {
-namespace ut
-{
-
-class CameraSeriesTest : public CPPUNIT_NS::TestFixture
-{
-    CPPUNIT_TEST_SUITE( CameraSeriesTest );
-    CPPUNIT_TEST( propertiesTest );
-    CPPUNIT_TEST_SUITE_END();
-
-public:
-    // interface
-    void setUp();
-    void tearDown();
-
-    void propertiesTest();
-
-};
-
-} //namespace ut
-} //namespace arDataCamp
-
-#endif // __ARDATACAMP_UT_CAMERASERIESTEST_HPP__
+    builder
+    .tag("object_version", "1")
+    .tag("lib_name", "arData")
+    .base< ::fwData::Object >()
+    .property("pointlist_container", &::arData::CalibrationInfo::m_pointListContainer)
+    .property("image_container", &::arData::CalibrationInfo::m_imageContainer)
+    ;
+}

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,13 +25,7 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <arDataCamp/Version.hpp>
-
 #include <fwCore/spyLog.hpp>
-
-#include <fwDataCamp/Version.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/helper/compare.hpp>
 
@@ -57,16 +51,6 @@ void CameraSeriesTest::tearDown()
     //Hack: force link with arData
     ::arData::Camera::sptr obj = ::arData::Camera::New();
     obj->getClassname();
-
-    //Force link with fwDataCamp
-    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwDataVersion);
-    //Force link with fwMedDataCamp
-    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwMedDataVersion);
-    //Force link with arDataCamp
-    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_arDataVersion);
 }
 
 //------------------------------------------------------------------------------

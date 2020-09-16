@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,19 @@
  *
  ***********************************************************************/
 
-#include "DataCampHelper.hpp"
+#include "detail/reflection/DataCampHelper.hpp"
 
 #include <fwData/GenericFieldBase.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
+#include <camp/class.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <vector>
 
-namespace arDataCamp
+namespace arData
 {
 namespace ut
 {
@@ -78,4 +80,4 @@ void compareObjectPropertyValue(::fwData::Object::sptr obj,
 
 } // namespace DataCampHelper
 } // namespace ut
-} // namespace arDataCamp
+} // namespace ardata

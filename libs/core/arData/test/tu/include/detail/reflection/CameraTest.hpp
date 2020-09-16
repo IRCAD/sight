@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,34 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATACAMP_NAMESPACE_HPP__
-#define __ARDATACAMP_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @brief       The namespace arDataCamp contains arData object descriptions used for introspection.
- * @namespace   arDataCamp
- */
-namespace arDataCamp
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace arData
 {
-} // namespace arDataCamp
+namespace detail
+{
+namespace reflection
+{
+namespace ut
+{
 
+class CameraTest : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( CameraTest );
+CPPUNIT_TEST( propertiesTest );
+CPPUNIT_TEST_SUITE_END();
 
-#endif /* __ARDATACAMP_NAMESPACE_HPP__ */
+public:
+    // interface
+    void setUp();
+    void tearDown();
+
+    void propertiesTest();
+
+};
+} // namespace reflection
+} // namespace detail
+} // namespace ut
+} // namespace arData
