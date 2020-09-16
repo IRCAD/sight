@@ -19,6 +19,7 @@ set( REQUIREMENTS
     uiPreferences
     uiTools
     maths
+    material
     media
     preferences
     servicesReg
