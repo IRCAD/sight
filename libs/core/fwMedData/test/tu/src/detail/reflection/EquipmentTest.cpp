@@ -20,56 +20,55 @@
  *
  ***********************************************************************/
 
-#include "ActivitySeriesTest.hpp"
+#include "detail/reflection/EquipmentTest.hpp"
 
-#include <fwData/Composite.hpp>
+#include "detail/reflection/DataCampHelper.hpp"
+
+#include <fwMedData/Equipment.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::EquipmentTest );
 
 namespace fwMedData
+{
+namespace detail
+{
+namespace reflection
 {
 namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::setUp()
+void EquipmentTest::setUp()
 {
-    // Set up context before running a test.
-    m_series = ::fwMedData::ActivitySeries::New();
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::tearDown()
+void EquipmentTest::tearDown()
 {
     // Clean up after the test run.
-    m_series.reset();
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::activityConfigIdTest()
+void EquipmentTest::propertiesTest()
 {
-    const ::fwMedData::ActivitySeries::ConfigIdType activityConfigId = "Visu2D";
-    CPPUNIT_ASSERT(m_series);
-    m_series->setActivityConfigId(activityConfigId);
-    CPPUNIT_ASSERT_EQUAL(activityConfigId, m_series->getActivityConfigId());
-}
+    const std::string institution_name                        = "IHU Strasbourg / IRCAD";
+    const ::DataCampHelper::PropertiesNameType dataProperties = {"fields", "institution_name"};
 
-//------------------------------------------------------------------------------
+    ::fwMedData::Equipment::sptr obj = ::fwMedData::Equipment::New();
+    obj->setInstitutionName(institution_name);
 
-void ActivitySeriesTest::dataTest()
-{
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
-    CPPUNIT_ASSERT(m_series);
-    CPPUNIT_ASSERT(data);
-    m_series->setData(data);
-    CPPUNIT_ASSERT_EQUAL(data, m_series->getData());
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@institution_name", institution_name);
+
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+} //namespace reflection
+} //namespace detail
 } //namespace fwMedData

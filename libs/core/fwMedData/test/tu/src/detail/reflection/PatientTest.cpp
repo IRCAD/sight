@@ -20,56 +20,63 @@
  *
  ***********************************************************************/
 
-#include "ActivitySeriesTest.hpp"
+#include "detail/reflection/PatientTest.hpp"
 
-#include <fwData/Composite.hpp>
+#include "detail/reflection/DataCampHelper.hpp"
+
+#include <fwMedData/Patient.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::PatientTest );
 
 namespace fwMedData
+{
+namespace detail
+{
+namespace reflection
 {
 namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::setUp()
+void PatientTest::setUp()
 {
-    // Set up context before running a test.
-    m_series = ::fwMedData::ActivitySeries::New();
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::tearDown()
+void PatientTest::tearDown()
 {
     // Clean up after the test run.
-    m_series.reset();
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySeriesTest::activityConfigIdTest()
+void PatientTest::propertiesTest()
 {
-    const ::fwMedData::ActivitySeries::ConfigIdType activityConfigId = "Visu2D";
-    CPPUNIT_ASSERT(m_series);
-    m_series->setActivityConfigId(activityConfigId);
-    CPPUNIT_ASSERT_EQUAL(activityConfigId, m_series->getActivityConfigId());
-}
+    const std::string name                                    = "Patient Name";
+    const std::string patient_id                              = "42";
+    const std::string birth_date                              = "19830214";
+    const std::string sex                                     = "M";
+    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields", "name", "patient_id", "birth_date", "sex" };
 
-//------------------------------------------------------------------------------
+    ::fwMedData::Patient::sptr obj = ::fwMedData::Patient::New();
+    obj->setName(name);
+    obj->setPatientId(patient_id);
+    obj->setBirthdate(birth_date);
+    obj->setSex(sex);
 
-void ActivitySeriesTest::dataTest()
-{
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
-    CPPUNIT_ASSERT(m_series);
-    CPPUNIT_ASSERT(data);
-    m_series->setData(data);
-    CPPUNIT_ASSERT_EQUAL(data, m_series->getData());
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@name", name);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_id", patient_id);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@birth_date", birth_date);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sex", sex);
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+} //namespace reflection
+} //namespace detail
 } //namespace fwMedData

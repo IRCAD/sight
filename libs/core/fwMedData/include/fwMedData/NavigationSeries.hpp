@@ -30,7 +30,7 @@
 #include <array>
 #include <map>
 
-fwCampAutoDeclareDataMacro((fwMedData)(NavigationSeries), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(NavigationSeries))
 
 namespace fwMedData
 {
