@@ -45,13 +45,6 @@ public:
     void tearDown();
 
     void propertiesTest();
-
-private:
-
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp modules
-    /// Recent GCC versions (>= 5.4) strip local variables with -O2
-    int m_fwDataVersion;
-    int m_fwMedDataVersion;
 };
 
 } //namespace ut

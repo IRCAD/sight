@@ -60,11 +60,11 @@ void CameraSeriesTest::propertiesTest()
     ::arData::CameraSeries::sptr series = ::arData::CameraSeries::New();
 
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        for (size_t j = 0; j < 4; ++j)
         {
-            mat->setCoefficient(i, j, 2*i+j);
+            mat->setCoefficient(i, j, static_cast<double>(2*i+j));
         }
     }
 

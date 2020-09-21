@@ -52,7 +52,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 
     //------------------------------------------------------------------------------
 
-    ::fwData::Object::sptr operator()(camp::NoType value)
+    ::fwData::Object::sptr operator()(camp::NoType )
     {
         SLM_FATAL("Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed");
         ::fwData::Object::sptr val;
@@ -89,7 +89,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 
     //------------------------------------------------------------------------------
 
-    ::fwData::Object::sptr operator()(const camp::EnumObject& value)
+    ::fwData::Object::sptr operator()(const camp::EnumObject& )
     {
         SLM_FATAL("Enter in void GetCampValueVisitor()(camp::EnumObject value) : case not managed");
         ::fwData::Object::sptr val;
@@ -228,7 +228,7 @@ void GetObject::visit(const camp::ArrayProperty& property)
         {
             elemValue = property.get( m_campObj, index );
         }
-        catch(const ::camp::OutOfRange& e)
+        catch(const ::camp::OutOfRange& )
         {
             FW_RAISE_EXCEPTION_MSG( ::fwData::reflection::exception::NullPointer,
                                     "Index '" << index << "' not found in array property '" << name << "'.");
@@ -258,9 +258,8 @@ void GetObject::visit(const camp::UserProperty& property)
 
 //-----------------------------------------------------------------------------
 
-void GetObject::visit(const camp::Function& function)
+void GetObject::visit(const camp::Function& )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwMedData/NavigationSeries.hpp>
+#include "fwMedData/NavigationSeries.hpp"
 
 #include <fwCamp/Mapper/ValueMapper.hpp>
 
@@ -59,40 +59,45 @@ struct ValueMapper< ::fwMedData::NavigationSeries::CoordinateType >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool source)
+    static ReturnType from(bool )
     {
-        CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
+        OSLM_ERROR("Conversion not handled");
+        return ReturnType();
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long source)
+    static ReturnType from(long )
     {
-        CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
+        OSLM_ERROR("Conversion not handled");
+        return ReturnType();
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double source)
+    static ReturnType from(double )
     {
-        CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
+        OSLM_ERROR("Conversion not handled");
+        return ReturnType();
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& source)
+    static ReturnType from(const camp::EnumObject& )
     {
-        CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
+        OSLM_ERROR("Conversion not handled");
+        return ReturnType();
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::UserObject& source)
+    static ReturnType from(const camp::UserObject& )
     {
-        CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
+        OSLM_ERROR("Conversion not handled");
+        return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
     {
         std::vector< std::string> result;
-        ReturnType coord;
+        ReturnType coord {0., 0., 0.};
         ::boost::split(result, source, ::boost::is_any_of(";"));
 
         if(result.size() >= 3)

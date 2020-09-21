@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "config.hpp"
-
+#include "arData/config.hpp"
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 

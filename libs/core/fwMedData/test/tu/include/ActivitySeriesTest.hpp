@@ -49,16 +49,9 @@ public:
     void activityConfigIdTest();
     void dataTest();
 
-protected:
-
-    SPTR(::fwMedData::ActivitySeries) m_series;
-
 private:
 
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp modules
-    /// Recent GCC versions (>= 5.4) strip local variables with -O2
-    int m_fwDataVersion;
-    int m_fwMedDataVersion;
+    SPTR(::fwMedData::ActivitySeries) m_series;
 
 };
 

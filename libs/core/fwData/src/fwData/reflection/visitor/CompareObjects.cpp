@@ -61,7 +61,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
 
     //------------------------------------------------------------------------------
 
-    PropType operator()(camp::NoType value)
+    PropType operator()(camp::NoType )
     {
         return std::make_pair("", "");
     }
@@ -273,9 +273,8 @@ void CompareObjects::visit(const camp::UserProperty& property)
 
 //-----------------------------------------------------------------------------
 
-void CompareObjects::visit(const camp::Function& function)
+void CompareObjects::visit(const camp::Function& )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

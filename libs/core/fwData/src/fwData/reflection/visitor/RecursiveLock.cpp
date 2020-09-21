@@ -49,37 +49,37 @@ struct LockVisitor : public camp::ValueVisitor< void >
 
     //------------------------------------------------------------------------------
 
-    void operator()(camp::NoType value)
+    void operator()(camp::NoType )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(bool value)
+    void operator()(bool )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(long value)
+    void operator()(long )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(double value)
+    void operator()(double )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(const std::string& value)
+    void operator()(const std::string& )
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void operator()(const camp::EnumObject& value)
+    void operator()(const camp::EnumObject& )
     {
     }
 
@@ -133,13 +133,13 @@ RecursiveLock::~RecursiveLock()
 
 //-----------------------------------------------------------------------------
 
-void RecursiveLock::visit(const camp::SimpleProperty& property)
+void RecursiveLock::visit(const camp::SimpleProperty& )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void RecursiveLock::visit(const camp::EnumProperty& property)
+void RecursiveLock::visit(const camp::EnumProperty& )
 {
 }
 
@@ -209,7 +209,7 @@ void RecursiveLock::visit(const camp::UserProperty& property)
 
 //-----------------------------------------------------------------------------
 
-void RecursiveLock::visit(const camp::Function& function)
+void RecursiveLock::visit(const camp::Function& )
 {
 }
 
