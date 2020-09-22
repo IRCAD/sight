@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "arData/detail/reflection/Camera.hpp"
 
 #include <fwCamp/UserObject.hpp>

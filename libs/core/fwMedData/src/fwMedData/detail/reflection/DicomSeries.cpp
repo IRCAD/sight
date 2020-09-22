@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/detail/reflection/DicomSeries.hpp"
 #include "fwMedData/DicomSeries.hpp"
 

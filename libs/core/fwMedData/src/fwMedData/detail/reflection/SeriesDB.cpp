@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/SeriesDB.hpp"
 
 #include "fwMedData/Series.hpp"

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "arData/CalibrationInfo.hpp"
 
 #include <fwCamp/UserObject.hpp>

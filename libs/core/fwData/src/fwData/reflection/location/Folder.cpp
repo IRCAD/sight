@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/location/Folder.hpp"
 
 #include "fwData/reflection/mapper.hpp"

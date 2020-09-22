@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/Landmarks.hpp"
 
 #include <fwCamp/UserObject.hpp>

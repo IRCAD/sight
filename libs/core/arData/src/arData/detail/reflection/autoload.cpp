@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "arData/detail/reflection/autoload.hpp"
 
 namespace ardata

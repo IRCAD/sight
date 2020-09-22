@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/detail/reflection/Material.hpp"
 
 #include <fwCamp/UserObject.hpp>

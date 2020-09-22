@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/Study.hpp"
 
 #include <fwCamp/UserObject.hpp>

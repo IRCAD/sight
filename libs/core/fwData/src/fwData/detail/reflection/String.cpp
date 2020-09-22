@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/String.hpp"
 
 #include <fwCamp/UserObject.hpp>

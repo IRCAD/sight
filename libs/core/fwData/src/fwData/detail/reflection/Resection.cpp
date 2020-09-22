@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/detail/reflection/Resection.hpp"
 
 #include <fwCamp/UserObject.hpp>

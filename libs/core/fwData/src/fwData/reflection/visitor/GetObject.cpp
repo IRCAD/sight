@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/reflection/visitor/GetObject.hpp"
 
 #include "fwData/Boolean.hpp"

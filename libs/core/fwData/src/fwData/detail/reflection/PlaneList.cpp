@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/PlaneList.hpp"
 
 #include <fwCamp/UserObject.hpp>

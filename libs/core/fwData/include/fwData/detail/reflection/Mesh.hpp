@@ -22,6 +22,8 @@
 
 #pragma once
 
+#define CAMP_COMPILATION
+
 #include "fwData/config.hpp"
 #include "fwData/Mesh.hpp"
 

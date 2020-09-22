@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/reflection/visitor/CompareObjects.hpp"
 
 #include "fwData/reflection/mapper.hpp"
@@ -110,7 +112,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
 
         if (value.pointer())
         {
-            std::string classname = value.call("classname").to<std::string>();
+            const std::string classname = value.call("classname").to<std::string>();
 
             if (metaclass.name() != classname)
             {

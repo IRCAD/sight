@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ActivitySeries.hpp"
+#define CAMP_COMPILATION
+
 #include "fwMedData/detail/reflection/ActivitySeries.hpp"
 
 #include <fwCamp/UserObject.hpp>

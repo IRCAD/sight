@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/PointList.hpp"
 
 #include <fwCamp/UserObject.hpp>

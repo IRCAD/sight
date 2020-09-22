@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/TransformationMatrix3D.hpp"
 
 #include <fwCamp/UserObject.hpp>

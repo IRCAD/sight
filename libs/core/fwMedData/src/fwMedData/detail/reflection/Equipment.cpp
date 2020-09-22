@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/Equipment.hpp"
 
 #include <fwCamp/UserObject.hpp>

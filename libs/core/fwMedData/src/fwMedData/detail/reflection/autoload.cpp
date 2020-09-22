@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/detail/reflection/autoload.hpp"
 
 namespace fwMedData

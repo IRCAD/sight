@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwMedData/NavigationSeries.hpp"
 
 #include "fwMedData/detail/reflection/mapper.hpp"

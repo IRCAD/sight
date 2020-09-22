@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/reflection/visitor/RecursiveLock.hpp"
 
 #include "fwData/Object.hpp"

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#define CAMP_COMPILATION
+
 #include "fwData/Graph.hpp"
 
 #include "fwData/reflection/mapper.hpp"
