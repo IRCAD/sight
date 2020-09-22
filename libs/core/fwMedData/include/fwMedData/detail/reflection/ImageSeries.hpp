@@ -23,8 +23,8 @@
 #pragma once
 
 #include "fwMedData/config.hpp"
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
+#include "fwMedData/DicomSeries.hpp"
+#include "fwMedData/ImageSeries.hpp"
 
 #include <fwCamp/macros.hpp>
 

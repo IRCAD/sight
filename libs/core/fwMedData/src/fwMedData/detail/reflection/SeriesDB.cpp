@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include "fwMedData/SeriesDB.hpp"
+
+#include "fwMedData/Series.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

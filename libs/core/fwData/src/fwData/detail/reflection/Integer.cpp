@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Integer.hpp>
+#include "fwData/Integer.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

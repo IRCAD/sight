@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Edge.hpp>
+#include "fwData/Edge.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

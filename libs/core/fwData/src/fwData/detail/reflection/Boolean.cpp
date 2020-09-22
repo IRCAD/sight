@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Boolean.hpp>
+#include "fwData/Boolean.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

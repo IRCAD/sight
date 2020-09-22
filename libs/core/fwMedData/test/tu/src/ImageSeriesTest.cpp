@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,11 @@
  *
  ***********************************************************************/
 
-
-#include "fwMedData/ImageSeries.hpp"
-
 #include "ImageSeriesTest.hpp"
 
 #include <fwTest/generator/Image.hpp>
-#include <fwTools/Type.hpp>
 
+#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ImageSeriesTest );

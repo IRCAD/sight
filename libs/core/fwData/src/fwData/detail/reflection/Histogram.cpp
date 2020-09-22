@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Histogram.hpp>
+#include "fwData/Histogram.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

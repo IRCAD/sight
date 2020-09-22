@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwData/Boolean.hpp>
-
 #include "BooleanTest.hpp"
 
+#include <fwData/Boolean.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::BooleanTest );
@@ -33,15 +32,21 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void BooleanTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void BooleanTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void BooleanTest::methode1()
 {

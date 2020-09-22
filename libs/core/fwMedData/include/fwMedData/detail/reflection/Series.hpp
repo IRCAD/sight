@@ -23,10 +23,10 @@
 #pragma once
 
 #include "fwMedData/config.hpp"
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
+#include "fwMedData/Equipment.hpp"
+#include "fwMedData/Patient.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/Study.hpp"
 
 #include <fwCamp/macros.hpp>
 

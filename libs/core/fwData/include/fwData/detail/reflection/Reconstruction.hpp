@@ -23,10 +23,10 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include "fwData/Image.hpp"
+#include "fwData/Material.hpp"
+#include "fwData/Mesh.hpp"
+#include "fwData/Reconstruction.hpp"
 
 #include <fwCamp/macros.hpp>
 

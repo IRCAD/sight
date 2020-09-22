@@ -22,9 +22,9 @@
 
 #pragma once
 
+#include "arData/Camera.hpp"
+#include "arData/CameraSeries.hpp"
 #include "arData/config.hpp"
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
 
 #include <fwCamp/macros.hpp>
 

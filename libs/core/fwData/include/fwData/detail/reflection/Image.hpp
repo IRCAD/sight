@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Image.hpp>
+#include "fwData/Image.hpp"
 
 #include <fwCamp/macros.hpp>
 

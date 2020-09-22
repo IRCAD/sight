@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/TransferFunction.hpp>
+#include "fwData/TransferFunction.hpp"
 
 #include <fwCamp/macros.hpp>
 

@@ -22,20 +22,20 @@
 
 #pragma once
 
+#include "fwMedData/ActivitySeries.hpp"
 #include "fwMedData/detail/reflection/ActivitySeries.hpp"
 #include "fwMedData/detail/reflection/DicomSeries.hpp"
 #include "fwMedData/detail/reflection/ImageSeries.hpp"
 #include "fwMedData/detail/reflection/Series.hpp"
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/NavigationSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include "fwMedData/DicomSeries.hpp"
+#include "fwMedData/Equipment.hpp"
+#include "fwMedData/ImageSeries.hpp"
+#include "fwMedData/ModelSeries.hpp"
+#include "fwMedData/NavigationSeries.hpp"
+#include "fwMedData/Patient.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/SeriesDB.hpp"
+#include "fwMedData/Study.hpp"
 
 #include <fwCamp/macros.hpp>
 

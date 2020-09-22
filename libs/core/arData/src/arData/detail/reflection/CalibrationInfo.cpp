@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <arData/CalibrationInfo.hpp>
+#include "arData/CalibrationInfo.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

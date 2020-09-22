@@ -22,12 +22,12 @@
 
 #pragma once
 
+#include "arData/CalibrationInfo.hpp"
+#include "arData/Camera.hpp"
+#include "arData/CameraSeries.hpp"
 #include "arData/config.hpp"
 #include "arData/detail/reflection/Camera.hpp"
 #include "arData/detail/reflection/CameraSeries.hpp"
-#include <arData/CalibrationInfo.hpp>
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
 
 #include <fwCamp/macros.hpp>
 

@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "fwMedData/ActivitySeries.hpp"
 #include "fwMedData/config.hpp"
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwCamp/macros.hpp>
 

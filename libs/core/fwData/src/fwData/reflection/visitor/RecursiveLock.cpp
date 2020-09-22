@@ -22,10 +22,10 @@
 
 #include "fwData/reflection/visitor/RecursiveLock.hpp"
 
+#include "fwData/Object.hpp"
 #include "fwData/reflection/exception/NullPointer.hpp"
 #include "fwData/reflection/exception/ObjectNotFound.hpp"
-#include <fwData/Object.hpp>
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCore/mt/types.hpp>
 

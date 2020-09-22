@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Float.hpp>
+#include "fwData/Float.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

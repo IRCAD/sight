@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Point.hpp>
+#include "fwData/Point.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

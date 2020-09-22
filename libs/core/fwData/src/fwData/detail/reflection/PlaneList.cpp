@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/PlaneList.hpp>
+#include "fwData/PlaneList.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

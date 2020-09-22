@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/location/Folder.hpp"
+
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

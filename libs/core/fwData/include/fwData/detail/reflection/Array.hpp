@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "fwData/Array.hpp"
 #include "fwData/config.hpp"
-#include <fwData/Array.hpp>
 
 #include <fwCamp/macros.hpp>
 

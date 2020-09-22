@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/ROITraits.hpp>
+#include "fwData/ROITraits.hpp"
 
 #include <fwCamp/macros.hpp>
 

@@ -22,13 +22,13 @@
 
 #include "fwData/reflection/visitor/GetObject.hpp"
 
+#include "fwData/Boolean.hpp"
+#include "fwData/Float.hpp"
+#include "fwData/Integer.hpp"
 #include "fwData/reflection/exception/NullPointer.hpp"
 #include "fwData/reflection/exception/ObjectNotFound.hpp"
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/reflection/mapper.hpp>
-#include <fwData/String.hpp>
+#include "fwData/reflection/mapper.hpp"
+#include "fwData/String.hpp"
 
 #include <boost/utility/enable_if.hpp>
 

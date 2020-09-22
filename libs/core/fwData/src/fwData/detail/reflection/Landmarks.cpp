@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Landmarks.hpp>
+#include "fwData/Landmarks.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

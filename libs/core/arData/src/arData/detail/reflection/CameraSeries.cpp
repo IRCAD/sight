@@ -20,9 +20,8 @@
  *
  ***********************************************************************/
 
+#include "arData/CameraSeries.hpp"
 #include "arData/detail/reflection/CameraSeries.hpp"
-
-#include <arData/CameraSeries.hpp>
 
 #include <fwCamp/UserObject.hpp>
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Color.hpp>
+#include "fwData/Color.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

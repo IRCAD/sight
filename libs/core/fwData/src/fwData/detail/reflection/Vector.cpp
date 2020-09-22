@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Vector.hpp>
+#include "fwData/Vector.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

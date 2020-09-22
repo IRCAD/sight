@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/StructureTraitsDictionary.hpp>
+#include "fwData/StructureTraitsDictionary.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

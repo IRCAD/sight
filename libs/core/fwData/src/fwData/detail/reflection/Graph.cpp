@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwData/Graph.hpp>
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/Graph.hpp"
+
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCamp/Mapper/ArrayMapper.hpp>
 #include <fwCamp/UserObject.hpp>

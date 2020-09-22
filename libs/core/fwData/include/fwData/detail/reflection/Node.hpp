@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Node.hpp>
+#include "fwData/Node.hpp"
 
 #include <fwCamp/macros.hpp>
 

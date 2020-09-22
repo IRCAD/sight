@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Mesh.hpp>
+#include "fwData/Mesh.hpp"
 
 #include <fwCamp/macros.hpp>
 

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/StructureTraits.hpp>
+#include "fwData/StructureTraits.hpp"
 
 #include <fwCamp/macros.hpp>
 

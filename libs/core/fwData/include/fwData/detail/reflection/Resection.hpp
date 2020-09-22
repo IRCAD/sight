@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Resection.hpp>
+#include "fwData/Resection.hpp"
 
 #include <fwCamp/macros.hpp>
 

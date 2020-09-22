@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 #include "fwMedData/detail/reflection/Series.hpp"
+#include "fwMedData/Series.hpp"
 
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
+#include "fwMedData/Equipment.hpp"
+#include "fwMedData/Patient.hpp"
+#include "fwMedData/Study.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

@@ -22,10 +22,10 @@
 
 #include "fwData/reflection/getObject.hpp"
 
+#include "fwData/Object.hpp"
 #include "fwData/reflection/exception/NullPointer.hpp"
 #include "fwData/reflection/exception/ObjectNotFound.hpp"
 #include "fwData/reflection/visitor/GetObject.hpp"
-#include <fwData/Object.hpp>
 
 #include <fwCore/base.hpp>
 

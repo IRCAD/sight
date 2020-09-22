@@ -20,9 +20,8 @@
  *
  ***********************************************************************/
 
+#include "fwMedData/ActivitySeries.hpp"
 #include "fwMedData/detail/reflection/ActivitySeries.hpp"
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwCamp/UserObject.hpp>
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwMedData/Equipment.hpp>
+#include "fwMedData/Equipment.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

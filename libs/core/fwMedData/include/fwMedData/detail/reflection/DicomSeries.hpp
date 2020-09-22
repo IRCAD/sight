@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwMedData/config.hpp"
-#include <fwMedData/DicomSeries.hpp>
+#include "fwMedData/DicomSeries.hpp"
 
 #include <fwCamp/macros.hpp>
 

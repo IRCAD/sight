@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/Tag.hpp>
+#include "fwData/Tag.hpp"
 
 #include <fwCamp/macros.hpp>
 

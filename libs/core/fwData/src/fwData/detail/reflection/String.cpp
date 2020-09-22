@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/String.hpp>
+#include "fwData/String.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

@@ -21,8 +21,7 @@
  ***********************************************************************/
 
 #include "fwMedData/detail/reflection/ImageSeries.hpp"
-
-#include <fwMedData/ImageSeries.hpp>
+#include "fwMedData/ImageSeries.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

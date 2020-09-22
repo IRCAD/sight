@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
+#include "fwMedData/NavigationSeries.hpp"
+
 #include "fwMedData/detail/reflection/mapper.hpp"
-#include <fwMedData/NavigationSeries.hpp>
 
 #include <fwCamp/UserObject.hpp>
 

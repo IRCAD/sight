@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Port.hpp>
+#include "fwData/Port.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

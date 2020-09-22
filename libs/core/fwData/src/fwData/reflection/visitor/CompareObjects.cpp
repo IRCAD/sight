@@ -22,7 +22,7 @@
 
 #include "fwData/reflection/visitor/CompareObjects.hpp"
 
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCore/Exception.hpp>
 

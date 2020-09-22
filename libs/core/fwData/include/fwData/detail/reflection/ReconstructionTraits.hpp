@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
-#include <fwData/ReconstructionTraits.hpp>
+#include "fwData/ReconstructionTraits.hpp"
 
 #include <fwCamp/macros.hpp>
 

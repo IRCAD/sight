@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include "fwData/TransformationMatrix3D.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/Composite.hpp"
+
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwCamp/UserObject.hpp>

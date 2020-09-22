@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/StructureTraits.hpp>
-
 #include "StructureTraitsDictionaryTest.hpp"
 
+#include <fwData/StructureTraits.hpp>
+#include <fwData/StructureTraitsDictionary.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StructureTraitsDictionaryTest );
@@ -34,15 +33,21 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void StructureTraitsDictionaryTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void StructureTraitsDictionaryTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void StructureTraitsDictionaryTest::testAddingStructure()
 {
@@ -98,7 +103,6 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     tumorCat[7] = ::fwData::StructureTraits::LEG;
     tumor->setCategories(tumorCat);
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(tumor));
-
 
     CPPUNIT_ASSERT(skin == structDico->getStructure("Skin"));
     CPPUNIT_ASSERT(liver == structDico->getStructure("Liver"));

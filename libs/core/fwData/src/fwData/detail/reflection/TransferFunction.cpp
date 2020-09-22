@@ -22,7 +22,7 @@
 
 #include "fwData/detail/reflection/TransferFunction.hpp"
 
-#include <fwData/reflection/mapper.hpp>
+#include "fwData/reflection/mapper.hpp"
 
 #include <fwCamp/UserObject.hpp>
 

@@ -26,6 +26,8 @@
 
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
+#include <fwCore/macros.hpp>
+
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
