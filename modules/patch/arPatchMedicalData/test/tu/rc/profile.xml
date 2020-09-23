@@ -1,6 +1,5 @@
 <profile name="arMedicalDataPatchTest" version="0.1">
 
-    <activate id="arDataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
 
     <activate id="gui" version="0.1" />

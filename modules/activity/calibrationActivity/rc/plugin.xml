@@ -2,8 +2,6 @@
 
     <library name="calibrationActivity" />
     <requirement id="servicesReg" />
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="validators" />
     <requirement id="preferences" />
     <requirement id="visuOgre" />
