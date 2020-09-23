@@ -26,10 +26,10 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransformationMatrix3D,
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransformationMatrix3D,
                          ::fwData::TransformationMatrix3D )
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -68,4 +68,4 @@ void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
 //------------------------------------------------------------------------------
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

@@ -25,7 +25,7 @@
 #include "fwServices/config.hpp"
 #include <fwServices/IXMLParser.hpp>
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -94,4 +94,4 @@ protected:
 };
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

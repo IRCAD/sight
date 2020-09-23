@@ -28,10 +28,10 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-fwServicesRegisterMacro(::fwServices::IXMLParser, ::dataReg::parser::Color)
-fwServicesRegisterObjectMacro(::dataReg::parser::Color, ::fwData::Color)
+fwServicesRegisterMacro(::fwServices::IXMLParser, ::fwServices::parser::Color)
+fwServicesRegisterObjectMacro(::fwServices::parser::Color, ::fwData::Color)
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -65,4 +65,4 @@ void Color::createConfig(::fwTools::Object::sptr _obj)
 //------------------------------------------------------------------------------
 
 } // namespace parser.
-} // namespace dataReg.
+} // namespace fwServices.

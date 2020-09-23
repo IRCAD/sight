@@ -30,15 +30,15 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::BooleanParser, ::fwData::Boolean )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::BooleanParser, ::fwData::Boolean )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::IntegerParser, ::fwData::Integer )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::IntegerParser, ::fwData::Integer )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::FloatParser, ::fwData::Float )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::FloatParser, ::fwData::Float )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::StringParser, ::fwData::String )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::StringParser, ::fwData::String )
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -71,4 +71,4 @@ void GenericField::createConfig( ::fwTools::Object::sptr _obj )
 //------------------------------------------------------------------------------
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

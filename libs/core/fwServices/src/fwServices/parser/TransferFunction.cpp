@@ -29,9 +29,9 @@
 
 #include <fwRuntime/Convert.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransferFunction, ::fwData::TransferFunction )
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -94,4 +94,4 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 // ------------------------------------------------------------------------------
 
 } // namespace parser
-} // namespace dataReg
+} // namespace fwServices

@@ -26,9 +26,9 @@
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::Object, ::fwData::Object )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Object, ::fwData::Object )
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -180,4 +180,4 @@ void Object::destroyConfig()
 //------------------------------------------------------------------------------
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

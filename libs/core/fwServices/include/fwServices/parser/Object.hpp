@@ -28,7 +28,7 @@
 
 #include <fwTools/Object.hpp>
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -64,4 +64,4 @@ protected:
 };
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

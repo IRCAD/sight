@@ -30,7 +30,7 @@
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -106,4 +106,4 @@ public:
 };
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices

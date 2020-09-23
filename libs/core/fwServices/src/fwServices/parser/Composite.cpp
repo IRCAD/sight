@@ -28,9 +28,9 @@
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::Composite, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Composite, ::fwData::Composite )
 
-namespace dataReg
+namespace fwServices
 {
 namespace parser
 {
@@ -173,4 +173,4 @@ void Composite::destroyConfig()
 //------------------------------------------------------------------------------
 
 } //namespace parser
-} //namespace dataReg
+} //namespace fwServices
