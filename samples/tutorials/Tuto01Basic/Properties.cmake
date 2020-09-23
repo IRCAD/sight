@@ -3,7 +3,7 @@ set( VERSION 0.1 ) # Version of the application
 set( TYPE APP ) # Type APP represent "Application"
 set( DEPENDENCIES  ) # For an application we have no dependencies (libraries to link)
 set( REQUIREMENTS # The modules used by this application
-    dataReg # to load the data registry
+    fwData # to load the data registry
     servicesReg # to load the service registry
     gui # to load gui
     guiQt # to load qt implementation of gui

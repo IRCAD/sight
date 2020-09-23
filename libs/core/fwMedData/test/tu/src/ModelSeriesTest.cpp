@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,14 @@
  *
  ***********************************************************************/
 
-
-#include "fwMedData/ModelSeries.hpp"
-
 #include "ModelSeriesTest.hpp"
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
-#include <fwTools/Type.hpp>
 
+#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ModelSeriesTest );
@@ -109,7 +106,7 @@ void ModelSeriesTest::deepCopyTest()
 
     CPPUNIT_ASSERT_EQUAL(1, (int)m_series->getReconstructionDB().size());
     CPPUNIT_ASSERT_EQUAL(1, (int)secondSeries->getReconstructionDB().size());
-    CPPUNIT_ASSERT (m_series->getReconstructionDB()[0] != secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] != secondSeries->getReconstructionDB()[0]);
 
 }
 

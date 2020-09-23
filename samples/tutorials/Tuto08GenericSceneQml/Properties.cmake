@@ -14,7 +14,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     ctrlCamp
-    dataReg
+    fwData
     gui
     guiQml
     ioData

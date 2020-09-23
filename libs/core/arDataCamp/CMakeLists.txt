@@ -1,3 +1,5 @@
 fwLoadProperties()
 
-target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DCAMP_COMPILATION")
+message(DEPRECATION "arDataCamp library is deprecated and will be removed in sight 22.0.
+It is now useless can be safely removed from requirements.")
+

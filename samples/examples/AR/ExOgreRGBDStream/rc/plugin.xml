@@ -1,7 +1,5 @@
 <plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="scene2D" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />

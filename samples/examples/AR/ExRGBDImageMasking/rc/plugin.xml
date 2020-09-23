@@ -1,6 +1,4 @@
 <plugin id="ExRGBDImageMasking" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="guiQt" />
     <requirement id="material" />
     <requirement id="servicesReg" />

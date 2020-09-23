@@ -8,8 +8,8 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     appXml
-    dataReg
-    arDataReg
+    fwData
+    arData
     servicesReg
     fwlauncher
     console

@@ -41,9 +41,8 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Native::Native( const std::filesystem::path& modulePath ) noexcept :
-    m_modulePath( modulePath ),
-    m_module( 0 )
+Native::Native( const std::string& name ) noexcept :
+    m_name( name )
 {
 }
 
@@ -55,20 +54,11 @@ Native::~Native() noexcept
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path Native::getModuleLocation() const
-{
-    // Pre-condition
-    SLM_ASSERT("module not initialized", m_module);
-    return m_module->getLibraryLocation();
-}
-
-//------------------------------------------------------------------------------
-
 const std::filesystem::path Native::getFullPath() const
 {
     std::filesystem::path result;
 
-    result = this->getModuleLocation() / this->getPath();
+    result = m_searchPath / this->getPath();
 
     // Test that the result path exists.
     if(result.empty())
@@ -90,17 +80,19 @@ const std::filesystem::path Native::getFullPath() const
 
 const std::regex Native::getNativeName() const
 {
+    SLM_ASSERT("module path not initialized", !m_name.empty());
+
     std::regex nativeName;
 
 #if defined(linux) || defined(__linux)
     nativeName = std::regex(
-        "lib" + m_modulePath.filename().string() + "\\.so\\.?[0-9\\.]*" );
+        "lib" + m_name + "\\.so\\.?[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = std::regex(
-        m_modulePath.filename().string() + "\\.dll");
+        m_name + "\\.dll");
 #elif defined (__APPLE__)
     nativeName = std::regex(
-        "lib" + m_modulePath.filename().string() + "[0-9\\.]*\\.dylib" );
+        "lib" + m_name + "[0-9\\.]*\\.dylib" );
 #endif
 
     return nativeName;
@@ -110,14 +102,12 @@ const std::regex Native::getNativeName() const
 
 const std::filesystem::path Native::getPath() const
 {
-    SLM_ASSERT("module path not initialized", !m_modulePath.empty());
-
     std::filesystem::path result;
 
     const std::regex nativeFileRegex( this->getNativeName() );
 
     // Walk through the module directory, seeking for a matching file.
-    std::filesystem::directory_iterator curDirEntry(this->getModuleLocation());
+    std::filesystem::directory_iterator curDirEntry(m_searchPath);
     std::filesystem::directory_iterator endDirEntry;
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
@@ -134,13 +124,9 @@ const std::filesystem::path Native::getPath() const
 
 //------------------------------------------------------------------------------
 
-void Native::setModule( const Module* module ) noexcept
+void Native::setSearchPath( const std::filesystem::path& path ) noexcept
 {
-    // Pre-condition
-    SLM_ASSERT("module already initialized", m_module == nullptr );
-    m_module = module;
-    // Post-condition
-    SLM_ASSERT("module not correctly attached", m_module == module );
+    m_searchPath = path;
 }
 
 //------------------------------------------------------------------------------

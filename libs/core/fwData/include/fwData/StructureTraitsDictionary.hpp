@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/StructureTraits.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(StructureTraitsDictionary), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(StructureTraitsDictionary));
 
 namespace fwData
 {
@@ -39,7 +39,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 {
 public:
-    fwCoreClassMacro(StructureTraitsDictionary, ::fwData::Object, ::fwData::factory::New< StructureTraitsDictionary >);
+    fwCoreClassMacro(StructureTraitsDictionary, ::fwData::Object, ::fwData::factory::New< StructureTraitsDictionary >)
     fwCampMakeFriendDataMacro((fwData)(StructureTraitsDictionary));
 
     typedef std::vector<std::string> StructureTypeNameContainer;

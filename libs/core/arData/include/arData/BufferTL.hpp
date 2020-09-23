@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-fwCampAutoDeclareDataMacro((arData)(BufferTL), ARDATA_API);
+fwCampAutoDeclareDataMacro((arData)(BufferTL));
 
 namespace arData
 {
@@ -41,7 +41,7 @@ class ARDATA_CLASS_API BufferTL : public TimeLine
 {
 
 public:
-    fwCoreClassMacro(BufferTL, ::fwData::Object);
+    fwCoreClassMacro(BufferTL, ::fwData::Object)
 
     typedef ::fwCore::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(::arData::timeline::Buffer) > TimelineType;

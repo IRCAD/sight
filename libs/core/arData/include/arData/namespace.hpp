@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,35 +20,39 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_NAMESPACE_HPP__
-#define __ARDATA_NAMESPACE_HPP__
-
 /**
  * @brief       The namespace arData contains data for augmented reality.
- * @namespace   arData
  */
+#pragma once
+
 namespace arData
 {
 
 /**
  * @brief       The namespace arData::timeline contains data for Timeline.
- * @namespace   arData::timeline
  */
 namespace timeline
 {
 
 /**
  * @brief       The namespace arData::timeline::mt contains data helper lock (mutex) Timeline.
- * @namespace   arData::timeline::mt
  */
 namespace mt
 {
 
 } // namespace mt
 
+namespace detail
+{
+/**
+ * @brief       The namespace reflection contains arData object descriptions used for introspection.
+ */
+namespace reflection
+{
+} // namespace ardata
+
+}
+
 } // namespace timeline
 
 } // namespace arData
-
-
-#endif /* __ARDATA_NAMESPACE_HPP__ */

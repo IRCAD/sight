@@ -1,6 +1,5 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="preferences" />
 

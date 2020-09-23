@@ -1,5 +1,4 @@
 <plugin id="TutoVectorField" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">

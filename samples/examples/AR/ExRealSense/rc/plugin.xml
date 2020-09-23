@@ -1,6 +1,4 @@
 <plugin id="ExRealSense" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
     <requirement id="material" />

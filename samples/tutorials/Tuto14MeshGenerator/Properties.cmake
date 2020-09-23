@@ -7,7 +7,8 @@ set( DEPENDENCIES
     fwDataTools
     fwGui )
 set( REQUIREMENTS
-    dataReg
+    fwData
+    fwMedData
     gui
     guiQt
     ioData

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_UT_DICOMSERIESTEST_HPP__
-#define __FWMEDDATA_UT_DICOMSERIESTEST_HPP__
+#pragma once
 
-#include "fwMedData/DicomSeries.hpp"
+#include <fwMedData/DicomSeries.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -51,6 +50,3 @@ private:
 
 } //namespace ut
 } //namespace fwMedData
-
-#endif //__FWMEDDATA_UT_DICOMSERIESTEST_HPP__
-

@@ -12,4 +12,4 @@ set( DEPENDENCIES
     fwThread
     fwMDSemanticPatch
 )
-set( REQUIREMENTS dataReg servicesReg ioAtoms gui guiQt patchMedicalData )
+set( REQUIREMENTS fwData servicesReg ioAtoms gui guiQt patchMedicalData )

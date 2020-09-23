@@ -16,9 +16,9 @@ set( DEPENDENCIES
     cvIO
 
 )
-set( REQUIREMENTS dataReg
+set( REQUIREMENTS fwData
                   servicesReg
-                  arDataReg
+                  arData
 )
 
 set( CONAN_DEPS

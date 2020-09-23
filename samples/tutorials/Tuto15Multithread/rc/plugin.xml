@@ -1,6 +1,5 @@
 ﻿<plugin id="Tuto15Multithread" version="@PROJECT_VERSION@" >
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 

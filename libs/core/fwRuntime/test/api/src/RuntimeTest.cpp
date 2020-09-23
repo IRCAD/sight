@@ -63,11 +63,25 @@ void RuntimeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+void RuntimeTest::testLibrary()
+{
+    bool success = ::fwRuntime::loadLibrary(std::string("fwData"));
+    CPPUNIT_ASSERT_EQUAL(true, success);
+
+    success = ::fwRuntime::loadLibrary(std::string("fwData"));
+    CPPUNIT_ASSERT_EQUAL(true, success);
+
+    success = ::fwRuntime::loadLibrary(std::string("foo"));
+    CPPUNIT_ASSERT_EQUAL(false, success);
+}
+
+//------------------------------------------------------------------------------
+
 void RuntimeTest::testModule()
 {
-    auto module = ::fwRuntime::loadModule(std::string("dataReg"));
+    auto module = ::fwRuntime::loadModule(std::string("servicesReg"));
 
-    CPPUNIT_ASSERT_EQUAL(std::string("dataReg"),  module->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(std::string("servicesReg"),  module->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(Version("0.1"),  module->getVersion());
     // No good parameter test for now, but at least test without any parameter
     CPPUNIT_ASSERT_EQUAL(false,  module->hasParameter("test"));
@@ -75,14 +89,14 @@ void RuntimeTest::testModule()
 
     auto runtime           = ::fwRuntime::Runtime::getDefault();
     const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
-    CPPUNIT_ASSERT_EQUAL(libLocation / "dataReg-0.1",  module->getLibraryLocation());
+    CPPUNIT_ASSERT_EQUAL(libLocation / "servicesReg-0.1",  module->getLibraryLocation());
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
-    CPPUNIT_ASSERT_EQUAL(rcLocation / "dataReg-0.1",  module->getResourcesLocation());
+    CPPUNIT_ASSERT_EQUAL(rcLocation / "servicesReg-0.1",  module->getResourcesLocation());
 
     const auto extensions = module->getExtensions();
-    CPPUNIT_ASSERT_EQUAL(true, extensions.empty());
+    CPPUNIT_ASSERT_EQUAL(false, extensions.empty());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("::dataReg::Plugin"), module->getClass());
+    CPPUNIT_ASSERT_EQUAL(std::string("::servicesReg::Plugin"), module->getClass());
     auto plugin = module->getPlugin();
     CPPUNIT_ASSERT_MESSAGE("Plugin is null", nullptr != plugin);
 

@@ -46,12 +46,6 @@ public:
 
     /// Overrides stop method. Do nothing
     DATAREG_API void stop() noexcept;
-
-private:
-    /// Dummy variable members used to force link with fwDataCamp and fwMedDataCamp modules
-    /// Recent GCC versions (>= 5.4) strip local variables with -O2
-    int m_fwDataCampVersion;
-    int m_fwMedDataCampVersion;
 };
 
 } // namespace dataReg

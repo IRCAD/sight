@@ -28,7 +28,7 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(Patient), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(Patient))
 
 namespace fwMedData
 {

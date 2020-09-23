@@ -10,5 +10,5 @@ set( DEPENDENCIES
     fwCom
     fwServices
 )
-set( REQUIREMENTS dataReg servicesReg)
+set( REQUIREMENTS fwData servicesReg)
 

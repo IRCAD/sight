@@ -50,9 +50,9 @@ struct Native
     /**
      * @brief       Constructor
      *
-     * @param[in]   modulePath      a path to the module to manage
+     * @param[in]   name    libray name
      */
-    Native( const std::filesystem::path& modulePath) noexcept;
+    Native( const std::string& name ) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -106,11 +106,11 @@ struct Native
     const std::filesystem::path getPath() const;
 
     /**
-     * @brief       Set the module the library is attached to.
+     * @brief       Set the initial path from which the library will be loaded.
      *
-     * @param[in]   module  a pointer to a module instance
+     * @param[in]   path  search path
      */
-    void setModule( const ::fwRuntime::detail::Module* module ) noexcept;
+    void setSearchPath( const std::filesystem::path& path ) noexcept;
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS
@@ -119,22 +119,15 @@ struct Native
     const std::regex getNativeName() const;
 
     private:
-
-        /**
-         * @brief  Returns the location of module library
-         * @return The path of module library.
-         */
-        const std::filesystem::path getModuleLocation() const;
-
         /**
          * @brief   The path to the module to load.
          */
-        const std::filesystem::path m_modulePath;
+        const std::string m_name;
 
         /**
          * @brief   A pointer to the module the library is attached to.
          */
-        const Module* m_module;
+        std::filesystem::path m_searchPath;
 
         /**
          * @brief   Assignment operator.

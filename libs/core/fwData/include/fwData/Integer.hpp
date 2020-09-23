@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/Object.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(Integer), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Integer));
 
 namespace fwData
 {
@@ -40,7 +40,7 @@ class FWDATA_CLASS_API Integer : public GenericField< std::int64_t >
 {
 public:
 
-    fwCoreClassMacro(Integer, ::fwData::Object);
+    fwCoreClassMacro(Integer, ::fwData::Object)
 
     //------------------------------------------------------------------------------
 

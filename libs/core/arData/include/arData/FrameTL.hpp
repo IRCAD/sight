@@ -31,7 +31,7 @@
 
 #include <fwTools/Type.hpp>
 
-fwCampAutoDeclareDataMacro((arData)(FrameTL), ARDATA_API);
+fwCampAutoDeclareDataMacro((arData)(FrameTL));
 
 namespace arData
 {

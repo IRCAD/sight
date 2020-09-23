@@ -1,6 +1,5 @@
 <plugin id="PoCStereo" version="@PROJECT_VERSION@" >
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
     <requirement id="scene2D" />

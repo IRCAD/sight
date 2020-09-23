@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwPacsIO
     )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     gui
     ioPacs

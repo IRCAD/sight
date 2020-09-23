@@ -11,7 +11,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     gui
-    dataReg
+    fwData
     servicesReg
     ioVTK
     ioData

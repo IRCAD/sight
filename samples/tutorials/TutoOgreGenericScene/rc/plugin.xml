@@ -1,5 +1,4 @@
 <plugin id="TutoOgreGenericScene" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
     <requirement id="guiQt" />

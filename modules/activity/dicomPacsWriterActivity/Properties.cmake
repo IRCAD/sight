@@ -8,7 +8,7 @@ set( REQUIREMENTS
     dicomAppConfig
     ctrlMemory
     ctrlSelection
-    dataReg
+    fwData
     dicomPacsReaderActivity
     gui
     guiQt

@@ -22,47 +22,10 @@
 
 /**
  * @ingroup apprequirement
- * @brief  The namespace dataReg (data registration) contains classes which allow to parse the xml configuration
- *         of objects .
+ * @deprecated
+ * @brief  The namespace dataReg is deprecated and will be removed in Sight 22.0.
  *
- * It also is used to load fwData and fwMedData library. So, if you want to use any objects in your application
- * described in XML, you require this module: add the requirement in your application plugin.xml.
- *
- * @code{xml}
-    <requirement id="dataReg" />
-   @endcode
- *
- *  Example of plugin.xml:
- *
- * @code{xml}
-    <plugin id="Tuto01Basic" version="@PROJECT_VERSION@">
-
-        <!-- The modules in requirements are automatically started when this Application is launched. -->
-        <requirement id="dataReg" />
-        <requirement id="servicesReg" />
-
-        <!-- Defines the App-config -->
-        <extension implements="::fwServices::registry::AppConfig">
-            <id>tutoBasicConfig</id><!-- identifier of the configuration -->
-            <config>
-
-                <!-- Frame service -->
-                <service uid="myFrame" type="::gui::frame::SDefaultFrame">
-                    <gui>
-                        <frame>
-                            <name>tutoBasicApplicationName</name>
-                            <icon>Tuto01Basic-0.1/tuto.ico</icon>
-                            <minSize width="800" height="600" />
-                        </frame>
-                    </gui>
-                </service>
-
-                <start uid="myFrame" /><!-- start the frame service -->
-
-            </config>
-        </extension>
-    </plugin>
-   @endcode
+ * It was used to load fwData and fwMedData library which is now done automatically in AppConfigManager.
  */
 #pragma once
 

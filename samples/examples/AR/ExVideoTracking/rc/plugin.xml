@@ -1,6 +1,4 @@
 <plugin id="ExVideoTracking" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">

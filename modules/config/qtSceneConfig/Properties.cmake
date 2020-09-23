@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     gui
     guiQt

@@ -22,11 +22,9 @@
 
 /**
  * @ingroup apprequirement
- * @brief   The namespace arDataReg (arData registration) contains classes which describes all types of data existing in
- * lib arData.
- *
- * It's also used to load arData library. So, if you want to use any objects in your application
- * described in XML, you require this module: add the requirement in your application plugin.xml.
+ * @deprecated
+ * @brief  The namespace arDataReg is deprecated and will be removed in Sight 22.0.
+ * It was used to load arData library which is now done automatically in AppConfigManager.
  */
 #pragma once
 

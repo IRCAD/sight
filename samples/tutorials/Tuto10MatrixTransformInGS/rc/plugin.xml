@@ -4,7 +4,6 @@
         To use this application, you need to load a mesh.
 -->
 <plugin id="Tuto10MatrixTransformInGS" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 

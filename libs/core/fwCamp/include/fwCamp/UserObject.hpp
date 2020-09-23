@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_USEROBJECT_HPP__
-#define __FWCAMP_USEROBJECT_HPP__
-
-#include <camp/userobject.hpp>
-
-#include <fwCore/macros.hpp>
+#pragma once
 
 #include "fwCamp/factory/new.hpp"
 #include "fwCamp/registry/detail.hpp"
+
+#include <fwCore/macros.hpp>
+
+#include <camp/userobject.hpp>
 
 namespace fwCamp
 {
@@ -42,13 +41,10 @@ struct UserObjectRegistrar
     /**
      * @brief Register an object of type name in factory.
      */
-    UserObjectRegistrar( const std::string &name )
+    UserObjectRegistrar( const std::string& name )
     {
         ::fwCamp::registry::get()->addFactory(name, &::fwCamp::factory::New<T>);
     }
 };
 
 }
-
-#endif //__FWCAMP_USEROBJECT_HPP__
-

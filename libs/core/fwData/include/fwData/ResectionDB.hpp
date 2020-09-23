@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(ResectionDB));
 
 namespace fwData
 {
@@ -42,7 +42,7 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassMacro(ResectionDB, ::fwData::Object, ::fwData::factory::New< ResectionDB >);
+    fwCoreClassMacro(ResectionDB, ::fwData::Object, ::fwData::factory::New< ResectionDB >)
     fwCampMakeFriendDataMacro((fwData)(ResectionDB));
 
     /**

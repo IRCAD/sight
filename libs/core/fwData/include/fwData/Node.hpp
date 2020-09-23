@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Node));
 
 namespace fwData
 {
@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassMacro(Node, ::fwData::Object, ::fwData::factory::New< Node >);
+    fwCoreClassMacro(Node, ::fwData::Object, ::fwData::factory::New< Node >)
     fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container

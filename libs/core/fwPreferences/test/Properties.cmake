@@ -13,7 +13,7 @@ set( DEPENDENCIES
     fwPreferences
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     preferences
 )

@@ -6,7 +6,8 @@ set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     servicesReg
-    dataReg
+    fwData
+    fwMedData
     gui
     guiQt
     ioITK

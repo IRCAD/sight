@@ -12,7 +12,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     styleQml
-    dataReg
+    fwData
     servicesReg
     ioAtoms
     ioActivity

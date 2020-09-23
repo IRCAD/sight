@@ -55,7 +55,6 @@ Detail of the ToolBar
           third tab (RegisterAction).
  -->
 <plugin id="ExRegistration" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="guiQt" />

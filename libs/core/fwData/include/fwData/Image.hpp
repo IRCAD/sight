@@ -27,8 +27,6 @@
 #include "fwData/iterator/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
-#include <boost/shared_array.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
@@ -37,10 +35,12 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
+#include <boost/shared_array.hpp>
+
 #include <filesystem>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Image));
 
 namespace fwData
 {

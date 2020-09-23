@@ -12,4 +12,4 @@ set( DEPENDENCIES
     fwThread
     arMDSemanticPatch
 )
-set( REQUIREMENTS dataReg servicesReg ioAtoms patchMedicalData arPatchMedicalData)
+set( REQUIREMENTS fwData servicesReg ioAtoms patchMedicalData arPatchMedicalData)

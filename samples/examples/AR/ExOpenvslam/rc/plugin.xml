@@ -1,6 +1,4 @@
 <plugin id="ExOpenvslam" version="@PROJECT_VERSION@">
-    <requirement id="arDataReg" />
-    <requirement id="dataReg" />
     <requirement id="guiQt" />
     <requirement id="material" />
     <requirement id="servicesReg" />

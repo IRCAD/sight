@@ -15,6 +15,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     visuVTK
+    servicesReg
 )
 set( USE_PCH_FROM_TARGET fwRenderVTK )
 set( START_BEFORE guiQt )

@@ -1,6 +1,5 @@
 <profile name="preferencesTest" version="0.1">
 
-    <activate id="dataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
 
     <activate id="preferences" version="0.1" />

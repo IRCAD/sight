@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,15 +22,14 @@
 
 #include "IsTypeOfTest.hpp"
 
-#include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <utility>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::IsTypeOfTest );
@@ -40,15 +39,21 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void IsTypeOfTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void IsTypeOfTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void IsTypeOfTest::methode1()
 {
@@ -59,19 +64,19 @@ void IsTypeOfTest::methode1()
     ::fwData::Image::sptr dataImage                       = ::fwData::Image::New();
     ::fwData::TransferFunction::sptr dataTransferFunction = ::fwData::TransferFunction::New();
 
-    ::fwData::Composite::isTypeOf         ( "::fwData::Object" );
-    ::fwData::Boolean::isTypeOf           ( "::fwData::Object" );
-    ::fwData::Float::isTypeOf             ( "::fwData::Object" );
-    ::fwData::Integer::isTypeOf           ( "::fwData::Object" );
-    ::fwData::Image::isTypeOf             ( "::fwData::Object" );
-    ::fwData::TransferFunction::isTypeOf  ( "::fwData::Object" );
+    ::fwData::Composite::isTypeOf( "::fwData::Object" );
+    ::fwData::Boolean::isTypeOf( "::fwData::Object" );
+    ::fwData::Float::isTypeOf( "::fwData::Object" );
+    ::fwData::Integer::isTypeOf( "::fwData::Object" );
+    ::fwData::Image::isTypeOf( "::fwData::Object" );
+    ::fwData::TransferFunction::isTypeOf( "::fwData::Object" );
 
-    ::fwData::Composite::isTypeOf         ( "::fwData::Composite"         );
-    ::fwData::Boolean::isTypeOf           ( "::fwData::Boolean"           );
-    ::fwData::Float::isTypeOf             ( "::fwData::Float"             );
-    ::fwData::Integer::isTypeOf           ( "::fwData::Integer"           );
-    ::fwData::Image::isTypeOf             ( "::fwData::Image"             );
-    ::fwData::TransferFunction::isTypeOf  ( "::fwData::TransferFunction"  );
+    ::fwData::Composite::isTypeOf( "::fwData::Composite"         );
+    ::fwData::Boolean::isTypeOf( "::fwData::Boolean"           );
+    ::fwData::Float::isTypeOf( "::fwData::Float"             );
+    ::fwData::Integer::isTypeOf( "::fwData::Integer"           );
+    ::fwData::Image::isTypeOf( "::fwData::Image"             );
+    ::fwData::TransferFunction::isTypeOf( "::fwData::TransferFunction"  );
 
     CPPUNIT_ASSERT( dataComposite->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataBoolean->isA("::fwData::Object") );
@@ -111,4 +116,3 @@ void IsTypeOfTest::methode1()
 
 } //namespace ut
 } //namespace fwData
-

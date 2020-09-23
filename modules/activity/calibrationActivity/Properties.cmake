@@ -17,9 +17,9 @@ set( REQUIREMENTS
     activities
 
     # Objects declaration
-    dataReg                 # fwData
     servicesReg             # fwService
-    arDataReg               # arData
+    fwData
+    arData
 
     # UI declaration/Actions
     gui

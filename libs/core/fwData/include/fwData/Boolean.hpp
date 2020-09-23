@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/Object.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(Boolean), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Boolean));
 namespace fwData
 {
 
@@ -39,7 +39,7 @@ namespace fwData
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-    fwCoreClassMacro(Boolean, ::fwData::Object);
+    fwCoreClassMacro(Boolean, ::fwData::Object)
 
     //------------------------------------------------------------------------------
 

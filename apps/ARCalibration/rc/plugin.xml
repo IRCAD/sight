@@ -1,8 +1,6 @@
 <plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="arDataReg" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />

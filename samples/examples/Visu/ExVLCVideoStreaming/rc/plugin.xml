@@ -1,7 +1,5 @@
 <plugin id="ExVLCVideoStreaming" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />

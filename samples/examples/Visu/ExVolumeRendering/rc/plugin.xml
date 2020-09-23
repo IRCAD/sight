@@ -31,7 +31,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
  -->
 <plugin id="ExVolumeRendering" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />

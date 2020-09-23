@@ -25,15 +25,12 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB))
 
 namespace fwMedData
 {

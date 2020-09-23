@@ -711,8 +711,7 @@ void ConversionTest::nullPtrManagmentTest()
 
 //-----------------------------------------------------------------------------
 
-#define EMTPY_CLASS_API
-fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged), EMTPY_CLASS_API);
+fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
 
 namespace fwAtomConversion
 {
