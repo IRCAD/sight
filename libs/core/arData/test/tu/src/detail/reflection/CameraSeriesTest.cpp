@@ -125,7 +125,7 @@ void CameraSeriesTest::propertiesTest()
 }
 
 //------------------------------------------------------------------------------
+} // namespace ut
 } // namespace reflection
 } // namespace detail
-} // namespace ut
 } // namespace ardata

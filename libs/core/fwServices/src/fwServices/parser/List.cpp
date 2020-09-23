@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/List.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/List.hpp>
 

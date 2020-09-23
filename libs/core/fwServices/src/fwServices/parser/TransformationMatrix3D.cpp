@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/TransformationMatrix3D.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/TransformationMatrix3D.hpp>
 

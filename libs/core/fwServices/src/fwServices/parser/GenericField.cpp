@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/GenericField.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>

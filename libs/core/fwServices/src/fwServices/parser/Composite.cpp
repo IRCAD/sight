@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/Composite.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/Composite.hpp>
 

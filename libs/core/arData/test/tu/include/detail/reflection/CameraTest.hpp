@@ -47,7 +47,7 @@ public:
     void propertiesTest();
 
 };
+} // namespace ut
 } // namespace reflection
 } // namespace detail
-} // namespace ut
 } // namespace arData

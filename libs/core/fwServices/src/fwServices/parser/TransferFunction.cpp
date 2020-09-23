@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/TransferFunction.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>

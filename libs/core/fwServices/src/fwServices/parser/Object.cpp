@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/Object.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <boost/foreach.hpp>
 

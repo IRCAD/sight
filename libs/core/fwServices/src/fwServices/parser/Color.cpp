@@ -22,7 +22,7 @@
 
 #include "fwServices/parser/Color.hpp"
 
-#include <fwServices/macros.hpp>
+#include "fwServices/macros.hpp"
 
 #include <fwData/Color.hpp>
 

@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "fwData/config.hpp"
-
+#include "fwServices/config.hpp"
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
 
