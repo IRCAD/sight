@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwData
@@ -62,14 +61,14 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::SeriesDB]: store the loaded images.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the images to load, if it not defined, 'configureWithIHM()' should be called to define
+ * - \b file (optional): path of the images to load, if it not defined, 'configureWithUI()' should be called to define
  * the path.
  */
 class IOITK_CLASS_API SInrSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceMacro(SInrSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SInrSeriesDBReader,  ::fwIO::IReader)
 
     IOITK_API SInrSeriesDBReader() noexcept;
 
@@ -90,15 +89,24 @@ protected:
     /// Calls base class implementation
     virtual void configuring() override;
 
-    /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
+    /// Reads inr files specified by user (configure or configureWithUI) and pushes them into SeriesDB.
     IOITK_API virtual void updating() override;
 
     /**
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the inr files path.
+     *
+     * This method is used to find the inr files path using a files selector.
+     */
+    IOITK_API virtual void configureWithUI() override;
 
     /// Returns managed file type, here FILES
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

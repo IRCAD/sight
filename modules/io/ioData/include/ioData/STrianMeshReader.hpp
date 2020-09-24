@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,8 +75,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IODATA_API void configureWithIHM() override;
+
+    /**
+     * @brief Configure the mesh path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    IODATA_API void configureWithUI() override;
     /// @}
 
     /// Return path type managed by the service, here FILE

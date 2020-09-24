@@ -792,9 +792,9 @@ void SMultipleTF::importPool()
 
     reader->configure(config);
     reader->start();
-    reader->configureWithIHM();
-    reader->update();
-    reader->stop();
+    reader->openLocationDialog();
+    reader->update().wait();
+    reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
 
     // Check the loaded composite.
@@ -844,8 +844,8 @@ void SMultipleTF::exportPool()
     writer->configure(config);
     writer->start();
     writer->configureWithIHM();
-    writer->update();
-    writer->stop();
+    writer->update().wait();
+    writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);
 }
 

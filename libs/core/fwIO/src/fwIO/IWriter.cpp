@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,8 @@ const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFold
 const ::fwCom::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM"; // Deprecated
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_UI  = "configureWithUI";
 
 //-----------------------------------------------------------------------------
 
@@ -44,7 +45,8 @@ IWriter::IWriter() noexcept :
     m_useTimestampPrefix(false),
     m_currentTimestamp(0.0)
 {
-    newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
+    newSlot(s_CONFIGURE_WITH_IHM, &IWriter::deprecateConfigureWithIHM, this);
+    newSlot(s_CONFIGURE_WITH_UI, &IWriter::configureWithUI, this);
     newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
     newSlot(s_SET_TIMESTAMP_PREFIX, &IWriter::setTimestampPrefix, this);
 }
@@ -211,6 +213,24 @@ void IWriter::configuring()
             this->setFolder(std::filesystem::path(folder));
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::deprecateConfigureWithIHM()
+{
+    FW_DEPRECATED_MSG("configureWithUI should be implemented in subclass,"
+                      " this method will be a pure virtual in sight 22.0.", 22.0);
+    this->configureWithUI();
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::configureWithUI()
+{
+    FW_DEPRECATED_MSG("configureWithUI should be implemented in subclass,"
+                      " this method will be a pure virtual in sight 22.0.", 22.0);
+    this->configureWithIHM();
 }
 
 //-----------------------------------------------------------------------------

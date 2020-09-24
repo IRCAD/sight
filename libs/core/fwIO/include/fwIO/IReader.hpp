@@ -70,9 +70,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     FWIO_API virtual void configureWithIHM() = 0;
 
+    /**
+     * @brief Configure the image path (by default does nothing).
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    FWIO_API virtual void configureWithUI();
     /**
      * @brief   returns  (filename) extension
      */
@@ -221,7 +230,7 @@ protected:
     FWIO_API virtual void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `configureWithIHM` slot is called
+     * @brief Title of the window that will open when the `configureWithUI` slot is called
      */
     std::string m_windowTitle;
 
@@ -230,6 +239,8 @@ protected:
 
 private:
 
+    /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.
+    void deprecateConfigureWithIHM();
     /// Slot to read folder
     void readFolder(std::filesystem::path path);
     /// Slot to read file

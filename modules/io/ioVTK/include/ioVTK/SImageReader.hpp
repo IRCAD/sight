@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwData::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'configureWithIHM()' should be called to
+ * - \b file (optional): path of the image to load, if it is not defined, 'configureWithUI()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SImageReader : public ::fwIO::IReader
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SImageReader,  ::fwIO::IReader)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -82,8 +82,17 @@ public:
      * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the image path with a dialogBox.
+     *
+     * This method is used to find the file path using a file selector.
+     */
+    IOVTK_API virtual void configureWithUI() override;
 
     /**
      * @brief Constructor. Do nothing.

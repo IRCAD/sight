@@ -72,6 +72,13 @@ SMeshWriter::SMeshWriter() noexcept
 
 void SMeshWriter::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SMeshWriter::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;

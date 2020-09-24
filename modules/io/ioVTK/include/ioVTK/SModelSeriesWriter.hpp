@@ -67,7 +67,7 @@ namespace ioVTK
  * @subsection Input Input
  * - \b data [::fwMedData::ModelSeries]: model to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'configureWithUI()' should be called to define
  * the path.
  * - \b extension (optional): extension to use when writing files (vtk, vtp, obj, stl, ply). If nothing is set
  * a popup will ask to user to choose one.
@@ -93,8 +93,17 @@ public:
      * @brief Configure the mesh path.
      *
      * This method is used to find the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the mesh path.
+     *
+     * This method is used to find the file path  using a file selector.
+     */
+    IOVTK_API virtual void configureWithUI() override;
 
 protected:
 

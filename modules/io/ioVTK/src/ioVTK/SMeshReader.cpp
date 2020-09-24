@@ -73,6 +73,13 @@ SMeshReader::SMeshReader() noexcept
 
 void SMeshReader::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SMeshReader::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;

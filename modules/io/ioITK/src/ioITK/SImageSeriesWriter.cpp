@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SImageSeriesWriter, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SImageSeriesWriter, ::fwMedData::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -75,10 +75,16 @@ void SImageSeriesWriter::configuring()
 }
 
 //------------------------------------------------------------------------------
-//
+
 void SImageSeriesWriter::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesWriter::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

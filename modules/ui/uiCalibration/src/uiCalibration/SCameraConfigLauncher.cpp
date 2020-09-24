@@ -232,7 +232,7 @@ void SCameraConfigLauncher::onImportClicked()
     {
         ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(readerService);
         reader->start();
-        reader->configureWithIHM();
+        reader->configureWithUI();
         reader->update();
         reader->stop();
     }

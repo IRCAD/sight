@@ -81,6 +81,12 @@ SModelSeriesWriter::SModelSeriesWriter() noexcept
 
 void SModelSeriesWriter::configureWithIHM()
 {
+    this->configureWithUI();
+}
+//------------------------------------------------------------------------------
+
+void SModelSeriesWriter::configureWithUI()
+{
     SLM_TRACE_FUNC();
     static std::filesystem::path _sDefaultPath("");
 

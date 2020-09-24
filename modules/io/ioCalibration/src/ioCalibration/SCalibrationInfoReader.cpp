@@ -74,6 +74,13 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 
 void SCalibrationInfoReader::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SCalibrationInfoReader::configureWithUI()
+{
     static std::filesystem::path s_defaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

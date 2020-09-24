@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace ioITK
@@ -47,14 +46,14 @@ namespace ioITK
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it not defined, 'configureWithIHM()' should be called to define
+ * - \b file (optional): path of the file to save, if it not defined, 'configureWithUI()' should be called to define
  * the path.
  */
 class IOITK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter)
 
     IOITK_API SImageSeriesWriter() noexcept;
 
@@ -77,8 +76,15 @@ protected:
     /// Override
     IOITK_API void info(std::ostream& _sstream ) override;
 
-    /// Override
+    /**
+     * @brief Configure using GUI.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
+
+    /// Configure using GUI.
+    IOITK_API virtual void configureWithUI() override;
 
     /// Return managed file type, here FILE
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

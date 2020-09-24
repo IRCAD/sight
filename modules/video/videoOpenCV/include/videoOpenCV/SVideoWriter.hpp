@@ -66,8 +66,15 @@ public:
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     VIDEOOPENCV_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Display a location dialog allowing to select the video file to save
+    /**
+     * @brief Display a location dialog allowing to select the video file to save
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     VIDEOOPENCV_API virtual void configureWithIHM() override;
+
+    /// Display a location dialog allowing to select the video file to save
+    VIDEOOPENCV_API virtual void configureWithUI() override;
 
     /// Return file type (::fwIO::FILE)
     VIDEOOPENCV_API virtual ::fwIO::IOPathType getIOPathType() const override;

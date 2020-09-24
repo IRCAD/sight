@@ -417,7 +417,7 @@ void TransferFunctionEditor::importTF()
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
     reader->start();
-    reader->configureWithIHM();
+    reader->configureWithUI();
     reader->update().wait();
     reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
@@ -446,7 +446,7 @@ void TransferFunctionEditor::exportTF()
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
     writer->start();
-    writer->configureWithIHM();
+    writer->configureWithUI();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);

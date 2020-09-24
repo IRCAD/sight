@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSurfaceSegmentationWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SSurfaceSegmentationWriter,  ::fwIO::IWriter)
 
     /**
      * @brief Constructor
@@ -74,8 +74,15 @@ public:
      */
     IOGDCM_API virtual ~SSurfaceSegmentationWriter() noexcept override;
 
-    /// Propose a directory selection where to save the DICOM files.
+    /**
+     * @brief Propose a directory selection where to save the DICOM files.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
+
+    /// Propose a directory selection where to save the DICOM files.
+    IOGDCM_API virtual void configureWithUI() override;
 
 protected:
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwMedData
@@ -61,7 +60,7 @@ namespace ioVtkGdcm
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- *  - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
+ *  - \b folder (optional): path of the folder, if it is not defined, 'configureWithUI()' should be called to define
  * the path.
  */
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
@@ -82,9 +81,15 @@ public:
      */
     IOVTKGDCM_API virtual ~SImageSeriesWriter() noexcept;
 
-    /// Propose select a directory where to save the DICOM files.
+    /**
+     * @brief Propose select a directory where to save the DICOM files.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOVTKGDCM_API virtual void configureWithIHM() override;
 
+    /// Propose select a directory where to save the DICOM files.
+    IOVTKGDCM_API virtual void configureWithUI() override;
 protected:
 
     /// Does nothing

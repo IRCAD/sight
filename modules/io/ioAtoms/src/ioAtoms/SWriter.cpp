@@ -556,6 +556,13 @@ void SWriter::updating()
 
 void SWriter::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//-----------------------------------------------------------------------------
+
+void SWriter::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath;
 
     if( !m_useAtomsPatcher || versionSelection() )
@@ -587,7 +594,6 @@ void SWriter::configureWithIHM()
         }
 
     }
-
 }
 
 //-----------------------------------------------------------------------------

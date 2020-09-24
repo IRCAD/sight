@@ -453,6 +453,13 @@ void SReader::notificationOfUpdate()
 
 void SReader::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//-----------------------------------------------------------------------------
+
+void SReader::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

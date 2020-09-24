@@ -131,6 +131,13 @@ void SMatricesReader::starting()
 
 void SMatricesReader::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SMatricesReader::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
@@ -255,7 +262,7 @@ void SMatricesReader::startReading()
 
     if (!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->configureWithUI();
     }
 
     if (this->hasLocationDefined())

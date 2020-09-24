@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
 
 public:
 
-    fwCoreServiceMacro(SMatricesReader, ::fwIO::IReader);
+    fwCoreServiceMacro(SMatricesReader, ::fwIO::IReader)
 
     /// Constructor.
     IOTIMELINE_API SMatricesReader() noexcept;
@@ -96,8 +96,15 @@ public:
     /// Destructor. Does nothing
     IOTIMELINE_API virtual ~SMatricesReader() noexcept;
 
-    /// Display a location dialog allowing to select the video file to save
+    /**
+     * @brief Display a location dialog allowing to select the video file to save
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOTIMELINE_API virtual void configureWithIHM() override;
+
+    /// Display a location dialog allowing to select the video file to save
+    IOTIMELINE_API virtual void configureWithUI() override;
 
     /// Return file type (::fwIO::FILE)
     IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;

@@ -68,6 +68,12 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
+    this->configureWithUI();
+}
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

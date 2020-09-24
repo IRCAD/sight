@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwData
@@ -63,7 +62,7 @@ namespace ioVTK
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to save, if it is not defined, 'configureWithIHM()' should be called to
+ * - \b file (optional): path of the image to save, if it is not defined, 'configureWithUI()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
@@ -82,12 +81,19 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter)
+
+    /**
+     * @brief Configure the image path.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    IOVTK_API virtual void configureWithIHM() override;
 
     /**
      * @brief Configure the image path.
      */
-    IOVTK_API virtual void configureWithIHM() override;
+    IOVTK_API virtual void configureWithUI() override;
 
 protected:
 

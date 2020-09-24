@@ -137,19 +137,19 @@
 
         <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>depthRecorder/configureWithIHM</slot>
+                <slot>depthRecorder/configureWithUI</slot>
             </slots>
         </service>
 
         <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>rgbRecorder/configureWithIHM</slot>
+                <slot>rgbRecorder/configureWithUI</slot>
             </slots>
         </service>
 
         <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>irRecorder/configureWithIHM</slot>
+                <slot>irRecorder/configureWithUI</slot>
             </slots>
         </service>
 

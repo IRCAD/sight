@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,6 +95,13 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SMatrixWriter::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
@@ -187,7 +194,7 @@ void SMatrixWriter::startRecord()
     std::ios_base::openmode openMode = std::ofstream::app;
     if(!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->configureWithUI();
         // In trunc mode, any contents that existed in the file before it is open are discarded.
         // This is the needed behavior when opening the file for the first time.
         openMode = std::ofstream::trunc;

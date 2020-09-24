@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 #include <vector>
 
@@ -119,7 +118,7 @@ class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
@@ -164,8 +163,15 @@ protected:
     /// Override
     IOGDCM_API virtual std::string getSelectorDialogTitle() override;
 
-    /// Override
+    /**
+     * @brief Configure using GUI.
+     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
+
+    /// Configure using GUI.
+    IOGDCM_API virtual void configureWithUI() override;
 
     /// Return managed file type, here FOLDER
     IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;

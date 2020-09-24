@@ -95,6 +95,13 @@ void SPdfWriter::configuring()
 
 void SPdfWriter::configureWithIHM()
 {
+    this->configureWithUI();
+}
+
+//------------------------------------------------------------------------------
+
+void SPdfWriter::configureWithUI()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
