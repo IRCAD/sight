@@ -11,5 +11,7 @@ set( DEPENDENCIES
     fwServices
     fwTools
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    servicesReg
+)
 

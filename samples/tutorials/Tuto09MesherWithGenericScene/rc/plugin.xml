@@ -4,7 +4,6 @@
     reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
  -->
 <plugin id="Tuto09MesherWithGenericScene" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">

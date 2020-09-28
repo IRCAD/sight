@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries))
 
 namespace fwMedData
 {

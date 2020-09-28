@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     servicesReg
-    dataReg
+    fwData
     gui
     uiTF
     scene2D

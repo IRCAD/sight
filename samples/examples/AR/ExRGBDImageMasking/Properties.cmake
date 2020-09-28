@@ -6,10 +6,11 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     appXml
     fwlauncher
-    arDataReg
+    arData
     arPatchMedicalData
     patchMedicalData
-    dataReg
+    fwData
+    fwMedData
     dataManagerConfig
     servicesReg
     ctrlCamp

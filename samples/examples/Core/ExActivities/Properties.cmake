@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
 
     servicesReg
-    dataReg
+    fwData
 
     gui
     guiQt

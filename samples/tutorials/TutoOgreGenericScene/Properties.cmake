@@ -9,7 +9,7 @@ set( REQUIREMENTS
     gui
     guiQt
     ioData
-    dataReg
+    fwData
     servicesReg
     uiImageQt
     uiIO

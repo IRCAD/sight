@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATACAMP_EXCEPTION_OBJECTNOTFOUND_HPP__
-#define __FWDATACAMP_EXCEPTION_OBJECTNOTFOUND_HPP__
+#pragma once
 
-#include <fwCore/Exception.hpp>
+#include "fwData/reflection/exception/ObjectNotFound.hpp"
 
-#include "fwDataCamp/config.hpp"
-
-namespace fwDataCamp
-{
-
-namespace exception
-{
-
-/// Object not found exception.
-struct ObjectNotFound : ::fwCore::Exception
-{
-    FWDATACAMP_API ObjectNotFound ( const std::string &err );
-};
-
-} // namespace exception
-
-} // namespace fwDataCamp
-
-#endif /* __FWDATACAMP_EXCEPTION_OBJECTNOTFOUND_HPP__ */
-
+// @deprecated ::fwDataCamp has been moved to ::fwData::reflection (sight 22.0)
+namespace fwDataCamp = ::fwData::reflection;

@@ -29,7 +29,7 @@
 
 #include <fwData/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries))
 
 namespace fwData
 {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 #include "fwData/Image.hpp"
 #include "fwData/Object.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Material));
 
 namespace fwData
 {
@@ -41,7 +41,7 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassMacro(Material, ::fwData::Object, ::fwData::factory::New< Material >);
+    fwCoreClassMacro(Material, ::fwData::Object, ::fwData::factory::New< Material >)
     fwCampMakeFriendDataMacro((fwData)(Material));
 
     /**

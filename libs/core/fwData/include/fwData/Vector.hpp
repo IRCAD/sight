@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace fwData
 class Vector;
 }
 
-fwCampAutoDeclareDataMacro((fwData)(Vector), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Vector));
 
 namespace fwData
 {
@@ -51,7 +51,7 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassMacro(Vector, ::fwData::Object, ::fwData::factory::New< Vector >);
+    fwCoreClassMacro(Vector, ::fwData::Object, ::fwData::factory::New< Vector >)
     fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;

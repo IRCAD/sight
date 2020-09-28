@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,10 +24,6 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwDataCamp/Version.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ActivitySeriesTest );
 
@@ -42,14 +38,6 @@ void ActivitySeriesTest::setUp()
 {
     // Set up context before running a test.
     m_series = ::fwMedData::ActivitySeries::New();
-
-    //Force link with fwDataCamp
-    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwDataVersion);
-
-    //Force link with fwMedDataCamp
-    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwMedDataVersion);
 }
 
 //------------------------------------------------------------------------------

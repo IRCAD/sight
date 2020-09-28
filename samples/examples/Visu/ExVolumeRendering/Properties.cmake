@@ -7,7 +7,7 @@ set( REQUIREMENTS
     appXml
     ctrlCamp
     ctrlSelection
-    dataReg
+    fwData
     fwlauncher
     gui
     guiQt

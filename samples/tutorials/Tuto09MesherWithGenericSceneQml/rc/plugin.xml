@@ -1,6 +1,5 @@
 <plugin id="Tuto09MesherWithGenericSceneQml" class="::Tuto09MesherWithGenericSceneQml::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="uiImageQml" />
     <requirement id="uiMedDataQml" />

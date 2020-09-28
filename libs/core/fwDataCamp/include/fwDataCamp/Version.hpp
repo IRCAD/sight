@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATACAMP_VERSION_HPP__
-#define __FWDATACAMP_VERSION_HPP__
+#pragma once
 
 #include "fwDataCamp/config.hpp"
 
-namespace fwDataCamp
+namespace fwData
+{
+namespace reflection
 {
 /// Class to manage fwDataCamp version
 struct Version
@@ -33,5 +34,7 @@ struct Version
     FWDATACAMP_API static const int s_CURRENT_VERSION;
 };
 }
+}
 
-#endif // __FWDATACAMP_VERSION_HPP__
+// @deprecated ::fwDataCamp has been moved to ::fwData::reflection (sight 22.0)
+namespace fwDataCamp = ::fwData::reflection;

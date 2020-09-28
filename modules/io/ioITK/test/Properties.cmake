@@ -15,7 +15,7 @@ set( DEPENDENCIES
     fwIO
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     gui
     ioITK

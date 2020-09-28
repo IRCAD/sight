@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwQml
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     guiQml
     fwlauncher

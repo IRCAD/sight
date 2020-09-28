@@ -1,6 +1,5 @@
 <profile name="calibrationActivityTest" version="0.1">
 
-    <activate id="dataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
 
     <activate id="visuVTK" version="0.1" />

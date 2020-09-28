@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
+#include "ProcessObjectTest.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/ProcessObject.hpp>
-#include "ProcessObjectTest.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ProcessObjectTest );
 
@@ -31,6 +32,8 @@ namespace fwData
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ProcessObjectTest::constructeur()
 {

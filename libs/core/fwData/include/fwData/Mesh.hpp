@@ -34,7 +34,7 @@
 
 #include <boost/multi_array.hpp>
 
-fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Mesh));
 
 namespace fwData
 {

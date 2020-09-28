@@ -32,7 +32,7 @@
 
 #include <fwTools/Type.hpp>
 
-fwCampAutoDeclareDataMacro((fwData)(Array), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Array));
 
 namespace fwData
 {

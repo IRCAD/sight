@@ -21,7 +21,7 @@ set( DEPENDENCIES
     fwPreferences
     )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     )
 set( CONAN_DEPS

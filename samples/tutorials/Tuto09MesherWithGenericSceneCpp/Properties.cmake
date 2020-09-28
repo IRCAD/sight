@@ -13,7 +13,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     ctrlCamp
-    dataReg
+    fwData
     gui
     guiQt
     ioData

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ namespace arData
 class Float3TL : public GenericTL< float[3] >
 {
 public:
-    fwCoreClassMacro(Float3TL, ::arData::TimeLine, ::fwData::factory::New< Float3TL >);
+    fwCoreClassMacro(Float3TL, ::arData::TimeLine, ::fwData::factory::New< Float3TL >)
     Float3TL( ::fwData::Object::Key key ) :
         GenericTL< float[3] >(key)
     {
@@ -57,7 +57,7 @@ typedef float float4[4];
 class Float4TL : public GenericTL< float4 >
 {
 public:
-    fwCoreClassMacro(Float4TL, ::arData::TimeLine, ::fwData::factory::New< Float4TL >);
+    fwCoreClassMacro(Float4TL, ::arData::TimeLine, ::fwData::factory::New< Float4TL >)
     Float4TL( ::fwData::Object::Key key ) :
         GenericTL< float4 >(key)
     {
@@ -78,7 +78,7 @@ public:
 class TestClassTL : public GenericTL< TestContained >
 {
 public:
-    fwCoreClassMacro(TestClassTL, ::arData::TimeLine, ::fwData::factory::New< TestClassTL >);
+    fwCoreClassMacro(TestClassTL, ::arData::TimeLine, ::fwData::factory::New< TestClassTL >)
 
     TestClassTL( ::fwData::Object::Key key ) :
         GenericTL< TestContained >(key)

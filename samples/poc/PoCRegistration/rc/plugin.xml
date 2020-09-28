@@ -1,7 +1,6 @@
 <plugin id="PoCRegistration" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
-    <requirement id="dataReg" />
 
     <requirement id="patchMedicalData" />
 

@@ -13,8 +13,8 @@ set( REQUIREMENTS
         videoQt
         visuVTKQt
         visuVTKARAdaptor
-        arDataReg
-        dataReg
+        arData
+        fwData
         servicesReg
         trackingCalibration
         videoCalibration

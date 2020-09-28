@@ -16,7 +16,7 @@ set( DEPENDENCIES
     cvIO
     calibration3d
 )
-set( REQUIREMENTS dataReg servicesReg)
+set( REQUIREMENTS fwData servicesReg)
 set( CONAN_DEPS
     ${CONAN_OPENCV}
 )

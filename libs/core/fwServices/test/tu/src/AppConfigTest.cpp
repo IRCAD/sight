@@ -115,7 +115,7 @@ void AppConfigTest::addConfigTest()
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string moduleId("dataReg");
+    const std::string moduleId("servicesReg");
     const std::string moduleVersion("0.1");
     ::fwServices::registry::AppInfo::ParametersType parameters;
 

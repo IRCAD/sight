@@ -6,9 +6,9 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     media
     appXml
-    arDataReg
+    arData
     ctrlCamp
-    dataReg
+    fwData
     fwlauncher
     gui
     guiQt

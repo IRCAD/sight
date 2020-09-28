@@ -28,7 +28,7 @@
 #include <array>
 #include <iostream>
 
-fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D));
 
 namespace fwData
 {

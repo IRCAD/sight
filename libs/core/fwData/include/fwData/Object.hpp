@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@
 #include <string>
 #include <unordered_map>
 
-fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Object));
 
 namespace fwData
 {
@@ -67,7 +67,7 @@ public:
 
     typedef ::fwData::factory::Key Key;
 
-    fwCoreClassMacro(Object, ::fwTools::Object);
+    fwCoreClassMacro(Object, ::fwTools::Object)
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Object));
 

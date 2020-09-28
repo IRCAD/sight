@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,18 @@
  *
  ***********************************************************************/
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-
-#include <fwData/Graph.hpp>
-#include <fwData/Node.hpp>
-#include <fwData/Edge.hpp>
-#include <fwData/Port.hpp>
 #include "GraphTest.hpp"
 
+#include <fwData/Edge.hpp>
+#include <fwData/Graph.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/Port.hpp>
 
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::GraphTest );
@@ -77,11 +76,11 @@ void GraphTest::normalCase()
     n2->addInputPort( p2 );
 
     ::fwData::Edge::sptr e( ::fwData::Edge::New() );
-    e->setIdentifiers("sizex","threshold");
+    e->setIdentifiers("sizex", "threshold");
 
     g->addNode(n1);
     g->addNode(n2);
-    g->addEdge(e,n1,n2);
+    g->addEdge(e, n1, n2);
 
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getInputEdges(n1).size() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getOutputEdges(n1).size() );
@@ -128,7 +127,7 @@ void GraphTest::limitCase1()
     n2->addInputPort( p2 );
 
     ::fwData::Edge::sptr e1( ::fwData::Edge::New() );
-    e1->setIdentifiers("sizex","threshold");
+    e1->setIdentifiers("sizex", "threshold");
 
     bool success;
 
@@ -150,13 +149,12 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getNbEdges() );
 
-
-    success = g->addEdge(e1,n1,n2);
+    success = g->addEdge(e1, n1, n2);
     CPPUNIT_ASSERT_EQUAL( success,  true );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
-    success = g->addEdge(e1,n1,n2);
+    success = g->addEdge(e1, n1, n2);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
@@ -167,28 +165,28 @@ void GraphTest::limitCase1()
     p3->setType("float");
     n3->addOutputPort( p3 );
 
-    success = g->addEdge(e1,n3,n2);
+    success = g->addEdge(e1, n3, n2);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
-    success = g->addEdge(e1,n1,n3);
+    success = g->addEdge(e1, n1, n3);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
     ::fwData::Edge::sptr e2( ::fwData::Edge::New() );
-    e2->setIdentifiers("sizex","BADID");
+    e2->setIdentifiers("sizex", "BADID");
 
-    success = g->addEdge(e2,n1,n2);
+    success = g->addEdge(e2, n1, n2);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
     ::fwData::Edge::sptr e3( ::fwData::Edge::New() );
-    e3->setIdentifiers("BADID","threshold");
+    e3->setIdentifiers("BADID", "threshold");
 
-    success = g->addEdge(e3,n1,n2);
+    success = g->addEdge(e3, n1, n2);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
@@ -209,13 +207,15 @@ void GraphTest::limitCase1()
     // e1 : n1 -> n2
 
     ::fwData::Edge::sptr e4( ::fwData::Edge::New() );
-    e4->setIdentifiers("sizex","threshold");
+    e4->setIdentifiers("sizex", "threshold");
 
-    success = g->addEdge(e4,n1,n4);
+    success = g->addEdge(e4, n1, n4);
     CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)3, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 }
+
+//------------------------------------------------------------------------------
 
 void GraphTest::limitCase2()
 {
@@ -239,8 +239,8 @@ void GraphTest::limitCase2()
     g->addNode(n2);
 
     ::fwData::Edge::sptr e1( ::fwData::Edge::New() );
-    e1->setIdentifiers("sizex","threshold");
-    g->addEdge(e1,n1,n2);
+    e1->setIdentifiers("sizex", "threshold");
+    g->addEdge(e1, n1, n2);
 
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
@@ -252,8 +252,7 @@ void GraphTest::limitCase2()
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
     ::fwData::Edge::sptr e2( ::fwData::Edge::New() );
-    e2->setIdentifiers("sizex","threshold");
-
+    e2->setIdentifiers("sizex", "threshold");
 
     success = g->removeEdge(e2);
     CPPUNIT_ASSERT_EQUAL( success,  false );

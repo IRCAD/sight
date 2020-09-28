@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwData)(Resection), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Resection));
 namespace fwData
 {
 /**
@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Resection : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Resection, ::fwData::Object, ::fwData::factory::New< Resection >);
+    fwCoreClassMacro(Resection, ::fwData::Object, ::fwData::factory::New< Resection >)
 
     fwCampMakeFriendDataMacro((fwData)(Resection));
 

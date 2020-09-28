@@ -14,7 +14,7 @@ set( DEPENDENCIES
     cvIO
 )
 
-set( REQUIREMENTS dataReg
+set( REQUIREMENTS fwData
                   servicesReg
 )
 

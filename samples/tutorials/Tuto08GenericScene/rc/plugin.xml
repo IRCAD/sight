@@ -3,7 +3,6 @@
     To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
 -->
 <plugin id="Tuto08GenericScene" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">

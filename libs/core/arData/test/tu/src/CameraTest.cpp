@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,6 @@
 #include "CameraTest.hpp"
 
 #include <arData/Camera.hpp>
-
-#include <arDataCamp/Version.hpp>
-
-#include <fwCore/spyLog.hpp>
 
 #include <fwTest/helper/compare.hpp>
 
@@ -52,9 +48,6 @@ void CameraTest::setUp()
 
 void CameraTest::tearDown()
 {
-    //Force link with arDataCamp
-    const int arfVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(arfVersion);
 }
 
 //------------------------------------------------------------------------------

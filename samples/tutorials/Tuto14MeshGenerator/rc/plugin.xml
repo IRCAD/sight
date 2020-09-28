@@ -2,7 +2,6 @@
 
     <library name="Tuto14MeshGenerator" />
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 

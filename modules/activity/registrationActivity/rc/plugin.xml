@@ -4,7 +4,6 @@
     <requirement id="guiQt" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
-    <requirement id="dataReg" />
     <requirement id="activities" />
 
     <xi:include href="configurations/BlendEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

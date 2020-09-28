@@ -12,7 +12,10 @@ set( DEPENDENCIES
     fwRenderOgre
     fwRuntime
 )
-set( REQUIREMENTS visuOgre )
+set( REQUIREMENTS
+    visuOgre
+    servicesReg
+)
 set( CONAN_DEPS
     ${CONAN_QT}
 )

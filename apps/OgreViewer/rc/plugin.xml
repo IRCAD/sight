@@ -6,7 +6,6 @@
     <requirement id="visuOgre" />
     <requirement id="material" />
     <requirement id="guiQt" />
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="scene2D" />
     <requirement id="patchMedicalData" />

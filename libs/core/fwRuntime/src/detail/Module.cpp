@@ -242,7 +242,7 @@ Module::ExtensionPointConstIterator Module::extensionPointsEnd() const
 
 void Module::addLibrary( SPTR(dl::Library)library )
 {
-    library->setModule(this);
+    library->setSearchPath(this->getLibraryLocation());
     m_libraries.insert(library);
 }
 

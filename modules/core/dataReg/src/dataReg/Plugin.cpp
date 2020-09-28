@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,19 +47,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    //Hack: force link with fwData
-    ::fwData::Float::sptr obj = ::fwData::Float::New();
-    obj->getClassname();
-
-    //Hack: force link with fwMedData
-    ::fwMedData::Patient::sptr pat = ::fwMedData::Patient::New();
-    pat->getClassname();
-
-    //Force link with fwDataCamp
-    m_fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-
-    //Force link with fwMedDataCamp
-    m_fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //-----------------------------------------------------------------------------
