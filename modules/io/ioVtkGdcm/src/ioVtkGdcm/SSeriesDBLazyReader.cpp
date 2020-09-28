@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB )
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
@@ -144,6 +144,7 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
     try
     {
         myLoader->read();
+        m_readFailed = false;
     }
     catch (const std::exception& e)
     {

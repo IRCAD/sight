@@ -1,5 +1,5 @@
 set( NAME OgreViewer )
-set( VERSION 0.4 )
+set( VERSION 0.5 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -18,6 +18,7 @@ set( REQUIREMENTS
     fwData
     fwMedData
     servicesReg             # fwServices
+    ioPacs
 
     # UI declaration/Actions
     gui
@@ -33,6 +34,7 @@ set( REQUIREMENTS
     ioVtkGdcm
     ioVTK
     ioAtoms
+    ioGdcm
 
     # Services
     scene2D
@@ -40,6 +42,9 @@ set( REQUIREMENTS
     ctrlTF
     uiMeasurement
     opImageFilter
+    ioPacs
+    uiMedDataQt
+    ctrlSelection
 
     # Configuration launchers
     ogreConfig

@@ -246,7 +246,7 @@ private:
     /// Contains the parent scene node.
     ::Ogre::SceneNode* m_parentSceneNode { nullptr };
 
-    /// Entity's width.
+    /// Defines the entity's width.
     ::Ogre::Real m_width { 0.f };
 
     /// Defines the entity's height.

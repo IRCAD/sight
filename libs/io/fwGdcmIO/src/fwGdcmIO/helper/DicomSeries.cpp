@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -247,11 +247,16 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     DicomSeriesContainerType seriesDB;
 
     //Loop through every files available in the scanner
+    std::map< std::string, std::filesystem::path > orderedFilenames;
     for(const std::filesystem::path& dicomFile : filenames)
     {
-        auto filename = dicomFile.string();
+        orderedFilenames[dicomFile.filename().string()] = dicomFile;
+    }
+    for(const auto& dicomFile : orderedFilenames)
+    {
+        auto filename = dicomFile.second.string();
 
-        OSLM_ASSERT("The file \"" << dicomFile << "\" is not a key of the gdcm scanner",
+        OSLM_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
                     seriesScanner.IsKey(filename.c_str()));
 
         const std::string sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
@@ -262,7 +267,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
            != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
 
-            this->createSeries(seriesDB, seriesScanner, dicomFile);
+            this->createSeries(seriesDB, seriesScanner, dicomFile.second);
         }
 
         if (!readerObserver || readerObserver->cancelRequested())

@@ -29,6 +29,8 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
@@ -46,14 +48,19 @@ namespace ioPacs
  * @brief This editor is used to edit a pacs configuration.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service type="::ioPacs::SPacsConfigurationEditor">
         <inout key="config" uid="..." />
+        <config showDialog="true" />
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b config [::fwPacsIO::data::PacsConfiguration]: pacs configuration.
+ *
+ * @subsection Configuration Configuration:
+ * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just send the
+ *                                                 notification.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
                                                   public ::fwGui::editor::IEditor
@@ -72,25 +79,34 @@ public:
     /// Destroyes the service.
     IOPACS_API virtual ~SPacsConfigurationEditor() noexcept;
 
-private:
+protected:
 
     /// Configures the editor.
-    virtual void configuring() override;
+    IOPACS_API void configuring() override;
 
     /// Creates the UI.
-    virtual void starting() override;
+    IOPACS_API void starting() override;
 
     /// Does nothing.
-    void updating() override;
+    IOPACS_API void updating() override;
 
     /// Destroyes the UI.
-    virtual void stopping() override;
+    IOPACS_API void stopping() override;
+
+private:
 
     /**
      * @brief Sends a modified signal on the configuration.
      * @param _pacsConfiguration the modified data .
      */
     void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration);
+
+    /**
+     * @brief Displays an information dialog.
+     * @param _title title of the dialog.
+     * @param _message message of the dialog.
+     */
+    void showDialog(const std::string _title, const std::string _message);
 
     /// Contains the AET of the SCU (client name) editor.
     QPointer< QLineEdit > m_SCUAppEntityTitleEdit;
@@ -122,6 +138,15 @@ private:
 
     /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
+
+    /// Contains the worker used to ping the PACS.
+    ::fwThread::Worker::sptr m_PingPACSWorker;
+
+    /// Defines whether or not the dialog message should be displayed for the ping result.
+    bool m_showDialog { true };
+
+    /// Contains the slot to show a dialog in the main thread.
+    ::fwCom::Slot< void(const std::string, const std::string) >::sptr m_slotShowDialog { nullptr };
 
 private Q_SLOTS:
 

@@ -430,7 +430,7 @@ void SWriter::updating()
                                                          );
 
     // Generate a temporary file name for saving the file.
-    const std::filesystem::path tmpFolderPath = std::filesystem::temp_directory_path();
+    const std::filesystem::path tmpFolderPath = ::fwTools::System::getTemporaryFolder();
     const std::filesystem::path tmpFilePath   = tmpFolderPath / (::fwTools::System::genTempFileName() + ".sight");
     const std::filesystem::path tmpFilename   = tmpFilePath.filename();
 

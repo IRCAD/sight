@@ -1,0 +1,601 @@
+<extension implements="::fwServices::registry::AppConfig" >
+    <id>OgreViewer_PACSSelector_AppCfg</id>
+    <parameters>
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <param name="WINDOW_TITLE" />
+        <param name="WINDOW_ICON" />
+        <param name="previewSeriesDB" />
+        <param name="localSeriesDB" />
+        <param name="image" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${previewSeriesDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${localSeriesDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+
+        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+
+        <object uid="previewSelections" type="::fwData::Vector" />
+        <object uid="previewDicom" type="::fwMedData::DicomSeries" />
+        <object uid="previewImage" type="::fwData::Image" />
+        <object uid="previewImageReset" type="::fwData::Image" />
+
+        <object uid="localSelections" type="::fwData::Vector" />
+        <object uid="localImage" type="::fwData::Image" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::frame::SDefaultFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>${WINDOW_TITLE}</name>
+                    <icon>${WINDOW_ICON}</icon>
+                    <minSize width="720" height="390" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="containerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="containerView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" backgroundColor="#3E4453" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="queryView" start="yes" />
+                <view sid="selectorsView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="queryView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <spacer />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="queryEditorSrv" start="yes" />
+                <view sid="showAdvancedQueryEditorSrv" start="yes" />
+                <view sid="hideAdvancedQueryEditorSrv" start="yes" />
+                <view sid="showPACSConfigurationSrv" start="yes" />
+                <view sid="hidePACSConfigurationSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="selectorsView" type="::gui::view::SDefaultView" >
+            <gui>
+                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="270" vOffset="-6" hOffset="50%" />
+                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="270" vOffset="-6" />
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <slideView sid="advancedQueryEditorSliderView" start="yes" />
+                <slideView sid="configurePACSSliderView" start="yes" />
+                <view sid="previewView" start="yes" />
+                <view sid="localView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="advancedQueryEditorSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" backgroundColor="#3E4453" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="advancedQueryEditorSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="configurePACSSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" backgroundColor="#3E4453" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="configurePACSEditorSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="previewView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="previewSelectorSrv" start="yes" />
+                <view sid="previewSceneView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="previewSceneView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
+            </gui>
+            <registry>
+                <view sid="genericScenePreviewSrv" start="yes" />
+                <slideView sid="previewSceneSliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="previewSceneSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="previewDICOMSliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="previewDICOMSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliderIndexDicomPullerEditorSrv" start="yes" />
+                <view sid="seriesPullerAct" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="localView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="localSelectorSrv" start="yes" />
+                <view sid="localSceneView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="localSceneView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
+            </gui>
+            <registry>
+                <view sid="genericSceneLocalSrv" start="yes" />
+                <slideView sid="localSceneSliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="localSceneSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="localSliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="localSliderView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="exportImageAct" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericScenePreviewSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer" order="1" />
+                <adaptor uid="pNegatoAdp" />
+                <adaptor uid="pNegatoCameraAdp" />
+            </scene>
+        </service>
+
+        <service uid="pNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+            <inout key="image" uid="previewImage" />
+            <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
+        </service>
+
+        <service uid="pNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+            <inout key="image" uid="previewImage" />
+            <config layer="defaultLayer" priority="0" orientation="axial" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericSceneLocalSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer" order="1" />
+                <adaptor uid="lNegatoAdp" />
+                <adaptor uid="lNegatoCameraAdp" />
+                <adaptor uid="lTextAdp" />
+            </scene>
+        </service>
+
+        <service uid="lNegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <inout key="image" uid="localImage" />
+            <config layer="defaultLayer" priority="1" sliceIndex="axial" interactive="true" />
+        </service>
+
+        <service uid="lNegatoCameraAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <config layer="defaultLayer" priority="0" />
+        </service>
+
+        <service uid="lTextAdp" type="::visuOgreAdaptor::SText" >
+            <config layer="defaultLayer" x="0.025" y="0.025" hAlign="left" vAlign="top" color="#D25252" />
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="seriesPullerAct" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+               <toolTip>Pull selected series</toolTip>
+            </config>
+        </service>
+
+        <service uid="exportImageAct" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+               <toolTip>Load the image</toolTip>
+            </config>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="showAdvancedQueryEditorSrv" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/YellowBottomChevron.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="hideAdvancedQueryEditorSrv" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/YellowTopChevron.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="showPACSConfigurationSrv" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="hidePACSConfigurationSrv" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
+        <service uid="leftNotifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview" />
+            <message>Default Message</message>
+            <position>BOTTOM_LEFT</position>
+            <maxNotifications>10</maxNotifications>
+            <duration>5000</duration>
+        </service>
+
+        <service uid="rightNotifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview" />
+            <message>Default Message</message>
+            <position>BOTTOM_RIGHT</position>
+            <maxNotifications>10</maxNotifications>
+            <duration>5000</duration>
+        </service>
+
+        <service uid="resetPreviewSrv" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="previewImageReset" />
+            <inout key="target" uid="previewImage" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <service uid="negatoStoperSrv" type="::gui::action::SStarter" >
+            <stop uid="pNegatoAdp" />
+        </service>
+
+        <service uid="negatoStarterSrv" type="::gui::action::SStarter" >
+            <start uid="pNegatoAdp" />
+        </service>
+
+        <service uid="medicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <inout key="image" uid="localImage" />
+        </service>
+
+        <service uid="configurePACSInitializerSrv" type="::ioPacs::SPacsConfigurationInitializer" >
+            <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
+            <config
+                localApplicationTitle="OgreViewer"
+                pacsHostName="localhost"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="4242"
+                moveApplicationTitle="OgreViewer"
+                moveApplicationPort="104"
+                retrieveMethod="MOVE"
+                preferenceKey="OGREVIEWER_PACS_CONFIGURATION"
+                />
+        </service>
+
+        <service uid="configurePACSEditorSrv" type="::ioPacs::SPacsConfigurationEditor" >
+            <inout key="config" uid="pacsConfiguration" />
+            <config showDialog="false" />
+        </service>
+
+        <service uid="queryEditorSrv" type="::ioPacs::SQueryEditor" >
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="seriesDB" uid="${previewSeriesDB}" />
+            <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" advanced="false" />
+        </service>
+
+        <service uid="advancedQueryEditorSrv" type="::ioPacs::SQueryEditor" >
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="seriesDB" uid="${previewSeriesDB}" />
+            <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" />
+        </service>
+
+        <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+            <inout key="seriesDB" uid="${previewSeriesDB}" />
+            <inout key="selection" uid="previewSelections" />
+            <selectionMode>extended</selectionMode>
+            <icons>
+                <icon series="::fwMedData::DicomSeries" icon="flatIcon-0.1/icons/GreenMedicine.svg" />
+            </icons>
+        </service>
+
+        <service uid="extractPreviewSrv" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="previewSelections" >
+              <extract from="@values.0" />
+            </in>
+            <inout key="target" uid="previewDicom" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <service uid="sliderIndexDicomPullerEditorSrv" type="::ioPacs::SSliceIndexDicomEditor" autoConnect="yes" >
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="series" uid="previewDicom" />
+            <inout key="image" uid="previewImage" />
+            <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500" />
+        </service>
+
+        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" autoConnect="yes">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <in key="selectedSeries" uid="previewSelections" />
+            <inout key="seriesDB" uid="${localSeriesDB}" />
+            <config dicomReader="::ioGdcm::SSeriesDBReader" />
+        </service>
+
+        <service uid="localSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+            <inout key="seriesDB" uid="${localSeriesDB}" />
+            <inout key="selection" uid="localSelections" />
+            <selectionMode>extended</selectionMode>
+            <icons>
+                <icon series="::fwMedData::ImageSeries" icon="flatIcon-0.1/icons/Volume.svg" />
+            </icons>
+        </service>
+
+        <service uid="extractLocalSrv" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="localSelections" >
+              <extract from="@values.0.image" />
+            </in>
+            <inout key="target" uid="localImage" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <service uid="exportImageSrv" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="localImage" />
+            <inout key="target" uid="${image}" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+            <signal>mainView/closed</signal>
+        </connect>
+
+        <connect>
+            <signal>mainView/started</signal>
+            <slot>previewSceneSliderView/show</slot>
+            <slot>localSceneSliderView/show</slot>
+        </connect>
+
+        <connect>
+            <signal>seriesPullerAct/clicked</signal>
+            <slot>seriesPullerSrv/update</slot>
+            <slot>hideAdvancedQueryEditorSrv/update</slot>
+            <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>exportImageAct/clicked</signal>
+            <slot>exportImageSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>lNegatoAdp/pickedVoxel</signal>
+            <slot>lTextAdp/setText</slot>
+            <slot>hideAdvancedQueryEditorSrv/update</slot>
+            <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>previewSelections/addedObjects</signal>
+            <slot>negatoStoperSrv/update</slot>
+            <slot>hideAdvancedQueryEditorSrv/update</slot>
+            <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>negatoStoperSrv/updated</signal>
+            <slot>resetPreviewSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>resetPreviewSrv/updated</signal>
+            <slot>negatoStarterSrv/update</slot>
+            <slot>extractPreviewSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>localSelections/addedObjects</signal>
+            <slot>extractLocalSrv/update</slot>
+            <slot>hideAdvancedQueryEditorSrv/update</slot>
+            <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <!-- connection from IService notify signals to the SNotifier,you can add as many services as you need -->
+        <connect>
+            <signal>configurePACSEditorSrv/successNotified</signal>
+            <signal>seriesPullerSrv/successNotified</signal>
+            <slot>rightNotifierSrv/popSuccess</slot>
+        </connect>
+
+        <connect>
+            <signal>queryEditorSrv/failureNotified</signal>
+            <slot>leftNotifierSrv/popFailure</slot>
+        </connect>
+
+        <connect>
+            <signal>configurePACSEditorSrv/failureNotified</signal>
+            <signal>sliderIndexDicomPullerEditorSrv/failureNotified</signal>
+            <signal>seriesPullerSrv/failureNotified</signal>
+            <slot>rightNotifierSrv/popFailure</slot>
+        </connect>
+
+        <connect>
+            <signal>queryEditorSrv/infoNotified</signal>
+            <slot>leftNotifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>sliderIndexDicomPullerEditorSrv/infoNotified</signal>
+            <signal>seriesPullerSrv/infoNotified</signal>
+            <slot>rightNotifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>showAdvancedQueryEditorSrv/clicked</signal>
+            <slot>showAdvancedQueryEditorSrv/hide</slot>
+            <slot>hideAdvancedQueryEditorSrv/show</slot>
+            <slot>advancedQueryEditorSliderView/show</slot>
+        </connect>
+
+        <connect>
+            <signal>hideAdvancedQueryEditorSrv/clicked</signal>
+            <signal>hideAdvancedQueryEditorSrv/updated</signal>
+            <slot>hideAdvancedQueryEditorSrv/hide</slot>
+            <slot>showAdvancedQueryEditorSrv/show</slot>
+            <slot>advancedQueryEditorSliderView/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>showPACSConfigurationSrv/clicked</signal>
+            <slot>showPACSConfigurationSrv/hide</slot>
+            <slot>hidePACSConfigurationSrv/show</slot>
+            <slot>configurePACSSliderView/show</slot>
+        </connect>
+
+        <connect>
+            <signal>hidePACSConfigurationSrv/clicked</signal>
+            <signal>hidePACSConfigurationSrv/updated</signal>
+            <slot>hidePACSConfigurationSrv/hide</slot>
+            <slot>showPACSConfigurationSrv/show</slot>
+            <slot>configurePACSSliderView/hide</slot>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="configurePACSInitializerSrv" />
+        <start uid="mainView" />
+        <start uid="leftNotifierSrv" />
+        <start uid="rightNotifierSrv" />
+        <start uid="resetPreviewSrv" />
+        <start uid="negatoStoperSrv" />
+        <start uid="negatoStarterSrv" />
+        <start uid="medicalImageSrv" />
+        <start uid="extractPreviewSrv" />
+        <start uid="extractLocalSrv" />
+        <start uid="seriesPullerSrv" />
+        <start uid="exportImageSrv" />
+        <start uid="pNegatoAdp" />
+        <start uid="pNegatoCameraAdp" />
+        <start uid="lNegatoAdp" />
+        <start uid="lNegatoCameraAdp" />
+        <start uid="lTextAdp" />
+
+        <update uid="hideAdvancedQueryEditorSrv" />
+        <update uid="hidePACSConfigurationSrv" />
+
+    </config>
+</extension>

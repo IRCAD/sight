@@ -48,6 +48,7 @@
 namespace ioPacs
 {
 
+static const std::string s_ADVANCED_CONFIG    = "advanced";
 static const std::string s_ICON_PATH_CONFIG   = "icon";
 static const std::string s_ICON_WIDTH_CONFIG  = "width";
 static const std::string s_ICON_HEIGHT_CONFIG = "height";
@@ -80,9 +81,10 @@ void SQueryEditor::configuring()
         const auto iconPath = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
         if(iconPath)
         {
-            m_iconPath = ::fwRuntime::getBundleResourceFilePath(iconPath.value());
+            m_iconPath = ::fwRuntime::getModuleResourceFilePath(iconPath.value());
         }
 
+        m_advanced   = config->get<bool>(s_ADVANCED_CONFIG, m_advanced);
         m_iconWidth  = config->get<unsigned int>(s_ICON_WIDTH_CONFIG, m_iconWidth);
         m_iconHeight = config->get<unsigned int>(s_ICON_HEIGHT_CONFIG, m_iconHeight);
     }
@@ -92,9 +94,8 @@ void SQueryEditor::configuring()
 
 void SQueryEditor::starting()
 {
-    // Gets the pacs configuration.
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
-    SLM_ASSERT("input '" + s_PACS_INPUT +"' does not exist.", m_pacsConfiguration);
+    // Create the worker.
+    m_executeQueryWorker = ::fwThread::Worker::New();
 
     // Create the GUI.
     ::fwGui::IGuiContainerSrv::create();
@@ -123,150 +124,191 @@ void SQueryEditor::starting()
     searchLayout->addWidget(m_searchButton);
     mainLayout->addLayout(searchLayout);
 
-    QHBoxLayout* const advancedLayout = new QHBoxLayout();
-    advancedLayout->setObjectName("SQueryEditor_advanced");
+    QObject::connect(m_searchEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::connect(m_searchButton, &QPushButton::clicked, this, &SQueryEditor::executeQueryAsync);
 
-    QVBoxLayout* const labelLayout = new QVBoxLayout();
-    labelLayout->setObjectName("SQueryEditor_labels");
+    if(m_advanced)
+    {
+        QHBoxLayout* const advancedLayout = new QHBoxLayout();
+        advancedLayout->setObjectName("SQueryEditor_advanced");
 
-    QLabel* const dateLabel = new QLabel("Date of the study");
-    dateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const nameLabel = new QLabel("Patient's name");
-    nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const idLabel = new QLabel("Patient's ID");
-    idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const seriesUIDLabel = new QLabel("Series's ID");
-    seriesUIDLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const descriptionLabel = new QLabel("Series's description");
-    descriptionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const modalityLabel = new QLabel("Modality");
-    modalityLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QVBoxLayout* const labelLayout = new QVBoxLayout();
+        labelLayout->setObjectName("SQueryEditor_labels");
 
-    labelLayout->addWidget(dateLabel);
-    labelLayout->addWidget(new QLabel());
-    labelLayout->addWidget(nameLabel);
-    labelLayout->addWidget(idLabel);
-    labelLayout->addWidget(seriesUIDLabel);
-    labelLayout->addWidget(descriptionLabel);
-    labelLayout->addWidget(modalityLabel);
+        QLabel* const dateLabel = new QLabel("Date of the study");
+        dateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const nameLabel = new QLabel("Patient's name");
+        nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const idLabel = new QLabel("Patient's ID");
+        idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const seriesUIDLabel = new QLabel("Series's ID");
+        seriesUIDLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const descriptionLabel = new QLabel("Series's description");
+        descriptionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const modalityLabel = new QLabel("Modality");
+        modalityLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    QHBoxLayout* const dateLayout = new QHBoxLayout();
+        labelLayout->addWidget(dateLabel);
+        labelLayout->addWidget(new QLabel());
+        labelLayout->addWidget(nameLabel);
+        labelLayout->addWidget(idLabel);
+        labelLayout->addWidget(seriesUIDLabel);
+        labelLayout->addWidget(descriptionLabel);
+        labelLayout->addWidget(modalityLabel);
 
-    QVBoxLayout* const dateLabelLayout = new QVBoxLayout();
+        QHBoxLayout* const dateLayout = new QHBoxLayout();
 
-    QLabel* const fromLabel = new QLabel("");
-    fromLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QLabel* const toLabel = new QLabel("to");
-    toLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QVBoxLayout* const dateLabelLayout = new QVBoxLayout();
 
-    dateLabelLayout->addWidget(fromLabel);
-    dateLabelLayout->addWidget(toLabel);
+        QLabel* const fromLabel = new QLabel("from");
+        fromLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const toLabel = new QLabel("to");
+        toLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    QVBoxLayout* const dateEditLayout = new QVBoxLayout();
+        dateLabelLayout->addWidget(fromLabel);
+        dateLabelLayout->addWidget(toLabel);
 
-    m_beginStudyDateEdit = new QDateEdit();
-    QDate beginDate = QDate::currentDate();
-    beginDate.setDate(beginDate.year(), beginDate.month()-1 > 0 ? beginDate.month()-1 : 12, beginDate.day());
-    m_beginStudyDateEdit->setDate(beginDate);
-    m_beginStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
-    m_endStudyDateEdit = new QDateEdit();
-    m_endStudyDateEdit->setDate(QDate::currentDate());
-    m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
-    dateEditLayout->addWidget(m_beginStudyDateEdit);
-    dateEditLayout->addWidget(m_endStudyDateEdit);
+        QVBoxLayout* const dateEditLayout = new QVBoxLayout();
 
-    dateLayout->addLayout(dateLabelLayout, 0);
-    dateLayout->addLayout(dateEditLayout, 1);
+        m_beginStudyDateEdit = new QDateEdit();
+        m_beginStudyDateEdit->setDate(QDate());
+        m_beginStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
+        m_endStudyDateEdit = new QDateEdit();
+        m_endStudyDateEdit->setDate(QDate::currentDate());
+        m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
+        dateEditLayout->addWidget(m_beginStudyDateEdit);
+        dateEditLayout->addWidget(m_endStudyDateEdit);
 
-    QVBoxLayout* const editLayout = new QVBoxLayout();
-    editLayout->setObjectName("SQueryEditor_editors");
+        dateLayout->addLayout(dateLabelLayout, 0);
+        dateLayout->addLayout(dateEditLayout, 1);
 
-    m_patientNameEdit       = new QLineEdit();
-    m_patientUIDEdit        = new QLineEdit();
-    m_seriesUIDEdit         = new QLineEdit();
-    m_seriesDescriptionEdit = new QLineEdit();
-    m_seriesModalityEdit    = new QLineEdit();
+        QVBoxLayout* const editLayout = new QVBoxLayout();
+        editLayout->setObjectName("SQueryEditor_editors");
 
-    editLayout->addLayout(dateLayout);
-    editLayout->addWidget(m_patientNameEdit);
-    editLayout->addWidget(m_patientUIDEdit);
-    editLayout->addWidget(m_seriesUIDEdit);
-    editLayout->addWidget(m_seriesDescriptionEdit);
-    editLayout->addWidget(m_seriesModalityEdit);
+        m_patientNameEdit       = new QLineEdit();
+        m_patientUIDEdit        = new QLineEdit();
+        m_seriesUIDEdit         = new QLineEdit();
+        m_seriesDescriptionEdit = new QLineEdit();
+        m_seriesModalityEdit    = new QLineEdit();
 
-    advancedLayout->addLayout(labelLayout);
-    advancedLayout->addLayout(editLayout);
+        editLayout->addLayout(dateLayout);
+        editLayout->addWidget(m_patientNameEdit);
+        editLayout->addWidget(m_patientUIDEdit);
+        editLayout->addWidget(m_seriesUIDEdit);
+        editLayout->addWidget(m_seriesDescriptionEdit);
+        editLayout->addWidget(m_seriesModalityEdit);
 
-    mainLayout->addLayout(advancedLayout);
+        advancedLayout->addLayout(labelLayout);
+        advancedLayout->addLayout(editLayout);
+
+        mainLayout->addLayout(advancedLayout);
+
+        // Connect signals.
+        QObject::connect(m_patientNameEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+        QObject::connect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+        QObject::connect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+        QObject::connect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+        QObject::connect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    }
 
     qtContainer->setLayout(mainLayout);
-
-    // Connect signals.
-    QObject::connect(m_searchEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_searchButton, &QPushButton::clicked, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_patientNameEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::connect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::updating()
 {
-    this->executeQuery();
+    this->executeQueryAsync();
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::stopping()
 {
-    QObject::disconnect(m_searchEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_searchButton, &QPushButton::clicked, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_patientNameEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
-    QObject::disconnect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQuery);
+    QObject::disconnect(m_searchEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_searchButton, &QPushButton::clicked, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_patientNameEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+    QObject::disconnect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+
+    // Stop worker.
+    m_executeQueryWorker->stop();
+    m_executeQueryWorker.reset();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
+void SQueryEditor::executeQueryAsync()
+{
+    if(!m_isQuerying)
+    {
+        m_executeQueryWorker->post(std::bind(&::ioPacs::SQueryEditor::executeQuery, this));
+    }
+    else
+    {
+        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        notif->asyncEmit("Already querying");
+        return;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SQueryEditor::executeQuery()
 {
+    m_isQuerying = true;
+
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
     // Initialize connection.
     try
     {
+        const auto pacsConfiguration = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
+
         seriesEnquirer->initialize(
-            m_pacsConfiguration->getLocalApplicationTitle(),
-            m_pacsConfiguration->getPacsHostName(),
-            m_pacsConfiguration->getPacsApplicationPort(),
-            m_pacsConfiguration->getPacsApplicationTitle());
+            pacsConfiguration->getLocalApplicationTitle(),
+            pacsConfiguration->getPacsHostName(),
+            pacsConfiguration->getPacsApplicationPort(),
+            pacsConfiguration->getPacsApplicationTitle());
         seriesEnquirer->connect();
     }
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't connect to the PACS");
+        m_isQuerying = false;
         return;
     }
 
     try
     {
         // Execute find requests.
-        const std::string searchValue            = m_searchEdit->text().toStdString();
-        const std::string nameSearchValue        = m_patientNameEdit->text().toStdString();
-        const std::string patientUIDSearchValue  = m_patientUIDEdit->text().toStdString();
-        const std::string seriesUIDSearchValue   = m_seriesUIDEdit->text().toStdString();
-        const std::string descriptionSearchValue = m_seriesDescriptionEdit->text().toStdString();
-        const std::string modalitySearchValue    = m_seriesModalityEdit->text().toStdString();
+        const std::string searchValue      = m_searchEdit->text().toStdString();
+        std::string beginDataSearchValue   = "";
+        std::string endDateSearchValue     = "";
+        std::string nameSearchValue        = "";
+        std::string patientUIDSearchValue  = "";
+        std::string seriesUIDSearchValue   = "";
+        std::string descriptionSearchValue = "";
+        std::string modalitySearchValue    = "";
+
+        if(m_advanced)
+        {
+            beginDataSearchValue   = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            endDateSearchValue     = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            nameSearchValue        = m_patientNameEdit->text().toStdString();
+            patientUIDSearchValue  = m_patientUIDEdit->text().toStdString();
+            seriesUIDSearchValue   = m_seriesUIDEdit->text().toStdString();
+            descriptionSearchValue = m_seriesDescriptionEdit->text().toStdString();
+            modalitySearchValue    = m_seriesModalityEdit->text().toStdString();
+        }
 
         OFList< QRResponse* > responses;
 
@@ -291,12 +333,15 @@ void SQueryEditor::executeQuery()
         {
             responses = seriesEnquirer->findSeriesByModality(modalitySearchValue);
         }
-        // Else we find everything that match the date editor.
+        // By default, check by date if the advanced mode is enable.
+        else if(m_advanced)
+        {
+            responses = seriesEnquirer->findSeriesByDate(beginDataSearchValue, endDateSearchValue);
+        }
+        // Else, retrieve all patient.
         else
         {
-            responses = seriesEnquirer->findSeriesByDate(
-                m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString(),
-                m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString());
+            responses = seriesEnquirer->findSeriesByPatientName("");
         }
 
         // Filter all results.
@@ -329,9 +374,13 @@ void SQueryEditor::executeQuery()
 
                     response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, ofValue);
                     QDate seriesDate = QDate::fromString(ofValue.c_str(), "yyyyMMdd");
-                    if(seriesDate <= m_beginStudyDateEdit->date() || seriesDate >= m_endStudyDateEdit->date())
+                    // Check date if the advanced mode is enabled.
+                    if(m_advanced)
                     {
-                        continue;
+                        if(seriesDate <= m_beginStudyDateEdit->date() || seriesDate >= m_endStudyDateEdit->date())
+                        {
+                            continue;
+                        }
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_PatientName, ofValue);
@@ -423,7 +472,7 @@ void SQueryEditor::executeQuery()
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't execture query");
     }
@@ -432,6 +481,8 @@ void SQueryEditor::executeQuery()
     {
         seriesEnquirer->disconnect();
     }
+
+    m_isQuerying = false;
 }
 
 //------------------------------------------------------------------------------

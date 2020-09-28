@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,72 +38,62 @@ namespace ioPacs
 {
 
 /**
- * @brief   This editor service is used to display a progress bar
+ * @brief This editor service is used to display a progress bar.
+ *
+ * @section Slots Slots
+ * - \b startProgress(std::string): starts the progress bar (bar id).
+ * - \b updateProgress(std::string, float, string): updates the progress bar (bar id, percentage, message).
+ * - \b stopProgress(std::string): stops the progress bar (bar id).
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="progressBarController" type="::ioPacs::SProgressBarController" />
+   @endcode
  */
 class IOPACS_CLASS_API SProgressBarController : public ::fwServices::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SProgressBarController,  ::fwServices::IController );
+    fwCoreServiceMacro(SProgressBarController,  ::fwServices::IController)
 
-    /// Type of progress bar container
-    typedef std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
-
-    /**
-     * @brief constructor
-     */
+    /// Initializes slots.
     IOPACS_API SProgressBarController() noexcept;
 
-    /**
-     * @brief destructor
-     */
+    /// Destroys the service.
     IOPACS_API virtual ~SProgressBarController() noexcept;
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="progressBarController" impl="::ioPacs::SProgressBarController"
-         autoConnect="no">
-       </service>
-       @endcode
-     */
+    /// Does nothing.
     IOPACS_API virtual void configuring() override;
 
-    /// Override
+    /// Does nothing.
     IOPACS_API virtual void starting() override;
 
-    /// Override
+    /// Does nothing.
     IOPACS_API virtual void stopping() override;
 
-    /// Override
+    /// Does nothing.
     IOPACS_API void updating() override;
 
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
+private:
 
-    /**
-     * @name Slots
-     * @{
-     */
-    void startProgress(std::string id);
+    /// Starts a progress bar with the given id.
+    void startProgress(std::string _id);
 
-    void updateProgress(std::string id, float percentage, std::string message);
+    /// Starts a progress bar with the given id with a new message.
+    void updateProgress(std::string _id, float _percentage, std::string _message);
 
-    void stopProgress(std::string id);
-    /**
-     * @}
-     */
+    /// Stops a progress bar with the given id.
+    void stopProgress(std::string _id);
 
-    /// Progress Dialog
-    ProgressDialogContainerType m_progressDialogs;
+    /// Stores progress bars.
+    std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > m_progressDialogs;
 
-    ::fwCore::mt::Mutex m_mutex; ///< mutex for progress dialog access
+    /// Synchronizes progress bars access.
+    ::fwCore::mt::Mutex m_mutex;
 
 };
 
-} // namespace ioPacs
+} // namespace ioPacs.

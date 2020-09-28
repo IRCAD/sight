@@ -34,13 +34,13 @@ struct IOPACS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destroys the plugin.
-    IOPACS_API ~Plugin() noexcept;
+    IOPACS_API ~Plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    IOPACS_API void start();
+    IOPACS_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    IOPACS_API void stop() noexcept;
+    IOPACS_API void stop() noexcept override;
 
 };
 

@@ -150,6 +150,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
     try
     {
         reader->read();
+        m_readFailed = false;
     }
     catch (const std::exception& e)
     {

@@ -666,46 +666,31 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
-    const auto srcType = _image->getType();
+    // Allocate texture memory.
+    if( _texture->getWidth() != _image->getSize2()[0] ||
+        _texture->getHeight() != _image->getSize2()[1] ||
+        _texture->getDepth() != _image->getSize2()[2] ||
+        _texture->getTextureType() != ::Ogre::TEX_TYPE_3D ||
+        _texture->getFormat() != ::Ogre::PF_L16 ||
+        _texture->getUsage() != ::Ogre::TU_STATIC_WRITE_ONLY)
+    {
+        ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
+                                               _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
 
+    }
+
+    // Fill the texture buffer.
+    const auto srcType = _image->getType();
     if(srcType == ::fwTools::Type::s_INT16)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
-
-        }
-
         copyNegatoImage< std::int16_t, std::int16_t >(_texture, _image);
     }
     else if(srcType == ::fwTools::Type::s_INT32)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
-                                                   false);
-
-        }
-
         copyNegatoImage< std::int32_t, std::int16_t >(_texture, _image);
     }
     else if(srcType == ::fwTools::Type::s_UINT8)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
-
-        }
-
         copyNegatoImage< std::uint8_t, std::int16_t >(_texture, _image);
     }
     else

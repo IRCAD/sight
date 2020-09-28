@@ -31,6 +31,8 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
@@ -46,7 +48,6 @@ namespace ioPacs
  * Queries results are stored in a SeriesDB where each Series is a DicomSeries.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service type="::ioPacs::SQueryEditor">
             <in key="pacsConfig" uid="..." />
@@ -62,6 +63,7 @@ namespace ioPacs
  * - \b seriesDB [::fwData::Object]: seriesDB where to push the queried data.
  *
  * @subsection Configuration Configuration:
+ * - \b advanced (optional, bool, default=true): define if advanced fields are displayed.
  * - \b icon (optional, string, default=""): path of the icon used in the search button.
  * - \b width (optional, unsigned int, default=20): width of the icon used in the search button.
  * - \b height (optional, unsigned int, default=20): height of the icon used in the search button.
@@ -84,25 +86,39 @@ public:
     /// Destroyes the service.
     IOPACS_API virtual ~SQueryEditor() noexcept;
 
-private:
+protected:
 
     /// Configures the editor.
-    virtual void configuring() override;
+    IOPACS_API void configuring() override;
 
-    /// Creates the GUI and connect widget to @ref updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
-    virtual void starting() override;
+    /// Creates the GUI and connects widget to updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
+    IOPACS_API void starting() override;
 
     /// Executes a query with last settings.
-    void updating() override;
+    IOPACS_API void updating() override;
 
     /// Destroys the GUI and disconnect signals.
-    virtual void stopping() override;
+    IOPACS_API void stopping() override;
+
+private:
+
+    /// Executes a query and fills the result in the series DB.
+    void executeQuery();
 
     /**
      * @brief Adds series in the series DB.
      * @param _series series to add.
      */
     void updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series);
+
+    /// Contains the enquirer worker.
+    ::fwThread::Worker::sptr m_executeQueryWorker { nullptr };
+
+    /// Defines if the service is executing query.
+    std::atomic< bool > m_isQuerying { false };
+
+    /// Defines if advanced fields are displayed.
+    bool m_advanced { true };
 
     /// Defines the path of the button's icon.
     std::filesystem::path m_iconPath {};
@@ -140,13 +156,10 @@ private:
     /// Contains the modality line editor.
     QPointer< QLineEdit > m_seriesModalityEdit;
 
-    /// Contains the configuratuion of the PACS.
-    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
-
 private Q_SLOTS:
 
     /// Executes a query and fills the result in the series DB.
-    void executeQuery();
+    void executeQueryAsync();
 
 };
 

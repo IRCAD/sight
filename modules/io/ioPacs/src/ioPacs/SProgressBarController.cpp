@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,27 +22,20 @@
 
 #include "ioPacs/SProgressBarController.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/dialog/ProgressDialog.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SProgressBarController, ::fwData::Composite );
-
 static const ::fwCom::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const ::fwCom::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
+
+fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SProgressBarController)
 
 //------------------------------------------------------------------------------
 
@@ -60,72 +53,60 @@ SProgressBarController::~SProgressBarController() noexcept
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::info(std::ostream& _sstream )
+void SProgressBarController::configuring()
 {
-    _sstream << "SProgressBarController::info";
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::starting()
 {
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SProgressBarController::stopping()
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SProgressBarController::configuring()
-{
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::startProgress(std::string id)
+void SProgressBarController::stopping()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
-    m_progressDialogs[id] = ::fwGui::dialog::ProgressDialog::New();
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::updateProgress(std::string id, float percentage, std::string message)
+void SProgressBarController::startProgress(std::string _id)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
-    if(m_progressDialogs.find(id) != m_progressDialogs.end())
+    m_progressDialogs[_id] = ::fwGui::dialog::ProgressDialog::New();
+}
+
+//------------------------------------------------------------------------------
+
+void SProgressBarController::updateProgress(std::string _id, float _percentage, std::string _message)
+{
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+    if(m_progressDialogs.find(_id) != m_progressDialogs.end())
     {
-        (*m_progressDialogs[id])(percentage, message);
-        m_progressDialogs[id]->setMessage(message);
+        (*m_progressDialogs[_id])(_percentage, _message);
+        m_progressDialogs[_id]->setMessage(_message);
     }
     else
     {
         SLM_WARN("Trying to update a progress bar which is not started !");
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::stopProgress(std::string id)
+void SProgressBarController::stopProgress(std::string _id)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
-    m_progressDialogs.erase(id);
+    m_progressDialogs.erase(_id);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ioPacs
+} // namespace ioPacs.
