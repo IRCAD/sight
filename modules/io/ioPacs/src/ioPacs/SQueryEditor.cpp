@@ -38,6 +38,7 @@
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/ofstd/ofstring.h>
 
+#include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -104,7 +105,7 @@ void SQueryEditor::starting()
     QVBoxLayout* const mainLayout = new QVBoxLayout();
 
     m_searchEdit = new QLineEdit();
-    m_searchEdit->setPlaceholderText("Find by name, ID, date, description or modality");
+    m_searchEdit->setPlaceholderText("Find by name, birth date, ID, date, description or modality");
     m_searchButton = new QPushButton("Search");
 
     if(!m_iconPath.empty())
@@ -139,6 +140,8 @@ void SQueryEditor::starting()
         dateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QLabel* const nameLabel = new QLabel("Patient's name");
         nameLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel* const birthDateLabel = new QLabel("Patient's birth date");
+        birthDateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QLabel* const idLabel = new QLabel("Patient's ID");
         idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QLabel* const seriesUIDLabel = new QLabel("Series's ID");
@@ -151,6 +154,7 @@ void SQueryEditor::starting()
         labelLayout->addWidget(dateLabel);
         labelLayout->addWidget(new QLabel());
         labelLayout->addWidget(nameLabel);
+        labelLayout->addWidget(birthDateLabel);
         labelLayout->addWidget(idLabel);
         labelLayout->addWidget(seriesUIDLabel);
         labelLayout->addWidget(descriptionLabel);
@@ -185,7 +189,20 @@ void SQueryEditor::starting()
         QVBoxLayout* const editLayout = new QVBoxLayout();
         editLayout->setObjectName("SQueryEditor_editors");
 
-        m_patientNameEdit       = new QLineEdit();
+        m_patientNameEdit = new QLineEdit();
+
+        QHBoxLayout* const birthDateEditLayout = new QHBoxLayout();
+
+        m_birthDateEdit = new QDateEdit();
+        m_birthDateEdit->setDate(QDate());
+        m_birthDateEdit->setDisplayFormat("dd.MM.yyyy");
+        m_birthDateEdit->setEnabled(false);
+
+        QCheckBox* const birthDateEnabler = new QCheckBox();
+
+        birthDateEditLayout->addWidget(birthDateEnabler, 0);
+        birthDateEditLayout->addWidget(m_birthDateEdit, 1);
+
         m_patientUIDEdit        = new QLineEdit();
         m_seriesUIDEdit         = new QLineEdit();
         m_seriesDescriptionEdit = new QLineEdit();
@@ -193,6 +210,7 @@ void SQueryEditor::starting()
 
         editLayout->addLayout(dateLayout);
         editLayout->addWidget(m_patientNameEdit);
+        editLayout->addLayout(birthDateEditLayout);
         editLayout->addWidget(m_patientUIDEdit);
         editLayout->addWidget(m_seriesUIDEdit);
         editLayout->addWidget(m_seriesDescriptionEdit);
@@ -205,6 +223,7 @@ void SQueryEditor::starting()
 
         // Connect signals.
         QObject::connect(m_patientNameEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
+        QObject::connect(birthDateEnabler, &QCheckBox::stateChanged, this, &SQueryEditor::enableBirthDateEdit);
         QObject::connect(m_patientUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
         QObject::connect(m_seriesUIDEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
         QObject::connect(m_seriesDescriptionEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
@@ -294,6 +313,7 @@ void SQueryEditor::executeQuery()
         std::string beginDataSearchValue   = "";
         std::string endDateSearchValue     = "";
         std::string nameSearchValue        = "";
+        std::string birthDateSearchValue   = "";
         std::string patientUIDSearchValue  = "";
         std::string seriesUIDSearchValue   = "";
         std::string descriptionSearchValue = "";
@@ -301,9 +321,13 @@ void SQueryEditor::executeQuery()
 
         if(m_advanced)
         {
-            beginDataSearchValue   = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            endDateSearchValue     = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            nameSearchValue        = m_patientNameEdit->text().toStdString();
+            beginDataSearchValue = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            endDateSearchValue   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
+            nameSearchValue      = m_patientNameEdit->text().toStdString();
+            if(m_birthDateEdit->isEnabled())
+            {
+                birthDateSearchValue = m_birthDateEdit->date().toString("yyyyMMdd").toStdString();
+            }
             patientUIDSearchValue  = m_patientUIDEdit->text().toStdString();
             seriesUIDSearchValue   = m_seriesUIDEdit->text().toStdString();
             descriptionSearchValue = m_seriesDescriptionEdit->text().toStdString();
@@ -316,6 +340,10 @@ void SQueryEditor::executeQuery()
         if(!nameSearchValue.empty())
         {
             responses = seriesEnquirer->findSeriesByPatientName(nameSearchValue);
+        }
+        else if(!birthDateSearchValue.empty())
+        {
+            responses = seriesEnquirer->findSeriesByPatientBirthDate(birthDateSearchValue);
         }
         else if(!patientUIDSearchValue.empty())
         {
@@ -383,6 +411,16 @@ void SQueryEditor::executeQuery()
                         }
                     }
 
+                    response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, ofValue);
+                    const std::string patientBirthDate = ofValue.c_str();
+                    if(!birthDateSearchValue.empty())
+                    {
+                        if(patientBirthDate.find(birthDateSearchValue) == std::string::npos)
+                        {
+                            continue;
+                        }
+                    }
+
                     response->m_dataset->findAndGetOFStringArray(DCM_PatientName, ofValue);
                     const std::string patientName = ofValue.c_str();
                     if(!nameSearchValue.empty())
@@ -436,6 +474,7 @@ void SQueryEditor::executeQuery()
                     // Check if each tag match at least the main research value.
                     if(seriesDate.toString("yyyyMMdd").toStdString().find(searchValue) != std::string::npos ||
                        patientName.find(searchValue) != std::string::npos ||
+                       patientBirthDate.find(searchValue) != std::string::npos ||
                        patientID.find(searchValue) != std::string::npos ||
                        seriesInstanceUID.find(searchValue) != std::string::npos ||
                        seriesDescription.find(searchValue) != std::string::npos ||
@@ -489,10 +528,9 @@ void SQueryEditor::executeQuery()
 
 void SQueryEditor::updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series)
 {
-    const ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("inout '" + s_SERIESDB_INOUT +"' does not exist..", seriesDB);
+    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
 
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Delete old series from the SeriesDB.
     seriesDBHelper.clear();
@@ -506,6 +544,13 @@ void SQueryEditor::updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _s
 
     // Notify the SeriesDB.
     seriesDBHelper.notify();
+}
+
+//------------------------------------------------------------------------------
+
+void SQueryEditor::enableBirthDateEdit(int _enable)
+{
+    m_birthDateEdit->setEnabled(_enable);
 }
 
 } // namespace ioPacs
