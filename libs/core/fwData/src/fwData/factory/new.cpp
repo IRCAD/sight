@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,13 @@
  *
  ***********************************************************************/
 
-#include "fwData/Object.hpp"
-
 #include "fwData/factory/new.hpp"
 
+#include "fwData/Object.hpp"
+
+#include <fwRuntime/operations.hpp>
+
+#include <regex>
 
 namespace fwData
 {
@@ -31,13 +34,29 @@ namespace fwData
 namespace factory
 {
 
-::fwData::Object::sptr New( const ::fwData::registry::KeyType & classname )
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr New( const ::fwData::registry::KeyType& classname )
 {
+    std::smatch match;
+    static const std::regex reg("::([^:.]*)::.*");
+    if( std::regex_match(classname, match, reg ) && match.size() == 2)
+    {
+        const std::string libName = match[1].str();
+        const bool loaded         = ::fwRuntime::loadLibrary(libName);
+        if(!loaded)
+        {
+            return nullptr;
+        }
+    }
+    else
+    {
+        SLM_FATAL("Cannot determine library name from data '" + classname + "'");
+    }
+
     return ::fwData::registry::get()->create(classname);
 }
 
 } // namespace factory
 
 } // namespace fwData
-
-

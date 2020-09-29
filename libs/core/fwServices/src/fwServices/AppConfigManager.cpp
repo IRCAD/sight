@@ -296,24 +296,6 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
         // Start dll to retrieve proxy and register object
         ext->getModule()->start();
     }
-    else
-    {
-        std::smatch match;
-        static const std::regex reg("::([^:.]*)::.*");
-        if( std::regex_match(type.first, match, reg ) && match.size() == 2)
-        {
-            const std::string libName = match[1].str();
-            const bool loaded         = ::fwRuntime::loadLibrary(libName);
-            if(!loaded)
-            {
-                return nullptr;
-            }
-        }
-        else
-        {
-            SLM_FATAL("Cannot determine library name from data '" + type.first + "'");
-        }
-    }
 
     ::fwData::Object::sptr obj = ::fwData::factory::New(type.first);
     SLM_ASSERT("Factory failed to build object : " + type.first, obj);
