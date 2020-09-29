@@ -54,12 +54,12 @@ namespace fwAtomConversion
         catch(const ::fwCore::Exception& e)
         {
             SLM_ERROR(e.what());
-            FW_RAISE_EXCEPTION_IF(
-                exception::DataFactoryNotFound(
-                    std::string("Unable to build '") + classname + "': the data factory may be missing.")
-                , !obj
-                );
         }
+        FW_RAISE_EXCEPTION_IF(
+            exception::DataFactoryNotFound(
+                std::string("Unable to build '") + classname + "': the data factory may be missing.")
+            , !obj
+            );
 
         bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
 
@@ -83,12 +83,12 @@ namespace fwAtomConversion
     catch(const ::fwCore::Exception& e)
     {
         SLM_ERROR(e.what());
-        FW_RAISE_EXCEPTION_IF(
-            exception::DataFactoryNotFound(
-                std::string("Unable to build '") + classname + "': the data factory may be missing.")
-            , !obj
-            );
     }
+    FW_RAISE_EXCEPTION_IF(
+        exception::DataFactoryNotFound(
+            std::string("Unable to build '") + classname + "': the data factory may be missing.")
+        , !obj
+        );
 
     ::fwTools::UUID::set(obj, uuid);
     return obj;
@@ -107,13 +107,12 @@ namespace fwAtomConversion
     catch(const ::fwCore::Exception& e)
     {
         SLM_ERROR(e.what());
-        FW_RAISE_EXCEPTION_IF(
-            exception::DataFactoryNotFound(
-                std::string("Unable to build '") + classname + "': the data factory may be missing.")
-            , !obj
-            );
     }
-
+    FW_RAISE_EXCEPTION_IF(
+        exception::DataFactoryNotFound(
+            std::string("Unable to build '") + classname + "': the data factory may be missing.")
+        , !obj
+        );
     const bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
 
     FW_RAISE_EXCEPTION_IF(
