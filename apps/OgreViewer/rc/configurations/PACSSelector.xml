@@ -306,6 +306,7 @@
         <service uid="exportImageAct" type="::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
+               <executable>false</executable>
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
@@ -525,6 +526,11 @@
             <slot>extractLocalSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>extractLocalSrv/updated</signal>
+            <slot>exportImageAct/setExecutable</slot>
         </connect>
 
         <connect>

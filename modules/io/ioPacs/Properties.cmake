@@ -19,10 +19,7 @@ set( DEPENDENCIES
     fwIO
     fwPreferences
     )
-set( REQUIREMENTS
-    fwData
-    servicesReg
-    )
+set( REQUIREMENTS )
 set( CONAN_DEPS
     ${CONAN_DCMTK}
     ${CONAN_QT}
