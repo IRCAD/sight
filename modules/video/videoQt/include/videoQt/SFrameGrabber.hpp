@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,12 +66,15 @@ namespace videoQt
         <service type="::videoQt::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
+            <config notifyInterval="1000"/>
         </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * @subsection Configuration Configuration:
+ * - \b notifyInterval (optional, int): defines the player notify interval in ms, default value 1000.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
                                         public ::arServices::IGrabber
@@ -79,7 +82,7 @@ class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
 Q_OBJECT;
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber);
+    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber)
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() noexcept;
@@ -164,6 +167,9 @@ private:
 
     /// Mirror frame in vertical direction
     bool m_verticallyFlip;
+
+    /// The position update frame interval
+    int m_notifyInterval{1000};
 };
 
 } // namespace videoQt

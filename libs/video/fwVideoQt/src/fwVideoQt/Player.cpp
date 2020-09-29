@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,10 +30,11 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <filesystem>
 #include <QAbstractVideoSurface>
 #include <QCameraViewfinderSettings>
 #include <QVideoSurfaceFormat>
+
+#include <filesystem>
 
 namespace fwVideoQt
 {
@@ -220,6 +221,16 @@ void Player::toggleLoopMode(const bool isLoopEnable)
         {
             m_playlist->setPlaybackMode( QMediaPlaylist::CurrentItemOnce);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Player::setNotifyInterval(const int milliSeconds)
+{
+    if(m_mediaPlayer)
+    {
+        m_mediaPlayer->setNotifyInterval(milliSeconds);
     }
 }
 
