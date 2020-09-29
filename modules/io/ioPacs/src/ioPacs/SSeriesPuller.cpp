@@ -92,12 +92,15 @@ void SSeriesPuller::configuring()
 
 void SSeriesPuller::starting()
 {
+    // Create the worker.
+    m_requestWorker = ::fwThread::Worker::New();
+
     // Create the DICOM reader.
     m_seriesDB = ::fwMedData::SeriesDB::New();
 
     m_dicomReader = this->registerService< ::fwIO::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
-    m_dicomReader->setWorker(this->getWorker());
+    m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
     if(!m_readerConfig.empty())
     {
@@ -111,7 +114,7 @@ void SSeriesPuller::starting()
     }
 
     m_dicomReader->configure();
-    m_dicomReader->start();
+    m_dicomReader->start().wait();
     SLM_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 }
 
@@ -129,7 +132,7 @@ void SSeriesPuller::updating()
     }
     else
     {
-        this->pullSeries();
+        m_requestWorker->post(std::bind(&SSeriesPuller::pullSeries, this));
     }
 }
 
@@ -139,6 +142,10 @@ void SSeriesPuller::stopping()
 {
     // Unregister the DICOM reader.
     this->unregisterServices();
+
+    // Stop the worker.
+    m_requestWorker->stop();
+    m_requestWorker.reset();
 }
 
 //------------------------------------------------------------------------------

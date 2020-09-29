@@ -82,7 +82,7 @@ void SPacsConfigurationEditor::configuring()
 void SPacsConfigurationEditor::starting()
 {
     // Create the worker.
-    m_PingPACSWorker = ::fwThread::Worker::New();
+    m_requestWorker = ::fwThread::Worker::New();
 
     const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
@@ -202,8 +202,8 @@ void SPacsConfigurationEditor::stopping()
                         SLOT(onRetrieveMethodChanged(int)));
 
     // Stop the worker.
-    m_PingPACSWorker->stop();
-    m_PingPACSWorker.reset();
+    m_requestWorker->stop();
+    m_requestWorker.reset();
 
     this->destroy();
 }
@@ -212,7 +212,7 @@ void SPacsConfigurationEditor::stopping()
 
 void SPacsConfigurationEditor::pingPACS()
 {
-    m_PingPACSWorker->post([&]
+    m_requestWorker->post([&]
         {
             const auto pacsConfiguration =
                 this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);

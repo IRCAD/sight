@@ -96,7 +96,7 @@ void SQueryEditor::configuring()
 void SQueryEditor::starting()
 {
     // Create the worker.
-    m_executeQueryWorker = ::fwThread::Worker::New();
+    m_requestWorker = ::fwThread::Worker::New();
 
     // Create the GUI.
     ::fwGui::IGuiContainerSrv::create();
@@ -253,8 +253,8 @@ void SQueryEditor::stopping()
     QObject::disconnect(m_seriesModalityEdit, &QLineEdit::returnPressed, this, &SQueryEditor::executeQueryAsync);
 
     // Stop worker.
-    m_executeQueryWorker->stop();
-    m_executeQueryWorker.reset();
+    m_requestWorker->stop();
+    m_requestWorker.reset();
 
     this->destroy();
 }
@@ -265,7 +265,7 @@ void SQueryEditor::executeQueryAsync()
 {
     if(!m_isQuerying)
     {
-        m_executeQueryWorker->post(std::bind(&::ioPacs::SQueryEditor::executeQuery, this));
+        m_requestWorker->post(std::bind(&::ioPacs::SQueryEditor::executeQuery, this));
     }
     else
     {

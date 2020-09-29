@@ -87,11 +87,15 @@ void SSliceIndexDicomEditor::configuring()
 
 void SSliceIndexDicomEditor::starting()
 {
+    // Create the worker.
+    m_requestWorker = ::fwThread::Worker::New();
+
     // Create the DICOM reader.
     m_seriesDB = ::fwMedData::SeriesDB::New();
 
     m_dicomReader = this->registerService< ::fwIO::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
+    m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
 
     if(!m_readerConfig.empty())
@@ -106,7 +110,7 @@ void SSliceIndexDicomEditor::starting()
     }
 
     m_dicomReader->configure();
-    m_dicomReader->start();
+    m_dicomReader->start().wait();
     SLM_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
@@ -172,6 +176,10 @@ void SSliceIndexDicomEditor::stopping()
 {
     this->unregisterServices();
 
+    // Stop the worker.
+    m_requestWorker->stop();
+    m_requestWorker.reset();
+
     this->destroy();
 }
 
@@ -196,7 +204,7 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::retrieveSlice() const
+void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
     const auto dicomSeries          = this->getLockedInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
@@ -206,7 +214,7 @@ void SSliceIndexDicomEditor::retrieveSlice() const
     // If the slice is not pulled, pull it.
     if(!isInstanceAvailable)
     {
-        this->pullSlice(dicomSeries, selectedSliceIndex);
+        m_requestWorker->post(std::bind(&SSliceIndexDicomEditor::pullSlice, this, selectedSliceIndex));
     }
     else
     {
@@ -216,8 +224,7 @@ void SSliceIndexDicomEditor::retrieveSlice() const
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::pullSlice(const ::fwData::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
-                                       std::size_t _selectedSliceIndex) const
+void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
 {
     bool success = false;
 
@@ -245,10 +252,12 @@ void SSliceIndexDicomEditor::pullSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
         notif->asyncEmit("Unable to connect to PACS");
     }
 
+    const auto dicomSeries = this->getLockedInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+
     // Get selected slice.
     try
     {
-        const std::string seriesInstanceUID = _dicomSeries->getInstanceUID();
+        const std::string seriesInstanceUID = dicomSeries->getInstanceUID();
         const std::string sopInstanceUID    =
             seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, static_cast<unsigned int>(_selectedSliceIndex));
 
@@ -273,7 +282,7 @@ void SSliceIndexDicomEditor::pullSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
             // Compute the path and add it to the DICOM series.
             std::filesystem::path tmpPath      = ::fwTools::System::getTemporaryFolder() / "dicom/";
             std::filesystem::path downloadPath = tmpPath.string() + seriesInstanceUID + "/" + sopInstanceUID;
-            _dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
+            dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
             success = true;
         }
@@ -301,7 +310,7 @@ void SSliceIndexDicomEditor::pullSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
 
     if(success)
     {
-        this->readSlice(_dicomSeries, _selectedSliceIndex);
+        this->readSlice(dicomSeries, _selectedSliceIndex);
     }
 }
 
