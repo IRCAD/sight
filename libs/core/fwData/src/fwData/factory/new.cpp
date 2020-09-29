@@ -56,7 +56,7 @@ namespace factory
     }
     else
     {
-        SLM_FATAL("Cannot determine library name from data '" + classname + "'");
+        FW_RAISE("Cannot determine library name from data '" + classname + "'");
     }
 
     return ::fwData::registry::get()->create(classname);
