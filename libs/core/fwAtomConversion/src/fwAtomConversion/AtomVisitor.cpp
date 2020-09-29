@@ -51,7 +51,7 @@ namespace fwAtomConversion
         {
             obj = ::fwData::factory::New(classname);
         }
-        catch(::fwCore::Exception& e)
+        catch(const ::fwCore::Exception& e)
         {
             SLM_ERROR(e.what());
             FW_RAISE_EXCEPTION_IF(
@@ -80,7 +80,7 @@ namespace fwAtomConversion
         obj = ::fwData::factory::New(classname);
         // uuid is set only if the given uuid is available
     }
-    catch(::fwCore::Exception& e)
+    catch(const ::fwCore::Exception& e)
     {
         SLM_ERROR(e.what());
         FW_RAISE_EXCEPTION_IF(
@@ -103,9 +103,8 @@ namespace fwAtomConversion
     try
     {
         obj = ::fwData::factory::New(classname);
-        // uuid is set only if the given uuid is available
     }
-    catch(::fwCore::Exception& e)
+    catch(const ::fwCore::Exception& e)
     {
         SLM_ERROR(e.what());
         FW_RAISE_EXCEPTION_IF(
