@@ -45,15 +45,19 @@ namespace editor
  * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  *
  * @section Signals Signals
- * - \b clicked(): This signal is emitted when the button is clicked
- * - \b toggled(bool):  This signal is emitted when the button is checked
+ * - \b clicked(): This signal is emitted when the button is clicked.
+ * - \b toggled(bool):  This signal is emitted when the button is checked.
  *
  * @section Slot Slot
- * - \b setChecked(bool): This slot allows to check/uncheck the button
- * - \b check(): This slot allows to check the button
- * - \b uncheck(): This slot allows to uncheck the button
- * - \b show(): This slot shows the button
- * - \b hide(): This slot hides the button
+ * - \b setChecked(bool): allows to check/uncheck the button.
+ * - \b check(): allows to check the button.
+ * - \b uncheck(): allows to uncheck the button.
+ * - \b setIsExecutable(bool): sets the button executability.
+ * - \b setExecutable(): sets the button executable.
+ * - \b setInexecutable(): sets the button inexecutable.
+ * - \b setVisible(bool):s ets the button visibility.
+ * - \b show(): shows the button.
+ * - \b hide(): hides the button.
  *
  * @section XML XML configuration
  * @code{.xml}
@@ -72,14 +76,15 @@ namespace editor
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b text (optional, string, default=""): text displayed on the button
- * - \b icon (optional, string, default=""): icon displayed on the button
- * - \b checkable (optional, bool, default=false): if true, the button is checkable
- * - \b text2 (optional, string, default=""): text displayed if the button is checked
- * - \b icon2 (optional, string, default=""): icon displayed if the button is checked
- * - \b checked (optional, bool, default=false): if true, the button is checked at start
- * - \b iconWidth (optional, unsigned, default=0): icon width
- * - \b iconHeight (optional, unsigned, default=0): icon height
+ * - \b text (optional, string, default=""): text displayed on the button.
+ * - \b icon (optional, string, default=""): icon displayed on the button.
+ * - \b checkable (optional, bool, default=false): if true, the button is checkable.
+ * - \b executable (optional, bool, default=true): if true, the button is executable.
+ * - \b text2 (optional, string, default=""): text displayed if the button is checked.
+ * - \b icon2 (optional, string, default=""): icon displayed if the button is checked.
+ * - \b checked (optional, bool, default=false): if true, the button is checked at start.
+ * - \b iconWidth (optional, unsigned, default=0): icon width.
+ * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
 class GUIQT_CLASS_API SSignalButton : public QObject,
                                       public ::fwGui::editor::IEditor
@@ -129,6 +134,18 @@ private:
     /// SLOT: unchecks the button.
     void uncheck();
 
+    /// SLOT: sets the button executability.
+    void setIsExecutable(bool _isExecutable);
+
+    /// SLOT: sets the button executable.
+    void setExecutable();
+
+    /// SLOT: sets the button inexecutable.
+    void setInexecutable();
+
+    /// SLOT: sets the button visibility.
+    void setVisible(bool _isVisible);
+
     /// SLOT: shows the button.
     void show();
 
@@ -160,6 +177,9 @@ private:
 
     /// Defines if the button is checkable.
     bool m_checkable { false };
+
+    /// Defines if the button is executable.
+    bool m_executable { true };
 
     /// Defines if the button is checked at start.
     bool m_checkAtStart { false };

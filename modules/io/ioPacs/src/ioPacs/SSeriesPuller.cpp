@@ -274,9 +274,6 @@ void SSeriesPuller::pullSeries()
         {
             seriesEnquirer->disconnect();
         }
-
-        // Notify Progress Dialog.
-        m_sigProgressStopped->asyncEmit(m_progressbarId);
     }
     else
     {
@@ -302,6 +299,9 @@ void SSeriesPuller::pullSeries()
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         failNotif->asyncEmit("Series download failed");
     }
+
+    // Notify Progress Dialog.
+    m_sigProgressStopped->asyncEmit(m_progressbarId);
 }
 
 //------------------------------------------------------------------------------

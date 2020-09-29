@@ -168,11 +168,13 @@
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
+                    <view proportion="0" visible="false" />
                 </layout>
             </gui>
             <registry>
                 <view sid="sliderIndexDicomPullerEditorSrv" start="yes" />
                 <view sid="seriesPullerAct" start="yes" />
+                <view sid="waitAct" start="yes" />
             </registry>
         </service>
 
@@ -287,6 +289,17 @@
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Pull selected series</toolTip>
+            </config>
+        </service>
+
+        <service uid="waitAct" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <executable>false</executable>
+               <icon>flatIcon-0.1/icons/BlueWait.svg</icon>
+               <iconWidth>24</iconWidth>
+               <iconHeight>24</iconHeight>
+               <toolTip>Pulling selected series</toolTip>
             </config>
         </service>
 
@@ -512,6 +525,18 @@
             <slot>extractLocalSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>seriesPullerSrv/progressStarted</signal>
+            <slot>seriesPullerAct/hide</slot>
+            <slot>waitAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>seriesPullerSrv/progressStopped</signal>
+            <slot>seriesPullerAct/show</slot>
+            <slot>waitAct/hide</slot>
         </connect>
 
         <!-- connection from IService notify signals to the SNotifier,you can add as many services as you need -->
