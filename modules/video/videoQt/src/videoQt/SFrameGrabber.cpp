@@ -39,6 +39,8 @@
 namespace videoQt
 {
 
+static const std::string s_NOTIFY_INTERVAL_NAME_CONFIG = "notifyInterval";
+
 //-----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -84,6 +86,17 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
+    const ConfigType configType = this->getConfigTree();
+
+    if ( configType.count("config"))
+    {
+        const ConfigType config  = configType.get_child("config.<xmlattr>");
+        const int notifyInterval = config.get<int>(s_NOTIFY_INTERVAL_NAME_CONFIG);
+        if(notifyInterval > 0)
+        {
+            m_notifyInterval = notifyInterval;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +134,7 @@ void SFrameGrabber::startCamera()
             QObject::connect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
             QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this,
                              SLOT(onPresentFrame(QVideoFrame)));
-
+            m_videoPlayer->setNotifyInterval(m_notifyInterval);
             m_videoPlayer->play();
 
             auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(

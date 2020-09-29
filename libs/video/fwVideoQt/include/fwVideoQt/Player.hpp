@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,6 +57,9 @@ public:
 
     /// enable/disable loop in video
     FWVIDEOQT_API void toggleLoopMode(const bool isLoopEnable);
+
+    /// set the notify interval, which is the minimal step of position variation for the video refresh
+    FWVIDEOQT_API void setNotifyInterval(const int milliSeconds);
 
     /// set the new position in the video.
     FWVIDEOQT_API void setPosition(const int64_t position);
