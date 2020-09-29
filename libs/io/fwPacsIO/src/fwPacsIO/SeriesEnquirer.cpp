@@ -43,19 +43,21 @@ namespace fwPacsIO
 
 const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
+//------------------------------------------------------------------------------
+
 SeriesEnquirer::SeriesEnquirer() :
     m_progressCallback(ProgressCallbackSlotType::sptr())
 {
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 SeriesEnquirer::~SeriesEnquirer()
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::initialize(const std::string& _applicationTitle,
                                 const std::string& _peerHostName,
@@ -140,7 +142,7 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::connect()
 {
@@ -164,28 +166,28 @@ bool SeriesEnquirer::connect()
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::isConnectedToPacs() const
 {
     return this->isConnected();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::pingPacs()
 {
     return this->sendECHORequest(0).good();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::disconnect()
 {
     this->releaseAssociation();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
 {
@@ -205,7 +207,7 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
     return findResponses;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 {
@@ -222,7 +224,7 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
     return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &_dataset, &dataResponse);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 {
@@ -242,7 +244,7 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
     return this->sendCGETRequest(presID, &_dataset, &dataResponse);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
 {
@@ -260,7 +262,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
 {
@@ -280,7 +282,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string& _name)
 {
@@ -340,7 +342,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string&
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& _uid)
 {
@@ -399,7 +401,67 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& 
 
     return this->sendFindRequest(dataset);
 }
-// ----------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientBirthDate(const std::string& _birthDate)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series birthdate.
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, _birthDate.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromDate, const std::string& _toDate)
 {
@@ -459,7 +521,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromD
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
 {
@@ -519,7 +581,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _modality)
 {
@@ -579,7 +641,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _m
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string& _description)
 {
@@ -639,7 +701,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string&
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanceUID, unsigned int _instanceNumber)
 {
@@ -673,7 +735,7 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
@@ -706,7 +768,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
@@ -738,7 +800,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
                                                          const std::string& _sopInstanceUID)
@@ -770,7 +832,7 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
                                                         const std::string& _sopInstanceUID)
@@ -802,7 +864,7 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seri
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
 {
@@ -835,7 +897,7 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 {
@@ -865,7 +927,7 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID _presID,
                                                RetrieveResponse* _response,
@@ -886,7 +948,7 @@ OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID,
                                                DcmDataset* _incomingObject,
@@ -934,7 +996,7 @@ OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
 {
@@ -951,6 +1013,4 @@ Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
     return pc;
 }
 
-// ----------------------------------------------------------------------------
-
-} //namespace fwPacsIO
+} // namespace fwPacsIO.

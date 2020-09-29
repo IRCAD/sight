@@ -79,8 +79,8 @@
 
         <service uid="selectorsView" type="::gui::view::SDefaultView" >
             <gui>
-                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="270" vOffset="-6" hOffset="50%" />
-                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="270" vOffset="-6" />
+                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
+                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" />

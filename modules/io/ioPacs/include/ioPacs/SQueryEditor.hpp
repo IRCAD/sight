@@ -124,10 +124,10 @@ private:
     std::filesystem::path m_iconPath {};
 
     /// Defines the with of the button's icon.
-    unsigned int m_iconWidth {20};
+    unsigned int m_iconWidth { 20 };
 
     /// Defines the height of the button's icon.
-    unsigned int m_iconHeight {20};
+    unsigned int m_iconHeight { 20 };
 
     /// Contains the search line editor.
     QPointer< QLineEdit > m_searchEdit;
@@ -143,6 +143,9 @@ private:
 
     /// Contains the name line editor.
     QPointer< QLineEdit > m_patientNameEdit;
+
+    /// Contains the birth date line editor.
+    QPointer< QDateEdit > m_birthDateEdit;
 
     /// Contains the patient id line editor.
     QPointer< QLineEdit > m_patientUIDEdit;
@@ -160,6 +163,12 @@ private Q_SLOTS:
 
     /// Executes a query and fills the result in the series DB.
     void executeQueryAsync();
+
+    /**
+     * @brief Enables the birth date editor.
+     * @param _enable value used as a boolean.
+     */
+    void enableBirthDateEdit(int _enable);
 
 };
 
