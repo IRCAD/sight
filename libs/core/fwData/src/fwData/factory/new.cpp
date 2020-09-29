@@ -38,6 +38,11 @@ namespace factory
 
 ::fwData::Object::sptr New( const ::fwData::registry::KeyType& classname )
 {
+    if(classname.empty())
+    {
+        return nullptr;
+    }
+
     std::smatch match;
     static const std::regex reg("::([^:.]*)::.*");
     if( std::regex_match(classname, match, reg ) && match.size() == 2)
@@ -55,6 +60,7 @@ namespace factory
     }
 
     return ::fwData::registry::get()->create(classname);
+
 }
 
 } // namespace factory
