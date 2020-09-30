@@ -176,10 +176,10 @@ void SQueryEditor::starting()
 
         m_beginStudyDateEdit = new QDateEdit();
         m_beginStudyDateEdit->setDate(QDate());
-        m_beginStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
+        m_beginStudyDateEdit->setDisplayFormat("MM.dd.yyyy");
         m_endStudyDateEdit = new QDateEdit();
         m_endStudyDateEdit->setDate(QDate::currentDate());
-        m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
+        m_endStudyDateEdit->setDisplayFormat("MM.dd.yyyy");
         dateEditLayout->addWidget(m_beginStudyDateEdit);
         dateEditLayout->addWidget(m_endStudyDateEdit);
 
@@ -195,7 +195,7 @@ void SQueryEditor::starting()
 
         m_birthDateEdit = new QDateEdit();
         m_birthDateEdit->setDate(QDate());
-        m_birthDateEdit->setDisplayFormat("dd.MM.yyyy");
+        m_birthDateEdit->setDisplayFormat("MM.dd.yyyy");
         m_birthDateEdit->setEnabled(false);
 
         QCheckBox* const birthDateEnabler = new QCheckBox();
@@ -306,10 +306,21 @@ void SQueryEditor::executeQuery()
         return;
     }
 
+    const std::function< std::string(std::string) > standardise
+        = [](std::string _s)
+          {
+              std::string res = _s;
+              std::transform(_s.begin(), _s.end(), res.begin(), [](unsigned char _c)
+            {
+                return std::tolower(_c);
+            });
+              return res;
+          };
+
     try
     {
         // Execute find requests.
-        const std::string searchValue      = m_searchEdit->text().toStdString();
+        const std::string searchValue      = standardise(m_searchEdit->text().toStdString());
         std::string beginDataSearchValue   = "";
         std::string endDateSearchValue     = "";
         std::string nameSearchValue        = "";
@@ -323,15 +334,15 @@ void SQueryEditor::executeQuery()
         {
             beginDataSearchValue = m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString();
             endDateSearchValue   = m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString();
-            nameSearchValue      = m_patientNameEdit->text().toStdString();
+            nameSearchValue      = standardise(m_patientNameEdit->text().toStdString());
             if(m_birthDateEdit->isEnabled())
             {
                 birthDateSearchValue = m_birthDateEdit->date().toString("yyyyMMdd").toStdString();
             }
-            patientUIDSearchValue  = m_patientUIDEdit->text().toStdString();
-            seriesUIDSearchValue   = m_seriesUIDEdit->text().toStdString();
-            descriptionSearchValue = m_seriesDescriptionEdit->text().toStdString();
-            modalitySearchValue    = m_seriesModalityEdit->text().toStdString();
+            patientUIDSearchValue  = standardise(m_patientUIDEdit->text().toStdString());
+            seriesUIDSearchValue   = standardise(m_seriesUIDEdit->text().toStdString());
+            descriptionSearchValue = standardise(m_seriesDescriptionEdit->text().toStdString());
+            modalitySearchValue    = standardise(m_seriesModalityEdit->text().toStdString());
         }
 
         OFList< QRResponse* > responses;
@@ -400,12 +411,12 @@ void SQueryEditor::executeQuery()
                     // Check if each tag match the request one.
                     OFString ofValue;
 
-                    response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, ofValue);
-                    QDate seriesDate = QDate::fromString(ofValue.c_str(), "yyyyMMdd");
+                    response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, ofValue);
+                    QDate studyDate = QDate::fromString(ofValue.c_str(), "yyyyMMdd");
                     // Check date if the advanced mode is enabled.
                     if(m_advanced)
                     {
-                        if(seriesDate <= m_beginStudyDateEdit->date() || seriesDate >= m_endStudyDateEdit->date())
+                        if(studyDate <= m_beginStudyDateEdit->date() || studyDate >= m_endStudyDateEdit->date())
                         {
                             continue;
                         }
@@ -422,7 +433,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_PatientName, ofValue);
-                    const std::string patientName = ofValue.c_str();
+                    const std::string patientName = standardise(ofValue.c_str());
                     if(!nameSearchValue.empty())
                     {
                         if(patientName.find(nameSearchValue) == std::string::npos)
@@ -432,7 +443,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_PatientID, ofValue);
-                    const std::string patientID = ofValue.c_str();
+                    const std::string patientID = standardise(ofValue.c_str());
                     if(!patientUIDSearchValue.empty())
                     {
                         if(patientID.find(patientUIDSearchValue) == std::string::npos)
@@ -442,7 +453,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, ofValue);
-                    const std::string seriesInstanceUID = ofValue.c_str();
+                    const std::string seriesInstanceUID = standardise(ofValue.c_str());
                     if(!seriesUIDSearchValue.empty())
                     {
                         if(seriesInstanceUID.find(seriesUIDSearchValue) == std::string::npos)
@@ -452,7 +463,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, ofValue);
-                    const std::string seriesDescription = ofValue.c_str();
+                    const std::string seriesDescription = standardise(ofValue.c_str());
                     if(!descriptionSearchValue.empty())
                     {
                         if(seriesDescription.find(descriptionSearchValue) == std::string::npos)
@@ -462,7 +473,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     response->m_dataset->findAndGetOFStringArray(DCM_Modality, ofValue);
-                    const std::string modality = ofValue.c_str();
+                    const std::string modality = standardise(ofValue.c_str());
                     if(!modalitySearchValue.empty())
                     {
                         if(modality.find(modalitySearchValue) == std::string::npos)
@@ -472,7 +483,7 @@ void SQueryEditor::executeQuery()
                     }
 
                     // Check if each tag match at least the main research value.
-                    if(seriesDate.toString("yyyyMMdd").toStdString().find(searchValue) != std::string::npos ||
+                    if(studyDate.toString("MM/dd/yyyy").toStdString().find(searchValue) != std::string::npos ||
                        patientName.find(searchValue) != std::string::npos ||
                        patientBirthDate.find(searchValue) != std::string::npos ||
                        patientID.find(searchValue) != std::string::npos ||

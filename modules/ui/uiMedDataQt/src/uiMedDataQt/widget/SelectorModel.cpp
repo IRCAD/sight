@@ -178,8 +178,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         std::string birthDate = patient->getBirthdate();
         if(!birthDate.empty() && birthDate != "unknown")
         {
-            birthDate.insert(4, "-");
-            birthDate.insert(7, "-");
+            birthDate = birthDate.substr(4, 2) + "/" + birthDate.substr(6, 2) + "/" + birthDate.substr(0, 4);
         }
         QStandardItem* patientBirthdate = new QStandardItem( QString::fromStdString(birthDate) );
 
@@ -188,8 +187,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         std::string studyDate = study->getDate();
         if(!studyDate.empty())
         {
-            studyDate.insert(4, "/");
-            studyDate.insert(7, "/");
+            studyDate = studyDate.substr(4, 2) + "/" + studyDate.substr(6, 2) + "/" + studyDate.substr(0, 4);
         }
         QStandardItem* studyDateItem = new QStandardItem( QString::fromStdString(studyDate));
 
@@ -233,8 +231,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     std::string seriesDate = _series->getDate();
     if(!seriesDate.empty())
     {
-        seriesDate.insert(4, "/");
-        seriesDate.insert(7, "/");
+        seriesDate = seriesDate.substr(4, 2) + "/" + seriesDate.substr(6, 2) + "/" + seriesDate.substr(0, 4);
     }
     QStandardItem* seriesDateItem = new QStandardItem( QString::fromStdString(seriesDate));
 

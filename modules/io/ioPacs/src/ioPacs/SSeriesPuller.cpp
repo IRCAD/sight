@@ -326,6 +326,13 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 
     for(const ::fwMedData::Series::sptr& series: _selectedSeries)
     {
+        const std::string modality = series->getModality();
+        if(modality != "CT" && modality != "MR" && modality != "XA")
+        {
+            infoNotif->asyncEmit("Unable to read the modality '" + modality + "'");
+            return;
+        }
+
         const std::string selectedSeriesUID = series->getInstanceUID();
 
         // Check if the series is loaded.
