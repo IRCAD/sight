@@ -995,25 +995,25 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     const double delta = 1.;
     if(*m_capturedTFPoint == _subTF->m_TFPoints.front())
     {
-        if(newCoord.getX() > nextPointXCoord)
+        if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
     }
     else if(*m_capturedTFPoint == _subTF->m_TFPoints.back())
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
     }
     else
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
-        else if(newCoord.getX() > nextPointXCoord)
+        else if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
@@ -1045,8 +1045,8 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     const ::fwData::mt::ObjectWriteLock tfLock(tf);
 
     // Retrieves the TF point.
-    ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-    auto tfDataIt = tfData.begin();
+    const ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
+    auto tfDataIt                                       = tfData.begin();
     for(unsigned i = 0; i < pointIndex; ++i)
     {
         tfDataIt++;

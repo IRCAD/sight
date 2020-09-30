@@ -582,25 +582,25 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
     const double delta = 1.;
     if(*m_capturedTFPoint == m_TFPoints.front())
     {
-        if(newCoord.getX() > nextPointXCoord)
+        if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
     }
     else if(*m_capturedTFPoint == m_TFPoints.back())
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
     }
     else
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
-        else if(newCoord.getX() > nextPointXCoord)
+        else if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
@@ -633,8 +633,8 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
         pointIndex = m_TFPoints.size() - 1 - pointIndex;
     }
     // Retrieves the TF point.
-    ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-    auto tfDataIt = tfData.begin();
+    const ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
+    auto tfDataIt                                       = tfData.begin();
     for(unsigned i = 0; i < pointIndex; ++i)
     {
         tfDataIt++;
