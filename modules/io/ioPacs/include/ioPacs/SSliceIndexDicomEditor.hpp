@@ -34,6 +34,7 @@
 #include <fwServices/IHasServices.hpp>
 
 #include <fwThread/Timer.hpp>
+#include <fwThread/Worker.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -121,15 +122,13 @@ private:
     void setSliderInformation(unsigned _value);
 
     /// Retrieves the local slice or pull it, then, read it.
-    void retrieveSlice() const;
+    void retrieveSlice();
 
     /**
      * @brief Pulls the slice from the PACS.
-     * @param _dicomSeries the dicom series instance.
      * @param _selectedSliceIndex index of the slice to pull.
      */
-    void pullSlice(const ::fwData::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
-                   std::size_t _selectedSliceIndex) const;
+    void pullSlice(std::size_t _selectedSliceIndex) const;
 
     /**
      * @brief Reads a local slice.
@@ -138,6 +137,9 @@ private:
      */
     void readSlice(const ::fwData::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
                    std::size_t _selectedSliceIndex) const;
+
+    /// Contains the worker of the series enquire thread.
+    ::fwThread::Worker::sptr m_requestWorker;
 
     /// Contains the slider.
     QPointer< QSlider > m_slider { nullptr };

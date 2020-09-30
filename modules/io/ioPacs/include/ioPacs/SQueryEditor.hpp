@@ -111,8 +111,8 @@ private:
      */
     void updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series);
 
-    /// Contains the enquirer worker.
-    ::fwThread::Worker::sptr m_executeQueryWorker { nullptr };
+    /// Contains the worker of the series enquire thread.
+    ::fwThread::Worker::sptr m_requestWorker { nullptr };
 
     /// Defines if the service is executing query.
     std::atomic< bool > m_isQuerying { false };

@@ -135,6 +135,9 @@ private:
     ///SLOT: removes series from m_localSeries, when deleted in a gui Selector for instance.
     void removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries);
 
+    /// Defines the worker of the series enquire thread.
+    ::fwThread::Worker::sptr m_requestWorker;
+
     /// Defines the DICOM reader implementation.
     std::string m_dicomReaderImplementation { "" };
 

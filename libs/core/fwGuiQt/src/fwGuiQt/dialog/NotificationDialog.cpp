@@ -55,7 +55,7 @@ void NotificationDialog::show()
     QWidget* parent = qApp->activeWindow();
 
     // If the activie window is a slide bar, we need to retrieve the nativ parent.
-    if(parent->objectName() == "SlideBar")
+    if(parent && parent->objectName() == "SlideBar")
     {
         parent = parent->nativeParentWidget();
     }
@@ -67,6 +67,13 @@ void NotificationDialog::show()
     if(parentContainer)
     {
         parent = parentContainer->getQtContainer();
+    }
+
+    // If there is no parent here, we get the top one.
+    if(!parent)
+    {
+        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
+        return;
     }
 
     // Creates the clikable label.
@@ -222,15 +229,8 @@ void NotificationDialog::show()
     container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
     container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
-    // Get the activeWindow, if null print a message & ignore this notification.
-    const auto activeWin = qApp->activeWindow();
-    if(!activeWin)
-    {
-        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
-        return;
-    }
     // Moves the container when the main window is moved or is resized.
-    activeWin->installEventFilter(container);
+    parent->installEventFilter(container);
 
     // Gives it a layout with the clickable label.
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);

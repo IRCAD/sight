@@ -53,11 +53,15 @@ namespace editor
 static const ::fwCom::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
 static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
-static const ::fwCom::Slots::SlotKeyType s_CHECK_SLOT       = "check";
-static const ::fwCom::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT        = "show";
-static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT        = "hide";
+static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
+static const ::fwCom::Slots::SlotKeyType s_CHECK_SLOT             = "check";
+static const ::fwCom::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
+static const ::fwCom::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+static const ::fwCom::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
+static const ::fwCom::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
+static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT              = "show";
+static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 //-----------------------------------------------------------------------------
 
@@ -69,6 +73,10 @@ SSignalButton::SSignalButton() noexcept
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
+    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setIsExecutable, this);
+    newSlot(s_SET_EXECUTABLE_SLOT, &SSignalButton::setExecutable, this);
+    newSlot(s_SET_INEXECUTABLE_SLOT, &SSignalButton::setInexecutable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
     newSlot(s_SHOW_SLOT, &SSignalButton::show, this);
     newSlot(s_HIDE_SLOT, &SSignalButton::hide, this);
 }
@@ -95,6 +103,14 @@ void SSignalButton::configuring()
             SLM_ASSERT("'checkable' value must be 'true' or 'false'",
                        checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false");
             m_checkable = (checkableCfg->getValue() == "true");
+        }
+
+        ::fwRuntime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
+        if(executableCfg)
+        {
+            SLM_ASSERT("'executable' value must be 'true' or 'false'",
+                       executableCfg->getValue() == "true" || executableCfg->getValue() == "false");
+            m_executable = (executableCfg->getValue() == "true");
         }
 
         ::fwRuntime::ConfigurationElement::sptr txtCfg = config->findConfigurationElement("text");
@@ -164,6 +180,7 @@ void SSignalButton::starting()
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
+    m_button->setEnabled(m_executable);
     layout->addWidget(m_button);
     qtContainer->setLayout(layout);
 
@@ -276,6 +293,34 @@ void SSignalButton::check()
 void SSignalButton::uncheck()
 {
     this->setChecked(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::setIsExecutable(bool _isExecutable)
+{
+    m_button->setEnabled(_isExecutable);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::setExecutable()
+{
+    m_button->setEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::setInexecutable()
+{
+    m_button->setEnabled(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::setVisible(bool _isVisible)
+{
+    m_button->setVisible(_isVisible);
 }
 
 //-----------------------------------------------------------------------------
