@@ -788,6 +788,7 @@ void SMultipleTF::exportPool()
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tfp");
     config.add("extensions.extension", ".tfp");
+    config.add("extensions.extension.<xmlattr>.label", "Transfer Function Pool");
 
     writer->configure(config);
     writer->start();

@@ -63,9 +63,7 @@ namespace ioAtoms
         <extensions>
             <extension label="XML">.xml</extension>
             <extension label="Zipped XML>.xmlz</extension>
-            <extension>.j</extension>
             <extension label="Medical workspace">.mw</extension>
-            <extension>.vpz</extension>
         </extensions>
     </service>
    @endcode
@@ -85,7 +83,7 @@ namespace ioAtoms
  * - \b extensions(optional): defines available extensions displayed in dialog to read file. If the 'extensions' is
  *      empty or not specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are
  *      available.
- *      The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
+ *      The attribute label (mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
  * @see ::fwIO::IReader
