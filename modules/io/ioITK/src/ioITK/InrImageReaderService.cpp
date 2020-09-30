@@ -77,12 +77,12 @@ void InrImageReaderService::configuring()
 
 void InrImageReaderService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::configureWithUI()
+void InrImageReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

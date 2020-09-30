@@ -62,8 +62,8 @@ namespace ioVTK
  * @subsection Input Input
  * - \b data [::fwData::Image]: image to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'configureWithUI()' should be called to define
- * the path.
+ * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * define the path.
  */
 class IOVTK_CLASS_API SImageWriter : public ::fwIO::IWriter
 {
@@ -88,9 +88,9 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
 
     /**
@@ -99,7 +99,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IOVTK_API virtual void configureWithUI() override;
+    IOVTK_API virtual void openLocationDialog() override;
 
     /**
      * @brief Save a VTK image.

@@ -121,9 +121,9 @@ protected:
      *
      * This method is used to set the file path of the PDF to write.
      *
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOQT_API void configureWithIHM() override;
 
     /**
@@ -132,7 +132,7 @@ protected:
      * This method is used to set the file path of the PDF to write.
      *
      */
-    IOQT_API void configureWithUI() override;
+    IOQT_API void openLocationDialog() override;
 
     /**
      * @brief Updating method. Creates a new PDF.

@@ -78,15 +78,15 @@ public:
 
     /**
      * @brief Configure the image path.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
 
     /**
      * @brief Configure the image path.
      */
-    IOVTK_API virtual void configureWithUI() override;
+    IOVTK_API virtual void openLocationDialog() override;
 
 protected:
 

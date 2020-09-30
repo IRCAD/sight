@@ -61,8 +61,8 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::SeriesDB]: store the loaded images.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the images to load, if it not defined, 'configureWithUI()' should be called to define
- * the path.
+ * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
+ * define the path.
  */
 class IOITK_CLASS_API SInrSeriesDBReader : public ::fwIO::IReader
 {
@@ -89,16 +89,16 @@ protected:
     /// Calls base class implementation
     virtual void configuring() override;
 
-    /// Reads inr files specified by user (configure or configureWithUI) and pushes them into SeriesDB.
+    /// Reads inr files specified by user (configure or openLocationDialog) and pushes them into SeriesDB.
     IOITK_API virtual void updating() override;
 
     /**
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
 
     /**
@@ -106,7 +106,7 @@ protected:
      *
      * This method is used to find the inr files path using a files selector.
      */
-    IOITK_API virtual void configureWithUI() override;
+    IOITK_API virtual void openLocationDialog() override;
 
     /// Returns managed file type, here FILES
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

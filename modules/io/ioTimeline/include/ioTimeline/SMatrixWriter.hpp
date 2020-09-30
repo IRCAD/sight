@@ -78,13 +78,13 @@ public:
 
     /**
      * @brief Display a location dialog allowing to select the video file to save
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOTIMELINE_API virtual void configureWithIHM() override;
 
     /// Display a location dialog allowing to select the video file to save
-    IOTIMELINE_API virtual void configureWithUI() override;
+    IOTIMELINE_API virtual void openLocationDialog() override;
 
     /// Return file type (::fwIO::FOLDER)
     IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;

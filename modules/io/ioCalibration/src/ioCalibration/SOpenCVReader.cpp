@@ -67,12 +67,12 @@ void SOpenCVReader::configuring()
 
 void SOpenCVReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::configureWithUI()
+void SOpenCVReader::openLocationDialog()
 {
     this->defineLocationGUI();
 }

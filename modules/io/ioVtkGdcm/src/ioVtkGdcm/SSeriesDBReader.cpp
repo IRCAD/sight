@@ -71,12 +71,12 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::configureWithUI()
+void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

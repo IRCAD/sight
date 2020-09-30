@@ -83,12 +83,12 @@ void STrianMeshReader::configuring()
 
 void STrianMeshReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void STrianMeshReader::configureWithUI()
+void STrianMeshReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

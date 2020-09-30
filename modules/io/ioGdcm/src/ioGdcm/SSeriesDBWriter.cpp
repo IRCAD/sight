@@ -69,12 +69,12 @@ SSeriesDBWriter::~SSeriesDBWriter() noexcept
 
 void SSeriesDBWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::configureWithUI()
+void SSeriesDBWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

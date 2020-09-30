@@ -76,12 +76,12 @@ void MeshWriterService::configuring()
 
 void MeshWriterService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configureWithUI()
+void MeshWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

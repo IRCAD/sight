@@ -92,12 +92,12 @@ void TransformationMatrix3DReaderService::configuring()
 
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::configureWithUI()
+void TransformationMatrix3DReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

@@ -62,7 +62,7 @@ namespace ioVTK
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to save, if it is not defined, 'configureWithUI()' should be called to
+ * - \b file (optional): path of the image to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
@@ -85,15 +85,15 @@ public:
 
     /**
      * @brief Configure the image path.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
 
     /**
      * @brief Configure the image path.
      */
-    IOVTK_API virtual void configureWithUI() override;
+    IOVTK_API virtual void openLocationDialog() override;
 
 protected:
 

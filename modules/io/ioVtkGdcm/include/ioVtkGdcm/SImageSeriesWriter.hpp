@@ -60,7 +60,7 @@ namespace ioVtkGdcm
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- *  - \b folder (optional): path of the folder, if it is not defined, 'configureWithUI()' should be called to define
+ *  - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
@@ -83,13 +83,13 @@ public:
 
     /**
      * @brief Propose select a directory where to save the DICOM files.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTKGDCM_API virtual void configureWithIHM() override;
 
     /// Propose select a directory where to save the DICOM files.
-    IOVTKGDCM_API virtual void configureWithUI() override;
+    IOVTKGDCM_API virtual void openLocationDialog() override;
 protected:
 
     /// Does nothing

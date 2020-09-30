@@ -95,12 +95,12 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::configureWithUI()
+void SMatrixWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -194,7 +194,7 @@ void SMatrixWriter::startRecord()
     std::ios_base::openmode openMode = std::ofstream::app;
     if(!this->hasLocationDefined())
     {
-        this->configureWithUI();
+        this->openLocationDialog();
         // In trunc mode, any contents that existed in the file before it is open are discarded.
         // This is the needed behavior when opening the file for the first time.
         openMode = std::ofstream::trunc;

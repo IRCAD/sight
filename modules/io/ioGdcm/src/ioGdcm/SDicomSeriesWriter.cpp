@@ -73,11 +73,11 @@ SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
 
 void SDicomSeriesWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::configureWithUI()
+void SDicomSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

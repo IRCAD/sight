@@ -68,12 +68,12 @@ SSeriesDBLazyReader::~SSeriesDBLazyReader() noexcept
 
 void SSeriesDBLazyReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBLazyReader::configureWithUI()
+void SSeriesDBLazyReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

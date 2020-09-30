@@ -67,12 +67,12 @@ SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
 
 void SCalibrationImagesWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SCalibrationImagesWriter::configureWithUI()
+void SCalibrationImagesWriter::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 

@@ -67,9 +67,9 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     FWIO_API virtual void configureWithIHM() = 0;
 
     /**
@@ -78,7 +78,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    FWIO_API virtual void configureWithUI();
+    FWIO_API virtual void openLocationDialog();
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -206,7 +206,7 @@ protected:
     FWIO_API virtual void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `configureWithUI` slot is called
+     * @brief Title of the window that will open when the `openLocationDialog` slot is called
      */
     std::string m_windowTitle;
 

@@ -95,12 +95,12 @@ void SPdfWriter::configuring()
 
 void SPdfWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::configureWithUI()
+void SPdfWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

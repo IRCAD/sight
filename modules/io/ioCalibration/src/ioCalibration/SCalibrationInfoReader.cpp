@@ -74,12 +74,12 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 
 void SCalibrationInfoReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SCalibrationInfoReader::configureWithUI()
+void SCalibrationInfoReader::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 

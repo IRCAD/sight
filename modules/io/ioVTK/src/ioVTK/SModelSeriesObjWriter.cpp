@@ -71,12 +71,12 @@ SModelSeriesObjWriter::SModelSeriesObjWriter() noexcept
 
 void SModelSeriesObjWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesObjWriter::configureWithUI()
+void SModelSeriesObjWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

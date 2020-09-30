@@ -88,12 +88,12 @@ void SInrSeriesDBReader::configuring()
 
 void SInrSeriesDBReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::configureWithUI()
+void SInrSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

@@ -68,7 +68,7 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::SeriesDB]: seriesDB to load.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the files to load, if it is not defined, 'configureWithUI()' should be called to
+ * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
@@ -93,9 +93,9 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
 
     /**
@@ -104,7 +104,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IOVTK_API virtual void configureWithUI() override;
+    IOVTK_API virtual void openLocationDialog() override;
 
 protected:
 

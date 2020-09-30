@@ -104,12 +104,12 @@ void SFrameWriter::starting()
 
 void SFrameWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::configureWithUI()
+void SFrameWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -217,7 +217,7 @@ void SFrameWriter::startRecord()
 {
     if (!this->hasLocationDefined())
     {
-        this->configureWithUI();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())

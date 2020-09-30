@@ -90,12 +90,12 @@ void SVideoWriter::starting()
 
 void SVideoWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::configureWithUI()
+void SVideoWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -271,7 +271,7 @@ void SVideoWriter::startRecord()
 {
     if (!this->hasLocationDefined())
     {
-        this->configureWithUI();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())

@@ -84,12 +84,12 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 void SImageSeriesReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesReader::configureWithUI()
+void SImageSeriesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

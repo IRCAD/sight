@@ -79,13 +79,13 @@ public:
 
     /**
      * @brief Propose select a directory where to save the DICOM files.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
 
     /// Propose select a directory where to save the DICOM files.
-    IOGDCM_API virtual void configureWithUI() override;
+    IOGDCM_API virtual void openLocationDialog() override;
 
 protected:
 

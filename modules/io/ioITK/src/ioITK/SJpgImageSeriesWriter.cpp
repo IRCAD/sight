@@ -75,12 +75,12 @@ void SJpgImageSeriesWriter::configuring()
 
 void SJpgImageSeriesWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::configureWithUI()
+void SJpgImageSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

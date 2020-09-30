@@ -118,13 +118,13 @@ protected:
 
     /**
      * @brief Configure using GUI.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
 
     /// Configure using GUI.
-    IOGDCM_API virtual void configureWithUI() override;
+    IOGDCM_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
     IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;

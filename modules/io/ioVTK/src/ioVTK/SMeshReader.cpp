@@ -73,12 +73,12 @@ SMeshReader::SMeshReader() noexcept
 
 void SMeshReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::configureWithUI()
+void SMeshReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

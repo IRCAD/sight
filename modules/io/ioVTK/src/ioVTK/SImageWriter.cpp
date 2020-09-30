@@ -76,12 +76,12 @@ SImageWriter::SImageWriter() noexcept
 
 void SImageWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::configureWithUI()
+void SImageWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

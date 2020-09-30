@@ -90,13 +90,13 @@ protected:
 
     /**
      * @brief configure the service using GUI.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOCALIBRATION_API void configureWithIHM() override;
 
     /// configure the service using GUI.
-    IOCALIBRATION_API void configureWithUI() override;
+    IOCALIBRATION_API void openLocationDialog() override;
 
     /**
      * @brief Prompt a dialog to define file location.

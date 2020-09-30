@@ -85,12 +85,12 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 void SModelSeriesReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void SModelSeriesReader::configureWithUI()
+void SModelSeriesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

@@ -114,12 +114,12 @@ void SDicomSeriesDBReader::configuring()
 
 void SDicomSeriesDBReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::configureWithUI()
+void SDicomSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

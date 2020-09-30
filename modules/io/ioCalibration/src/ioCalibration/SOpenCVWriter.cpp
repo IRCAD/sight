@@ -63,12 +63,12 @@ void SOpenCVWriter::configuring()
 
 void SOpenCVWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //----------------------------------------------------------------------------
 
-void SOpenCVWriter::configureWithUI()
+void SOpenCVWriter::openLocationDialog()
 {
     this->defineLocationGUI();
 }

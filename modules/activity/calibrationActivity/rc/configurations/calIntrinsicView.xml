@@ -270,7 +270,7 @@
         <service uid="saveInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataWriterSrv/configureWithUI</slot>
+                <slot>calibrationDataWriterSrv/openLocationDialog</slot>
                 <slot>calibrationDataWriterSrv/update</slot>
             </slots>
         </service>
@@ -278,7 +278,7 @@
         <service uid="loadInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataReaderSrv/configureWithUI</slot>
+                <slot>calibrationDataReaderSrv/openLocationDialog</slot>
                 <slot>calibrationDataReaderSrv/update</slot>
             </slots>
         </service>

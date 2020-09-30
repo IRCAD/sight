@@ -82,12 +82,12 @@ void TransformationMatrix3DWriterService::configuring()
 
 void TransformationMatrix3DWriterService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::configureWithUI()
+void TransformationMatrix3DWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 

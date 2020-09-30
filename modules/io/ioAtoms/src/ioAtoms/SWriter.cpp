@@ -556,12 +556,12 @@ void SWriter::updating()
 
 void SWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void SWriter::configureWithUI()
+void SWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

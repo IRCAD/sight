@@ -453,12 +453,12 @@ void SReader::notificationOfUpdate()
 
 void SReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void SReader::configureWithUI()
+void SReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

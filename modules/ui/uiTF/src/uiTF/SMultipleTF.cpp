@@ -843,7 +843,7 @@ void SMultipleTF::exportPool()
 
     writer->configure(config);
     writer->start();
-    writer->configureWithIHM();
+    writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);

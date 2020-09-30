@@ -65,13 +65,13 @@ public:
 
     /**
      * @brief Configures the folder path.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOCALIBRATION_API virtual void configureWithIHM() override;
 
     /// Configures the folder path.
-    IOCALIBRATION_API virtual void configureWithUI() override;
+    IOCALIBRATION_API virtual void openLocationDialog() override;
 
 protected:
 

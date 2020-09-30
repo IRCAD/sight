@@ -51,7 +51,7 @@ namespace ioITK
  * @subsection Input Input
  * - \b data [::fwData::Image]: image to save.
  * @subsection Configuration Configuration
- * - \b folder (optional): path of the folder, if it is not defined, 'configureWithUI()' should be called to define
+ * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
 class IOITK_CLASS_API JpgImageWriterService : public ::fwIO::IWriter
@@ -87,13 +87,13 @@ protected:
 
     /**
      * @brief Configure using GUI.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
 
     /// Configure using GUI.
-    IOITK_API virtual void configureWithUI() override;
+    IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FOLDER
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

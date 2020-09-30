@@ -137,19 +137,19 @@
 
         <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>depthRecorder/configureWithUI</slot>
+                <slot>depthRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
         <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>rgbRecorder/configureWithUI</slot>
+                <slot>rgbRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
         <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>irRecorder/configureWithUI</slot>
+                <slot>irRecorder/openLocationDialog</slot>
             </slots>
         </service>
 

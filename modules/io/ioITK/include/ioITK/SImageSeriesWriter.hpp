@@ -46,7 +46,7 @@ namespace ioITK
  * @subsection Input Input
  * - \b data [::fwMedData::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it not defined, 'configureWithUI()' should be called to define
+ * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
 class IOITK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
@@ -78,13 +78,13 @@ protected:
 
     /**
      * @brief Configure using GUI.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
 
     /// Configure using GUI.
-    IOITK_API virtual void configureWithUI() override;
+    IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

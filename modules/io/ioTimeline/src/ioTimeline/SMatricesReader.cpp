@@ -131,12 +131,12 @@ void SMatricesReader::starting()
 
 void SMatricesReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::configureWithUI()
+void SMatricesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -262,7 +262,7 @@ void SMatricesReader::startReading()
 
     if (!this->hasLocationDefined())
     {
-        this->configureWithUI();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())

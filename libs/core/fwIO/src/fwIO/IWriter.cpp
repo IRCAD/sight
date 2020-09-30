@@ -36,8 +36,8 @@ const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFold
 const ::fwCom::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM"; // Deprecated
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_UI  = "configureWithUI";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
+static const ::fwCom::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
 
 //-----------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ IWriter::IWriter() noexcept :
     m_currentTimestamp(0.0)
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::deprecateConfigureWithIHM, this);
-    newSlot(s_CONFIGURE_WITH_UI, &IWriter::configureWithUI, this);
+    newSlot(s_OPEN_LOCATION_DIALOG, &IWriter::openLocationDialog, this);
     newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
     newSlot(s_SET_TIMESTAMP_PREFIX, &IWriter::setTimestampPrefix, this);
 }
@@ -219,16 +219,16 @@ void IWriter::configuring()
 
 void IWriter::deprecateConfigureWithIHM()
 {
-    FW_DEPRECATED_MSG("configureWithUI should be implemented in subclass,"
+    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
                       " this method will be a pure virtual in sight 22.0.", 22.0);
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void IWriter::configureWithUI()
+void IWriter::openLocationDialog()
 {
-    FW_DEPRECATED_MSG("configureWithUI should be implemented in subclass,"
+    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
                       " this method will be a pure virtual in sight 22.0.", 22.0);
     this->configureWithIHM();
 }

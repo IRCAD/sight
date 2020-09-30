@@ -121,13 +121,13 @@ public:
 
     /**
      * @brief Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOATOMS_API void configureWithIHM() override;
 
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
-    IOATOMS_API void configureWithUI() override;
+    IOATOMS_API void openLocationDialog() override;
 
     /// Maps file extension to format name.
     typedef std::map< std::string, std::string > FileExtension2NameType;

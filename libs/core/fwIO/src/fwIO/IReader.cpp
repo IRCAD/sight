@@ -37,11 +37,11 @@ namespace fwIO
 const ::fwCom::Slots::SlotKeyType IReader::s_SET_FILE_FOLDER = "setFileFolder";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT   = "readFolder";
-static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT     = "readFile";
-static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT    = "readFiles";
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM"; // Deprecated
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_UI  = "configureWithUI";
+static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT     = "readFolder";
+static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT       = "readFile";
+static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT      = "readFiles";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
+static const ::fwCom::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
 
 //-----------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ IReader::IReader() noexcept
     newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
     newSlot(s_READ_FILES_SLOT, &IReader::readFiles, this);
     newSlot(s_CONFIGURE_WITH_IHM, &IReader::deprecateConfigureWithIHM, this);
-    newSlot(s_CONFIGURE_WITH_UI, &IReader::configureWithUI, this);
+    newSlot(s_OPEN_LOCATION_DIALOG, &IReader::openLocationDialog, this);
     newSlot(s_SET_FILE_FOLDER, &IReader::setFileFolder, this);
 }
 
@@ -243,17 +243,17 @@ void IReader::configuring()
 
 void IReader::deprecateConfigureWithIHM()
 {
-    FW_DEPRECATED_MSG("configureWithUI should be implemented in subclass,"
+    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
                       " this method will be a pure virtual in sight 22.0.", 22.0);
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void IReader::configureWithUI()
+void IReader::openLocationDialog()
 {
     FW_DEPRECATED_MSG(
-        "configureWithUI should be implemented in subclass, this method will be a pure virtual in sight 22.0.",
+        "openLocationDialog should be implemented in subclass, this method will be a pure virtual in sight 22.0.",
         22.0);
     this->configureWithIHM();
 }

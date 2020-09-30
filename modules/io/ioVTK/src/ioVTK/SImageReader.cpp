@@ -80,12 +80,12 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 void SImageReader::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageReader::configureWithUI()
+void SImageReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

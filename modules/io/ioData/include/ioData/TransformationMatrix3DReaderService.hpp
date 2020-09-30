@@ -64,9 +64,9 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IODATA_API virtual void configureWithIHM() override;
 
     /**
@@ -75,7 +75,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IODATA_API virtual void configureWithUI() override;
+    IODATA_API virtual void openLocationDialog() override;
 
     /**
      * @brief   returns  (filename) extension

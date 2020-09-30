@@ -74,12 +74,12 @@ void InrImageWriterService::configuring()
 
 void InrImageWriterService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::configureWithUI()
+void InrImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

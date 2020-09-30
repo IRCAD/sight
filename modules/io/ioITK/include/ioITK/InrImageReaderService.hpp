@@ -51,7 +51,7 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwData::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'configureWithUI()' should be called to
+ * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
 class IOITK_CLASS_API InrImageReaderService : public ::fwIO::IReader
@@ -87,13 +87,13 @@ protected:
 
     /**
      * @brief Configure using GUI.
-     * @deprecated Will be removed in sight 22.0. Use configureWithUI() instead.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use configureWithUI() instead.")]]
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
 
     /// Configure using GUI.
-    IOITK_API virtual void configureWithUI() override;
+    IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

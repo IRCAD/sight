@@ -73,12 +73,12 @@ void JpgImageWriterService::configuring()
 
 void JpgImageWriterService::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configureWithUI()
+void JpgImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

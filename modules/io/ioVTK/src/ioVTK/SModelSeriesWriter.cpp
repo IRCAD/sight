@@ -81,11 +81,11 @@ SModelSeriesWriter::SModelSeriesWriter() noexcept
 
 void SModelSeriesWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::configureWithUI()
+void SModelSeriesWriter::openLocationDialog()
 {
     SLM_TRACE_FUNC();
     static std::filesystem::path _sDefaultPath("");

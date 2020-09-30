@@ -67,12 +67,12 @@ SSurfaceSegmentationWriter::~SSurfaceSegmentationWriter() noexcept
 
 void SSurfaceSegmentationWriter::configureWithIHM()
 {
-    this->configureWithUI();
+    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
 
-void SSurfaceSegmentationWriter::configureWithUI()
+void SSurfaceSegmentationWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
