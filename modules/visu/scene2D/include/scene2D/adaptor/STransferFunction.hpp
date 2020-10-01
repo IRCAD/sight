@@ -88,17 +88,17 @@ public:
     /// Destroys the adaptor.
     SCENE2D_API virtual ~STransferFunction() noexcept;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Initializes the layer and draw the TF.
      *
      * @see updating()
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -113,13 +113,15 @@ private:
      * Connect ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INOUT to
      * ::scene2D::adaptor::STransferFunction::s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Release all graphics items and draw the TF.
-    virtual void updating() override;
+    void updating() override;
 
     /// Release all graphic items.
-    virtual void stopping() override;
+    void stopping() override;
+
+private:
 
     /// Creates graphic points.
     void createTFPoints();
@@ -168,6 +170,7 @@ private:
      *                       the mouse up/down and left/right respectively.
      * - Right mouse click: remove the current clicked TF point or open a context menu
      *                      to manage multiple actions which are 'clamp' or 'linear'.
+     * - Wheel move: updates the whole current TF opacity.
      */
     virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
 
@@ -216,7 +219,7 @@ private:
      * @brief Sets @ref m_capturedTF if the clicked coord if over the TF.
      * @param _event the 2D scene event.
      */
-    void midButtonClickEvent(const ::fwRenderQt::data::Event& _event);
+    void midButtonClickEvent(::fwRenderQt::data::Event& _event);
 
     /**
      * @brief Update the window/level of the TF relativly to the mouse movement.
@@ -240,6 +243,12 @@ private:
      * @param _event the 2D scene event.
      */
     void rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event);
+
+    /**
+     * @brief Updates the whole current TF opacity.
+     * @param _event the 2D scene event.
+     */
+    void midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event);
 
     /**
      * @brief Sets if the TF is clamped or not.
@@ -281,6 +290,9 @@ private:
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
     std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
+
+    /// Stores the current TF id and its unclamped alpha color value map.
+    std::pair< ::fwTools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
 
 };
 

@@ -102,33 +102,17 @@ public:
     /// Destroys the adaptor.
     SCENE2D_API virtual ~SMultipleTF() noexcept;
 
-private:
-
-    /// Represents a sub-TF which is a TF of the input composite.
-    struct SubTF
-    {
-        /// Contains the TF data.
-        ::fwData::TransferFunction::sptr m_tf { nullptr };
-
-        /// Sets the z value in the local layer.
-        int m_zIndex { 0 };
-
-        /// Contains a set of graphic point and it coordinate in the window/level space.
-        std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > > m_TFPoints;
-
-        /// Contains the graphic gradient.
-        QGraphicsPolygonItem* m_TFPolygon;
-    };
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Initializes the current TF, the layer and draw all TF.
      *
      * @see updating()
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -142,19 +126,37 @@ private:
      * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
      * ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Release all graphics items and draw all TF, all TF connections a established here.
-    virtual void updating() override;
+    void updating() override;
 
     /// Release all graphic items and disconect all TF in the composite.
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Notifies that the TF is swapped.
      * @param _key key of the swapped data.
      */
     void swapping(const KeyType& _key) override;
+
+private:
+
+    /// Represents a sub-TF which is a TF of the input composite.
+    struct SubTF
+    {
+        /// Contains the TF data.
+        ::fwData::TransferFunction::sptr m_tf { nullptr };
+
+        /// Sets the z value in the local layer.
+        int m_zIndex { 0 };
+
+        /// Contains a set of graphic point and its coordinates in the window/level space.
+        std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > > m_TFPoints;
+
+        /// Contains the graphic gradient.
+        QGraphicsPolygonItem* m_TFPolygon;
+    };
 
     /// Deletes subTF in @ref m_subTF and clears them.
     void releaseTFData();
@@ -249,6 +251,7 @@ private:
      *                       the mouse up/down and left/right respectively.
      * - Right mouse click: remove the current clicked TF point or open a context menu
      *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
+     * - Wheel move: updates the whole current TF opacity.
      */
     virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
 
@@ -310,7 +313,7 @@ private:
      * @brief Sets @ref m_capturedTF if the clicked coord if over the current TF.
      * @param _event the 2D scene event.
      */
-    void midButtonClickEvent(const ::fwRenderQt::data::Event& _event);
+    void midButtonClickEvent(::fwRenderQt::data::Event& _event);
 
     /**
      * @brief Update the window/level of the current TF relativly to the mouse movement.
@@ -334,6 +337,12 @@ private:
      * @param _event the 2D scene event.
      */
     void rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event);
+
+    /**
+     * @brief Updates the whole current TF opacity.
+     * @param _event the 2D scene event.
+     */
+    void midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event);
 
     /// Deletes the current TF and change the current TF.
     void removeCurrenTF();
@@ -430,6 +439,9 @@ private:
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
     std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
+
+    /// Stores for each TF id, its unclamped alpha color value map.
+    std::map< ::fwTools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
 
 };
 

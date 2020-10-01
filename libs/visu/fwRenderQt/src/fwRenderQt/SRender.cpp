@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,13 +101,11 @@ Scene2DGraphicsView* SRender::getView() const
 
 void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
 {
-    /* std::map are sorted regarding to key values. Keys of m_zValue2AdaptorID are z-values (float).
-     *
-     * The dispatching is performed to the highest z-valued adaptors first, so we start iterating
-     * from the end of m_zValue2AdaptorID (with reverse_iterator).
-     */
-    if ( !_event.isAccepted() )
+    if (!_event.isAccepted())
     {
+        // Get all started adaptors.
+        std::vector< ::fwRenderQt::IAdaptor::sptr > orderedAdaptors;
+
         const auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
         for( const auto& elt : registry)
         {
@@ -117,8 +115,25 @@ void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
                     ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.first));
                 if(adaptor != nullptr && adaptor->isStarted())
                 {
-                    adaptor->processInteraction( _event );
+                    orderedAdaptors.push_back(adaptor);
                 }
+            }
+        }
+
+        // Sort adaptors by z value.
+        std::sort(orderedAdaptors.begin(), orderedAdaptors.end(),
+                  [&](::fwRenderQt::IAdaptor::sptr _a1, ::fwRenderQt::IAdaptor::sptr _a2)
+            {
+                return _a1->getZValue() > _a2->getZValue();
+            });
+
+        // Process interaction on all adaptors until one has accepted the event.
+        for(::fwRenderQt::IAdaptor::sptr adaptor : orderedAdaptors)
+        {
+            adaptor->processInteraction(_event);
+            if(_event.isAccepted())
+            {
+                return;
             }
         }
     }

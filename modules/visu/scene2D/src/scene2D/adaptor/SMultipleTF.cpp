@@ -146,7 +146,9 @@ void SMultipleTF::starting()
         }
     }
 
+    // Adds the layer item to the scene.
     m_layer = new QGraphicsItemGroup();
+    this->getScene2DRender()->getScene()->addItem(m_layer);
 
     m_pointsPen.setCosmetic(true);
     m_pointsPen.setWidthF(0);
@@ -567,9 +569,6 @@ void SMultipleTF::buildLayer()
     // Adjusts the layer's position and zValue depending on the associated axis.
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
-
-    // Adds the layer item to the scene.
-    this->getScene2DRender()->getScene()->addItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -771,7 +770,6 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
        _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
     {
         this->midButtonClickEvent(_event);
-        _event.setAccepted(true);
         return;
     }
 
@@ -781,6 +779,15 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     {
         this->rightButtonCLickEvent(_event);
         _event.setAccepted(true);
+        return;
+    }
+
+    // If the middle button wheel moves, change the whole subTF opacity.
+    if(_event.getButton() == ::fwRenderQt::data::Event::NoButton &&
+       (_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ||
+        _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp))
+    {
+        this->midButtonWheelMoveEvent(_event);
         return;
     }
 }
@@ -921,7 +928,6 @@ void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
                 this->setOutput(s_TF_OUTPUT, newCurrentSubTF->m_tf);
             }
         }
-
     }
 }
 
@@ -1080,6 +1086,14 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     // Adds the new TF point.
     tf->addTFColor(newTFValue, tfColor);
 
+    // Updates unclamped data.
+    if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
+    {
+        ::fwData::TransferFunction::TFDataType& data = m_unclampedTFData[tf->getID()];
+        data.erase(oldTFValue);
+        data[newTFValue] = tfColor;
+    }
+
     // Updates the window/level.
     if(window > 0)
     {
@@ -1141,6 +1155,13 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
         // Removes the TF point.
         const ::fwData::TransferFunction::TFValueType tfValue = tfDataIt->first;
         tf->eraseTFValue(tfValue);
+
+        // Update unclamped data.
+        if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
+        {
+            ::fwData::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
+            tfData.erase(tfValue);
+        }
 
         // Gets new window/level min max value in the window/level space.
         double min = _subTF->m_TFPoints.begin()->first.first;
@@ -1330,6 +1351,13 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
         // Adds the new TF point.
         tf->addTFColor(tfValue, newColor);
 
+        // Update unclamped data.
+        if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
+        {
+            ::fwData::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
+            tfData[tfValue]                                = newColor;
+        }
+
         // Gets new window/level min max value in the window/level space.
         double min = currentSubTF->m_TFPoints.begin()->first.first;
         double max = currentSubTF->m_TFPoints.rbegin()->first.first;
@@ -1368,7 +1396,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::midButtonClickEvent(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::midButtonClickEvent(::fwRenderQt::data::Event& _event)
 {
     // Finds all subTF that match the clicked coord.
     std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
@@ -1388,6 +1416,7 @@ void SMultipleTF::midButtonClickEvent(const ::fwRenderQt::data::Event& _event)
         m_capturedTF = std::make_pair(
             (*matchingIt)->m_tf,
             ::fwRenderQt::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
+        _event.setAccepted(true);
     }
 }
 
@@ -1514,6 +1543,111 @@ void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
+void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
+{
+    // Finds all subTF that match the current coord.
+    std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
+
+    // Checks if the current tf is in the matching list.
+    const auto matchingIt = std::find_if(matchingSubTF.begin(), matchingSubTF.end(), [&](const SubTF* _subTF)
+            {
+                return _subTF->m_tf == m_currentTF;
+            });
+
+    // Change the opacity only if the mouse if over the current TF.
+    if(matchingIt != matchingSubTF.end())
+    {
+        ::fwData::Composite::key_type key;
+        ::fwData::TransferFunction::sptr tf;
+        {
+            const auto tfPool = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+
+            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+
+            // Finds the key in the composite
+            SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+            for(::fwData::Composite::value_type poolElt : *tfPool)
+            {
+                if(poolElt.second == m_currentTF)
+                {
+                    key = poolElt.first;
+                    break;
+                }
+            }
+
+            // Updates the current TF.
+            tf = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+
+            const double scale = _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ? -0.05 : 0.05;
+
+            // Find unclamped data.
+            ::fwData::TransferFunction::TFDataType tfData;
+            if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
+            {
+                tfData = m_unclampedTFData[tf->getID()];
+            }
+            else
+            {
+                tfData = tf->getTFData();
+            }
+
+            // Check if the scaling is usefull.
+            bool usefull = false;
+            for(auto& data : tfData)
+            {
+                if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelUp && data.second.a > 0. &&
+                   data.second.a < 1.)
+                {
+                    usefull = true;
+                    break;
+                }
+                else if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown && data.second.a > 0.)
+                {
+                    usefull = true;
+                    break;
+                }
+            }
+
+            // Scale data.
+            if(usefull)
+            {
+                for(auto& data : tfData)
+                {
+                    data.second.a += data.second.a * scale;
+                }
+
+                // Store unclamped data.
+                m_unclampedTFData[tf->getID()] = tfData;
+
+                // Clamp data.
+                for(auto& data : tfData)
+                {
+                    data.second.a = std::clamp(data.second.a, 0., 1.);
+                }
+
+                // Updates the TF.
+                tf->setTFData(tfData);
+
+                // Sends the signal.
+                const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
+                    ::fwData::TransferFunction::s_MODIFIED_SIG);
+                {
+                    const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
+            }
+        }
+
+        // Re-draw all the scene.
+        this->updating();
+
+        _event.setAccepted(true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SMultipleTF::removeCurrenTF()
 {
     const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
@@ -1537,6 +1671,8 @@ void SMultipleTF::removeCurrenTF()
                 break;
             }
         }
+
+        m_unclampedTFData.erase(m_currentTF->getID());
 
         // Removes the current TF.
         compositeHelper.remove(key);
@@ -1694,6 +1830,9 @@ void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
 
     // Pushs the subTF to the vector.
     m_subTF.push_back(newSubTF);
+
+    this->createTFPolygon(newSubTF);
+    this->buildLayer();
 
     // Updates the current TF.
     this->setCurrentTF(newSubTF);
