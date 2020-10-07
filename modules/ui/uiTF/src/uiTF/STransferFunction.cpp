@@ -537,6 +537,7 @@ void STransferFunction::exportTF()
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tf");
     config.add("extensions.extension", ".tf");
+    config.add("extensions.extension.<xmlattr>.label", "Transfer Function");
 
     writer->configure(config);
     writer->start();

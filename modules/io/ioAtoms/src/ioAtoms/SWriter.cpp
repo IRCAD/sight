@@ -157,6 +157,7 @@ void SWriter::configuring()
             {
                 m_allowedExts.insert(m_allowedExts.end(), ext);
                 m_allowedExtLabels[ext] = it->second.get("<xmlattr>.label", "");
+                SLM_ASSERT("No label given for extension '" + ext + "'", !m_allowedExtLabels[ext].empty());
             }
         }
     }
