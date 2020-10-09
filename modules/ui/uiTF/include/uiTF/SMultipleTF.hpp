@@ -72,7 +72,8 @@ namespace uiTF
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
- * - \b tfPerPath (optional, default="false"): if true, merge all TF contains in each path to a new composite.
+ * - \b tfPerPath (optional, default="false"): if true, merge all TF contained in each path to a new composite
+ *                                             (only works for basic TF, multiple TF are read as is).
  * - \b deleteIcon (optional): path of the delete button icon.
  * - \b newIcon (optional): path of the new button icon.
  * - \b copyIcon (optional): path of the copy button icon.
