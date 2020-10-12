@@ -277,6 +277,7 @@ void SActivitySequencer::goTo(int index)
         m_currentActivity = index;
         QObject* object = m_widget->rootObject();
         QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, index));
+        QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, index));
     }
     else
     {
