@@ -1,8 +1,8 @@
 # Conan support
-file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
+file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake"
     "${CMAKE_BINARY_DIR}/conan.cmake"
     SHOW_PROGRESS
-    EXPECTED_HASH SHA256=c9c8dfaf21fb071aa1cd2a2e250b73476405705052096e4cdfd5f1192b007dd0)
+    EXPECTED_HASH SHA256=75c92be7d739ab69c3c9a1cd0bf4728cd08da143a18776eb43f8e2af16accace)
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_check(VERSION 1.0.0 REQUIRED)
