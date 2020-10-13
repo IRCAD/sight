@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ class FWIO_CLASS_API IWriter : public ::fwServices::IService
 {
 
 public:
-    fwCoreServiceMacro(IWriter, ::fwServices::IService);
+    fwCoreServiceMacro(IWriter, ::fwServices::IService)
 
     /**
      * @name Slots API
@@ -67,8 +67,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     FWIO_API virtual void configureWithIHM() = 0;
+
+    /**
+     * @brief Configure the image path (by default does nothing).
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    FWIO_API virtual void openLocationDialog();
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -196,7 +206,7 @@ protected:
     FWIO_API virtual void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `configureWithIHM` slot is called
+     * @brief Title of the window that will open when the `openLocationDialog` slot is called
      */
     std::string m_windowTitle;
 
@@ -204,6 +214,9 @@ protected:
     bool m_writeFailed{false};
 
 private:
+
+    /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.
+    void deprecateConfigureWithIHM();
 
     /// Value to store file or folder paths
     ::fwIO::LocationsType m_locations;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwMedData::ModelSeries )
 
 //------------------------------------------------------------------------------
 
@@ -66,6 +66,13 @@ SSurfaceSegmentationWriter::~SSurfaceSegmentationWriter() noexcept
 //------------------------------------------------------------------------------
 
 void SSurfaceSegmentationWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSurfaceSegmentationWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

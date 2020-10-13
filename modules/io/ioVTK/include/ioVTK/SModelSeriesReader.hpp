@@ -60,7 +60,7 @@ namespace ioVTK
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::ModelSeries]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the files to load, if it is not defined, 'configureWithIHM()' should be called to
+ * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
 class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
@@ -84,8 +84,17 @@ public:
      * @brief Configure the mesh path.
      *
      * This method is used to find the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the mesh path.
+     *
+     * This method is used to find the file path  using a file selector.
+     */
+    IOVTK_API virtual void openLocationDialog() override;
 
 protected:
 

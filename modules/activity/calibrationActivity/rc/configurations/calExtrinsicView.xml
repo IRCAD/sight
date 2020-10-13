@@ -285,9 +285,9 @@
         <service uid="saveInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataWriter1Srv/configureWithIHM</slot>
+                <slot>calibrationDataWriter1Srv/openLocationDialog</slot>
                 <slot>calibrationDataWriter1Srv/update</slot>
-                <slot>calibrationDataWriter2Srv/configureWithIHM</slot>
+                <slot>calibrationDataWriter2Srv/openLocationDialog</slot>
                 <slot>calibrationDataWriter2Srv/update</slot>
             </slots>
         </service>
@@ -295,9 +295,9 @@
         <service uid="loadInputsAct" type="::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
-                <slot>calibrationDataReader1Srv/configureWithIHM</slot>
+                <slot>calibrationDataReader1Srv/openLocationDialog</slot>
                 <slot>calibrationDataReader1Srv/update</slot>
-                <slot>calibrationDataReader2Srv/configureWithIHM</slot>
+                <slot>calibrationDataReader2Srv/openLocationDialog</slot>
                 <slot>calibrationDataReader2Srv/update</slot>
             </slots>
         </service>

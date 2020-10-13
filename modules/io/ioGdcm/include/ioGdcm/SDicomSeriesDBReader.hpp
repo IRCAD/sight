@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwJobs
@@ -76,7 +75,7 @@ public:
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SDicomSeriesDBReader,  ::fwIO::IReader)
 
     /**
      * @brief   constructor
@@ -117,8 +116,15 @@ protected:
     /// Configuring method. This method is used to configure the service.
     IOGDCM_API virtual void configuring() override;
 
-    /// Override
+    /**
+     * @brief Configure using GUI.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
+
+    /// Configure using GUI.
+    IOGDCM_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
     IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -81,7 +81,13 @@ SImageSeriesWriter::SImageSeriesWriter() noexcept
 
 void SImageSeriesWriter::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -104,7 +110,6 @@ void SImageSeriesWriter::configureWithIHM()
     {
         this->clearLocations();
     }
-
 }
 
 //------------------------------------------------------------------------------

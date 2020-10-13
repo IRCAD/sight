@@ -88,7 +88,13 @@ void SInrSeriesDBReader::configuring()
 
 void SInrSeriesDBReader::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SInrSeriesDBReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

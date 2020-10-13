@@ -90,6 +90,13 @@ void SVideoWriter::starting()
 
 void SVideoWriter::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
@@ -264,7 +271,7 @@ void SVideoWriter::startRecord()
 {
     if (!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())

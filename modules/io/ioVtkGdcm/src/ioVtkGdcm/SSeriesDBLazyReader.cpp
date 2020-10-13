@@ -68,6 +68,13 @@ SSeriesDBLazyReader::~SSeriesDBLazyReader() noexcept
 
 void SSeriesDBLazyReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBLazyReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;

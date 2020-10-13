@@ -324,7 +324,7 @@ void SIOSelector::updating()
                 try
                 {
                     reader->start();
-                    reader->configureWithIHM();
+                    reader->openLocationDialog();
 
                     ::fwGui::Cursor cursor;
                     cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -382,7 +382,7 @@ void SIOSelector::updating()
                 try
                 {
                     writer->start();
-                    writer->configureWithIHM();
+                    writer->openLocationDialog();
 
                     ::fwGui::Cursor cursor;
                     cursor.setCursor(::fwGui::ICursor::BUSY);

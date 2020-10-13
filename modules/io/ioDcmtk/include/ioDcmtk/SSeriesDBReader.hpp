@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwMedData
@@ -115,8 +114,15 @@ protected:
     /// Override
     IODCMTK_API virtual std::string getSelectorDialogTitle() override;
 
-    /// Override
+    /**
+     * @brief Configure using GUI.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IODCMTK_API virtual void configureWithIHM() override;
+
+    /// Configure using GUI.
+    IODCMTK_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
     IODCMTK_API ::fwIO::IOPathType getIOPathType() const override;

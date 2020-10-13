@@ -84,6 +84,13 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 void SImageSeriesReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     // Initialize the available extensions for BitmapImageReader

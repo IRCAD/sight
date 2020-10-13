@@ -85,6 +85,13 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 void SModelSeriesReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void SModelSeriesReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;

@@ -558,6 +558,13 @@ void SWriter::updating()
 
 void SWriter::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void SWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     if( !m_useAtomsPatcher || versionSelection() )
@@ -589,7 +596,6 @@ void SWriter::configureWithIHM()
         }
 
     }
-
 }
 
 //-----------------------------------------------------------------------------

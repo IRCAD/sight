@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ namespace ioITK
  * @subsection In-Out In-Out
  * - \b data [::fwData::Image]: loaded image.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the image to load, if it is not defined, 'configureWithIHM()' should be called to
+ * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
 class IOITK_CLASS_API InrImageReaderService : public ::fwIO::IReader
@@ -85,8 +85,15 @@ protected:
     /// Override
     IOITK_API void info(std::ostream& _sstream ) override;
 
-    /// Override
+    /**
+     * @brief Configure using GUI.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOITK_API virtual void configureWithIHM() override;
+
+    /// Configure using GUI.
+    IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
     IOITK_API ::fwIO::IOPathType getIOPathType() const override;

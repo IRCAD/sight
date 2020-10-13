@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -72,6 +72,12 @@ SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+//------------------------------------------------------------------------------
+
+void SDicomSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

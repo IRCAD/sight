@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwData
@@ -63,8 +62,8 @@ namespace ioVTK
  * @subsection Input Input
  * - \b data [::fwData::Image]: image to save.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'configureWithIHM()' should be called to define
- * the path.
+ * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * define the path.
  */
 class IOVTK_CLASS_API SImageWriter : public ::fwIO::IWriter
 {
@@ -89,8 +88,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOVTK_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the image path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    IOVTK_API virtual void openLocationDialog() override;
 
     /**
      * @brief Save a VTK image.

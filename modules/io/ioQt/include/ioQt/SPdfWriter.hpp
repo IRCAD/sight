@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,7 +76,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceMacro(SPdfWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SPdfWriter,  ::fwIO::IWriter)
     /**
      * @brief Constructor : does nothing
      */
@@ -121,8 +121,18 @@ protected:
      *
      * This method is used to set the file path of the PDF to write.
      *
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOQT_API void configureWithIHM() override;
+
+    /**
+     * @brief Configure the image path.
+     *
+     * This method is used to set the file path of the PDF to write.
+     *
+     */
+    IOQT_API void openLocationDialog() override;
 
     /**
      * @brief Updating method. Creates a new PDF.

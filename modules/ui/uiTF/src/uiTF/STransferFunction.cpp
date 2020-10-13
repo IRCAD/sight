@@ -499,7 +499,7 @@ void STransferFunction::importTF()
 
     reader->configure(config);
     reader->start();
-    reader->configureWithIHM();
+    reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
@@ -541,7 +541,7 @@ void STransferFunction::exportTF()
 
     writer->configure(config);
     writer->start();
-    writer->configureWithIHM();
+    writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);
