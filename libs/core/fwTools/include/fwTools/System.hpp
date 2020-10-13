@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,6 +86,14 @@ public:
      * @return  true if the process is running
      */
     FWTOOLS_API static bool isProcessRunning(int pid) noexcept;
+
+    /**
+     * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
+     * @param _from source path of the file to rename.
+     * @param _to destination path of the renamed file.
+     * @throws std::filesystem_error if it fails.
+     */
+    FWTOOLS_API static void robustRename(const std::filesystem::path& _from, const std::filesystem::path& _to);
 
     /**
      * @brief Sets the temporary folder prefix.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 #include "SystemTest.hpp"
 
 #include <fwTools/System.hpp>
+
+#include <fstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::SystemTest );
@@ -72,6 +74,37 @@ void SystemTest::genTempFilenameTest()
         }
     }
 }
+
+//------------------------------------------------------------------------------
+
+void SystemTest::robustRenameTest()
+{
+    const std::filesystem::path originFile(::fwTools::System::getTemporaryFolder() / "test.sight");
+    // Create fake file.
+    {
+        std::fstream fs;
+        fs.open(originFile, std::ios::out);
+        fs.close();
+    }
+
+    const std::filesystem::path destinationFile(::fwTools::System::getTemporaryFolder() / "test1000.sight");
+
+    //1. Basic renaming.
+    CPPUNIT_ASSERT_NO_THROW(::fwTools::System::robustRename(originFile, destinationFile));
+
+    CPPUNIT_ASSERT_MESSAGE("Destination file should exist.", std::filesystem::exists(destinationFile));
+    CPPUNIT_ASSERT_MESSAGE("Origin file shouldn't exist", !std::filesystem::exists(originFile));
+
+    // 2. Should throw an exception.
+    CPPUNIT_ASSERT_THROW(::fwTools::System::robustRename(originFile, destinationFile),
+                         std::filesystem::filesystem_error);
+
+    // Clean up.
+    std::filesystem::remove(destinationFile);
+
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwTools
