@@ -10,8 +10,7 @@ set( REQUIREMENTS
     guiQt
     ioVTK
     uiIO # contains services to show dialogs for reader/writer selection
-    visuVTKQt
-    vtkSimpleNegato
+    visuOgreBasic
     fwlauncher
     appXml
 )

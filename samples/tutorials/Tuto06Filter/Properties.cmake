@@ -10,8 +10,7 @@ set( REQUIREMENTS
     guiQt
     ioVTK
     uiIO
-    visuVTKQt
-    vtkSimpleNegato
+    visuOgreBasic
     opImageFilter # module containing the action to performs a threshold
     fwlauncher
     appXml

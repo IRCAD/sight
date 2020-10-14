@@ -337,17 +337,26 @@ void SNegato3D::newImage()
         this->createPlanes(spacing, origin);
 
         // Update Slice
-        const auto axialIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-        const auto frontalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-        const auto sagittalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        const auto imgSize       = image->getSize2();
+        const auto axialIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
+        SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
+        const auto axialIdx = axialIdxField ? axialIdxField->getValue() : static_cast<int>(imgSize[2]/2);
+
+        const auto frontalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
+        SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
+        const auto frontalIdx = frontalIdxField ? frontalIdxField->getValue() : static_cast<int>(imgSize[1]/2);
+
+        const auto sagittalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
+        SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
+        const auto sagittalIdx = sagittalIdxField ? sagittalIdxField->getValue() : static_cast<int>(imgSize[0]/2);
 
         this->changeSliceIndex(
-            static_cast<int>(axialIndex),
-            static_cast<int>(frontalIndex),
-            static_cast<int>(sagittalIndex)
+            static_cast<int>(axialIdx),
+            static_cast<int>(frontalIdx),
+            static_cast<int>(sagittalIdx)
             );
     }
 

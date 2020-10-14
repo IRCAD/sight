@@ -8,10 +8,8 @@ set( REQUIREMENTS
     servicesReg
     gui
     guiQt
-    ioVTK # contains the reader and writer for VTK files (image and mesh).
-    visuVTK # loads VTK rendering library (fwRenderVTK).
-    visuVTKQt # containsthe vtk Renderer window interactor manager using Qt.
-    vtkSimpleNegato # contains a visualization service of medical image.
+    ioVTK           # contains the reader and writer for VTK files (image and mesh).
+    visuOgreBasic   # loads basic rendering services for images and meshes.
     fwlauncher
     appXml
 )

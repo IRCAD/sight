@@ -3,7 +3,6 @@
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceBasicConfig</id>
@@ -23,12 +22,12 @@
                     <frame>
                         <name>tutoDataServiceBasic</name>
                         <icon>Tuto02DataServiceBasic-0.1/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <minSize width="1024" height="768" />
                     </frame>
                 </gui>
                 <registry>
                     <!-- Associate the container for the rendering service. -->
-                    <view sid="myRendering" />
+                    <view sid="imageRenderer" />
                 </registry>
             </service>
 
@@ -37,7 +36,7 @@
                 The <file> tag defines the path of the image to load. Here, it is a relative
                 path from the repository in which you launch the application.
             -->
-            <service uid="myReaderPathFile" type="::ioVTK::SImageReader">
+            <service uid="imageReader" type="::ioVTK::SImageReader">
                 <inout key="data" uid="imageData" />
                 <file>../../data/patient1.vtk</file>
             </service>
@@ -46,7 +45,7 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="myRendering" type="::vtkSimpleNegato::SRenderer">
+            <service uid="imageRenderer" type="::visuOgreBasic::SImage">
                 <in key="image" uid="imageData" />
             </service>
 
@@ -56,16 +55,16 @@
                 The services will be stopped the reverse order compared to the starting one.
             -->
             <start uid="mainFrame" />
-            <start uid="myReaderPathFile" />
-            <start uid="myRendering" />
+            <start uid="imageReader" />
+            <start uid="imageRenderer" />
 
             <!--
                 Definition of the service to update:
                 The reading service load the data on the update.
                 The render update must be called after the reading of the image.
             -->
-            <update uid="myReaderPathFile" />
-            <update uid="myRendering" />
+            <update uid="imageReader" />
+            <update uid="imageRenderer" />
 
         </config>
     </extension>

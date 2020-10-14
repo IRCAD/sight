@@ -10,8 +10,7 @@ set( REQUIREMENTS
     guiQt
     ioVTK
     uiIO
-    visuVTKQt
-    vtkSimpleMesh # contains a visualization service of mesh.
+    visuOgreBasic # contains a visualization service of mesh.
     fwlauncher
     appXml
 )

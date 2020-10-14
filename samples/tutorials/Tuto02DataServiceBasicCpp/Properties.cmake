@@ -1,5 +1,5 @@
 
-set( NAME Tuto02DataServiceBasicCtrl )
+set( NAME Tuto02DataServiceBasicCpp )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( START ON )
@@ -14,10 +14,8 @@ set( REQUIREMENTS
     guiQt
     fwData
     servicesReg
-    visuVTK
-    visuVTKQt
+    visuOgreBasic   # loads basic rendering services for images and meshes.
     ioData
     ioVTK
-    vtkSimpleNegato
     fwlauncher
 )

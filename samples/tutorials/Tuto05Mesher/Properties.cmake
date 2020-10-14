@@ -11,9 +11,8 @@ set( REQUIREMENTS
     ioVTK
     visuVTKQt
     uiIO
-    vtkSimpleNegato
-    vtkSimpleMesh
-    opVTKMesh # provides services to generate a mesh from an image.
+    visuOgreBasic   # contains a visualization service of mesh.
+    opVTKMesh       # provides services to generate a mesh from an image.
     fwlauncher
     appXml
 )

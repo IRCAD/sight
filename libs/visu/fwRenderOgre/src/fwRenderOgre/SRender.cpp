@@ -374,10 +374,15 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);
 
-    if (attributes.count("topColor") && attributes.count("bottomColor"))
+    if (attributes.count("color") )
     {
-        std::string topColor = attributes.get<std::string>("topColor");
-        std::string botColor = attributes.get<std::string>("bottomColor");
+        const std::string color = attributes.get<std::string>("color");
+        ogreLayer->setBackgroundColor(color, color);
+    }
+    else if (attributes.count("topColor") && attributes.count("bottomColor"))
+    {
+        const std::string topColor = attributes.get<std::string>("topColor");
+        const std::string botColor = attributes.get<std::string>("bottomColor");
 
         ogreLayer->setBackgroundColor(topColor, botColor);
     }
@@ -388,6 +393,10 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
         const float botScaleVal = attributes.get<float>("bottomScale");
 
         ogreLayer->setBackgroundScale(topScaleVal, botScaleVal);
+    }
+    else
+    {
+        ogreLayer->setBackgroundScale(0.5f, 0.5f);
     }
 
     m_layers[s_OGREBACKGROUNDID] = ogreLayer;

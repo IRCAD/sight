@@ -63,4 +63,4 @@ private:
     ::fwCom::SlotBase::sptr m_slotEmptySelection;
 };
 
-} // namespace Tuto02DataServiceBasicCtrl
+} // namespace Tuto09MesherWithGenericSceneCpp

@@ -2,7 +2,6 @@
 <plugin id="Tuto03DataService" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceConfig</id>
@@ -12,7 +11,7 @@
             <object uid="image" type="::fwData::Image" />
 
             <!-- Frame service:
-                The frame creates a container fot the rendering service and a menu bar.
+                The frame creates a container for the rendering service and a menu bar.
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="yes"' attribute.
             -->
@@ -85,9 +84,9 @@
 
             <!--
                 Open file action:
-                This service (::gui::action::StarterActionService) is a generic action, it starts and update the
+                This service (::gui::action::SStarter) is a generic action, it starts and updates the
                 services given in the configuration when the user clicks on the action.
-                Here, the reader selector will be called when the actions is clicked.
+                Here, the reader selector will be called when the action is clicked.
             -->
             <service uid="actionOpenFile" type="::gui::action::SStarter">
                 <start uid="myReaderPathFile" />
@@ -95,12 +94,12 @@
 
             <!--
                 Reader selector dialog:
-                This is a generic service that show a dialog to display all the reader or writer available for its
-                associated data. By default it is configured to show reader. (Note: if there is only one reading
-                service, it is directly selected without dialog box.)
-                Here, it the only reader available to read a ::fwData::Image is ::ioVTK::ImageReaderService (see
+                This is a generic service that shows a dialog to display all the readers or writers available for its
+                associated data. By default it is configured to show readers. (Note: if there is only one reading
+                service, it is directly selected without prompting.)
+                Here, the only reader available to read a ::fwData::Image is ::ioVTK::ImageReaderService (see
                 Tuto02DataServiceBasic), so the selector will not be displayed.
-                When the service was chosen, it is started, updated and stopped, so the data is read.
+                When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
             <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="image" />
@@ -111,8 +110,8 @@
                 Here, the service attribute 'autoConnect="yes"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="myRendering" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
-                <in key="image" uid="image" />
+            <service uid="myRendering" type="::visuOgreBasic::SImage">
+                <in key="image" uid="image" autoConnect="yes" />
             </service>
 
             <!--

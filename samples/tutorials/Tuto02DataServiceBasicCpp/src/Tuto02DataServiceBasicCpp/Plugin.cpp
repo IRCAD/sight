@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "Tuto02DataServiceBasicCtrl/Plugin.hpp"
+#include "Tuto02DataServiceBasicCpp/Plugin.hpp"
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -28,10 +28,10 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-namespace Tuto02DataServiceBasicCtrl
+namespace Tuto02DataServiceBasicCpp
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto02DataServiceBasicCtrl::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto02DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +68,10 @@ void Plugin::initialize()
     m_readerSrv->configure();
 
     // create and register the render service
-    m_renderSrv = ::fwServices::add("::vtkSimpleNegato::SRenderer");
-    m_renderSrv->registerInput(m_image, "image"); // add the input image
-    m_renderSrv->setID( "myRenderingTuto" ); // set an identifier
+    // create the frame configuration
+    m_renderSrv = ::fwServices::add("::visuOgreBasic::SImage");
+    m_renderSrv->registerInput(m_image, "image");
+    m_renderSrv->setID( "renderer" ); // set an identifier
     m_renderSrv->configure();
 
     // create and register frame service
@@ -78,12 +79,12 @@ void Plugin::initialize()
 
     // create the frame configuration
     ::fwServices::IService::ConfigType frameConfig;
-    frameConfig.put("gui.frame.name", "tutoDataServiceBasicCtrl");
-    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCtrl-0.1/tuto.ico");
+    frameConfig.put("gui.frame.name", "tutoDataServiceBasicCpp");
+    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCpp-0.1/tuto.ico");
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
     // use the render identifier to display it in the frame
-    frameConfig.put("registry.view.<xmlattr>.sid", "myRenderingTuto");
+    frameConfig.put("registry.view.<xmlattr>.sid", "renderer");
 
     m_frameSrv->setConfiguration( frameConfig );
     m_frameSrv->configure();
@@ -98,7 +99,7 @@ void Plugin::initialize()
     m_renderSrv->update();
 }
 
-//------------------------------------------------------------------------------
+//--------------------------------------renderConfig----------------------------------------
 
 void Plugin::stop() noexcept
 {
@@ -122,4 +123,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto02DataServiceBasicCtrl
+} // namespace Tuto02DataServiceBasicCpp

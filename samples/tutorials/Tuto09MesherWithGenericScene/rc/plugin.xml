@@ -215,7 +215,7 @@
                </out>
             </service>
 
-            <!-- This service convert a simple fwData::Image to medical Image -->
+            <!-- This service converts a simple fwData::Image to medical Image -->
             <service uid="medicaImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="imageId" />
             </service>

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "Tuto02DataServiceBasicCtrl/config.hpp"
+#include "Tuto02DataServiceBasicCpp/config.hpp"
 
 #include <fwData/Image.hpp>
 
@@ -30,37 +30,39 @@
 
 #include <fwServices/IService.hpp>
 
-namespace Tuto02DataServiceBasicCtrl
+namespace Tuto02DataServiceBasicCpp
 {
 
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO02DATASERVICEBASICCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO02DATASERVICEBASICCPP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    TUTO02DATASERVICEBASICCTRL_API Plugin() noexcept;
+    TUTO02DATASERVICEBASICCPP_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO02DATASERVICEBASICCTRL_API ~Plugin() noexcept;
+    TUTO02DATASERVICEBASICCPP_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    TUTO02DATASERVICEBASICCTRL_API void start();
+    TUTO02DATASERVICEBASICCPP_API void start();
 
     /// Overrides stop method. Do nothing
-    TUTO02DATASERVICEBASICCTRL_API void stop() noexcept;
+    TUTO02DATASERVICEBASICCPP_API void stop() noexcept;
 
-    TUTO02DATASERVICEBASICCTRL_API void initialize();
+    TUTO02DATASERVICEBASICCPP_API void initialize();
 
-    TUTO02DATASERVICEBASICCTRL_API void uninitialize() noexcept;
+    TUTO02DATASERVICEBASICCPP_API void uninitialize() noexcept;
 
 private:
     ::fwData::Image::sptr m_image;
 
     ::fwServices::IService::sptr m_frameSrv;
     ::fwServices::IService::sptr m_renderSrv;
+    ::fwServices::IService::sptr m_interactorSrv;
+    ::fwServices::IService::sptr m_negatoSrv;
     ::fwServices::IService::sptr m_readerSrv;
 };
 
-} // namespace Tuto02DataServiceBasicCtrl
+} // namespace Tuto02DataServiceBasicCpp

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,11 @@
  *
  ***********************************************************************/
 
+/**
+ * @brief The namespace visuOgreBasic supplies simple rendering services for meshes and images.
+ */
 #pragma once
 
-#include "Tuto08GenericSceneQml/config.hpp"
-
-#include <fwRuntime/Plugin.hpp>
-
-namespace Tuto08GenericSceneQml
+namespace visuOgreBasic
 {
-
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO08GENERICSCENEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
-{
-public:
-    /// Constructor.
-    TUTO08GENERICSCENEQML_API Plugin() noexcept;
-
-    /// Destructor. Do nothing.
-    TUTO08GENERICSCENEQML_API ~Plugin() noexcept;
-
-    /// Overrides start method.
-    TUTO08GENERICSCENEQML_API void start();
-
-    /// Overrides stop method. Do nothing
-    TUTO08GENERICSCENEQML_API void stop() noexcept;
-
-    TUTO08GENERICSCENEQML_API void initialize();
-
-    TUTO08GENERICSCENEQML_API void uninitialize() noexcept;
-};
-
-} // namespace Tuto08GenericSceneQml
+}

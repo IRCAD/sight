@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,26 @@
 
 #pragma once
 
-#include "Tuto08GenericSceneQml/config.hpp"
+#include "visuOgreBasic/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace Tuto08GenericSceneQml
+namespace visuOgreBasic
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO08GENERICSCENEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+class VISUOGREBASIC_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
 public:
-    /// Constructor.
-    TUTO08GENERICSCENEQML_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    TUTO08GENERICSCENEQML_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    ~Plugin() noexcept override;
 
-    /// Overrides start method.
-    TUTO08GENERICSCENEQML_API void start();
+    /// Creates the Ogre log manager.
+    VISUOGREBASIC_API void start() override;
 
-    /// Overrides stop method. Do nothing
-    TUTO08GENERICSCENEQML_API void stop() noexcept;
-
-    TUTO08GENERICSCENEQML_API void initialize();
-
-    TUTO08GENERICSCENEQML_API void uninitialize() noexcept;
+    /// Stops the plugin, destroys Ogre resources.
+    VISUOGREBASIC_API void stop() noexcept override;
 };
 
-} // namespace Tuto08GenericSceneQml
+} // namespace visuOgreBasic

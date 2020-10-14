@@ -1,7 +1,6 @@
 <plugin id="Tuto05Mesher" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>MesherConfig</id>
@@ -131,8 +130,8 @@
                 Services associated to the Image data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="RenderingImage" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
-                <in key="image" uid="myImage" />
+            <service uid="RenderingImage" type="::visuOgreBasic::SImage">
+                <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
             <service uid="readerPathImageFile" type="::uiIO::editor::SIOSelector">
@@ -149,8 +148,8 @@
                 Services associated to the Mesh data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="RenderingMesh" type="::vtkSimpleMesh::SRenderer" autoConnect="yes" >
-                <in key="mesh" uid="myMesh" />
+            <service uid="RenderingMesh" type="::visuOgreBasic::SMesh" >
+                <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector">
