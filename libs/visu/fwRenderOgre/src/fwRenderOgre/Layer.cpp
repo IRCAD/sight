@@ -87,20 +87,19 @@ const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
-    Layer* m_layer;
-    int m_frameId;
+    Layer* m_layer { nullptr };
+    int m_frameId { 0 };
 
     //------------------------------------------------------------------------------
 
     LayerCameraListener(Layer* renderer) :
-        m_layer(renderer),
-        m_frameId(0)
+        m_layer(renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void cameraPreRenderScene(::Ogre::Camera*) final
+    void cameraPreRenderScene(::Ogre::Camera*) final
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
@@ -168,7 +167,6 @@ Layer::~Layer()
         delete m_cameraListener;
         m_cameraListener = nullptr;
     }
-
     if(m_autostereoListener)
     {
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
@@ -549,7 +547,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     }
 
     m_cancelFurtherInteraction = false;
-    this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------

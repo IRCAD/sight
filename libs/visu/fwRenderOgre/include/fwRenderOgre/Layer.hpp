@@ -104,8 +104,11 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
 
-    /// Contains signals sent when the camera is modified.
+    /// @deprecated A listener is now in place in SCamera instead.
+    [[deprecated("Removed in sight 22.0.")]]
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
+
+    /// Contains signals sent when the camera is modified.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef ::fwCom::Signal<void ()> CameraUpdatedSignalType;
 

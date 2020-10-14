@@ -51,6 +51,27 @@ static const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibratio
 static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT     = "transform";
 
+//-----------------------------------------------------------------------------
+
+struct SCamera::CameraNodeListener : public ::Ogre::MovableObject::Listener
+{
+    SCamera* m_layer { nullptr };
+
+    //------------------------------------------------------------------------------
+
+    CameraNodeListener(SCamera* renderer) :
+        m_layer(renderer)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void objectMoved(::Ogre::MovableObject* camera) override
+    {
+        m_layer->updateTF3D();
+    }
+};
+
 //------------------------------------------------------------------------------
 
 SCamera::SCamera() noexcept
@@ -63,6 +84,13 @@ SCamera::SCamera() noexcept
 
 SCamera::~SCamera() noexcept
 {
+    if(m_cameraNodeListener)
+    {
+        m_camera->setListener(m_cameraNodeListener);
+        delete m_cameraNodeListener;
+        m_cameraNodeListener = nullptr;
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -80,8 +108,9 @@ void SCamera::starting()
 
     m_camera = this->getLayer()->getDefaultCamera();
 
-    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
-                              this->getSptr(), s_UPDATE_TF_SLOT);
+    m_cameraNodeListener = new CameraNodeListener(this);
+    m_camera->setListener(m_cameraNodeListener);
+
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
@@ -137,6 +166,9 @@ void SCamera::updating()
     const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
     orientation = orientation * rotateZ * rotateY;
 
+    // Flag to skip updateTF3D() when called from the camera listener
+    m_skipUpdate = true;
+
     ::Ogre::Node* parent = m_camera->getParentNode();
 
     // Reset the camera position
@@ -163,6 +195,13 @@ void SCamera::stopping()
 
 void SCamera::updateTF3D()
 {
+    if(m_skipUpdate)
+    {
+        // We were called from the listener after update() was called, so skip that
+        m_skipUpdate = false;
+        return;
+    }
+
     const ::Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
     const ::Ogre::Quaternion& orientation = camNode->getOrientation();
 
