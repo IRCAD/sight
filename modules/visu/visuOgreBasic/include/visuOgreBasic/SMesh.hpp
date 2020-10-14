@@ -24,9 +24,9 @@
 
 #include "visuOgreBasic/config.hpp"
 
-#include <fwGui/IGuiContainerSrv.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
-#include <boost/shared_array.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 namespace visuOgreBasic
 {
@@ -51,11 +51,9 @@ public:
     fwCoreServiceMacro(SMesh, ::fwGui::IGuiContainerSrv)
 
     VISUOGREBASIC_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
-
     VISUOGREBASIC_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
 
-    typedef ::boost::shared_array< double > SharedArray;
-    typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
+    typedef ::fwCom::Signal< void (::fwData::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
 
     /// Constructor. Does nothing.
     VISUOGREBASIC_API SMesh() noexcept;
@@ -74,16 +72,22 @@ public:
 private:
 
     ///  This method does nothing.
-    VISUOGREBASIC_API void configuring() override;
+    void configuring() override;
 
     ///  This method starts sub-services.
-    VISUOGREBASIC_API virtual void starting() override;
+    virtual void starting() override;
 
     ///  This method launches sub-services.
-    VISUOGREBASIC_API virtual void updating() override;
+    virtual void updating() override;
 
     ///  This method stops sub-services.
-    VISUOGREBASIC_API virtual void stopping() override;
+    virtual void stopping() override;
+
+    /// Slot: receives new camera transform and update the camera.
+    void updateCamPosition(::fwData::TransformationMatrix3D::sptr _transform);
+
+    /// Slot: receives new camera transform from the camera service and trigger the signal.
+    void updateCamTransform();
 
     /// Render service
     ::fwServices::IService::sptr m_renderSrv;
@@ -94,11 +98,21 @@ private:
     /// Negatoscope adaptor
     ::fwServices::IService::sptr m_meshSrv;
 
+    /// Camera adaptor
+    ::fwServices::IService::sptr m_cameraSrv;
+
+    /// Camera transform
+    ::fwData::TransformationMatrix3D::sptr m_cameraTransform;
+
     /// Whether of or not to autoConnect to the image, needed for the purpose of tutorials
     bool m_meshAutoConnect { false };
 
     /// Signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;
+
+    /// Stores connection with the camera transform
+    ::fwCom::helper::SigSlotConnection m_connections;
+
 };
 
 } // namespace visuOgreBasic

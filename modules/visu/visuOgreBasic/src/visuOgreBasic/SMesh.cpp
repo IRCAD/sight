@@ -31,8 +31,9 @@
 namespace visuOgreBasic
 {
 
-const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
-const ::fwCom::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG      = "camUpdated";
+const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
+const ::fwCom::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG       = "camUpdated";
 
 static const std::string s_MESH_INPUT = "mesh";
 
@@ -41,6 +42,7 @@ static const std::string s_MESH_INPUT = "mesh";
 SMesh::SMesh() noexcept
 {
     newSlot(s_UPDATE_CAM_POSITION_SLOT, &SMesh::updateCamPosition, this);
+    newSlot(s_UPDATE_CAM_TRANSFORM_SLOT, &SMesh::updateCamTransform, this);
 
     m_sigCamUpdated = newSignal<CamUpdatedSignalType>(s_CAM_UPDATED_SIG);
 }
@@ -74,9 +76,10 @@ void SMesh::configuring()
     auto inoutsCfg = config.equal_range("in");
     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
     {
-        if(itCfg->second.get<std::string>("<xmlattr>.key") == s_MESH_INPUT)
+        if (itCfg->second.get<std::string>("<xmlattr>.key") == s_MESH_INPUT)
         {
-            m_meshAutoConnect = itCfg->second.get<std::string>("<xmlattr>.autoConnect") == "yes";
+            m_meshAutoConnect =
+                itCfg->second.get_optional<std::string>("<xmlattr>.autoConnect").get_value_or("no") == "yes";
         }
     }
 }
@@ -105,33 +108,49 @@ void SMesh::starting()
     interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
     ::fwServices::IService::ConfigType negatoCfg;
     negatoCfg.put("<xmlattr>.uid", this->getID() + "meshAdaptor");
+    ::fwServices::IService::ConfigType cameraCfg;
+    cameraCfg.put("<xmlattr>.uid", this->getID() + "cameraAdaptor");
 
     renderConfig.add_child("scene.adaptor", interactorCfg);
     renderConfig.add_child("scene.adaptor", negatoCfg);
+    renderConfig.add_child("scene.adaptor", cameraCfg);
 
     m_renderSrv = ::fwServices::add("::fwRenderOgre::SRender");
-    m_renderSrv->setConfiguration( renderConfig );
-    m_renderSrv->setID( genericSceneId );
+    m_renderSrv->setConfiguration(renderConfig);
+    m_renderSrv->setID(genericSceneId);
     m_renderSrv->configure();
 
     ::fwServices::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
     m_interactorSrv = ::fwServices::add("::visuOgreAdaptor::STrackballCamera");
-    m_interactorSrv->setConfiguration( interactorConfig );
-    m_interactorSrv->setID( this->getID() + "interactorAdaptor" );
+    m_interactorSrv->setConfiguration(interactorConfig);
+    m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    ::fwServices::IService::ConfigType negatoConfig;
-    negatoConfig.put("config.<xmlattr>.layer", "default");
+    ::fwServices::IService::ConfigType meshConfig;
+    meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = ::fwServices::add("::visuOgreAdaptor::SMesh");
-    m_meshSrv->setConfiguration( negatoConfig );
-    m_meshSrv->registerInOut( std::const_pointer_cast< ::fwData::Object >(mesh->getConstSptr()), "mesh", true );
-    m_meshSrv->setID( this->getID() + "meshAdaptor" );
+    m_meshSrv->setConfiguration(meshConfig);
+    m_meshSrv->registerInOut(std::const_pointer_cast< ::fwData::Object>(mesh->getConstSptr()), "mesh", true);
+    m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
+
+    m_cameraTransform = ::fwData::TransformationMatrix3D::New();
+    m_connections.connect(m_cameraTransform, ::fwData::Object::s_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
+
+    ::fwServices::IService::ConfigType cameraConfig;
+    cameraConfig.put("config.<xmlattr>.layer", "default");
+    m_cameraSrv = ::fwServices::add("::visuOgreAdaptor::SCamera");
+    m_cameraSrv->setConfiguration(cameraConfig);
+    m_cameraSrv->registerInOut(m_cameraTransform->getSptr(), "transform", true);
+    m_cameraSrv->setID(this->getID() + "cameraAdaptor");
+    m_cameraSrv->configure();
 
     m_renderSrv->slot("start")->asyncRun();
     m_interactorSrv->slot("start")->asyncRun();
     m_meshSrv->slot("start")->asyncRun();
+    m_cameraSrv->slot("start")->asyncRun();
 }
 
 //------------------------------------------------------------------------------
@@ -144,21 +163,47 @@ void SMesh::updating()
 
 void SMesh::stopping()
 {
+    m_cameraSrv->stop().wait();
     m_meshSrv->stop().wait();
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
     ::fwGui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    ::fwServices::OSR::unregisterService( m_meshSrv );
-    ::fwServices::OSR::unregisterService( m_interactorSrv );
-    ::fwServices::OSR::unregisterService( m_renderSrv );
+    ::fwServices::OSR::unregisterService(m_cameraSrv);
+    ::fwServices::OSR::unregisterService(m_meshSrv);
+    ::fwServices::OSR::unregisterService(m_interactorSrv);
+    ::fwServices::OSR::unregisterService(m_renderSrv);
 
+    m_cameraSrv.reset();
     m_meshSrv.reset();
     m_interactorSrv.reset();
     m_renderSrv.reset();
 
+    m_connections.disconnect();
+    m_cameraTransform.reset();
+
     this->destroy();
 }
+
+//------------------------------------------------------------------------------
+
+void SMesh::updateCamPosition(::fwData::TransformationMatrix3D::sptr _transform)
+{
+    m_cameraTransform->shallowCopy(_transform);
+    m_cameraSrv->update().wait();
+}
+
+//------------------------------------------------------------------------------
+
+void SMesh::updateCamTransform()
+{
+    {
+        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_TRANSFORM_SLOT)));
+        m_sigCamUpdated->asyncEmit(m_cameraTransform);
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace visuOgreBasic

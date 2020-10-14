@@ -14,7 +14,7 @@
                     <frame>
                         <name>tutoSignalSlot</name>
                         <icon>Tuto04SignalSlot-0.1/tuto.ico</icon>
-                        <minSize width="720" height="600" />
+                        <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />
                 </gui>
@@ -47,9 +47,9 @@
             <service uid="myDefaultView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Rendering 1" align="center" />
-                        <view caption="Rendering 2" align="right" minWidth="400" minHeight="100" />
-                        <view caption="Rendering 3" align="right" minWidth="400" minHeight="100" />
+                        <view caption="Move cameras 1,2,3" align="center" />
+                        <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
+                        <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
                     </layout>
                 </gui>
                 <registry>
@@ -105,8 +105,8 @@
                 focal, view up).
                 - To update the camera without clicking, you could call the slot 'updateCamPosition'
 
-                Here, we connect each rendering service signal 'camUpdated' to the others service slot
-                'updateCamPosition', so the cameras are synchronized in each scene.
+                Here, we connect some rendering services signal 'camUpdated' to the others service slot
+                'updateCamPosition', so the cameras are synchronized between scenes.
             -->
             <connect>
                 <signal>myRendering1/camUpdated</signal>
@@ -117,14 +117,8 @@
             <connect>
                 <signal>myRendering2/camUpdated</signal>
                 <slot>myRendering1/updateCamPosition</slot>
-                <slot>myRendering3/updateCamPosition</slot>
             </connect>
 
-            <connect>
-                <signal>myRendering3/camUpdated</signal>
-                <slot>myRendering2/updateCamPosition</slot>
-                <slot>myRendering1/updateCamPosition</slot>
-            </connect>
 
             <start uid="myFrame" />
 
