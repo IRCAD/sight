@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,11 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QUrl>
+
+#include <filesystem>
 
 namespace uiGenericQt
 {
@@ -39,7 +40,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +66,6 @@ void LaunchBrowserActionService::info(std::ostream& _sstream )
 
 void LaunchBrowserActionService::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IActionSrv::initialize();
 
     std::vector < Configuration > urlConfig = m_configuration->find("url");
@@ -79,7 +79,6 @@ void LaunchBrowserActionService::configuring()
 
 void LaunchBrowserActionService::updating()
 {
-    SLM_TRACE_FUNC();
 
     SLM_WARN_IF("URL is empty.", m_url.empty());
     QUrl url(QString::fromStdString(m_url), QUrl::TolerantMode);

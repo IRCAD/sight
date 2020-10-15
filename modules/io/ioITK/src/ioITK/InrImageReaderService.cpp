@@ -119,7 +119,6 @@ void InrImageReaderService::info(std::ostream& _sstream )
 bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
                                          const ::fwData::Image::sptr& _pImg )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
@@ -155,7 +154,6 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
 
 void InrImageReaderService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {
@@ -184,7 +182,6 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 

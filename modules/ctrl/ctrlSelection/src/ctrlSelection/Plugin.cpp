@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
+#include "ctrlSelection/Plugin.hpp"
+
 #include <fwCore/spyLog.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include "ctrlSelection/Plugin.hpp"
 
 namespace ctrlSelection
 {
@@ -43,7 +43,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

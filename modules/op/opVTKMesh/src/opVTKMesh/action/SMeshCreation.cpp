@@ -72,7 +72,6 @@ SMeshCreation::~SMeshCreation() noexcept
 
 void SMeshCreation::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -80,7 +79,6 @@ void SMeshCreation::starting()
 
 void SMeshCreation::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -88,7 +86,6 @@ void SMeshCreation::stopping()
 
 void SMeshCreation::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     if (m_configuration->findConfigurationElement("percentReduction") &&
@@ -106,7 +103,6 @@ void SMeshCreation::configuring()
 
 void SMeshCreation::updating()
 {
-    SLM_TRACE_FUNC();
 
     /// Retrieve objects
     auto pImage = this->getInput< ::fwData::Image >("image");
@@ -156,13 +152,11 @@ void SMeshCreation::updating()
         decimate->SetSplitAngle( 120 );
         decimate->Update();
         polyData = decimate->GetOutput();
-        SLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        SLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
 

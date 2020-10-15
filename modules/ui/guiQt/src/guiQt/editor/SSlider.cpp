@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSlider );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSlider )
 
 const ::fwCom::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
@@ -230,7 +230,6 @@ void SSlider::starting()
 
 void SSlider::stopping()
 {
-    SLM_TRACE_FUNC();
 
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
 

@@ -287,7 +287,6 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 void IFrameSrv::onCloseExit()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::Application::New()->exit(0);
 }
 
@@ -295,7 +294,6 @@ void IFrameSrv::onCloseExit()
 
 void IFrameSrv::onCloseNotify()
 {
-    SLM_TRACE_FUNC();
     m_sigClosed->asyncEmit();
 }
 
@@ -303,7 +301,6 @@ void IFrameSrv::onCloseNotify()
 
 void IFrameSrv::onCloseMessage()
 {
-    SLM_TRACE_FUNC();
     auto app = ::fwGui::Application::New();
     app->exit(0);
 }

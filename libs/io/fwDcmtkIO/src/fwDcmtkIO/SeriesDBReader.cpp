@@ -99,7 +99,6 @@ SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
 
 void SeriesDBReader::read()
 {
-    SLM_TRACE_FUNC();
 
     // Get filenames
     FilenameContainerType filenames = this->getFilenames();

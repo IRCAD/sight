@@ -47,14 +47,12 @@ VtiImageWriter::VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTK Image Writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtiImageWriter::~VtiImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

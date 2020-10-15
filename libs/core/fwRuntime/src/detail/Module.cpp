@@ -308,8 +308,6 @@ void Module::loadLibraries()
     // Pre-condition
     SLM_ASSERT("Module is already loaded", m_loadingModule == nullptr );
 
-    SLM_TRACE( "Loading " + this->getIdentifier() + s_VERSION_DELIMITER + this->getVersion().string() + " library...");
-
     // References the current module as the loading module.
     m_loadingModule = shared_from_this();
 
@@ -344,7 +342,6 @@ void Module::loadLibraries()
 
     // Post-condition
     assert( m_loadingModule == 0 );
-    SLM_TRACE("Library " + getModuleStr(m_identifier, m_version) + " loaded");
 }
 
 //------------------------------------------------------------------------------
@@ -403,7 +400,6 @@ void Module::start()
         try
         {
             startPlugin();
-            SLM_TRACE(getModuleStr(m_identifier, m_version) + " Started");
         }
         catch( std::exception& e )
         {
@@ -446,12 +442,10 @@ void Module::startPlugin()
 
     if(::fwRuntime::getCurrentProfile())
     {
-        SLM_TRACE("Starting " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
         // Stores and start the plugin.
         try
         {
             auto prof = std::dynamic_pointer_cast< detail::profile::Profile>(::fwRuntime::getCurrentProfile());
-            SLM_TRACE("Register stopper for " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
             prof->add(std::make_shared<profile::Stopper>(this->getIdentifier(), this->getVersion()));
 
             m_plugin = plugin;
@@ -476,12 +470,10 @@ void Module::stop()
     SLM_ASSERT(getModuleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != nullptr );
     SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
 
-    SLM_TRACE("Stopping " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
     try
     {
         m_plugin->stop();
         m_started = false;
-        SLM_TRACE(getModuleStr(m_identifier, m_version) << " Stopped");
     }
     catch( std::exception& e )
     {
@@ -512,9 +504,7 @@ void Module::initialize()
     try
     {
         m_initialized = true;
-        SLM_TRACE("Initializing " + getModuleStr(m_identifier, m_version) + " ...");
         m_plugin->initialize();
-        SLM_TRACE("             " + getModuleStr(m_identifier, m_version) + " Initialized");
     }
     catch( std::exception& e )
     {
@@ -531,10 +521,8 @@ void Module::uninitialize()
     SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
     try
     {
-        SLM_TRACE("Uninitializing " + this->getIdentifier() + " ...");
         m_plugin->uninitialize();
         m_initialized = false;
-        SLM_TRACE("               " + this->getIdentifier() + " Uninitialized");
     }
     catch( std::exception& e )
     {

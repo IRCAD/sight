@@ -142,7 +142,6 @@ public:
             {
                 ::fwDataTools::PickingInfo info;
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), info.m_worldPos);
-                SLM_TRACE("PICK" << info.m_worldPos[0] << " ," << info.m_worldPos[1] << " ," << info.m_worldPos[2] );
 
                 info.m_modifierMask =
                     caller->GetControlKey() ? ::fwDataTools::PickingInfo::CTRL : ::fwDataTools::PickingInfo::NONE;
@@ -161,8 +160,6 @@ public:
                 info.m_eventId = iter->second;
 
                 info.m_keyPressed = caller->GetKeyCode();
-                SLM_TRACE("EVENT" << static_cast<int>(info.m_eventId) );
-                SLM_TRACE("KEY" << info.m_keyPressed << " - MASK " << static_cast<int>(info.m_modifierMask) );
 
                 info.m_timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 

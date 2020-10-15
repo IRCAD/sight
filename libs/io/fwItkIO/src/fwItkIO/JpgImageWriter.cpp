@@ -57,14 +57,12 @@ namespace fwItkIO
 JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 JpgImageWriter::~JpgImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

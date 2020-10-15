@@ -62,7 +62,6 @@ SSlotCaller::~SSlotCaller() noexcept
 
 void SSlotCaller::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -70,7 +69,6 @@ void SSlotCaller::starting()
 
 void SSlotCaller::stopping()
 {
-    SLM_TRACE_FUNC();
 
     this->actionServiceStopping();
 }
@@ -86,7 +84,6 @@ void SSlotCaller::info(std::ostream& _sstream )
 
 void SSlotCaller::updating()
 {
-    SLM_TRACE_FUNC();
 
     if(this->confirmAction())
     {
@@ -120,7 +117,6 @@ void SSlotCaller::updating()
 
 void SSlotCaller::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     ConfigurationType syncCfg = m_configuration->findConfigurationElement(s_SYNCED_CALL_KEY);

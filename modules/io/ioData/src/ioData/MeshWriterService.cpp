@@ -109,7 +109,6 @@ void MeshWriterService::openLocationDialog()
 
 void MeshWriterService::updating()
 {
-    SLM_TRACE_FUNC();
     if(this->hasLocationDefined())
     {
         // Retrieve object

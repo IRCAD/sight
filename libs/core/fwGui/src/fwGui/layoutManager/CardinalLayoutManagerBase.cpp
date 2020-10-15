@@ -70,7 +70,6 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
                configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectViews = configuration->find("view");
-    SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
     for (ConfigurationType view : vectViews)
     {

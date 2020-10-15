@@ -127,7 +127,6 @@ void SInrSeriesDBReader::openLocationDialog()
 
 bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
@@ -163,7 +162,6 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwD
 
 void SInrSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

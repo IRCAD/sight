@@ -80,7 +80,6 @@ void SMeshModifier::configuring()
 
 void SMeshModifier::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
     ::fwDataTools::Mesh::initRand();
 }
@@ -89,7 +88,6 @@ void SMeshModifier::starting()
 
 void SMeshModifier::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -97,7 +95,6 @@ void SMeshModifier::stopping()
 
 void SMeshModifier::updating()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh");
     SLM_ASSERT("Mesh dynamicCast failed", mesh);
     try

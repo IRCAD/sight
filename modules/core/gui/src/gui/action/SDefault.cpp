@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@ namespace gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDefault );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDefault )
 
 SDefault::SDefault() noexcept
 {
@@ -51,7 +51,6 @@ void SDefault::configuring()
 
 void SDefault::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -59,7 +58,6 @@ void SDefault::starting()
 
 void SDefault::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -67,7 +65,6 @@ void SDefault::stopping()
 
 void SDefault::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -79,4 +76,3 @@ void SDefault::info(std::ostream& _sstream )
 
 }
 }
-

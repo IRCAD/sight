@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,19 @@
  *
  ***********************************************************************/
 
-#include <dcmtk/config/osconfig.h>
+#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
 
 #include "fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp"
 #include "fwDicomIOFilter/composite/IComposite.hpp"
-#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/registry/macros.hpp"
 #include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
 
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::custom::DefaultDicomFilter );
 
@@ -46,7 +46,8 @@ const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filt
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DefaultDicomFilter(::fwDicomIOFilter::IFilter::Key key) : ICustom()
+DefaultDicomFilter::DefaultDicomFilter(::fwDicomIOFilter::IFilter::Key key) :
+    ICustom()
 {
 }
 
@@ -112,7 +113,6 @@ const
         //Apply filter
         if(filter)
         {
-            SLM_TRACE("Applying default filter for SOPClassUID: \""+sopClassUID+"\".");
             tempo = filter->forcedApply(s, logger);
         }
         else

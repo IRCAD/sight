@@ -55,7 +55,6 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
                configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
-    SLM_TRACE_IF("No menu define.", vectMenus.empty() );
     m_menus.clear();
     for (ConfigurationType menu : vectMenus)
     {

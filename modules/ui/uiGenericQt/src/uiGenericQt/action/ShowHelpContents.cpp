@@ -115,7 +115,6 @@ void ShowHelpContents::configuring()
         m_fsHelpPath           = std::filesystem::path( filename );
         m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
         SLM_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
-        SLM_TRACE("Filename found " << filename );
     }
 }
 
@@ -123,7 +122,6 @@ void ShowHelpContents::configuring()
 
 void ShowHelpContents::updating()
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
 
     QDialog* dialog = new QDialog(qApp->activeWindow());

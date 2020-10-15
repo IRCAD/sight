@@ -110,7 +110,6 @@ void SliceSelector::setTypeSelection( int type )
 
 void SliceSelector::onSliceIndexChange( int value ) noexcept
 {
-    SLM_TRACE_FUNC();
     m_fctChangeIndexCallback( value );
     this->setSliceValue( value );
 }
@@ -133,14 +132,12 @@ void SliceSelector::setChangeTypeCallback(ChangeTypeCallback fct)
 
 void SliceSelector::printIndex(int index)
 {
-    SLM_TRACE("index= "<<index);
 }
 
 //------------------------------------------------------------------------------
 
 void SliceSelector::printType(int type)
 {
-    SLM_TRACE("type= "<<type);
 }
 
 //------------------------------------------------------------------------------

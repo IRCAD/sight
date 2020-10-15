@@ -103,7 +103,6 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
         }
         else
         {
-            SLM_TRACE("Reading process over.");
         }
 
     }
@@ -117,7 +116,6 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
         if(m_currentDicom->second == m_dcmInfo->m_dicomSeries->getDicomContainer().rbegin()->second &&
            m_currentPosition == m_frameSize)
         {
-            SLM_TRACE("Reading process over.");
             delete m_frame;
         }
     }

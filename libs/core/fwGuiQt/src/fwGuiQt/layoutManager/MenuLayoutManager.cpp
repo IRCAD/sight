@@ -58,7 +58,6 @@ MenuLayoutManager::~MenuLayoutManager()
 
 void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 {
-    SLM_TRACE_FUNC();
 
     m_parent = ::fwGuiQt::container::QtMenuContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);

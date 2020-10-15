@@ -87,7 +87,6 @@ void SModelSeriesWriter::configureWithIHM()
 
 void SModelSeriesWriter::openLocationDialog()
 {
-    SLM_TRACE_FUNC();
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialog;

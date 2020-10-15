@@ -126,7 +126,6 @@ void Profile::start()
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
-    SLM_TRACE( "NB INITIALIZERS: " <<  m_initializers.size() );
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +142,6 @@ int Profile::run()
 
 int Profile::defaultRun()
 {
-    SLM_TRACE_FUNC();
     this->setup();
     this->cleanup();
     return 0;

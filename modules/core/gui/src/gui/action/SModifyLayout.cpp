@@ -54,7 +54,6 @@ SModifyLayout::~SModifyLayout() noexcept
 
 void SModifyLayout::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -62,7 +61,6 @@ void SModifyLayout::starting()
 
 void SModifyLayout::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -77,7 +75,6 @@ void SModifyLayout::info(std::ostream& _sstream )
 
 void SModifyLayout::updating()
 {
-    SLM_TRACE_FUNC();
 
     for(MoveSrvVectType::value_type elt :  m_moveSrv )
     {
@@ -167,7 +164,6 @@ void SModifyLayout::updating()
 
 void SModifyLayout::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     if( !vectConfig.empty() )

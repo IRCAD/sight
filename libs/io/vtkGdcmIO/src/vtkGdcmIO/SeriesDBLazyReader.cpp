@@ -195,7 +195,6 @@ SeriesDBLazyReader::MapSeriesType buildMapSeriesFromScanner(::gdcm::Scanner& _sc
             if(!imageType.empty())
             {
                 // Treatment of secondary capture dicom file.
-                SLM_TRACE("Image Type : " + std::string(imageType));
                 fileSetId += "_";
                 fileSetId += imageType;
             }
@@ -218,21 +217,18 @@ SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBLazyReader::~SeriesDBLazyReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesDBLazyReader::read()
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     std::vector<std::string> filenames;
     if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
@@ -260,7 +256,6 @@ void SeriesDBLazyReader::read()
 
 ::fwMedData::SeriesDB::sptr SeriesDBLazyReader::createSeriesDB(const std::filesystem::path& _dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     std::vector<std::string> filenames;
@@ -625,8 +620,6 @@ void SeriesDBLazyReader::preprocessImage(const ::fwData::Image::sptr& _img,
     r.SetSlope(interceptSlope[1]);
     r.SetPixelFormat(scalarType);
     scalarType = r.ComputeInterceptSlopePixelType();
-    SLM_TRACE("Intercept = " << interceptSlope[0]);
-    SLM_TRACE("Slope = " << interceptSlope[1]);
 
     switch(scalarType)
     {

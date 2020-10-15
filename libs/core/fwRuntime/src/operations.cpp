@@ -349,7 +349,7 @@ bool loadLibrary(const std::string& identifier)
     }
     catch (const RuntimeException& e)
     {
-        SLM_ERROR("Could not load library '" + identifier + "': " + e.what() )
+        SLM_ERROR("Could not load library '" + identifier + "': " + e.what() );
         return false;
     }
 
@@ -422,9 +422,6 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
 {
     std::vector< ConfigurationElement::sptr > elements;
     std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
-
-    SLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << " Module" <<
-              point->getModule()->getIdentifier() );
 
     if( !point )
     {

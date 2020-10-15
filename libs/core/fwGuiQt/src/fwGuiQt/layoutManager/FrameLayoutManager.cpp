@@ -57,7 +57,6 @@ FrameLayoutManager::~FrameLayoutManager()
 
 void FrameLayoutManager::createFrame()
 {
-    SLM_TRACE_FUNC();
     FrameInfo frameInfo = this->getFrameInfo();
 
     ::fwGuiQt::QtMainFrame* mainframe = new ::fwGuiQt::QtMainFrame();
@@ -143,7 +142,6 @@ void FrameLayoutManager::destroyFrame()
 
 void FrameLayoutManager::onCloseFrame()
 {
-    SLM_TRACE_FUNC();
     this->m_closeCallback();
 }
 

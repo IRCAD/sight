@@ -141,8 +141,8 @@ std::map< std::string, configuration > initialize(std::string configFile)
             //if port is already used we use the same server and worker
             if(it->second.port == portTab[i])
             {
-                SLM_TRACE("Found that "<<it->second.deviceIn<<" and "<<deviceInTab[i]<<
-                          " have the same port ("<<it->second.port<<").");
+                SLM_INFO("Found that "<<it->second.deviceIn<<" and "<<deviceInTab[i]<<
+                         " have the same port ("<<it->second.port<<").");
                 server               = it->second.server;
                 worker               = it->second.worker;
                 serverAlreadyStarted = true;
@@ -237,7 +237,7 @@ int main (int argc, char** argv)
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {
                     configuration config = associationDeviceServer.find(deviceName)->second;
-                    SLM_TRACE("Received a '"<<deviceType<<"' named '"<<deviceName);
+                    SLM_INFO("Received a '"<<deviceType<<"' named '"<<deviceName);
 
                     sendingServer = config.server;
 
@@ -249,7 +249,7 @@ int main (int argc, char** argv)
 
                             if(msg.IsNotNull())
                             {
-                                SLM_TRACE("Resending the message '"<<deviceName<<"' with name '"<<config.deviceOut
+                                SLM_DEBUG("Resending the message '"<<deviceName<<"' with name '"<<config.deviceOut
                                                                    <<" to port : '"<<config.port<<"'.");
 
                                 //re-send the message with the correct server

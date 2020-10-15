@@ -155,7 +155,6 @@ GetObject::~GetObject()
 
 void GetObject::visit(const camp::SimpleProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG( "SimpleProperty name =" << name );
     if( name == m_propertyName )
@@ -172,7 +171,6 @@ void GetObject::visit(const camp::SimpleProperty& property)
 
 void GetObject::visit(const camp::EnumProperty& property)
 {
-    SLM_TRACE_FUNC();
     SLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
                   property.name() == m_propertyName );
 }
@@ -181,7 +179,6 @@ void GetObject::visit(const camp::EnumProperty& property)
 
 void GetObject::visit(const camp::MapProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG( "MapProperty name =" << name);
     if( name == m_propertyName )
@@ -210,7 +207,6 @@ void GetObject::visit(const camp::MapProperty& property)
 
 void GetObject::visit(const camp::ArrayProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG( "ArrayProperty name =" << name );
     if( name == m_propertyName )
@@ -245,7 +241,6 @@ void GetObject::visit(const camp::ArrayProperty& property)
 
 void GetObject::visit(const camp::UserProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG( "UserProperty name =" << name );
     if( name == m_propertyName )

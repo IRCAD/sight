@@ -205,7 +205,6 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
     CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
     if(buffer == nullptr)
     {
-        SLM_TRACE("No frame found for timestamp: " << timestamp);
         return;
     }
 

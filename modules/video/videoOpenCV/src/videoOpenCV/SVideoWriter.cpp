@@ -198,8 +198,8 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
             if(m_timestamps.size() >= 5 )
             {
                 // computes number of fps
-                const double fps = 1000 * m_timestamps.size() / (m_timestamps.back() - m_timestamps.front());
-                SLM_TRACE("Estimated FPS: " << fps);
+                const double fps = 1000 * m_timestamps.size() /
+                                   (m_timestamps.back() - m_timestamps.front());
                 const int width                     = static_cast<int>( frameTL->getWidth() );
                 const int height                    = static_cast<int>( frameTL->getHeight() );
                 std::filesystem::path path          = this->getFile();

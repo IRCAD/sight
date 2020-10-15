@@ -285,7 +285,6 @@ DictionaryReader::~DictionaryReader()
 
 void DictionaryReader::read()
 {
-    SLM_TRACE_FUNC();
     assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
@@ -367,7 +366,6 @@ void DictionaryReader::read()
 
 std::string DictionaryReader::extension()
 {
-    SLM_TRACE_FUNC();
     return (".dic");
 }
 

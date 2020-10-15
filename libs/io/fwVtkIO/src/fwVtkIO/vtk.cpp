@@ -216,7 +216,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 //    source->PropagateUpdateExtent();
 
     int dim = source->GetDataDimension();
-    SLM_TRACE("source->GetDataDimension() : " << dim);
 
     if(dim == 2)
     {
@@ -258,8 +257,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     {
         void* destBuffer;
 
-        SLM_TRACE("image size : " << size << " - nbBytePerPixel : " << source->GetScalarSize() );
-        SLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
         destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
         destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
         if (nbComponents == 1)

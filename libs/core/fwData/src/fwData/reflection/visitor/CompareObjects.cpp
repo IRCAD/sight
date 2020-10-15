@@ -180,7 +180,6 @@ CompareObjects::~CompareObjects()
 
 void CompareObjects::visit(const camp::SimpleProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
@@ -196,7 +195,6 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
 
 void CompareObjects::visit(const camp::EnumProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     ::camp::Value elemValue = property.get(m_campObj);
 
@@ -212,7 +210,6 @@ void CompareObjects::visit(const camp::EnumProperty& property)
 
 void CompareObjects::visit(const camp::MapProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name(property.name());
     SLM_DEBUG("MapProperty name = " << name);
 
@@ -235,7 +232,6 @@ void CompareObjects::visit(const camp::MapProperty& property)
 
 void CompareObjects::visit(const camp::ArrayProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name(property.name());
     SLM_DEBUG( "ArrayProperty name =" << name );
 
@@ -257,7 +253,6 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
 
 void CompareObjects::visit(const camp::UserProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     SLM_DEBUG( "UserProperty name =" << name );
     ::camp::Value elemValue = property.get( m_campObj );

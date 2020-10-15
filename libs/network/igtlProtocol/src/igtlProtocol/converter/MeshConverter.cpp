@@ -528,7 +528,6 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
 
 IConverter::sptr MeshConverter::New()
 {
-    SLM_TRACE_FUNC();
 
     return std::make_shared< MeshConverter >();
 }

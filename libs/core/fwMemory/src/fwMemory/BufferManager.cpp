@@ -400,7 +400,6 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
     std::filesystem::path tmp        = ::fwTools::System::getTemporaryFolder();
     std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
 
-    SLM_TRACE("dumping " << bufferPtr << " " << dumpedFile);
     info.lockCounter.reset();
 
     if ( this->writeBufferImpl(*bufferPtr, info.size, dumpedFile) )
@@ -446,7 +445,6 @@ bool BufferManager::restoreBuffer(BufferInfo& info,
     allocSize = ((allocSize) ? allocSize : info.size);
     if ( !info.loaded )
     {
-        SLM_TRACE("Restoring " << bufferPtr);
 
         info.bufferPolicy->allocate(*bufferPtr, allocSize);
 
@@ -501,7 +499,6 @@ bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
     std::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
     const char* charBuf = static_cast< const char* >(buffer);
-    SLM_TRACE("writing " << path);
     fs.write(charBuf, size);
     fs.close();
     return !fs.bad();
@@ -528,7 +525,6 @@ bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType si
     FW_RAISE_IF(path << ": Bad file size, expected: " << size << ", was: " << fileSize,
                 size - fileSize != 0);
 
-    SLM_TRACE("reading " << path);
     char* charBuf = static_cast< char* >(buffer);
     fs.read(charBuf, size);
 

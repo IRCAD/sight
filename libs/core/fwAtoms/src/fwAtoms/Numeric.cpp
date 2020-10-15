@@ -67,7 +67,6 @@ bool lexicalCast( Numeric::ValueType& v, const std::string& s )
     }
     catch ( const ::boost::bad_lexical_cast&)
     {
-        SLM_TRACE("lexicalCast failed for '" << s << "'" << " to type: " << typeid(T).name() );
     }
     return ok;
 }

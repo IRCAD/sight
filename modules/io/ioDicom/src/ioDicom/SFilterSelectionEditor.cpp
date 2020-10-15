@@ -80,7 +80,6 @@ void SFilterSelectionEditor::configuring()
 
 void SFilterSelectionEditor::starting()
 {
-    SLM_TRACE_FUNC();
 
     // Get Destination SeriesDB
     m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
@@ -248,7 +247,6 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
 void SFilterSelectionEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     // Disconnect the signals
     QObject::disconnect(m_selectedFilterListWidget, SIGNAL(currentRowChanged(int)), this,

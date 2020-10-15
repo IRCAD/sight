@@ -62,7 +62,6 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent)
 {
-    SLM_TRACE_FUNC();
 
     m_parent = ::fwGuiQt::container::QtToolBarContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwToolBar to QtToolBarContainer failed", m_parent);

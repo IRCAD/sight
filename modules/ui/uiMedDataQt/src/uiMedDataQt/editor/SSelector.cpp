@@ -204,7 +204,6 @@ void SSelector::starting()
 
     if(m_allowedRemove)
     {
-        SLM_TRACE("CONNECT remove series slot");
         QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
                          this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
     }

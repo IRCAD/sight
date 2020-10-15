@@ -121,7 +121,6 @@ void SActivityLauncher::starting()
 
 void SActivityLauncher::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 

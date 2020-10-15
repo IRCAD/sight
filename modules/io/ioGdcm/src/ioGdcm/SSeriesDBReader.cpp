@@ -207,14 +207,12 @@ void SSeriesDBReader::configuring()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -235,7 +233,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
@@ -331,7 +328,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 void SSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr localSeriesDB = this->createSeriesDB(this->getFolder());

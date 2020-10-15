@@ -201,7 +201,6 @@ void RecursiveLock::visit(const camp::ArrayProperty& property)
 
 void RecursiveLock::visit(const camp::UserProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
 
     ::camp::Value elemValue = property.get( m_campObj );

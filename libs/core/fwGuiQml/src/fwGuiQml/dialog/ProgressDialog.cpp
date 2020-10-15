@@ -130,7 +130,6 @@ void ProgressDialog::operator()(float percent, std::string msg)
     const int& value = static_cast<int>(percent*100);
     if(value != this->m_value)
     {
-        SLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
 
         this->m_value = value;
         this->setMessage(msg);

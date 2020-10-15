@@ -286,7 +286,6 @@ void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& recons
     ::fwData::Color::sptr color = ::fwData::Color::New();
     color->setRGBA( rgba );
     material->setDiffuse(color);
-    SLM_TRACE("RGBA color : " << rgba[0]<<" "<< rgba[1]<<" "<< rgba[2]<<" "<< rgba[3]);
 
     // Recommended Presentation Type
     const auto representationMode =

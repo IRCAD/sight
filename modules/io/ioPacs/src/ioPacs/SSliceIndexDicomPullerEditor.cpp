@@ -255,7 +255,6 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 
     // Compute slice index
     std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
-    SLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
         if(m_pacsConfiguration)

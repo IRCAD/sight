@@ -66,7 +66,6 @@ bool ImageDicomSource::readImage()
     fileArray->Initialize();
     for( std::string file :  m_dcmInfo->m_seriesFiles )
     {
-        SLM_TRACE("Add " << file << " to vtkGdcmReader");
         fileArray->InsertNextValue( file.c_str() );
     }
 

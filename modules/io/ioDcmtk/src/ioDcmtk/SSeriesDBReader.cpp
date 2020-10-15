@@ -148,7 +148,6 @@ void SSeriesDBReader::configuring()
             const ::fwRuntime::ConfigurationElement::AttributePair attributePair = (*it)->getSafeAttributeValue("uid");
             if(attributePair.first)
             {
-                SLM_TRACE("New SOP class supported : " + attributePair.second);
                 m_supportedSOPClassSelection.push_back(attributePair.second);
             }
         }
@@ -166,14 +165,12 @@ void SSeriesDBReader::configuring()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -194,7 +191,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwDcmtkIO::SeriesDBReader::sptr myLoader = ::fwDcmtkIO::SeriesDBReader::New();
     ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
@@ -241,7 +237,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 void SSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );

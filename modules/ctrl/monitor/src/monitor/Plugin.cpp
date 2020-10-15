@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "monitor/Plugin.hpp"
 
 #include "monitor/installSIGSEVBacktrace.hpp"
-#include "monitor/Plugin.hpp"
+
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace monitor
 {
@@ -40,7 +41,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_TRACE_FUNC();
 
     installSIGSEVBacktrace();
 }

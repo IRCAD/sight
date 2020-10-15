@@ -113,14 +113,12 @@ void SImageWriter::openLocationDialog()
 
 void SImageWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SImageWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +141,6 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
                               const CSPTR(::fwData::Image)& image,
                               const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
-    SLM_TRACE_FUNC();
     bool bValue = true;
 
     ::fwDataIO::writer::IObjectWriter::sptr myWriter;
@@ -269,7 +266,6 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
 
 void SImageWriter::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {
@@ -286,7 +282,6 @@ void SImageWriter::updating()
         }
         catch(::fwTools::Failed& e)
         {
-            SLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();

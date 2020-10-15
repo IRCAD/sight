@@ -225,8 +225,6 @@ void SImage::updateImageOpacity()
         if(nullptr != imageBlend )
         {
             imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
-            SLM_TRACE(
-                "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
         }
 
         this->setVtkPipelineModified();
@@ -255,32 +253,26 @@ void SImage::buildPipeline( )
     SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend||imageChecker );
     if (imageBlend)
     {
-        SLM_TRACE("Register is a vtkImageBlend");
         if (m_imagePortId < 0)
         {
             m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
             imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
-            SLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
         }
     }
     else if (imageChecker)
     {
-        SLM_TRACE("Register is a vtkImageCheckerboard");
         if (m_imagePortId < 0)
         {
             m_imagePortId = imageChecker->GetNumberOfInputConnections(0);
             imageChecker->SetInputConnection(m_imagePortId, m_map2colors->GetOutputPort());
-            SLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageCheckerboard");
         }
     }
     else if (algorithm)
     {
-        SLM_TRACE("Register is a vtkImageAlgorithm");
         algorithm->SetInputConnection(m_map2colors->GetOutputPort());
     }
     else if (imageData)
     {
-        SLM_TRACE("Register is a vtkImageData");
         m_map2colors->SetOutput(imageData);
         m_map2colors->Update();
     }

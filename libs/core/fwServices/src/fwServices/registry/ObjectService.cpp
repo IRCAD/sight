@@ -421,7 +421,6 @@ void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& ob
 
 void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 {
-    SLM_TRACE_FUNC();
 
     auto it = m_services.find(service);
     FW_RAISE_IF("service '" + service->getID() + "' is not found in the OSR", it == m_services.end());

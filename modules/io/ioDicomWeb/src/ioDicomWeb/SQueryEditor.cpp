@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,11 @@
 
 #include <dcmtk/dcmnet/scu.h>
 
-#include <filesystem>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+
+#include <filesystem>
 
 namespace ioDicomWeb
 {
@@ -86,7 +87,6 @@ void SQueryEditor::configuring()
 
 void SQueryEditor::starting()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
@@ -128,7 +128,6 @@ void SQueryEditor::starting()
 
 void SQueryEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     // Disconnect the signals
     QObject::disconnect(m_patientNameLineEdit, SIGNAL(returnPressed()), this, SLOT(queryPatientName()));
@@ -144,7 +143,6 @@ void SQueryEditor::stopping()
 
 void SQueryEditor::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

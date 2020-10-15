@@ -58,7 +58,6 @@ void GzBufferImageWriter::write()
     assert( getFile().empty() == false );
 
     ::fwData::Image::csptr image = getConcreteObject();
-    SLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->getClassname());
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");

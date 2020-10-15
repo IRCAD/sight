@@ -229,11 +229,6 @@ void SImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
     extent[2*m_helper.getOrientation()]   = slice;
     extent[2*m_helper.getOrientation()+1] = slice;
 
-    SLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
-              " Y min: " << extent[2] << " Y max: " << extent[3] <<
-              " Z min: " << extent[4] << " Z max: " << extent[5]
-              );
-
     m_imageActor->SetDisplayExtent( extent );
 
     this->setVtkPipelineModified();
@@ -255,7 +250,6 @@ void SImageSlice::buildPipeline( )
     SLM_ASSERT("Invalid vtk image source", algorithm||imageData );
     if (algorithm)
     {
-        SLM_TRACE("Input is a vtkImageAlgorithm");
         m_imageActor->GetMapper()->SetInputConnection(algorithm->GetOutputPort());
         //if (imageBlend)
         //{
@@ -265,7 +259,6 @@ void SImageSlice::buildPipeline( )
     }
     else if (imageData)
     {
-        SLM_TRACE("Input is a vtkImageData");
         m_imageActor->SetInputData(imageData);
     }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SConsumer );
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SConsumer )
 
 namespace ExTimeLine
 {
@@ -69,7 +69,6 @@ void SConsumer::configuring()
 
 void SConsumer::starting()
 {
-    SLM_TRACE_FUNC();
 
     if(m_period)
     {

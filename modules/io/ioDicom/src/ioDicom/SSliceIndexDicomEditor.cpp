@@ -85,7 +85,6 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::initialize();
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
@@ -194,7 +193,6 @@ void SSliceIndexDicomEditor::starting()
 
 void SSliceIndexDicomEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     // Stop dicom reader
     if(!m_dicomReader.expired())
@@ -247,7 +245,6 @@ void SSliceIndexDicomEditor::triggerNewSlice()
     // Compute slice index
     size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                 dicomSeries->getFirstInstanceNumber();
-    SLM_TRACE("triggered new slice : " << selectedSliceIndex);
 
     SLM_ERROR_IF("There is no instance available for selected slice index.",
                  !dicomSeries->isInstanceAvailable(selectedSliceIndex));

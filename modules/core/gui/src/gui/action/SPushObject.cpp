@@ -121,8 +121,6 @@ void SPushObject::updateObjects()
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
-    SLM_TRACE("start check : " << compositeSrc->getID() << "[" << m_srcKey << "] : " <<
-              (compositeSrc->find(m_srcKey) != compositeSrc->end()) );
 
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 

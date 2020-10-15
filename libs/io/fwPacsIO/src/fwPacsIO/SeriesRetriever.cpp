@@ -126,9 +126,7 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
     OFCondition cond;
 
     // Dump incoming message
-    SLM_TRACE("Received C-STORE Request");
     OFString tempStr;
-    SLM_TRACE(DIMSE_dumpMessage(tempStr, incomingMsg->msg.CStoreRQ, DIMSE_INCOMING, NULL, presID));
 
     // Get Dataset
     DcmDataset* dataset = new DcmDataset();
@@ -141,14 +139,12 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
             OFString seriesID;
             if(dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
             {
-                SLM_TRACE("Series Instance UID: " + std::string(seriesID.c_str()));
             }
 
             //Find the instance UID
             OFString iname;
             if (dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
             {
-                SLM_TRACE("SOP Instance UID: " + std::string(iname.c_str()));
             }
 
             //Create Folder
@@ -168,8 +164,6 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
             cond            = this->sendSTOREResponse(presID, incomingMsg->msg.CStoreRQ, rsp.DimseStatus);
 
             // Dump outgoing message
-            SLM_TRACE("Sending C-STORE Response");
-            SLM_TRACE(DIMSE_dumpMessage(tempStr, rsp, DIMSE_OUTGOING, NULL, presID));
 
             if (cond.bad())
             {
@@ -178,7 +172,6 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
             }
             else
             {
-                SLM_TRACE("C-STORE Response successfully sent.");
             }
 
             // Notify callback

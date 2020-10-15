@@ -204,8 +204,6 @@ SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Point
 
     points.push_back( _bSplinePoints.back() );
 
-    SLM_TRACE("B-Spline points size moved from " << _bSplinePoints.size() << " to " << points.size());
-
     return points;
 }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite )
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -70,7 +70,6 @@ PointEditor::~PointEditor() noexcept
 
 void PointEditor::starting()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -107,7 +106,6 @@ void PointEditor::starting()
 
 void PointEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     this->destroy();
 }
@@ -116,7 +114,6 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
 }
 

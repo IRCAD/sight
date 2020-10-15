@@ -45,14 +45,12 @@ namespace fwItkIO
 ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageWriter::~ImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 struct ITKSaverFunctor

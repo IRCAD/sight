@@ -87,7 +87,6 @@ vtkObject* SNegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
-        SLM_TRACE(this->getID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -119,7 +118,6 @@ void SNegatoOneSlice::cleanImageSource()
 {
     if (m_imageSliceAdaptor.expired())
     {
-        SLM_TRACE(this->getID() << ": Create SImageSlice Adaptor Service");
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
@@ -149,7 +147,6 @@ void SNegatoOneSlice::cleanImageSource()
 {
     if (m_imageAdaptor.expired())
     {
-        SLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 

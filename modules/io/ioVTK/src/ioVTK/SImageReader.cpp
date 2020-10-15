@@ -193,7 +193,6 @@ void SImageReader::updating()
         catch(::fwTools::Failed& e)
         {
             m_readFailed = true;
-            SLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
 

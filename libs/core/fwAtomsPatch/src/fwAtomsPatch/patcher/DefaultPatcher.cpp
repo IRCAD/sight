@@ -291,7 +291,6 @@ DefaultPatcher::~DefaultPatcher()
 
             if(patch)
             {
-                SLM_TRACE("[SP] " << classname);
                 fwAtomsPatchInfoLogMacro("Apply structural patch to transform '" + classname
                                          + "|" + version + "' to '"
                                          + currentInfos.first + "|" + currentInfos.second + "'");
@@ -336,7 +335,6 @@ DefaultPatcher::~DefaultPatcher()
 
         if(patch)
         {
-            SLM_TRACE("[CP] " << ::fwAtomsPatch::helper::getClassname(current));
             fwAtomsPatchInfoLogMacro("Apply contextual patch to transform '"
                                      + ::fwAtomsPatch::helper::getClassname(previous)
                                      + "|" + ::fwAtomsPatch::helper::getVersion(previous) + "' to '"

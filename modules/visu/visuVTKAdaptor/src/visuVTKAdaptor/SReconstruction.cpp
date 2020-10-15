@@ -107,7 +107,6 @@ void SReconstruction::createMeshService()
 
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
 
-    SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
         // create the srv configuration for objects auto-connection
@@ -128,8 +127,6 @@ void SReconstruction::createMeshService()
         meshAdaptor->update();
 
         m_meshService = meshAdaptor;
-        SLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
-        SLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }
 }
 

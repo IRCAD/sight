@@ -106,14 +106,12 @@ void JpgImageWriterService::openLocationDialog()
 
 void JpgImageWriterService::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void JpgImageWriterService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +125,6 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
@@ -162,7 +159,6 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
 
 void JpgImageWriterService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

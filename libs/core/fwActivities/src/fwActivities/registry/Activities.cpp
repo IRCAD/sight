@@ -108,8 +108,6 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     SLM_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
             0 <= minOccurs && minOccurs <= maxOccurs);
-    SLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs
-                                        << "(" << description << ")");
 }
 
 //-----------------------------------------------------------------------------

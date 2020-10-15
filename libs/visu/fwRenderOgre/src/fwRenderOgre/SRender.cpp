@@ -171,7 +171,6 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-    SLM_TRACE_FUNC();
 
     bool bHasBackground = false;
 

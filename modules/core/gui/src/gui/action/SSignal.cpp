@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSignal );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSignal )
 
 static const ::fwCom::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
 static const ::fwCom::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
@@ -88,7 +88,6 @@ void SSignal::info(std::ostream& _sstream )
 
 void SSignal::updating()
 {
-    SLM_TRACE_FUNC();
     if (this->confirmAction())
     {
         m_sigTriggered->asyncEmit(this->getIsActive());
@@ -104,4 +103,3 @@ void SSignal::updating()
 
 } // namespace action
 } // namespace gui
-

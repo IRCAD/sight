@@ -110,10 +110,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
         {_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]};
 
         //on enleve les triangles s'ils sont situes au dessus du point
-        SLM_TRACE(
-            "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
-                _p[Z] );
-
         if ( !(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z] ) ) //trianglePotentiallyWellPositionned
         {
             //on teste la presence des vertex de part et d'autre des 3 axes.
@@ -126,8 +122,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 const double Delta2 = P2[axe] - _p[axe];
                 const double Delta3 = P3[axe] - _p[axe];
 
-                SLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
-
                 if ( Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f )
                 {
                     stop = true; break;
@@ -139,7 +133,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
             }
             if ( !stop )
             {
-                SLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
 
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
@@ -153,14 +146,12 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                     //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
                     if (t < 0.f)
                     {
-                        SLM_TRACE(" t = " << t << " u = " << u << " v = " << v);
                         ++intersectionNbr;
                     }
                 }
             }
         }
     }
-    SLM_TRACE("Nb intersection : " << intersectionNbr);
     return ( intersectionNbr%2 == 1 );
 }
 

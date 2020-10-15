@@ -86,8 +86,6 @@ PatchingManager::~PatchingManager()
     ::fwAtomsPatch::patcher::IPatcher::sptr patcher;
     std::string currentName, targetName;
 
-    SLM_TRACE("[PATCHING] Starting...");
-
     for(::fwAtomsPatch::VersionsGraph::VersionSeriesType::value_type elt :  series)
     {
         ::fwAtomsPatch::VersionsGraph::NodeIDType targetVersionNode = elt;
@@ -104,7 +102,6 @@ PatchingManager::~PatchingManager()
         patcher = ::fwAtomsPatch::patcher::factory::New(link.getPatcher());
         SLM_ASSERT("There is no patcher called \"" << link.getPatcher() << "\".", patcher);
 
-        SLM_TRACE("[PATCHING] '" << currentName << "' -> '" << targetName << "'.");
         fwAtomsPatchInfoLogMacro("Begin patcher '" + link.getPatcher() + "'");
 
         //Patching

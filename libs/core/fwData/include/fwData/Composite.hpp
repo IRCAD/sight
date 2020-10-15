@@ -326,11 +326,9 @@ SPTR(DATATYPE) Composite::at(const std::string& key)
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {
-        SLM_TRACE( "Object '" + key + "' not found.");
     }
     return castData;
 }
@@ -345,11 +343,9 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {
-        SLM_TRACE( "Object '" + key + "' not found.");
     }
     return castData;
 }

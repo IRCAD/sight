@@ -115,7 +115,6 @@ public:
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
-        SLM_TRACE( "EventId: " << eventId);
 
         if ( eventId == vtkCommand::RightButtonPressEvent )
         {

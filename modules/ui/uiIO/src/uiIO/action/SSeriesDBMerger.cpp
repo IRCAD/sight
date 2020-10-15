@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,10 +45,10 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
+static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 static const ::fwServices::IService::KeyType s_SERIES_INOUT = "seriesDB";
 
@@ -78,7 +78,6 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 
 void SSeriesDBMerger::configuring()
 {
-    SLM_TRACE_FUNC();
 
     this->::fwGui::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
@@ -94,7 +93,6 @@ void SSeriesDBMerger::configuring()
 
 void SSeriesDBMerger::updating( )
 {
-    SLM_TRACE_FUNC();
     ::fwGui::LockAction lock(this->getSptr());
 
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_INOUT);

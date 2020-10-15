@@ -61,7 +61,6 @@ void TransformationMatrix3DWriterService::info(std::ostream& _sstream )
 
 void TransformationMatrix3DWriterService::starting( )
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -116,14 +115,12 @@ void TransformationMatrix3DWriterService::openLocationDialog()
 
 void TransformationMatrix3DWriterService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DWriterService::updating()
 {
-    SLM_TRACE_FUNC();
     if(this->hasLocationDefined())
     {
         // Retrieve object

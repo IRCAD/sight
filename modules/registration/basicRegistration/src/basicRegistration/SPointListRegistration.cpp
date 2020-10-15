@@ -89,7 +89,7 @@ void SPointListRegistration::configuring()
         else
         {
             SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
-                      " Defaulting to 'rigid'.")
+                      " Defaulting to 'rigid'.");
         }
     }
     else
@@ -149,19 +149,8 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
                         auto coord = pointRef->getCoord();
                         sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                        SLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
-                                      ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                        SLM_TRACE(
-                            "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
-                                pointRef->getCoord()[2] );
-
                         coord = pointReg->getCoord();
                         targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
-                        SLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
-                                      ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                        SLM_TRACE(
-                            "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
-                                pointReg->getCoord()[2] );
                     }
                 }
             }
@@ -235,8 +224,6 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
         }
 
         errorValue /= sourcePts->GetNumberOfPoints();
-
-        SLM_TRACE("RMSE : "<<errorValue);
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 

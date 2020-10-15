@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,6 @@ struct WeakCall
         m_weakPtr(ptr),
         m_func(f)
     {
-        SLM_TRACE("WeakCall object : " + ptr->getClassname() );
     }
 
     WeakCall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
@@ -63,7 +62,6 @@ struct WeakCall
         m_func(f),
         m_worker( m )
     {
-        SLM_TRACE("WeakCall object : " + ptr->getClassname() );
     }
 
     ~WeakCall()

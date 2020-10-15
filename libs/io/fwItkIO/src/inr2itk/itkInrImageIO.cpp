@@ -154,7 +154,6 @@ void InrImageIO::ReadImageInformation()
             // Tokenize [KEY] = [VALUE] and store it in map
             std::string key   = line.substr(0, delimiter-line.begin());
             std::string value = line.substr(delimiter-line.begin()+1, std::string::npos);
-            SLM_TRACE("[" << key << "] = [" << value << "]");
             if(headerValues.find(key) != headerValues.end())
             {
                 // duplicate key

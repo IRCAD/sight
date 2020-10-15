@@ -93,7 +93,6 @@ void SSimpleMeshDeformation::stopping()
 
 void SSimpleMeshDeformation::updating()
 {
-    SLM_TRACE_FUNC();
 
     auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
 

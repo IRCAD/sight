@@ -268,7 +268,6 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     // Compute slice index
     const size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                       dicomSeries->getFirstInstanceNumber();
-    SLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
         this->pullInstance();

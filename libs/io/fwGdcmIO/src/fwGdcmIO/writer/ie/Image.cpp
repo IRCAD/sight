@@ -92,7 +92,6 @@ void Image::writeImagePlaneModule()
     {
         gdcmImage.SetSpacing(i, spacing[i]);
     }
-    SLM_TRACE("Image's spacing : " << spacing[0] << "x" << spacing[1] << "x" << spacing[2]);
 
     // Slice Thickness - Type 2
     // NOTE: ::gdcm::ImageWriter may replace SliceThickness values according to Image Origins
@@ -131,18 +130,15 @@ void Image::writeImagePixelModule()
     ::gdcm::PhotometricInterpretation photoInter =
         ::fwGdcmIO::helper::DicomDataTools::getPhotometricInterpretation(m_object);
     gdcmImage.SetPhotometricInterpretation(photoInter);
-    SLM_TRACE("Image's photometric interpretation : " << photoInter);
 
     // Image's pixel type
     ::gdcm::PixelFormat pixelFormat = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
     gdcmImage.SetPixelFormat(pixelFormat);
-    SLM_TRACE("Image's pixel type : " << pixelFormat);
 
     //Image's number of dimension
     unsigned int dimension =
         static_cast<unsigned int>((m_instance->getIsMultiFiles()) ? 2 : m_object->getNumberOfDimensions());
     gdcmImage.SetNumberOfDimensions(dimension);
-    SLM_TRACE("Image's number of dimensions : " << dimension);
 
     // Image's dimension
     const ::fwData::Image::Size& size = m_object->getSize2();
@@ -150,7 +146,6 @@ void Image::writeImagePixelModule()
     {
         gdcmImage.SetDimension(i, static_cast<unsigned int>(size[i]));
     }
-    SLM_TRACE("Image's dimensions : " << size[0] << "x" << size[1] << "x" << size[2]);
 
 }
 
@@ -192,11 +187,9 @@ void Image::writeVOILUTModule()
     {
         // Image's windows center
         ::fwGdcmIO::helper::DicomDataWriter::setTagValues< double, 0x0028, 0x1050 >(&windowCenter, 1, dataset);
-        SLM_TRACE("Image's window center : " << windowCenter);
 
         // Image's windows width
         ::fwGdcmIO::helper::DicomDataWriter::setTagValues< double, 0x0028, 0x1051 >(&windowWidth, 1, dataset);
-        SLM_TRACE("Image's window width : " << windowWidth);
     }
 
 }
@@ -210,7 +203,6 @@ void Image::writeSOPCommonModule()
 
     // SOP Class UID
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<  0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
-    SLM_TRACE("SOP Class UID : " + m_instance->getSOPClassUID());
 }
 
 //------------------------------------------------------------------------------

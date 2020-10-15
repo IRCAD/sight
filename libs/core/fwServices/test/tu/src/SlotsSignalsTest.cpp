@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,6 @@ void SlotsSignalsTest::tearDown()
 
 void SlotsSignalsTest::basicTest()
 {
-    SLM_TRACE_FUNC();
     using namespace ::fwServices::registry;
 
     Buffer::sptr buffer  = Buffer::New();
@@ -104,7 +103,6 @@ void SlotsSignalsTest::basicTest()
 
 void SlotsSignalsTest::comObjectServiceTest()
 {
-    SLM_TRACE_FUNC();
     Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
@@ -189,7 +187,6 @@ void SlotsSignalsTest::comObjectServiceTest()
 
 void SlotsSignalsTest::comServiceToServiceTest()
 {
-    SLM_TRACE_FUNC();
     Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
@@ -232,7 +229,6 @@ void SlotsSignalsTest::comServiceToServiceTest()
 
 void SlotsSignalsTest::blockConnectionTest()
 {
-    SLM_TRACE_FUNC();
     Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();

@@ -35,9 +35,7 @@ namespace fwThread
 
 std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
 {
-    SLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
     std::size_t res = io_service->run();
-    SLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
     return res;
 }
 

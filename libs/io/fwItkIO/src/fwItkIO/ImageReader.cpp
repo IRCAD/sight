@@ -53,14 +53,12 @@ ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key )  :
     ::fwData::location::enableSingleFile<
         IObjectReader >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include <QMenu>
-#include <QMenuBar>
-#include <QString>
+#include "fwGuiQt/layoutManager/MenuBarLayoutManager.hpp"
+
+#include "fwGuiQt/container/QtMenuContainer.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/container/QtMenuContainer.hpp"
-#include "fwGuiQt/layoutManager/MenuBarLayoutManager.hpp"
-
+#include <QMenu>
+#include <QMenuBar>
+#include <QString>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::MenuBarLayoutManager,
                     ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
@@ -54,7 +54,6 @@ MenuBarLayoutManager::~MenuBarLayoutManager()
 
 void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr parent )
 {
-    SLM_TRACE_FUNC();
 
     m_parent = ::fwGuiQt::container::QtMenuBarContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwMenuBar to QtMenuBarContainer failed", m_parent);
@@ -64,7 +63,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
     for ( std::string name : m_menuNames)
     {
         ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
-        QMenu *qtMenu = menuBar->addMenu(QString::fromStdString( name ));
+        QMenu* qtMenu = menuBar->addMenu(QString::fromStdString( name ));
         menu->setQtMenu(qtMenu);
         m_menus.push_back(menu);
     }
@@ -81,12 +80,11 @@ void MenuBarLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-
 void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(
         fwMenu);
-    QMenu *menu = menuContainer->getQtMenu();
+    QMenu* menu = menuContainer->getQtMenu();
     menu->setVisible(isVisible);
 }
 
@@ -96,7 +94,7 @@ void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu
 {
     ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(
         fwMenu);
-    QMenu *menu = menuContainer->getQtMenu();
+    QMenu* menu = menuContainer->getQtMenu();
     menu->setEnabled(isEnabled);
 }
 
@@ -104,6 +102,3 @@ void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-

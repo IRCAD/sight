@@ -69,7 +69,6 @@ Code::~Code() noexcept
 
 void Code::starting()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -104,7 +103,6 @@ void Code::starting()
 
 void Code::stopping()
 {
-    SLM_TRACE_FUNC();
 
     QObject::disconnect(m_valueCtrl, SIGNAL(textChanged()), this, SLOT(onModifyValue()));
 
@@ -115,7 +113,6 @@ void Code::stopping()
 
 void Code::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     if(!vectConfig.empty())
@@ -138,7 +135,6 @@ void Code::updating()
     SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
-    SLM_TRACE(stringObj->getID() << " updated value : " << stringObj->value());
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +165,6 @@ void Code::onModifyValue()
 
     if ( oldValue->value() != stringObj->value() )
     {
-        SLM_TRACE( stringObj->getID() << " modified");
 
         auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {

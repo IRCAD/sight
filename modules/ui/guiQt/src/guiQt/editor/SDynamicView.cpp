@@ -151,7 +151,6 @@ void SDynamicView::starting()
 
 void SDynamicView::stopping()
 {
-    SLM_TRACE_FUNC();
     while(m_tabWidget->count())
     {
         this->closeTab(0, true);

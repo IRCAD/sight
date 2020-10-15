@@ -989,7 +989,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
-            SLM_TRACE("Near SAO");
             maxNear = 1;
             minFar  = 10000;
         }

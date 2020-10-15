@@ -170,7 +170,7 @@ void IParameter::updating()
 
         if( !bSet )
         {
-            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
                       + m_material->getName() + "'");
         }
         else
@@ -185,7 +185,7 @@ void IParameter::updating()
 
         if( this->setParameter(*tech) )
         {
-            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
+            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_material->getName() + "'");
         }
         else

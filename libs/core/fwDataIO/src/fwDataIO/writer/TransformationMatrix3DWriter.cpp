@@ -65,7 +65,6 @@ void TransformationMatrix3DWriter::write()
     int i = 0;
     for (auto val : mat)
     {
-        SLM_TRACE("MATRIX : " << val);
         file << val;
         i++;
         if (i%4 == 0 && i != 16)

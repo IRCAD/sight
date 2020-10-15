@@ -76,7 +76,6 @@ void TransferFunction::toBWVtkLookupTable(
     vtkSmartPointer<vtkLookupTable> lt,
     unsigned int size )
 {
-    SLM_TRACE_FUNC();
 
     // Configures basic parameters
     lt->Allocate( static_cast<int>(size), static_cast<int>(size) );

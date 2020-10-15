@@ -180,7 +180,6 @@ SModelSeriesList::~SModelSeriesList() noexcept
 
 void SModelSeriesList::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     const ConfigType configType = this->getConfigTree();
@@ -220,7 +219,6 @@ void SModelSeriesList::configuring()
 
 void SModelSeriesList::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
@@ -312,7 +310,6 @@ void SModelSeriesList::updating()
 
 void SModelSeriesList::stopping()
 {
-    SLM_TRACE_FUNC();
 
     if(m_enableHideAll)
     {

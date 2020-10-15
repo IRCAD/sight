@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,9 +30,9 @@
 
 #include <boost/tokenizer.hpp>
 
-#include <filesystem>
 #include <locale.h>
 
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 
@@ -44,7 +44,6 @@ namespace fwGuiQt
 App::App(int& argc, char** argv, bool guiEnabled) :
     QApplication(argc, argv, guiEnabled)
 {
-    SLM_TRACE_FUNC();
 
     setlocale(LC_ALL, "C"); // needed for mfo save process
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
@@ -67,14 +66,12 @@ App::App(int& argc, char** argv, bool guiEnabled) :
 
 void App::aboutToQuit()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void App::onExit()
 {
-    SLM_TRACE_FUNC();
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QApplication::restoreOverrideCursor();

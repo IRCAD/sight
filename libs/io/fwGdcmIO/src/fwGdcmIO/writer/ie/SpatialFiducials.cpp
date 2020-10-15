@@ -189,7 +189,6 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
             coordinates[1] = static_cast<float>(point->getCoord()[1]);
             ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(coordinates, 2,
                                                                                        graphicDataItemDataset);
-            SLM_TRACE("WRITE NEW POINT : [" << label << "] " << coordinates[0] << " / " << coordinates[1]);
 
             // Referenced Image Sequence - Type 1
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence = new ::gdcm::SequenceOfItems();

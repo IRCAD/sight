@@ -82,7 +82,6 @@ void Server::runServer()
         {
             ::fwCore::mt::ScopedLock lock(m_mutex);
             m_clients.push_back(newClient);
-            SLM_TRACE("New client on server port: "<<m_port);
         }
     }
 }

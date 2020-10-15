@@ -193,7 +193,6 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
-            SLM_TRACE("The service '" + sid.first + "' is started by '" + m_sid + "'");
             service->start();
         }
     }
@@ -248,7 +247,6 @@ void ViewRegistrar::unmanage()
                        "It may have been destroyed by the configuration if it uses deferred objects.",
                        ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            SLM_TRACE("The service '" + sid.first + "' is stopped by '" + m_sid + "'");
             service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);

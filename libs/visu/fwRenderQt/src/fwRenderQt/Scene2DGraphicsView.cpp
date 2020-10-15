@@ -113,7 +113,6 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 
 void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 {
-    SLM_TRACE("Press in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonPress );
@@ -181,7 +180,6 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 {
-    SLM_TRACE("DoubleClick in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonDoubleClick );
@@ -196,7 +194,6 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 {
-    SLM_TRACE("Release in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonRelease );
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
@@ -210,7 +207,6 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 {
-    SLM_TRACE("Move in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseMove );
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
@@ -225,7 +221,6 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 void Scene2DGraphicsView::wheelEvent ( QWheelEvent* _event )
 {
     const bool scrollUp = _event->delta() > 0;
-    SLM_TRACE("Scroll " << (scrollUp ? "up" : "down") << " _event");
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( (scrollUp) ? ::fwRenderQt::data::Event::MouseWheelUp : ::fwRenderQt::data::Event::MouseWheelDown);
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->pos().x(), _event->pos().y() ) );
