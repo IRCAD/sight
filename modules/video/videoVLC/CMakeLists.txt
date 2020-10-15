@@ -1,5 +1,7 @@
 fwLoadProperties()
 
+message(DEPRECATION "Module 'videoVLC' is deprecated and will be removed after sight 21.0.")
+
 find_path(VLC_INCLUDE_DIR vlc/vlc.h PATHS
     "${CONAN_VLC_ROOT}/include"
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/include"
