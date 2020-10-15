@@ -251,7 +251,7 @@ void SActivitySequencer::goTo(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
     {
-        OSLM_ERROR("no activity to launch at index " << index)
+        SLM_ERROR("no activity to launch at index " << index)
         return;
     }
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);

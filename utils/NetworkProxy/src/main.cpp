@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -106,13 +106,13 @@ std::map< std::string, configuration > initialize(std::string configFile)
                       std::istream_iterator<std::string>(),
                       std::back_inserter<std::vector<std::string> > (words));
 
-            OSLM_FATAL_IF("Configuration file empty ", words.size() == 0);
+            SLM_FATAL_IF("Configuration file empty ", words.size() == 0);
 
             if(words[0].find("#") == std::string::npos)
             {
-                OSLM_FATAL_IF("Error in configuration file line: '"<<i<<"'.", words.size() != 4);
+                SLM_FATAL_IF("Error in configuration file line: '"<<i<<"'.", words.size() != 4);
 
-                OSLM_INFO(
+                SLM_INFO(
                     "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
                         words[3]);
 
@@ -141,8 +141,8 @@ std::map< std::string, configuration > initialize(std::string configFile)
             //if port is already used we use the same server and worker
             if(it->second.port == portTab[i])
             {
-                OSLM_TRACE("Found that "<<it->second.deviceIn<<" and "<<deviceInTab[i]<<
-                           " have the same port ("<<it->second.port<<").");
+                SLM_TRACE("Found that "<<it->second.deviceIn<<" and "<<deviceInTab[i]<<
+                          " have the same port ("<<it->second.port<<").");
                 server               = it->second.server;
                 worker               = it->second.worker;
                 serverAlreadyStarted = true;
@@ -208,7 +208,7 @@ int main (int argc, char** argv)
         SLM_INFO(err.what());
     }
 
-    OSLM_INFO("server started on port: "<<port);
+    SLM_INFO("server started on port: "<<port);
 
     //main loop
     while (1)
@@ -237,7 +237,7 @@ int main (int argc, char** argv)
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {
                     configuration config = associationDeviceServer.find(deviceName)->second;
-                    OSLM_TRACE("Received a '"<<deviceType<<"' named '"<<deviceName);
+                    SLM_TRACE("Received a '"<<deviceType<<"' named '"<<deviceName);
 
                     sendingServer = config.server;
 
@@ -249,8 +249,8 @@ int main (int argc, char** argv)
 
                             if(msg.IsNotNull())
                             {
-                                OSLM_TRACE("Resending the message '"<<deviceName<<"' with name '"<<config.deviceOut
-                                                                    <<" to port : '"<<config.port<<"'.");
+                                SLM_TRACE("Resending the message '"<<deviceName<<"' with name '"<<config.deviceOut
+                                                                   <<" to port : '"<<config.port<<"'.");
 
                                 //re-send the message with the correct server
                                 sendingServer->setMessageDeviceName(config.deviceOut);
@@ -264,7 +264,7 @@ int main (int argc, char** argv)
                     }
                     else
                     {
-                        OSLM_WARN(
+                        SLM_WARN(
                             "No corresponding between type "<<deviceType<<" and name "<<deviceName<<" message skipped");
                     }
                 }

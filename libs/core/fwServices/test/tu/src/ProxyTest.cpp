@@ -67,7 +67,7 @@ struct ProxyTestClass
 
     int sum(int a, int b)
     {
-        OSLM_INFO("SUM " << a << " + " << b);
+        SLM_INFO("SUM " << a << " + " << b);
         ++m_methodSum;
         return a+b;
     }
@@ -76,7 +76,7 @@ struct ProxyTestClass
 
     int square (int a)
     {
-        OSLM_INFO("SQUARE " << a );
+        SLM_INFO("SQUARE " << a );
         ++m_methodSquare;
         return a*a;
     }
@@ -85,7 +85,7 @@ struct ProxyTestClass
 
     void doNothing()
     {
-        OSLM_INFO("DO NOTHING");
+        SLM_INFO("DO NOTHING");
         ++m_methodDoNothing;
     }
 

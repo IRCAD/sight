@@ -22,8 +22,6 @@
 
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Integer.hpp>
@@ -35,6 +33,8 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -72,8 +72,8 @@ IFrameLayoutManager::~IFrameLayoutManager()
 
 void IFrameLayoutManager::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
-                configuration->getName() == "frame");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
+               configuration->getName() == "frame");
 
     std::vector < ConfigurationType > name       = configuration->find("name");
     std::vector < ConfigurationType > icon       = configuration->find("icon");
@@ -94,8 +94,8 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     if(!icon.empty())
     {
         m_frameInfo.m_iconPath = ::fwRuntime::getModuleResourceFilePath(icon.at(0)->getValue());
-        OSLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
-                    std::filesystem::exists(m_frameInfo.m_iconPath));
+        SLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
+                   std::filesystem::exists(m_frameInfo.m_iconPath));
     }
 
     if(!minSize.empty())
@@ -132,7 +132,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            OSLM_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
+            SLM_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
         }
     }
     this->readConfig();

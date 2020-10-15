@@ -921,7 +921,7 @@ size_t Mesh::allocatePointNormals()
 
 size_t Mesh::allocatePointColors(ColorArrayTypes t)
 {
-    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    SLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
     if (!m_pointColors )
     {
@@ -963,7 +963,7 @@ size_t Mesh::allocateCellNormals()
 
 size_t Mesh::allocateCellColors(ColorArrayTypes t)
 {
-    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    SLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
     if (!m_cellColors )
     {

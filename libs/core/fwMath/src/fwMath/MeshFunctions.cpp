@@ -110,7 +110,7 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
         {_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]};
 
         //on enleve les triangles s'ils sont situes au dessus du point
-        OSLM_TRACE(
+        SLM_TRACE(
             "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
                 _p[Z] );
 
@@ -126,7 +126,7 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 const double Delta2 = P2[axe] - _p[axe];
                 const double Delta3 = P3[axe] - _p[axe];
 
-                OSLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
+                SLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
 
                 if ( Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f )
                 {
@@ -139,7 +139,7 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
             }
             if ( !stop )
             {
-                OSLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
+                SLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
 
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
@@ -153,14 +153,14 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                     //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
                     if (t < 0.f)
                     {
-                        OSLM_TRACE(" t = " << t << " u = " << u << " v = " << v);
+                        SLM_TRACE(" t = " << t << " u = " << u << " v = " << v);
                         ++intersectionNbr;
                     }
                 }
             }
         }
     }
-    OSLM_TRACE("Nb intersection : " << intersectionNbr);
+    SLM_TRACE("Nb intersection : " << intersectionNbr);
     return ( intersectionNbr%2 == 1 );
 }
 
@@ -175,7 +175,7 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 
     for(const fwVertexIndex::value_type& vertex :  _vertexIndex)
     {
-        OSLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
+        SLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]) )];

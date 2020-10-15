@@ -345,7 +345,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                 {
                     sorted   = ippSorter.GetFilenames();
                     zspacing = ippSorter.GetZSpacing();
-                    OSLM_TRACE("Found z-spacing:" << ippSorter.GetZSpacing());
+                    SLM_TRACE("Found z-spacing:" << ippSorter.GetZSpacing());
                 }
                 else
                 {
@@ -397,7 +397,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                                 const std::vector<double> vOrigin2 =
                                     ::gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
                                 zspacing = vOrigin2[2] - vOrigin1[2];
-                                OSLM_TRACE(
+                                SLM_TRACE(
                                     "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
                                         vOrigin1[2]);
                             }
@@ -446,12 +446,12 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                         }
                         catch(std::exception& e)
                         {
-                            OSLM_ERROR("VTKImage to fwData::Image failed : "<<e.what());
+                            SLM_ERROR("VTKImage to fwData::Image failed : "<<e.what());
                         }
                     }
                     catch (std::exception& e)
                     {
-                        OSLM_ERROR( "Error during conversion : " << e.what() );
+                        SLM_ERROR( "Error during conversion : " << e.what() );
                     }
                     catch (...)
                     {
@@ -662,7 +662,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
     }
     catch (std::exception& e)
     {
-        OSLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
+        SLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
         for(const auto filename : _filenames)
         {
             SLM_ERROR("file error : " + filename );

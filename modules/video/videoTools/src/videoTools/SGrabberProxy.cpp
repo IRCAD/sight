@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,7 @@ const ::fwCom::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
 
 const ::fwCom::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL);
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ void SGrabberProxy::configuring()
                     "'exclude' (to exclude the selection of the selector list).",
                     mode == "exclude" || mode == "include" );
         m_exclude = ( mode == "exclude" );
-        OSLM_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
+        SLM_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
 
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)

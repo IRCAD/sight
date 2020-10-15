@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -291,7 +291,7 @@ DefaultPatcher::~DefaultPatcher()
 
             if(patch)
             {
-                OSLM_TRACE("[SP] " << classname);
+                SLM_TRACE("[SP] " << classname);
                 fwAtomsPatchInfoLogMacro("Apply structural patch to transform '" + classname
                                          + "|" + version + "' to '"
                                          + currentInfos.first + "|" + currentInfos.second + "'");
@@ -336,7 +336,7 @@ DefaultPatcher::~DefaultPatcher()
 
         if(patch)
         {
-            OSLM_TRACE("[CP] " << ::fwAtomsPatch::helper::getClassname(current));
+            SLM_TRACE("[CP] " << ::fwAtomsPatch::helper::getClassname(current));
             fwAtomsPatchInfoLogMacro("Apply contextual patch to transform '"
                                      + ::fwAtomsPatch::helper::getClassname(previous)
                                      + "|" + ::fwAtomsPatch::helper::getVersion(previous) + "' to '"

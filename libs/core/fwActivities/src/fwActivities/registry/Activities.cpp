@@ -22,8 +22,6 @@
 
 #include "fwActivities/registry/Activities.hpp"
 
-#include <boost/foreach.hpp>
-
 #include <fwData/Vector.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -31,6 +29,8 @@
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Module.hpp>
 #include <fwRuntime/Runtime.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <limits>
 #include <regex>
@@ -67,7 +67,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
             parameters.push_back( parameter );
         }
     }
-    OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+    SLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,11 +105,11 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     SLM_ASSERT("Create option is only available if minOccurs = 0 and maxOccurs = 1",
                !create || (minOccurs == 0 && maxOccurs == 1));
 
-    OSLM_ASSERT(
+    SLM_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
             0 <= minOccurs && minOccurs <= maxOccurs);
-    OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs
-                                         << "(" << description << ")");
+    SLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs
+                                        << "(" << description << ")");
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +260,7 @@ void Activities::parseBundleInformation()
 
     for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {
-        OSLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activities");
+        SLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);
 
         ::fwCore::mt::WriteLock lock(m_registryMutex);

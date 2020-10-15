@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -203,7 +203,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             menuItem->setQtMenuItem(action);
 
             m_menuItems.push_back(menuItem);
-            OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            SLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
             ::fwGuiQt::ActionCallback::sptr qtCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);

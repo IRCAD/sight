@@ -146,7 +146,7 @@ public:
         if ( pickSomething() )
         {
             ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
-            OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
+            SLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
             m_adaptor->updateView( world);
         }
         m_adaptor->updateView(world);
@@ -333,7 +333,7 @@ void SProbeCursor::updateView( double world[3] )
     const ::fwData::mt::ObjectReadLock lock(image);
     int index[3];
     m_helper.worldToImageSliceIndex( world, index );
-    OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
+    SLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
     std::string txt;
 
@@ -365,7 +365,7 @@ void SProbeCursor::updateView( double world[3] )
         vtkPoints* points = m_cursorPolyData->GetPoints();
         for ( int i = 0; i < 4; ++i)
         {
-            OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
+            SLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
             points->SetPoint(i, worldCross[i]);
         }
         points->Modified();

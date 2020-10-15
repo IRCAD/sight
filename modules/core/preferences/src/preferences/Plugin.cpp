@@ -72,7 +72,7 @@ void Plugin::start()
     }
     catch(::fwCore::Exception& e)
     {
-        OSLM_ERROR("Preferences service not started. " << e.what());
+        SLM_ERROR("Preferences service not started. " << e.what());
     }
 }
 

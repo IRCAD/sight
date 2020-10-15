@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,8 +37,8 @@ GenericObjectBase::GenericObjectBase(unsigned int maxElementNum, ::fwCore::HiRes
     m_presenceMask(0),
     m_maxElementNum(maxElementNum)
 {
-    OSLM_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
-                m_maxElementNum < sizeof(uint64_t) * 8);
+    SLM_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
+               m_maxElementNum < sizeof(uint64_t) * 8);
 }
 
 //-----------------------------------------------------------------------------

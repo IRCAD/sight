@@ -299,11 +299,11 @@ void IService::setObjectId(const IService::KeyType& _key, const size_t index, co
 
 void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 {
-    OSLM_ERROR(indent << " data : '" << pt.data() << "'" );
+    SLM_ERROR(indent << " data : '" << pt.data() << "'" );
 
     for( ::boost::property_tree::ptree::value_type& v :  pt)
     {
-        OSLM_ERROR((indent + "  '") << v.first << "':" );
+        SLM_ERROR((indent + "  '") << v.first << "':" );
         displayPt(v.second, indent + "      ");
 
     }
@@ -425,7 +425,7 @@ void IService::configure(const ConfigType& ptree)
 
 void IService::reconfiguring()
 {
-    OSLM_FATAL(
+    SLM_FATAL(
         "If this method (reconfiguring) is called, it must be overridden in the implementation ("
             << this->getClassname() <<", "<< this->getID() << ")" );
 }
@@ -555,7 +555,7 @@ IService::SharedFutureType IService::startSlot()
 
 IService::SharedFutureType IService::internalStart(bool _async)
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
+    SLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
 
     this->connectToConfig();
 
@@ -610,7 +610,7 @@ IService::SharedFutureType IService::stopSlot()
 
 IService::SharedFutureType IService::internalStop(bool _async)
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
+    SLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
     this->autoDisconnect();
 
@@ -665,9 +665,9 @@ IService::SharedFutureType IService::swapKeySlot(const KeyType& _key, ::fwData::
 
 IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, ::fwData::Object::sptr _obj, bool _async)
 {
-    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
-                  (_obj ? _obj->getID() : "nullptr"),
-                  m_globalState != STARTED);
+    SLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
+                 (_obj ? _obj->getID() : "nullptr"),
+                 m_globalState != STARTED);
 
     auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
     PackagedTaskType task( fn );
@@ -719,12 +719,12 @@ IService::SharedFutureType IService::internalUpdate(bool _async)
 {
     if(m_globalState != STARTED)
     {
-        OSLM_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
-                  "' of type '" << this->getClassname() << "': update is discarded." );
+        SLM_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                 "' of type '" << this->getClassname() << "': update is discarded." );
         return SharedFutureType();
     }
-    OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
-                "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
+    SLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
+               "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
     PackagedTaskType task( std::bind(&IService::updating, this) );
     SharedFutureType future = task.get_future();

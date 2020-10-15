@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,6 @@
 #include <vtkThreshold.h>
 #include <vtkWindowedSincPolyDataFilter.h>
 
-
 namespace opVTKMesh
 {
 
@@ -54,7 +53,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation )
 
 //-----------------------------------------------------------------------------
 
@@ -100,7 +99,7 @@ void SMeshCreation::configuring()
         m_reduction = boost::lexical_cast<unsigned int>(reduce);
     }
 
-    OSLM_INFO( "Reduction value = " << m_reduction);
+    SLM_INFO( "Reduction value = " << m_reduction);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,12 +134,11 @@ void SMeshCreation::updating()
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
-    smoothFilter->SetPassBand ( 0.1 );
+    smoothFilter->SetPassBand( 0.1 );
     smoothFilter->SetFeatureAngle(120.0);
     smoothFilter->SetEdgeAngle(90);
     smoothFilter->FeatureEdgeSmoothingOn();
     smoothFilter->Update();
-
 
     // Get polyData
     vtkSmartPointer< vtkPolyData > polyData;
@@ -158,13 +156,13 @@ void SMeshCreation::updating()
         decimate->SetSplitAngle( 120 );
         decimate->Update();
         polyData = decimate->GetOutput();
-        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+        SLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
+        SLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
 
@@ -181,4 +179,3 @@ void SMeshCreation::updating()
 
 } // namespace action
 } // namespace opVTKMesh
-

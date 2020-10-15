@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SReconstruction);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SReconstruction)
 
 namespace visuVTKAdaptor
 {
@@ -128,8 +128,8 @@ void SReconstruction::createMeshService()
         meshAdaptor->update();
 
         m_meshService = meshAdaptor;
-        OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
-        OSLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
+        SLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
+        SLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }
 }
 

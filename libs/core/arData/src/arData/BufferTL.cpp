@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -199,8 +199,8 @@ CSPTR(::arData::timeline::Object) BufferTL::getObject(::fwCore::HiResClock::HiRe
         result = iter->second;
     }
 
-    OSLM_WARN_IF("There is no object in the timeline matching the timestamp: " << timestamp << ".",
-                 iter == m_timeline.end());
+    SLM_WARN_IF("There is no object in the timeline matching the timestamp: " << timestamp << ".",
+                iter == m_timeline.end());
 
     return result;
 }

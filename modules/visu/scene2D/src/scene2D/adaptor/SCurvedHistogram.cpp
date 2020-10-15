@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SCurvedHistogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SCurvedHistogram)
 
 #define PI 3.14159265
 
@@ -204,7 +204,7 @@ SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Point
 
     points.push_back( _bSplinePoints.back() );
 
-    OSLM_TRACE("B-Spline points size moved from " << _bSplinePoints.size() << " to " << points.size());
+    SLM_TRACE("B-Spline points size moved from " << _bSplinePoints.size() << " to " << points.size());
 
     return points;
 }

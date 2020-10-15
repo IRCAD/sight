@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ ActivitySeries::~ActivitySeries()
     namespace ActReg                    = ::fwActivities::registry;
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
-    OSLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
+    SLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
@@ -129,7 +129,7 @@ ActivitySeries::~ActivitySeries()
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
-            OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
+            SLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
             (*data)[req.name] = (*vectorType)[0];
         }
         else

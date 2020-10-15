@@ -141,7 +141,7 @@ void SImagesProbeCursor::updateView( double world[3] )
 
             int index[3];
             m_helper.worldToImageSliceIndex( world, index );
-            OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
+            SLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
 
             if (    world[0] < firstImage->getOrigin2()[0] ||
                     world[1] < firstImage->getOrigin2()[1] ||
@@ -165,7 +165,7 @@ void SImagesProbeCursor::updateView( double world[3] )
                 vtkPoints* points = m_cursorPolyData->GetPoints();
                 for ( int i = 0; i < 4; ++i)
                 {
-                    OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
+                    SLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
                     points->SetPoint(i, worldCross[i]);
                 }
                 points->Modified();
@@ -187,7 +187,7 @@ void SImagesProbeCursor::updateView( double world[3] )
 
                 int index[3];
                 m_helper.worldToImageSliceIndex( world, index );
-                OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
+                SLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
                 if ( !( world[0] < image->getOrigin2()[0] ||
                         world[1] < image->getOrigin2()[1] ||

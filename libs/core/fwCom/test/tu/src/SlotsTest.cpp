@@ -65,10 +65,7 @@ int slotsTestSum (int a, int b)
 
 void slotsTestPrint(const std::string& str)
 {
-#if !SLM_TRACE_ENABLED
-    FwCoreNotUsedMacro(str);
-#endif
-    SLM_TRACE(str);
+    SLM_DEBUG(str);
 }
 
 struct SlotsTestBasic

@@ -341,7 +341,7 @@ void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
             }
             else
             {
-                OSLM_ERROR("Camera #" << i << " is not calibrated.");
+                SLM_ERROR("Camera #" << i << " is not calibrated.");
             }
 
             // In fwRenderOgre we define extrinsic calibrations as being the transform from the

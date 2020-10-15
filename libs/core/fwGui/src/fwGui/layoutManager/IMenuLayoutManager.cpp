@@ -47,8 +47,8 @@ IMenuLayoutManager::~IMenuLayoutManager()
 
 void IMenuLayoutManager::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
@@ -109,7 +109,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
                 }
                 else
                 {
-                    OSLM_FATAL("specialAction " << specialActionName << " is unknown." );
+                    SLM_FATAL("specialAction " << specialActionName << " is unknown." );
                 }
             }
 

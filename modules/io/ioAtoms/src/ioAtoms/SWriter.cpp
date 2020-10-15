@@ -234,7 +234,7 @@ bool SWriter::versionSelection()
                     }
                     catch ( std::out_of_range e)
                     {
-                        OSLM_ERROR("Bad version format: either " + _a + " or " + _b);
+                        SLM_ERROR("Bad version format: either " + _a + " or " + _b);
                         return false;
                     }
                 });
@@ -256,7 +256,7 @@ bool SWriter::versionSelection()
                 }
                 catch ( std::out_of_range e)
                 {
-                    OSLM_ERROR("Bad version format: " + v);
+                    SLM_ERROR("Bad version format: " + v);
 
                     prettyVersionsAll.push_back(v);
                     prettyVersionsToVersions[ v ] = v;
@@ -523,7 +523,7 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        OSLM_ERROR(_e.what());
+        SLM_ERROR(_e.what());
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                           _e.what(),
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);

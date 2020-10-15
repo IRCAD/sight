@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -163,8 +163,8 @@ VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const N
 {
     ::fwCore::mt::ReadLock lock(m_graphMutex);
     auto [edgeID, success] = ::boost::edge(origin, target, m_graph);
-    OSLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
-                                             << m_graph[target].getVersionName() << "'.", success);
+    SLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
+                                            << m_graph[target].getVersionName() << "'.", success);
     return m_graph[edgeID];
 }
 
@@ -237,8 +237,8 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     ::fwCore::mt::ReadLock lock(m_graphMutex);
     auto [newEdge, success] = ::boost::add_edge(origin, target, edge, m_graph);
 
-    OSLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
-                "and '" << edge.getTargetVersion() << "'", success);
+    SLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
+               "and '" << edge.getTargetVersion() << "'", success);
 
     return newEdge;
 }

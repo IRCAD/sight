@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::fwData::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -121,8 +121,8 @@ void SPushObject::updateObjects()
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
-    OSLM_TRACE("start check : " << compositeSrc->getID() << "[" << m_srcKey << "] : " <<
-               (compositeSrc->find(m_srcKey) != compositeSrc->end()) );
+    SLM_TRACE("start check : " << compositeSrc->getID() << "[" << m_srcKey << "] : " <<
+              (compositeSrc->find(m_srcKey) != compositeSrc->end()) );
 
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 

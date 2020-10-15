@@ -394,7 +394,7 @@ void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::Mod
         for(auto const& cIt :  m_displayedInfo)
         {
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(reconstruction, cIt.first);
-            OSLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }
         QTreeWidgetItem* item = new QTreeWidgetItem(info);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagePickerInteractor);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagePickerInteractor)
 
 namespace visuVTKAdaptor
 {
@@ -122,7 +122,7 @@ public:
             {
                 double world[3] = {-1, 0, 0};
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
-                OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
+                SLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 
                 ::fwDataTools::PickingInfo info;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ class FWDATA_CLASS_API GenericField : public GenericFieldBase
 {
 
 public:
-    fwCoreClassMacro(GenericField<T>, ::fwData::Object);
+    fwCoreClassMacro(GenericField<T>, ::fwData::Object)
 
     typedef T ValueType;
 
@@ -93,7 +93,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -113,7 +113,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -133,7 +133,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -153,7 +153,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -173,7 +173,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -193,7 +193,7 @@ public:
 #ifndef _DEBUG
             FwCoreNotUsedMacro(exp);
 #endif
-            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }

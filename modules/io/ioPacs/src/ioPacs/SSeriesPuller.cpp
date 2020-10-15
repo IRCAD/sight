@@ -83,7 +83,7 @@ void SSeriesPuller::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
-    OSLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
+    SLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
 
     m_readerConfig = configType.get(s_READER_CONFIG, m_readerConfig);
 }

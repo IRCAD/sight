@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -149,7 +149,7 @@ void SRender::configurePicker( const ConfigType& pickerConf )
     if(m_pickers.count(id) == 0)
     {
         m_pickers[id] = vtkAbstractPropPicker::SafeDownCast(vtkObjectFactory::CreateInstance(vtkclass.c_str()));
-        OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.", m_pickers[id]);
+        SLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.", m_pickers[id]);
         m_pickers[id]->InitializePickList();
         m_pickers[id]->PickFromListOn();
         vtkPicker* picker = vtkPicker::SafeDownCast(m_pickers[id]);
@@ -390,7 +390,7 @@ void SRender::updating()
 
 void SRender::render()
 {
-    OSLM_ASSERT("Scene must be started", this->isStarted());
+    SLM_ASSERT("Scene must be started", this->isStarted());
     if (m_offScreen)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
@@ -458,7 +458,7 @@ void SRender::requestRender()
         this->setPendingRenderRequest(true);
         if(m_renderMode == RenderMode::SYNC)
         {
-            OSLM_DEBUG("sync SRender: " << this->getID());
+            SLM_DEBUG("sync SRender: " << this->getID());
             this->slot(SRender::s_RENDER_SLOT)->run();
         }
         else
@@ -538,7 +538,7 @@ void SRender::stopContext()
 
 vtkRenderer* SRender::getRenderer(RendererIdType rendererId)
 {
-    OSLM_ASSERT("Renderer not found : '" << rendererId << "'", m_renderers.count(rendererId) == 1);
+    SLM_ASSERT("Renderer not found : '" << rendererId << "'", m_renderers.count(rendererId) == 1);
 
     return m_renderers[rendererId];
 }

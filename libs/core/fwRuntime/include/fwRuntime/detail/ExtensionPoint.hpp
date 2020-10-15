@@ -110,8 +110,8 @@ public:
             {
                 std::copy( extension->begin(), extension->end(), output);
             }
-            OSLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
-                          " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
+            SLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
+                         " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
         }
     }
 

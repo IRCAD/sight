@@ -324,13 +324,13 @@ void SeriesDBLazyReader::addSeries(const ::fwMedData::SeriesDB::sptr& _seriesDB,
 
 #if SLM_INFO_ENABLED
         timer.stop();
-        OSLM_INFO("Time in to lazy read data : " << timer.getElapsedTimeInMilliSec());
+        SLM_INFO("Time in to lazy read data : " << timer.getElapsedTimeInMilliSec());
 #endif
 
     }
     catch (std::exception& e)
     {
-        OSLM_ERROR("Try with another reader or retry with this reader on a specific subfolder : " << e.what());
+        SLM_ERROR("Try with another reader or retry with this reader on a specific subfolder : " << e.what());
         std::vector< std::string >::const_iterator it = _filenames.begin();
         for(; it != _filenames.end(); ++it)
         {
@@ -625,8 +625,8 @@ void SeriesDBLazyReader::preprocessImage(const ::fwData::Image::sptr& _img,
     r.SetSlope(interceptSlope[1]);
     r.SetPixelFormat(scalarType);
     scalarType = r.ComputeInterceptSlopePixelType();
-    OSLM_TRACE("Intercept = " << interceptSlope[0]);
-    OSLM_TRACE("Slope = " << interceptSlope[1]);
+    SLM_TRACE("Intercept = " << interceptSlope[0]);
+    SLM_TRACE("Slope = " << interceptSlope[1]);
 
     switch(scalarType)
     {

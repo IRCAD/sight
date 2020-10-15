@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
+#include "fwMemory/stream/in/Buffer.hpp"
 
 #include <fwCore/macros.hpp>
 #include <fwCore/spyLog.hpp>
 
-#include "fwMemory/stream/in/Buffer.hpp"
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 namespace fwMemory
 {
@@ -37,7 +37,7 @@ namespace in
 
 struct HoldCounterStream : ::boost::iostreams::stream< ::boost::iostreams::array_source >
 {
-    HoldCounterStream(char *buf, size_t size, const Buffer::LockType &lock) :
+    HoldCounterStream(char* buf, size_t size, const Buffer::LockType& lock) :
         ::boost::iostreams::stream< ::boost::iostreams::array_source >(buf, size),
         m_counter(lock)
     {
@@ -46,21 +46,27 @@ struct HoldCounterStream : ::boost::iostreams::stream< ::boost::iostreams::array
     Buffer::LockType m_counter;
 };
 
+//------------------------------------------------------------------------------
+
 Buffer::LockType noFactory()
 {
     return Buffer::LockType();
 }
 
 Buffer::Buffer(void* buf, size_t size) :
-    m_buf(buf), m_size(size), m_counterFactory(&noFactory)
+    m_buf(buf),
+    m_size(size),
+    m_counterFactory(&noFactory)
 {
-    OSLM_ASSERT("Buffer is null.", m_buf || size == 0);
+    SLM_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
-    m_buf(buf), m_size(size), m_counterFactory(counterFactory)
+    m_buf(buf),
+    m_size(size),
+    m_counterFactory(counterFactory)
 {
-    OSLM_ASSERT("Buffer is null.", m_buf || size == 0);
+    SLM_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 SPTR(std::istream) Buffer::get()
@@ -69,7 +75,7 @@ SPTR(std::istream) Buffer::get()
 
     typedef HoldCounterStream ArrayStreamType;
     SPTR( ArrayStreamType ) arrayInStream
-        = std::make_shared< ArrayStreamType > ( static_cast<char *>(m_buf), m_size, m_counterFactory() );
+        = std::make_shared< ArrayStreamType > ( static_cast<char*>(m_buf), m_size, m_counterFactory() );
 
     return arrayInStream;
 }
@@ -77,4 +83,3 @@ SPTR(std::istream) Buffer::get()
 } // namespace in
 } // namespace stream
 } // namespace fwMemory
-

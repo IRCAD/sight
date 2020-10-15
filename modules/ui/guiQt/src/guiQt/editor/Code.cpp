@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,12 +43,12 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::fwData::String );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::fwData::String )
 
 //------------------------------------------------------------------------------
 
 const std::string Code::s_PYTHON = "Python";
-const std::string Code::s_CPP    = "Cpp";
+const std::string Code::s_CPP = "Cpp";
 
 static const ::fwServices::IService::KeyType s_STRING_INOUT = "string";
 
@@ -91,7 +91,7 @@ void Code::starting()
     }
     else
     {
-        OSLM_WARN("Language "<<m_language<<" not yet supported.");
+        SLM_WARN("Language "<<m_language<<" not yet supported.");
     }
 
     qtContainer->setLayout( layout );
@@ -138,7 +138,7 @@ void Code::updating()
     SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
-    OSLM_TRACE(stringObj->getID() << " updated value : " << stringObj->value());
+    SLM_TRACE(stringObj->getID() << " updated value : " << stringObj->value());
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ void Code::onModifyValue()
 
     if ( oldValue->value() != stringObj->value() )
     {
-        OSLM_TRACE( stringObj->getID() << " modified");
+        SLM_TRACE( stringObj->getID() << " modified");
 
         auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {

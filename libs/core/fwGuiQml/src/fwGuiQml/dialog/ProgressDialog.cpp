@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -130,7 +130,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
     const int& value = static_cast<int>(percent*100);
     if(value != this->m_value)
     {
-        OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
+        SLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
 
         this->m_value = value;
         this->setMessage(msg);

@@ -236,7 +236,7 @@ void MeshReader::read()
 
     if (!parseTrian2(buffer, buffer+length, mesh))
     {
-        OSLM_ERROR( "Bad file format : " << path.string());
+        SLM_ERROR( "Bad file format : " << path.string());
         throw std::ios_base::failure("Unable to open " + path.string() + " : Bad file format.");
     }
 

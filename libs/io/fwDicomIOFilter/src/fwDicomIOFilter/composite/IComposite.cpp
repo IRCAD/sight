@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -89,7 +89,7 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(
             }
             catch(::fwDicomIOFilter::exceptions::FilterFailure e)
             {
-                OSLM_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
+                SLM_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
                 filtered.push_back(s);
             }
         }

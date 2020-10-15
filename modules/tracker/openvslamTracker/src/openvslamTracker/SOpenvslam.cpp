@@ -41,6 +41,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <openvslamIO/Helper.hpp>
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
@@ -51,8 +53,6 @@
 #include <openvslam/publish/frame_publisher.h>
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
-
-#include <openvslamIO/Helper.hpp>
 
 namespace openvslamTracker
 {
@@ -744,7 +744,7 @@ void SOpenvslam::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         }
         catch (std::exception& e)
         {
-            OSLM_ERROR("Error processing openvslam: " << e.what());
+            SLM_ERROR("Error processing openvslam: " << e.what());
             return;
         }
 

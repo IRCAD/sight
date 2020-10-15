@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -117,7 +117,7 @@ void Object::setFields( const FieldMapType& fieldMap )
 void Object::removeField( const FieldNameType& name )
 {
     FieldMapType::const_iterator iter = m_fields.find(name);
-    OSLM_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
+    SLM_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
     if(iter != m_fields.end())
     {
         m_fields.erase(iter);

@@ -258,7 +258,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
 
     Uint16 rspStatusCode;
     OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
-    OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
+    SLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
 }
 
@@ -278,7 +278,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
     // const_cast required to use bad DCMTK sendSTORERequest API
     DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
     OFCondition result     = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
-    OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
+    SLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
 }
 

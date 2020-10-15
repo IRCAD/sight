@@ -212,14 +212,14 @@ void IToolBarSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisib
 
 void IToolBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-                layoutConfig->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
+               layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
         ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IToolBarLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY,
-                m_layoutManager);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY,
+               m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

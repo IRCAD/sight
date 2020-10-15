@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -337,7 +337,7 @@ void IAdaptor::addToRenderer(vtkProp* prop)
 
 void IAdaptor::addToPicker(vtkProp* prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
+    SLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->AddPickList(prop);
     this->setVtkPipelineModified();
 }
@@ -346,7 +346,7 @@ void IAdaptor::addToPicker(vtkProp* prop, std::string pickerId)
 
 void IAdaptor::removeFromPicker(vtkProp* prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
+    SLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);
     this->setVtkPipelineModified();
 }

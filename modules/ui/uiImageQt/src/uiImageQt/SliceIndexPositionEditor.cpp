@@ -235,7 +235,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
-        OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+        SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         const int index = static_cast<int>(image->getField< ::fwData::Integer >( fieldID )->value());
 
         // Update QSlider
@@ -270,7 +270,7 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
@@ -287,9 +287,9 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    OSLM_ASSERT("Bad slice type "<<type, type == ::fwDataTools::helper::MedicalImage::X_AXIS ||
-                type == ::fwDataTools::helper::MedicalImage::Y_AXIS ||
-                type == ::fwDataTools::helper::MedicalImage::Z_AXIS );
+    SLM_ASSERT("Bad slice type "<<type, type == ::fwDataTools::helper::MedicalImage::X_AXIS ||
+               type == ::fwDataTools::helper::MedicalImage::Y_AXIS ||
+               type == ::fwDataTools::helper::MedicalImage::Z_AXIS );
 
     const int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type

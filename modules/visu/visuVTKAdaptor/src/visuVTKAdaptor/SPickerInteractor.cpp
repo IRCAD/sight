@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPickerInteractor);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPickerInteractor)
 
 namespace visuVTKAdaptor
 {
@@ -142,7 +142,7 @@ public:
             {
                 ::fwDataTools::PickingInfo info;
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), info.m_worldPos);
-                OSLM_TRACE("PICK" << info.m_worldPos[0] << " ," << info.m_worldPos[1] << " ," << info.m_worldPos[2] );
+                SLM_TRACE("PICK" << info.m_worldPos[0] << " ," << info.m_worldPos[1] << " ," << info.m_worldPos[2] );
 
                 info.m_modifierMask =
                     caller->GetControlKey() ? ::fwDataTools::PickingInfo::CTRL : ::fwDataTools::PickingInfo::NONE;
@@ -161,8 +161,8 @@ public:
                 info.m_eventId = iter->second;
 
                 info.m_keyPressed = caller->GetKeyCode();
-                OSLM_TRACE("EVENT" << static_cast<int>(info.m_eventId) );
-                OSLM_TRACE("KEY" << info.m_keyPressed << " - MASK " << static_cast<int>(info.m_modifierMask) );
+                SLM_TRACE("EVENT" << static_cast<int>(info.m_eventId) );
+                SLM_TRACE("KEY" << info.m_keyPressed << " - MASK " << static_cast<int>(info.m_modifierMask) );
 
                 info.m_timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 

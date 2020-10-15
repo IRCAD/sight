@@ -174,7 +174,7 @@ void SClientListener::runClient()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            OSLM_ERROR(ex.what());
+            SLM_ERROR(ex.what());
         }
     }
 }

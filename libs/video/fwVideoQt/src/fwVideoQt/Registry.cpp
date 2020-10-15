@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -144,7 +144,7 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
                 }
                 else
                 {
-                    OSLM_ERROR("No compatible pixel format found");
+                    SLM_ERROR("No compatible pixel format found");
                 }
 
                 player->initCameraDevice(camera->getCameraID(),

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,18 +33,19 @@
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QImage>
 #include <QString>
+
+#include <filesystem>
 
 namespace videoQt
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::arData::FrameTL);
+fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::arData::FrameTL)
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_SAVE_FRAME_SLOT   = "saveFrame";
+const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_SAVE_FRAME_SLOT = "saveFrame";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "startRecord";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
@@ -115,7 +116,7 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
         ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
 
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
-        OSLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
+        SLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
 
         if(buffer)
         {

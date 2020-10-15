@@ -95,7 +95,7 @@ void STransformDepthMap2mm::updating()
     const auto type = originFrame->getType();
     if(type != ::fwTools::Type::s_UINT16)
     {
-        OSLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 

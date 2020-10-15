@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <QMenuBar>
-
 #include "fwGuiQt/container/QtMenuBarContainer.hpp"
+
+#include <QMenuBar>
 
 namespace fwGuiQt
 {
@@ -31,7 +31,8 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtMenuBarContainer::QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) noexcept : m_menuBar(0)
+QtMenuBarContainer::QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) noexcept :
+    m_menuBar(0)
 {
 }
 
@@ -49,8 +50,8 @@ void QtMenuBarContainer::clean()
 
     m_menuBar->clear();
 
-    QList<QMenu *> list = m_menuBar->findChildren<QMenu *>();
-    Q_FOREACH (QMenu *m, list)
+    QList<QMenu*> list = m_menuBar->findChildren<QMenu*>();
+    Q_FOREACH (QMenu* m, list)
     {
         m->hide();
         delete m;
@@ -63,8 +64,8 @@ void QtMenuBarContainer::destroyContainer()
 {
     SLM_ASSERT("The Qt MenuBar is not yet initialized", m_menuBar);
 
-    QList<QMenu *> allMenu = m_menuBar->findChildren<QMenu *>();
-    OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
+    QList<QMenu*> allMenu = m_menuBar->findChildren<QMenu*>();
+    SLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
 
     m_menuBar->hide();
     delete m_menuBar;
@@ -72,7 +73,7 @@ void QtMenuBarContainer::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-void QtMenuBarContainer::setQtMenuBar(QMenuBar *menuBar)
+void QtMenuBarContainer::setQtMenuBar(QMenuBar* menuBar)
 {
     this->m_menuBar = menuBar;
 }

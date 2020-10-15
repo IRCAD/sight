@@ -150,7 +150,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-        OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+        SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         const int index = static_cast<int>(image->getField< ::fwData::Integer >( fieldID )->value());
 
         // Update QSlider
@@ -183,7 +183,7 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
@@ -198,9 +198,9 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
 void SSliceIndexPositionEditor::onSliceType( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    OSLM_ASSERT("Bad slice type "<<type, type == X_AXIS ||
-                type == Y_AXIS ||
-                type == Z_AXIS );
+    SLM_ASSERT("Bad slice type "<<type, type == X_AXIS ||
+               type == Y_AXIS ||
+               type == Z_AXIS );
 
     const int oldType = static_cast< int > ( m_orientation );
     // Change slice type

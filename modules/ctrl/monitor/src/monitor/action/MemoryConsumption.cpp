@@ -54,7 +54,7 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
         ::fwData::Array::SizeType size(1, memorySizeInBytes);
         buffer->resize(size, ::fwTools::Type::s_UINT8_TYPENAME, true);
 
-        OSLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
+        SLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 
         memoryConsumer.push_back( buffer );
     }
@@ -113,7 +113,7 @@ void MemoryConsumption::configuring()
 
     SLM_ASSERT("Missing attribute 'value'", consumptionCfg->hasAttribute("mode"));
     std::string mode = consumptionCfg->getAttributeValue("mode");
-    OSLM_ASSERT("Wrong value ("<< mode <<") for mode tag", mode == "increase" || mode == "decrease");
+    SLM_ASSERT("Wrong value ("<< mode <<") for mode tag", mode == "increase" || mode == "decrease");
     m_isIncreaseMode = (mode == "increase");
 
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))

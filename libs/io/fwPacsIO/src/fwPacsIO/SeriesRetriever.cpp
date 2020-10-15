@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -128,7 +128,7 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
     // Dump incoming message
     SLM_TRACE("Received C-STORE Request");
     OFString tempStr;
-    OSLM_TRACE(DIMSE_dumpMessage(tempStr, incomingMsg->msg.CStoreRQ, DIMSE_INCOMING, NULL, presID));
+    SLM_TRACE(DIMSE_dumpMessage(tempStr, incomingMsg->msg.CStoreRQ, DIMSE_INCOMING, NULL, presID));
 
     // Get Dataset
     DcmDataset* dataset = new DcmDataset();
@@ -169,7 +169,7 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
 
             // Dump outgoing message
             SLM_TRACE("Sending C-STORE Response");
-            OSLM_TRACE(DIMSE_dumpMessage(tempStr, rsp, DIMSE_OUTGOING, NULL, presID));
+            SLM_TRACE(DIMSE_dumpMessage(tempStr, rsp, DIMSE_OUTGOING, NULL, presID));
 
             if (cond.bad())
             {

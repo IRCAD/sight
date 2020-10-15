@@ -127,8 +127,8 @@ void SSlotCaller::configuring()
 
     m_synchronized = syncCfg && syncCfg->getValue() == "true";
 
-    OSLM_ASSERT("Missing slots configuration element in " << this->getID(),
-                m_configuration->hasConfigurationElement(s_SLOTS_KEY));
+    SLM_ASSERT("Missing slots configuration element in " << this->getID(),
+               m_configuration->hasConfigurationElement(s_SLOTS_KEY));
     ConfigurationType cfg = m_configuration->findConfigurationElement(s_SLOTS_KEY);
 
     ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement(s_SLOT_KEY);
@@ -142,7 +142,7 @@ void SSlotCaller::configuring()
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            SLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 

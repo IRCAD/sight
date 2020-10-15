@@ -23,10 +23,10 @@
 #include "fwThread/Timer.hpp"
 #include "fwThread/Worker.hpp"
 
+#include <fwCore/TimeStamp.hpp>
+
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
-
-#include <fwCore/TimeStamp.hpp>
 
 namespace fwThread
 {
@@ -35,9 +35,9 @@ namespace fwThread
 
 std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
 {
-    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
+    SLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
     std::size_t res = io_service->run();
-    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
+    SLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
     return res;
 }
 

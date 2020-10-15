@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,6 @@
 #include <camp/class.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace fwAtomsPatch
@@ -237,8 +236,8 @@ void VersionsManager::generateVersionsGraph()
         {
             ::fwAtomsPatch::LinkDescriptor link = VersionsManager::getLink(elt);
 
-            OSLM_ASSERT("There is no graph created for the context \"" << link.getContext() << "\".",
-                        m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end());
+            SLM_ASSERT("There is no graph created for the context \"" << link.getContext() << "\".",
+                       m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end());
 
             m_versionsGraphMap[link.getContext()]->addEdge(link);
         }

@@ -208,7 +208,7 @@ void SImageSeriesReader::updating()
         }
         catch(::fwTools::Failed& e)
         {
-            OSLM_TRACE("Error : " << e.what());
+            SLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();

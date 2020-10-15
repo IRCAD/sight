@@ -481,7 +481,7 @@ void Module::stop()
     {
         m_plugin->stop();
         m_started = false;
-        OSLM_TRACE(getModuleStr(m_identifier, m_version) << " Stopped");
+        SLM_TRACE(getModuleStr(m_identifier, m_version) << " Stopped");
     }
     catch( std::exception& e )
     {

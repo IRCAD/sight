@@ -125,7 +125,7 @@ ImageStorageReader::~ImageStorageReader()
     if(spacing[0] == 0 || spacing[1] == 0 || spacing[2] == 0)
     {
         spacing[0] = spacing[1] = spacing[2] = 1;
-        OSLM_WARN("Invalid value for pixel spacing. Assuming pixel value is 1.");
+        SLM_WARN("Invalid value for pixel spacing. Assuming pixel value is 1.");
     }
 
     image->setSpacing2({spacing[0], spacing[1], spacing[2]});

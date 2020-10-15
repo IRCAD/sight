@@ -54,8 +54,8 @@ IToolBarBuilder::~IToolBarBuilder()
 
 void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be toolBar",
-                configuration->getName() == "toolBar");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be toolBar",
+               configuration->getName() == "toolBar");
 
     if (configuration->hasAttribute("align"))
     {
@@ -78,7 +78,7 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         }
         else
         {
-            OSLM_FATAL("Wrong value '"<< alignment <<"' for 'align' attribute (require top, bottom, right or left)");
+            SLM_FATAL("Wrong value '"<< alignment <<"' for 'align' attribute (require top, bottom, right or left)");
         }
     }
 
@@ -87,7 +87,7 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
         if(!hexaColor.empty())
         {
-            OSLM_ASSERT(
+            SLM_ASSERT(
                 "Color string should start with '#' and followed by 6 or 8 "
                 "hexadecimal digits. Given color: " << hexaColor,
                     hexaColor[0] == '#'

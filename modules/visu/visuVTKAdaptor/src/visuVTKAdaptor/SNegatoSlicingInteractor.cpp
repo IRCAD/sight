@@ -128,7 +128,7 @@ public:
         pickPoint[1] = y;
         pickPoint[2] = 0;
 
-        OSLM_TRACE(
+        SLM_TRACE(
             "vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " <<
                 pickPoint[2]);
 
@@ -477,16 +477,16 @@ void SNegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     this->worldToImageSliceIndex(pickedPoint, index);
     index[m_orientation] = originalIndex;
 
-    OSLM_TRACE("sliceIndex[0] "<< sliceIndex[0]->value()<< " index[0] " << index[0] << " pickedPt "<<pickedPoint[0]);
-    OSLM_TRACE("sliceIndex[1] "<< sliceIndex[1]->value()<< " index[1] " << index[1] << " pickedPt "<<pickedPoint[1]);
-    OSLM_TRACE("sliceIndex[2] "<< sliceIndex[2]->value()<< " index[2] " << index[2] << " pickedPt "<<pickedPoint[2]);
+    SLM_TRACE("sliceIndex[0] "<< sliceIndex[0]->value()<< " index[0] " << index[0] << " pickedPt "<<pickedPoint[0]);
+    SLM_TRACE("sliceIndex[1] "<< sliceIndex[1]->value()<< " index[1] " << index[1] << " pickedPt "<<pickedPoint[1]);
+    SLM_TRACE("sliceIndex[2] "<< sliceIndex[2]->value()<< " index[2] " << index[2] << " pickedPt "<<pickedPoint[2]);
 
 #ifdef DEBUG
     for ( int i = 0; i < image->getNumberOfDimensions(); i++ )
     {
-        OSLM_ASSERT("index["<< i <<"] = " << index[i]
-                            << " and image->getSize()[" << i << "] = " << image->getSize2()[i],
-                    index[i] >= 0 && index[i] < image->getSize2()[i]);
+        SLM_ASSERT("index["<< i <<"] = " << index[i]
+                           << " and image->getSize()[" << i << "] = " << image->getSize2()[i],
+                   index[i] >= 0 && index[i] < image->getSize2()[i]);
     }
 #endif
 

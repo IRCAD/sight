@@ -91,13 +91,13 @@ void SColourImageMasking::configuring()
     m_foregroundComponents = config.get<int>("foregroundComponents", 5);
     m_backgroundComponents = config.get<int>("backgroundComponents", 5);
 
-    OSLM_ASSERT("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
-                (m_scaleFactor > 0 && m_scaleFactor <= 1));
-    OSLM_ASSERT("The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
-                m_backgroundComponents > 0);
-    OSLM_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
-    OSLM_ASSERT("The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
-                m_foregroundComponents > 0);
+    SLM_ASSERT("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
+               (m_scaleFactor > 0 && m_scaleFactor <= 1));
+    SLM_ASSERT("The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
+               m_backgroundComponents > 0);
+    SLM_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
+    SLM_ASSERT("The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
+               m_foregroundComponents > 0);
 
     m_lowerColor = ::cv::Scalar(0, 0, 0);
     m_upperColor = ::cv::Scalar(255, 255, 255);
@@ -171,15 +171,15 @@ void SColourImageMasking::updating()
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
         // Sanity checks
-        OSLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
-        OSLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
-        OSLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
+        SLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
+        SLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
+        SLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
         const auto maskSize = mask->getSize2();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
-            OSLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]
-                                          << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
-                                          << videoTL->getHeight() << ").");
+            SLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]
+                                         << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
+                                         << videoTL->getHeight() << ").");
         }
 
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
@@ -196,7 +196,7 @@ void SColourImageMasking::updating()
 
         if(!videoBuffer)
         {
-            OSLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
+            SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
             return;
         }
 
@@ -205,8 +205,8 @@ void SColourImageMasking::updating()
         ::fwCore::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
-            OSLM_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
-                                                       << m_lastVideoTimestamp << ")");
+            SLM_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
+                                                      << m_lastVideoTimestamp << ")");
             return;
         }
 
@@ -254,7 +254,7 @@ void SColourImageMasking::setBackground()
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        OSLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
+        SLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
@@ -304,7 +304,7 @@ void SColourImageMasking::setForeground()
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        OSLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
+        SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);

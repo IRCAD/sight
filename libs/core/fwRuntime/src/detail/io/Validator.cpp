@@ -164,9 +164,9 @@ bool Validator::validate( const std::filesystem::path& xmlFile )
 
     if ( result != 0 )
     {
-        OSLM_WARN("Validator::validation NOK, xml = " << xmlFile.string() );
-        OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
-        OSLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
+        SLM_WARN("Validator::validation NOK, xml = " << xmlFile.string() );
+        SLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
+        SLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
     }
 
     return result == 0;
@@ -191,10 +191,10 @@ bool Validator::validate( xmlNodePtr node )
     {
         xmlBufferPtr buffer = xmlBufferCreate();
         xmlNodeDump( buffer, node->doc, node, 1, 1 );
-        OSLM_WARN("Validator::validation NOK, node :\n " << buffer->content);
+        SLM_WARN("Validator::validation NOK, node :\n " << buffer->content);
         xmlBufferFree( buffer );
-        OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
-        OSLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
+        SLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
+        SLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
     }
 
     return result == 0;

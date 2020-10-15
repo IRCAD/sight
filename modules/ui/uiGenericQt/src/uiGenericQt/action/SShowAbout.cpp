@@ -108,7 +108,7 @@ void SShowAbout::configuring()
         m_size.setWidth(std::stoi(w));
         m_size.setHeight(std::stoi(h));
 
-        OSLM_TRACE("Set frame size to (" << m_size.width() << ", " << m_size.height() << ")");
+        SLM_TRACE("Set frame size to (" << m_size.width() << ", " << m_size.height() << ")");
     }
 }
 

@@ -61,35 +61,35 @@ struct ValueMapper< ::fwMedData::NavigationSeries::CoordinateType >
 
     static ReturnType from(bool )
     {
-        OSLM_ERROR("Conversion not handled");
+        SLM_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(long )
     {
-        OSLM_ERROR("Conversion not handled");
+        SLM_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(double )
     {
-        OSLM_ERROR("Conversion not handled");
+        SLM_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject& )
     {
-        OSLM_ERROR("Conversion not handled");
+        SLM_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject& )
     {
-        OSLM_ERROR("Conversion not handled");
+        SLM_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ struct ValueMapper< ::fwMedData::NavigationSeries::CoordinateType >
         }
         else
         {
-            OSLM_WARN("Invalid number of components: " << result.size());
+            SLM_WARN("Invalid number of components: " << result.size());
         }
         return coord;
     }

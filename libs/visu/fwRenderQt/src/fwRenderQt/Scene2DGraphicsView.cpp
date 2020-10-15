@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -113,7 +113,7 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 
 void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 {
-    OSLM_TRACE("Press in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
+    SLM_TRACE("Press in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonPress );
@@ -181,7 +181,7 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 {
-    OSLM_TRACE("DoubleClick in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
+    SLM_TRACE("DoubleClick in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonDoubleClick );
@@ -196,7 +196,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 {
-    OSLM_TRACE("Release in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
+    SLM_TRACE("Release in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonRelease );
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
@@ -210,7 +210,7 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 {
-    OSLM_TRACE("Move in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
+    SLM_TRACE("Move in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( ::fwRenderQt::data::Event::MouseMove );
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
@@ -225,7 +225,7 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 void Scene2DGraphicsView::wheelEvent ( QWheelEvent* _event )
 {
     const bool scrollUp = _event->delta() > 0;
-    OSLM_TRACE("Scroll " << (scrollUp ? "up" : "down") << " _event");
+    SLM_TRACE("Scroll " << (scrollUp ? "up" : "down") << " _event");
     ::fwRenderQt::data::Event sceneEvent;
     sceneEvent.setType( (scrollUp) ? ::fwRenderQt::data::Event::MouseWheelUp : ::fwRenderQt::data::Event::MouseWheelDown);
     sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->pos().x(), _event->pos().y() ) );
@@ -266,4 +266,3 @@ void Scene2DGraphicsView::paintEvent(QPaintEvent* event)
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderQt
-

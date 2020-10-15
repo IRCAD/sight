@@ -58,14 +58,14 @@ void TransformationMatrix3DWriter::write()
     file.open(getFile().string().c_str(), std::fstream::out);
     if (!file.is_open())
     {
-        OSLM_ERROR( "Trf file writing error for " << getFile());
+        SLM_ERROR( "Trf file writing error for " << getFile());
         return;
     }
     ::fwData::TransformationMatrix3D::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
     int i = 0;
     for (auto val : mat)
     {
-        OSLM_TRACE("MATRIX : " << val);
+        SLM_TRACE("MATRIX : " << val);
         file << val;
         i++;
         if (i%4 == 0 && i != 16)

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,9 +50,9 @@ namespace uiTools
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SStatus );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SStatus )
 
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT      = "changeToGreen";
+const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
 const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
@@ -165,11 +165,11 @@ void SStatus::configuring()
         {
             const size_t countLabelStatus = configLabels.get().count("labelStatus");
 
-            OSLM_WARN_IF(
+            SLM_WARN_IF(
                 "Number of 'labelStatus' (" << countLabelStatus << ") is different from needed status (" << m_count << ").",
                     countLabelStatus != m_count);
-            OSLM_WARN_IF("'labelStatus' from " << m_count+1 << " to " << countLabelStatus << " will be lost.",
-                         countLabelStatus > m_count);
+            SLM_WARN_IF("'labelStatus' from " << m_count+1 << " to " << countLabelStatus << " will be lost.",
+                        countLabelStatus > m_count);
 
             const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
@@ -185,7 +185,7 @@ void SStatus::configuring()
             // If there is less labelStatus than needed ones, fill with empty strings
             if(countLabelStatus < m_count)
             {
-                OSLM_WARN("'labelStatus' from " << countLabelStatus+1 << " to " << m_count << " will be empty.");
+                SLM_WARN("'labelStatus' from " << countLabelStatus+1 << " to " << m_count << " will be empty.");
                 for(size_t i = countLabelStatus; i < m_count; ++i)
                 {
                     QPointer < QLabel > qLab = new QLabel();
@@ -277,7 +277,7 @@ void SStatus::toggleGreenRed(const bool green)
 
 void SStatus::changeNthToGreen(const int index)
 {
-    OSLM_INFO_IF(
+    SLM_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
 
@@ -293,7 +293,7 @@ void SStatus::changeNthToGreen(const int index)
 
 void SStatus::changeNthToRed(const int index)
 {
-    OSLM_INFO_IF(
+    SLM_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
 
@@ -309,7 +309,7 @@ void SStatus::changeNthToRed(const int index)
 
 void SStatus::changeNthToOrange(const int index)
 {
-    OSLM_INFO_IF(
+    SLM_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
 
@@ -325,7 +325,7 @@ void SStatus::changeNthToOrange(const int index)
 
 void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
-    OSLM_INFO_IF(
+    SLM_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
 

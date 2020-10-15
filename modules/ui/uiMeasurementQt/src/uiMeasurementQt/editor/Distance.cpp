@@ -80,7 +80,7 @@ void Distance::starting()
 
     namespace fs = std::filesystem;
     fs::path pathImageDist = ::fwRuntime::getModuleResourceFilePath("uiMeasurementQt", "distance.png");
-    OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
+    SLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 

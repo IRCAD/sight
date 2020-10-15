@@ -245,8 +245,8 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
         ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
     m_frameLayoutManager = ::fwGui::layoutManager::IFrameLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
-                m_frameLayoutManager);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
+               m_frameLayoutManager);
 
     m_frameLayoutManager->initialize(frameConfig);
 }
@@ -261,8 +261,8 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
     m_menuBarBuilder                    = ::fwGui::builder::IMenuBarBuilder::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY,
-                m_menuBarBuilder);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY,
+               m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }
@@ -277,8 +277,8 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder                    = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
-                m_toolBarBuilder);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
+               m_toolBarBuilder);
 
     m_toolBarBuilder->initialize(toolBarConfig);
 }

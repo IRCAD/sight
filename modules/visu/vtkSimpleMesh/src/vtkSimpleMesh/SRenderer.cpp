@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::SRenderer, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::SRenderer, ::fwData::Mesh )
 
 namespace vtkSimpleMesh
 {
@@ -303,13 +303,13 @@ void SRenderer::updatePipeline()
     m_hiResTimer.start();
     this->updateVTKPipeline(false);
     m_hiResTimer.stop();
-    OSLM_INFO("Vertex updating time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
+    SLM_INFO("Vertex updating time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
 
     m_hiResTimer.reset();
     m_hiResTimer.start();
     m_interactorManager->getInteractor()->Render();
     m_hiResTimer.stop();
-    OSLM_INFO("Render time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
+    SLM_INFO("Render time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
 }
 
 //-----------------------------------------------------------------------------

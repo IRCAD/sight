@@ -194,8 +194,8 @@ void AppConfigManager::stop()
     }
     this->stopStartedServices();
 
-    OSLM_INFO("Parsing OSR after stopping the config :" << std::endl
-                                                        << ::fwServices::OSR::getRegistryInformation());
+    SLM_INFO("Parsing OSR after stopping the config :" << std::endl
+                                                       << ::fwServices::OSR::getRegistryInformation());
     m_state = STATE_STOPPED;
 }
 
@@ -211,8 +211,8 @@ void AppConfigManager::destroy()
     }
     this->destroyCreatedServices();
 
-    OSLM_INFO("Parsing OSR after destroying the config :" << std::endl
-                                                          << ::fwServices::OSR::getRegistryInformation());
+    SLM_INFO("Parsing OSR after destroying the config :" << std::endl
+                                                         << ::fwServices::OSR::getRegistryInformation());
 
     m_cfgElem.reset();
     m_createdObjects.clear();
@@ -366,7 +366,7 @@ void AppConfigManager::stopStartedServices()
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
+        SLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
@@ -382,7 +382,7 @@ void AppConfigManager::destroyCreatedServices()
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.", srv->isStopped());
+        SLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.", srv->isStopped());
         ::fwServices::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
@@ -1036,7 +1036,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                     if(_id == objCfg.m_uid)
                     {
                         ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                        OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                        SLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                         optional &= objCfg.m_optional;
                         if(objCfg.m_optional)
@@ -1058,9 +1058,9 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                 {
                     // 1. Stop the service
                     ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                    SLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                    OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
+                    SLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
                     srv->stop().wait();
 
                     for(auto it = m_startedSrv.begin(); it != m_startedSrv.end(); ++it)
@@ -1073,8 +1073,8 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                     }
 
                     // 2. Destroy the service
-                    OSLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
-                                srv->isStopped());
+                    SLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
+                               srv->isStopped());
                     ::fwServices::OSR::unregisterService(srv);
 
                     for(auto it = m_createdSrv.begin(); it != m_createdSrv.end(); ++it)
@@ -1102,7 +1102,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                 {
                     // Update auto connections
                     ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                    SLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                     srv->autoDisconnect();
                     srv->autoConnect();

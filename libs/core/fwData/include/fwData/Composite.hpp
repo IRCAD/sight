@@ -309,7 +309,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     for( ::fwData::Composite::value_type elem : *this )
     {
         castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
+        SLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
 

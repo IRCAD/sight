@@ -24,10 +24,10 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <boost/numeric/conversion/cast.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <igtlPolyDataMessage.h>
 
@@ -115,7 +115,7 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
                 dest->GetVertices()->AddCell(4, cell);
                 break;
             default:
-                OSLM_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
+                SLM_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
         }
     }
 }

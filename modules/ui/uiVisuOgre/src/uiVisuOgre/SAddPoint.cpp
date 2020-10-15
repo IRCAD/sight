@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ void SAddPoint::updating()
 void SAddPoint::addPoint(const ::fwData::Point::sptr _point)
 {
     auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
     {
         ::fwData::mt::ObjectWriteLock lock(pointList);
@@ -107,7 +107,7 @@ void SAddPoint::addPoint(const ::fwData::Point::sptr _point)
 void SAddPoint::removePoint(const ::fwData::Point::csptr _point)
 {
     auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
     ::fwData::mt::ObjectWriteLock lock(pointList);
 
@@ -150,7 +150,7 @@ void SAddPoint::pick(::fwDataTools::PickingInfo _info)
 void SAddPoint::clearPoints()
 {
     auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    OSLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
 
     ::fwData::mt::ObjectWriteLock lock(pointList);
 

@@ -255,7 +255,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 
     // Compute slice index
     std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
-    OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
+    SLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
         if(m_pacsConfiguration)
@@ -298,7 +298,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
 
     const auto& binaries = dicomSeries->getDicomContainer();
     auto iter            = binaries.find(_selectedSliceIndex);
-    OSLM_ASSERT("Index '"<<_selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
+    SLM_ASSERT("Index '"<<_selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
     const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);

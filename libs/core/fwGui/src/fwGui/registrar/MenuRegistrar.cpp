@@ -95,8 +95,8 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 start = (startValue == "yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
-            OSLM_ASSERT("The action '" + sid + "' already exists for '" + m_sid + "' menu.",
-                        m_actionSids.find( sid) == m_actionSids.end());
+            SLM_ASSERT("The action '" + sid + "' already exists for '" + m_sid + "' menu.",
+                       m_actionSids.find( sid) == m_actionSids.end());
             m_actionSids[sid] = SIDMenuMapType::mapped_type(index, start);
 
             ::fwGui::ActionCallbackBase::sptr callback;
@@ -129,8 +129,8 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
             }
             std::string sid                 = menu->getAttributeValue("sid");
             std::pair<int, bool> indexStart = std::make_pair( index, start);
-            OSLM_ASSERT("The menu '" + sid + "' already exists for this menu '" + m_sid + "'",
-                        m_actionSids.find( sid) == m_actionSids.end());
+            SLM_ASSERT("The menu '" + sid + "' already exists for this menu '" + m_sid + "'",
+                       m_actionSids.find( sid) == m_actionSids.end());
             m_menuSids[sid] = indexStart;
         }
         index++;
@@ -144,9 +144,9 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
     ::fwGui::container::fwMenuItem::sptr menuItem;
     for( SIDMenuMapType::value_type sid :  m_actionSids)
     {
-        OSLM_ASSERT("The menu '" << m_sid << "' contains more menuItems in <registry> than in <layout>: "
-                                 << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
-                    sid.second.first < menuItems.size());
+        SLM_ASSERT("The menu '" << m_sid << "' contains more menuItems in <registry> than in <layout>: "
+                                << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
+                   sid.second.first < menuItems.size());
         menuItem = menuItems.at( sid.second.first );
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
@@ -181,9 +181,9 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus
     ::fwGui::container::fwMenu::sptr menu;
     for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
-        OSLM_ASSERT("The menu '" << m_sid << "' contains more menus in <registry> than in <layout>: "
-                                 << sid.second.first << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
-                    (sid.second.first+1) < menus.size());
+        SLM_ASSERT("The menu '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+                                << sid.second.first << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
+                   (sid.second.first+1) < menus.size());
         menu = menus.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
@@ -206,9 +206,9 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }
@@ -218,9 +218,9 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }

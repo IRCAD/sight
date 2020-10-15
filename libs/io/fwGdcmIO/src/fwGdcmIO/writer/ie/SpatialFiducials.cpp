@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -189,7 +189,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
             coordinates[1] = static_cast<float>(point->getCoord()[1]);
             ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(coordinates, 2,
                                                                                        graphicDataItemDataset);
-            OSLM_TRACE("WRITE NEW POINT : [" << label << "] " << coordinates[0] << " / " << coordinates[1]);
+            SLM_TRACE("WRITE NEW POINT : [" << label << "] " << coordinates[0] << " / " << coordinates[1]);
 
             // Referenced Image Sequence - Type 1
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence = new ::gdcm::SequenceOfItems();

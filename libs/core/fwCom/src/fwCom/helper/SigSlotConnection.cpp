@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #include "fwCom/helper/SigSlotConnection.hpp"
 
-#include <fwCom/SignalBase.hpp>
 #include <fwCom/exception/AlreadyConnected.hpp>
 #include <fwCom/exception/BadSlot.hpp>
+#include <fwCom/SignalBase.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -62,7 +62,7 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals, ::
     }
     catch (::fwCom::exception::BadSlot& e)
     {
-        OSLM_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
+        SLM_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
     }
     catch (::fwCom::exception::AlreadyConnected& e)
     {
@@ -72,8 +72,8 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals, ::
         const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicCast(hasSlots);
         auto targetID                         = target ? target->getID() : "";
 
-        OSLM_ERROR("Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
-                   + targetID + "/" + slotKey + "' : " << e.what() << ".");
+        SLM_ERROR("Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
+                  + targetID + "/" + slotKey + "' : " << e.what() << ".");
     }
 }
 
@@ -100,8 +100,8 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
         }
         catch (::fwCom::exception::BadSlot& e)
         {
-            OSLM_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
-                       << e.what() << ".");
+            SLM_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
+                      << e.what() << ".");
         }
         catch (::fwCom::exception::AlreadyConnected& e)
         {
@@ -111,8 +111,8 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
             const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicCast(hasSlots);
             auto targetID                         = target ? target->getID() : "";
 
-            OSLM_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
-                       + targetID + "/" + keys.second + "' : " << e.what() << ".");
+            SLM_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
+                      + targetID + "/" + keys.second + "' : " << e.what() << ".");
         }
     }
 }

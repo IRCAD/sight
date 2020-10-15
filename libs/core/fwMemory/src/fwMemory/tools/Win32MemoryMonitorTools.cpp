@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,26 +87,26 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
         if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), &cbNeeded) )
         {
             GetModuleBaseNameW( hProcess, hMod, (LPWSTR)name, nameSize );
-            OSLM_INFO( "    Name : " << name << "  ( PID : " << processID << " )");
+            SLM_INFO( "    Name : " << name << "  ( PID : " << processID << " )");
         }
         else
         {
-            OSLM_INFO( "    Name : not found ( PID : " << processID << " )");
+            SLM_INFO( "    Name : not found ( PID : " << processID << " )");
         }
 
         PROCESS_MEMORY_COUNTERS_EX pmc;
         if ( GetProcessMemoryInfo( hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
         {
-            OSLM_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
-            OSLM_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
-            OSLM_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
-            OSLM_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
-            OSLM_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
-            OSLM_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
-            OSLM_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
-            OSLM_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
-            OSLM_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
-            OSLM_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
+            SLM_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
+            SLM_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
+            SLM_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
+            SLM_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
+            SLM_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
+            SLM_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
+            SLM_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
+            SLM_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
+            SLM_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
+            SLM_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
         }
         else
         {
@@ -130,13 +130,13 @@ void Win32MemoryMonitorTools::printSystemMemoryInformation()
     GlobalMemoryStatusEx(&statex);
 
     SLM_INFO( "-- System memory information --" );
-    OSLM_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
-    OSLM_INFO( "    There are " << statex.ullTotalPhys/oToKo        <<  " total Ko of physical memory." );
-    OSLM_INFO( "    There are " << statex.ullAvailPhys/oToKo        <<  " free Ko of physical memory." );
-    OSLM_INFO( "    There are " << statex.ullTotalPageFile/oToKo    <<  " total Ko of paging file." );
-    OSLM_INFO( "    There are " << statex.ullAvailPageFile/oToKo    <<  " free Ko of paging file." );
-    OSLM_INFO( "    There are " << statex.ullTotalVirtual/oToKo     <<  " total Ko of virtual memory." );
-    OSLM_INFO( "    There are " << statex.ullAvailVirtual/oToKo     <<  " free Ko of virtual memory." );
+    SLM_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
+    SLM_INFO( "    There are " << statex.ullTotalPhys/oToKo        <<  " total Ko of physical memory." );
+    SLM_INFO( "    There are " << statex.ullAvailPhys/oToKo        <<  " free Ko of physical memory." );
+    SLM_INFO( "    There are " << statex.ullTotalPageFile/oToKo    <<  " total Ko of paging file." );
+    SLM_INFO( "    There are " << statex.ullAvailPageFile/oToKo    <<  " free Ko of paging file." );
+    SLM_INFO( "    There are " << statex.ullTotalVirtual/oToKo     <<  " total Ko of virtual memory." );
+    SLM_INFO( "    There are " << statex.ullAvailVirtual/oToKo     <<  " free Ko of virtual memory." );
 }
 
 //-----------------------------------------------------------------------------

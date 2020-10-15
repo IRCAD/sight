@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_COPYTEST_HPP__
-#define __FWDATA_UT_COPYTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #define __FWDATA_UT_FIELD_DEEP_COPY_MACRO(ObjType)                                                                        \
     {                                                                                                                     \
-        OSLM_WARN("Testing : " << #ObjType);                                                                              \
+        SLM_WARN("Testing : " << #ObjType);                                                                              \
         ObjType::sptr object = ObjType::New();                                                                            \
         ObjType::sptr deepCopyObject;                                                                                     \
                                                                                                                           \
@@ -53,7 +52,7 @@
 
 #define __FWDATA_UT_FIELD_COPY_MACRO(ObjType)                                                                        \
     {                                                                                                                \
-        OSLM_WARN("Testing : " << #ObjType);                                                                         \
+        SLM_WARN("Testing : " << #ObjType);                                                                         \
         ObjType::sptr object            = ObjType::New();                                                            \
         ObjType::sptr deepCopyObject    = ObjType::New();                                                            \
         ObjType::sptr shallowCopyObject = ObjType::New();                                                            \
@@ -85,7 +84,6 @@
         CPPUNIT_ASSERT_EQUAL( object->getField("F3"), shallowCopyObject->getField("F3") );                           \
     }
 
-
 namespace fwData
 {
 namespace ut
@@ -112,5 +110,3 @@ public:
 
 } //namespace ut
 } //namespace fwData
-
-#endif //__FWDATA_UT_COPYTEST_HPP__

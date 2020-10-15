@@ -131,7 +131,7 @@ void SComputeMatrixFromCell::updateSingle(int i, std::string key)
 
 void SComputeMatrixFromCell::updateBoth(int i, int j)
 {
-    OSLM_FATAL_IF("Missing mesh, maybe the service has not been updated after start ?", !m_mesh);
+    SLM_FATAL_IF("Missing mesh, maybe the service has not been updated after start ?", !m_mesh);
 
     m_cranioCaudalIndex = i;
     m_radialIndex       = j;

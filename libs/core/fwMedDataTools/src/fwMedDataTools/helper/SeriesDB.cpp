@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 SeriesDB::SeriesDB( ::fwMedData::SeriesDB::wptr seriesDB ) :
-    m_seriesDB ( seriesDB )
+    m_seriesDB( seriesDB )
 {
 }
 
@@ -51,8 +51,8 @@ SeriesDB::~SeriesDB()
 void SeriesDB::add( ::fwMedData::Series::sptr newSeries )
 {
     ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-    OSLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
-                 std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
+    SLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
+                std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
 
     // Modify SeriesDB
     seriesDB->getContainer().push_back( newSeries );
@@ -67,8 +67,8 @@ void SeriesDB::remove( ::fwMedData::Series::sptr oldSeries )
 {
     ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
     ::fwMedData::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
-    OSLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
-                 iter != seriesDB->end());
+    SLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
+                iter != seriesDB->end());
 
     // Modify SeriesDB
     seriesDB->getContainer().erase( iter );
@@ -120,8 +120,8 @@ void SeriesDB::notify()
 
     }
 
-    OSLM_INFO_IF("No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
-                 m_addedSeries.empty() && m_removedSeries.empty());
+    SLM_INFO_IF("No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
+                m_addedSeries.empty() && m_removedSeries.empty());
 }
 
 //-----------------------------------------------------------------------------

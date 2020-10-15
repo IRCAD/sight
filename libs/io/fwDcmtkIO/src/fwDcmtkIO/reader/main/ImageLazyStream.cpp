@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -103,7 +103,7 @@ std::streamsize ImageLazySource::read(char* s, std::streamsize n)
         }
         else
         {
-            OSLM_TRACE("Reading process over.");
+            SLM_TRACE("Reading process over.");
         }
 
     }

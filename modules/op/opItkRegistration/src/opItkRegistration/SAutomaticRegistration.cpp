@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,9 +41,9 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SAutomaticRegistration, ::fwData::Image);
+fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SAutomaticRegistration, ::fwData::Image)
 
-static const ::fwServices::IService::KeyType s_TARGET_IN    = "target";
+static const ::fwServices::IService::KeyType s_TARGET_IN = "target";
 static const ::fwServices::IService::KeyType s_REFERENCE_IN = "reference";
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
@@ -70,11 +70,11 @@ void SAutomaticRegistration::configuring()
 
     m_minStep = config.get< double >("minStep", -1.);
 
-    OSLM_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
+    SLM_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
 
     m_maxIterations = config.get< unsigned long >("maxIterations", 0);
 
-    OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
+    SLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("metric", "");
     this->setMetric(metric);
@@ -257,7 +257,7 @@ void SAutomaticRegistration::updating()
     }
     catch(::itk::ExceptionObject& e)
     {
-        OSLM_ERROR("[ITK EXCEPTION]" << e.GetDescription());
+        SLM_ERROR("[ITK EXCEPTION]" << e.GetDescription());
     }
 
     m_sigComputed->asyncEmit();
@@ -294,7 +294,7 @@ void SAutomaticRegistration::setEnumParameter(std::string val, std::string key)
     }
     else
     {
-        OSLM_FATAL("Key must be 'metric', unknown key :" << key);
+        SLM_FATAL("Key must be 'metric', unknown key :" << key);
     }
 }
 
@@ -317,7 +317,7 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     }
     else
     {
-        OSLM_FATAL("Unknown key : " << key);
+        SLM_FATAL("Unknown key : " << key);
     }
 }
 
@@ -327,7 +327,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
 {
     if(key == "maxIterations")
     {
-        OSLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
+        SLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
         m_maxIterations = static_cast<unsigned long>(val);
     }
     else if(key.find("shrink_") != std::string::npos )
@@ -337,7 +337,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
     }
     else
     {
-        OSLM_FATAL("Unknown key : " << key);
+        SLM_FATAL("Unknown key : " << key);
     }
 }
 
@@ -374,7 +374,7 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
     }
     else
     {
-        OSLM_FATAL("Unknown metric: " << metricName);
+        SLM_FATAL("Unknown metric: " << metricName);
     }
 }
 

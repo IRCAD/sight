@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,14 +41,14 @@ Signals::~Signals()
 #ifdef DEBUG
     for( SignalMapType::value_type elem :  m_signals )
     {
-        OSLM_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );
+        SLM_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );
     }
 #endif
 }
 
 //-----------------------------------------------------------------------------
 
-Signals& Signals::operator()( const SignalKeyType &key, const SignalBase::sptr &Signal )
+Signals& Signals::operator()( const SignalKeyType& key, const SignalBase::sptr& Signal )
 {
     m_signals.insert( SignalMapType::value_type(key, Signal) );
     return *this;
@@ -56,7 +56,7 @@ Signals& Signals::operator()( const SignalKeyType &key, const SignalBase::sptr &
 
 //-----------------------------------------------------------------------------
 
-SignalBase::sptr Signals::operator[]( const SignalKeyType &key ) const
+SignalBase::sptr Signals::operator[]( const SignalKeyType& key ) const
 {
     SignalMapType::const_iterator it = m_signals.find(key);
 
@@ -96,4 +96,3 @@ Signals& Signals::operator=( const Signals& )
 //-----------------------------------------------------------------------------
 
 } // namespace fwCom
-

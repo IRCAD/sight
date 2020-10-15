@@ -55,7 +55,7 @@ void IMenuBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
         if(!hexaColor.empty())
         {
-            OSLM_ASSERT(
+            SLM_ASSERT(
                 "Color string should start with '#' and followed by 6 or 8 "
                 "hexadecimal digits. Given color: " << hexaColor,
                     hexaColor[0] == '#'

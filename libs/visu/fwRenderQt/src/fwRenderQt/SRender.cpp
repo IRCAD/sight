@@ -338,10 +338,10 @@ void SRender::configureScene( ConfigurationType _conf )
         }
         else
         {
-            OSLM_ERROR_IF("Unknown aspect ratio (" <<
-                          aspectRatio <<
-                          "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
-                          aspectRatio != "IgnoreAspectRatio");
+            SLM_ERROR_IF("Unknown aspect ratio (" <<
+                         aspectRatio <<
+                         "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
+                         aspectRatio != "IgnoreAspectRatio");
             m_aspectRatioMode = Qt::IgnoreAspectRatio;
         }
     }

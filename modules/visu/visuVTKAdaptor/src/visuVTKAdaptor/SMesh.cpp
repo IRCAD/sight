@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@
 #include <vtkTextureMapToSphere.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMesh);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMesh)
 
 //-----------------------------------------------------------------------------
 
@@ -1042,7 +1042,7 @@ void SMesh::updateColorMode(std::uint8_t mode)
         }
         default:
         {
-            OSLM_ERROR("mode " << mode << " is not allowed");
+            SLM_ERROR("mode " << mode << " is not allowed");
             break;
         }
     }

@@ -70,7 +70,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
+        SLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre

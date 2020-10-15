@@ -152,10 +152,10 @@ void* newBuffer(size_t size)
     }
     catch (std::exception& e)
     {
-        OSLM_ERROR("No enough memory to allocate an image of type "
-                   << fwTools::Type::create<IMAGETYPE>().string()
-                   << " and of size "<< size << "." << std::endl
-                   << e.what() );
+        SLM_ERROR("No enough memory to allocate an image of type "
+                  << fwTools::Type::create<IMAGETYPE>().string()
+                  << " and of size "<< size << "." << std::endl
+                  << e.what() );
         throw;
     }
     return destBuffer;
@@ -216,7 +216,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 //    source->PropagateUpdateExtent();
 
     int dim = source->GetDataDimension();
-    OSLM_TRACE("source->GetDataDimension() : " << dim);
+    SLM_TRACE("source->GetDataDimension() : " << dim);
 
     if(dim == 2)
     {
@@ -258,8 +258,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     {
         void* destBuffer;
 
-        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << source->GetScalarSize() );
-        OSLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
+        SLM_TRACE("image size : " << size << " - nbBytePerPixel : " << source->GetScalarSize() );
+        SLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
         destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
         destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
         if (nbComponents == 1)

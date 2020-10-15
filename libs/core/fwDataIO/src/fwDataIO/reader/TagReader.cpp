@@ -63,7 +63,7 @@ void TagReader::read()
     std::filesystem::path path =
         ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-    OSLM_INFO( "[TagReader::read] Tag file: " << path);
+    SLM_INFO( "[TagReader::read] Tag file: " << path);
     assert( path.empty() == false );
 
     ::std::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
@@ -72,7 +72,7 @@ void TagReader::read()
     file.open(path.string().c_str(), std::fstream::in);
     if (!file.is_open())
     {
-        OSLM_ERROR( "Tag file loading error for " << path.string());
+        SLM_ERROR( "Tag file loading error for " << path.string());
         std::string str = "Unable to open ";
         str += path.string();
         throw std::ios_base::failure(str);

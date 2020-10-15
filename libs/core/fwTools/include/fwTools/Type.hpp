@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwCore/base.hpp>
 
 #include <any>
-
 #include <limits>
 #include <map>
 #include <string>
@@ -288,9 +287,9 @@ FWTOOLS_API void Type::setType< std::uint64_t >();
 template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
 const std::string& Type::traitsToString()
 {
-    OSLM_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
-                          << " " << (ISINTEGRAL ? "integral" : "floating")
-                          << " type with size : " << SIZEOF);
+    SLM_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
+                         << " " << (ISINTEGRAL ? "integral" : "floating")
+                         << " type with size : " << SIZEOF);
     return Type::s_UNSPECIFIED_TYPENAME;
 }
 

@@ -423,8 +423,8 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     std::vector< ConfigurationElement::sptr > elements;
     std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
 
-    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << " Module" <<
-               point->getModule()->getIdentifier() );
+    SLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << " Module" <<
+              point->getModule()->getIdentifier() );
 
     if( !point )
     {
@@ -437,7 +437,7 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     }
     else
     {
-        OSLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+        SLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
     }
 
     // The job is done!

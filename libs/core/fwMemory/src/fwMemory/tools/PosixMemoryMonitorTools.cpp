@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <fcntl.h>
-#include <filesystem>
 
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -41,6 +40,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -104,13 +104,13 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
     get_memory_stats(memory);
     std::uint64_t oToKMo = 1024*1024;
 
-    OSLM_INFO("Total memory: " << memory.total/oToKMo<< " Mo");
-    OSLM_INFO("Free memory:  " << memory.free/oToKMo << " Mo");
-    OSLM_INFO("Buffered:     " << memory.buffered/oToKMo << " Mo");
-    OSLM_INFO("Cached:       " << memory.cached/oToKMo << " Mo");
-    OSLM_INFO("Swap Cached:  " << memory.swapcached/oToKMo << " Mo");
-    OSLM_INFO("Swap Total:   " << memory.swaptotal/oToKMo << " Mo");
-    OSLM_INFO("Swap Free:    " << memory.swapfree/oToKMo << " Mo");
+    SLM_INFO("Total memory: " << memory.total/oToKMo<< " Mo");
+    SLM_INFO("Free memory:  " << memory.free/oToKMo << " Mo");
+    SLM_INFO("Buffered:     " << memory.buffered/oToKMo << " Mo");
+    SLM_INFO("Cached:       " << memory.cached/oToKMo << " Mo");
+    SLM_INFO("Swap Cached:  " << memory.swapcached/oToKMo << " Mo");
+    SLM_INFO("Swap Total:   " << memory.swaptotal/oToKMo << " Mo");
+    SLM_INFO("Swap Free:    " << memory.swapfree/oToKMo << " Mo");
 
     Status allStat;
     getAllStatus( allStat );
@@ -118,11 +118,11 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
 
     std::uint64_t computedFree = ( memory.total - allStat.VmRSS ) / oToKMo;
     std::uint64_t free         = memory.free / oToKMo;
-    OSLM_INFO(  "(ComputedFree, Free, Diff) - ( "
-                << std::setw(5) << computedFree
-                << std::setw(5) << free
-                << std::setw(5) << computedFree -free
-                << " )" );
+    SLM_INFO(  "(ComputedFree, Free, Diff) - ( "
+               << std::setw(5) << computedFree
+               << std::setw(5) << free
+               << std::setw(5) << computedFree -free
+               << " )" );
     (void)computedFree;         // Fixes "unused variable" warnings
     (void)free;
 }
@@ -282,16 +282,16 @@ void PosixMemoryMonitorTools::analyseMemInfo( std::string& line, MemInfo& meminf
 void PosixMemoryMonitorTools::printStatus( Status& stat )
 {
     int oToMo = 1024 * 1024;
-    OSLM_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo" );
-    OSLM_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo" );
-    OSLM_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo" );
-    OSLM_DEBUG("VmHWM = " << stat.VmHWM / oToMo << " Mo" );
-    OSLM_DEBUG("VmRSS = " << stat.VmRSS / oToMo << " Mo" );
-    OSLM_DEBUG("VmData = " << stat.VmData / oToMo << " Mo" );
-    OSLM_DEBUG("VmStk = " << stat.VmStk / oToMo << " Mo" );
-    OSLM_DEBUG("VmExe = " << stat.VmExe / oToMo << " Mo" );
-    OSLM_DEBUG("VmLib = " << stat.VmLib / oToMo << " Mo" );
-    OSLM_DEBUG("VmPTE = " << stat.VmPTE / oToMo << " Mo" );
+    SLM_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo" );
+    SLM_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo" );
+    SLM_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo" );
+    SLM_DEBUG("VmHWM = " << stat.VmHWM / oToMo << " Mo" );
+    SLM_DEBUG("VmRSS = " << stat.VmRSS / oToMo << " Mo" );
+    SLM_DEBUG("VmData = " << stat.VmData / oToMo << " Mo" );
+    SLM_DEBUG("VmStk = " << stat.VmStk / oToMo << " Mo" );
+    SLM_DEBUG("VmExe = " << stat.VmExe / oToMo << " Mo" );
+    SLM_DEBUG("VmLib = " << stat.VmLib / oToMo << " Mo" );
+    SLM_DEBUG("VmPTE = " << stat.VmPTE / oToMo << " Mo" );
     (void)oToMo;                // Fixes "unused variable" warnings
 }
 
@@ -487,22 +487,22 @@ void PosixMemoryMonitorTools::printAllStatus()
     totalVmLib  /= oToMo;
     totalVmPTE  /= oToMo;
 
-    OSLM_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(
-                   5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(
-                   5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(
-                   5) << totalVmPTE << " )");
+    SLM_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(
+                  5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(
+                  5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(
+                  5) << totalVmPTE << " )");
 
     /*
-       OSLM_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
-       OSLM_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
+       SLM_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
+       SLM_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
+       SLM_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
+       SLM_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
+       SLM_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
+       SLM_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
+       SLM_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
+       SLM_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
+       SLM_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
+       SLM_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
      */
 }
 

@@ -108,7 +108,7 @@ struct ValueMapper< ::fwData::TransferFunction::TFColor >
         }
         else
         {
-            OSLM_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
+            SLM_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
         }
         return tfColor;
     }

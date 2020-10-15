@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImage);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImage)
 
 namespace visuVTKAdaptor
 {
@@ -225,7 +225,7 @@ void SImage::updateImageOpacity()
         if(nullptr != imageBlend )
         {
             imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
-            OSLM_TRACE(
+            SLM_TRACE(
                 "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
         }
 
@@ -260,7 +260,7 @@ void SImage::buildPipeline( )
         {
             m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
             imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
-            OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+            SLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
         }
     }
     else if (imageChecker)
@@ -270,7 +270,7 @@ void SImage::buildPipeline( )
         {
             m_imagePortId = imageChecker->GetNumberOfInputConnections(0);
             imageChecker->SetInputConnection(m_imagePortId, m_map2colors->GetOutputPort());
-            OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageCheckerboard");
+            SLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageCheckerboard");
         }
     }
     else if (algorithm)

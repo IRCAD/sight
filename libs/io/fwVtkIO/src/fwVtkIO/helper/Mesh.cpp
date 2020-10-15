@@ -1163,10 +1163,10 @@ double Mesh::computeVolume( const ::fwData::Mesh::csptr& mesh )
     calculator->Update();
 
     const double volume = calculator->GetVolume();
-    OSLM_DEBUG(
+    SLM_DEBUG(
         "GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " <<
             calculator->GetVolumeProjected() );
-    OSLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
+    SLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
     if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
     {
         std::stringstream ss;

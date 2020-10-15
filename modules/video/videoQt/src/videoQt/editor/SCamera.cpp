@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -165,12 +165,12 @@ void SCamera::starting()
                     ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);
             }
-            OSLM_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
+            SLM_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
         }
         else
         {
-            OSLM_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
-                         m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
+            SLM_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
+                        m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
         }
     }
 }

@@ -150,7 +150,7 @@ void AlgoMeshDeformation::computeSimu()
     for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
     {
         pointsItr->point->x = origPointsItr->point->x;
-        OSLM_TRACE("pointsItr->point->y - m_yCenter = " <<  pointsItr->point->y - m_yCenter);
+        SLM_TRACE("pointsItr->point->y - m_yCenter = " <<  pointsItr->point->y - m_yCenter);
         if( origPointsItr->point->y - m_yCenter > 0 )
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;

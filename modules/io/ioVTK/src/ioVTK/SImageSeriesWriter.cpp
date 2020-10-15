@@ -164,7 +164,7 @@ void SImageSeriesWriter::updating()
         catch(::fwTools::Failed& e)
         {
             m_writeFailed = true;
-            OSLM_TRACE("Error : " << e.what());
+            SLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();

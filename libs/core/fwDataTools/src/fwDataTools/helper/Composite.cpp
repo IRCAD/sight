@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,9 +53,9 @@ Composite::~Composite()
 
 void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                   "object to be added.",
-                   m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
+    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                  "object to be added.",
+                  m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
 
     // Modify composite
     m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
@@ -68,9 +68,9 @@ void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObjec
 
 void Composite::remove( std::string _compositeKey )
 {
-    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                   "object to be removed.",
-                   m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                  "object to be removed.",
+                  m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
     ::fwData::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
@@ -102,9 +102,9 @@ void Composite::clear()
 
 void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                   "object to be swapped.",
-                   m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                  "object to be swapped.",
+                  m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
     ::fwData::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
@@ -119,9 +119,9 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
     }
     else
     {
-        OSLM_INFO(
+        SLM_INFO(
             "Cannot swap this object ( "<< _compositeKey <<
-            " ) in composite because it is the same object. Do nothing (not notification)");
+                " ) in composite because it is the same object. Do nothing (not notification)");
     }
 }
 
@@ -150,8 +150,8 @@ void Composite::notify()
 
         sig->asyncEmit(m_addedObjects);
     }
-    OSLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
-                 m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
+    SLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
+                m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
 
     m_removedObjects.clear();
     m_newChangedObjects.clear();

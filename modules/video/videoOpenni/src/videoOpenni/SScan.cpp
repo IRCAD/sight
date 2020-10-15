@@ -96,7 +96,7 @@ void SScan::starting()
     m_status = m_camera.open(::openni::ANY_DEVICE);
     if (m_status != ::openni::STATUS_OK)
     {
-        OSLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
+        SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
         return;
     }
 
@@ -208,7 +208,7 @@ void SScan::startCamera()
 
     if (m_status != ::openni::STATUS_OK)
     {
-        OSLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
+        SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Sense Error",
             "Sense device is not available. Please check if it is plugged in.",
@@ -365,8 +365,8 @@ void SScan::takeSnapshot()
     if(m_snapshotDepthTL != nullptr)
     {
         m_status = m_depthStream.start();
-        OSLM_ERROR_IF("Couldn't start depth stream." << ::openni::OpenNI::getExtendedError(),
-                      m_status != ::openni::STATUS_OK);
+        SLM_ERROR_IF("Couldn't start depth stream." << ::openni::OpenNI::getExtendedError(),
+                     m_status != ::openni::STATUS_OK);
         m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_depthStream.stop();
     }
@@ -375,8 +375,8 @@ void SScan::takeSnapshot()
     if(m_snapshotColorTL != nullptr)
     {
         m_status = m_colorStream.start();
-        OSLM_ERROR_IF("Couldn't start color stream." << ::openni::OpenNI::getExtendedError(),
-                      m_status != ::openni::STATUS_OK);
+        SLM_ERROR_IF("Couldn't start color stream." << ::openni::OpenNI::getExtendedError(),
+                     m_status != ::openni::STATUS_OK);
         m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_colorStream.stop();
     }
@@ -385,8 +385,8 @@ void SScan::takeSnapshot()
     if(m_snapshotIRTL != nullptr)
     {
         m_status = m_irStream.start();
-        OSLM_ERROR_IF("Couldn't start IR stream." << ::openni::OpenNI::getExtendedError(),
-                      m_status != ::openni::STATUS_OK);
+        SLM_ERROR_IF("Couldn't start IR stream." << ::openni::OpenNI::getExtendedError(),
+                     m_status != ::openni::STATUS_OK);
         m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_irStream.stop();
     }

@@ -203,7 +203,7 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init( int& argc, char** argv)
 {
-    OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
+    SLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
     // To get Qt initialized properly, we need to find its plugins
     // This is difficult to do this, especially because the location of the deps is different whether
@@ -227,7 +227,7 @@ void WorkerQt::init( int& argc, char** argv)
     m_argc = argc;
     m_argv = argv;
 
-    OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
+    SLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
 }
 
 //------------------------------------------------------------------------------

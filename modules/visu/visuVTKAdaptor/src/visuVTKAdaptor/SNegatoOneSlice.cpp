@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoOneSlice);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoOneSlice)
 
 namespace visuVTKAdaptor
 {
@@ -87,7 +87,7 @@ vtkObject* SNegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
     {
-        OSLM_TRACE(this->getID() << ": Create ImageSource");
+        SLM_TRACE(this->getID() << ": Create ImageSource");
         if (!m_imageSourceId.empty())
         {
             m_imageSource = this->getVtkObject(m_imageSourceId);
@@ -119,7 +119,7 @@ void SNegatoOneSlice::cleanImageSource()
 {
     if (m_imageSliceAdaptor.expired())
     {
-        OSLM_TRACE(this->getID() << ": Create SImageSlice Adaptor Service");
+        SLM_TRACE(this->getID() << ": Create SImageSlice Adaptor Service");
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
@@ -149,7 +149,7 @@ void SNegatoOneSlice::cleanImageSource()
 {
     if (m_imageAdaptor.expired())
     {
-        OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
+        SLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 

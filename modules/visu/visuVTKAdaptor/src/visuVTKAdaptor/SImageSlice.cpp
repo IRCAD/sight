@@ -229,10 +229,10 @@ void SImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
     extent[2*m_helper.getOrientation()]   = slice;
     extent[2*m_helper.getOrientation()+1] = slice;
 
-    OSLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
-               " Y min: " << extent[2] << " Y max: " << extent[3] <<
-               " Z min: " << extent[4] << " Z max: " << extent[5]
-               );
+    SLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
+              " Y min: " << extent[2] << " Y max: " << extent[3] <<
+              " Z min: " << extent[4] << " Z max: " << extent[5]
+              );
 
     m_imageActor->SetDisplayExtent( extent );
 

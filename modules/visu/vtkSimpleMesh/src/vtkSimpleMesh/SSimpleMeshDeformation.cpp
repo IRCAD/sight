@@ -104,14 +104,14 @@ void SSimpleMeshDeformation::updating()
         m_hiRestimer.start();
         this->computeDeformation(m_mesh, m_transformMesh);
         m_hiRestimer.stop();
-        OSLM_INFO("Deformation time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
+        SLM_INFO("Deformation time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
 
         lock.upgrade();
         m_hiRestimer.reset();
         m_hiRestimer.start();
         this->copyMesh(m_transformMesh, mesh);
         m_hiRestimer.stop();
-        OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
+        SLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
 
         ::fwData::Mesh::VertexModifiedSignalType::sptr sig;

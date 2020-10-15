@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,14 +50,14 @@ QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _shared
     {
         // For context sharing to be enabled, both contexts need to be on the same thread when calling 'create'.
         // (At least on Windows: see https://community.khronos.org/t/wglsharelists-failing/42656).
-        OSLM_FATAL_IF("Shared contexts should be created on the same thread.",
-                      glContext->thread() != _sharedContext->thread());
+        SLM_FATAL_IF("Shared contexts should be created on the same thread.",
+                     glContext->thread() != _sharedContext->thread());
         glContext->setShareContext(_sharedContext);
     }
 
     const bool success = glContext->create();
-    OSLM_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
-                  !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
+    SLM_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
+                 !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
 
     return glContext;
 }

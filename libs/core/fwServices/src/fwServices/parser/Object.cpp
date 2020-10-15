@@ -57,7 +57,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            OSLM_ERROR(
+            SLM_ERROR(
                 "xml subelement \""<< subElementName <<
                     "\" for element object is not supported for the moment when you use a reference on item composite.");
             isOk = false;
@@ -97,9 +97,9 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should either be BUILD_OBJECT "
-                             "or GET_OBJECT.",
-                             buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                SLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should either be BUILD_OBJECT "
+                            "or GET_OBJECT.",
+                            buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
             SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
@@ -113,8 +113,8 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("The key "<< key <<" already exists in the object.", !associatedObject->getField(
-                                key ) );
+                SLM_ASSERT("The key "<< key <<" already exists in the object.", !associatedObject->getField(
+                               key ) );
 
                 // Create and manage object config
                 ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();

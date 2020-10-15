@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -133,14 +133,14 @@ void SliceSelector::setChangeTypeCallback(ChangeTypeCallback fct)
 
 void SliceSelector::printIndex(int index)
 {
-    OSLM_TRACE("index= "<<index);
+    SLM_TRACE("index= "<<index);
 }
 
 //------------------------------------------------------------------------------
 
 void SliceSelector::printType(int type)
 {
-    OSLM_TRACE("type= "<<type);
+    SLM_TRACE("type= "<<type);
 }
 
 //------------------------------------------------------------------------------
@@ -162,4 +162,3 @@ void SliceSelector::onSliceTypeChange( int index )
 //------------------------------------------------------------------------------
 
 } // fwGuiQt
-

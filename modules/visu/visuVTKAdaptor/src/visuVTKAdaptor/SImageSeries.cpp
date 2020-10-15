@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,10 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSeries);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSeries)
 
 static const ::fwServices::IService::KeyType s_IMAGE_SERIES_INOUT = "imageSeries";
-static const ::fwServices::IService::KeyType s_TF_INOUT           = "tf";
+static const ::fwServices::IService::KeyType s_TF_INOUT = "tf";
 
 namespace visuVTKAdaptor
 {
@@ -137,7 +137,7 @@ void SImageSeries::starting()
 void SImageSeries::updating()
 {
     ::fwMedData::ImageSeries::sptr series = this->getInOut< ::fwMedData::ImageSeries >(s_IMAGE_SERIES_INOUT);
-    OSLM_ASSERT("Missing iamgeSeries", series);
+    SLM_ASSERT("Missing iamgeSeries", series);
 
     this->stopping();
 

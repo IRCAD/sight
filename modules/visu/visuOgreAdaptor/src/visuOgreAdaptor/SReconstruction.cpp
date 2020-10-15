@@ -170,8 +170,8 @@ void SReconstruction::createMeshService()
 
         m_meshAdaptor = meshAdaptor;
 
-        OSLM_TRACE("Mesh is visible : " << reconstruction->getIsVisible());
-        OSLM_TRACE("Mesh nb points : " << mesh->getNumberOfPoints());
+        SLM_TRACE("Mesh is visible : " << reconstruction->getIsVisible());
+        SLM_TRACE("Mesh nb points : " << mesh->getNumberOfPoints());
     }
 }
 

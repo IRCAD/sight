@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -124,8 +124,8 @@ void SSignalGate::updating()
 
 void SSignalGate::received(size_t _index)
 {
-    OSLM_DEBUG("'" << this->getID() << "' received a signal at position : " << _index);
-    OSLM_ASSERT("Could not find a signal at index " <<_index, _index < m_flags.size() );
+    SLM_DEBUG("'" << this->getID() << "' received a signal at position : " << _index);
+    SLM_ASSERT("Could not find a signal at index " <<_index, _index < m_flags.size() );
 
     m_flags[_index] = true;
 
@@ -140,7 +140,7 @@ void SSignalGate::received(size_t _index)
         // Reset all flags before sending the signal
         std::fill(m_flags.begin(), m_flags.end(), false);
 
-        OSLM_DEBUG("'" << this->getID() << "' received all signals, sending 'allReceived' now.");
+        SLM_DEBUG("'" << this->getID() << "' received all signals, sending 'allReceived' now.");
         auto sig = this->signal<AllReceivedSignalType>(s_ALL_RECEIVED_SIG);
         sig->asyncEmit();
     }

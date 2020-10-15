@@ -92,7 +92,7 @@ struct LockVisitor : public camp::ValueVisitor< void >
         const camp::Class& metaclass = value.getClass();
         if ( value.pointer() )
         {
-            OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<"' )" );
+            SLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<"' )" );
             if( metaclass.hasFunction("is_a") )
             {
                 if( value.call("is_a", ::camp::Args("::fwData::Object")).to<bool>() )

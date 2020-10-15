@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -115,13 +115,13 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
         {
             if ( !std::filesystem::is_directory(dataDir) )
             {
-                OSLM_ERROR( dataDir << " already exists and is not a directory." );
+                SLM_ERROR( dataDir << " already exists and is not a directory." );
                 dataDir = "";
             }
         }
         else if (createDirectory)
         {
-            OSLM_INFO("Creating application data directory: "<< dataDir);
+            SLM_INFO("Creating application data directory: "<< dataDir);
             std::filesystem::create_directories(dataDir);
         }
     }

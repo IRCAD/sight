@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -136,7 +136,7 @@ const ::fwCom::Slots::SlotKeyType SFrameStreamer::s_STOP_STREAM       = "stopStr
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::videoVLC::SFrameStreamer);
+fwServicesRegisterMacro(::fwServices::IOperator, ::videoVLC::SFrameStreamer)
 
 //------------------------------------------------------------------------------
 
@@ -205,7 +205,7 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
     CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
     if(buffer == nullptr)
     {
-        OSLM_TRACE("No frame found for timestamp: " << timestamp);
+        SLM_TRACE("No frame found for timestamp: " << timestamp);
         return;
     }
 

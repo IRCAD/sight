@@ -323,7 +323,7 @@ void SReader::updating()
                     if(!m_filter.empty())
                     {
                         ::fwAtomsFilter::IFilter::sptr filter = ::fwAtomsFilter::factory::New(m_filter);
-                        OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
+                        SLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
                         filter->apply(atom);
                     }
                     runningJob.done();
@@ -408,7 +408,7 @@ void SReader::updating()
         catch( std::exception& e )
         {
             m_readFailed = true;
-            OSLM_ERROR( e.what() );
+            SLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),
                                                               ::fwGui::dialog::MessageDialog::CRITICAL);
         }

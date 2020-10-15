@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@
 namespace ctrlCamp
 {
 
-fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, ::fwData::Object);
+fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, ::fwData::Object)
 
 const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
 const ::fwServices::IService::KeyType s_TARGET_INOUT = "target";
@@ -161,7 +161,7 @@ void SCopy::copy()
         }
         catch(std::exception& e)
         {
-            OSLM_FATAL("Unhandled exception: " << e.what());
+            SLM_FATAL("Unhandled exception: " << e.what());
         }
 
         SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);

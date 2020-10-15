@@ -102,7 +102,7 @@ void SCompositorParameter::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
-    OSLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
+    SLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
 }
 
 //------------------------------------------------------------------------------

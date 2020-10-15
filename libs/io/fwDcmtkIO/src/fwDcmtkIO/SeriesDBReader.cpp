@@ -131,7 +131,7 @@ void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSer
     for(const ::fwMedData::Series::csptr& series : dicomSeriesDB->getContainer())
     {
         ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
-        OSLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
+        SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
         this->convertDicomSeries(dicomSeries, notifier);
     }
 }
@@ -509,7 +509,7 @@ void SeriesDBReader::convertDicomSeries(::fwMedData::DicomSeries::csptr dicomSer
     }
     else
     {
-        OSLM_WARN("\""+sopClassUID+"\" SOPClassUID is not supported.");
+        SLM_WARN("\""+sopClassUID+"\" SOPClassUID is not supported.");
     }
 
     if(notifier)

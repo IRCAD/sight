@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -154,7 +154,7 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
             }
             else
             {
-                OSLM_ERROR("No compatible pixel format found");
+                SLM_ERROR("No compatible pixel format found");
             }
         }
         else
@@ -163,7 +163,7 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
             camera->setHeight(0);
             camera->setWidth(0);
 
-            OSLM_ERROR("No camera setting selected, using default...");
+            SLM_ERROR("No camera setting selected, using default...");
         }
 
 //FIXME : Setting the pixel format generate an error (gstreamer)
@@ -212,7 +212,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 }
                 else
                 {
-                    OSLM_ERROR("No compatible pixel format found");
+                    SLM_ERROR("No compatible pixel format found");
                 }
 
                 //Create QCameraViewfinderSettings from the informations of the QCameraImageCapture
@@ -250,7 +250,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
             }
             else
             {
-                OSLM_ERROR("No compatible pixel format found");
+                SLM_ERROR("No compatible pixel format found");
             }
 
             std::stringstream stream;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ bool lexicalCast( Numeric::ValueType& v, const std::string& s )
     }
     catch ( const ::boost::bad_lexical_cast&)
     {
-        OSLM_TRACE("lexicalCast failed for '" << s << "'" << " to type: " << typeid(T).name() );
+        SLM_TRACE("lexicalCast failed for '" << s << "'" << " to type: " << typeid(T).name() );
     }
     return ok;
 }
@@ -121,4 +121,3 @@ void Numeric::setFromString(const std::string& s, Numeric::NumericType type)
 }
 
 }
-

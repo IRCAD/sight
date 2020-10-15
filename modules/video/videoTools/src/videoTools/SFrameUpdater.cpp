@@ -143,7 +143,7 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
                     format = ::fwData::Image::RGBA;
                     break;
                 default:
-                    OSLM_ERROR("Number of compenent not managed")
+                    SLM_ERROR("Number of compenent not managed")
                     return;
             }
 
@@ -182,7 +182,7 @@ void SFrameUpdater::updateImage()
     const ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
     CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 
-    OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+    SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
     if(buffer)
     {
         m_lastTimestamp = timestamp;
