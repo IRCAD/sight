@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,13 +38,8 @@
  * level is set to N, every log level lesser than N will be enabled, the other
  * macro will be define but won't have any effect.
  *
- * Each log level macro has two variant : SLM_<level> and OSLM_<level>.
- * - SLM_ variant is a simple log message macros, append a loglevel-tagged
- *   log message to the logger.
- *   - Example : SLM_FATAL( "This should not append" );
- * - OSLM_ variant is a stringstream log message macros, it is the same as
- *   "Simple log message macros", but accept a stream as argument.
- *   - Example : OSLM_INFO( "Count : " << i );
+ * Each log level macro can accept strings or stringstreams:
+ *   - Example : SLM_INFO( "Count : " << i );
  *
  * FATAL macros have a particular behavior : the application is aborted after
  * the message was logged.
@@ -95,10 +90,10 @@
 
 # define __FWCORE_IF(cond, code) if ( cond ) { code }
 
-# define OSL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK(   \
-        std::stringstream oslStr;                               \
-        oslStr << message;                                      \
-        SL_ ## loglevel(log, oslStr.str());                     \
+# define SL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK(   \
+        std::stringstream oslStr;                              \
+        oslStr << message;                                     \
+        log.loglevel(oslStr.str(), __FILE__, __LINE__);      \
         )
 
 #ifdef SPYLOG_LEVEL
@@ -113,93 +108,55 @@
 
 // -----------------------------------------------------------------------------
 
-#  define SL_TRACE(log, message) __FWCORE_IF_ENABLED( 6,                                        \
-                                                      log.trace(message, __FILE__, __LINE__);   \
+#  define SL_TRACE(log, message) __FWCORE_IF_ENABLED( 6,                              \
+                                                      SL_LOG(log, trace, message);    \
                                                       )
-#  define OSL_TRACE(log, message) __FWCORE_IF_ENABLED( 6,                               \
-                                                       OSL_LOG(log, TRACE, message);    \
-                                                       )
-#  define SL_TRACE_IF(log, message, cond) __FWCORE_IF_ENABLED( 6,                                               \
-                                                               __FWCORE_IF(cond, log.trace(message, __FILE__,   \
-                                                                                           __LINE__); )         \
-                                                               )
-#  define OSL_TRACE_IF(log, message, cond) __FWCORE_IF_ENABLED( 6,                                                  \
-                                                                __FWCORE_IF(cond, OSL_LOG(log, TRACE, message); )   \
-                                                                )
 
-#  define SL_DEBUG(log, message) __FWCORE_IF_ENABLED( 5,                                        \
-                                                      log.debug(message, __FILE__, __LINE__);   \
+#  define SL_TRACE_IF(log, message, cond) __FWCORE_IF_ENABLED( 6,                                                 \
+                                                               __FWCORE_IF(cond, SL_LOG(log, trace, message); )   \
+                                                               )
+
+#  define SL_DEBUG(log, message) __FWCORE_IF_ENABLED( 5,                            \
+                                                      SL_LOG(log, debug, message);  \
                                                       )
-#  define OSL_DEBUG(log, message) __FWCORE_IF_ENABLED( 5,                             \
-                                                       OSL_LOG(log, DEBUG, message);  \
-                                                       )
-#  define SL_DEBUG_IF(log, message, cond) __FWCORE_IF_ENABLED( 5,                                               \
-                                                               __FWCORE_IF(cond, log.debug(message, __FILE__,   \
-                                                                                           __LINE__); )         \
-                                                               )
-#define OSL_DEBUG_IF(log, message, cond) __FWCORE_IF_ENABLED( 5,                                                    \
-                                                              __FWCORE_IF(cond, OSL_LOG(log, DEBUG, message); )     \
-                                                              )
+#define SL_DEBUG_IF(log, message, cond) __FWCORE_IF_ENABLED( 5,                                                   \
+                                                             __FWCORE_IF(cond, SL_LOG(log, debug, message); )     \
+                                                             )
 
-#define SL_INFO(log, message) __FWCORE_IF_ENABLED( 4,                                       \
-                                                   log.info(message, __FILE__, __LINE__);   \
+#define SL_INFO(log, message) __FWCORE_IF_ENABLED( 4,                             \
+                                                   SL_LOG(log, info, message);    \
                                                    )
-#define OSL_INFO(log, message) __FWCORE_IF_ENABLED( 4,                              \
-                                                    OSL_LOG(log, INFO, message);    \
-                                                    )
-#define SL_INFO_IF(log, message, cond) __FWCORE_IF_ENABLED( 4,                                                         \
-                                                            __FWCORE_IF(cond, log.info(message, __FILE__, __LINE__); ) \
+#define SL_INFO_IF(log, message, cond) __FWCORE_IF_ENABLED( 4,                                               \
+                                                            __FWCORE_IF(cond, SL_LOG(log, info, message); )  \
                                                             )
-#define OSL_INFO_IF(log, message, cond) __FWCORE_IF_ENABLED( 4,                                                \
-                                                             __FWCORE_IF(cond, OSL_LOG(log, INFO, message); )  \
-                                                             )
 
-#define SL_WARN(log, message) __FWCORE_IF_ENABLED( 3,                                       \
-                                                   log.warn(message, __FILE__, __LINE__);   \
+#define SL_WARN(log, message) __FWCORE_IF_ENABLED( 3,                              \
+                                                   SL_LOG(log, warn, message);    \
                                                    )
-#define OSL_WARN(log, message) __FWCORE_IF_ENABLED( 3,                              \
-                                                    OSL_LOG(log, WARN, message);    \
-                                                    )
-#define SL_WARN_IF(log, message, cond) __FWCORE_IF_ENABLED( 3,                                                         \
-                                                            __FWCORE_IF(cond, log.warn(message, __FILE__, __LINE__); ) \
+#define SL_WARN_IF(log, message, cond) __FWCORE_IF_ENABLED( 3,                                                \
+                                                            __FWCORE_IF(cond, SL_LOG(log, warn, message); )   \
                                                             )
-#define OSL_WARN_IF(log, message, cond) __FWCORE_IF_ENABLED( 3,                                                 \
-                                                             __FWCORE_IF(cond, OSL_LOG(log, WARN, message); )   \
+
+#define SL_ERROR(log, message) __FWCORE_IF_ENABLED( 2,                            \
+                                                    SL_LOG(log, error, message);  \
+                                                    )
+#define SL_ERROR_IF(log, message, cond) __FWCORE_IF_ENABLED( 2,                                               \
+                                                             __FWCORE_IF(cond, SL_LOG(log, error, message); ) \
                                                              )
 
-#define SL_ERROR(log, message) __FWCORE_IF_ENABLED( 2,                                      \
-                                                    log.error(message, __FILE__, __LINE__); \
+#define SL_FATAL(log, message) __FWCORE_IF_ENABLED( 1,                             \
+                                                    SL_LOG(log, fatal, message);   \
+                                                    SPYLOG_ABORT();                 \
                                                     )
-#define OSL_ERROR(log, message) __FWCORE_IF_ENABLED( 2,                             \
-                                                     OSL_LOG(log, ERROR, message);  \
-                                                     )
-#define SL_ERROR_IF(log, message, cond) __FWCORE_IF_ENABLED( 2,                                                          \
-                                                             __FWCORE_IF(cond, log.error(message, __FILE__, __LINE__); ) \
-                                                             )
-#define OSL_ERROR_IF(log, message, cond) __FWCORE_IF_ENABLED( 2,                                                \
-                                                              __FWCORE_IF(cond, OSL_LOG(log, ERROR, message); ) \
-                                                              )
-
-#define SL_FATAL(log, message) __FWCORE_IF_ENABLED( 1,                                             \
-                                                    log.fatal(message, __FILE__, __LINE__);        \
-                                                    SPYLOG_ABORT();                                \
-                                                    )
-#define OSL_FATAL(log, message) __FWCORE_IF_ENABLED( 1,                              \
-                                                     OSL_LOG(log, FATAL, message);   \
-                                                     SPYLOG_ABORT();                 \
-                                                     )
 #define SL_FATAL_IF(log, message, cond) __FWCORE_IF_ENABLED( 1,                                             \
                                                              __FWCORE_IF(cond, SL_FATAL(log, message); )    \
                                                              )
-#define OSL_FATAL_IF(log, message, cond) __FWCORE_IF_ENABLED( 1,                                            \
-                                                              __FWCORE_IF(cond, OSL_FATAL(log, message); )  \
-                                                              )
 
 // -----------------------------------------------------------------------------
 
 # ifdef _DEBUG
 #  ifdef WIN32
-#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(                                            \
+#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(                                          \
         __FWCORE_IF(!(cond),                                                                            \
                     std::stringstream oslStr1;                                                          \
                     oslStr1 << "Assertion '" <<                                                         \
@@ -209,7 +166,7 @@
                     __debugbreak();                                                                     \
                     ))
 #  else
-#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(            \
+#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(          \
         __FWCORE_IF(!(cond),                                            \
                     std::stringstream oslStr1;                          \
                     oslStr1 << "Assertion '" <<                         \
@@ -219,15 +176,14 @@
                     ))
 #  endif
 
-#  define OSL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(   \
-        __FWCORE_IF(!(cond),                                    \
-                    std::stringstream oslStr;                   \
-                    oslStr << message;                          \
-                    SL_ASSERT(log, oslStr.str(), cond);         \
+#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(   \
+        __FWCORE_IF(!(cond),                                   \
+                    std::stringstream oslStr;                  \
+                    oslStr << message;                         \
+                    __SL_ASSERT(log, oslStr.str(), cond);      \
                     ))
 # else
 #  define SL_ASSERT(log, message, cond) // empty
-#  define OSL_ASSERT(log, message, cond) // empty
 # endif
 
 // -----------------------------------------------------------------------------
@@ -244,77 +200,76 @@
 /** @{ */
 /** Trace message macros.  */
 # define SLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message)
-/** Trace stringstream message macros.  */
-# define OSLM_TRACE(message) OSL_TRACE(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal trace message macros.  */
 # define SLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal trace stringstream message macros.  */
-# define OSLM_TRACE_IF(message, cond) OSL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Debug message macros.  */
 # define SLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
-/** Debug stringstream message macros.  */
-# define OSLM_DEBUG(message) OSL_DEBUG(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SLM_DEBUG instead. */
+# define OSLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal debug message macros.  */
 # define SLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal debug stringstream message macros.  */
-# define OSLM_DEBUG_IF(message, cond) OSL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SLM_DEBUG_IF instead. */
+# define OSLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Info message macros.  */
 # define SLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
-/** Info stringstream message macros.  */
-# define OSLM_INFO(message) OSL_INFO(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SLM_INFO instead. */
+# define OSLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal info message macros.  */
 # define SLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal info stringstream message macros.  */
-# define OSLM_INFO_IF(message, cond) OSL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SLM_INFO_IF instead. */
+# define OSLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Warning message macros.  */
 # define SLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
-/** Warning stringstream message macros.  */
-# define OSLM_WARN(message) OSL_WARN(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SLM_WARN instead.  */
+# define OSLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal warning message macros.  */
 # define SLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal warning stringstream message macros.  */
-# define OSLM_WARN_IF(message, cond) OSL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SLM_WARN_IF instead. */
+# define OSLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Error message macros.  */
 # define SLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
-/** Error stringstream message macros.  */
-# define OSLM_ERROR(message) OSL_ERROR(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SLM_ERROR instead.  */
+# define OSLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal error message macros.  */
 # define SLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal error stringstream message macros.  */
-# define OSLM_ERROR_IF(message, cond) OSL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SLM_ERROR_IF instead.  */
+# define OSLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Fatal message macros.  */
 # define SLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
-/** Fatal stringstream message macros.  */
-# define OSLM_FATAL(message) OSL_FATAL(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SLM_FATAL instead.  */
+# define OSLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal fatal message macros.  */
 # define SLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** Conditionnal fatal stringstream message macros.  */
-# define OSLM_FATAL_IF(message, cond) OSL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SLM_FATAL_IF instead.  */
+# define OSLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Log message macros.  */
-#define OSLM_LOG(message)                                          \
+#define SLM_LOG(message)                                          \
     __FWCORE_EXPR_BLOCK(                                      \
         std::stringstream stream;                                  \
         stream << message;                                         \
         _SPYLOG_SPYLOGGER_.log(stream.str(), __FILE__, __LINE__);  \
         )
+#define OSLM_LOG(message) SLM_LOG(message)
 /**  @} */
 
 /**
@@ -326,7 +281,7 @@
 # define SLM_ASSERT(message, cond)                      \
     SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
 # define OSLM_ASSERT(message, cond)                     \
-    OSL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
+    SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
 
 // -----------------------------------------------------------------------------
 
@@ -360,31 +315,31 @@
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED(oldFnName, newFnName, version) \
-    OSLM_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                  << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
-                 );
+    SLM_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+                                 << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
+                );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_IF(oldFnName, newFnName, version, condition) \
-    OSLM_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                   << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
-                  condition);
+    SLM_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+                                  << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
+                 ondition);
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
-    OSLM_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+    SLM_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.
  */
 #define FW_DEPRECATED_KEY(newKey, access, version) \
-    OSLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
-                 "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
-                 "in '" << version << "'.");
+    SLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
+                "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
+                "in '" << version << "'.");
 
 /** Preprocessor define that can be tested to know if trace log level is active */
 #define SLM_TRACE_ENABLED __FWCORE_IF_ELSE_ENABLED( 6, 1, 0 )
