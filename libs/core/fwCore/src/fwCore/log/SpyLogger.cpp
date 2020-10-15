@@ -218,7 +218,5 @@ void SpyLogger::log(const std::string& mes, const char* file, int line)
     BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
-//-----------------------------------------------------------------------------
-
 } // namespace log
 } // namespace fwCore

@@ -191,6 +191,14 @@
 #  define _SPYLOG_SPYLOGGER_            \
     ::fwCore::log::SpyLogger::getSpyLogger()
 
+// Empty function to trigger deprecation warnings
+[[deprecated("OSLM_* macros removed in Sight 22.0, use SLM_* macros instead.")]]
+void OSLM_DEPRECATED();
+
+// Empty function to trigger deprecation warnings
+[[deprecated("Trace log level removed in Sight 22.0, use higher log levels instead.")]]
+void SLM_TRACE_DEPRECATED();
+
 // -----------------------------------------------------------------------------
 
 /**
@@ -199,77 +207,66 @@
 
 /** @{ */
 /** Trace message macros.  */
-# define SLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message)
-# define OSLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message)
+# define SLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SLM_TRACE_DEPRECATED()
+# define OSLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SLM_TRACE_DEPRECATED()
 /** Conditionnal trace message macros.  */
-# define SLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
-# define OSLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SLM_TRACE_DEPRECATED()
+# define OSLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SLM_TRACE_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Debug message macros.  */
-# define SLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
+# define SLM_DEBUG(message)
 /** @deprecated @sight22, use SLM_DEBUG instead. */
-# define OSLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_DEBUG(message); OSLM_DEPRECATED()
 /** Conditionnal debug message macros.  */
-# define SLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_DEBUG_IF(message, cond)
 /** @deprecated @sight22, use SLM_DEBUG_IF instead. */
-# define OSLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_DEBUG_IF(message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Info message macros.  */
 # define SLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SLM_INFO instead. */
-# define OSLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
 /** Conditionnal info message macros.  */
 # define SLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SLM_INFO_IF instead. */
-# define OSLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Warning message macros.  */
 # define SLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SLM_WARN instead.  */
-# define OSLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
 /** Conditionnal warning message macros.  */
 # define SLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SLM_WARN_IF instead. */
-# define OSLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Error message macros.  */
 # define SLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SLM_ERROR instead.  */
-# define OSLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
 /** Conditionnal error message macros.  */
 # define SLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SLM_ERROR_IF instead.  */
-# define OSLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Fatal message macros.  */
 # define SLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SLM_FATAL instead.  */
-# define OSLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
+# define OSLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
 /** Conditionnal fatal message macros.  */
 # define SLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SLM_FATAL_IF instead.  */
-# define OSLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/**  @} */
-
-/** @{ */
-/** Log message macros.  */
-#define SLM_LOG(message)                                          \
-    __FWCORE_EXPR_BLOCK(                                      \
-        std::stringstream stream;                                  \
-        stream << message;                                         \
-        _SPYLOG_SPYLOGGER_.log(stream.str(), __FILE__, __LINE__);  \
-        )
-#define OSLM_LOG(message) SLM_LOG(message)
+# define OSLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /**
@@ -358,3 +355,17 @@
 
 /** Preprocessor define that can be tested to know if fatal log level is active */
 #define SLM_FATAL_ENABLED __FWCORE_IF_ELSE_ENABLED( 1, 1, 0 )
+
+//------------------------------------------------------------------------------
+
+inline void OSLM_DEPRECATED()
+{
+    // Empty function to trigger deprecation warnings
+}
+
+//------------------------------------------------------------------------------
+
+inline void SLM_TRACE_DEPRECATED()
+{
+    // Empty function to trigger deprecation warnings
+}
