@@ -194,8 +194,8 @@ void AppConfigManager::stop()
     }
     this->stopStartedServices();
 
-    SLM_INFO("Parsing OSR after stopping the config :" << std::endl
-                                                       << ::fwServices::OSR::getRegistryInformation());
+    SLM_DEBUG("Parsing OSR after stopping the config :" << std::endl
+                                                        << ::fwServices::OSR::getRegistryInformation());
     m_state = STATE_STOPPED;
 }
 
@@ -211,8 +211,8 @@ void AppConfigManager::destroy()
     }
     this->destroyCreatedServices();
 
-    SLM_INFO("Parsing OSR after destroying the config :" << std::endl
-                                                         << ::fwServices::OSR::getRegistryInformation());
+    SLM_DEBUG("Parsing OSR after destroying the config :" << std::endl
+                                                          << ::fwServices::OSR::getRegistryInformation());
 
     m_cfgElem.reset();
     m_createdObjects.clear();
@@ -407,9 +407,9 @@ void AppConfigManager::processStartItems()
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
                     m_deferredStartSrv.push_back(uid);
-                    SLM_INFO( this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
-                              "of its data is missing. With DEBUG log level, you can know which are the "
-                              "missing objects.");
+                    SLM_DEBUG( this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
+                               "of its data is missing. With DEBUG log level, you can know which are the "
+                               "missing objects.");
                 }
                 else
                 {
@@ -452,9 +452,9 @@ void AppConfigManager::processUpdateItems()
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
                     m_deferredUpdateSrv.push_back(uid);
-                    SLM_INFO( this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
-                              "of its data is missing. With DEBUG log level, you can know which are the "
-                              "missing objects.");
+                    SLM_DEBUG( this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
+                               "of its data is missing. With DEBUG log level, you can know which are the "
+                               "missing objects.");
                 }
                 else
                 {
@@ -522,7 +522,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
                 const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
                 FwCoreNotUsedMacro(ret);
-                SLM_INFO_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
+                SLM_DEBUG_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
             }
             else
             {
@@ -616,8 +616,8 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                            !::fwTools::fwID::exist(srvConfig.m_uid));
 
                 const std::string msg = AppConfigManager::getUIDListAsString(uids);
-                SLM_INFO(this->msgHead() + "Service '" + srvConfig.m_uid +
-                         "' has not been created because the object" + msg + "not available.");
+                SLM_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
+                          "' has not been created because the object" + msg + "not available.");
             }
         }
         else if (elem->getName() == "serviceList")
