@@ -28,6 +28,8 @@
 
 #include <fwServices/op/Add.hpp>
 
+#include <fwCom/Slots.hxx>
+
 namespace visuOgreBasic
 {
 
