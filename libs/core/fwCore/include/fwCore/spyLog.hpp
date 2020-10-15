@@ -96,61 +96,26 @@
         log.loglevel(oslStr.str(), __FILE__, __LINE__);      \
         )
 
-#ifdef SPYLOG_LEVEL
-
-#define __FWCORE_IF_ENABLED( level, expr ) \
-    BOOST_PP_EXPR_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL, level), expr)
-
-#define __FWCORE_IF_ELSE_ENABLED( level, expr1, expr2 ) \
-    BOOST_PP_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL, level), expr1, expr2)
-
-#endif
-
 // -----------------------------------------------------------------------------
 
-#  define SL_TRACE(log, message) __FWCORE_IF_ENABLED( 6,                              \
-                                                      SL_LOG(log, trace, message);    \
-                                                      )
+#define SL_TRACE(log, message) SL_LOG(log, trace, message);
+#define SL_TRACE_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, trace, message); )
 
-#  define SL_TRACE_IF(log, message, cond) __FWCORE_IF_ENABLED( 6,                                                 \
-                                                               __FWCORE_IF(cond, SL_LOG(log, trace, message); )   \
-                                                               )
+#define SL_DEBUG(log, message) SL_LOG(log, debug, message);
+#define SL_DEBUG_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, debug, message); )
 
-#  define SL_DEBUG(log, message) __FWCORE_IF_ENABLED( 5,                            \
-                                                      SL_LOG(log, debug, message);  \
-                                                      )
-#define SL_DEBUG_IF(log, message, cond) __FWCORE_IF_ENABLED( 5,                                                   \
-                                                             __FWCORE_IF(cond, SL_LOG(log, debug, message); )     \
-                                                             )
+#define SL_INFO(log, message) SL_LOG(log, info, message);
+#define SL_INFO_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, info, message); )
 
-#define SL_INFO(log, message) __FWCORE_IF_ENABLED( 4,                             \
-                                                   SL_LOG(log, info, message);    \
-                                                   )
-#define SL_INFO_IF(log, message, cond) __FWCORE_IF_ENABLED( 4,                                               \
-                                                            __FWCORE_IF(cond, SL_LOG(log, info, message); )  \
-                                                            )
+#define SL_WARN(log, message) SL_LOG(log, warn, message);
+#define SL_WARN_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, warn, message); )
 
-#define SL_WARN(log, message) __FWCORE_IF_ENABLED( 3,                              \
-                                                   SL_LOG(log, warn, message);    \
-                                                   )
-#define SL_WARN_IF(log, message, cond) __FWCORE_IF_ENABLED( 3,                                                \
-                                                            __FWCORE_IF(cond, SL_LOG(log, warn, message); )   \
-                                                            )
+#define SL_ERROR(log, message) SL_LOG(log, error, message);
+#define SL_ERROR_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, error, message); )
 
-#define SL_ERROR(log, message) __FWCORE_IF_ENABLED( 2,                            \
-                                                    SL_LOG(log, error, message);  \
-                                                    )
-#define SL_ERROR_IF(log, message, cond) __FWCORE_IF_ENABLED( 2,                                               \
-                                                             __FWCORE_IF(cond, SL_LOG(log, error, message); ) \
-                                                             )
-
-#define SL_FATAL(log, message) __FWCORE_IF_ENABLED( 1,                             \
-                                                    SL_LOG(log, fatal, message);   \
-                                                    SPYLOG_ABORT();                 \
-                                                    )
-#define SL_FATAL_IF(log, message, cond) __FWCORE_IF_ENABLED( 1,                                             \
-                                                             __FWCORE_IF(cond, SL_FATAL(log, message); )    \
-                                                             )
+#define SL_FATAL(log, message) SL_LOG(log, fatal, message);   \
+    SPYLOG_ABORT();
+#define SL_FATAL_IF(log, message, cond) __FWCORE_IF(cond, SL_FATAL(log, message); )
 
 // -----------------------------------------------------------------------------
 
@@ -216,13 +181,13 @@ void SLM_TRACE_DEPRECATED();
 
 /** @{ */
 /** Debug message macros.  */
-# define SLM_DEBUG(message)
+# define SLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SLM_DEBUG instead. */
-# define OSLM_DEBUG(message); OSLM_DEPRECATED()
+# define OSLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
 /** Conditionnal debug message macros.  */
-# define SLM_DEBUG_IF(message, cond)
+# define SLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SLM_DEBUG_IF instead. */
-# define OSLM_DEBUG_IF(message, cond); OSLM_DEPRECATED()
+# define OSLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
 /**  @} */
 
 /** @{ */
@@ -337,24 +302,6 @@ void SLM_TRACE_DEPRECATED();
     SLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
                 "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
                 "in '" << version << "'.");
-
-/** Preprocessor define that can be tested to know if trace log level is active */
-#define SLM_TRACE_ENABLED __FWCORE_IF_ELSE_ENABLED( 6, 1, 0 )
-
-/** Preprocessor define that can be tested to know if debug log level is active */
-#define SLM_DEBUG_ENABLED __FWCORE_IF_ELSE_ENABLED( 5, 1, 0 )
-
-/** Preprocessor define that can be tested to know if info log level is active */
-#define SLM_INFO_ENABLED  __FWCORE_IF_ELSE_ENABLED( 4, 1, 0 )
-
-/** Preprocessor define that can be tested to know if warning log level is active */
-#define SLM_WARN_ENABLED  __FWCORE_IF_ELSE_ENABLED( 3, 1, 0 )
-
-/** Preprocessor define that can be tested to know if error log level is active */
-#define SLM_ERROR_ENABLED __FWCORE_IF_ELSE_ENABLED( 2, 1, 0 )
-
-/** Preprocessor define that can be tested to know if fatal log level is active */
-#define SLM_FATAL_ENABLED __FWCORE_IF_ELSE_ENABLED( 1, 1, 0 )
 
 //------------------------------------------------------------------------------
 

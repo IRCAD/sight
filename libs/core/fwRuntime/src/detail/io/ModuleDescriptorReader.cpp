@@ -95,17 +95,11 @@ const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModu
             }
             catch(const RuntimeException& runtimeException)
             {
-#if !SLM_INFO_ENABLED
-                FwCoreNotUsedMacro(runtimeException);
-#endif
-                OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
+                SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
             catch(const ::fwCore::Exception& exception)
             {
-#if !SLM_INFO_ENABLED
-                FwCoreNotUsedMacro(exception);
-#endif
-                OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << exception.what() );
+                SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << exception.what() );
             }
         }
     }
@@ -205,7 +199,7 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(x
         {
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
-            OSLM_WARN_IF(
+            SLM_WARN_IF(
                 "Module : " << ( module ? module->getIdentifier() : "<None>" ) << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                 (value.find("\n") != std::string::npos || value.find("\t") != std::string::npos));
 

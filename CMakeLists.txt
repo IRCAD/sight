@@ -86,17 +86,6 @@ set(PROJECTS_TO_BUILD CACHE STRING
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
-set(SPYLOG_LEVEL "error" CACHE STRING "Log level")
-set(SPYLOG_LEVEL_VALUES "fatal;error;warning;info;debug;trace" CACHE INTERNAL
-    "List of possible values for log level")
-set(SPYLOG_LEVEL_MAP_fatal 1)
-set(SPYLOG_LEVEL_MAP_error 2)
-set(SPYLOG_LEVEL_MAP_warning 3)
-set(SPYLOG_LEVEL_MAP_info 4)
-set(SPYLOG_LEVEL_MAP_debug 5)
-set(SPYLOG_LEVEL_MAP_trace 6)
-set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
-
 ########################################################################################################################
 # Warn user of install dir isn't empty
 ########################################################################################################################

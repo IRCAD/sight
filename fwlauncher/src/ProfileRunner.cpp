@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
     const std::string defaultLogFile = "SLM.log";
 
     typedef ::fwCore::log::SpyLogger SpyLogger;
-    int logLevel = SpyLogger::SL_TRACE;
+    int logLevel = SpyLogger::SL_WARN;
 
     po::options_description logOptions("Log options");
     logOptions.add_options()
