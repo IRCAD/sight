@@ -59,14 +59,14 @@ struct SCamera::CameraNodeListener : public ::Ogre::MovableObject::Listener
 
     //------------------------------------------------------------------------------
 
-    CameraNodeListener(SCamera* renderer) :
-        m_layer(renderer)
+    CameraNodeListener(SCamera* _renderer) :
+        m_layer(_renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void objectMoved(::Ogre::MovableObject* camera) override
+    void objectMoved(::Ogre::MovableObject*) override
     {
         m_layer->updateTF3D();
     }
