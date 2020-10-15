@@ -59,15 +59,16 @@ class Layer;
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
  *
  * @section Signals Signals
- *  - \b compositorUpdated(): sent when the compositor chain is modified.
- *  - \b fullscreenSet(bool): sent when fullscreen is enabled/disabled.
+ * - \b compositorUpdated(): sent when the compositor chain is modified.
+ * - \b fullscreenSet(bool): sent when fullscreen is enabled/disabled.
  *
  * @section Slots Slots
- *  - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
- *  - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
- *  - \b requestRender(): request the service to repaint the scene.
- *  - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
- *  - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
+ * - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
+ * - \b resetCameras(): resets all layers camera.
+ * - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
+ * - \b requestRender(): request the service to repaint the scene.
+ * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
+ * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -166,6 +167,9 @@ public:
     /// Contains the slot name that computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
+    /// Contains the slot name that resets all layers camera.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
+
     /// Contains the slot name that computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
@@ -213,6 +217,9 @@ public:
 
     /// Resets camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);
+
+    /// Resets all layers camera parameters with the actual global bounding box.
+    FWRENDEROGRE_API void resetCameras();
 
     /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();

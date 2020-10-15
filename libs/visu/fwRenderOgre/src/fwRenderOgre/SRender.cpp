@@ -70,6 +70,7 @@ const ::fwCom::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fulls
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
+const ::fwCom::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 const ::fwCom::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
@@ -89,6 +90,7 @@ SRender::SRender() noexcept
     m_fullscreenSetSig = newSignal<FullscreenSetSignalType>(s_FULLSCREEN_SET_SIG);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
+    newSlot(s_RESET_CAMERAS_SLOT, &SRender::resetCameras, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
     newSlot(s_DISABLE_FULLSCREEN, &SRender::disableFullscreen, this);
@@ -476,6 +478,18 @@ void SRender::resetCameraCoordinates(const std::string& _layerId)
     if(layer != m_layers.end())
     {
         layer->second->resetCameraCoordinates();
+    }
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::resetCameras()
+{
+    for(auto layer : m_layers)
+    {
+        layer.second->resetCameraCoordinates();
     }
 
     this->requestRender();

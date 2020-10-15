@@ -706,28 +706,36 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
         {
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
-            if(entity && entity->isVisible())
+            if(entity)
             {
-                worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                if(entity->isVisible())
+                {
+                    worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                }
             }
             else
             {
                 // Then try to cast into a ManualObject*
                 const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
 
-                if(manualObject && manualObject->isVisible())
+                if(manualObject)
                 {
-                    worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                    if(manualObject->isVisible())
+                    {
+                        worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                    }
                 }
                 else
                 {
                     // Last try to cast into a Camera*
                     const ::Ogre::Camera* cameraObject = dynamic_cast< ::Ogre::Camera* > (movable);
 
-                    if(cameraObject && cameraObject != this->getDefaultCamera() &&
-                       cameraObject->isDebugDisplayEnabled())
+                    if(cameraObject && cameraObject != this->getDefaultCamera())
                     {
-                        worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                        if(cameraObject->isDebugDisplayEnabled())
+                        {
+                            worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                        }
                     }
                 }
             }
