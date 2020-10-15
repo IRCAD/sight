@@ -320,7 +320,6 @@ void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
 
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
-    FW_PROFILE("TF Update")
     const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
 
     if(!m_preIntegratedRendering)
