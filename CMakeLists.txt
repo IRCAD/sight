@@ -418,7 +418,6 @@ if(BUILD_SDK)
         "${CMAKE_SOURCE_DIR}/cmake/build/profile_config.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/build/profile.xml.in"
         "${CMAKE_SOURCE_DIR}/cmake/build/registerServices.cpp.in"
-        "${CMAKE_SOURCE_DIR}/cmake/build/spyLogLevel.hpp.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/build
       COMPONENT

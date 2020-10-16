@@ -114,12 +114,10 @@ void signal_handler(int signal)
     catch(const std::exception& e)
     {
         SLM_FATAL( e.what() );
-        exit(1);
     }
     catch(...)
     {
         SLM_FATAL( "An unrecoverable error has occurred." );
-        exit(2);
     }
 
     // We use brutal exit because when interrupted by a signal, we never get out from run,
