@@ -13,16 +13,7 @@
 * Compiler: (gcc/clang/... & version)
 * Build type: (debug/release)
 * Commit: (current commit or tag)
-  * (Any related repository commit/tag e.g conan, sight, sight-doc ...)
-
-
-### What is the current *bug* behavior?
-
-(What actually happens)
-
-### What is the expected *correct* behavior?
-
-(What you should see instead)
+  * (Any related repository commit/tag e.g ...)
 
 ### Relevant logs and/or screenshots
 

@@ -286,6 +286,8 @@ protected:
      */
     FWPACSIO_API Uint8 findUncompressedPC(const OFString& _sopClass);
 
+private:
+
     /// Defines the MOVE destination AE Title.
     std::string m_moveApplicationTitle;
 

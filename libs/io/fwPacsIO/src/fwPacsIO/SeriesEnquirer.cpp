@@ -85,6 +85,11 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     this->setPeerPort(_peerPort);
     this->setPeerAETitle(_peerApplicationTitle.c_str());
 
+    SLM_INFO("Initialize connection to (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
+
     // Clear presentation context.
     this->clearPresentationContexts();
 
@@ -139,13 +144,17 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     {
         this->addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], transferSyntaxes, ASC_SC_ROLE_SCP);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 bool SeriesEnquirer::connect()
 {
+    SLM_INFO("Connect to (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
+
     // Initialize network.
     OFCondition result = this->initNetwork();
     if (result.bad())
@@ -177,6 +186,7 @@ bool SeriesEnquirer::isConnectedToPacs() const
 
 bool SeriesEnquirer::pingPacs()
 {
+    SLM_INFO("Send C-ECHO request")
     return this->sendECHORequest(0).good();
 }
 
@@ -184,6 +194,10 @@ bool SeriesEnquirer::pingPacs()
 
 void SeriesEnquirer::disconnect()
 {
+    SLM_INFO("Disconnect from (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
     this->releaseAssociation();
 }
 
@@ -202,6 +216,9 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
     }
 
     // Send the request
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-FIND request : " + stream.str())
     this->sendFINDRequest(presID, &_dataset, &findResponses);
 
     return findResponses;
@@ -221,6 +238,9 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-MOVE request : " + stream.str())
     return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &_dataset, &dataResponse);
 }
 
@@ -241,6 +261,9 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-GET request : " + stream.str())
     return this->sendCGETRequest(presID, &_dataset, &dataResponse);
 }
 
@@ -257,8 +280,8 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
     }
 
     Uint16 rspStatusCode;
+    SLM_INFO("Send C-STORE request")
     OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
-    SLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
 }
 
@@ -277,8 +300,8 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
     Uint16 rspStatusCode;
     // const_cast required to use bad DCMTK sendSTORERequest API
     DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
-    OFCondition result     = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
-    SLM_WARN("PACS RESPONSE :" << rspStatusCode);
+    SLM_INFO("Send C-STORE request")
+    OFCondition result = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
     return result;
 }
 

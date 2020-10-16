@@ -4,7 +4,11 @@
 
 ### Proposal
 
+(How you will do it) 
+
 ### Links / references
+
+(Any references)
 
 ### Documentation blurb
 
