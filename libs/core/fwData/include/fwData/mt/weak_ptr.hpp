@@ -102,11 +102,7 @@ public:
     weak_ptr& operator=(weak_ptr&&)      = default;
     ~weak_ptr()                          = default;
 
-    /// Returns the locked_ptr from the weak pointer
-    inline locked_ptr<DATATYPE> lock() const noexcept
-    {
-        return locked_ptr<DATATYPE>(m_data.lock());
-    }
+    [[nodiscard]] locked_ptr< DATATYPE > lock() const noexcept;
 
     /// Returns true if the weak pointer have expired
     inline bool expired() const noexcept
@@ -145,6 +141,16 @@ private:
     /// The data to guard
     std::weak_ptr< DATATYPE > m_data;
 };
+
+//-----------------------------------------------------------------------------
+
+template < class DATATYPE >
+inline locked_ptr< DATATYPE > weak_ptr<DATATYPE>::lock() const noexcept
+{
+    return locked_ptr< DATATYPE >(m_data.lock());
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace mt
 } // namespace fwData
