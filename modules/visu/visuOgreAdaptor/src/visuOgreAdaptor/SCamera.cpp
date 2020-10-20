@@ -33,7 +33,6 @@
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
 
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
@@ -84,13 +83,6 @@ SCamera::SCamera() noexcept
 
 SCamera::~SCamera() noexcept
 {
-    if(m_cameraNodeListener)
-    {
-        m_camera->setListener(m_cameraNodeListener);
-        delete m_cameraNodeListener;
-        m_cameraNodeListener = nullptr;
-    }
-
 }
 
 //------------------------------------------------------------------------------
@@ -188,7 +180,12 @@ void SCamera::stopping()
 {
     m_layerConnection.disconnect();
 
-    this->unregisterServices();
+    if(m_cameraNodeListener)
+    {
+        m_camera->setListener(nullptr);
+        delete m_cameraNodeListener;
+        m_cameraNodeListener = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------

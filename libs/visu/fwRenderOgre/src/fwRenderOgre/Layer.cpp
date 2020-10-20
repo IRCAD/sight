@@ -161,25 +161,6 @@ Layer::Layer()
 
 Layer::~Layer()
 {
-    if(m_camera && m_cameraListener)
-    {
-        m_camera->removeListener(m_cameraListener);
-        delete m_cameraListener;
-        m_cameraListener = nullptr;
-    }
-    if(m_autostereoListener)
-    {
-        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
-    }
-
-    if(m_sceneManager)
-    {
-        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-        m_sceneManager = nullptr;
-    }
-    m_camera = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -388,6 +369,26 @@ void Layer::destroyScene()
         ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
         m_lightAdaptor.reset();
     }
+
+    if(m_camera && m_cameraListener)
+    {
+        m_camera->removeListener(m_cameraListener);
+        delete m_cameraListener;
+        m_cameraListener = nullptr;
+    }
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
+    if(m_sceneManager)
+    {
+        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+        m_sceneManager = nullptr;
+    }
+    m_camera = nullptr;
 }
 
 // ----------------------------------------------------------------------------
