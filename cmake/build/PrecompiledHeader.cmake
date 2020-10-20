@@ -404,5 +404,11 @@ function(use_precompiled_header _target _input)
 
         assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
 
+        # Unix Makefiles (default) generator does not manage to deduce dependencies properly
+        # So we have to enforce it
+        if(${CMAKE_GENERATOR} STREQUAL "Unix Makefiles")
+            add_dependencies(${_target} ${_input})
+        endif()
+
     endif()
 endfunction()
