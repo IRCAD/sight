@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "visuOgreBasic/Plugin.hpp"
+#include "visuBasic/Plugin.hpp"
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace visuOgreBasic
+namespace visuBasic
 {
 
 //------------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuOgreBasic::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuBasic::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     // This module is intended to be used for the first tutorials.
-    // Thus we load the adaptors moudel here instead in the .xml of the
+    // Thus we load the adaptors model here instead in the .xml of the
     // application to hide the complexity.
     auto module = ::fwRuntime::loadModule("visuOgreAdaptor");
     SLM_FATAL_IF("'visuOgreAdaptor' module failed to load.", !module);
@@ -57,4 +57,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreBasic
+} // namespace visuBasic.

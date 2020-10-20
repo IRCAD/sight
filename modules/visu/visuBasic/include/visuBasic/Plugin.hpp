@@ -22,26 +22,28 @@
 
 #pragma once
 
-#include "visuOgreBasic/config.hpp"
+#include "visuBasic/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace visuOgreBasic
+namespace visuBasic
 {
 
 /// This class is started when the module is loaded.
-class VISUOGREBASIC_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class VISUBASIC_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
+
 public:
 
     /// Destroys the plugin.
     ~Plugin() noexcept override;
 
     /// Creates the Ogre log manager.
-    VISUOGREBASIC_API void start() override;
+    VISUBASIC_API void start() override;
 
     /// Stops the plugin, destroys Ogre resources.
-    VISUOGREBASIC_API void stop() noexcept override;
+    VISUBASIC_API void stop() noexcept override;
+
 };
 
-} // namespace visuOgreBasic
+} // namespace visuBasic.

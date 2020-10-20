@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
-/**
- * @brief The namespace visuOgreBasic supplies simple rendering services for meshes and images.
- */
 #pragma once
 
-namespace visuOgreBasic
+/// The namespace visuBasic supplies simple rendering services for meshes and images.
+namespace visuBasic
 {
 }

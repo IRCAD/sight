@@ -152,7 +152,7 @@
                 Renderer of the 1st Image:
                 This is the source image for the filtering.
             -->
-            <service uid="image1Srv" type="::visuOgreBasic::SImage" >
+            <service uid="image1Srv" type="::visuBasic::SImage" >
                 <in key="image" uid="myImage1" autoConnect="yes" />
             </service>
 
@@ -160,7 +160,7 @@
                 Rendered for the 2nd Image:
                 This is the output image for the filtering.
             -->
-            <service uid="image2Srv" type="::visuOgreBasic::SImage" >
+            <service uid="image2Srv" type="::visuBasic::SImage" >
                 <in key="image" uid="myImage2" autoConnect="yes" />
             </service>
 

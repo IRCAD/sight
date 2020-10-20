@@ -119,7 +119,7 @@
                 Here, the service attribute 'autoConnect="yes"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="imageRenderSrv" type="::visuOgreBasic::SImage" >
+            <service uid="imageRenderSrv" type="::visuBasic::SImage" >
                 <in key="image" uid="image" autoConnect="yes" />
             </service>
 

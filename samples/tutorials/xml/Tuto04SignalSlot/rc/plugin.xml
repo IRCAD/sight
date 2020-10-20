@@ -98,15 +98,15 @@
                 We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
                 shown in the windows defines in 'view' service.
             -->
-            <service uid="rendering1Srv" type="::visuOgreBasic::SMesh" >
+            <service uid="rendering1Srv" type="::visuBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
 
-            <service uid="rendering2Srv" type="::visuOgreBasic::SMesh" >
+            <service uid="rendering2Srv" type="::visuBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
 
-            <service uid="rendering3Srv" type="::visuOgreBasic::SMesh" >
+            <service uid="rendering3Srv" type="::visuBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
 

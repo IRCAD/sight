@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    visuOgreBasic
+    visuBasic
     opImageFilter # module containing the action to performs a threshold
 )
 

@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO # contains services to show dialogs for reader/writer selection
-    visuOgreBasic
+    visuBasic
 )
 
 moduleParam(

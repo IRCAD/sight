@@ -23,7 +23,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    visuOgreBasic
+    visuBasic
 )
 
 moduleParam(guiQt

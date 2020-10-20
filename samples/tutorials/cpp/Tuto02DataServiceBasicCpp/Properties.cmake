@@ -22,7 +22,7 @@ set( REQUIREMENTS
     ioVTK           # contains the reader and writer for VTK files (image and mesh).
 
     # Services
-    visuOgreBasic   # loads basic rendering services for images and meshes.
+    visuBasic   # loads basic rendering services for images and meshes.
 
 )
 set( WARNINGS_AS_ERRORS ON )

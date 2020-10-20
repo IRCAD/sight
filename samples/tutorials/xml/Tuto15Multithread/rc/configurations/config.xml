@@ -107,12 +107,12 @@
         </service>
 
         <!-- Visualization service for the first window. -->
-        <service uid="rendering1Srv" type="::visuOgreBasic::SMesh" autoConnect="yes" >
+        <service uid="rendering1Srv" type="::visuBasic::SMesh" autoConnect="yes" >
             <in key="mesh" uid="mesh" autoresetcamera="no" />
         </service>
 
         <!-- Visualization service for the second window -->
-        <service uid="rendering2Srv" type="::visuOgreBasic::SMesh" autoConnect="yes" >
+        <service uid="rendering2Srv" type="::visuBasic::SMesh" autoConnect="yes" >
             <in key="mesh" uid="mesh" autoresetcamera="no" />
         </service>
 

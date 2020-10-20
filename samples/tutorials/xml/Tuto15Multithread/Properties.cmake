@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    visuOgreBasic
+    visuBasic
     vtkSimpleMesh
 )
 

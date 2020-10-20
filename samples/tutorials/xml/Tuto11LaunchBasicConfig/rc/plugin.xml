@@ -90,7 +90,7 @@
                 <inout key="data" uid="image" />
             </service>
 
-            <service uid="imageRendereSrv" type="::visuOgreBasic::SImage" >
+            <service uid="imageRendereSrv" type="::visuBasic::SImage" >
                 <in key="image" uid="image" />
             </service>
 

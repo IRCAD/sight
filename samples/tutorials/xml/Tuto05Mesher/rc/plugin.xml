@@ -135,7 +135,7 @@
                 Services associated to the Image data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="imageSrv" type="::visuOgreBasic::SImage" >
+            <service uid="imageSrv" type="::visuBasic::SImage" >
                 <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
@@ -153,7 +153,7 @@
                 Services associated to the Mesh data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="meshSrv" type="::visuOgreBasic::SMesh" >
+            <service uid="meshSrv" type="::visuBasic::SMesh" >
                 <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 

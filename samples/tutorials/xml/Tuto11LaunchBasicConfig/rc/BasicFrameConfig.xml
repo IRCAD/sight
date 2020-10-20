@@ -34,7 +34,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="imageRendereSrv" type="::visuOgreBasic::SImage" >
+        <service uid="imageRendereSrv" type="::visuBasic::SImage" >
             <in key="image" uid="${imageUid}" />
         </service>
 

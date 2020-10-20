@@ -36,7 +36,7 @@ set( REQUIREMENTS
     uiIO
 
     # Generic Scene
-    visuOgreBasic
+    visuBasic
 )
 
 moduleParam(guiQt

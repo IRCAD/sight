@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "visuOgreBasic/SImage.hpp"
+#include "visuBasic/SImage.hpp"
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -28,7 +28,7 @@
 
 #include <fwServices/op/Add.hpp>
 
-namespace visuOgreBasic
+namespace visuBasic
 {
 
 static const std::string s_IMAGE_INPUT = "image";
@@ -43,18 +43,6 @@ SImage::SImage() noexcept
 
 SImage::~SImage() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SImage::getAutoConnections() const
-{
-    // This is actually useless since the sub-service already listens to the data,
-    // but this prevents a warning in fwServices from being raised.
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -132,6 +120,18 @@ void SImage::starting()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SImage::getAutoConnections() const
+{
+    // This is actually useless since the sub-service already listens to the data,
+    // but this prevents a warning in fwServices from being raised.
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 void SImage::updating()
 {
 }
@@ -157,4 +157,4 @@ void SImage::stopping()
     this->destroy();
 }
 
-} // namespace visuOgreBasic
+} // namespace visuBasic.

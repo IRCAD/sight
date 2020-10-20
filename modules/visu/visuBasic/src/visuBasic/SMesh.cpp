@@ -20,7 +20,9 @@
  *
  ***********************************************************************/
 
-#include "visuOgreBasic/SMesh.hpp"
+#include "visuBasic/SMesh.hpp"
+
+#include <fwCom/Slots.hxx>
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -28,14 +30,13 @@
 
 #include <fwServices/op/Add.hpp>
 
-#include <fwCom/Slots.hxx>
-
-namespace visuOgreBasic
+namespace visuBasic
 {
 
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
-const ::fwCom::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG       = "camUpdated";
+
+const ::fwCom::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG = "camUpdated";
 
 static const std::string s_MESH_INPUT = "mesh";
 
@@ -53,18 +54,6 @@ SMesh::SMesh() noexcept
 
 SMesh::~SMesh() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
-{
-    // This is actually useless since the sub-service already listens to the data,
-    // but this prevents a warning in fwServices from being raised.
-    KeyConnectionsMap connections;
-    connections.push(s_MESH_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -157,6 +146,18 @@ void SMesh::starting()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+{
+    // This is actually useless since the sub-service already listens to the data,
+    // but this prevents a warning in fwServices from being raised.
+    KeyConnectionsMap connections;
+    connections.push(s_MESH_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 void SMesh::updating()
 {
 }
@@ -208,4 +209,4 @@ void SMesh::updateCamTransform()
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreBasic
+} // namespace visuBasic.

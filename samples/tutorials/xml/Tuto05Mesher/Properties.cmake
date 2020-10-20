@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    visuOgreBasic   # contains a visualization service of mesh.
+    visuBasic   # contains a visualization service of mesh.
     opVTKMesh       # provides services to generate a mesh from an image.
 )
 

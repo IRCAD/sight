@@ -50,7 +50,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="::visuOgreBasic::SImage" autoConnect="yes" >
+        <service uid="imageScene" type="::visuBasic::SImage" autoConnect="yes" >
             <in key="image" uid="${image}" />
         </service>
 
