@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,8 +76,10 @@ class VlcCallbackProxy;
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b networkCaching(optional, default: 500): Caching value for network resources, in milliseconds [0 .. 60000].
+ *
+ * @deprecated ::videoVLC module will be removed in sight 21.0
  */
-class VIDEOVLC_CLASS_API SFrameGrabber : public ::arServices::IGrabber
+class VIDEOVLC_DEPRECATED_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
 
 public:

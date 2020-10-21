@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,11 +53,13 @@ struct MemoryVideoData;
    @endcode
  * @subsection Input Input
  * - \b frameTL [::arData::FrameTL]: timeline containing video frames.
+ *
+ * @deprecated ::videoVLC module will be removed in sight 21.0.
  */
-class VIDEOVLC_CLASS_API SFrameStreamer : public ::fwServices::IOperator
+class VIDEOVLC_DEPRECATED_CLASS_API SFrameStreamer : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceMacro(SFrameStreamer, ::fwServices::IOperator);
+    fwCoreServiceMacro(SFrameStreamer, ::fwServices::IOperator)
 
     /**
      * @brief SFrameStreamer constructor.
