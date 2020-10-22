@@ -1,5 +1,8 @@
 fwLoadProperties()
 
+message(AUTHOR_WARNING "uiHandEye module is deprecated and will be removed in sight 21.0.
+It is now useless can be safely removed from requirements.")
+
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 
 fwForwardInclude(

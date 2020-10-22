@@ -29,6 +29,10 @@
 namespace uiHandEye
 {
 
+/**
+ * @brief This struct is started when the module is loaded.
+ * @deprecated This module is not supported anymore, it will be removed in sight 21.0.
+ */
 struct Plugin : public ::fwRuntime::Plugin
 {
     /**
@@ -42,6 +46,7 @@ struct Plugin : public ::fwRuntime::Plugin
      * @exception ::fwRuntime::RuntimeException.
      * This method is used by runtime in order to initialize the module.
      */
+    [[deprecated("This module is not supported anymore, it will be removed in sight 21.0.")]]
     void start();
 
     /**

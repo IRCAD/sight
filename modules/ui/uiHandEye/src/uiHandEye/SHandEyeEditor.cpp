@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,9 +42,9 @@
 
 namespace uiHandEye
 {
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiHandEye::SHandEyeEditor);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiHandEye::SHandEyeEditor)
 
-const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_ADD_SLOT           = "add";
+const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_ADD_SLOT = "add";
 const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_REMOVE_SLOT        = "remove";
 const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_RESET_SLOT         = "reset";
 const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_GET_SELECTION_SLOT = "getSelection";
@@ -59,6 +59,8 @@ static const ::fwServices::IService::KeyType s_MATRIXTL2_INPUT = "matrixTL2";
 
 SHandEyeEditor::SHandEyeEditor() noexcept
 {
+    FW_DEPRECATED_MSG("This service is not supported anymore, it will be removed in sight 21.0.", "21.0");
+
     newSlot( s_ADD_SLOT,  &SHandEyeEditor::add, this );
     newSlot( s_REMOVE_SLOT, &SHandEyeEditor::remove, this );
     newSlot( s_RESET_SLOT,  &SHandEyeEditor::reset, this );
