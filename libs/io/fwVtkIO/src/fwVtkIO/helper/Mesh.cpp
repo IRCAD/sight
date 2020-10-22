@@ -187,7 +187,7 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                     FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
-        mesh->adjustAllocatedMemory();
+        //mesh->adjustAllocatedMemory();
 
         if (cellColors || cellNormals || cellTexCoords)
         {

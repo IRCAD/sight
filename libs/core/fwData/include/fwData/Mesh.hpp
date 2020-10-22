@@ -450,6 +450,7 @@ public:
      *
      * Reset the number of points to 0. It doesn't impact memory allocation.
      */
+    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
     FWDATA_API void clearPoints();
 
     /**
@@ -457,6 +458,7 @@ public:
      *
      * Reset the number of cells and celldata size to 0. It doesn't impact memory allocation.
      */
+    [[deprecated("call reserve(nbPoints, nbCells, cellType, extraArrays).(sight 22.0)")]]
     FWDATA_API void clearCells();
 
     /**
@@ -464,17 +466,22 @@ public:
      */
     FWDATA_API void clear();
 
-    /// Remove corresponding array, memory is freed.
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearPointNormals();
-    /// Remove corresponding array, memory is freed.
+
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearPointColors();
-    /// Remove corresponding array, memory is freed.
+
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearPointTexCoords();
-    /// Remove corresponding array, memory is freed.
+
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearCellNormals();
-    /// Remove corresponding array, memory is freed.
+
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearCellColors();
-    /// Remove corresponding array, memory is freed.
+
+    /// Clear corresponding array, memory is freed.
     FWDATA_API void clearCellTexCoords();
 
     /// Set number of points.
@@ -1061,6 +1068,9 @@ protected:
     /// analysis.
     /// @deprecated Will be removed in sight 22.0
     [[deprecated("sight 22.0")]] ArrayMapType m_arrayMap;
+
+    /// Stores current attributes.
+    Attributes m_attributes { Attributes::NONE };
 };
 
 //------------------------------------------------------------------------------
@@ -1081,6 +1091,13 @@ inline Mesh::Attributes operator&(const Mesh::Attributes& lhs, const Mesh::Attri
         static_cast<std::underlying_type<Mesh::Attributes>::type>(lhs) &
         static_cast<std::underlying_type<Mesh::Attributes>::type>(rhs)
         );
+}
+
+//------------------------------------------------------------------------------
+
+inline Mesh::Attributes operator~(const Mesh::Attributes& lhs)
+{
+    return static_cast<Mesh::Attributes> ( ~static_cast<std::underlying_type<Mesh::Attributes>::type>(lhs));
 }
 
 //------------------------------------------------------------------------------
@@ -1123,42 +1140,42 @@ inline ITERATOR Mesh::end() const
 
 inline bool Mesh::hasPointColors() const
 {
-    return m_pointColors != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_COLORS);
 }
 
 //------------------------------------------------------------------------------
 
 inline bool Mesh::hasCellColors() const
 {
-    return m_cellColors != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_COLORS);
 }
 
 //------------------------------------------------------------------------------
 
 inline bool Mesh::hasPointNormals() const
 {
-    return m_pointNormals != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_NORMALS);
 }
 
 //------------------------------------------------------------------------------
 
 inline bool Mesh::hasCellNormals() const
 {
-    return m_cellNormals != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_NORMALS);
 }
 
 //------------------------------------------------------------------------------
 
 inline bool Mesh::hasPointTexCoords() const
 {
-    return m_pointTexCoords != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::POINT_TEX_COORDS);
 }
 
 //------------------------------------------------------------------------------
 
 inline bool Mesh::hasCellTexCoords() const
 {
-    return m_cellTexCoords != nullptr;
+    return static_cast<bool>(m_attributes & Mesh::Attributes::CELL_TEX_COORDS);
 }
 
 //------------------------------------------------------------------------------
