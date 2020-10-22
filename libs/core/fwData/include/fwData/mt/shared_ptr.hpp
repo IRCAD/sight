@@ -103,10 +103,7 @@ public:
     ~shared_ptr()                            = default;
 
     /// Returns the locked_ptr from the shared pointer
-    inline locked_ptr<DATATYPE> lock() const noexcept
-    {
-        return locked_ptr<DATATYPE>(m_data);
-    }
+    [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
 
     /// Convenience function that mimics std::dynamic_pointer_cast()
     template< class CASTED_DATATYPE >
@@ -132,6 +129,14 @@ private:
     /// The data to store
     std::shared_ptr<DATATYPE> m_data;
 };
+
+//-----------------------------------------------------------------------------
+
+template < class DATATYPE >
+inline locked_ptr<DATATYPE> shared_ptr< DATATYPE >::lock() const noexcept
+{
+    return locked_ptr<DATATYPE>(m_data);
+}
 
 } // namespace mt
 } // namespace fwData
