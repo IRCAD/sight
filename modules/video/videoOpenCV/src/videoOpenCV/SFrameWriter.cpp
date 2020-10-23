@@ -242,8 +242,8 @@ void SFrameWriter::startRecord()
         }
         else
         {
-            OSLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
-                       std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
+            SLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
+                      std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
             return;
         }
 

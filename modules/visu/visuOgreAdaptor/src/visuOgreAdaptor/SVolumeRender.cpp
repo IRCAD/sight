@@ -466,7 +466,7 @@ void SVolumeRender::updateSampling(int _nbSamples)
 {
     this->getRenderService()->makeCurrent();
 
-    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
+    SLM_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
     m_nbSamples = static_cast<std::uint16_t>(_nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);

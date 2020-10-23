@@ -173,7 +173,6 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-    SLM_TRACE_FUNC();
 
     bool bHasBackground = false;
 
@@ -197,14 +196,14 @@ void SRender::starting()
     auto bkgConfigs = sceneCfg.equal_range("background");
     for( auto it = bkgConfigs.first; it != bkgConfigs.second; ++it )
     {
-        OSLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
+        SLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
         try
         {
             this->configureBackgroundLayer(it->second);
         }
         catch (std::exception& e)
         {
-            OSLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
+            SLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
         }
 
         bHasBackground = true;
@@ -532,8 +531,8 @@ bool SRender::isShownOnScreen()
 
 ::fwRenderOgre::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
-    OSLM_ASSERT("Empty sceneID", !sceneID.empty());
-    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
+    SLM_ASSERT("Empty sceneID", !sceneID.empty());
+    SLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
 
     ::fwRenderOgre::Layer::sptr layer = m_layers.at(sceneID);
 

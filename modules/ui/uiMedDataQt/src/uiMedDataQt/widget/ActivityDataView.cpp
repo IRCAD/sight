@@ -721,7 +721,7 @@ void ActivityDataView::importObjectFromSDB()
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
     if (newObject)
     {
-        OSLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
+        SLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
         auto obj      = this->readObject("::fwMedData::SeriesDB", m_sdbIoSelectorSrvConfig);
@@ -749,7 +749,7 @@ void ActivityDataView::importObjectFromSDB()
     else
     {
         std::string msg = "Can not create object '" + type + "'";
-        OSLM_ERROR(msg);
+        SLM_ERROR(msg);
         QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
     }
 }

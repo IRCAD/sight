@@ -151,7 +151,6 @@ void SDynamicView::starting()
 
 void SDynamicView::stopping()
 {
-    SLM_TRACE_FUNC();
     while(m_tabWidget->count())
     {
         this->closeTab(0, true);
@@ -260,7 +259,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
         ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
                                                           e.what(),
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
-        OSLM_ERROR(e.what());
+        SLM_ERROR(e.what());
         return;
     }
 
@@ -420,7 +419,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
             submatch.replace(0, 1, "@");
 
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(activitySeries->getData(), submatch);
-            OSLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 
@@ -432,7 +431,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
             }
             else
             {
-                OSLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
             }
 
             submatch.replace(0, 1, "!");

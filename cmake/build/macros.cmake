@@ -169,25 +169,6 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_LIBRARY ${${FWPROJECT_NAME}_LIBRARY} PARENT_SCOPE)
     endif()
 
-    set(SPYLOG_LEVEL_${FWPROJECT_NAME} "${SPYLOG_LEVEL}" CACHE STRING "${FWPROJECT_NAME}'s Log level" )
-    set_property(CACHE SPYLOG_LEVEL_${FWPROJECT_NAME} PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
-    mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
-
-    if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY")
-           AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
-            target_compile_definitions(${TARGET_NAME}
-                PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
-        else()
-            target_compile_definitions(${TARGET_NAME}
-                PRIVATE SPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}}
-                PRIVATE SPYLOG_NO_INCLUDE=1)
-        endif()
-    else()
-        message(SEND_ERROR "${SPYLOG_LEVEL_${FWPROJECT_NAME}} is not a valid value for SPYLOG_LEVEL_${FWPROJECT_NAME}" )
-    endif()
-    unset(SPYLOG_VALID_VALUE)
-
 endmacro()
 
 
@@ -610,9 +591,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
     if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
-        # create the spyLogLevel.hpp for the current library
-        configure_header_file(${FWPROJECT_NAME} "spyLogLevel.hpp")
-
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
             if(VERBOSE_PCH)
@@ -695,12 +673,6 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
-            # create the spyLogLevel.hpp for the current library
-            configure_file(
-                "${FWCMAKE_BUILD_FILES_DIR}/spyLogLevel.hpp.in"
-                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
-                IMMEDIATE @ONLY)
-
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
                 add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
                 if(VERBOSE_PCH)

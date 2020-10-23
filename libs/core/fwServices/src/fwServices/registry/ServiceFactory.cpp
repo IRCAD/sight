@@ -121,7 +121,7 @@ void ServiceFactory::parseBundleInformation()
 
         if ( iter != m_srvImplTosrvInfo.end() )
         {
-            OSLM_DEBUG(
+            SLM_DEBUG(
                 "We already have informations about this service  (from register macro) ( "<< module.first <<
                     " )." );
 
@@ -160,12 +160,12 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
-    OSLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
-                iter != m_srvImplTosrvInfo.end() );
+    SLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
+               iter != m_srvImplTosrvInfo.end() );
 
     const ServiceInfo& info = iter->second;
 
-    OSLM_DEBUG("SR creates a new service ( classname = " << _srvImpl << " )");
+    SLM_DEBUG("SR creates a new service ( classname = " << _srvImpl << " )");
 
     if ( info.factory )
     {
@@ -173,13 +173,13 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     }
     else
     {
-        OSLM_ASSERT( "A module must declare the factory named"
-                     << _srvImpl
-                     <<", the service declaration might be missing (or misspelled) in a module plugin.",
-                     info.module );
-        OSLM_ASSERT( "The module '" + info.module->getIdentifier() + "' is already loaded and the factory '"
-                     + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
-                     "in a .cpp file.", !info.module->isStarted() );
+        SLM_ASSERT( "A module must declare the factory named"
+                    << _srvImpl
+                    <<", the service declaration might be missing (or misspelled) in a module plugin.",
+                    info.module );
+        SLM_ASSERT( "The module '" + info.module->getIdentifier() + "' is already loaded and the factory '"
+                    + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
+                    "in a .cpp file.", !info.module->isStarted() );
 
         lock.unlock(); // module->start() may trigger calls to addFactory
         info.module->start();
@@ -212,10 +212,10 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
     {
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
 
-        OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory.",
-                    m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
+        SLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory.",
+                   m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
 
-        OSLM_ASSERT(
+        SLM_ASSERT(
             "Conflicting types were defined for this service, "
                 << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
                 _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
@@ -243,12 +243,12 @@ void ServiceFactory::addServiceFactory( FactoryType _factory,
     {
         SLM_DEBUG("We already have informations about this service ( " + simpl + " )." );
         ServiceInfo& info = iter->second;
-        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) already has a registered factory.",
-                    !info.factory );
-        OSLM_ASSERT("Try to add factory, but this srv ( "
-                    << simpl << " ) is already registered and doesn't have the same srv type. ( "
-                    << stype << " != " << info.serviceType <<" )",
-                    stype == info.serviceType );
+        SLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) already has a registered factory.",
+                   !info.factory );
+        SLM_ASSERT("Try to add factory, but this srv ( "
+                   << simpl << " ) is already registered and doesn't have the same srv type. ( "
+                   << stype << " != " << info.serviceType <<" )",
+                   stype == info.serviceType );
 
         ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
         info.factory = _factory;
@@ -274,8 +274,8 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( simpl );
 
-    OSLM_ASSERT("Try to associate an object to a service factory, but this srv is not yet registered.",
-                iter != m_srvImplTosrvInfo.end());
+    SLM_ASSERT("Try to associate an object to a service factory, but this srv is not yet registered.",
+               iter != m_srvImplTosrvInfo.end());
 
     if ( iter != m_srvImplTosrvInfo.end() )
     {
@@ -308,23 +308,23 @@ void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
     //Print information
     for(SrvRegContainer::value_type srvReg :  src)
     {
-        OSLM_DEBUG(" Service name = " << srvReg.first );
-        OSLM_DEBUG("  - type   = " << srvReg.second.serviceType );
+        SLM_DEBUG(" Service name = " << srvReg.first );
+        SLM_DEBUG("  - type   = " << srvReg.second.serviceType );
 
 #if SLM_DEBUG_ENABLED
         size_t objNum = 0;
         for(const auto& objImpl : srvReg.second.objectImpl)
         {
-            OSLM_DEBUG("  - object " << objNum++ << " = " << objImpl)
+            SLM_DEBUG("  - object " << objNum++ << " = " << objImpl)
         }
 #endif
 
-        OSLM_DEBUG_IF("  - module = " <<  srvReg.second.module->getIdentifier(), srvReg.second.module );
-        OSLM_DEBUG_IF("  - module = ( no module registered )", !srvReg.second.module );
+        SLM_DEBUG_IF("  - module = " <<  srvReg.second.module->getIdentifier(), srvReg.second.module );
+        SLM_DEBUG_IF("  - module = ( no module registered )", !srvReg.second.module );
 
-        OSLM_DEBUG_IF("  - name after creation = "
-                      <<  srvReg.second.factory()->getClassname(), srvReg.second.factory );
-        OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", !srvReg.second.factory );
+        SLM_DEBUG_IF("  - name after creation = "
+                     <<  srvReg.second.factory()->getClassname(), srvReg.second.factory );
+        SLM_DEBUG_IF("  - name after creation = ( no factory registered )", !srvReg.second.factory );
     }
 }
 
@@ -338,7 +338,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
     {
         if ( !srvReg.second.module )
         {
-            OSLM_WARN("Service " << srvReg.first << " is not declared/found in a plugin.xml." );
+            SLM_WARN("Service " << srvReg.first << " is not declared/found in a plugin.xml." );
         }
     }
 }
@@ -398,10 +398,10 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
             {
                 if ( oimpl == object )
                 {
-                    OSLM_ASSERT("Method has already found a specific ("
-                                << serviceImpl <<" != " << srv.first
-                                << ") service for the object " << oimpl << ".",
-                                !specificImplIsFound );
+                    SLM_ASSERT("Method has already found a specific ("
+                               << serviceImpl <<" != " << srv.first
+                               << ") service for the object " << oimpl << ".",
+                               !specificImplIsFound );
 
                     specificImplIsFound = true;
                     serviceImpl         = srv.first;
@@ -409,9 +409,9 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
                 }
                 else if ( oimpl == "::fwData::Object" )
                 {
-                    OSLM_ASSERT("Method has already found a generic service for the object ("
-                                << oimpl << ").",
-                                !genericImplIsFound );
+                    SLM_ASSERT("Method has already found a generic service for the object ("
+                               << oimpl << ").",
+                               !genericImplIsFound );
 #ifdef _DEBUG
                     genericImplIsFound = true;
 #endif
@@ -425,7 +425,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
         }
     }
 
-    OSLM_ASSERT("A default implementation is not found for this type of service "<<type, !serviceImpl.empty() );
+    SLM_ASSERT("A default implementation is not found for this type of service "<<type, !serviceImpl.empty() );
 
     return serviceImpl;
 }

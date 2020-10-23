@@ -127,14 +127,12 @@ void SJpgImageSeriesWriter::openLocationDialog()
 
 void SJpgImageSeriesWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SJpgImageSeriesWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -148,7 +146,6 @@ void SJpgImageSeriesWriter::info(std::ostream& _sstream )
 
 void SJpgImageSeriesWriter::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

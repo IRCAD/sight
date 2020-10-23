@@ -129,14 +129,12 @@ void SModelSeriesReader::openLocationDialog()
 
 void SModelSeriesReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

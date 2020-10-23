@@ -155,14 +155,14 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
 void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-                layoutConfig->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
+               layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
         ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IMenuBarLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY,
-                m_layoutManager);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY,
+               m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

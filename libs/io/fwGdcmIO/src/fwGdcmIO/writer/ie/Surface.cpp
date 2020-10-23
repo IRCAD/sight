@@ -93,7 +93,6 @@ void Surface::writeSOPCommonModule()
 
     // SOP Class UID
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
-    SLM_TRACE("SOP Class UID : " + m_instance->getSOPClassUID());
 
     // SOP Instance UID
     ::gdcm::UIDGenerator uidGenerator;

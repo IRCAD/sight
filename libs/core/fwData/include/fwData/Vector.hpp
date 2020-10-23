@@ -302,7 +302,7 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
     for(const ::fwData::Object::sptr& data : this->getContainer() )
     {
         castedData = std::dynamic_pointer_cast<DATATYPE>( data );
-        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
+        SLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
         vec.push_back( castedData );
     }
 

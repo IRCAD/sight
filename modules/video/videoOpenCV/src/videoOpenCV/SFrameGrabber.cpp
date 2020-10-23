@@ -113,10 +113,10 @@ void SFrameGrabber::configuring()
 
     m_defaultDuration = config.get<double>("defaultDuration", m_defaultDuration);
 
-    OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
+    SLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 
     m_step = config.get<unsigned long>("step", m_step);
-    OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    SLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
 
@@ -530,7 +530,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             }
             else
             {
-                OSLM_ERROR("Only one image to read, set 'oneShot' mode to true.");
+                SLM_ERROR("Only one image to read, set 'oneShot' mode to true.");
                 return;
             }
 
@@ -574,8 +574,8 @@ void SFrameGrabber::grabVideo()
 
                 if (width != w || height != h)
                 {
-                    OSLM_ERROR("This video cannot be read, the frame size is not expected. expected: "
-                               << width << " x " << height << ", actual: " << w << " x " << h);
+                    SLM_ERROR("This video cannot be read, the frame size is not expected. expected: "
+                              << width << " x " << height << ", actual: " << w << " x " << h);
                     return;
                 }
 
@@ -679,7 +679,7 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
-        OSLM_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
+        SLM_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
         const size_t width  = static_cast<size_t>(image.size().width);
         const size_t height = static_cast<size_t>(image.size().height);
@@ -860,13 +860,13 @@ void SFrameGrabber::setStep(int step, std::string key)
 {
     if(key == "step")
     {
-        OSLM_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
+        SLM_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<unsigned long>(step);
     }
     else
     {
-        OSLM_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
+        SLM_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
 }
 

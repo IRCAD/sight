@@ -143,21 +143,18 @@ SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBReader::~SeriesDBReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesDBReader::read()
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     std::vector<std::string> filenames;
     if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
@@ -185,7 +182,6 @@ void SeriesDBReader::read()
 
 ::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB(const std::filesystem::path& _dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     std::vector<std::string> filenames;
@@ -292,7 +288,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                 if(!imageType.empty())
                 {
                     // Treatment of secondary capture dicom file.
-                    SLM_TRACE("Image Type : " + std::string(imageType));
                     fileSetId += "_";
                     fileSetId += imageType;
                 }
@@ -306,7 +301,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
 
         for(const auto& elt : mapSeries)
         {
-            SLM_TRACE( "Processing: '" + elt.first + "' file set.");
             const MapSeriesType::mapped_type& files = elt.second;
             if ( !files.empty() )
             {
@@ -345,7 +339,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                 {
                     sorted   = ippSorter.GetFilenames();
                     zspacing = ippSorter.GetZSpacing();
-                    OSLM_TRACE("Found z-spacing:" << ippSorter.GetZSpacing());
                 }
                 else
                 {
@@ -374,18 +367,14 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                 fileArray->Initialize();
                 if(isSorted)
                 {
-                    SLM_TRACE("Success to sort '" + elt.first+"'");
                     if (!zspacing && sorted.size() > 1)
                     {
-                        SLM_TRACE( "Guessing zspacing ..." );
                         if (!sorted.empty())
                         {
                             ::gdcm::Reader localReader1;
                             ::gdcm::Reader localReader2;
                             const std::string& f1 = *(sorted.begin());
                             const std::string& f2 = *(sorted.begin() + 1);
-                            SLM_TRACE( "Search spacing in: '" + f1 +"'");
-                            SLM_TRACE( "Search spacing in: '" + f2 +"'");
 
                             localReader1.SetFileName( f1.c_str() );
                             localReader2.SetFileName( f2.c_str() );
@@ -397,9 +386,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                                 const std::vector<double> vOrigin2 =
                                     ::gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
                                 zspacing = vOrigin2[2] - vOrigin1[2];
-                                OSLM_TRACE(
-                                    "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
-                                        vOrigin1[2]);
                             }
                             SLM_ERROR_IF("Cannot read: '" + f1 + "' or: '" + f2 +"'", !canRead);
                         }
@@ -408,7 +394,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
 
                 for(const std::string& file : sorted)
                 {
-                    SLM_TRACE("Add '" + file + "' to vtkGdcmReader");
                     fileArray->InsertNextValue(file.c_str());
                 }
 
@@ -419,7 +404,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                     reader->SetFileNames( fileArray );
                     try
                     {
-                        SLM_TRACE("Read Series: '" + elt.first + "'");
 
                         //add progress observation
                         vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > progressCallback =
@@ -446,12 +430,12 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                         }
                         catch(std::exception& e)
                         {
-                            OSLM_ERROR("VTKImage to fwData::Image failed : "<<e.what());
+                            SLM_ERROR("VTKImage to fwData::Image failed : "<<e.what());
                         }
                     }
                     catch (std::exception& e)
                     {
-                        OSLM_ERROR( "Error during conversion : " << e.what() );
+                        SLM_ERROR( "Error during conversion : " << e.what() );
                     }
                     catch (...)
                     {
@@ -662,7 +646,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
     }
     catch (std::exception& e)
     {
-        OSLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
+        SLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
         for(const auto filename : _filenames)
         {
             SLM_ERROR("file error : " + filename );

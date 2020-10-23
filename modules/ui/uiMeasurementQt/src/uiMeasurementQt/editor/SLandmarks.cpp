@@ -113,12 +113,12 @@ void SLandmarks::configuring()
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
-    OSLM_FATAL_IF(
+    SLM_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
     m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
-    OSLM_FATAL_IF(
+    SLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
@@ -313,7 +313,7 @@ void SLandmarks::onColorButton()
 
 void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
 {
-    OSLM_ERROR_IF("A column different from the group's name is being edited", _column != 0);
+    SLM_ERROR_IF("A column different from the group's name is being edited", _column != 0);
     m_treeWidget->blockSignals(true);
 
     if(_column == 0)
@@ -896,7 +896,7 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
     QTreeWidgetItem* const item = getGroupItem(_groupName);
 
-    OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
+    SLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
     QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
     item->removeChild(pointItem);
@@ -977,7 +977,7 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
 
         QTreeWidgetItem* const item = itemList.at(0);
 
-        OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
+        SLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
         QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
 
@@ -1006,7 +1006,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
     if(m_advancedMode)
     {
-        OSLM_ASSERT(
+        SLM_ASSERT(
             "Index must be less than " << currentItem->childCount(),
                 static_cast<int>(_index) < currentItem->childCount());
 

@@ -109,7 +109,7 @@ void SMatrixTLSynchronizer::synchronize()
 
                 {
                     ::fwData::mt::ObjectWriteLock lock(matrix);
-                    OSLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
+                    SLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
 
                     matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
 
@@ -135,7 +135,7 @@ void SMatrixTLSynchronizer::synchronize()
             }
         }
 
-        OSLM_DEBUG( std::endl <<matrixPrint.str());
+        SLM_DEBUG( std::endl <<matrixPrint.str());
     }
 }
 

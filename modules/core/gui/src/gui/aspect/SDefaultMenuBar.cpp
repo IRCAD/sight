@@ -55,7 +55,6 @@ void SDefaultMenuBar::configuring()
 
 void SDefaultMenuBar::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
 }
 
@@ -63,7 +62,6 @@ void SDefaultMenuBar::starting()
 
 void SDefaultMenuBar::stopping()
 {
-    SLM_TRACE_FUNC();
     this->destroy();
 }
 
@@ -71,7 +69,6 @@ void SDefaultMenuBar::stopping()
 
 void SDefaultMenuBar::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

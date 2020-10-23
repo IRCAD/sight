@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,6 +45,8 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
+#include <regex>
+
 namespace fwCore
 {
 namespace log
@@ -54,6 +56,23 @@ SpyLogger SpyLogger::s_spyLogger;
 
 BOOST_LOG_GLOBAL_LOGGER(lg, ::boost::log::sources::severity_logger_mt< ::boost::log::trivial::severity_level >);
 BOOST_LOG_GLOBAL_LOGGER_DEFAULT(lg, ::boost::log::sources::severity_logger_mt< ::boost::log::trivial::severity_level >);
+
+//-----------------------------------------------------------------------------
+
+std::string stripFilePath(const char* path)
+{
+    // Keep the minimum file tree necessary to identify the file, i.e.
+    // /home/user/dev/sight/modules/visu/visuOgreAdaptor/src/visuOgreAdaptor/SCamera.cpp -> visuOgreAdaptor/SCamera.cpp
+    static const std::regex regex("(include|src)(?!.*(src|include))/(.*)");
+
+    std::smatch match;
+    std::string strippedPath(path);
+    if( std::regex_search(strippedPath, match, regex) )
+    {
+        strippedPath.assign(match[3].first, match[3].second);
+    }
+    return strippedPath;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -154,52 +173,50 @@ void SpyLogger::setLevel(LevelType level)
 
 void SpyLogger::trace(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::trace) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::trace) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::debug(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::debug) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::debug) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::info(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::info) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::info) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::warn(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::warning) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::warning) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::error(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::fatal(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::fatal) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::fatal) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::log(const std::string& mes, const char* file, int line)
 {
-    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << file << ":" << line << ": "<< mes;
+    BOOST_LOG_SEV(lg::get(), ::boost::log::trivial::error) << "[" << stripFilePath(file) << ":" << line << "] "<< mes;
 }
-
-//-----------------------------------------------------------------------------
 
 } // namespace log
 } // namespace fwCore

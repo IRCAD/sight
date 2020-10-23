@@ -48,7 +48,6 @@ DicomInstance::DicomInstance() :
     m_SOPClassUID(""),
     m_logger(nullptr)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

@@ -113,7 +113,7 @@ Extension::Validity Extension::validate()
 
     // Validates the extension.
     std::shared_ptr< detail::io::Validator >   validator( point->getExtensionValidator() );
-    OSLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
+    SLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>
     validator->clearErrorLog();
@@ -125,7 +125,7 @@ Extension::Validity Extension::validate()
     {
         m_validity = Invalid;
         const std::string identifier = m_id.empty() ? "anonymous" : m_id;
-        OSLM_ERROR(
+        SLM_ERROR(
             "In bundle " << getModule()->getIdentifier() << ". " << identifier
                          << ": invalid extension XML element node does not respect schema. Verification error log is : "
                          << std::endl << validator->getErrorLog() );

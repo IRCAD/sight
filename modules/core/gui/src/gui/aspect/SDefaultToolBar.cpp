@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwGui::IToolBarSrv, ::gui::aspect::SDefaultToolBar );
+fwServicesRegisterMacro( ::fwGui::IToolBarSrv, ::gui::aspect::SDefaultToolBar )
 
 namespace gui
 {
@@ -46,7 +46,6 @@ SDefaultToolBar::~SDefaultToolBar() noexcept
 
 void SDefaultToolBar::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
 }
 
@@ -54,7 +53,6 @@ void SDefaultToolBar::starting()
 
 void SDefaultToolBar::stopping()
 {
-    SLM_TRACE_FUNC();
     this->destroy();
 }
 
@@ -62,7 +60,6 @@ void SDefaultToolBar::stopping()
 
 void SDefaultToolBar::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 
@@ -70,14 +67,12 @@ void SDefaultToolBar::configuring()
 
 void SDefaultToolBar::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void SDefaultToolBar::info( std::ostream& _sstream )
 {
-    SLM_TRACE_FUNC();
 }
 
 }

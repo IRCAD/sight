@@ -187,8 +187,8 @@ void SCameraConfigLauncher::swapping()
 
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
-    OSLM_ASSERT("Bad index: " << index,
-                index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
+    SLM_ASSERT("Bad index: " << index,
+               index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
 
     if (index == 0)
     {
@@ -362,7 +362,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    OSLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
+    SLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);

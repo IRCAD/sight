@@ -778,7 +778,6 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
 
         if (result.good())
         {
-            SLM_TRACE("Received series " + seriesInstanceUID);
         }
         else
         {
@@ -811,7 +810,6 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
 
         if (result.good())
         {
-            SLM_TRACE("Received series " + seriesInstanceUID);
         }
         else
         {
@@ -844,7 +842,6 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
@@ -876,7 +873,6 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seri
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
@@ -903,7 +899,6 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
 
         if (result.good())
         {
-            SLM_TRACE("Instance sent.");
         }
         else
         {
@@ -934,7 +929,6 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 
         if (result.good())
         {
-            SLM_TRACE("Instance sent.");
         }
         else
         {
@@ -986,14 +980,12 @@ OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID
         OFString seriesID;
         if(_incomingObject->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
         {
-            SLM_TRACE("Series Instance UID: " + std::string(seriesID.c_str()));
         }
 
         // Find the instance UID.
         OFString iname;
         if(_incomingObject->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
         {
-            SLM_TRACE("SOP Instance UID: " + std::string(iname.c_str()));
         }
 
         // Create Folder.

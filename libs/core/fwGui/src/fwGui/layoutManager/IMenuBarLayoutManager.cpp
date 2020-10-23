@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,11 +51,10 @@ IMenuBarLayoutManager::~IMenuBarLayoutManager()
 
 void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
-    SLM_TRACE_IF("No menu define.", vectMenus.empty() );
     m_menus.clear();
     for (ConfigurationType menu : vectMenus)
     {
@@ -90,6 +89,3 @@ std::vector< ::fwGui::container::fwMenu::sptr > IMenuBarLayoutManager::getMenus(
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-

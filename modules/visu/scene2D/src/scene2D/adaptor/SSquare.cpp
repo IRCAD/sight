@@ -129,7 +129,6 @@ void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
         {
             if ( this->coordViewIsInItem( _event.getCoord(), m_rec ) )
             {
-                SLM_TRACE("Point is captured");
                 m_pointIsCaptured = true;
                 m_oldCoord        = this->coordViewToCoordItem( _event.getCoord(), m_rec );
                 m_rec->setBrush( Qt::yellow );

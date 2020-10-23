@@ -52,7 +52,6 @@ SQuit::~SQuit() noexcept
 
 void SQuit::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 
@@ -60,7 +59,6 @@ void SQuit::configuring()
 
 void SQuit::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -68,7 +66,6 @@ void SQuit::starting()
 
 void SQuit::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 

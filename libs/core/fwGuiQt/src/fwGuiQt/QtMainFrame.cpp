@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,6 @@ void QtMainFrame::setCloseCallback(CloseCallback fct)
 
 void QtMainFrame::closeEvent(QCloseEvent* event)
 {
-    SLM_TRACE_FUNC();
     m_fctCloseCallback();
     event->ignore();
 }
@@ -67,4 +66,3 @@ void QtMainFrame::closeEvent(QCloseEvent* event)
 //------------------------------------------------------------------------------
 
 } // fwGuiQt
-

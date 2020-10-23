@@ -65,7 +65,6 @@ ImageTransparency::~ImageTransparency() noexcept
 
 void ImageTransparency::starting()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -104,7 +103,6 @@ void ImageTransparency::starting()
 
 void ImageTransparency::stopping()
 {
-    SLM_TRACE_FUNC();
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
     QObject::disconnect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
@@ -116,7 +114,6 @@ void ImageTransparency::stopping()
 
 void ImageTransparency::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
 
     //<shortcut value="X"/>
@@ -191,7 +188,6 @@ void ImageTransparency::info( std::ostream& _sstream )
 
 void ImageTransparency::onModifyTransparency(int value)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
@@ -209,7 +205,6 @@ void ImageTransparency::onModifyTransparency(int value)
 
 void ImageTransparency::onModifyVisibility(bool value)
 {
-    SLM_TRACE_FUNC();
     m_valueCheckBox->setCheckState(value ? Qt::Checked : Qt::Unchecked);
     this->notifyVisibility(value);
 }
@@ -218,7 +213,6 @@ void ImageTransparency::onModifyVisibility(bool value)
 
 void ImageTransparency::onModifyVisibility(int value)
 {
-    SLM_TRACE_FUNC();
     m_action->setChecked(value == Qt::Checked);
 
     this->notifyVisibility(value == Qt::Checked);

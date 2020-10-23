@@ -66,11 +66,10 @@ CardinalLayoutManagerBase::~CardinalLayoutManagerBase()
 
 void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectViews = configuration->find("view");
-    SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
     for (ConfigurationType view : vectViews)
     {
@@ -78,7 +77,7 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("align") )
         {
             const std::string align = view->getExistingAttributeValue("align");
-            OSLM_ASSERT("Align "<<align<<" unknown", STRING_TO_ALIGN.find(align) != STRING_TO_ALIGN.end() );
+            SLM_ASSERT("Align "<<align<<" unknown", STRING_TO_ALIGN.find(align) != STRING_TO_ALIGN.end() );
             vi.m_align = STRING_TO_ALIGN.find(align)->second;
         }
 
@@ -97,8 +96,8 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("resizable") )
         {
             const std::string resizable = view->getExistingAttributeValue("resizable");
-            OSLM_ASSERT("Incorrect value for \"resizable\" attribute "<<resizable,
-                        (resizable == "yes") || (resizable == "no"));
+            SLM_ASSERT("Incorrect value for \"resizable\" attribute "<<resizable,
+                       (resizable == "yes") || (resizable == "no"));
             vi.m_isResizable = (resizable == "yes");
         }
 
@@ -123,9 +122,9 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("visible") )
         {
             const std::string visible = view->getExistingAttributeValue("visible");
-            OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                        (visible == "true") || (visible == "false") ||
-                        (visible == "yes") || (visible == "no"));
+            SLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                       (visible == "true") || (visible == "false") ||
+                       (visible == "yes") || (visible == "no"));
             vi.m_visible = ((visible == "true") || (visible == "yes"));
         }
 
@@ -138,8 +137,8 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("useScrollBar") )
         {
             const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-            OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                        (useScrollBar == "yes") || (useScrollBar == "no"));
+            SLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                       (useScrollBar == "yes") || (useScrollBar == "no"));
             vi.m_useScrollBar = (useScrollBar == "yes");
         }
         if( view->hasAttribute("toolTip") )
@@ -152,7 +151,7 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
             const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
             if(!hexaColor.empty())
             {
-                OSLM_ASSERT(
+                SLM_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "
                     "hexadecimal digits. Given color: " << hexaColor,
                         hexaColor[0] == '#'

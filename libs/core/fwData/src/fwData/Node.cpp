@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,6 @@ Node::Node(::fwData::Object::Key key) :
 
 Node::~Node()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +136,7 @@ void Node::shallowCopy(const Object::csptr& _source )
     if( other->getObject())
     {
         ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
-        OSLM_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
+        SLM_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->shallowCopy( other->m_object );
     }

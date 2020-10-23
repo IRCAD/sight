@@ -168,7 +168,7 @@ void SStarter::updating()
                     }
                     else
                     {
-                        OSLM_WARN("Service " << service->getID() << " is not stopped");
+                        SLM_WARN("Service " << service->getID() << " is not stopped");
                     }
                     service->update();
                     break;
@@ -181,7 +181,7 @@ void SStarter::updating()
                     }
                     else
                     {
-                        OSLM_WARN("Service " << service->getID() << " is not started");
+                        SLM_WARN("Service " << service->getID() << " is not started");
                     }
                     break;
                 }
@@ -194,15 +194,15 @@ void SStarter::updating()
                     }
                     else
                     {
-                        OSLM_WARN("Service " << service->getID() << " is not stopped");
+                        SLM_WARN("Service " << service->getID() << " is not stopped");
                     }
                     break;
                 }
                 default:
                 {
-                    OSLM_FATAL("There is no action ("<< action
-                                                     <<") type corresponding to the action id requested for " << uid <<
-                               ".");
+                    SLM_FATAL("There is no action ("<< action
+                                                    <<") type corresponding to the action id requested for " << uid <<
+                              ".");
                     break;
                 }
             }
@@ -214,7 +214,7 @@ void SStarter::updating()
                 "The service is unavailable.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
 
-            OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
+            SLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
     }
 }
@@ -227,7 +227,7 @@ void SStarter::configuring()
 
     for(ConfigurationType actionCfg :  m_configuration->getElements() )
     {
-        OSLM_INFO( "SStarter " << actionCfg->getName());
+        SLM_INFO( "SStarter " << actionCfg->getName());
 
         std::string actionType = actionCfg->getName();
         ActionType action;
@@ -261,7 +261,7 @@ void SStarter::configuring()
         }
         else
         {
-            OSLM_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
+            SLM_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
             continue;
         }
         SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SReprojectionError);
+fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SReprojectionError)
 
 namespace videoCalibration
 {
@@ -92,7 +92,7 @@ void SReprojectionError::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_patternWidth                            = config.get<double>("patternWidth", m_patternWidth);
-    OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+    SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
     auto inCfg = config.equal_range("in");
     for (auto itCfg = inCfg.first; itCfg != inCfg.second; ++itCfg)
@@ -172,7 +172,7 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
             ::fwCore::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
             if(ts <= 0)
             {
-                OSLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
+                SLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
                 return;
             }
 

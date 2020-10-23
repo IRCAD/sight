@@ -180,7 +180,6 @@ SModelSeriesList::~SModelSeriesList() noexcept
 
 void SModelSeriesList::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     const ConfigType configType = this->getConfigTree();
@@ -220,7 +219,6 @@ void SModelSeriesList::configuring()
 
 void SModelSeriesList::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
@@ -312,7 +310,6 @@ void SModelSeriesList::updating()
 
 void SModelSeriesList::stopping()
 {
-    SLM_TRACE_FUNC();
 
     if(m_enableHideAll)
     {
@@ -394,7 +391,7 @@ void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::Mod
         for(auto const& cIt :  m_displayedInfo)
         {
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(reconstruction, cIt.first);
-            OSLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }
         QTreeWidgetItem* item = new QTreeWidgetItem(info);

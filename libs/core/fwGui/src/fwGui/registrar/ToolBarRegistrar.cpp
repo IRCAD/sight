@@ -171,9 +171,9 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr 
     ::fwGui::container::fwMenuItem::sptr menuItem;
     for( SIDToolBarMapType::value_type sid :  m_actionSids)
     {
-        OSLM_ASSERT("The toolBar '" << m_sid << "' contains more menuItem in <registry> than in <layout>: "
-                                    << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
-                    sid.second.first < menuItems.size());
+        SLM_ASSERT("The toolBar '" << m_sid << "' contains more menuItem in <registry> than in <layout>: "
+                                   << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
+                   sid.second.first < menuItems.size());
         menuItem = menuItems.at( sid.second.first );
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
@@ -208,9 +208,9 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
     ::fwGui::container::fwMenu::sptr menu;
     for( SIDToolBarMapType::value_type sid :  m_menuSids)
     {
-        OSLM_ASSERT("The toolBar '" << m_sid << "' contains more menu in <regitry> than in <layout>: "
-                                    << (sid.second.first+1) << " menu in <regitry>, but only " << menus.size() <<"  in <layout>.",
-                    sid.second.first < menus.size());
+        SLM_ASSERT("The toolBar '" << m_sid << "' contains more menu in <regitry> than in <layout>: "
+                                   << (sid.second.first+1) << " menu in <regitry>, but only " << menus.size() <<"  in <layout>.",
+                   sid.second.first < menus.size());
         menu = menus.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
@@ -232,9 +232,9 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr
     ::fwGui::container::fwContainer::sptr container;
     for( SIDToolBarMapType::value_type sid :  m_editorSids)
     {
-        OSLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
-                                    << (sid.second.first+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
-                    sid.second.first < containers.size());
+        SLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+                                   << (sid.second.first+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
+                   sid.second.first < containers.size());
         container = containers.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
@@ -250,9 +250,9 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr
 
     for( WIDToolBarMapType::value_type wid :  m_editorWids)
     {
-        OSLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
-                                    << (wid.second+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
-                    wid.second < containers.size());
+        SLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+                                   << (wid.second+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
+                   wid.second < containers.size());
         container = containers.at( wid.second );
         ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
     }
@@ -266,10 +266,10 @@ void ToolBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(
-                            sid.first ) );
+            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(
+                           sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }
@@ -279,10 +279,10 @@ void ToolBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(
-                            sid.first ) );
+            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(
+                           sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }
@@ -292,10 +292,10 @@ void ToolBarRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(
-                            sid.first ) );
+            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(
+                           sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }

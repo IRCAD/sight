@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,6 @@ MenuLayoutManager::~MenuLayoutManager()
 
 void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 {
-    SLM_TRACE_FUNC();
 
     m_parent = ::fwGuiQt::container::QtMenuContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
@@ -124,7 +123,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
         if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu )
         {
             m_menuItems.push_back(menuItem);
-            OSLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            SLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ::fwGui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
             ::fwGuiQt::ActionCallback::sptr qtCallback = ::fwGuiQt::ActionCallback::dynamicCast(callback);

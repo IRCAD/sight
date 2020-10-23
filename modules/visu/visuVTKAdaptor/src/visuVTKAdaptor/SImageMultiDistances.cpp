@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -422,7 +422,7 @@ void SImageMultiDistances::createNewDistance( std::string sceneId )
                                                                ::fwData::Vector::New());
     distanceField->getContainer().push_back(newPL);
 
-    OSLM_INFO("DistanceField size: " << distanceField->size() );
+    SLM_INFO("DistanceField size: " << distanceField->size() );
 
     int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
     int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];

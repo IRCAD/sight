@@ -45,14 +45,12 @@ namespace fwItkIO
 ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageWriter::~ImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 struct ITKSaverFunctor
@@ -70,7 +68,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
+        SLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre

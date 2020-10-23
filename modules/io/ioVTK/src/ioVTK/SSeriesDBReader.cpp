@@ -118,14 +118,12 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

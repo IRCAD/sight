@@ -103,14 +103,12 @@ SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     m_job(::fwJobs::Observer::New("SeriesDB reader")),
     m_lazyMode(true)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBReader::~SeriesDBReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

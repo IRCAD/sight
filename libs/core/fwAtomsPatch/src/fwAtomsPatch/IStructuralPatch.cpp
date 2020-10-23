@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,16 @@
  *
  ***********************************************************************/
 
-#include <fwAtomsPatch/types.hpp>
-
 #include "fwAtomsPatch/IStructuralPatch.hpp"
+
 #include "fwAtomsPatch/helper/functions.hpp"
+#include <fwAtomsPatch/types.hpp>
 
 namespace fwAtomsPatch
 {
 
-IStructuralPatch::IStructuralPatch() : IPatch()
+IStructuralPatch::IStructuralPatch() :
+    IPatch()
 {
 }
 
@@ -40,7 +41,8 @@ IStructuralPatch::~IStructuralPatch()
 
 // ----------------------------------------------------------------------------
 
-IStructuralPatch::IStructuralPatch( const IStructuralPatch &cpy ) : IPatch(cpy)
+IStructuralPatch::IStructuralPatch( const IStructuralPatch& cpy ) :
+    IPatch(cpy)
 {
     m_originClassname = cpy.getOriginClassname();
     m_targetClassname = cpy.getTargetClassname();
@@ -62,14 +64,14 @@ void IStructuralPatch::apply(const ::fwAtoms::Object::sptr& previous,
                              const ::fwAtoms::Object::sptr& current,
                              ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
-    OSLM_ASSERT("The type of the previous object (" << ::fwAtomsPatch::helper::getClassname(
-                    previous)
-                                                    << ") does not match the required type (" << m_originClassname << ").",
-                ::fwAtomsPatch::helper::getClassname(previous) == m_originClassname);
-    OSLM_ASSERT("The version of the previous object (" << ::fwAtomsPatch::helper::getVersion(
-                    previous)
-                                                       << ") does not match the required version (" << m_originVersion << ").",
-                ::fwAtomsPatch::helper::getVersion(previous) == m_originVersion);
+    SLM_ASSERT("The type of the previous object (" << ::fwAtomsPatch::helper::getClassname(
+                   previous)
+                                                   << ") does not match the required type (" << m_originClassname << ").",
+               ::fwAtomsPatch::helper::getClassname(previous) == m_originClassname);
+    SLM_ASSERT("The version of the previous object (" << ::fwAtomsPatch::helper::getVersion(
+                   previous)
+                                                      << ") does not match the required version (" << m_originVersion << ").",
+               ::fwAtomsPatch::helper::getVersion(previous) == m_originVersion);
 }
 
 // ----------------------------------------------------------------------------
@@ -85,7 +87,5 @@ const std::string& IStructuralPatch::getTargetVersion() const
 {
     return m_targetVersion;
 }
-
-
 
 } //fwAtomsPatch

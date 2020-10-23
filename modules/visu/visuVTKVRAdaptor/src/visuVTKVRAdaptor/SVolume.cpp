@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKVRAdaptor::SVolume);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKVRAdaptor::SVolume)
 
 //-----------------------------------------------------------------------------
 
@@ -513,7 +513,7 @@ void SVolume::buildPipeline( )
     }
     else
     {
-        OSLM_WARN("blend mode '"<< m_blendMode <<"' is unknown. Should be min, max, average, composite or additive.");
+        SLM_WARN("blend mode '"<< m_blendMode <<"' is unknown. Should be min, max, average, composite or additive.");
     }
 
     m_volume->SetMapper(m_volumeMapper);

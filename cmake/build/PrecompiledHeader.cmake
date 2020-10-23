@@ -215,8 +215,7 @@ function(add_precompiled_header _target _input)
         set(_pch_compile_flags "")
         if(_source STREQUAL "${_PCH_SOURCE_CXX}")
             set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \
-                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\\include\\${_target}\" \
-                                    \"/FI${CMAKE_CURRENT_BINARY_DIR}\\include\\${_target}\\spyLogLevel.hpp\"")
+                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\\include\\${_target}\"")
             set(_pch_source_cxx_found TRUE)
             set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
 
@@ -316,14 +315,14 @@ function(add_precompiled_header _target _input)
         COMMENT "Generating pch deps file for ${_target} (PCH)")
       add_custom_command(
         OUTPUT "${_output_cxx}"
-        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -include "${_target}/spyLogLevel.hpp" -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
         DEPENDS "${_pch_header}" "${_pch_flags_file}" "${_pch_binary_dir}/pch.d"
         DEPFILE "${_pch_binary_dir}/pch.d"
         COMMENT "Precompiling ${_name} for ${_target} (PCH)")
     else()
       add_custom_command(
         OUTPUT "${_output_cxx}"
-        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -include "${_target}/spyLogLevel.hpp" -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
         DEPENDS "${_pch_header}" "${_pch_flags_file}"
         IMPLICIT_DEPENDS CXX "${_pch_header}"
         COMMENT "Precompiling ${_name} for ${_target} (PCH)")
@@ -367,15 +366,6 @@ function(use_precompiled_header _target _input)
                                                         OBJECT_DEPENDS "${_object_depends}")
             endif()
         endforeach()
-
-        # Add the SPYLOG_LEVEL of the source pch target
-        # It will not be used but this makes the compiler happy
-        get_target_property(_pch_compile_definitions ${${_target}_PCH_TARGET} COMPILE_DEFINITIONS)
-        foreach(def ${_pch_compile_definitions})
-            if("${def}" MATCHES "SPYLOG_LEVEL_")
-                target_compile_definitions(${_target} PRIVATE ${def})
-            endif()
-        endforeach()
     endif(MSVC)
 
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -390,15 +380,6 @@ function(use_precompiled_header _target _input)
 
             # Add the location of the pch as an include directory
             target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/${_input}/include/${_input} )
-
-            # Add the SPYLOG_LEVEL of the source pch target
-            # It will not be used but this makes the compiler happy
-            get_target_property(_input_compile_definitions ${_input} COMPILE_DEFINITIONS)
-            foreach(def ${_input_compile_definitions})
-                if("${def}" MATCHES "SPYLOG_LEVEL_")
-                    target_compile_definitions(${_target} PRIVATE ${def})
-                endif()
-            endforeach()
         endif()
         set(_output_cxx "${_outdir}")
 

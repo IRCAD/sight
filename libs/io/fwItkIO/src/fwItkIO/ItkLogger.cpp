@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -72,28 +72,28 @@ ItkLogger::~ItkLogger()
 
 void ItkLogger::DisplayText(const char* _txt)
 {
-    OSLM_INFO("[ITK]: " << _txt);
+    SLM_INFO("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayErrorText(const char* _txt)
 {
-    OSLM_ERROR("[ITK]: " << _txt);
+    SLM_ERROR("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayWarningText(const char* _txt)
 {
-    OSLM_WARN("[ITK]: " << _txt);
+    SLM_WARN("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayDebugText(const char* _txt)
 {
-    OSLM_DEBUG("[ITK]: " << _txt);
+    SLM_DEBUG("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------

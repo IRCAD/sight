@@ -98,7 +98,6 @@ bool defineLabel(std::string& name)
 
 void AddLandmark::updating()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
 
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))

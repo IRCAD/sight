@@ -52,7 +52,7 @@ void Color::createConfig(::fwTools::Object::sptr _obj)
     {
         const ::fwRuntime::ConfigurationElement::csptr config = *configs.begin();
         const std::string hexaColor                           = config->getValue();
-        OSLM_ASSERT(
+        SLM_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
             "hexadecimal digits. Given color: " << hexaColor,
                 hexaColor[0] == '#'

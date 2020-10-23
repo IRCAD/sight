@@ -121,7 +121,7 @@ void IParameter::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_paramName = config.get<std::string>("parameter", "");
-    OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
+    SLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
     m_techniqueName = config.get<std::string>("technique", "");
 
@@ -142,7 +142,7 @@ void IParameter::configuring()
         }
         else
         {
-            OSLM_ERROR("This shader type " << shaderType << " isn't supported yet");
+            SLM_ERROR("This shader type " << shaderType << " isn't supported yet");
         }
     }
 }
@@ -170,7 +170,7 @@ void IParameter::updating()
 
         if( !bSet )
         {
-            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
                       + m_material->getName() + "'");
         }
         else
@@ -181,11 +181,11 @@ void IParameter::updating()
     else
     {
         ::Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
-        OSLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
+        SLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
         if( this->setParameter(*tech) )
         {
-            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
+            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_material->getName() + "'");
         }
         else
@@ -349,12 +349,12 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             }
             else
             {
-                OSLM_ERROR("Array type not handled: " << arrayObject->getType());
+                SLM_ERROR("Array type not handled: " << arrayObject->getType());
             }
         }
         else
         {
-            OSLM_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
+            SLM_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
         }
     }
     else if(objClass == "::fwData::Image")
@@ -388,7 +388,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     // We allow to work on the SRender composite and interact with slots instead
     else if(objClass != "::fwData::Composite")
     {
-        OSLM_ERROR("This Type " << objClass << " isn't supported.");
+        SLM_ERROR("This Type " << objClass << " isn't supported.");
     }
 
     return true;

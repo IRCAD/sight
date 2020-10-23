@@ -68,7 +68,6 @@ STextureSelector::~STextureSelector() noexcept
 
 void STextureSelector::starting()
 {
-    SLM_TRACE_FUNC();
 
     this->create();
 
@@ -100,7 +99,6 @@ void STextureSelector::starting()
 
 void STextureSelector::stopping()
 {
-    SLM_TRACE_FUNC();
 
     this->destroy();
 }
@@ -109,7 +107,6 @@ void STextureSelector::stopping()
 
 void STextureSelector::configuring()
 {
-    SLM_TRACE_FUNC();
 
     this->initialize();
 }

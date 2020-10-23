@@ -52,7 +52,6 @@ BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("Bitmap image writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

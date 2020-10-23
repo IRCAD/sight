@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,7 +76,7 @@ void vtkOutputWindowToSpyLog::PrintSelf(ostream& os, vtkIndent indent)
 
 void vtkOutputWindowToSpyLog::DisplayText(const char* txt)
 {
-    OSLM_WARN("[VTK]: " << txt);
+    SLM_WARN("[VTK]: " << txt);
 }
 
 //------------------------------------------------------------------------------

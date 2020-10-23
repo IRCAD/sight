@@ -58,21 +58,18 @@ static const ::fwServices::IService::KeyType s_FILTER_INOUT = "filter";
 SFilterSelectorDialog::SFilterSelectorDialog() :
     m_filtersAreExcluded( true )
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 SFilterSelectorDialog::~SFilterSelectorDialog()  noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SFilterSelectorDialog::configuring()
 {
-    SLM_TRACE_FUNC();
 
     m_selectedFilters.clear();
 
@@ -112,21 +109,18 @@ void SFilterSelectorDialog::configuring()
 
 void SFilterSelectorDialog::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SFilterSelectorDialog::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SFilterSelectorDialog::updating()
 {
-    SLM_TRACE_FUNC();
 
     // Retrieve available filters
     std::vector< ::fwDicomIOFilter::IFilter::sptr > registredFilters;

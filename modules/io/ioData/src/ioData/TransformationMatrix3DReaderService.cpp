@@ -78,7 +78,6 @@ std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExte
 
 void TransformationMatrix3DReaderService::starting( )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,14 +124,12 @@ void TransformationMatrix3DReaderService::openLocationDialog()
 
 void TransformationMatrix3DReaderService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::updating()
 {
-    SLM_TRACE_FUNC();
     if(this->hasLocationDefined())
     {
         // Retrieve object

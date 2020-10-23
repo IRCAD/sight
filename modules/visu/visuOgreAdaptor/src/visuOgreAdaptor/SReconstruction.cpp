@@ -145,7 +145,6 @@ void SReconstruction::createMeshService()
 
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
 
-    SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
@@ -170,8 +169,6 @@ void SReconstruction::createMeshService()
 
         m_meshAdaptor = meshAdaptor;
 
-        OSLM_TRACE("Mesh is visible : " << reconstruction->getIsVisible());
-        OSLM_TRACE("Mesh nb points : " << mesh->getNumberOfPoints());
     }
 }
 

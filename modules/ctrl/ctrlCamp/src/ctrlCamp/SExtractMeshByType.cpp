@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@
 namespace ctrlCamp
 {
 
-fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractMeshByType);
+fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractMeshByType)
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ void SExtractMeshByType::configuring()
             if(cfg->getAttributeValue("group") == "target")
             {
                 const std::vector< ConfigType > keyCfg = cfg->find("key");
-                OSLM_ASSERT(
+                SLM_ASSERT(
                     "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " <<  keyCfg.size(),
                         extractCfg.size() == keyCfg.size());
                 ok = true;
@@ -103,7 +103,7 @@ void SExtractMeshByType::starting()
 void SExtractMeshByType::updating()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries>("source");
-    OSLM_ASSERT("ModelSeries not found", modelSeries);
+    SLM_ASSERT("ModelSeries not found", modelSeries);
 
     ::fwData::mt::ObjectReadLock lock(modelSeries);
 
@@ -135,7 +135,7 @@ void SExtractMeshByType::updating()
                 }
             }
         }
-        OSLM_ERROR_IF(
+        SLM_ERROR_IF(
             "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
                 !found);
     }

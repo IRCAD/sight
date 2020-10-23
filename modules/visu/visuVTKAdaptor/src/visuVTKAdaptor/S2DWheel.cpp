@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::S2DWheel);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::S2DWheel)
 
 namespace visuVTKAdaptor
 {
@@ -86,7 +86,7 @@ void S2DWheel::starting()
     m_wheelWidget->On();
     m_wheelWidget->SetWheelUpdateCallback([this](double cx, double cy, double o)
         {
-            OSLM_DEBUG("Center : " << "(" << cx << ", " << cy << "), Orientation : " << o);
+            SLM_DEBUG("Center : " << "(" << cx << ", " << cy << "), Orientation : " << o);
             this->m_wheelUpdatedSignal->asyncEmit(cx, cy, o);
         });
 

@@ -148,13 +148,11 @@ void SVTKMesher::updating()
         decimate->SetSplitAngle( 120 );
         decimate->Update();
         polyData = decimate->GetOutput();
-        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
 

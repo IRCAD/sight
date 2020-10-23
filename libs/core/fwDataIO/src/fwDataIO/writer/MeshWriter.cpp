@@ -54,7 +54,7 @@ MeshWriter::~MeshWriter()
 
 void MeshWriter::write()
 {
-    OSLM_INFO( "[MeshReader::read] Trian file: " << getFile());
+    SLM_INFO( "[MeshReader::read] Trian file: " << getFile());
     assert( getFile().empty() == false );
 
     ::fwData::Mesh::csptr mesh = this->getConcreteObject();
@@ -67,7 +67,7 @@ void MeshWriter::write()
 
     if (!file.is_open())
     {
-        OSLM_ERROR( "Trian file writing error for " << getFile().string());
+        SLM_ERROR( "Trian file writing error for " << getFile().string());
         std::string str = "Unable to write ";
         str += getFile().string();
         throw std::ios_base::failure(str);

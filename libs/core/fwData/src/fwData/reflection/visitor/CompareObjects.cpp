@@ -147,7 +147,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
         }
         else
         {
-            OSLM_INFO("try visiting class= '" << metaclass.name() << " but a null pointer was found");
+            SLM_INFO("try visiting class= '" << metaclass.name() << " but a null pointer was found");
         }
         return prop;
     }
@@ -180,9 +180,8 @@ CompareObjects::~CompareObjects()
 
 void CompareObjects::visit(const camp::SimpleProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG("SimpleProperty name = " << name);
+    SLM_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
     PropertyVisitor visitor(getPath(name), m_props);
     PropType pt = elemValue.visit(visitor);
@@ -196,7 +195,6 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
 
 void CompareObjects::visit(const camp::EnumProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
     ::camp::Value elemValue = property.get(m_campObj);
 
@@ -212,9 +210,8 @@ void CompareObjects::visit(const camp::EnumProperty& property)
 
 void CompareObjects::visit(const camp::MapProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name(property.name());
-    OSLM_DEBUG("MapProperty name = " << name);
+    SLM_DEBUG("MapProperty name = " << name);
 
     std::pair< ::camp::Value, ::camp::Value > value;
     std::string mapKey;
@@ -235,9 +232,8 @@ void CompareObjects::visit(const camp::MapProperty& property)
 
 void CompareObjects::visit(const camp::ArrayProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name(property.name());
-    OSLM_DEBUG( "ArrayProperty name =" << name );
+    SLM_DEBUG( "ArrayProperty name =" << name );
 
     for(unsigned int i = 0; i < property.size(m_campObj); ++i)
     {
@@ -257,9 +253,8 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
 
 void CompareObjects::visit(const camp::UserProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG( "UserProperty name =" << name );
+    SLM_DEBUG( "UserProperty name =" << name );
     ::camp::Value elemValue = property.get( m_campObj );
 
     if(m_campObj.call("is_a", ::camp::Args("::fwData::Object")).to<bool>())

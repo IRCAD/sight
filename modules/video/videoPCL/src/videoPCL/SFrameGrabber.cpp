@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,12 +33,11 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
-
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <regex>
 
 namespace videoPCL
@@ -48,7 +47,7 @@ static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::arData::FrameTL);
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::arData::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ void SFrameGrabber::configuring()
 
     m_fps = config.get<unsigned int>("fps", 30);
 
-    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
+    SLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +127,7 @@ void SFrameGrabber::startCamera()
         else
         {
             this->setStartState(false);
-            OSLM_ERROR("Wrong file format. The format should be *.pcd.");
+            SLM_ERROR("Wrong file format. The format should be *.pcd.");
         }
     }
     else

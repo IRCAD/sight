@@ -130,8 +130,8 @@ void MedicalImage::setOrientation( MedicalImage::Orientation orientation )
 
 void MedicalImage::setOrientation( int orientation )
 {
-    OSLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
-                orientation == 0 || orientation == 1 || orientation == 2);
+    SLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
+               orientation == 0 || orientation == 1 || orientation == 2);
     this->setOrientation(static_cast< ::fwDataTools::helper::MedicalImage::Orientation >(orientation));
 }
 

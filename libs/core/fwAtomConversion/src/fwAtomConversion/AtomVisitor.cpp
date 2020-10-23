@@ -63,7 +63,7 @@ namespace fwAtomConversion
 
         bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
 
-        OSLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
+        SLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
     }
 
     return obj;

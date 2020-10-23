@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ void fwID::setID( IDType newID )
 
 void fwID::addIDInDictionary( IDType newID )
 {
-    OSLM_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
+    SLM_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
 
     ::fwCore::mt::WriteLock lock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);

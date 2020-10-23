@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -264,9 +264,9 @@ struct UseFactoryThread
         int duration = 20;
         for (int i = 0; i < s_NBOBJECTS; ++i)
         {
-            OSLM_WARN( "building 1 " << m_objectType << "... " );
+            SLM_WARN( "building 1 " << m_objectType << "... " );
             m_objects.push_back( m_factory.create(m_objectType, duration) );
-            OSLM_WARN( "built 1 " << m_objectType << "... " );
+            SLM_WARN( "built 1 " << m_objectType << "... " );
         }
     }
 
@@ -367,7 +367,7 @@ void FactoryRegistryTest::threadSafetyTest()
         CPPUNIT_ASSERT_EQUAL(size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
     }
 
-    CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NBOBJECTS * 2, ObjectTest::s_counter);
+    CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NBOBJECTS* 2, ObjectTest::s_counter);
     CPPUNIT_ASSERT_EQUAL(
         size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
         objectTestFactory.getFactoryKeys().size()

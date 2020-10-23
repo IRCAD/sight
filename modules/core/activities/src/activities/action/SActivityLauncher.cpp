@@ -121,7 +121,6 @@ void SActivityLauncher::starting()
 
 void SActivityLauncher::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -155,16 +154,16 @@ void SActivityLauncher::configuring()
                 m_parameters.push_back( parameter );
             }
         }
-        OSLM_ASSERT("A maximum of 1 <parameters> tag is allowed", config.count("parameters") < 2);
+        SLM_ASSERT("A maximum of 1 <parameters> tag is allowed", config.count("parameters") < 2);
 
         if(config.count("filter") == 1 )
         {
             const ::fwServices::IService::ConfigType& configFilter = config.get_child("filter");
-            OSLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+            SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
-            OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
-                        mode == "include" || mode == "exclude");
+            SLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+                       mode == "include" || mode == "exclude");
             m_filterMode = mode;
 
             BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("id") )
@@ -172,7 +171,7 @@ void SActivityLauncher::configuring()
                 m_keys.push_back(v.second.get<std::string>(""));
             }
         }
-        OSLM_ASSERT("A maximum of 1 <filter> tag is allowed", config.count("filter") < 2);
+        SLM_ASSERT("A maximum of 1 <filter> tag is allowed", config.count("filter") < 2);
 
         if(config.count("quickLaunch") == 1 )
         {
@@ -404,7 +403,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
     ::fwActivities::IBuilder::sptr builder;
     builder = ::fwActivities::builder::factory::New(info.builderImpl);
-    OSLM_ASSERT(info.builderImpl << " instantiation failed", builder);
+    SLM_ASSERT(info.builderImpl << " instantiation failed", builder);
 
     ::fwMedData::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
@@ -415,7 +414,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
                           "> failed.";
         ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
                                                            ::fwGui::dialog::IMessageDialog::WARNING);
-        OSLM_ERROR(msg);
+        SLM_ERROR(msg);
         return;
     }
 
@@ -492,7 +491,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     for(auto const& validatorImpl :  info.validatorsImpl)
     {
         ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
-        OSLM_ASSERT(validatorImpl << " instantiation failed", validator);
+        SLM_ASSERT(validatorImpl << " instantiation failed", validator);
 
         ::fwActivities::IValidator::ValidationType valid = validator->validate(info, selection);
         validation.first                                &= valid.first;
@@ -637,7 +636,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
             }
 
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(workingObj, parameterToReplace);
-            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 

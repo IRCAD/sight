@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList, ::fwData::PointList )
 
 namespace visuVTKARAdaptor
 {
@@ -68,7 +68,6 @@ SPointList::~SPointList() noexcept
 
 void SPointList::configuring()
 {
-    SLM_TRACE_FUNC();
 
     this->configureParams();
 

@@ -81,19 +81,19 @@ void IActionSrv::initialize()
 {
     m_registrar = ::fwGui::registrar::ActionRegistrar::New(this->getID());
 
-    OSLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
-                    "name"));
-    OSLM_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.",
-                !m_configuration->hasAttribute("shortcut"));
-    OSLM_ASSERT("Depreciated tag <enable> in "<< this->getID() << " configuration.",
-                !m_configuration->hasAttribute("enable"));
-    OSLM_ASSERT(
+    SLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
+                   "name"));
+    SLM_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.",
+               !m_configuration->hasAttribute("shortcut"));
+    SLM_ASSERT("Depreciated tag <enable> in "<< this->getID() << " configuration.",
+               !m_configuration->hasAttribute("enable"));
+    SLM_ASSERT(
         "Depreciated tag <specialAction> in "<< this->getID() << " configuration.",
             !m_configuration->hasAttribute("specialAction"));
-    OSLM_ASSERT("Depreciated tag <style> in "<< this->getID() << " configuration.",
-                !m_configuration->hasAttribute("style"));
-    OSLM_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
-                !m_configuration->hasAttribute("state"));
+    SLM_ASSERT("Depreciated tag <style> in "<< this->getID() << " configuration.",
+               !m_configuration->hasAttribute("style"));
+    SLM_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
+               !m_configuration->hasAttribute("state"));
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for( iter = m_configuration->begin(); iter != m_configuration->end(); ++iter )

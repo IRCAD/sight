@@ -190,7 +190,7 @@ void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 
 TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     const std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
     double previousValue                   = minMax.first;
     double nextValue                       = minMax.second;
@@ -245,7 +245,7 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 
 TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
     const double min = std::numeric_limits<double>::min();
     const double max = std::numeric_limits<double>::max();
@@ -313,7 +313,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) 
 
 TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
     const double min     = std::numeric_limits<double>::min();
     const double max     = std::numeric_limits<double>::max();
@@ -400,7 +400,7 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType val
 const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value) const
 {
     TFDataType::const_iterator itr = m_tfData.find(_value);
-    OSLM_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
+    SLM_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
     return itr->second;
 }
 

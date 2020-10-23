@@ -93,7 +93,7 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
 
         ::fwCore::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
         CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
-        OSLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
+        SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 
         const float* values = buffer->getElement(0);

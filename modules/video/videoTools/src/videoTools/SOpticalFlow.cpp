@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ void SOpticalFlow::updating()
 {
     if(!this->isStarted())
     {
-        OSLM_ERROR("Cannot call `update` when service is stopped.");
+        SLM_ERROR("Cannot call `update` when service is stopped.");
         return;
     }
 
@@ -136,7 +136,7 @@ void SOpticalFlow::updating()
         }
         else
         {
-            OSLM_FATAL("Wrong type of image (nb of components = "<<frameTL->getNumberOfComponents()<<").");
+            SLM_FATAL("Wrong type of image (nb of components = "<<frameTL->getNumberOfComponents()<<").");
         }
 
         if(!m_initialization)
@@ -164,9 +164,9 @@ void SOpticalFlow::updating()
 
             m_mainMutex.lock();
 
-            OSLM_ASSERT("last image and current image should have same size: "<< m_lastGrayImg.size << " , "
-                                                                              << grayImg.size
-                        , m_lastGrayImg.size == grayImg.size);
+            SLM_ASSERT("last image and current image should have same size: "<< m_lastGrayImg.size << " , "
+                                                                             << grayImg.size
+                       , m_lastGrayImg.size == grayImg.size);
 
             // Optical flow (Lucas-Kanade version).
             ::cv::calcOpticalFlowPyrLK(m_lastGrayImg, grayImg, m_lastCorners, currentCorners, status, err);

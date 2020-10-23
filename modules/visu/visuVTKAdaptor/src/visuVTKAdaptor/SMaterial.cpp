@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -206,7 +206,7 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
                           material->getRepresentationMode() == ::fwData::Material::WIREFRAME ||
                           material->getRepresentationMode() == ::fwData::Material::POINT;
 
-    OSLM_ASSERT("Unknown material representation mode : " << material->getRepresentationMode(), knownRep);
+    SLM_ASSERT("Unknown material representation mode : " << material->getRepresentationMode(), knownRep);
 
     switch(material->getRepresentationMode())
     {
@@ -235,7 +235,7 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
                               material->getShadingMode() == ::fwData::Material::GOURAUD ||
                               material->getShadingMode() == ::fwData::Material::FLAT;
 
-    OSLM_ASSERT("Unknown shading mode : " << material->getShadingMode(), knownShading);
+    SLM_ASSERT("Unknown shading mode : " << material->getShadingMode(), knownShading);
 
     switch(material->getShadingMode())
     {

@@ -123,14 +123,12 @@ void SModelSeriesObjWriter::openLocationDialog()
 
 void SModelSeriesObjWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesObjWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +149,6 @@ void SModelSeriesObjWriter::info(std::ostream& _sstream )
 
 void SModelSeriesObjWriter::updating()
 {
-    SLM_TRACE_FUNC();
 
     if(  this->hasLocationDefined() )
     {

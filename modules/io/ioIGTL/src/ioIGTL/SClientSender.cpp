@@ -131,7 +131,7 @@ void SClientSender::stopping()
 
 void SClientSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
-    OSLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
+    SLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
 
     if (m_client.isConnected())
     {

@@ -256,8 +256,8 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     {
         auto filename = dicomFile.second.string();
 
-        OSLM_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
-                    seriesScanner.IsKey(filename.c_str()));
+        SLM_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
+                   seriesScanner.IsKey(filename.c_str()));
 
         const std::string sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
         const std::string mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);

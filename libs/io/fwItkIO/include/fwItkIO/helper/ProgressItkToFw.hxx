@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#ifndef __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
-#define __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
 
 #include <fwCore/base.hpp>
 
@@ -60,7 +57,6 @@ public:
             return;
         }
         float percent = po->GetProgress();
-        OSLM_TRACE("LocalCommand::Execute '" << m_msg << "' " << percent );
         m_adviser->notifyProgress( percent, m_msg );
     }
 
@@ -105,5 +101,3 @@ ProgressItkToFw<OBSERVEE >::~ProgressItkToFw()
 }
 
 }
-
-#endif // __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__

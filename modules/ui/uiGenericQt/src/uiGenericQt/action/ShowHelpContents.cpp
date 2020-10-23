@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -38,6 +37,8 @@
 #include <QObject>
 #include <QSplitter>
 #include <QTextBrowser>
+
+#include <filesystem>
 
 namespace uiGenericQt
 {
@@ -74,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -113,8 +114,7 @@ void ShowHelpContents::configuring()
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
         m_fsHelpPath           = std::filesystem::path( filename );
         m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
-        OSLM_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
-        OSLM_TRACE("Filename found " << filename );
+        SLM_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
     }
 }
 
@@ -122,7 +122,6 @@ void ShowHelpContents::configuring()
 
 void ShowHelpContents::updating()
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
@@ -130,7 +129,7 @@ void ShowHelpContents::updating()
     QHelpEngine* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
     if (!helpEngine->setupData())
     {
-        OSLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
+        SLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( "Help file is missing or not correct." );

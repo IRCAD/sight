@@ -140,7 +140,7 @@ std::string formatTime(const std::string& _time)
     if( std::regex_match(formatTime, match, re) )
     {
         std::string year, month, day, hour, min, sec;
-        OSLM_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);
+        SLM_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);
         hour.assign(match[1].first, match[1].second);
         min.assign(match[2].first, match[2].second);
         sec.assign(match[3].first, match[3].second);
@@ -416,7 +416,7 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
         {
             ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
             std::string id = activitySeries->getActivityConfigId();
-            OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+            SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
             ::fwActivities::registry::ActivityInfo activityInfo;
             activityInfo = registry->getInfo(id);
@@ -424,7 +424,7 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
         }
         else
         {
-            OSLM_WARN("This type of series is not defined (" << _series->getClassname() << ")");
+            SLM_WARN("This type of series is not defined (" << _series->getClassname() << ")");
         }
     }
 }

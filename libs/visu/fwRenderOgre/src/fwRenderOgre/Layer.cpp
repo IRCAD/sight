@@ -831,7 +831,7 @@ bool Layer::isDefaultLight(const ::fwRenderOgre::ILight::csptr& _light) const
 
 void Layer::removeDefaultLight()
 {
-    OSLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
+    SLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
     ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
     m_lightAdaptor.reset();
 }
@@ -858,7 +858,7 @@ void Layer::resetCameraCoordinates()
                                                    worldCoordBoundingBox.getSize().length() : 0;
 
             float coeffZoom = static_cast<float>(boundingBoxLength);
-            OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
+            SLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
             ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
@@ -997,7 +997,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
-            OSLM_TRACE("Near SAO");
             maxNear = 1;
             minFar  = 10000;
         }
@@ -1093,7 +1092,7 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         }
         else
         {
-            OSLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
+            SLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
         }
     }
 

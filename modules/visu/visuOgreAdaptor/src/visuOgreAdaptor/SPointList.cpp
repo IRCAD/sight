@@ -193,7 +193,7 @@ void SPointList::starting()
         }
         else
         {
-            OSLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
 }
@@ -260,7 +260,7 @@ void SPointList::updating()
         }
         else
         {
-            OSLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
     this->requestRender();

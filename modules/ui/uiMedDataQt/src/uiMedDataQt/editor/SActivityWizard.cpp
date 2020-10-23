@@ -135,7 +135,7 @@ void SActivityWizard::configuring()
         const auto file = ::fwRuntime::getResourceFilePath(icon);
         m_objectIcons[type] = file.string();
     }
-    OSLM_ASSERT("icons are empty", !m_objectIcons.empty());
+    SLM_ASSERT("icons are empty", !m_objectIcons.empty());
 }
 
 //------------------------------------------------------------------------------

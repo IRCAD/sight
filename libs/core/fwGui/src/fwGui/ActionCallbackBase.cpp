@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,9 +60,9 @@ void ActionCallbackBase::setSID(std::string sid)
 
 void ActionCallbackBase::execute()
 {
-    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
+    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid );
-    OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
+    SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
 }
 
@@ -70,11 +70,11 @@ void ActionCallbackBase::execute()
 
 void ActionCallbackBase::check(bool checked)
 {
-    OSLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
+    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid );
-    OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
+    SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);
-    OSLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
+    SLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
     checked = (action->isInverted() ? !checked : checked);
     if (action->getIsActive() != checked)
     {

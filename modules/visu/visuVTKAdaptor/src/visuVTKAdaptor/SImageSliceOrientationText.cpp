@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSliceOrientationText);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSliceOrientationText)
 
 namespace visuVTKAdaptor
 {
@@ -282,7 +282,6 @@ void SImageSliceOrientationText::configuring()
     m_locations = (m_locations == "default") ? "R,L,A,P,S,I" : m_locations;
 
     m_initialOrientation = srvconfig.get("initialOrientation", "axial");
-    SLM_TRACE("initialOrientation " + m_initialOrientation);
 }
 
 //------------------------------------------------------------------------------

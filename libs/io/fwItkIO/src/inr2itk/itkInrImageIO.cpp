@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,25 @@
  *
  ***********************************************************************/
 
-#include <algorithm>
-#include <map>
-#include <utility>
-#include <cstdio>
+#include "inr2itk/itkInrImageIO.hpp"
+
+#include <fwCore/Exception.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 #include <itk_zlib.h>
 #include <itkByteSwapper.h>
-#include <itkIOCommon.h>
 #include <itkExceptionObject.h>
+#include <itkIOCommon.h>
 
-#include <fwCore/spyLog.hpp>
-#include <fwCore/Exception.hpp>
+#include <algorithm>
+#include <cstdio>
+#include <map>
+#include <utility>
 
-#include "inr2itk/itkInrImageIO.hpp"
-
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#define min(a,b) ((a) <= (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+#define min(a, b) ((a) <= (b) ? (a) : (b))
 
 namespace itk
 {
@@ -84,7 +84,7 @@ bool InrImageIO::CanReadFile( const char* FileNameToRead )
     gzclose(inputFile);
 
     std::string const magic("#INRIMAGE-4#{\n");
-    if(firstLine!=magic)
+    if(firstLine != magic)
     {
         return false;
     }
@@ -99,7 +99,7 @@ bool InrImageIO::CanReadFile( const char* FileNameToRead )
 void InrImageIO::ReadImageInformation()
 {
     gzFile inputFile = gzopen(this->GetFileName(), "rb");
-    if(inputFile==NULL)
+    if(inputFile == NULL)
     {
         gzclose(inputFile);
         ExceptionObject exception(__FILE__, __LINE__);
@@ -122,7 +122,7 @@ void InrImageIO::ReadImageInformation()
         std::string::size_type const endOfLine = line.find('\n');
         line = line.substr(0, endOfLine);
 
-        if(line=="##}")
+        if(line == "##}")
         {
             // End of header : get outta here
             break;
@@ -132,7 +132,7 @@ void InrImageIO::ReadImageInformation()
         {
             // Empty line, nothing to do
         }
-        else if(line[0]=='#')
+        else if(line[0] == '#')
         {
             // Comment line, nothing to do
         }
@@ -140,7 +140,7 @@ void InrImageIO::ReadImageInformation()
         {
             // Look for key=value
             std::string::const_iterator delimiter = std::find(line.begin(), line.end(), '=');
-            if(delimiter==line.end())
+            if(delimiter == line.end())
             {
                 // invalid line : missing '='
                 gzclose(inputFile);
@@ -154,8 +154,7 @@ void InrImageIO::ReadImageInformation()
             // Tokenize [KEY] = [VALUE] and store it in map
             std::string key   = line.substr(0, delimiter-line.begin());
             std::string value = line.substr(delimiter-line.begin()+1, std::string::npos);
-            OSLM_TRACE("[" << key << "] = [" << value << "]");
-            if(headerValues.find(key)!=headerValues.end())
+            if(headerValues.find(key) != headerValues.end())
             {
                 // duplicate key
                 ExceptionObject exception(__FILE__, __LINE__);
@@ -175,24 +174,24 @@ void InrImageIO::ReadImageInformation()
     gzclose(inputFile);
 
     // Process headerValue map
-    for(std::map<std::string, std::string>::const_iterator it = headerValues.begin(); it!=headerValues.end(); ++it)
+    for(std::map<std::string, std::string>::const_iterator it = headerValues.begin(); it != headerValues.end(); ++it)
     {
-        if(it->first=="XDIM")
+        if(it->first == "XDIM")
         {
             int xdim = ::boost::lexical_cast<int>( it->second );
             this->SetDimensions(0, xdim);
         }
-        else if(it->first=="YDIM")
+        else if(it->first == "YDIM")
         {
             int ydim = ::boost::lexical_cast<int>( it->second );
             this->SetDimensions(1, ydim);
         }
-        else if(it->first=="ZDIM")
+        else if(it->first == "ZDIM")
         {
             int zdim = ::boost::lexical_cast<int>( it->second );
             this->SetDimensions(2, zdim);
         }
-        else if(it->first=="VDIM")
+        else if(it->first == "VDIM")
         {
             int vdim = ::boost::lexical_cast<int>( it->second );
             if(vdim == 1)
@@ -205,25 +204,25 @@ void InrImageIO::ReadImageInformation()
             }
             SetNumberOfComponents(vdim);
         }
-        else if(it->first=="VX")
+        else if(it->first == "VX")
         {
             float vx = ::boost::lexical_cast< float >( it->second );
             this->SetSpacing(0, vx);
         }
-        else if(it->first=="VY")
+        else if(it->first == "VY")
         {
             float vy = ::boost::lexical_cast< float >( it->second );
             this->SetSpacing(1, vy);
         }
-        else if(it->first=="VZ")
+        else if(it->first == "VZ")
         {
             float vz = ::boost::lexical_cast< float >( it->second );
             this->SetSpacing(2, vz);
         }
-        else if(it->first=="TYPE")
+        else if(it->first == "TYPE")
         {
             std::map<std::string, std::string>::const_iterator pixsize_it = headerValues.find("PIXSIZE");
-            if(pixsize_it==headerValues.end())
+            if(pixsize_it == headerValues.end())
             {
                 // Missing pixsize
                 ExceptionObject exception(__FILE__, __LINE__);
@@ -234,17 +233,17 @@ void InrImageIO::ReadImageInformation()
             }
             std::string type    = it->second;
             std::string pixsize = pixsize_it->second;
-            if(type=="unsigned fixed")
+            if(type == "unsigned fixed")
             {
-                if(pixsize=="8 bits")
+                if(pixsize == "8 bits")
                 {
                     m_ComponentType = UCHAR;
                 }
-                else if(pixsize=="16 bits")
+                else if(pixsize == "16 bits")
                 {
                     m_ComponentType = USHORT;
                 }
-                else if(pixsize=="32 bits")
+                else if(pixsize == "32 bits")
                 {
                     if ( 4 == sizeof(unsigned int) )
                     {
@@ -263,7 +262,7 @@ void InrImageIO::ReadImageInformation()
                         throw exception;
                     }
                 }
-                else if(pixsize=="64 bits")
+                else if(pixsize == "64 bits")
                 {
                     if ( 8 == sizeof(unsigned int) )
                     {
@@ -291,17 +290,17 @@ void InrImageIO::ReadImageInformation()
                     throw exception;
                 }
             }
-            else if(type=="signed fixed")
+            else if(type == "signed fixed")
             {
-                if(pixsize=="8 bits")
+                if(pixsize == "8 bits")
                 {
                     m_ComponentType = CHAR;
                 }
-                else if(pixsize=="16 bits")
+                else if(pixsize == "16 bits")
                 {
                     m_ComponentType = SHORT;
                 }
-                else if(pixsize=="32 bits")
+                else if(pixsize == "32 bits")
                 {
                     if ( 4 == sizeof(int) )
                     {
@@ -320,7 +319,7 @@ void InrImageIO::ReadImageInformation()
                         throw exception;
                     }
                 }
-                else if(pixsize=="64 bits")
+                else if(pixsize == "64 bits")
                 {
                     if ( 8 == sizeof(int) )
                     {
@@ -348,7 +347,7 @@ void InrImageIO::ReadImageInformation()
                     throw exception;
                 }
             }
-            else if(type=="float")
+            else if(type == "float")
             {
                 /*
                    if(pixsize=="8 bits")
@@ -358,11 +357,11 @@ void InrImageIO::ReadImageInformation()
                    {
                    }
                  */
-                /*else*/ if(pixsize=="32 bits")
+                /*else*/ if(pixsize == "32 bits")
                 {
                     m_ComponentType = FLOAT;
                 }
-                else if(pixsize=="64 bits")
+                else if(pixsize == "64 bits")
                 {
                     m_ComponentType = DOUBLE;
                 }
@@ -384,25 +383,25 @@ void InrImageIO::ReadImageInformation()
                 throw exception;
             }
         } // TYPE
-        else if(it->first=="PIXSIZE")
+        else if(it->first == "PIXSIZE")
         {
             // nothing to do, processed with "TYPE"
         }
-        else if(it->first=="SCALE")
+        else if(it->first == "SCALE")
         {
             // For fixed point arithmetic only. We don't use it.
         }
-        else if(it->first=="CPU")
+        else if(it->first == "CPU")
         {
             // Big endian are : sun, sgi
-            if(it->second=="sun" || it->second=="sgi")
+            if(it->second == "sun" || it->second == "sgi")
             {
                 // File is big-endian, swap if system is little endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsLE();
                 m_ByteOrder = BigEndian;
             }
             // Little endian are : pc, alpha, decm
-            else if(it->second=="pc" || it->second=="alpha" || it->second=="decm")
+            else if(it->second == "pc" || it->second == "alpha" || it->second == "decm")
             {
                 // File is little-endian, swap if system is big-endian.
                 //m_swapBytes = itk::ByteSwapper<char>::SystemIsBE();
@@ -422,7 +421,7 @@ void InrImageIO::ReadImageInformation()
 
 //------------------------------------------------------------------------------
 
-void InrImageIO::Read(void * buffer)
+void InrImageIO::Read(void* buffer)
 {
     gzFile file = gzopen(GetFileName(), "rb");
 
@@ -437,7 +436,7 @@ void InrImageIO::Read(void * buffer)
 
     // Skip the header
     int bytesSkipped = gzseek(file, m_headerSize, SEEK_CUR);
-    if(bytesSkipped!=m_headerSize)
+    if(bytesSkipped != m_headerSize)
     {
         ExceptionObject exception(__FILE__, __LINE__);
         std::stringstream errorMessage;
@@ -455,7 +454,7 @@ void InrImageIO::Read(void * buffer)
     int bytesRead      = 0;
     int nbStep         = 10;
     long long int size =
-        (  (GetImageSizeInBytes()>1024*1024*10) ?  ( GetImageSizeInBytes() / nbStep ) + 1 : GetImageSizeInBytes()  );
+        (  (GetImageSizeInBytes() > 1024*1024*10) ?  ( GetImageSizeInBytes() / nbStep ) + 1 : GetImageSizeInBytes()  );
     int step = 0;
     try
     {
@@ -463,10 +462,10 @@ void InrImageIO::Read(void * buffer)
         {
             step++;
             UpdateProgress(  ((float)bytesRead)/GetImageSizeInBytes() );
-            bytesRead += gzread( file, ((char *)buffer)+bytesRead,  min(size, GetImageSizeInBytes() - bytesRead)  );
+            bytesRead += gzread( file, ((char*)buffer)+bytesRead,  min(size, GetImageSizeInBytes() - bytesRead)  );
         }
     }
-    catch(::fwCore::Exception &e) // catch progress bar cancel exception
+    catch(::fwCore::Exception& e) // catch progress bar cancel exception
     {
         gzclose(file);
         throw;
@@ -474,7 +473,7 @@ void InrImageIO::Read(void * buffer)
     UpdateProgress( 1.0 );
     // End replace
 
-    if(bytesRead!=GetImageSizeInBytes())
+    if(bytesRead != GetImageSizeInBytes())
     {
         gzclose(file);
         ExceptionObject exception(__FILE__, __LINE__);
@@ -581,19 +580,19 @@ void InrImageIO::Read(void * buffer)
 
 //------------------------------------------------------------------------------
 
-bool InrImageIO::CanWriteFile(const char * FileNameToWrite)
+bool InrImageIO::CanWriteFile(const char* FileNameToWrite)
 {
     // Extension must be .inr or .inr.gz
     std::string const filename(FileNameToWrite);
 
     std::string::size_type index = filename.rfind(".inr");
-    if(index==filename.length() - std::string(".inr").length())
+    if(index == filename.length() - std::string(".inr").length())
     {
         return true;
     }
 
     index = filename.rfind(".inr.gz");
-    if(index==filename.length() - std::string(".inr.gz").length())
+    if(index == filename.length() - std::string(".inr.gz").length())
     {
         return true;
     }
@@ -610,30 +609,30 @@ void InrImageIO::WriteImageInformation()
     // Magic
     headerStream << "#INRIMAGE-4#{" << "\n";
     // Dimensions : always write a 3D InrImage
-    headerStream << "XDIM=" << ((GetDimensions(0)<1) ? 1 : GetDimensions(0)) << "\n";
-    headerStream << "YDIM=" << ((GetDimensions(1)<1) ? 1 : GetDimensions(1)) << "\n";
-    headerStream << "ZDIM=" << ((GetDimensions(2)<1) ? 1 : GetDimensions(2)) << "\n";
+    headerStream << "XDIM=" << ((GetDimensions(0) < 1) ? 1 : GetDimensions(0)) << "\n";
+    headerStream << "YDIM=" << ((GetDimensions(1) < 1) ? 1 : GetDimensions(1)) << "\n";
+    headerStream << "ZDIM=" << ((GetDimensions(2) < 1) ? 1 : GetDimensions(2)) << "\n";
     // Number of components per pixel
     headerStream << "VDIM=" << GetNumberOfComponents() << "\n";
     // Spacing : if it's 0, put it to one instead
-    headerStream << "VX=" << ((GetSpacing(0)==0.0) ? 1.0 : GetSpacing(0)) << "\n";
-    headerStream << "VY=" << ((GetSpacing(1)==0.0) ? 1.0 : GetSpacing(1)) << "\n";
-    headerStream << "VZ=" << ((GetSpacing(2)==0.0) ? 1.0 : GetSpacing(2)) << "\n";
+    headerStream << "VX=" << ((GetSpacing(0) == 0.0) ? 1.0 : GetSpacing(0)) << "\n";
+    headerStream << "VY=" << ((GetSpacing(1) == 0.0) ? 1.0 : GetSpacing(1)) << "\n";
+    headerStream << "VZ=" << ((GetSpacing(2) == 0.0) ? 1.0 : GetSpacing(2)) << "\n";
     // Scale
     headerStream << "SCALE=2**0" << "\n";
     // Endianness
     headerStream << "CPU=" << (itk::ByteSwapper<char>::SystemIsLE() ? "pc" : "sgi") << "\n";
     // Point type
     std::string type;
-    if(m_ComponentType==UCHAR || m_ComponentType==USHORT || m_ComponentType==UINT || m_ComponentType==ULONG)
+    if(m_ComponentType == UCHAR || m_ComponentType == USHORT || m_ComponentType == UINT || m_ComponentType == ULONG)
     {
         type = "unsigned fixed";
     }
-    else if(m_ComponentType==CHAR || m_ComponentType==SHORT || m_ComponentType==INT || m_ComponentType==LONG)
+    else if(m_ComponentType == CHAR || m_ComponentType == SHORT || m_ComponentType == INT || m_ComponentType == LONG)
     {
         type = "signed fixed";
     }
-    else if(m_ComponentType==FLOAT || m_ComponentType==DOUBLE)
+    else if(m_ComponentType == FLOAT || m_ComponentType == DOUBLE)
     {
         type = "float";
     }
@@ -650,27 +649,27 @@ void InrImageIO::WriteImageInformation()
     headerStream << "TYPE=" << type << "\n";
     // PixelSize
     int pixelSize;
-    if(m_ComponentType==UCHAR || m_ComponentType==CHAR)
+    if(m_ComponentType == UCHAR || m_ComponentType == CHAR)
     {
         pixelSize = sizeof(char);
     }
-    else if(m_ComponentType==USHORT || m_ComponentType==SHORT)
+    else if(m_ComponentType == USHORT || m_ComponentType == SHORT)
     {
         pixelSize = sizeof(short);
     }
-    else if(m_ComponentType==UINT || m_ComponentType==INT)
+    else if(m_ComponentType == UINT || m_ComponentType == INT)
     {
         pixelSize = sizeof(int);
     }
-    else if(m_ComponentType==ULONG || m_ComponentType==LONG)
+    else if(m_ComponentType == ULONG || m_ComponentType == LONG)
     {
         pixelSize = sizeof(long);
     }
-    else if(m_ComponentType==FLOAT)
+    else if(m_ComponentType == FLOAT)
     {
         pixelSize = sizeof(float);
     }
-    else if(m_ComponentType==DOUBLE)
+    else if(m_ComponentType == DOUBLE)
     {
         pixelSize = sizeof(double);
     }
@@ -689,7 +688,7 @@ void InrImageIO::WriteImageInformation()
     headerStream << "PIXSIZE=" << pixelSize << " bits" << "\n";
 
     int const padding = 256 - headerStream.str().length() - std::string("##}\n").length();
-    for(int i = 0; i<padding; ++i)
+    for(int i = 0; i < padding; ++i)
     {
         headerStream << "\n";
     }
@@ -709,7 +708,7 @@ void InrImageIO::WriteImageInformation()
     std::string const filename(this->GetFileName());
     std::string::size_type const index = filename.rfind(".inr.gz");
 
-    if(index==filename.length() - std::string(".inr.gz").length())
+    if(index == filename.length() - std::string(".inr.gz").length())
     {
         gzFile outputFile = gzopen(this->GetFileName(), "wb9");
         if(outputFile == 0)
@@ -752,7 +751,7 @@ void InrImageIO::Write(const void* buffer)
     std::string const filename(GetFileName());
     std::string const suffix(".inr.gz");
     std::string::size_type const index = filename.rfind(suffix);
-    if(index==filename.length() - suffix.length())
+    if(index == filename.length() - suffix.length())
     {
         gzFile outputFile = gzopen(this->GetFileName(), "ab");
         if(outputFile == 0)
@@ -770,18 +769,18 @@ void InrImageIO::Write(const void* buffer)
         // by
         int written        = 0;
         long long int size =
-            (  (GetImageSizeInBytes()>1024*1024*10) ? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
+            (  (GetImageSizeInBytes() > 1024*1024*10) ? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
         try
         {
-            while ( written <   GetImageSizeInBytes() )
+            while ( written < GetImageSizeInBytes() )
             {
                 UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
                 written +=
-                    gzwrite( outputFile, ((char *)buffer)+written,  min(size, GetImageSizeInBytes() - written)  );
+                    gzwrite( outputFile, ((char*)buffer)+written,  min(size, GetImageSizeInBytes() - written)  );
 
             }
         }
-        catch(::fwCore::Exception &e) // catch progress bar cancel exception
+        catch(::fwCore::Exception& e) // catch progress bar cancel exception
         {
             gzclose(outputFile);
             throw;
@@ -809,17 +808,17 @@ void InrImageIO::Write(const void* buffer)
         // by :
         int written        = 0;
         long long int size =
-            (  (GetImageSizeInBytes()>1024*1024*10) ? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
+            (  (GetImageSizeInBytes() > 1024*1024*10) ? ( GetImageSizeInBytes() / 10 ) + 1 : GetImageSizeInBytes()  );
         try
         {
-            while ( written <   GetImageSizeInBytes() )
+            while ( written < GetImageSizeInBytes() )
             {
                 UpdateProgress(  ((float)written)/GetImageSizeInBytes() );
                 written +=
-                    fwrite( ((char *)buffer)+written, 1,  min(size, GetImageSizeInBytes() - written), outputFile);
+                    fwrite( ((char*)buffer)+written, 1,  min(size, GetImageSizeInBytes() - written), outputFile);
             }
         }
-        catch(::fwCore::Exception &e) // catch progress bar cancel exception
+        catch(::fwCore::Exception& e) // catch progress bar cancel exception
         {
             fclose(outputFile);
             throw;

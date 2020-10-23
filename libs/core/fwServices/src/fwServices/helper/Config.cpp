@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -89,12 +89,12 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            SLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
-                        !uid.empty() && !key.empty());
+            SLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
+                       !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
             {
@@ -155,12 +155,12 @@ ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationEleme
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            OSLM_ASSERT("errMsgHead + Wrong value for attribute src: "<<src, match.size() >= 3);
+            SLM_ASSERT("errMsgHead + Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            OSLM_ASSERT(errMsgHead + src << " configuration is not correct for "<< elem->getName(),
-                        !uid.empty() && !key.empty());
+            SLM_ASSERT(errMsgHead + src << " configuration is not correct for "<< elem->getName(),
+                       !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
             {

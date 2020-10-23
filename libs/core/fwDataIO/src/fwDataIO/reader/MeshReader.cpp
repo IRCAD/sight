@@ -204,7 +204,6 @@ void MeshReader::read()
     assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-    SLM_TRACE( "Trian file: " + path.string());
     SLM_ASSERT("Empty path for Trian file", !path.empty() );
 
     std::streamsize length;
@@ -236,7 +235,7 @@ void MeshReader::read()
 
     if (!parseTrian2(buffer, buffer+length, mesh))
     {
-        OSLM_ERROR( "Bad file format : " << path.string());
+        SLM_ERROR( "Bad file format : " << path.string());
         throw std::ios_base::failure("Unable to open " + path.string() + " : Bad file format.");
     }
 

@@ -97,14 +97,12 @@ void SSeriesDBLazyReader::openLocationDialog()
 
 void SSeriesDBLazyReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBLazyReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +138,6 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBLazyReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();
     ::fwMedData::SeriesDB::sptr dummy              = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);

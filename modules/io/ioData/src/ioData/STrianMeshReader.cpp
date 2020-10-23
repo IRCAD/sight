@@ -116,7 +116,6 @@ void STrianMeshReader::openLocationDialog()
 
 void STrianMeshReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         // Retrieve object

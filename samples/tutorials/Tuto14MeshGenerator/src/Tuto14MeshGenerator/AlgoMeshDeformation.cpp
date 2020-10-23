@@ -88,7 +88,6 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 
 void AlgoMeshDeformation::initSimu()
 {
-    SLM_TRACE_FUNC();
     const auto mesh = m_mesh.lock();
     m_originMesh = ::fwData::Object::copy(mesh);
     m_step       = 0;
@@ -126,7 +125,6 @@ void AlgoMeshDeformation::initSimu()
 
 void AlgoMeshDeformation::computeSimu()
 {
-    SLM_TRACE_FUNC();
     m_step += m_direction;
     if ( m_step == m_nbStep )
     {
@@ -150,7 +148,6 @@ void AlgoMeshDeformation::computeSimu()
     for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
     {
         pointsItr->point->x = origPointsItr->point->x;
-        OSLM_TRACE("pointsItr->point->y - m_yCenter = " <<  pointsItr->point->y - m_yCenter);
         if( origPointsItr->point->y - m_yCenter > 0 )
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;

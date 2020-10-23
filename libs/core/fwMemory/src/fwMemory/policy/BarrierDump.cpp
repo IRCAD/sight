@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -231,11 +231,11 @@ bool BarrierDump::setParam(const std::string& name, const std::string& value)
     }
     catch( ::fwMemory::exception::BadCast const& )
     {
-        OSLM_ERROR("Bad value for " << name << " : " << value);
+        SLM_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
 
-    OSLM_ERROR("Bad parameter name " << name );
+    SLM_ERROR("Bad parameter name " << name );
     return false;
 }
 

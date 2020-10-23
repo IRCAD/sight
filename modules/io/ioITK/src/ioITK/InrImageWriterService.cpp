@@ -107,14 +107,12 @@ void InrImageWriterService::openLocationDialog()
 
 void InrImageWriterService::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageWriterService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +126,6 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
 
     myWriter->setObject(image);
@@ -161,7 +158,6 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
 
 void InrImageWriterService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

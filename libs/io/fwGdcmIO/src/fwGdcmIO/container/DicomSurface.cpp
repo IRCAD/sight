@@ -122,7 +122,6 @@ DicomSurface::DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
 
 DicomSurface::~DicomSurface()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

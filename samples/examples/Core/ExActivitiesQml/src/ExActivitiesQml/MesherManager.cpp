@@ -155,7 +155,7 @@ void MesherManager::onServiceCreated(const QVariant& obj)
         }
         else
         {
-            OSLM_FATAL("service '" + srv->getClassname() + "' is not managed")
+            SLM_FATAL("service '" + srv->getClassname() + "' is not managed")
         }
     }
 }

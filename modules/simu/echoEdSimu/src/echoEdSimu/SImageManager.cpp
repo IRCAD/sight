@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,9 @@
 namespace echoEdSimu
 {
 
-fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SImageManager, ::fwData::Composite );
+fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SImageManager, ::fwData::Composite )
 
-const std::string s_ctPath   = "./Data/CTImages";
+const std::string s_ctPath = "./Data/CTImages";
 const std::string s_echoPath = "./Data/EchoImages";
 
 const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_SINGLE_SLOT = "updateSingle";
@@ -156,7 +156,7 @@ void SImageManager::updateBoth(int i, int j)
 {
     if (i < s_minI || i > s_maxI || j < s_minJ || j > s_maxJ)
     {
-        OSLM_ERROR("Image [" << i - s_minI << "][" << j - s_minJ <<"] index out of bound");
+        SLM_ERROR("Image [" << i - s_minI << "][" << j - s_minJ <<"] index out of bound");
         return;
     }
     m_cranioCaudalIndex = i;

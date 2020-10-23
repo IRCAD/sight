@@ -56,8 +56,8 @@ LineLayoutManagerBase::~LineLayoutManagerBase()
 
 void LineLayoutManagerBase::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectOrientation = configuration->find("orientation");
 
@@ -136,16 +136,16 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("visible") )
             {
                 const std::string visible = view->getExistingAttributeValue("visible");
-                OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                            (visible == "true") || (visible == "false") ||
-                            (visible == "yes") || (visible == "no"));
+                SLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                           (visible == "true") || (visible == "false") ||
+                           (visible == "yes") || (visible == "no"));
                 vi.m_visible = ((visible == "true") || (visible == "yes"));
             }
             if( view->hasAttribute("useScrollBar") )
             {
                 const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-                OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                            (useScrollBar == "yes") || (useScrollBar == "no"));
+                SLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                           (useScrollBar == "yes") || (useScrollBar == "no"));
                 vi.m_useScrollBar = (useScrollBar == "yes");
             }
             if( view->hasAttribute("toolTip") )
@@ -158,7 +158,7 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
                 const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
                 if(!hexaColor.empty())
                 {
-                    OSLM_ASSERT(
+                    SLM_ASSERT(
                         "Color string should start with '#' and followed by 6 or 8 "
                         "hexadecimal digits. Given color: " << hexaColor,
                             hexaColor[0] == '#'

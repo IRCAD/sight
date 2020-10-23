@@ -78,7 +78,7 @@ void SSliceIndexDicomEditor::configuring()
 
     m_delay                     = config.get<unsigned>(s_DELAY_CONFIG, m_delay);
     m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
-    OSLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
+    SLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
 
     m_readerConfig = configType.get(s_READER_CONFIG, m_readerConfig);
 }
@@ -332,7 +332,7 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
     // Get the DICOM buffer to write in a temporary folder.
     const auto& binaries = _dicomSeries->getDicomContainer();
     auto iter            = binaries.find(_selectedSliceIndex);
-    OSLM_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
+    SLM_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
     const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer      = static_cast<char*>(lockerDest.getBuffer());
@@ -347,7 +347,7 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
     std::ofstream fs(path, std::ios::binary|std::ios::trunc);
     if(!fs.good())
     {
-        OSLM_ERROR("Unable to open '" << path << "' for write.");
+        SLM_ERROR("Unable to open '" << path << "' for write.");
         return;
     }
     fs.write(buffer, bufferSize);

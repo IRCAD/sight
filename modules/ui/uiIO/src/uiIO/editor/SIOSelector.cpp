@@ -272,7 +272,7 @@ void SIOSelector::updating()
                 {
                     m_sigJobFailed->asyncEmit();
                 }
-                OSLM_ASSERT("Problem to find the selected string.", extensionIdFound );
+                SLM_ASSERT("Problem to find the selected string.", extensionIdFound );
             }
             else
             {

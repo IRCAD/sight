@@ -63,7 +63,7 @@ bool compare(
             }
         }
 
-        OSLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
+        SLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
 
     for(const ::fwData::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)

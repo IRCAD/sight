@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -94,11 +94,11 @@ void ServiceConfig::addServiceConfigInfo
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
-    OSLM_DEBUG( "New service config registering : "
-                << " configId = " << configId
-                << " service = " << service
-                << " desc = " << desc
-                );
+    SLM_DEBUG( "New service config registering : "
+               << " configId = " << configId
+               << " service = " << service
+               << " desc = " << desc
+               );
 
     SLM_ASSERT("The service config with the id "<< configId <<" already exists.",
                m_reg.find( configId ) == m_reg.end() );

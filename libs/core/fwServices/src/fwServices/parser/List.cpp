@@ -49,7 +49,7 @@ bool List::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgEleme
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            OSLM_ERROR(
+            SLM_ERROR(
                 "xml subelement \""<< subElementName <<
                     "\" for element object is not supported for the moment when you use a reference on item List.");
             isOk = false;
@@ -89,9 +89,9 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
-                             "or GET_OBJECT.",
-                             buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                SLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
+                            "or GET_OBJECT.",
+                            buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
             if( buildMode == BUILD_OBJECT )

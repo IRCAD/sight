@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -344,12 +344,12 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
     {
         if (it->second == obj)
         {
-            OSLM_WARN("Object '" + id + "' is already registered.");
+            SLM_WARN("Object '" + id + "' is already registered.");
             return;
         }
         else
         {
-            OSLM_WARN("Object '" + id + "' has not been unregistered, we will do it.");
+            SLM_WARN("Object '" + id + "' has not been unregistered, we will do it.");
             this->removeObject(it->second, id);
         }
     }
@@ -387,7 +387,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
             {
                 if (srv->isStarted() && !objCfg.m_optional)
                 {
-                    OSLM_ERROR("Service should be stopped.");
+                    SLM_ERROR("Service should be stopped.");
                     this->stop(srvInfo).wait();
                 }
 

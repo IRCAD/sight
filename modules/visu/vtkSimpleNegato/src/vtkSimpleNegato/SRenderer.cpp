@@ -64,7 +64,6 @@ SRenderer::SRenderer() noexcept :
     m_render( nullptr ),
     m_bPipelineIsInit(false)
 {
-    SLM_TRACE_FUNC();
     newSlot(s_REFRESH_SLOT, &SRenderer::refresh, this);
 }
 
@@ -72,14 +71,12 @@ SRenderer::SRenderer() noexcept :
 
 SRenderer::~SRenderer() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void SRenderer::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 

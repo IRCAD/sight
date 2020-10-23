@@ -108,8 +108,8 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
         {
             if ( !m_subObjPath.empty() )
             {
-                OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
-                                "classname") <<"' )" );
+                SLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
+                               "classname") <<"' )" );
                 ::fwData::Object* ptr = value.get< ::fwData::Object* >();
                 ::fwData::reflection::visitor::GetObject visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.get();
@@ -155,13 +155,12 @@ GetObject::~GetObject()
 
 void GetObject::visit(const camp::SimpleProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG( "SimpleProperty name =" << name );
+    SLM_DEBUG( "SimpleProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        OSLM_DEBUG( "Ok SimpleProperty name =" << name );
+        SLM_DEBUG( "Ok SimpleProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
@@ -172,22 +171,20 @@ void GetObject::visit(const camp::SimpleProperty& property)
 
 void GetObject::visit(const camp::EnumProperty& property)
 {
-    SLM_TRACE_FUNC();
-    OSLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
-                   property.name() == m_propertyName );
+    SLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
+                  property.name() == m_propertyName );
 }
 
 //-----------------------------------------------------------------------------
 
 void GetObject::visit(const camp::MapProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG( "MapProperty name =" << name);
+    SLM_DEBUG( "MapProperty name =" << name);
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        OSLM_DEBUG( "Ok MapProperty name =" << name );
+        SLM_DEBUG( "Ok MapProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
         std::pair< ::camp::Value, ::camp::Value > value;
@@ -210,13 +207,12 @@ void GetObject::visit(const camp::MapProperty& property)
 
 void GetObject::visit(const camp::ArrayProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG( "ArrayProperty name =" << name );
+    SLM_DEBUG( "ArrayProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        OSLM_DEBUG( "Ok ArrayProperty name =" << name );
+        SLM_DEBUG( "Ok ArrayProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
         size_t index = ::boost::lexical_cast< size_t >( key );
@@ -245,13 +241,12 @@ void GetObject::visit(const camp::ArrayProperty& property)
 
 void GetObject::visit(const camp::UserProperty& property)
 {
-    SLM_TRACE_FUNC();
     const std::string name( property.name() );
-    OSLM_DEBUG( "UserProperty name =" << name );
+    SLM_DEBUG( "UserProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        OSLM_DEBUG( "Ok UserProperty name =" << name );
+        SLM_DEBUG( "Ok UserProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
@@ -281,8 +276,8 @@ std::string GetObject::getNextPropertyName()
         nextItem        = m_newSubObjPath;
         m_newSubObjPath = "";
     }
-    OSLM_DEBUG( "nextItem = " << nextItem );
-    OSLM_DEBUG( "m_newSubObjPath = " << m_newSubObjPath );
+    SLM_DEBUG( "nextItem = " << nextItem );
+    SLM_DEBUG( "m_newSubObjPath = " << m_newSubObjPath );
     return nextItem;
 }
 

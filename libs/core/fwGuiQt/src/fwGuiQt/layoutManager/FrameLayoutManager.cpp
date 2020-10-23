@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,6 @@ FrameLayoutManager::~FrameLayoutManager()
 
 void FrameLayoutManager::createFrame()
 {
-    SLM_TRACE_FUNC();
     FrameInfo frameInfo = this->getFrameInfo();
 
     ::fwGuiQt::QtMainFrame* mainframe = new ::fwGuiQt::QtMainFrame();
@@ -72,7 +71,7 @@ void FrameLayoutManager::createFrame()
     if(!frameInfo.m_iconPath.empty())
     {
         QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
-        OSLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
+        SLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
     if(!qApp->activeWindow())
@@ -143,7 +142,6 @@ void FrameLayoutManager::destroyFrame()
 
 void FrameLayoutManager::onCloseFrame()
 {
-    SLM_TRACE_FUNC();
     this->m_closeCallback();
 }
 

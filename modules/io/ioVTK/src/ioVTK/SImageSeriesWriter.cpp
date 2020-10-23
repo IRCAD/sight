@@ -116,14 +116,12 @@ void SImageSeriesWriter::openLocationDialog()
 
 void SImageSeriesWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +142,6 @@ void SImageSeriesWriter::info(std::ostream& _sstream )
 
 void SImageSeriesWriter::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {
@@ -164,7 +161,6 @@ void SImageSeriesWriter::updating()
         catch(::fwTools::Failed& e)
         {
             m_writeFailed = true;
-            OSLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();

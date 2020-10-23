@@ -72,7 +72,7 @@ void GdcmHelper::searchRecursivelyFiles(const std::filesystem::path& dirPath, st
                     reader.SetFileName( filename.c_str() );
                     if( !reader.CanRead() )// with GDCM2.0.18 use !reader.CanRead()
                     {
-                        OSLM_WARN("Failed to read: " << filename );
+                        SLM_WARN("Failed to read: " << filename );
                     }
                     else
                     {
@@ -81,7 +81,7 @@ void GdcmHelper::searchRecursivelyFiles(const std::filesystem::path& dirPath, st
                 }
                 catch (std::exception& e)
                 {
-                    OSLM_ERROR( "Try with another reader for this file : " << filename.c_str());
+                    SLM_ERROR( "Try with another reader for this file : " << filename.c_str());
                 }
             }
         }

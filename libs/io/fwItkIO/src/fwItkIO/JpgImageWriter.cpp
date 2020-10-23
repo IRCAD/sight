@@ -57,14 +57,12 @@ namespace fwItkIO
 JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 JpgImageWriter::~JpgImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +86,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
+        SLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         ::fwData::Image::csptr image = param.m_dataImage;
 

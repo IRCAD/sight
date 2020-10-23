@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -361,7 +361,7 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
 {
     ::fwData::PointList::sptr pointlist;
 
-    OSLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
+    SLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
     // Ensure that we have a true depth-less 2D image.
     const ::cv::Mat img2d = _img.dims == 3 ? _img.reshape(0, 2, _img.size + 1) : _img;

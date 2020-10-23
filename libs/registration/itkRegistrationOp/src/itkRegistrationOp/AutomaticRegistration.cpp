@@ -148,7 +148,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
         break;
         default:
-            OSLM_FATAL("Unknown metric");
+            SLM_FATAL("Unknown metric");
     }
 
     TransformType::Pointer itkTransform = TransformType::New();
@@ -267,7 +267,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     }
     catch( ::itk::ExceptionObject& err )
     {
-        OSLM_ERROR("Error while registering : " << err);
+        SLM_ERROR("Error while registering : " << err);
     }
 }
 
@@ -287,7 +287,7 @@ void AutomaticRegistration::stopRegistration()
 
 AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentMetricValue();
 }
 
@@ -295,7 +295,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() c
 
 const AutomaticRegistration::OptimizerType::ParametersType& AutomaticRegistration::getCurrentParameters() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentPosition();
 }
 
@@ -303,7 +303,7 @@ const AutomaticRegistration::OptimizerType::ParametersType& AutomaticRegistratio
 
 AutomaticRegistration::RealType AutomaticRegistration::getRelaxationFactor() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetRelaxationFactor();
 }
 
@@ -311,7 +311,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getRelaxationFactor() con
 
 AutomaticRegistration::RealType AutomaticRegistration::getLearningRate() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetLearningRate();
 }
 
@@ -319,7 +319,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getLearningRate() const
 
 AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeTolerance() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetGradientMagnitudeTolerance();
 }
 
@@ -327,7 +327,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeToler
 
 itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
 {
-    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    SLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentIteration();
 }
 
@@ -335,7 +335,7 @@ itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
 
 itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() const
 {
-    OSLM_ASSERT("No registration process running.", m_registrator);
+    SLM_ASSERT("No registration process running.", m_registrator);
     return m_registrator->GetCurrentLevel();
 }
 
@@ -343,7 +343,7 @@ itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() c
 
 void AutomaticRegistration::getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const
 {
-    OSLM_ASSERT("No registration process running.", m_registrator);
+    SLM_ASSERT("No registration process running.", m_registrator);
     auto itkMatrix = m_registrator->GetTransform();
     this->convertToF4sMatrix(itkMatrix, _trf);
 }

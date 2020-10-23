@@ -90,7 +90,7 @@ void Color::setRGBA( const ColorType red, const ColorType green, const ColorType
 
 void Color::setRGBA(const std::string& hexaColor )
 {
-    OSLM_ASSERT(
+    SLM_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << hexaColor,
             hexaColor[0] == '#'

@@ -50,7 +50,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_TRACE_FUNC();
 
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
     ::fwServices::registry::ActiveWorkers::getDefault()
@@ -61,7 +60,6 @@ void Plugin::start()
 
 void Plugin::stop() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

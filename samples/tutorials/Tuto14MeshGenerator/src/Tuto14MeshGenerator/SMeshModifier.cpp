@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@
 namespace Tuto14MeshGenerator
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto14MeshGenerator::SMeshModifier, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto14MeshGenerator::SMeshModifier, ::fwData::Mesh )
 
 //-----------------------------------------------------------------------------
 
@@ -63,16 +63,16 @@ void SMeshModifier::configuring()
     SLM_ASSERT( "There must be a functor attribute in the <config> xml element.",
                 configElement->hasAttribute("functor") );
     m_functor = configElement->getExistingAttributeValue("functor");
-    OSLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
-                m_functor == "ShakeMeshPoint"
-                || m_functor == "ColorizeMeshPoints"
-                || m_functor == "ColorizeMeshCells"
-                || m_functor == "ComputePointNormals"
-                || m_functor == "ComputeCellNormals"
-                || m_functor == "ShakePointNormals"
-                || m_functor == "ShakeCellNormals"
-                || m_functor == "MeshDeformation"
-                );
+    SLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
+               m_functor == "ShakeMeshPoint"
+               || m_functor == "ColorizeMeshPoints"
+               || m_functor == "ColorizeMeshCells"
+               || m_functor == "ComputePointNormals"
+               || m_functor == "ComputeCellNormals"
+               || m_functor == "ShakePointNormals"
+               || m_functor == "ShakeCellNormals"
+               || m_functor == "MeshDeformation"
+               );
 
 }
 
@@ -80,7 +80,6 @@ void SMeshModifier::configuring()
 
 void SMeshModifier::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
     ::fwDataTools::Mesh::initRand();
 }
@@ -89,7 +88,6 @@ void SMeshModifier::starting()
 
 void SMeshModifier::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -97,7 +95,6 @@ void SMeshModifier::stopping()
 
 void SMeshModifier::updating()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh");
     SLM_ASSERT("Mesh dynamicCast failed", mesh);
     try
@@ -197,4 +194,3 @@ void SMeshModifier::info(std::ostream& _sstream )
 //-----------------------------------------------------------------------------
 
 }
-
