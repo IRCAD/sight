@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,50 +43,62 @@
  *
  * It is associated to `ExMesher.qml` file.
  */
-class EXACTIVITIESQML_CLASS_API MesherManager : public ::fwQml::IQmlAppManager,
-                                                public ::fwCom::HasSignals
+class EXACTIVITIESQML_CLASS_API MesherManager :
+    public ::fwQml::IQmlAppManager,
+    public ::fwCom::HasSignals
 {
+
 Q_OBJECT
+
 typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
+
 Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
 
 public:
-    /// Constructor.
+
+    /// Adds requires objects.
     EXACTIVITIESQML_API MesherManager() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Calls initialize().
     EXACTIVITIESQML_API ~MesherManager() noexcept override;
 
 public Q_SLOTS:
 
-    /// Initialize the manager
+    /// Initializes the manager.
     void initialize() override;
 
-    /// Uninitialize the manager
+    /// Uninitializes the manager.
     void uninitialize() override;
 
-    /// Create the VTK scene and its adaptors
+    /// Creates the VTK scene and its adaptors.
     void createVtkScene();
 
-    /// Register the services instanciated from Qml
+    /// Registers the services instanciated from Qml.
     void onServiceCreated(const QVariant& obj) override;
 
-    /// Tell the image adaptor to change the slice mode
+    /// Tells the image adaptor to change the slice mode.
     void onUpdateSliceMode(int mode);
 
-    /// Tell the image adaptor to show/hide image slices
+    /// Tells the image adaptor to show/hide image slices.
     void onShowScan(bool isShown);
 
-    /// Generate the mesh
+    /// Generates the mesh.
     void applyMesher(unsigned int reduction);
 
 private:
 
     typedef ::fwCom::Signal<void ()> VoidSignalType;
 
-    bool m_vtkSceneCreated {false};
-    ::fwVTKQml::FrameBufferItem* m_frameBuffer{nullptr};
+    /// Defines if scene has been created.
+    bool m_vtkSceneCreated { false };
 
-    ::fwServices::IService::sptr m_imageAdaptor;
-    ::fwServices::IService::sptr m_modelSeriesAdaptor;
+    /// Contains the frame buffer given to the interactor manager.
+    ::fwVTKQml::FrameBufferItem* m_frameBuffer { nullptr };
+
+    /// Contains the negato adaptor.
+    ::fwServices::IService::sptr m_imageAdaptor { nullptr };
+
+    /// Contains the model series adaptor.
+    ::fwServices::IService::sptr m_modelSeriesAdaptor { nullptr };
+
 };

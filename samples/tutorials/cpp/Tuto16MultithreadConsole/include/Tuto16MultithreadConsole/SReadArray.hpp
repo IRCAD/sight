@@ -30,40 +30,46 @@ namespace Tuto16MultithreadConsole
 {
 
 /**
- * @brief   This service initializes a ::fwData::Array with 10 values (0 to 9).
-
- * @section XML XML Configuration
+ * @brief This service initializes a ::fwData::Array with 10 values (0 to 9).
  *
+ * @section XML XML Configuration
  * @code{.xml}
-        <service type="::Tuto16MultithreadConsole::SReadArray">
+        <service type="::Tuto16MultithreadConsole::SReadArray" >
             <inout key="array" uid="..." />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b array [::fwData::Array]: array which values should be initialized.
  */
-class TUTO16MULTITHREADCONSOLE_CLASS_API SReadArray : public ::fwServices::IController
+class TUTO16MULTITHREADCONSOLE_CLASS_API SReadArray final : public ::fwServices::IController
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SReadArray, ::fwServices::IController)
 
+    /// Creates the service.
     TUTO16MULTITHREADCONSOLE_API SReadArray() noexcept;
-    TUTO16MULTITHREADCONSOLE_API virtual ~SReadArray() noexcept;
+
+    /// Destroys the service.
+    TUTO16MULTITHREADCONSOLE_API ~SReadArray() noexcept override;
 
 protected:
 
-    /// Do nothing
-    virtual void starting() override;
+    /// Does nothing.
+    void configuring() override;
 
-    /// Do nothing
-    virtual void stopping() override;
+    /// Does nothing.
+    void starting() override;
 
-    /// Initialize the current ::fwData::Array with 10 values (0 to 9).
-    virtual void updating() override;
+    /// Initializes the current ::fwData::Array with 10 values (0 to 9).
+    void updating() override;
 
-    /// Do nothing
-    virtual void configuring() override;
+    /// Does nothing.
+    void stopping() override;
+
 };
 
-}  // namespace Tuto16MultithreadConsole
+} // namespace Tuto16MultithreadConsole.

@@ -1,32 +1,37 @@
 
-<plugin id="Tuto03DataService" version="@PROJECT_VERSION@">
+<plugin id="Tuto03DataService" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>tutoDataServiceConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto03DataService_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- The root data object in tutoDataService is a ::fwData::Image. -->
             <object uid="image" type="::fwData::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
 
             <!-- Frame service:
                 The frame creates a container for the rendering service and a menu bar.
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="yes"' attribute.
             -->
-            <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>tutoDataService</name>
-                        <icon>Tuto03DataService-0.1/tuto.ico</icon>
+                        <name>Tuto03DataService</name>
+                        <icon>Tuto03DataService-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="myRendering" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="imageRenderSrv" start="yes" />
                 </registry>
             </service>
 
@@ -38,14 +43,14 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="myMenu" start="yes" />
+                    <menu sid="menuView" start="yes" />
                 </registry>
             </service>
 
@@ -61,26 +66,28 @@
                 impact, but on Mac OS, this value installs the menuItem in the system menu bar, and on Linux this
                 value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="myMenu" type="::gui::aspect::SDefaultMenu">
+            <service uid="menuView" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
-                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
                         <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="actionOpenFile" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
                 </registry>
             </service>
+
+            <!-- ******************************* Actions ****************************************** -->
 
             <!--
                 Quit action:
                 The action service (::gui::action::SQuit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
-            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::gui::action::SQuit" />
 
             <!--
                 Open file action:
@@ -88,9 +95,11 @@
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
-            <service uid="actionOpenFile" type="::gui::action::SStarter">
-                <start uid="myReaderPathFile" />
+            <service uid="openImageAct" type="::gui::action::SStarter" >
+                <start uid="imageReaderSrv" />
             </service>
+
+            <!-- ******************************* Services ***************************************** -->
 
             <!--
                 Reader selector dialog:
@@ -101,7 +110,7 @@
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="image" />
             </service>
 
@@ -110,9 +119,11 @@
                 Here, the service attribute 'autoConnect="yes"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="myRendering" type="::visuOgreBasic::SImage">
+            <service uid="imageRenderSrv" type="::visuOgreBasic::SImage" >
                 <in key="image" uid="image" autoConnect="yes" />
             </service>
+
+            <!-- ******************************* Start services ***************************************** -->
 
             <!--
                 Here, we only start the frame because all the others services are managed by the gui service:
@@ -120,7 +131,7 @@
                 - the menu bar starts the menu services
                 - the menus starts the actions
             -->
-            <start uid="myFrame" />
+            <start uid="mainFrame" />
 
         </config>
     </extension>

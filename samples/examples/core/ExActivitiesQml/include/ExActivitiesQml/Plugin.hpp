@@ -29,28 +29,27 @@
 namespace ExActivitiesQml
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
+/// This class is started when the module is loaded.
 class EXACTIVITIESQML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
+
 public:
-    /// Constructor.
-    EXACTIVITIESQML_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    EXACTIVITIESQML_API ~Plugin() noexcept override;
 
-    /// Overrides start method. .
-    EXACTIVITIESQML_API void start();
+    /// Starts the plugin, registers qml files.
+    EXACTIVITIESQML_API void start() override;
 
-    /// Overrides stop method. Do nothing
-    EXACTIVITIESQML_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    EXACTIVITIESQML_API void stop() noexcept override;
 
-    EXACTIVITIESQML_API void initialize();
+    /// Load the main qml application.
+    EXACTIVITIESQML_API void initialize() override;
 
-    EXACTIVITIESQML_API void uninitialize() noexcept;
+    /// Does nothing here.
+    EXACTIVITIESQML_API void uninitialize() override;
 
 };
 
-} // namespace ExActivitiesQml
+} // namespace ExActivitiesQml.

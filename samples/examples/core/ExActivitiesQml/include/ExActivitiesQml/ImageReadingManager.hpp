@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,40 +43,50 @@
  *
  * It is associated to `ExImageReading.qml` file.
  */
-class EXACTIVITIESQML_CLASS_API ImageReadingManager : public ::fwQml::IQmlAppManager,
-                                                      public ::fwCom::HasSignals
+class EXACTIVITIESQML_CLASS_API ImageReadingManager :
+    public ::fwQml::IQmlAppManager,
+    public ::fwCom::HasSignals
 {
+
 Q_OBJECT
+
 typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
+
 Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
 
 public:
-    /// Constructor.
+
+    /// Adds requires objects.
     EXACTIVITIESQML_API ImageReadingManager() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Calls initialize().
     EXACTIVITIESQML_API ~ImageReadingManager() noexcept override;
 
 public Q_SLOTS:
 
-    /// Initialize the manager
-    void initialize() override;
+    /// Initializes the manager.
+    EXACTIVITIESQML_API void initialize() override;
 
-    /// Uninitialize the manager
-    void uninitialize() override;
+    /// Uninitializes the manager.
+    EXACTIVITIESQML_API void uninitialize() override;
 
-    /// Create the VTK scene and its adaptors
-    void createVtkScene();
+    /// Creates the VTK scene and its adaptors.
+    EXACTIVITIESQML_API void createVtkScene();
 
-    /// Open the image
-    void openImage();
+    /// Opens the image.
+    EXACTIVITIESQML_API void openImage();
 
 private:
 
     typedef ::fwCom::Signal<void ()> VoidSignalType;
 
-    bool m_vtkSceneCreated {false};
-    ::fwVTKQml::FrameBufferItem* m_frameBuffer{nullptr};
+    /// Defines if scene has been created.
+    bool m_vtkSceneCreated { false };
 
-    ::fwServices::IService::sptr m_imageAdaptor;
+    /// Contains the frame buffer given to the interactor manager.
+    ::fwVTKQml::FrameBufferItem* m_frameBuffer { nullptr };
+
+    /// Contains the negato adaptor.
+    ::fwServices::IService::sptr m_imageAdaptor { nullptr };
+
 };

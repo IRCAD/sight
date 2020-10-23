@@ -20,12 +20,9 @@
  *
  ***********************************************************************/
 
-/**
- * @brief       The namespace Tuto16MultithreadConsole contains services to run the Tuto16MultithreadConsole example.
- */
+/// The namespace Tuto16MultithreadConsole contains services to run the Tuto16MultithreadConsole example.
 #pragma once
 
 namespace Tuto16MultithreadConsole
 {
-
-} // namespace Tuto16MultithreadConsole
+}

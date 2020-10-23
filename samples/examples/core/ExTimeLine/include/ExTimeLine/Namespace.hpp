@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,7 @@
 
 #pragma once
 
-/**
- * @brief       The namespace ExTimeLine contains a producer/consumer program based on Timelines.
- *
- */
+/// The namespace ExTimeLine contains a producer/consumer program based on Timelines.
 namespace ExTimeLine
 {
-
-} // namespace ExTimeLine
+}

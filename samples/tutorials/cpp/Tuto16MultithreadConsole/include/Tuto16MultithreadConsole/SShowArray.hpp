@@ -30,46 +30,47 @@ namespace Tuto16MultithreadConsole
 {
 
 /**
- * @brief   This service displays the array values in the log.
- *
+ * @brief This service displays the array values in the log.
  * @note To see the information, you need to activate log level "info".
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
-        <service type="::Tuto16MultithreadConsole::SShowArray">
+        <service type="::Tuto16MultithreadConsole::SShowArray" >
             <input key="array" uid="..." />
        </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b array [::fwData::Array]: array which values should be incremented.
  */
-/**
- * @brief This service displays the array values.
- *
- */
-class TUTO16MULTITHREADCONSOLE_CLASS_API SShowArray : public ::fwServices::IController
+class TUTO16MULTITHREADCONSOLE_CLASS_API SShowArray final : public ::fwServices::IController
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SShowArray, ::fwServices::IController)
 
+    /// Creates the service.
     TUTO16MULTITHREADCONSOLE_API SShowArray() noexcept;
-    TUTO16MULTITHREADCONSOLE_API virtual ~SShowArray() noexcept;
+
+    /// Destroys the service.
+    TUTO16MULTITHREADCONSOLE_API ~SShowArray() noexcept override;
 
 protected:
 
-    /// Do nothing
-    virtual void starting() override;
+    /// Does nothing.
+    TUTO16MULTITHREADCONSOLE_API void configuring() override;
 
-    /// Do nothing
-    virtual void stopping() override;
+    /// Does nothing.
+    TUTO16MULTITHREADCONSOLE_API void starting() override;
 
-    /// Display the array values
-    virtual void updating() override;
+    /// Displays array values.
+    TUTO16MULTITHREADCONSOLE_API void updating() override;
 
-    /// Do nothing
-    virtual void configuring() override;
+    /// Does nothing.
+    TUTO16MULTITHREADCONSOLE_API void stopping() override;
+
 };
 
-}  // namespace Tuto16MultithreadConsole
+} // namespace Tuto16MultithreadConsole.

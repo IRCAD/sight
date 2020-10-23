@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,14 +45,14 @@ namespace ExTimeLine
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::Ex02TimeLine::SConsumer">
+        <service type="::Ex02TimeLine::SConsumer" >
             <in key="timeline" uid="..." />
             <id>0</id>
             <period>1000</period>
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [::Ex02TimeLine::MessageTL]: timeline containing messages.
+ * - \b timeline [::exTimeLineData::MessageTL]: timeline containing messages.
  * @subsection Configuration Configuration:
  * - \b id : id of the receiver.
  * - \b period (optional): time between two messages display, in milliseconds.
@@ -62,7 +62,7 @@ class EXTIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 public:
     EXTIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
 
-    fwCoreServiceMacro(SConsumer, ::fwServices::IService);
+    fwCoreServiceMacro(SConsumer, ::fwServices::IService)
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API virtual ~SConsumer() noexcept;

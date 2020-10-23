@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,13 @@
  *
  ***********************************************************************/
 
-#include "ExTimeLine/MessageTL.hpp"
+#include "exTimeLineData/MessageTL.hpp"
 
 #include <fwData/registry/macros.hpp>
 
-#include <fwTools/Object.hpp>
-
-namespace ExTimeLine
+namespace exTimeLineData
 {
 
-fwDataRegisterMacro( ::ExTimeLine::MessageTL )
+fwDataRegisterMacro( ::exTimeLineData::MessageTL )
 
-} // namespace arData
+} // namespace exTimeLineData.

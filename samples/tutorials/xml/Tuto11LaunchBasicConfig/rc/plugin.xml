@@ -1,86 +1,100 @@
-<plugin id="Tuto11LaunchBasicConfig" version="@PROJECT_VERSION@">
+<plugin id="Tuto11LaunchBasicConfig" version="@PROJECT_VERSION@" >
 
+    <requirement id="preferences" />
+    <requirement id="guiQt" />
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>TutoLaunchBasicConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto11LaunchBasicConfig_AppCfg</id>
         <config>
-            <object uid="imageUid" type="::fwData::Image"/>
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="image" type="::fwData::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Tuto 11 : Launch basic config</name>
-                        <icon>Tuto11LaunchBasicConfig-0.1/tuto.ico</icon>
+                        <name>Tuto11LaunchBasicConfig</name>
+                        <icon>Tuto11LaunchBasicConfig-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="mainMenuBar" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="imageRendereSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="mainMenuBar" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuFileView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
-                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
                         <separator />
-                        <menuItem name="Launch Config" style="check" shortcut="Ctrl+L" />
+                        <menuItem name="Launch config" style="check" shortcut="Ctrl+L" />
                         <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="actionOpenFile" start="yes" />
-                    <menuItem sid="actionLaunchConfig" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="launchConfigAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
                 </registry>
             </service>
 
+            <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="actionOpenFile" type="::gui::action::SStarter">
-                <start uid="myReaderPathFile" />
+            <service uid="openImageAct" type="::gui::action::SStarter" >
+                <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <!-- ************************ Configuration launchers ********************************* -->
 
             <!--
                 Configuration launcher:
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="actionLaunchConfig" type="::gui::action::SConfigLauncher">
-                <appConfig id="BasicFrameConfig" />
+            <service uid="launchConfigAct" type="::gui::action::SConfigLauncher" >
+                <appConfig id="Tuto11LaunchBasicConfig_BasicFrameConfig_AppCfg" />
                 <!--
-                    replace ${imageUid} in the sub-config by the uid of the object with the key
-                    (ie. ${imageUid} is replaced by "imageUid")
+                    replace ${image} in the sub-config by the uid of the object with the key
+                    (ie. ${image} is replaced by "image")
                 -->
-                <inout key="imageUid" uid="imageUid" />
+                <inout key="imageUid" uid="image" />
             </service>
 
-            <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector" >
-                <inout key="data" uid="imageUid" />
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+                <inout key="data" uid="image" />
             </service>
-            <service uid="mainView" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
-                <in key="image" uid="imageUid" />
+
+            <service uid="imageRendereSrv" type="::visuOgreBasic::SImage" >
+                <in key="image" uid="image" />
             </service>
+
+            <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
 

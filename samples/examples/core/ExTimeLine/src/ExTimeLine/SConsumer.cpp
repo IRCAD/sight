@@ -22,13 +22,13 @@
 
 #include "ExTimeLine/SConsumer.hpp"
 
-#include "ExTimeLine/MessageTL.hpp"
-
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
 #include <fwThread/Timer.hpp>
+
+#include <exTimeLineData/MessageTL.hpp>
 
 #include <functional>
 
@@ -90,14 +90,14 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    ::ExTimeLine::MessageTL::csptr timeline = this->getInput< ::ExTimeLine::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
+        const ::exTimeLineData::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
@@ -108,13 +108,13 @@ void SConsumer::updating()
 
 void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::ExTimeLine::MessageTL::csptr timeline = this->getInput< ::ExTimeLine::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
 
-    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
+        const ::exTimeLineData::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;

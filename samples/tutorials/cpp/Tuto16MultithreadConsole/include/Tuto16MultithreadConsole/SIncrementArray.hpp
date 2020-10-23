@@ -35,51 +35,59 @@ namespace Tuto16MultithreadConsole
 {
 
 /**
- * @brief   This service increments all the values of a ::fwData::Array.
+ * @brief This service increments all the values of a ::fwData::Array.
  *
  * @section Slots Slots
- * - \b startTimer(): start the internal timer and thus the periodic increment of the array values.
-
- * @section XML XML Configuration
+ * - \b startTimer(): starts the internal timer and thus the periodic increment of the array values.
  *
+ * @section XML XML Configuration
  * @code{.xml}
-        <service type="::Tuto16MultithreadConsole::SIncrementArray">
+        <service type="::Tuto16MultithreadConsole::SIncrementArray" >
             <inout key="array" uid="..." />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b array [::fwData::Array]: array which values should be incremented.
  */
-class TUTO16MULTITHREADCONSOLE_CLASS_API SIncrementArray : public ::fwServices::IController
+class TUTO16MULTITHREADCONSOLE_CLASS_API SIncrementArray final : public ::fwServices::IController
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SIncrementArray, ::fwServices::IController)
 
+    /// Initializes the slot.
     TUTO16MULTITHREADCONSOLE_API SIncrementArray() noexcept;
+
+    /// Destroys the service.
     TUTO16MULTITHREADCONSOLE_API virtual ~SIncrementArray() noexcept;
 
 protected:
 
-    /// Initialize the timer
-    virtual void starting() override;
+    /// Does nothing.
+    TUTO16MULTITHREADCONSOLE_API void configuring() override;
 
-    /// Stop and reset the timer
-    virtual void stopping() override;
+    /// Creates and starts the timer.
+    TUTO16MULTITHREADCONSOLE_API void starting() override;
 
-    /// Increment all the values of the current array
-    virtual void updating() override;
+    /// Increments all the values of the current array.
+    TUTO16MULTITHREADCONSOLE_API void updating() override;
 
-    /// Do nothing
-    virtual void configuring() override;
+    /// Stops and reset the timer.
+    TUTO16MULTITHREADCONSOLE_API void stopping() override;
 
 private:
-    /// Slot: starts the timer
+
+    /// SLOT: starts the timer.
     void startTimer();
 
-    SPTR( fwThread::Timer ) m_timer;
+    /// Contains the timer.
+    SPTR(fwThread::Timer) m_timer;
 
+    /// Defines the periode of the timer.
     unsigned int m_periodInMillisec;
 };
 
-}  // namespace Tuto16MultithreadConsole
+}  // namespace Tuto16MultithreadConsole.

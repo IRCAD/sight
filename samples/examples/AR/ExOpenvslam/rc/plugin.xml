@@ -1,14 +1,18 @@
-<plugin id="ExOpenvslam" version="@PROJECT_VERSION@">
+<plugin id="ExOpenvslam" version="@PROJECT_VERSION@" >
+
     <requirement id="guiQt" />
-    <requirement id="material" />
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExOpenvslamConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExOpenvslam_AppCfg</id>
         <config>
-            <!-- *********************************** Begin Objects declaration *********************************** -->
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
             <object uid="cameraSeries" type="::arData::CameraSeries" />
             <object uid="Frame"        type="::fwData::Image" />
             <object uid="Timeline"          type="::arData::FrameTL" />
@@ -18,362 +22,364 @@
             <object uid="openvslamPointCloud" type="::fwData::Mesh"     src="deferred" />
             <object uid="camera"              type="::arData::Camera"   src="deferred" />
 
-            <!-- *********************************** Begin layouts declaration *********************************** -->
+            <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="MainFrame" type="::gui::frame::SDefaultFrame">
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
+                    <menuBar/>
+                    <toolBar/>
                     <frame>
                         <name>ExOpenvslam</name>
                         <icon>ExOpenvslam-@PROJECT_VERSION@/app.ico</icon>
                     </frame>
-                    <menuBar/>
-                    <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBar" start="yes" />
-                    <toolBar sid="ToolBar" start="yes" />
-                    <view sid="GlobalView" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
+                    <view sid="containerView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuFileView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Map (*.map)" shortcut="Ctrl+O"/>
-                        <menuItem name="Save Map (*.map)" />
-                        <menuItem name="Save Trajectories (*.txt)" />
-                        <menuItem name="Export Map as Mesh" shortcut="Ctrl+S"/>
+                        <menuItem name="Load map (*.map)" shortcut="Ctrl+O" />
+                        <menuItem name="Save map (*.map)" />
+                        <menuItem name="Save trajectories (*.txt)" />
+                        <menuItem name="Export map as mesh" shortcut="Ctrl+S" />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="ActionLoadMap" start="yes"/>
-                    <menuItem sid="ActionSaveMap" start="yes"/>
-                    <menuItem sid="ActionSaveTrajectories" start="yes"/>
-                    <menuItem sid="ActionSavePC" start="yes"/>
-                    <menuItem sid="actionQuit" start="yes" />
+                    <menuItem sid="loadMapAct" start="yes" />
+                    <menuItem sid="saveMapAct" start="yes" />
+                    <menuItem sid="saveTrajectoriesAct" start="yes" />
+                    <menuItem sid="savePCAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
                 </registry>
             </service>
 
-            <service uid="GlobalView" type="::gui::view::SDefaultView">
+            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout>
+                        <menuItem name="Load calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
+                        <editor/>
+                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <separator/>
+                        <menuItem name="Start openvslam" icon="flatIcon-0.1/icons/GreenTracking.svg" />
+                        <menuItem name="Stop openvslam" icon="flatIcon-0.1/icons/RedUntracking.svg" />
+                        <menuItem name="Pause openvslam" icon="flatIcon-0.1/icons/OrangePauseOrangePause.svg" style="check" />
+                        <menuItem name="Reset openvslam" icon="flatIcon-0.1/icons/RedResetTracking.svg" />
+                        <menuItem name="Localization mode" icon="flatIcon-0.1/icons/OrangeLocalization.svg" style="check" />
+                        <separator/>
+                        <menuItem name="Hide/Show point cloud" icon="flatIcon-0.1/icons/Points.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalibAct" start="yes" />
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
+                    <menuItem sid="startOpenvslamAct" start="yes" />
+                    <menuItem sid="stopOpenvslamAct" start="yes" />
+                    <menuItem sid="pauseOpenvslamAct" start="yes" />
+                    <menuItem sid="resetOpenvslamAct" start="yes" />
+                    <menuItem sid="enableLocalizationAct" start="yes" />
+                    <menuItem sid="showHidePointCloudAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="containerView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="3" />
-                        <view proportion="1" />
+                        <view proportion="1" backgroundColor="#36393E" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="SceneViews" start="yes" />
-                    <view sid="EditorViews" start="yes" />
+                    <view sid="sceneViews" start="yes" />
+                    <view sid="editorViews" start="yes" />
                 </registry>
             </service>
 
-            <service uid="SceneViews" type="::gui::view::SDefaultView">
+            <service uid="sceneViews" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" caption="Openvslam Status." />
+                        <view proportion="0" backgroundColor="#36393E" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="VideoView" start="yes" />
-                    <view sid="StatusView" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
+                    <view sid="videoView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="EditorViews" type="::gui::view::SDefaultView">
+            <service uid="videoView" type="::gui::view::SDefaultView" >
                 <gui>
-                <layout type="::fwGui::ToolboxLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="videoSliderSrv" start="yes" />
+                    <view sid="statusView" start="yes" />
+                </registry>
+            </service>
+
+
+            <service uid="statusView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="openvslamInitSrvStatus" start="yes" />
+                    <view sid="openvslamTrackingStatusSrv" start="yes" />
+                    <view sid="openvslamVocStatusSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="editorViews" type="::gui::view::SDefaultView" >
+                <gui>
+                <layout type="::fwGui::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                         <view caption="Openvslam  Orb Parameters."  expanded="true" />
                         <view caption="Openvslam  initializer Parameters. (Advanced)" expanded="false" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="openvslamOrb" start="yes" />
-                    <view sid="openvslamInit" start="yes" />
+                    <view sid="openvslamOrbSrv" start="yes" />
+                    <view sid="openvslamInitSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="StatusView" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="openvslamInitStatus" start="yes" />
-                    <view sid="openvslamTrackingStatus" start="yes" />
-                    <view sid="openvslamVocStatus" start="yes" />
-                </registry>
-            </service>
+            <!-- ************************************* Action ************************************ -->
 
-            <service uid="VideoView" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="CameraViewRender" start="yes" />
-                    <view sid="VideoSlider" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="ToolBar" type="::gui::aspect::SDefaultToolBar">
-                <gui>
-                    <layout>
-                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg"/>
-                        <editor/>
-                        <menuItem name="Start" icon="media-0.1/icons/start.svg" />
-                        <menuItem name="Stop" icon="media-0.1/icons/stop.svg" />
-                        <menuItem name="Pause" icon="media-0.1/icons/pause.svg" />
-                        <menuItem name="Loop" icon="media-0.1/icons/loop.svg" style="check" />
-                        <separator/>
-                        <menuItem name="Start openvslam" icon="media-0.1/icons/tracking.svg" />
-                        <menuItem name="Stop openvslam" icon="media-0.1/icons/disableTracking.svg" />
-                        <menuItem name="Pause openvslam" icon="media-0.1/icons/pause-tracking.svg" style="check" />
-                        <menuItem name="Reset openvslam" icon="media-0-1/icons/reset.svg" />
-                        <menuItem name="Localization Mode" icon="media-0.1/icons/enableLocalization.svg" icon2="media-0.1/icons/disableLocalization.svg" style="check"/>
-                        <separator/>
-                        <menuItem name="Hide/Show point cloud" icon="media-0.1/icons/hide.svg" icon2="media-0.1/icons/show.svg" style="check" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="loadCalib" start="yes" />
-                    <editor sid="CameraSelector"/>
-                    <menuItem sid="ActionStart" start="yes" />
-                    <menuItem sid="ActionStop" start="yes" />
-                    <menuItem sid="ActionPause" start="yes" />
-                    <menuItem sid="ActionLoop" start="yes" />
-                    <menuItem sid="ActionStartOpenvslam" start="yes" />
-                    <menuItem sid="ActionStopOpenvslam" start="yes" />
-                    <menuItem sid="ActionPauseOpenvslam" start="yes" />
-                    <menuItem sid="ActionResetOpenvslam" start="yes" />
-                    <menuItem sid="ActionEnableLocalization" start="yes" />
-                    <menuItem sid="ActionHideShowPointCloud" start="yes" />
-                </registry>
-            </service>
-
-            <!-- *********************************** Begin actions declarations *********************************** -->
-
-            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::gui::action::SQuit" />
 
 
-            <service uid="loadCalib" type="::gui::action::SSlotCaller">
+            <service uid="loadCalibAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>CalibrationReader/update</slot>
+                    <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="ActionStart" type="::gui::action::SSlotCaller">
+            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>FrameGrabber/startCamera</slot>
+                    <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="ActionStop" type="::gui::action::SSlotCaller">
+            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>FrameGrabber/stopCamera</slot>
+                    <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="ActionPause" type="::gui::action::SSlotCaller">
+            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>FrameGrabber/pauseCamera</slot>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="ActionLoop" type="::gui::action::SSlotCaller">
+            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>FrameGrabber/loopVideo</slot>
+                    <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
             </service>
 
-            <service uid="ActionStartOpenvslam" type="::gui::action::SSlotCaller">
+            <service uid="startOpenvslamAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>FrustumListAdpt/clear</slot>
-                    <slot>ActionResetOpenvslam/show</slot>
-                    <slot>ActionStartOpenvslam/hide</slot>
-                    <slot>ActionStopOpenvslam/show</slot>
-                    <slot>openvslam/startTracking</slot>
+                    <slot>frustumListAdp/clear</slot>
+                    <slot>resetOpenvslamAct/show</slot>
+                    <slot>startOpenvslamAct/hide</slot>
+                    <slot>stopOpenvslamAct/show</slot>
+                    <slot>openvslamSrv/startTracking</slot>
                     <slot>EditorViews/hide</slot>
-                    <slot>openvslamInitStatus/changeToOrange</slot>
-                    <slot>ActionSaveMap/show</slot>
-                    <slot>ActionSavePC/show</slot>
+                    <slot>openvslamInitSrvStatus/changeToOrange</slot>
+                    <slot>saveMapAct/show</slot>
+                    <slot>savePCAct/show</slot>
                 </slots>
             </service>
 
-            <service uid="ActionPauseOpenvslam" type="::gui::action::SSlotCaller">
+            <service uid="pauseOpenvslamAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>openvslam/pauseTracker</slot>
+                    <slot>openvslamSrv/pauseTracker</slot>
                 </slots>
             </service>
 
-            <service uid="ActionHideShowPointCloud" type="::gui::action::SSlotCaller">
+            <service uid="showHidePointCloudAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>PointCloudAdpt/toggleVisibility</slot>
+                    <slot>pointCloudAdp/toggleVisibility</slot>
                 </slots>
             </service>
 
-            <service uid="ActionEnableLocalization" type="::gui::action::SBooleanSlotCaller">
+            <service uid="enableLocalizationAct" type="::gui::action::SBooleanSlotCaller" >
              <state active="false" />
                 <slots>
-                    <slot>openvslam/enableLocalization</slot>
+                    <slot>openvslamSrv/enableLocalization</slot>
                 </slots>
             </service>
 
-            <service uid="ActionSaveMap" type="::gui::action::SSlotCaller">
+            <service uid="saveMapAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>openvslam/saveMap</slot>
+                    <slot>openvslamSrv/saveMap</slot>
                 </slots>
             </service>
 
-            <service uid="ActionSaveTrajectories" type="::gui::action::SSlotCaller">
+            <service uid="saveTrajectoriesAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>openvslam/saveTrajectories</slot>
+                    <slot>openvslamSrv/saveTrajectories</slot>
                 </slots>
             </service>
 
 
-            <service uid="ActionLoadMap" type="::gui::action::SSlotCaller">
+            <service uid="loadMapAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>openvslam/loadMap</slot>
+                    <slot>openvslamSrv/loadMap</slot>
                 </slots>
             </service>
 
-            <service uid="ActionResetOpenvslam" type="::gui::action::SSlotCaller">
+            <service uid="resetOpenvslamAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>openvslam/resetPointCloud</slot>
-                    <slot>FrustumListAdpt/clear</slot>
+                    <slot>openvslamSrv/resetPointCloud</slot>
+                    <slot>frustumListAdp/clear</slot>
                 </slots>
             </service>
 
-            <service uid="ActionSavePC" type="::gui::action::SSlotCaller">
+            <service uid="savePCAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>SaveMesh/update</slot>
+                    <slot>meshWriterSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="ActionStopOpenvslam" type="::gui::action::SSlotCaller">
+            <service uid="stopOpenvslamAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>ActionResetOpenvslam/hide</slot>
-                    <slot>ActionStopOpenvslam/hide</slot>
-                    <slot>ActionStartOpenvslam/show</slot>
-                    <slot>openvslam/stopTracking</slot>
+                    <slot>resetOpenvslamAct/hide</slot>
+                    <slot>stopOpenvslamAct/hide</slot>
+                    <slot>startOpenvslamAct/show</slot>
+                    <slot>openvslamSrv/stopTracking</slot>
                     <slot>EditorViews/show</slot>
-                    <slot>openvslamTrackingStatus/changeToRed</slot>
-                    <slot>openvslamInitStatus/changeToRed</slot>
+                    <slot>openvslamTrackingStatusSrv/changeToRed</slot>
+                    <slot>openvslamInitSrvStatus/changeToRed</slot>
                 </slots>
             </service>
 
-            <service uid="HideAtStart" type="::gui::action::SSlotCaller">
+            <service uid="HideAtStart" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>ActionStopOpenvslam/hide</slot>
-                    <slot>ActionResetOpenvslam/hide</slot>
-                    <slot>ActionSaveMap/hide</slot>
-                    <slot>ActionSavePC/hide</slot>
-                    <slot>ActionSaveTrajectories/hide</slot>
-                    <slot>ActionLoadMap/hide</slot>
+                    <slot>stopOpenvslamAct/hide</slot>
+                    <slot>resetOpenvslamAct/hide</slot>
+                    <slot>saveMapAct/hide</slot>
+                    <slot>savePCAct/hide</slot>
+                    <slot>saveTrajectoriesAct/hide</slot>
+                    <slot>loadMapAct/hide</slot>
                 </slots>
             </service>
 
-            <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="data" uid="cameraSeries" />
-            </service>
+            <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
-            <service uid="Extractor" type="::ctrlCamp::SExtractObj">
-                <inout key="source" uid="cameraSeries">
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
-                </inout>
-                <out group="target">
-                    <key uid="camera" /> <!-- destination -->
-                </out>
-            </service>
-
-            <!-- *********************************** Begin video scene *********************************** -->
-
-            <service uid="CameraViewRender" type="::fwRenderOgre::SRender">
+            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <background topColor="#1E0037" bottomColor="#002533" />
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
                     <layer id="video" depth="2" >
-                        <viewport vOffset="0.01" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
+                        <viewport vOffset="0.01" width="0.3" height="0.3" hAlign="right" vAlign="top" />
                     </layer>
-                    <layer id="default" depth="1" transparency="HybridTransparency" numPeels="3"/>
-                    <adaptor uid="CameraAxis" />
-                    <adaptor uid="WorldAxis" />
-                    <adaptor uid="PointCloudAdpt" />
-                    <adaptor uid="transformAdpt" />
-                    <adaptor uid="FrustumAdpt" />
-                    <adaptor uid="FrustumListAdpt" />
-                    <adaptor uid="InteractorVRScene" />
-                    <adaptor uid="VideoAdpt" />
+                    <layer id="default" depth="1" transparency="HybridTransparency" numPeels="3" />
+                    <adaptor uid="cameraAxisAdp" />
+                    <adaptor uid="worldAxisAdp" />
+                    <adaptor uid="pointCloudAdp" />
+                    <adaptor uid="transformAdp" />
+                    <adaptor uid="frustumAdp" />
+                    <adaptor uid="frustumListAdp" />
+                    <adaptor uid="trackballInteractorAdp" />
+                    <adaptor uid="videoAdp" />
                 </scene>
             </service>
 
-            <service uid="VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
+            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="Frame" />
                 <config layer="video" />
             </service>
 
-            <service uid="InteractorVRScene" type="::visuOgreAdaptor::STrackballCamera">
+            <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
                 <config layer="default" />
             </service>
 
-            <service uid="CameraAxis" type="::visuOgreAdaptor::SAxis">
+            <service uid="cameraAxisAdp" type="::visuOgreAdaptor::SAxis" >
                 <config layer="default" transform="cameraMatrixTrf" length="30" />
             </service>
 
-            <service uid="WorldAxis" type="::visuOgreAdaptor::SAxis">
+            <service uid="worldAxisAdp" type="::visuOgreAdaptor::SAxis" >
                 <config layer="default" length="30" />
             </service>
 
-            <service uid="PointCloudAdpt" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
+            <service uid="pointCloudAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
                 <in key="mesh" uid="openvslamPointCloud" />
                 <config layer="default" autoresetcamera="no" color="#ffffffff" radius="3.0f" textureName="circle.dds" />
             </service>
 
-            <service uid="transformAdpt" type="::visuOgreAdaptor::STransform" autoConnect="yes">
+            <service uid="transformAdp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="CameraPoseMatrix" />
                 <config layer="default" transform="cameraMatrixTrf" />
             </service>
 
-            <service uid="FrustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
+            <service uid="frustumAdp" type="::visuOgreAdaptor::SFrustum" autoConnect="yes" >
                 <in key="camera" uid="camera" />
-                <config layer="default" transform="cameraMatrixTrf" near="1" far="50"/>
+                <config layer="default" transform="cameraMatrixTrf" near="1" far="50" />
             </service>
 
-            <service uid="FrustumListAdpt" type="::visuOgreAdaptor::SFrustumList" autoConnect="yes">
+            <service uid="frustumListAdp" type="::visuOgreAdaptor::SFrustumList" autoConnect="yes" >
                 <in key="camera" uid="camera" />
                 <in key="transform" uid="CameraPoseMatrix" />
                 <config layer="default" nbMax="10000" near="1.f" far="20.f" />
             </service>
 
-            <!-- *********************************** Begin services declarations *********************************** -->
+            <!-- ************************************* Services ************************************ -->
 
-            <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="calibrationReaderSrv" type="::ioCalibration::SOpenCVReader" >
+                <inout key="data" uid="cameraSeries" />
+            </service>
 
-            <service uid="openvslamInitStatus" type="::uiTools::editor::SStatus">
+            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
+                <inout key="source" uid="cameraSeries" >
+                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                </inout>
+                <out group="target" >
+                    <key uid="camera" /> <!-- destination -->
+                </out>
+            </service>
+
+            <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
+
+            <service uid="openvslamInitSrvStatus" type="::uiTools::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -385,7 +391,7 @@
                 <orange>Initializing...</orange>
             </service>
 
-            <service uid="openvslamTrackingStatus" type="::uiTools::editor::SStatus">
+            <service uid="openvslamTrackingStatusSrv" type="::uiTools::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -397,7 +403,7 @@
                 <orange>relocalization</orange>
             </service>
 
-            <service uid="openvslamVocStatus" type="::uiTools::editor::SStatus">
+            <service uid="openvslamVocStatusSrv" type="::uiTools::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -409,7 +415,7 @@
                 <green>Loaded</green>
             </service>
 
-            <service uid="openvslamOrb" type="::guiQt::editor::SParameters">
+            <service uid="openvslamOrbSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Number of features per image" key="nFeatures" defaultValue="2000" min="10" max="10000" />
                     <param type="double" name="Scale factor between levels in the scale pyramid" key="scaleFactor" defaultValue="1.2" min="1" max="10.0" />
@@ -419,9 +425,10 @@
                     <param type="bool" name="Show Features" key="showFeatures" defaultValue="false" />
                     <param type="enum" name="Map Type" key="mapType" values="Global,Local" defaultValue="Global" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="openvslamInit" type="::guiQt::editor::SParameters">
+            <service uid="openvslamInitSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Number of RANSAC Iterations" key="initializer.numRansacIterations" defaultValue="100" min="1" max="1000" />
                     <param type="int" name="Minimum number of triangulated points" key="initializer.minNumTriangulatedPts" defaultValue="50" min="10" max="200" />
@@ -430,169 +437,168 @@
                     <param type="int" name="Number of BA Iterations" key="initializer.numBAIterations" defaultValue="20" min="1" max="100" />
                     <param type="double" name="Initial scale magnitude" key="initializer.scalingFactor" defaultValue="200.0" min="0.1" max="1000.0" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="FrameGrabber" type="::videoOpenCV::SFrameGrabber">
+            <service uid="videoGrabberSrv" type="::videoOpenCV::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="Timeline" />
             </service>
 
-            <service uid="FrameUpdater" type="::videoTools::SFrameMatrixSynchronizer">
-                <in group="frameTL">
+            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" >
+                <in group="frameTL" >
                     <key uid="Timeline" />
                 </in>
-                <inout group="image">
+                <inout group="image" >
                     <key uid="Frame" />
                 </inout>
-                <in group="matrixTL">
+                <in group="matrixTL" >
                     <key uid="CamMatrixTimeline" />
                 </in>
-                <inout group="matrices0">
+                <inout group="matrices0" >
                     <key uid="CameraPoseMatrix" />
                 </inout>
                 <framerate>60</framerate>
-<!--                <tolerance>50</tolerance>-->
             </service>
 
-            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="openvslam" type="::openvslamTracker::SOpenvslam" worker="openvslamWorker">
+            <service uid="openvslamSrv" type="::openvslamTracker::SOpenvslam" worker="openvslamWorker" >
                 <in key="camera" uid="camera" />
                 <in key="timeline" uid="Timeline" autoConnect="yes" />
                 <inout key="cameraMatrixTL" uid="CamMatrixTimeline" />
                 <out key="pointCloud" uid="openvslamPointCloud" />
             </service>
 
-            <service uid="SaveMesh" type="::uiIO::editor::SIOSelector">
+            <service uid="meshWriterSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioVTK::SMeshWriter" />
             </service>
 
-            <!-- *********************************** Begin connections declarations *********************************** -->
+            <!-- ******************************* Connections ***************************************** -->
 
             <connect>
                 <signal>camera/idModified</signal>
-                <slot>FrameGrabber/stopCamera</slot>
+                <slot>videoGrabberSrv/stopCamera</slot>
             </connect>
 
             <!-- Connect openvslam status -->
             <connect>
-                <signal>openvslam/trackingInitialized</signal>
-                <slot>openvslamInitStatus/changeToGreen</slot>
+                <signal>openvslamSrv/trackingInitialized</signal>
+                <slot>openvslamInitSrvStatus/changeToGreen</slot>
             </connect>
 
             <connect>
-                <signal>openvslam/tracked</signal>
-                <slot>openvslamTrackingStatus/changeToGreen</slot>
-                <slot>ActionSaveTrajectories/show</slot>
+                <signal>openvslamSrv/tracked</signal>
+                <slot>openvslamTrackingStatusSrv/changeToGreen</slot>
+                <slot>saveTrajectoriesAct/show</slot>
             </connect>
 
 
             <connect>
-                <signal>openvslam/trackingLost</signal>
-                <signal>openvslam/stopped</signal>
-                <slot>openvslamTrackingStatus/changeToRed</slot>
+                <signal>openvslamSrv/trackingLost</signal>
+                <signal>openvslamSrv/stopped</signal>
+                <slot>openvslamTrackingStatusSrv/changeToRed</slot>
             </connect>
 
             <connect>
-                <signal>openvslam/vocFileLoaded</signal>
-                <slot>openvslamVocStatus/changeToGreen</slot>
+                <signal>openvslamSrv/vocFileLoaded</signal>
+                <slot>openvslamVocStatusSrv/changeToGreen</slot>
             </connect>
 
             <connect>
-                <signal>openvslam/vocFileLoadingStarted</signal>
-                <slot>openvslamVocStatus/changeToOrange</slot>
+                <signal>openvslamSrv/vocFileLoadingStarted</signal>
+                <slot>openvslamVocStatusSrv/changeToOrange</slot>
             </connect>
 
             <connect>
-                <signal>openvslam/vocFileUnloaded</signal>
-                <slot>openvslamVocStatus/changeToRed</slot>
+                <signal>openvslamSrv/vocFileUnloaded</signal>
+                <slot>openvslamVocStatusSrv/changeToRed</slot>
             </connect>
 
             <!-- Connect video slider and frame grabber -->
             <connect>
-                <signal>VideoSlider/positionChanged</signal>
-                <slot>FrameGrabber/setPositionVideo</slot>
+                <signal>videoSliderSrv/positionChanged</signal>
+                <slot>videoGrabberSrv/setPositionVideo</slot>
             </connect>
 
             <connect>
-                <signal>FrameGrabber/positionModified</signal>
-                <slot>VideoSlider/setPositionSlider</slot>
+                <signal>videoGrabberSrv/positionModified</signal>
+                <slot>videoSliderSrv/setPositionSlider</slot>
             </connect>
 
             <connect>
-                <signal>FrameGrabber/durationModified</signal>
-                <slot>VideoSlider/setDurationSlider</slot>
+                <signal>videoGrabberSrv/durationModified</signal>
+                <slot>videoSliderSrv/setDurationSlider</slot>
             </connect>
 
             <!-- Connect SParameters to Sopenvslam -->
             <connect>
-                <signal>openvslamOrb/intChanged</signal>
-                <signal>openvslamInit/intChanged</signal>
-                <slot>openvslam/setIntParameter</slot>
+                <signal>openvslamOrbSrv/intChanged</signal>
+                <signal>openvslamInitSrv/intChanged</signal>
+                <slot>openvslamSrv/setIntParameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrb/doubleChanged</signal>
-                <signal>openvslamInit/doubleChanged</signal>
-                <slot>openvslam/setDoubleParameter</slot>
+                <signal>openvslamOrbSrv/doubleChanged</signal>
+                <signal>openvslamInitSrv/doubleChanged</signal>
+                <slot>openvslamSrv/setDoubleParameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrb/boolChanged</signal>
-                <slot>openvslam/setBoolParameter</slot>
+                <signal>openvslamOrbSrv/boolChanged</signal>
+                <slot>openvslamSrv/setBoolParameter</slot>
             </connect>
 
             <connect>
-                <signal>openvslamOrb/enumChanged</signal>
-                <slot>openvslam/setEnumParameter</slot>
+                <signal>openvslamOrbSrv/enumChanged</signal>
+                <slot>openvslamSrv/setEnumParameter</slot>
             </connect>
 
             <connect>
                 <signal>cameraSeries/addedCamera</signal>
-                <slot>Extractor/update</slot>
-                <slot>ActionLoadMap/show</slot>
+                <slot>cameraExtractorSrv/update</slot>
+                <slot>loadMapAct/show</slot>
             </connect>
 
             <connect>
                 <signal>openvslam/mapLoaded</signal>
-                <slot>ActionResetOpenvslam/show</slot>
-                <slot>ActionStartOpenvslam/hide</slot>
-                <slot>ActionStopOpenvslam/show</slot>
-                <slot>openvslam/startTracking</slot>
+                <slot>resetOpenvslamAct/show</slot>
+                <slot>startOpenvslamAct/hide</slot>
+                <slot>stopOpenvslamAct/show</slot>
+                <slot>openvslamSrv/startTracking</slot>
                 <slot>EditorViews/hide</slot>
-                <slot>openvslamInitStatus/changeToOrange</slot>
-                <slot>ActionSaveMap/show</slot>
-                <slot>ActionSavePC/show</slot>
+                <slot>openvslamInitSrvStatus/changeToOrange</slot>
+                <slot>saveMapAct/show</slot>
+                <slot>savePCAct/show</slot>
             </connect>
 
-            <!-- *********************************** Begin start services *********************************** -->
+            <!-- ******************************* Start services ***************************************** -->
 
-            <start uid="MainFrame" />
-            <start uid="CalibrationReader" />
-            <start uid="CameraSelector" />
-            <start uid="Extractor" />
-            <start uid="openvslam" />
+            <start uid="mainFrame" />
+            <start uid="calibrationReaderSrv" />
+            <start uid="videoSelectorSrv" />
+            <start uid="cameraExtractorSrv" />
+            <start uid="openvslamSrv" />
             <start uid="HideAtStart" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="meshWriterSrv" />
+            <start uid="videoAdp" />
+            <start uid="trackballInteractorAdp" />
+            <start uid="cameraAxisAdp" />
+            <start uid="worldAxisAdp" />
+            <start uid="pointCloudAdp" />
+            <start uid="transformAdp" />
+            <start uid="frustumAdp" />
+            <start uid="frustumListAdp" />
 
-            <!-- video services -->
-            <start uid="FrameGrabber" />
-            <start uid="FrameUpdater" />
-            <start uid="SaveMesh" />
-            <start uid="VideoAdpt" />
-
-            <start uid="InteractorVRScene" />
-            <start uid="CameraAxis" />
-            <start uid="WorldAxis" />
-            <start uid="PointCloudAdpt" />
-            <start uid="transformAdpt" />
-            <start uid="FrustumAdpt" />
-            <start uid="FrustumListAdpt" />
+            <!-- ******************************* Update services ***************************************** -->
 
             <update uid="HideAtStart" />
 

@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace Tuto14MeshGenerator
+} // namespace Tuto14MeshGenerator.

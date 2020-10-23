@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,9 +28,7 @@
 
 #include <fwThread/Timer.hpp>
 
-#include <fwTools/Object.hpp>
-
-fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SMain, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SMain, ::fwData::Composite )
 
 namespace ExTimeLine
 {
@@ -82,4 +80,4 @@ void SMain::swapping( )
 
 //------------------------------------------------------------------------------
 
-} // namespace ExTimeLine
+} // namespace ExTimeLine.

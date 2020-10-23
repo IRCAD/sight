@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="TutoSceneQt3D" version="@PROJECT_VERSION@">
+<plugin id="TutoSceneQt3D" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
@@ -23,7 +23,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig" >
         <id>TutoSceneQt3D_AppCfg</id>
         <config>
 
@@ -34,7 +34,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::gui::frame::SDefaultFrame">
+            <service uid="mainView" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>TutoSceneQt3D</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -60,7 +60,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu">
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -76,7 +76,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::fwRenderQt3D::SRender">
+            <service uid="genericSceneSrv" type="::fwRenderQt3D::SRender" >
                 <scene>
                     <background color="#2d2d2d" />
 
@@ -97,7 +97,7 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="::uiIO::editor::SIOSelector">
+            <service uid="meshReaderAct" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
                 <config id="TutoSceneQt3D_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
@@ -106,7 +106,7 @@
 
             <service uid="quitAct" type="::gui::action::SQuit" />
 
-            <!-- ******************************* Start/Stop services ***************************************** -->
+            <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainView" />
             <start uid="materialAdp" />

@@ -31,9 +31,7 @@
 namespace TutoSceneQt3DCpp
 {
 
-/**
- * @brief This class starts the software when the bundles is loaded.
- */
+/// This class is started when the module is loaded.
 class TUTOSCENEQT3DCPP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 

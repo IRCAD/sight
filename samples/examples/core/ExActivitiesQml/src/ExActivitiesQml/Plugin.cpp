@@ -39,12 +39,6 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
 Plugin::~Plugin() noexcept
 {
 }
@@ -77,11 +71,11 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize() noexcept
+void Plugin::uninitialize()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ExActivitiesQml
+} // namespace ExActivitiesQml.

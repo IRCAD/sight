@@ -1,46 +1,65 @@
-
 set( NAME ExDump )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    servicesReg
+    fwlauncher              # Just to build the launcher
+    appXml                  # XML configurations
+
+    preferences             # Start the module, load file location or window preferences
+    guiQt                   # Start the module, allow dark theme
+
+    # Objects declaration
     fwData
+    servicesReg             # fwService
     fwMedData
 
+    # UI declaration/Actions
     gui
-    guiQt
+    style
+    flatIcon
 
-    appXml
-    memory
-    fwlauncher
-
+    # Reader
     ioAtoms
     ioITK
     ioVTK
     ioVtkGdcm
     ioData
 
+    # Services
+    memory
     uiIO
     uiMedDataQt
-
     2DVisualizationActivity
     3DVisualizationActivity
     ioActivity
-
-    media
-
     patchMedicalData
-
     filterUnknownSeries
-
-    preferences
-
     monitor
     monitorQt
 )
 
-# Set the reading mode to "lazy", so the buffers will only be read in memory when they are used.
-moduleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
+moduleParam(
+        memory
+    PARAM_LIST
+        loading_mode
+    PARAM_VALUES
+        lazy
+) # Set the reading mode to "lazy", so the buffers will only be read in memory when they are used.
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES ExDumpConfig)
+moduleParam(guiQt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        style-0.1/flatdark.rcc
+        style-0.1/flatdark.qss
+) # Allow dark theme via guiQt
+
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExDump_AppCfg
+) # Main application's configuration to launch

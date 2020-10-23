@@ -1,18 +1,28 @@
 set( NAME ExTimeLine )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES
     arData
     fwData
+    fwRuntime
     fwServices
+    fwCore
+    fwThread
+    fwCom
+    exTimeLineData
 )
 set( REQUIREMENTS
     appXml
-    fwData
-    arData
     servicesReg
     fwlauncher
     console
+    exTimeLineData
 )
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES ExTimeLineConfig)
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExTimeLine_AppCfg
+) # Main application's configuration to launch

@@ -33,36 +33,41 @@
 namespace Tuto02DataServiceBasicCpp
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO02DATASERVICEBASICCPP_CLASS_API Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+class TUTO02DATASERVICEBASICCPP_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
+
 public:
-    /// Constructor.
-    TUTO02DATASERVICEBASICCPP_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    TUTO02DATASERVICEBASICCPP_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    TUTO02DATASERVICEBASICCPP_API ~Plugin() noexcept override;
 
-    /// Overrides start method. .
-    TUTO02DATASERVICEBASICCPP_API void start();
+    /// Starts the plugin, does nothing here.
+    TUTO02DATASERVICEBASICCPP_API void start() override;
 
-    /// Overrides stop method. Do nothing
-    TUTO02DATASERVICEBASICCPP_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    TUTO02DATASERVICEBASICCPP_API void stop() noexcept override;
 
-    TUTO02DATASERVICEBASICCPP_API void initialize();
+    /// Creates the whole application..
+    TUTO02DATASERVICEBASICCPP_API void initialize() override;
 
-    TUTO02DATASERVICEBASICCPP_API void uninitialize() noexcept;
+    /// Destroys the whole application..
+    TUTO02DATASERVICEBASICCPP_API void uninitialize() override;
 
 private:
+
     ::fwData::Image::sptr m_image;
 
     ::fwServices::IService::sptr m_frameSrv;
+
     ::fwServices::IService::sptr m_renderSrv;
+
     ::fwServices::IService::sptr m_interactorSrv;
+
     ::fwServices::IService::sptr m_negatoSrv;
+
     ::fwServices::IService::sptr m_readerSrv;
+
 };
 
-} // namespace Tuto02DataServiceBasicCpp
+} // namespace Tuto02DataServiceBasicCpp.

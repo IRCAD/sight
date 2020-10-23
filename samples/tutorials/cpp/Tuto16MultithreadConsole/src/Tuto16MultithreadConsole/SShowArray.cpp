@@ -34,6 +34,8 @@ fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::
 namespace Tuto16MultithreadConsole
 {
 
+static const std::string s_ARRAY_INPUT = "array";
+
 //------------------------------------------------------------------------------
 
 SShowArray::SShowArray() noexcept
@@ -48,13 +50,13 @@ SShowArray::~SShowArray() noexcept
 
 //------------------------------------------------------------------------------
 
-void SShowArray::starting()
+void SShowArray::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowArray::stopping()
+void SShowArray::starting()
 {
 }
 
@@ -62,9 +64,7 @@ void SShowArray::stopping()
 
 void SShowArray::updating()
 {
-    ::fwData::Array::csptr array = this->getInput< ::fwData::Array >("array");
-    ::fwData::mt::ObjectReadLock readLock(array);
-    SLM_ASSERT("No array.", array);
+    const auto array = this->getInput< ::fwData::Array >(s_ARRAY_INPUT);
 
     const auto dumpLock = array->lock();
 
@@ -79,7 +79,7 @@ void SShowArray::updating()
 
 //------------------------------------------------------------------------------
 
-void SShowArray::configuring()
+void SShowArray::stopping()
 {
 }
 

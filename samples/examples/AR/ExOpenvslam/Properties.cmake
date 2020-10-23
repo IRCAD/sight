@@ -1,31 +1,59 @@
-
 set( NAME ExOpenvslam )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    media
-    appXml
-    arData
-    ctrlCamp
+    fwlauncher              # Just to build the launcher
+    appXml                  # XML configurations
+
+    preferences             # Start the module, load file location or window preferences
+    visuOgre                # Start the module, allow to use fwRenderOgre
+    material                # Start the module, load Ogre's materials
+    guiQt                   # Start the module, allow dark theme
+    visuOgreQt              # Enable Ogre to render things in Qt window
+
+    # Objects declaration
     fwData
-    fwlauncher
+    servicesReg             # fwService
+    arData
+
+    # UI declaration/Actions
     gui
-    guiQt
-    ioCalibration
-    ioData
+    style
+    flatIcon
+
+    # Reader
     ioVTK
-    uiTools
-    uiIO
-    material
-    servicesReg
-    openvslamTracker
-    videoOpenCV
+
+    # Grabber
     videoQt
+    videoOpenCV
+
+    # Services
     videoTools
-    visuOgre
+    uiTools
+    ctrlCamp
+    ioCalibration
+    uiIO
+    openvslamTracker
+
+    # Generic Scene
     visuOgreAdaptor
-    visuOgreQt
 )
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES ExOpenvslamConfig)
+moduleParam(guiQt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        style-0.1/flatdark.rcc
+        style-0.1/flatdark.qss
+) # Allow dark theme via guiQt
+
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExOpenvslam_AppCfg
+) # Main application's configuration to launch

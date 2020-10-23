@@ -1,0 +1,47 @@
+<extension implements="::fwServices::registry::AppConfig" >
+    <id>ExActivities_Base_AppCfg</id>
+    <parameters>
+        <param name="APP_NAME" />
+        <param name="ICON_PATH" />
+        <param name="SEQUENCER_CONFIG" />
+        <param name="WIZARD_CONFIG" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <gui>
+                <frame>
+                    <name>${APP_NAME}</name>
+                    <icon>${ICON_PATH}</icon>
+                    <minSize width="1280" height="800" />
+                </frame>
+            </gui>
+            <registry>
+                <view wid="activityView" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="activityLauncherSrv" type="::fwServices::SConfigController" >
+            <appConfig id="ActivityLauncher" />
+            <inout key="seriesDB" uid="seriesDB" />
+            <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />
+            <parameter replace="WIZARD_CONFIG" by="${WIZARD_CONFIG}" />
+            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+            <parameter replace="WID_PARENT" by="activityView" />
+        </service>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="activityLauncherSrv" />
+
+    </config>
+</extension>

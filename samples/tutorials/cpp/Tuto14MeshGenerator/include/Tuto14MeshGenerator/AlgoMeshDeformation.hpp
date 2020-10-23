@@ -32,34 +32,18 @@
 namespace Tuto14MeshGenerator
 {
 
-class TUTO14MESHGENERATOR_CLASS_API AlgoMeshDeformation
+class TUTO14MESHGENERATOR_CLASS_API AlgoMeshDeformation final
 {
+
 public:
 
-    /// Constructor
+    /// Creates an instance.
     TUTO14MESHGENERATOR_API AlgoMeshDeformation() noexcept;
 
-    /// Destructor
-    TUTO14MESHGENERATOR_API virtual ~AlgoMeshDeformation() noexcept;
+    /// Destroys the intance.
+    TUTO14MESHGENERATOR_API ~AlgoMeshDeformation() noexcept;
 
-    /**
-     * @brief Initialize algorithm's parameters.
-     */
-    TUTO14MESHGENERATOR_API void setParam( ::fwData::Mesh::sptr _mesh,
-                                           const unsigned int _step,
-                                           const unsigned int _amplitude);
-
-    /**
-     * @brief Initialize the simulated acquisition.
-     */
-    TUTO14MESHGENERATOR_API void initSimu();
-
-    /**
-     * @brief Compute the simulated acquisition for the given step between inspiration and expiration.
-     */
-    TUTO14MESHGENERATOR_API void computeSimu();
-
-    /// Compute deformation or init algo if necessary
+    /// Computes the deformation or sets and initializes the algorithm if necessary.
     TUTO14MESHGENERATOR_API void computeDeformation( ::fwData::Mesh::sptr _mesh,
                                                      const unsigned int _nbStep,
                                                      const unsigned int _amplitude );
@@ -67,19 +51,40 @@ public:
 private:
 
     /**
-     * @brief Number of simulated acquisitions to compute between inspiration and expiration.
+     * @brief Sets the algorithm parameters.
+     * @param _mesh the mesh to deform.
+     * @param _nbStep the number of simulated acquisitions to compute between inspiration and expiration.
+     * @param _amplitude
      */
-    unsigned int m_nbStep;
+    void setParam(::fwData::Mesh::sptr _mesh,
+                  const unsigned int _nbStep,
+                  const unsigned int _amplitude);
+
+    /// Initializes the simulated acquisition.
+    void initSimu();
+
+    /// Computes the simulated acquisition for the given step between inspiration and expiration.
+    void computeSimu();
+
+    /// Defines the number of simulated acquisitions to compute between inspiration and expiration.
+    unsigned int m_nbStep { 0 };
+
+    unsigned int m_amplitude { 40 };
+
+    unsigned int m_step { 0 };
+
+    int m_direction {1 };
+
+    size_t m_nbPoints { 0 };
+
+    size_t m_nbCells { 0 };
+
+    float m_yCenter { 0 };
 
     ::fwData::Mesh::wptr m_mesh;
+
     ::fwData::Mesh::sptr m_originMesh;
 
-    unsigned int m_amplitude;
-    unsigned int m_step;
-    int m_direction;
-    size_t m_nbPoints;
-    size_t m_nbCells;
-    float m_yCenter;
 };
 
-}   // namespace Tuto14MeshGenerator
+} // namespace Tuto14MeshGenerator.

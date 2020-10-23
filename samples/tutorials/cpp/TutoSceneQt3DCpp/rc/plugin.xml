@@ -1,8 +1,10 @@
 <plugin id="TutoSceneQt3DCpp" class="::TutoSceneQt3DCpp::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
-    <requirement id="guiQt" />
     <requirement id="visuQt3DQt" />
+    <requirement id="preferences" />
+    <requirement id="guiQt" />
+    <requirement id="servicesReg" />
+
 
     <library name="TutoSceneQt3DCpp" />
 

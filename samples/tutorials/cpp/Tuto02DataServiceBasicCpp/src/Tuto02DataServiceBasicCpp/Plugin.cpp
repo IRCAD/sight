@@ -35,12 +35,6 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
 Plugin::~Plugin() noexcept
 {
 }
@@ -55,46 +49,45 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    // create an empty image
+    // Objects declaration.
     m_image = ::fwData::Image::New();
 
-    // create and register the reader service
-    m_readerSrv = ::fwServices::add("::ioVTK::SImageReader");
-    m_readerSrv->registerInOut(m_image, "data"); // add the in-out image
-    // create the reader configuration
-    ::fwServices::IService::ConfigType readerCfg;
-    readerCfg.put("file", "../../data/patient1.vtk");
-    m_readerSrv->setConfiguration( readerCfg );
-    m_readerSrv->configure();
-
-    // create and register the render service
-    // create the frame configuration
-    m_renderSrv = ::fwServices::add("::visuOgreBasic::SImage");
-    m_renderSrv->registerInput(m_image, "image");
-    m_renderSrv->setID( "renderer" ); // set an identifier
-    m_renderSrv->configure();
-
-    // create and register frame service
+    // UI declaration
     m_frameSrv = ::fwServices::add("::gui::frame::SDefaultFrame");
+    {
+        ::fwServices::IService::ConfigType config;
+        config.put("gui.frame.name", "tutoDataServiceBasicCpp");
+        config.put("gui.frame.icon", "Tuto02DataServiceBasicCpp-0.1/tuto.ico");
+        config.put("gui.frame.minSize.<xmlattr>.width", "800");
+        config.put("gui.frame.minSize.<xmlattr>.height", "600");
+        config.put("registry.view.<xmlattr>.sid", "imageRendereSrv");
+        m_frameSrv->setConfiguration(config);
+        m_frameSrv->configure();
+    }
 
-    // create the frame configuration
-    ::fwServices::IService::ConfigType frameConfig;
-    frameConfig.put("gui.frame.name", "tutoDataServiceBasicCpp");
-    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCpp-0.1/tuto.ico");
-    frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
-    frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
-    // use the render identifier to display it in the frame
-    frameConfig.put("registry.view.<xmlattr>.sid", "renderer");
+    // Services
+    m_readerSrv = ::fwServices::add("::ioVTK::SImageReader");
+    {
+        m_readerSrv->registerInOut(m_image, "data");
+        ::fwServices::IService::ConfigType config;
+        config.put("file", "../../data/patient1.vtk");
+        m_readerSrv->setConfiguration(config);
+        m_readerSrv->configure();
+    }
 
-    m_frameSrv->setConfiguration( frameConfig );
-    m_frameSrv->configure();
+    m_renderSrv = ::fwServices::add("::visuOgreBasic::SImage");
+    {
+        m_renderSrv->registerInput(m_image, "image");
+        m_renderSrv->setID("imageRendereSrv");
+        m_renderSrv->configure();
+    }
 
-    // start the services
+    // Start services.
     m_frameSrv->start();
     m_readerSrv->start();
     m_renderSrv->start();
 
-    // update the services
+    // Update services.
     m_readerSrv->update();
     m_renderSrv->update();
 }
@@ -107,7 +100,7 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize() noexcept
+void Plugin::uninitialize()
 {
     // stop the services
     m_renderSrv->stop();
@@ -123,4 +116,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto02DataServiceBasicCpp
+} // namespace Tuto02DataServiceBasicCpp.

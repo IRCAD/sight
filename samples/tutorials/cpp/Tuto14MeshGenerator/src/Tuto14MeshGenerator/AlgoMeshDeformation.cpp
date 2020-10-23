@@ -31,14 +31,7 @@ namespace Tuto14MeshGenerator
 
 //-----------------------------------------------------------------------------
 
-AlgoMeshDeformation::AlgoMeshDeformation() noexcept :
-    m_nbStep(0),
-    m_amplitude(40),
-    m_step(0),
-    m_direction(1),
-    m_nbPoints(0),
-    m_nbCells(0),
-    m_yCenter(0)
+AlgoMeshDeformation::AlgoMeshDeformation() noexcept
 {
 }
 
@@ -148,7 +141,7 @@ void AlgoMeshDeformation::computeSimu()
     for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
     {
         pointsItr->point->x = origPointsItr->point->x;
-        if( origPointsItr->point->y - m_yCenter > 0 )
+        if(origPointsItr->point->y - m_yCenter > 0)
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
             pointsItr->rgba->r  = ::fwTools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
@@ -165,4 +158,4 @@ void AlgoMeshDeformation::computeSimu()
 
 //-----------------------------------------------------------------------------
 
-} // namespace Tuto14MeshGenerator
+} // namespace Tuto14MeshGenerator.

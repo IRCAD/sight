@@ -29,22 +29,21 @@
 namespace Tuto14MeshGenerator
 {
 
-/**
- * @brief Class call when module is started/stopped
- */
-class TUTO14MESHGENERATOR_CLASS_API Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+class TUTO14MESHGENERATOR_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
 
 public:
 
-    /// PLugin destructor
-    TUTO14MESHGENERATOR_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    TUTO14MESHGENERATOR_API ~Plugin() noexcept override;
 
-    /// This method is used by runtime to initialize the module.
-    TUTO14MESHGENERATOR_API void start();
+    /// Starts the plugin, does nothing here.
+    TUTO14MESHGENERATOR_API void start() override;
 
-    /// This method is used by runtime to stop the module.
-    TUTO14MESHGENERATOR_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    TUTO14MESHGENERATOR_API void stop() noexcept override;
+
 };
 
-} // namespace Tuto14MeshGenerator
+} // namespace Tuto14MeshGenerator.

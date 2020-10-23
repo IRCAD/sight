@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,53 +42,63 @@
  * @brief AppManager for a Qml application that allows to display an image and a model.
  *
  * It displays the organ manager that allows to change the color and visibility of the organs.
- *
  * It is associated to `ExImageDisplaying.qml` file.
  */
-class EXACTIVITIESQML_CLASS_API ImageDisplayingManager : public ::fwQml::IQmlAppManager,
-                                                         public ::fwCom::HasSignals
+class EXACTIVITIESQML_CLASS_API ImageDisplayingManager :
+    public ::fwQml::IQmlAppManager,
+    public ::fwCom::HasSignals
 {
+
 Q_OBJECT
+
 typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
+
 Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
 
 public:
-    /// Constructor.
+
+    /// Adds requires objects.
     EXACTIVITIESQML_API ImageDisplayingManager() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Calls initialize().
     EXACTIVITIESQML_API ~ImageDisplayingManager() noexcept override;
 
 public Q_SLOTS:
 
-    /// Initialize the manager
-    void initialize() override;
+    /// Initializes the manager.
+    EXACTIVITIESQML_API void initialize() override;
 
-    /// Uninitialize the manager
-    void uninitialize() override;
+    /// Uninitializes the manager.
+    EXACTIVITIESQML_API void uninitialize() override;
 
-    /// Create the VTK scene and its adaptors
-    void createVtkScene();
+    /// Creates the VTK scene and its adaptors.
+    EXACTIVITIESQML_API void createVtkScene();
 
-    /// Register the services instanciated from Qml
-    void onServiceCreated(const QVariant& obj) override;
+    /// Registers the services instanciated from Qml.
+    EXACTIVITIESQML_API void onServiceCreated(const QVariant& obj) override;
 
-    /// Tell the image adaptor to change the slice mode
-    void onUpdateSliceMode(int mode);
+    /// Tells the image adaptor to change the slice mode.
+    EXACTIVITIESQML_API void onUpdateSliceMode(int mode);
 
-    /// Tell the image adaptor to show/hide image slices
-    void onShowScan(bool isShown);
+    /// Tells the image adaptor to show/hide image slices.
+    EXACTIVITIESQML_API void onShowScan(bool isShown);
 
 private:
 
-    typedef ::fwCom::Signal<void ()> VoidSignalType;
+    /// Defines if the scene has been created.
+    bool m_sceneCreated { false };
 
-    bool m_vtkSceneCreated {false};
-    ::fwVTKQml::FrameBufferItem* m_frameBuffer{nullptr};
+    /// Contains the frame buffer given to the interactor manager.
+    ::fwVTKQml::FrameBufferItem* m_frameBuffer { nullptr };
 
-    ::fwServices::IService::sptr m_imageAdaptor;
-    ::fwServices::IService::sptr m_modelSeriesAdaptor;
+    /// Contains the negato adaptor.
+    ::fwServices::IService::sptr m_imageAdaptor { nullptr };
 
-    ::fwCom::SlotBase::sptr m_slotRecSelected;
-    ::fwCom::SlotBase::sptr m_slotEmptySelection;
+    /// Contains the model series adaptor.
+    ::fwServices::IService::sptr m_modelSeriesAdaptor { nullptr };
+
+    ::fwCom::SlotBase::sptr m_slotRecSelected { nullptr };
+
+    ::fwCom::SlotBase::sptr m_slotEmptySelection { nullptr };
+
 };

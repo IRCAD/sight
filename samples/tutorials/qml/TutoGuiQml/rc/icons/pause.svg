@@ -16,7 +16,7 @@
    id="svg3005"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="pause.svg">
+   sodipodi:docname="pause.svg" >
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -40,20 +40,20 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:snap-global="true"
-     showguides="true">
+     showguides="true" >
     <inkscape:grid
        type="xygrid"
        id="grid4048" />
   </sodipodi:namedview>
   <defs
-     id="defs3007">
+     id="defs3007" >
     <marker
        style="overflow:visible"
        id="EmptyTriangleOutM"
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="EmptyTriangleOutM">
+       inkscape:stockid="EmptyTriangleOutM" >
       <path
          transform="scale(0.4) translate(-4.5,0)"
          style="fill-rule:evenodd;fill:#FFFFFF;stroke:#000000;stroke-width:1.0pt;marker-start:none"
@@ -66,7 +66,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="TriangleOutL">
+       inkscape:stockid="TriangleOutL" >
       <path
          transform="scale(0.8)"
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
@@ -75,7 +75,7 @@
     </marker>
     <linearGradient
        osb:paint="solid"
-       id="linearGradient5522">
+       id="linearGradient5522" >
       <stop
          id="stop5524"
          offset="0"
@@ -87,7 +87,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="SquareL">
+       inkscape:stockid="SquareL" >
       <path
          transform="scale(0.8)"
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
@@ -100,7 +100,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="Arrow2Mend">
+       inkscape:stockid="Arrow2Mend" >
       <path
          transform="scale(0.6) rotate(180) translate(0,0)"
          d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
@@ -113,7 +113,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="Arrow1Lend">
+       inkscape:stockid="Arrow1Lend" >
       <path
          transform="scale(0.8) rotate(180) translate(12.5,0)"
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
@@ -122,7 +122,7 @@
     </marker>
     <linearGradient
        id="linearGradient3811"
-       inkscape:collect="always">
+       inkscape:collect="always" >
       <stop
          id="stop3813"
          offset="0"
@@ -134,7 +134,7 @@
     </linearGradient>
     <linearGradient
        osb:paint="solid"
-       id="linearGradient3797">
+       id="linearGradient3797" >
       <stop
          id="stop3799"
          offset="0"
@@ -155,7 +155,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="Arrow2Mend5">
+       inkscape:stockid="Arrow2Mend5" >
       <path
          transform="scale(0.6) rotate(180) translate(0,0)"
          d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
@@ -168,7 +168,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="Arrow2Mendi">
+       inkscape:stockid="Arrow2Mendi" >
       <path
          transform="scale(0.6) rotate(180) translate(0,0)"
          d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
@@ -181,7 +181,7 @@
        refX="0.0"
        refY="0.0"
        orient="auto"
-       inkscape:stockid="EmptyTriangleOutMP">
+       inkscape:stockid="EmptyTriangleOutMP" >
       <path
          transform="scale(0.4) translate(-4.5,0)"
          style="stroke-width:1.0pt;marker-start:none;stroke:#000091;fill:#000091;fill-rule:evenodd"
@@ -190,10 +190,10 @@
     </marker>
   </defs>
   <metadata
-     id="metadata3010">
+     id="metadata3010" >
     <rdf:RDF>
       <cc:Work
-         rdf:about="">
+         rdf:about="" >
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
@@ -205,14 +205,14 @@
      transform="translate(-237.3183,-121.94415)"
      id="layer1"
      inkscape:groupmode="layer"
-     inkscape:label="Calque 1">
+     inkscape:label="Calque 1" >
     <text
        sodipodi:linespacing="125%"
        id="text3013"
        y="272.52441"
        x="246.47722"
        style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-       xml:space="preserve"><tspan
+       xml:space="preserve" ><tspan
          y="272.52441"
          x="246.47722"
          id="tspan3015"
@@ -229,15 +229,15 @@
        transform="translate(241.5368,126.16265)"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        id="flowRoot3761"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3763"><rect
+       xml:space="preserve" ><flowRegion
+         id="flowRegion3763" ><rect
            y="3.5673711"
            x="-35.860416"
            height="148.9975"
            width="213.39473"
            id="rect3765" /></flowRegion><flowPara
          id="flowPara3767" /></flowRoot>    <g
-       id="g4686">
+       id="g4686" >
       <rect
          ry="1.499209"
          y="147.27481"

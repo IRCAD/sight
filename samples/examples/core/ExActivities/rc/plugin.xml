@@ -1,78 +1,45 @@
-<plugin id="ExActivities" version="@PROJECT_VERSION@">
+<plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
+    <requirement id="guiQt" />
     <requirement id="servicesReg" />
     <requirement id="preferences" />
+    <requirement id="activities" />
 
-    <xi:include href="configurations/ExBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/ExImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::AppConfigParameters">
-        <id>ExAppBase</id>
-        <parameters>
-            <param name="appName" value="Ex Activities @PROJECT_VERSION@" />
-            <param name="appIconPath" value="ExActivities-@PROJECT_VERSION@/app.ico" />
-            <param name="SEQUENCER_CONFIG" value="ExActivitiesSequencerActivities" />
-            <param name="WIZARD_CONFIG" value="ExActivitiesWizardConfig" />
-        </parameters>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ExActivitiesSequencerActivities</id>
-        <service>::uiActivitiesQt::editor::SActivitySequencer</service>
-        <desc>Configuration for sequencer</desc>
-        <config>
-            <activity id="ExImageReadingActivity" name="Import" />
-            <activity id="ExImageDisplayingActivity" name="Negatoscope" />
-            <activity id="ExImageDisplayingVRActivity" name="Volume Rendering" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ExActivitiesWizardConfig</id>
-        <service>::uiMedDataQt::editor::SActivityWizard</service>
-        <desc>Custom configuration for ExActivities wizard</desc>
-        <config>
-            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
-            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
-            <confirm>false</confirm>
-            <icons>
-                <icon type="::fwData::Image" icon="media-0.1/icons/icon-2D.png" />
-            </icons>
-        </config>
-    </extension>
-
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ExImageReadingActivity</id>
+    <extension implements="::fwActivities::registry::Activities" >
+        <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
-        <icon>media-0.1/icons/LoadActivity.svg</icon>
+        <icon>flatIcon-0.1/icons/BlueFile.svg</icon>
         <requirements>
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
             </requirement>
         </requirements>
-        <appConfig id="ExImageReading">
+        <appConfig id="ExActivities_ImageReading_AppCfg" >
             <parameters>
                  <parameter replace="image" by="@values.image" />
             </parameters>
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ExImageDisplayingActivity</id>
+    <extension implements="::fwActivities::registry::Activities" >
+        <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
-        <icon>media-0.1/icons/icon-2D.png</icon>
+        <icon>flatIcon-0.1/icons/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
+            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0" >
                 <desc>Landmarks that will be created in this activity.</desc>
             </requirement>
         </requirements>
-        <appConfig id="2DVisualization">
+        <appConfig id="2DVisualization" >
             <parameters>
                  <parameter replace="image" by="@values.image" />
                  <parameter replace="landmarks" by="@values.landmarks" />
@@ -80,26 +47,67 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ExImageDisplayingVRActivity</id>
+    <extension implements="::fwActivities::registry::Activities" >
+        <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
-        <icon>media-0.1/icons/icon-VR.png</icon>
+        <icon>flatIcon-0.1/icons/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="optionalModelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1">
+            <requirement name="optionalModelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
                 <desc>Optional model series.</desc>
             </requirement>
         </requirements>
-        <appConfig id="VolumeRendering">
+        <appConfig id="VolumeRendering" >
             <parameters>
                  <parameter replace="image" by="@values.image" />
                  <parameter replace="optionalModelSeriesComposite" by="@values.optionalModelSeries" />
             </parameters>
         </appConfig>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig" >
+        <id>ExActivities_Sequencer_SrvCfg</id>
+        <service>::uiActivitiesQt::editor::SActivitySequencer</service>
+        <desc>Configuration for sequencer</desc>
+        <config>
+            <activity id="ExImage_Import_Activity" name="Import" />
+            <activity id="ExImage_Negatoscope_Activity" name="Negatoscope" />
+            <activity id="ExImage_VolumeRendering_Activity" name="Volume Rendering" />
+            <clear>#2E3034</clear>
+            <primary>#6997BB</primary>
+            <background>#565A5E</background>
+            <elevation>#525867</elevation>
+            <accent>#666C7B</accent>
+            <foreground>#3E4453</foreground>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig" >
+        <id>ExActivities_Wizard_SrvCfg</id>
+        <service>::uiMedDataQt::editor::SActivityWizard</service>
+        <desc>Custom configuration for ExActivities wizard</desc>
+        <config>
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="::fwData::Image" icon="flatIcon-0.1/icons/Volume.svg" />
+            </icons>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfigParameters" >
+        <id>ExActivities_AppCfgParam</id>
+        <parameters>
+            <param name="APP_NAME" value="Ex Activities @PROJECT_VERSION@" />
+            <param name="ICON_PATH" value="ExActivities-@PROJECT_VERSION@/app.ico" />
+            <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />
+            <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />
+        </parameters>
     </extension>
 
 </plugin>

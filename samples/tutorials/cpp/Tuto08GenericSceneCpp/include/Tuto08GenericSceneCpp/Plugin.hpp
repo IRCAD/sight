@@ -31,31 +31,31 @@
 namespace Tuto08GenericSceneCpp
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO08GENERICSCENECPP_CLASS_API Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+class TUTO08GENERICSCENECPP_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
+
 public:
-    /// Constructor.
-    TUTO08GENERICSCENECPP_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    TUTO08GENERICSCENECPP_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    TUTO08GENERICSCENECPP_API ~Plugin() noexcept override;
 
-    /// Overrides start method. .
-    TUTO08GENERICSCENECPP_API void start();
+    /// Starts the plugin, does nothing here.
+    TUTO08GENERICSCENECPP_API void start() override;
 
-    /// Overrides stop method. Do nothing
-    TUTO08GENERICSCENECPP_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    TUTO08GENERICSCENECPP_API void stop() noexcept override;
 
-    TUTO08GENERICSCENECPP_API void initialize();
+    /// Creates the whole application.
+    TUTO08GENERICSCENECPP_API void initialize() override;
 
-    TUTO08GENERICSCENECPP_API void uninitialize() noexcept;
+    /// Destroys the whole application.
+    TUTO08GENERICSCENECPP_API void uninitialize() override;
 
 private:
 
     std::unique_ptr< ::fwServices::AppManager > m_appManager;
+
 };
 
-} // namespace Tuto08GenericSceneCpp
+} // namespace Tuto08GenericSceneCpp.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,43 +22,49 @@
 
 #pragma once
 
-#include "ExTimeLine/config.hpp"
+#include "exTimeLineData/config.hpp"
 
 #include <arData/GenericTL.hpp>
 #include <arData/GenericTL.hxx>
 #include <arData/timeline/GenericObject.hpp>
 #include <arData/timeline/GenericObject.hxx>
 
-namespace ExTimeLine
+namespace exTimeLineData
 {
 
 struct MsgData
 {
-    /// Maximum size of a message
+
+    /// Defines the maximum size of a message.
     static const size_t MAX_MSG_SIZE = 255;
 
-    /// Identifier of the sender
+    /// Defines the identifier of the sender.
     unsigned int uidSender;
-    /// Message as a C string
+
+    /// Stores the message as a C string.
     char szMsg[MAX_MSG_SIZE];
+
 };
 
 /**
- * @brief   This class defines a timeline that stores string messages.
+ * @brief Defines a timeline that stores string messages.
  */
-class EXTIMELINE_CLASS_API MessageTL : public ::arData::GenericTL< MsgData >
+class EXTIMELINEDATA_CLASS_API MessageTL : public ::arData::GenericTL< MsgData >
 {
+
 public:
-    fwCoreClassMacro(MessageTL, ::arData::TimeLine, ::fwData::factory::New< MessageTL >);
+
+    fwCoreClassMacro(MessageTL, ::arData::TimeLine, ::fwData::factory::New< MessageTL >)
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the data.
+     * @param _key private construction key.
      */
-    MessageTL( ::fwData::Object::Key key ) :
-        GenericTL< MsgData >(key)
+    EXTIMELINEDATA_API MessageTL(::fwData::Object::Key _key) :
+        GenericTL< MsgData >(_key)
     {
     }
+
 };
 
-} // namespace ExTimeLine
+} // namespace exTimeLineData.

@@ -26,12 +26,11 @@
 
 #include <fwCore/spyLog.hpp>
 
+#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-
-#include <fwTools/Object.hpp>
 
 namespace ExTimeLine
 {
@@ -51,17 +50,23 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    m_worker = ::fwThread::Worker::New();
     ::fwServices::registry::ActiveWorkers::getDefault()
-    ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, worker);
+    ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
+
+    ::fwRuntime::Runtime* const rntm = ::fwRuntime::Runtime::getDefault();
+    std::shared_ptr< ::fwRuntime::Module >    module = rntm->findModule( "ExTimeLine" );
+    std::cout << module->getLibraryLocation() << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
+    m_worker->stop();
+    m_worker.reset();
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ExTimeLine
+} // namespace ExTimeLine.

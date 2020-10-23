@@ -1,10 +1,13 @@
-<plugin id="Tuto05Mesher" version="@PROJECT_VERSION@">
+<plugin id="Tuto05Mesher" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>MesherConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto05Mesher_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'myMesh' -->
             <object uid="myMesh" type="::fwData::Mesh" />
@@ -12,20 +15,65 @@
             <!-- Image object associated to the key 'myImage' -->
             <object uid="myImage" type="::fwData::Image" />
 
-            <!-- Frame & View -->
+            <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Mesher</name>
-                        <icon>Tuto05Mesher-0.1/tuto.ico</icon>
+                        <name>Tuto05Mesher</name>
+                        <icon>Tuto05Mesher-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="myDefaultView" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="containerView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Mesher" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuMesherView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <menuItem name="Save image" />
+                        <separator />
+                        <menuItem name="Open mesh" shortcut="Ctrl+M" />
+                        <menuItem name="Save mesh" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="saveImageAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="saveMeshAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuMesherView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Compute Mesh (VTK)" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="createMeshAct" start="yes" />
                 </registry>
             </service>
 
@@ -36,110 +84,67 @@
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
-            <service uid="myDefaultView" type="::gui::view::SDefaultView">
+            <service uid="containerView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
-                        <view caption="Image view" />
-                        <view caption="Mesh view" />
+                        <view/>
+                        <view/>
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="RenderingImage" start="yes" />
-                    <view sid="RenderingMesh" start="yes" />
+                    <view sid="imageSrv" start="yes" />
+                    <view sid="meshSrv" start="yes" />
                 </registry>
             </service>
 
-            <!-- Menu Bar, Menus & Actions -->
+            <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Mesher" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menuFile" start="yes" />
-                    <menu sid="menuMesher" start="yes" />
-                </registry>
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <service uid="openImageAct" type="::gui::action::SStarter" >
+                <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Open image file" shortcut="Ctrl+O" />
-                        <menuItem name="Save image" />
-                        <separator />
-                        <menuItem name="Open mesh file" shortcut="Ctrl+M" />
-                        <menuItem name="Save mesh" />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionOpenImageFile" start="yes" />
-                    <menuItem sid="actionSaveImageFile" start="yes" />
-                    <menuItem sid="actionOpenMeshFile" start="yes" />
-                    <menuItem sid="actionSaveMeshFile" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
-                </registry>
+            <service uid="saveImageAct" type="::gui::action::SStarter" >
+                <start uid="imageWriterSrv" />
             </service>
 
-            <service uid="menuMesher" type="::gui::aspect::SDefaultMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Compute Mesh (VTK)" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionCreateVTKMesh" start="yes" />
-                </registry>
+            <service uid="openMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="actionQuit" type="::gui::action::SQuit" />
-
-            <service uid="actionOpenImageFile" type="::gui::action::SStarter">
-                <start uid="readerPathImageFile" />
+            <service uid="saveMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="actionSaveImageFile" type="::gui::action::SStarter">
-                <start uid="writerImageFile" />
-            </service>
-
-            <service uid="actionOpenMeshFile" type="::gui::action::SStarter">
-                <start uid="readerPathMeshFile" />
-            </service>
-
-            <service uid="actionSaveMeshFile" type="::gui::action::SStarter">
-                <start uid="writerMeshFile" />
-            </service>
-
-            <service uid="actionCreateVTKMesh" type="::opVTKMesh::action::SMeshCreation">
+            <service uid="createMeshAct" type="::opVTKMesh::action::SMeshCreation" >
                 <in key="image" uid="myImage" />
                 <inout key="mesh" uid="myMesh" />
                 <percentReduction value="0" />
             </service>
 
+            <!-- ******************************* Services ***************************************** -->
+
             <!-- Add a shortcut in the application (key "v") -->
-            <service uid="ActionShortcut" type="::guiQt::SSignalShortcut">
-                <config shortcut="v" sid="myDefaultView" />
+            <service uid="shortcutSrv" type="::guiQt::SSignalShortcut" >
+                <config shortcut="v" sid="containerView" />
             </service>
 
             <!--
                 Services associated to the Image data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="RenderingImage" type="::visuOgreBasic::SImage">
+            <service uid="imageSrv" type="::visuOgreBasic::SImage" >
                 <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
-            <service uid="readerPathImageFile" type="::uiIO::editor::SIOSelector">
+            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
-            <service uid="writerImageFile" type="::uiIO::editor::SIOSelector">
+            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="writer" />
             </service>
@@ -148,28 +153,32 @@
                 Services associated to the Mesh data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="RenderingMesh" type="::visuOgreBasic::SMesh" >
+            <service uid="meshSrv" type="::visuOgreBasic::SMesh" >
                 <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 
-            <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector">
+            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="writerMeshFile" type="::uiIO::editor::SIOSelector">
+            <service uid="meshWriterSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>
 
-            <!-- Connect the shortcut "v" to the update slot of 'actionCreateVTKMesh'-->
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connect the shortcut "v" to the update slot of 'createMeshAct'-->
             <connect>
-                <signal>ActionShortcut/activated</signal>
-                <slot>actionCreateVTKMesh/update</slot>
+                <signal>shortcutSrv/activated</signal>
+                <slot>createMeshAct/update</slot>
             </connect>
 
-            <start uid="myFrame" />
-            <start uid="ActionShortcut" />
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="shortcutSrv" />
 
         </config>
     </extension>

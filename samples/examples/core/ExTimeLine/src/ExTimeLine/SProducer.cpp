@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "ExTimeLine/SProducer.hpp"
 
-#include "ExTimeLine/MessageTL.hpp"
+#include "exTimeLineData/MessageTL.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -32,7 +32,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SProducer );
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SProducer )
 
 namespace ExTimeLine
 {
@@ -78,7 +78,7 @@ void SProducer::starting()
     // Init timeline pool
     if(m_timelineSize)
     {
-        ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL >("timeline");
+        const auto timeline = this->getLockedInOut< ::exTimeLineData::MessageTL >("timeline");
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
@@ -102,17 +102,17 @@ void SProducer::stopping()
 
 void SProducer::updating()
 {
-    ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL >("timeline");
+    ::exTimeLineData::MessageTL::sptr timeline = this->getInOut< ::exTimeLineData::MessageTL >("timeline");
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    SPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
-    ::ExTimeLine::MsgData* data = buffer->addElement(0);
+    ::exTimeLineData::MsgData* data = buffer->addElement(0);
 
     const std::string message = m_message + " #" + std::to_string( m_msgCount++ );
 
     data->uidSender = m_senderId;
-    strncpy(data->szMsg, message.c_str(), ::ExTimeLine::MsgData::MAX_MSG_SIZE);
+    strncpy(data->szMsg, message.c_str(), ::exTimeLineData::MsgData::MAX_MSG_SIZE);
 
     timeline->pushObject(buffer);
 

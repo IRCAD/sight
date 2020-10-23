@@ -1,37 +1,56 @@
-<plugin id="Tuto04SignalSlot" version="@PROJECT_VERSION@">
+<plugin id="Tuto04SignalSlot" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>tutoSignalSlotConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto04SignalSlot_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- The main data object is ::fwData::Mesh. -->
             <object uid="mesh" type="::fwData::Mesh" />
 
-            <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>tutoSignalSlot</name>
-                        <icon>Tuto04SignalSlot-0.1/tuto.ico</icon>
+                        <name>Tuto04SignalSlot</name>
+                        <icon>Tuto04SignalSlot-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="myDefaultView" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="containerView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="myMenuFile" start="yes" />
+                    <menu sid="menuFileView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
                 </registry>
             </service>
 
@@ -44,42 +63,32 @@
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="myDefaultView" type="::gui::view::SDefaultView">
+            <service uid="containerView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Move cameras 1,2,3" align="center" />
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view align="center" />
                         <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
                         <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="myRendering1" start="yes" />
-                    <view sid="myRendering2" start="yes" />
-                    <view sid="myRendering3" start="yes" />
+                    <view sid="rendering1Srv" start="yes" />
+                    <view sid="rendering2Srv" start="yes" />
+                    <view sid="rendering3Srv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="myMenuFile" type="::gui::aspect::SDefaultMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Open file" shortcut="Ctrl+O" />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionOpenFile" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
-                </registry>
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="openMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="actionOpenFile" type="::gui::action::SStarter">
-                <start uid="myReaderPathFile" />
-            </service>
+            <service uid="quitAct" type="::gui::action::SQuit" />
 
-            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <!-- ******************************* Services ***************************************** -->
 
-            <service uid="myReaderPathFile" type="::uiIO::editor::SIOSelector">
+            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
             </service>
@@ -89,15 +98,19 @@
                 We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
                 shown in the windows defines in 'view' service.
             -->
-            <service uid="myRendering1" type="::visuOgreBasic::SMesh" >
+            <service uid="rendering1Srv" type="::visuOgreBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
-            <service uid="myRendering2" type="::visuOgreBasic::SMesh" >
+
+            <service uid="rendering2Srv" type="::visuOgreBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
-            <service uid="myRendering3" type="::visuOgreBasic::SMesh" >
+
+            <service uid="rendering3Srv" type="::visuOgreBasic::SMesh" >
                 <in key="mesh" uid="mesh" autoConnect="yes" />
             </service>
+
+            <!-- ******************************* Connections ***************************************** -->
 
             <!--
                 Each 3D scene owns a 3D camera that can be moved by clicking in the scene.
@@ -109,18 +122,19 @@
                 'updateCamPosition', so the cameras are synchronized between scenes.
             -->
             <connect>
-                <signal>myRendering1/camUpdated</signal>
-                <slot>myRendering2/updateCamPosition</slot>
-                <slot>myRendering3/updateCamPosition</slot>
+                <signal>rendering1Srv/camUpdated</signal>
+                <slot>rendering2Srv/updateCamPosition</slot>
+                <slot>rendering3Srv/updateCamPosition</slot>
             </connect>
 
             <connect>
-                <signal>myRendering2/camUpdated</signal>
-                <slot>myRendering1/updateCamPosition</slot>
+                <signal>rendering2Srv/camUpdated</signal>
+                <slot>rendering1Srv/updateCamPosition</slot>
             </connect>
 
+            <!-- ******************************* Start services ***************************************** -->
 
-            <start uid="myFrame" />
+            <start uid="mainFrame" />
 
         </config>
     </extension>

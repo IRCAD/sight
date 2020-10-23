@@ -1,6 +1,7 @@
 <plugin id="Tuto02DataServiceBasicCpp" class="::Tuto02DataServiceBasicCpp::Plugin"  version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
     <library name="Tuto02DataServiceBasicCpp" />
     

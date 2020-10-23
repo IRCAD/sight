@@ -1,18 +1,42 @@
-
 set( NAME Tuto04SignalSlot )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
+    fwlauncher              # Just to build the launcher
+    appXml                  # XML configurations
+
+    guiQt                   # Start the module, load qt implementation of gui
+
+    # Objects declaration
     fwData
-    servicesReg
+    servicesReg             # fwService
+
+    # UI declaration/Actions
     gui
-    guiQt
+    style
+
+    # Reader
     ioVTK
+
+    # Services
     uiIO
-    visuOgreBasic # contains a visualization service of mesh.
-    fwlauncher
-    appXml
+    visuOgreBasic
 )
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoSignalSlotConfig)
+moduleParam(guiQt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        style-0.1/flatdark.rcc
+        style-0.1/flatdark.qss
+) # Allow dark theme via guiQt
+
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        Tuto04SignalSlot_AppCfg
+) # Main application's configuration to launch

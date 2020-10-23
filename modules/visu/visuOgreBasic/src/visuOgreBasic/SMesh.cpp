@@ -102,7 +102,7 @@ void SMesh::starting()
     // create and register the render service
     // create the frame configuration
     ::fwServices::IService::ConfigType renderConfig;
-    renderConfig.put("scene.background.<xmlattr>.color", "#222222");
+    renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 

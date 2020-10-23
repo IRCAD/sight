@@ -29,22 +29,20 @@
 namespace Tuto16MultithreadConsole
 {
 
-/**
- * @brief Class call when a module is started/stopped
- */
+/// This class is started when the module is loaded.
 class TUTO16MULTITHREADCONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
 public:
 
-    /// PLugin destructor
-    TUTO16MULTITHREADCONSOLE_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    TUTO16MULTITHREADCONSOLE_API ~Plugin() noexcept override;
 
-    /// This method is used by runtime to initialize the module.
-    TUTO16MULTITHREADCONSOLE_API void start();
+    /// Starts the plugin, does nothing here.
+    TUTO16MULTITHREADCONSOLE_API void start() override;
 
-    /// This method is used by runtime to stop the module.
-    TUTO16MULTITHREADCONSOLE_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    TUTO16MULTITHREADCONSOLE_API void stop() noexcept override;
 };
 
-} // namespace Tuto16MultithreadConsole
+} // namespace Tuto16MultithreadConsole.

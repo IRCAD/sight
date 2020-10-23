@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,37 +30,40 @@ namespace ExTimeLine
 {
 
 /**
- * @brief   This service is just a hack to block the main thread. Services on the other threads can run.
- *          Without that, the application exits immediately since we have no GUI.
+ * @brief This service is just a hack to block the main thread. Services on the other threads can run.
+ * Without that, the application exits immediately since we have no GUI.
  */
-class EXTIMELINE_CLASS_API SMain : public ::fwServices::IService
+class EXTIMELINE_CLASS_API SMain final : public ::fwServices::IService
 {
+
 public:
 
-    fwCoreServiceMacro(SMain, ::fwServices::IService);
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SMain, ::fwServices::IService)
 
+    /// Creates the service.
     EXTIMELINE_API SMain() noexcept;
+
+    /// Destroys the service.
     EXTIMELINE_API virtual ~SMain() noexcept;
 
 protected:
 
     /// Does nothing.
-    virtual void starting() override;
+    EXTIMELINE_API void configuring() override;
 
     /// Does nothing.
-    virtual void stopping() override;
+    EXTIMELINE_API void starting() override;
 
     /// Does nothing.
-    virtual void swapping() override;
+    EXTIMELINE_API void swapping() override;
 
     /// Contains one input instruction to block the main thread.
-    virtual void updating() override;
+    EXTIMELINE_API void updating() override;
 
     /// Does nothing.
-    virtual void configuring() override;
-
-private:
+    EXTIMELINE_API void stopping() override;
 
 };
 
-}  // namespace ExTimeLine
+}  // namespace ExTimeLine.

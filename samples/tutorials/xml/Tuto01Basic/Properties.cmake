@@ -1,15 +1,22 @@
 set( NAME Tuto01Basic ) # Name of the application
-set( VERSION 0.1 ) # Version of the application
+set( VERSION 0.2 ) # Version of the application
 set( TYPE APP ) # Type APP represent "Application"
 set( DEPENDENCIES  ) # For an application we have no dependencies (libraries to link)
 set( REQUIREMENTS # The modules used by this application
-    fwData # to load the data registry
-    servicesReg # to load the service registry
-    gui # to load gui
-    guiQt # to load qt implementation of gui
-    fwlauncher # executable to run the application
-    appXml # to parse the application configuration
+    fwlauncher              # Just to build the launcher
+    appXml                  # XML configurations
+    guiQt                   # Start the module, load qt implementation of gui
+
+    servicesReg             # fwService
+
+    # UI declaration/Actions
+    gui
 )
 
-# Set the configuration to use : 'tutoBasicConfig'
-moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        Tuto01Basic_AppCfg
+) # Main application's configuration to launch

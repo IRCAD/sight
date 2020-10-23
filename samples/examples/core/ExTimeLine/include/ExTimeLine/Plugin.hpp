@@ -26,27 +26,30 @@
 
 #include <fwRuntime/Plugin.hpp>
 
+#include <fwThread/Worker.hpp>
+
 namespace ExTimeLine
 {
 
-/**
- * @brief Class call when a module is started/stopped
- *
- */
+/// This class is started when the module is loaded.
 class EXTIMELINE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
 public:
 
-    /// PLugin destructor
-    EXTIMELINE_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    EXTIMELINE_API ~Plugin() noexcept override;
 
-    /// This method is used by runtime to initialize the module.
-    EXTIMELINE_API void start();
+    /// Adds the default worker.
+    EXTIMELINE_API void start() override;
 
-    /// This method is used by runtime to stop the module.
-    EXTIMELINE_API void stop() noexcept;
+    /// Does nothing here.
+    EXTIMELINE_API void stop() noexcept override;
+
+private:
+
+    ::fwThread::Worker::sptr m_worker { nullptr };
 
 };
 
-} // namespace ExTimeLine
+} // namespace ExTimeLine.

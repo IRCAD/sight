@@ -31,11 +31,10 @@ namespace Tuto14MeshGenerator
 {
 
 /**
- * @brief   This action modifies a mesh using specified functor in configuration.
+ * @brief This action modifies a mesh using specified functor in configuration.
  * The purpose is to test all possibilities provide by the new mesh structure.
-
- * @section XML XML Configuration
  *
+ * @section XML XML Configuration
  * @code{.xml}
      <service type="::Tuto14MeshGenerator::SMeshModifier" >
          <inout key="mesh" uid="..." />
@@ -44,62 +43,54 @@ namespace Tuto14MeshGenerator
    @endcode
  * @subsection InOut InOut
  * - \b mesh [::fwData::Mesh]: mesh to modify.
+ *
  * @subsection Configuration Configuration
- * - \b functor
- * Functor available :
- *  - ShakeMeshPoint
- *  - ColorizeMeshPoints
- *  - ColorizeMeshCells
- *  - ComputePointNormals
- *  - ComputeCellNormals
- *  - ShakePointNormals
- *  - ShakeCellNormals
- *  - MeshDeformation
+ * - \b functor (mandatory, string): the functor name used to generate mesh.
+ *  - ShakeMeshPoint: shakes meshe points.
+ *  - ColorizeMeshPoints: colorizes mesh points.
+ *  - ColorizeMeshCells: colorizes mesh cells.
+ *  - ComputePointNormals: computes point normals.
+ *  - ComputeCellNormals: computes cell normals
+ *  - ShakePointNormals: shakes point normals.
+ *  - ShakeCellNormals: shakes cell normals.
+ *  - MeshDeformation: deforms the mesh.
  */
-class TUTO14MESHGENERATOR_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
+class TUTO14MESHGENERATOR_CLASS_API SMeshModifier final : public ::fwGui::IActionSrv
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SMeshModifier, ::fwGui::IActionSrv)
 
-    /**
-     * @brief Constructor. Do nothing.
-     */
+    /// Creates the action.
     TUTO14MESHGENERATOR_API SMeshModifier() noexcept;
 
-    /**
-     * @brief Destructor. Do nothing.
-     */
-    TUTO14MESHGENERATOR_API virtual ~SMeshModifier() noexcept;
+    /// Destroyes the action.
+    TUTO14MESHGENERATOR_API ~SMeshModifier() noexcept override;
 
 protected:
 
-    TUTO14MESHGENERATOR_API virtual void configuring() override;
+    /// Configures the action.
+    TUTO14MESHGENERATOR_API void configuring() override;
 
-    TUTO14MESHGENERATOR_API virtual void starting() override;
+    /// Starts the action.
+    TUTO14MESHGENERATOR_API void starting() override;
 
-    TUTO14MESHGENERATOR_API virtual void stopping() override;
+    /// Modifies the mesh using the selected functor.
+    TUTO14MESHGENERATOR_API void updating() override;
 
-    /**
-     * @brief Process the action: modifies the mesh using the selected functor.
-     */
-    TUTO14MESHGENERATOR_API virtual void updating() override;
-
-    /**
-     * @brief This method gives information about the class.
-     */
-    TUTO14MESHGENERATOR_API virtual void info(std::ostream& _sstream ) override;
-
-    ///@}
+    /// Stops the action.
+    TUTO14MESHGENERATOR_API void stopping() override;
 
 private:
 
-    /// Functor name used to generate mesh.
+    /// Defines the functor name used to generate mesh.
     std::string m_functor;
 
-    /// Algo use to animate a deformation on the mesh
+    /// Defines the algorithm used to animate a deformation on the mesh.
     ::Tuto14MeshGenerator::AlgoMeshDeformation m_animator;
+
 };
 
-} // namespace Tuto14MeshGenerator
+} // namespace Tuto14MeshGenerator.

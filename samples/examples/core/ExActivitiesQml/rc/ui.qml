@@ -41,7 +41,7 @@ ApplicationWindow {
         id: activityLauncher
         anchors.fill: parent
         // Activity ids
-        activityIdsList: ["ExImageReadingActivity", "ExMesherActivity", "ExImageDisplayingActivity"]
+        activityIdsList: ["ExActivitiesQml_ImageReading_Activity", "ExActivitiesQml_Mesher_Activity", "ExActivitiesQml_ImageDisplaying_Activity"]
         // Name of the activities displayed in the stepper
         activityNameList: ["Read", "Mesher", "Display"]
     }

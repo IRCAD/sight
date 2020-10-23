@@ -1,5 +1,5 @@
 set( NAME TutoSceneQt3D )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES  )
@@ -10,7 +10,7 @@ set( REQUIREMENTS
     guiQt                   # Start the module, allow dark theme
 
     # Objects declaration
-    fwData                 # fwData
+    fwData
     servicesReg             # fwService
 
     # UI declaration/Actions

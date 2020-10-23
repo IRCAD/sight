@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace Tuto16MultithreadConsole
+} // namespace Tuto16MultithreadConsole.

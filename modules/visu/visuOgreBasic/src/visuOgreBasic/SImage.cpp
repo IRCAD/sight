@@ -91,7 +91,7 @@ void SImage::starting()
 
     // create and register the render service
     ::fwServices::IService::ConfigType renderConfig;
-    renderConfig.put("scene.background.<xmlattr>.color", "#222222");
+    renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 
@@ -118,6 +118,7 @@ void SImage::starting()
 
     ::fwServices::IService::ConfigType negatoConfig;
     negatoConfig.put("config.<xmlattr>.layer", "default");
+    negatoConfig.put("config.<xmlattr>.interactive", "true");
     m_negatoSrv = ::fwServices::add("::visuOgreAdaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
     m_negatoSrv->registerInOut( std::const_pointer_cast< ::fwData::Object >(image->getConstSptr()), "image", true );

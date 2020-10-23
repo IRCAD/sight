@@ -1,41 +1,50 @@
-<plugin id="Tuto12Picker" version="@PROJECT_VERSION@">
+<plugin id="Tuto12Picker" version="@PROJECT_VERSION@" >
+
+    <requirement id="preferences" />
+    <requirement id="visuOgre" />
+    <requirement id="material" />
+    <requirement id="guiQt" />
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>Tuto12Picker</id>
+
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto12Picker_AppCfg</id>
         <config>
-            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
             <object uid="mesh" type="::fwData::Mesh" />
             <object uid="image" type="::fwData::Image" />
-            <!-- ***************************************** End Objects declaration ******************************************* -->
-            <!-- ***************************************** Begin layouts declaration ***************************************** -->
-            <service uid="MyIHM" type="::gui::frame::SDefaultFrame">
+            <object uid="snapshot" type="::fwData::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto12Picker</name>
-                        <icon>Tuto12Picker-0.1/tuto.ico</icon>
+                        <icon>Tuto12Picker-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="containerView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menuFileView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -45,177 +54,197 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="action_openImage" start="yes" />
-                    <menuItem sid="action_openMesh" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::SDefaultView">
+            <service uid="containerView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
-                        <view caption="Picker world coordinate." proportion="0" />
-                        <view caption="Generic scene" border="11" proportion="1" />
+                        <view proportion="0" backgroundColor="#3E4453" />
+                        <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="pointView" start="yes" />
-                    <view sid="multiViewScene" start="yes" />
+                    <view sid="pointEditorSrv" start="yes" />
+                    <view sid="sceneView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiViewScene" type="::gui::view::SDefaultView">
+            <service uid="sceneView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" />
-                        <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" backgroundColor="#3E4453" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericScene" start="yes" />
-                    <view sid="multiViewScene_bottom" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
+                    <view sid="editorsView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiViewScene_bottom" type="::gui::view::SDefaultView">
+            <service uid="editorsView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
-                        <view proportion="0" minWidth="30" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="30" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sliceListEditor" start="yes" />
-                    <view sid="showScanEditor" start="yes" />
-                    <view sid="sliderIndexEditor" start="yes" />
-                    <view sid="snapshotScene1Editor" start="yes" />
+                    <view sid="showNegatoSrv" start="yes" />
+                    <view sid="sliderIndexEditorSrv" start="yes" />
+                    <view sid="snapshotSrv" start="yes" />
                 </registry>
             </service>
 
-            <!-- ***************************************** End layouts declaration ***************************************** -->
-            <!-- ***************************************** Begin services declarations    ************************************ -->
-            <service uid="action_openImage" type="::gui::action::SStarter">
-                <start uid="imageReader" />
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="openImageAct" type="::gui::action::SStarter" >
+                <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="action_openMesh" type="::gui::action::SStarter">
-                <start uid="meshReader" />
+            <service uid="openMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit" />
-            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
-            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="trackballInteractorAdp" />
+                    <adaptor uid="pickerInteractorAdp" />
+                    <adaptor uid="meshAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="snapshotAdp" />
+                    <adaptor uid="pickedVoxelTextAdp" />
+                </scene>
+            </service>
+
+            <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SPicker" >
+                <config layer="default" />
+            </service>
+
+            <service uid="meshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" />
+            </service>
+
+            <service uid="negatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+                <inout key="image" uid="image" />
+                <config layer="default" sliceIndex="axial" interactive="true" />
+            </service>
+
+            <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
+                <inout key="image" uid="snapshot" />
+                <config layer="default" flip="true" />
+            </service>
+
+            <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText" >
+                <text></text>
+                <config layer="default" x="0.01" y="0.01" hAlign="left" vAlign="top" color="#D35151" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="snapshotSrv" type="::guiQt::editor::SSignalButton" >
+                <config>
+                   <checkable>false</checkable>
+                   <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
+                </config>
+            </service>
+
+            <service uid="showNegatoSrv" type="::guiQt::editor::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
-                    <icon>media-0.1/icons/sliceHide.png</icon>
-                    <icon2>media-0.1/icons/sliceShow.png</icon2>
+                    <icon>flatIcon-0.1/icons/RedCross.svg</icon>
+                    <icon2>flatIcon-0.1/icons/Layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
                 </config>
             </service>
 
-            <service uid="pointView" type="::uiVisuQt::PointEditor" />
-            <service uid="meshReader" type="::uiIO::editor::SIOSelector">
+            <service uid="pointEditorSrv" type="::uiVisuQt::PointEditor" />
+
+            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
-                <selection mode="exclude" />
-                <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <service uid="imageReader" type="::uiIO::editor::SIOSelector">
+            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
-                <selection mode="exclude" />
-                <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+            <service uid="medicalImageConverterSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
-                <toolTip>Manage slice visibility</toolTip>
-                <selected>3</selected>
-                <items>
-                    <item text="One slice" value="1" />
-                    <item text="three slices" value="3" />
-                </items>
-            </service>
-
-            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditorSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
-            <!-- *************************** Begin generic scene *************************** -->
-
-            <service uid="genericScene" type="::fwRenderVTK::SRender">
-                <scene>
-                    <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-                    <renderer id="default" background="0.0" />
-                    <adaptor uid="meshAdaptor" />
-                    <adaptor uid="MPRNegato3D" />
-                    <adaptor uid="snapshot1" />
-                    <adaptor uid="pickerInteractor" />
-                </scene>
+            <!-- Write the snapshot image -->
+            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+                <inout key="data" uid="snapshot" />
+                <type mode="writer" />
+                <selection mode="exclude" />
+                <addSelection service="::ioAtoms::SWriter" />
             </service>
 
-            <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
-                <in key="mesh" uid="mesh" />
-                <config renderer="default" picker="myPicker" />
-            </service>
+            <!-- ******************************* Connections ***************************************** -->
 
-            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-                <inout key="image" uid="image" />
-                <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
-            </service>
-
-            <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
-                <config renderer="default" />
-            </service>
-
-            <service uid="pickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-                <config renderer="default" picker="myPicker" />
-            </service>
-
-            <!-- *************************** End generic scene *************************** -->
-
-            <!-- ***************************************** End render scenes declaration ***************************************** -->
-            <!-- ***************************************** End services declarations    ************************************************ -->
             <connect>
-                <signal>snapshotScene1Editor/snapped</signal>
-                <slot>snapshot1/snap</slot>
+                <signal>snapshotSrv/clicked</signal>
+                <slot>imageWriterSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>showScanEditor/toggled</signal>
-                <slot>MPRNegato3D/showSlice</slot>
+                <signal>showNegatoSrv/toggled</signal>
+                <slot>negatoAdp/updateVisibility</slot>
             </connect>
 
             <connect>
-                <signal>sliceListEditor/selected</signal>
-                <slot>MPRNegato3D/updateSliceMode</slot>
+                <signal>pickerInteractorAdp/picked</signal>
+                <slot>pointEditorSrv/getInteraction</slot>
             </connect>
 
+            <!-- Display the picked voxel information -->
             <connect>
-                <signal>pickerInteractor/picked</signal>
-                <slot>pointView/getInteraction</slot>
+                <signal>negatoAdp/pickedVoxel</signal>
+                <slot>pickedVoxelTextAdp/setText</slot>
             </connect>
 
-            <start uid="MyIHM" />
-            <start uid="medicalImageConverter" />
-            <!-- VTK scene 'genericScene' -->
-            <start uid="meshAdaptor" />
-            <start uid="MPRNegato3D" />
-            <start uid="snapshot1" />
-            <start uid="pickerInteractor" />
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="medicalImageConverterSrv" />
+            <start uid="imageWriterSrv" />
+            <start uid="trackballInteractorAdp" />
+            <start uid="pickerInteractorAdp" />
+            <start uid="meshAdp" />
+            <start uid="negatoAdp" />
+            <start uid="snapshotAdp" />
+            <start uid="pickedVoxelTextAdp" />
+
         </config>
     </extension>
 </plugin>

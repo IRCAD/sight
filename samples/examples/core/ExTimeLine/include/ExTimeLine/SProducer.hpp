@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace ExTimeLine
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::Ex02TimeLine::SProducer">
+       <service type="::Ex02TimeLine::SProducer" >
             <inout key="timeline" uid="..." />
            <message>Hello</message>
            <id>0</id>
@@ -44,7 +44,7 @@ namespace ExTimeLine
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b timeline [::Ex02TimeLine::MessageTL]: timeline where to put messages.
+ * - \b timeline [::exTimeLineData::MessageTL]: timeline where to put messages.
  * @subsection Configuration Configuration:
  * - \b message : message to be sent.
  * - \b id : id of the sender.
@@ -55,7 +55,7 @@ class EXTIMELINE_CLASS_API SProducer : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceMacro(SProducer, ::fwServices::IService);
+    fwCoreServiceMacro(SProducer, ::fwServices::IService)
 
     EXTIMELINE_API SProducer() noexcept;
     EXTIMELINE_API virtual ~SProducer() noexcept;

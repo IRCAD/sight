@@ -104,7 +104,7 @@ void ImageDisplayingManager::initialize()
 
 void ImageDisplayingManager::createVtkScene()
 {
-    if (!m_vtkSceneCreated)
+    if (!m_sceneCreated)
     {
         // generic scene
         auto renderSrv = ::fwServices::add< ::fwRenderVTK::SRender >("::fwRenderVTK::SRender");
@@ -155,7 +155,7 @@ void ImageDisplayingManager::createVtkScene()
         this->addService(m_imageAdaptor, true);
         this->addService(m_modelSeriesAdaptor, true);
 
-        m_vtkSceneCreated = true;
+        m_sceneCreated = true;
     }
 }
 

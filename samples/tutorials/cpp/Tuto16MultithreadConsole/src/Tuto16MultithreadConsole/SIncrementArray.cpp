@@ -41,6 +41,8 @@ namespace Tuto16MultithreadConsole
 
 static const ::fwCom::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
 
+static const std::string s_ARRAY_INOUT = "array";
+
 //------------------------------------------------------------------------------
 
 SIncrementArray::SIncrementArray() noexcept :
@@ -57,6 +59,13 @@ SIncrementArray::~SIncrementArray() noexcept
 
 //------------------------------------------------------------------------------
 
+void SIncrementArray::configuring()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 void SIncrementArray::starting()
 {
     m_timer = m_associatedWorker->createTimer();
@@ -66,39 +75,24 @@ void SIncrementArray::starting()
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::stopping()
-{
-    if (m_timer->isRunning())
-    {
-        m_timer->stop();
-    }
-    m_timer.reset();
-}
-
-//------------------------------------------------------------------------------
-
 void SIncrementArray::updating()
 {
-    ::fwData::Array::sptr array = this->getInOut< ::fwData::Array >("array");
-    ::fwData::mt::ObjectWriteLock writeLock(array);
-
-    SLM_ASSERT("No array.", array);
-    SLM_ASSERT("Array : bad number of dimensions.", array->getNumberOfDimensions() == 1 );
+    const auto array = this->getInOut< ::fwData::Array >(s_ARRAY_INOUT);
+    SLM_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1 );
 
     const auto dumpLock = array->lock();
 
     auto itr       = array->begin< unsigned int >();
     const auto end = array->end< unsigned int >();
 
-    // Increment the array values
+    // Increment the array values.
     for (; itr != end; ++itr)
     {
         ++(*itr);
     }
 
-    // Notify that the array is modified
-    ::fwData::Object::ModifiedSignalType::sptr sig
-        = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
+    // Notify that the array is modified.
+    const auto sig = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
     {
         ::fwCom::Connection::Blocker blockUpdate(sig->getConnection(m_slotUpdate));
         ::fwCom::Connection::Blocker blockTimer(sig->getConnection(this->slot(s_START_TIMER_SLOT)));
@@ -109,9 +103,13 @@ void SIncrementArray::updating()
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::configuring()
+void SIncrementArray::stopping()
 {
-
+    if(m_timer->isRunning())
+    {
+        m_timer->stop();
+    }
+    m_timer.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -123,4 +121,4 @@ void SIncrementArray::startTimer()
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto16MultithreadConsole
+} // namespace Tuto16MultithreadConsole.

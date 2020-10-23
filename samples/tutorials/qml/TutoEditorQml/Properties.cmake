@@ -1,5 +1,5 @@
 set( NAME TutoEditorQml )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( START ON)
 set( DEPENDENCIES
