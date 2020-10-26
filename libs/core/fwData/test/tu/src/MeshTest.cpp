@@ -851,6 +851,7 @@ void MeshTest::iteratorTest()
     }
 
     ::fwData::Mesh::csptr mesh2 = ::fwData::Mesh::copy(mesh);
+    const auto lock2 = mesh2->lock();
     {
         auto it          = mesh2->begin< ::fwData::iterator::ConstPointIterator >();
         const auto itEnd = mesh2->end< ::fwData::iterator::ConstPointIterator >();
@@ -905,6 +906,7 @@ void MeshTest::iteratorTest()
     }
 
     ::fwData::Mesh::sptr mesh3 = ::fwData::Mesh::New();
+    const auto lock3 = mesh3->lock();
     mesh3->resize(NB_POINTS, NB_CELLS, ::fwData::Mesh::CellType::QUAD, EXTRA_ARRAY);
 
     {
@@ -1076,6 +1078,9 @@ void MeshTest::iteratorCopyTest()
                        ::fwData::Mesh::Attributes::CELL_NORMALS |
                        ::fwData::Mesh::Attributes::CELL_COLORS |
                        ::fwData::Mesh::Attributes::CELL_TEX_COORDS);
+
+    const auto lock  = mesh->lock();
+    const auto lock2 = copiedMesh->lock();
 
     {
         //fill the mesh
