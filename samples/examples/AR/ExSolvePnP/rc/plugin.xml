@@ -311,7 +311,7 @@
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="::videoQt::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::videoOpenCV::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
@@ -329,7 +329,8 @@
                 <config videoReference="top_left" inverse="true" />
             </service>
 
-            <service uid="pointListARManagerSrv" type="::ctrlPicking::SManagePointList" >
+            <service uid="imagePickerSrv" type="::videoTools::SImagePicker" >
+                <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
             </service>
 
@@ -373,7 +374,7 @@
 
             <connect>
                 <signal>ARPickerAdp/picked</signal>
-                <slot>pointListARManagerSrv/pick</slot>
+                <slot>imagePickerSrv/getInteraction</slot>
             </connect>
 
             <connect>
@@ -391,7 +392,7 @@
             <start uid="meshReaderSrv" />
             <start uid="solvePnPSrv" />
             <start uid="frameUpdaterSrv" />
-            <start uid="pointListARManagerSrv" />
+            <start uid="imagePickerSrv" />
             <start uid="pointListVRManagerSrv" />
             <start uid="ARPickerAdp" />
             <start uid="ARVideoAdp" />

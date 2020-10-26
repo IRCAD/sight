@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    fwlauncher              # Just to build the launcher
+    fwlauncher              # Needed to build the launcher
     appXml                  # XML configurations
 
     guiQt                   # Start the module, load qt implementation of gui
@@ -19,7 +19,7 @@ set( REQUIREMENTS
     ioVTK
 
     # Services
-    uiIO # contains services to show dialogs for reader/writer selection
+    uiIO                    # Contains services to show dialogs for reader/writer selection
     visuBasic
 )
 

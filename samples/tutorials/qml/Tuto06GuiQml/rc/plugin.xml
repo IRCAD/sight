@@ -1,0 +1,12 @@
+<!-- Application name and version (the version is automatically replaced by CMake
+     using the version defined in the Properties.cmake) -->
+<plugin id="Tuto06GuiQml" class="::Tuto06GuiQml::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="Tuto06GuiQml" />
+
+    <!-- The modules in requirements are automatically started when this
+         Application is launched. -->
+
+    <requirement id="servicesReg" />
+
+</plugin>

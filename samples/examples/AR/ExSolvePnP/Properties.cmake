@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    fwlauncher              # Just to build the launcher
+    fwlauncher              # Needed to build the launcher
     appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
@@ -28,6 +28,7 @@ set( REQUIREMENTS
 
     # Grabber
     videoQt
+    videoOpenCV
 
     # Services
     videoTools

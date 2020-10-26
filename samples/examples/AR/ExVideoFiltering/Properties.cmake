@@ -4,7 +4,7 @@ set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    fwlauncher              # Just to build the launcher
+    fwlauncher              # Needed to build the launcher
     appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
