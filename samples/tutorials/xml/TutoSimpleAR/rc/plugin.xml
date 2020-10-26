@@ -36,12 +36,6 @@
             <object uid="frameTL" type="::arData::FrameTL" />
             <!-- Video frame that is used for the current iteration -->
             <object uid="sourceFrame" type="::fwData::Image" />
-            <!-- Offscreen buffer used to distort the 3D rendering of the cube -->
-            <object uid="offscreen3DImage" type="::fwData::Image" />
-            <!-- Final output video frame that will be displayed -->
-            <object uid="finalFrame" type="::fwData::Image" />
-            <!-- Distort 3D rendering of the cube -->
-            <object uid="distorted3DImage" type="::fwData::Image" />
             <!-- Map containing all detected markers in the current frame -->
             <object uid="markerMap" type="::arData::MarkerMap" />
             <!-- Marker matrix in the camera world -->
@@ -50,6 +44,8 @@
             <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D" />
             <!-- Cube superimposed on the video at the marker location -->
             <object uid="cubeMesh" type="::fwData::Mesh" />
+            <object uid="undistortMap" type="::fwData::Image" />
+            <object uid="distortMap" type="::fwData::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -80,8 +76,8 @@
                         <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
                         <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="flatIcon-0.1/icons/YellowDistortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="flatIcon-0.1/icons/YellowUndistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="flatIcon-0.1/icons/YellowUndistortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="flatIcon-0.1/icons/YellowDistortion.svg" />
                         <menuItem name="Enable 3D rendering distortion" icon="flatIcon-0.1/icons/YellowDistortion.svg" />
                         <menuItem name="Disable 3D rendering distortion" icon="flatIcon-0.1/icons/YellowUndistortion.svg" />
                         <separator/>
@@ -217,7 +213,7 @@
 
             <service uid="startUndistortAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>undistorterSrv/changeState</slot>
+                    <slot>undistortAdp/show</slot>
                     <slot>startDistortAct/setInexecutable</slot>
                     <slot>startUndistortAct/hide</slot>
                     <slot>stopUndistortAct/show</slot>
@@ -227,7 +223,7 @@
             <service uid="stopUndistortAct" type="::gui::action::SSlotCaller" >
                 <state visible="false" />
                 <slots>
-                    <slot>undistorterSrv/changeState</slot>
+                    <slot>undistortAdp/hide</slot>
                     <slot>startDistortAct/setExecutable</slot>
                     <slot>startUndistortAct/show</slot>
                     <slot>stopUndistortAct/hide</slot>
@@ -236,36 +232,26 @@
 
             <service uid="startDistortAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>distorterSrv/changeState</slot>
+                    <slot>distortAdp/show</slot>
                     <slot>startUndistortAct/setInexecutable</slot>
                     <slot>startDistortAct/hide</slot>
                     <slot>stopDistortAct/show</slot>
-                    <slot>showDistortionActorSrv/activate</slot>
-                    <slot>showDistortionActorSrv/update</slot>
-                    <slot>startGenericSceneSyncSrv/update</slot>
-                    <slot>startOffscreenSyncSrv/update</slot>
                 </slots>
             </service>
 
             <service uid="stopDistortAct" type="::gui::action::SSlotCaller" >
                 <state visible="false" />
                 <slots>
-                    <slot>distorterSrv/changeState</slot>
+                    <slot>distortAdp/hide</slot>
                     <slot>startUndistortAct/setExecutable</slot>
                     <slot>startDistortAct/show</slot>
                     <slot>stopDistortAct/hide</slot>
-                    <slot>showDistortionActorSrv/deactivate</slot>
-                    <slot>showDistortionActorSrv/update</slot>
-                    <slot>startGenericSceneSyncSrv/update</slot>
-                    <slot>startOffscreenSyncSrv/update</slot>
-                    <slot>frameUpdaterSrv/synchronize</slot>
                 </slots>
             </service>
 
             <service uid="showMeshAct" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>cubeAdp/updateVisibility</slot>
-                    <slot>cubeOffscreenAdp/updateVisibility</slot>
                 </slots>
                 <state active="true" />
             </service>
@@ -280,28 +266,26 @@
                 <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" />
+                    <layer id="video" order="1" compositors="Remap" />
                     <adaptor uid="videoAdp" />
+                    <adaptor uid="undistortAdp" />
 
-                    <layer id="default" order="2" />
+                    <layer id="default" order="3" compositors="Remap" />
                     <adaptor uid="axisAdp" />
                     <adaptor uid="cameraAdp" />
                     <adaptor uid="cubeAdp" />
-
-                    <layer id="ar" order="3" />
-                    <adaptor uid="distorted3DAdp" />
+                    <adaptor uid="distortAdp" />
                 </scene>
             </service>
 
             <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-                <in key="image" uid="finalFrame" />
+                <in key="image" uid="sourceFrame" />
                 <config layer="video" />
             </service>
 
-            <!-- Display the offscreen buffer of the 3D when we distort the 3D -->
-            <service uid="distorted3DAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-                <in key="image" uid="distorted3DImage" />
-                <config layer="ar" />
+            <service uid="undistortAdp" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes" >
+                <inout key="parameter" uid="undistortMap" />
+                <config layer="video" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
 
             <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
@@ -321,72 +305,16 @@
                 <config layer="default" autoresetcamera="no" />
             </service>
 
-            <!-- ******************************* Begin Generic Scene (OffScreen) ******************************* -->
-
-            <!-- Scene in which the 3D will be rendered if we apply the distortion to the 3D layer -->           
-            <service uid="offscreenGenericSCeneSrv" type="::fwRenderOgre::SRender" >
-                <inout key="offScreen" uid="offscreen3DImage" />
-                <!-- It is essential to use the 'sync' mode when doing AR -->
-                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
-                <scene renderMode="sync" width="1920" height="1080" >
-                    <background topColor="#36393E" bottomColor="#36393E" />
-
-                    <layer id="video" order="1" />
-                    <adaptor uid="videoOffscreenAdp" />
-
-                    <layer id="default" order="2" />
-                    <adaptor uid="axisOffscreenAdp" />
-                    <adaptor uid="cameraOffscreenAdp" />
-                    <adaptor uid="cubeOffscreenAdp" />
-                </scene>
-            </service>
-
-            <service uid="videoOffscreenAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-                <in key="image" uid="finalFrame" />
-                <config layer="video" />
-            </service>
-
-            <service uid="axisOffscreenAdp" type="::visuOgreAdaptor::SAxis" >
-                <config layer="default" length="30" origin="true" label="false" />
-            </service>
-
-            <!-- Camera for the 3D layer -->
-            <service uid="cameraOffscreenAdp" type="::visuOgreAdaptor::SCamera" autoConnect="yes" >
-                <inout key="transform" uid="cameraToMarker" />
-                <in key="calibration" uid="camera" />
-                <config layer="default" />
-            </service>
-
-            <!-- Cube displayed on top of the marker plane -->
-            <service uid="cubeOffscreenAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
-                <inout key="mesh" uid="cubeMesh" />
-                <config layer="default" autoresetcamera="no" />
+            <service uid="distortAdp" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes" >
+                <inout key="parameter" uid="distortMap" />
+                <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="showDistortionActorSrv" type="::gui::action::SBooleanSlotCaller" >
-                <state active="false" />
-                <slots>
-                    <slot>distorted3DAdp/updateVisibility</slot>
-                </slots>
-            </service>
-
             <service uid="loadMeshSrv" type="::ioVTK::SMeshReader" >
                 <inout key="data" uid="cubeMesh" />
                 <resource>TutoSimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
-            </service>
-
-            <!-- Default synchronization at launch -->
-            <!-- Disabled when doing distortion of the 3D layer -->
-            <service uid="startGenericSceneSyncSrv" type="::gui::action::SStarter" >
-                <start_or_stop uid="syncGenericSceneSrv" />
-            </service>
-
-            <!-- Synchronization when doing distorting of the 3D layer -->
-            <service uid="startOffscreenSyncSrv" type="::gui::action::SStarter" >
-                <start_or_stop uid="syncOffscreenRenderSrv" />
-                <start_or_stop uid="syncGenericSceneSrvAndOffscreenSrv" />
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
@@ -515,7 +443,7 @@
                 </inout>
                 <track>
                     <!-- list of tag's id -->
-                    <marker id="101" />
+                    <marker id="104" />
                 </track>
                 <debugMarkers>yes</debugMarkers>
             </service>
@@ -529,7 +457,7 @@
                     <key uid="camera" />
                 </in>
                 <inout group="matrix" >
-                    <key uid="markerToCamera" id="101" />
+                    <key uid="markerToCamera" id="104" />
                 </inout>
                 <patternWidth>60</patternWidth>
             </service>
@@ -537,7 +465,7 @@
             <!-- Computes the reprojection error -->
             <service uid="errorSrv" type="::videoCalibration::SReprojectionError" worker="error" >
                 <in group="matrix" autoConnect="yes" >
-                    <key uid="markerToCamera" id="101" />
+                    <key uid="markerToCamera" id="104" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />
@@ -553,37 +481,21 @@
                 <inout key="output" uid="cameraToMarker" />
             </service>
 
-            <!-- Undistort the video frame -->
-            <!-- If not enabled, it simply copies the input image -->
-            <service uid="undistorterSrv" type="::videoCalibration::SDistortion" worker="distortion" >
-                <in key="camera" uid="camera" />
-                <in key="input" uid="sourceFrame" />
-                <inout key="output" uid="finalFrame" />
+            <service uid="undistorterSrv" type="::videoCalibration::SDistortion" >
+                <in key="camera" uid="camera" autoConnect="yes" />
+                <inout key="map" uid="undistortMap" />
                 <mode>undistort</mode>
+            </service>
+
+            <service uid="distorterSrv" type="::videoCalibration::SDistortion" >
+                <in key="camera" uid="camera" autoConnect="yes" />
+                <inout key="map" uid="distortMap" />
+                <mode>distort</mode>
             </service>
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
             <service uid="syncGenericSceneSrv" type="::ctrlCom::SSignalGate" >
-                <signal>finalFrame/bufferModified</signal>
-                <signal>cameraToMarker/modified</signal>
-            </service>
-
-            <!-- Distort the offscreen render of the 3D scene -->
-            <service uid="distorterSrv" type="::videoCalibration::SDistortion" worker="distortion" >
-                <in key="camera" uid="camera" />
-                <in key="input" uid="offscreen3DImage" autoConnect="yes" />
-                <inout key="output" uid="distorted3DImage" />
-                <mode>distort</mode>
-            </service>
-
-            <!-- Wait for the distortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrvAndOffscreenSrv" type="::ctrlCom::SSignalGate" >
-                <signal>distorted3DImage/bufferModified</signal>
-                <signal>cameraToMarker/modified</signal>
-            </service>
-
-            <!-- Wait for the matrix inversion to be finished -->
-            <service uid="syncOffscreenRenderSrv" type="::ctrlCom::SSignalGate" >
+                <signal>sourceFrame/bufferModified</signal>
                 <signal>cameraToMarker/modified</signal>
             </service>
 
@@ -650,20 +562,11 @@
                 <signal>cameraSeries/modified</signal>
                 <slot>extractCameraSrv/update</slot>
                 <slot>errorSrv/update</slot>
-                <slot>startDistortAct/setExecutable</slot>
-                <slot>startUndistortAct/setExecutable</slot>
-                <slot>startUndistortAct/show</slot>
-                <slot>stopUndistortAct/hide</slot>
-                <slot>startDistortAct/show</slot>
-                <slot>stopDistortAct/hide</slot>
-                <slot>showDistortionActorSrv/deactivate</slot>
-                <slot>showDistortionActorSrv/update</slot>
             </connect>
 
             <connect>
                 <signal>trackerSrv/markerDetected</signal>
                 <slot>axisAdp/updateVisibility</slot>
-                <slot>undistorterSrv/update</slot>
             </connect>
 
             <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
@@ -672,20 +575,6 @@
                 <signal>syncGenericSceneSrv/allReceived</signal>
                 <slot>genericSceneSrv/requestRender</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
-            </connect>
-
-            <!-- When the distortion and the matrix inversion are finished, trigger the rendering -->
-            <!-- then process a new frame -->
-            <connect>
-                <signal>syncGenericSceneSrvAndOffscreenSrv/allReceived</signal>
-                <slot>genericSceneSrv/requestRender</slot>
-                <slot>frameUpdaterSrv/synchronize</slot>
-            </connect>
-
-            <!-- When the matrix inversion is finished, trigger the offscreen rendering -->
-            <connect>
-                <signal>syncOffscreenRenderSrv/allReceived</signal>
-                <slot>offscreenGenericSCeneSrv/requestRender</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->
@@ -703,26 +592,19 @@
             <start uid="hideAxisSrv" />
             <start uid="undistorterSrv" />
             <start uid="distorterSrv" />
-            <start uid="showDistortionActorSrv" />
-            <start uid="startGenericSceneSyncSrv" />
-            <start uid="startOffscreenSyncSrv" />
+            <start uid="syncGenericSceneSrv" />
             <start uid="loadMeshSrv" />
             <start uid="genericSceneSrv" />
             <start uid="videoAdp" />
-            <start uid="distorted3DAdp" />
+            <start uid="undistortAdp" />
             <start uid="axisAdp" />
             <start uid="cameraAdp" />
             <start uid="cubeAdp" />
-            <start uid="offscreenGenericSCeneSrv" />
-            <start uid="videoOffscreenAdp" />
-            <start uid="axisOffscreenAdp" />
-            <start uid="cubeOffscreenAdp" />
-            <start uid="cameraOffscreenAdp" />
+            <start uid="distortAdp" />
 
             <!-- ******************************* Update services ***************************************** -->
 
             <!-- At launch, enable the synchronization with the non-offscreen rendering -->
-            <update uid="startGenericSceneSyncSrv" />
             <update uid="showParametersAct" />
             <update uid="hideAxisSrv" />
             <update uid="loadMeshSrv" />
