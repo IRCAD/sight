@@ -226,7 +226,7 @@
             </service>
 
             <service uid="ARPickerAdp" type="::visuOgreAdaptor::SPicker" >
-                <config layer="video" />
+                <config layer="video" layerOrderDependant="false" />
             </service>
 
             <service uid="ARVideoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
@@ -329,12 +329,11 @@
                 <config videoReference="top_left" inverse="true" />
             </service>
 
-            <service uid="imagePickerSrv" type="::videoTools::SImagePicker" >
-                <in key="camera" uid="camera" />
+            <service uid="pointListARManagerSrv" type="::ctrlPicking::SManagePointList" >
                 <inout key="pointList" uid="2dPoints" />
             </service>
 
-            <service uid="landmarkManagerSrv" type="::ctrlPicking::SManagePointList" >
+            <service uid="pointListVRManagerSrv" type="::ctrlPicking::SManagePointList" >
                 <inout key="pointList" uid="3dPoints" />
                 <config label="true" />
             </service>
@@ -369,12 +368,12 @@
 
             <connect>
                 <signal>VRPickerAdp/picked</signal>
-                <slot>landmarkManagerSrv/pick</slot>
+                <slot>pointListVRManagerSrv/pick</slot>
             </connect>
 
             <connect>
                 <signal>ARPickerAdp/picked</signal>
-                <slot>imagePickerSrv/getInteraction</slot>
+                <slot>pointListARManagerSrv/pick</slot>
             </connect>
 
             <connect>
@@ -392,8 +391,8 @@
             <start uid="meshReaderSrv" />
             <start uid="solvePnPSrv" />
             <start uid="frameUpdaterSrv" />
-            <start uid="imagePickerSrv" />
-            <start uid="landmarkManagerSrv" />
+            <start uid="pointListARManagerSrv" />
+            <start uid="pointListVRManagerSrv" />
             <start uid="ARPickerAdp" />
             <start uid="ARVideoAdp" />
             <start uid="ARCameraAdp" />

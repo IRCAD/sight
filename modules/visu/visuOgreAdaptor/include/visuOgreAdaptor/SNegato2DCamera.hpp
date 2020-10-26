@@ -28,7 +28,6 @@
 #include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
 
 #include <memory>
 
@@ -57,7 +56,7 @@ namespace visuOgreAdaptor
     <service type="::visuOgreAdaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="yes" />
         <inout key="tf" uid="..." optional="yes" />
-        <config layer="..." priority="0" orientation="sagittal" />
+        <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
    </service>
    @endcode
  *
@@ -71,6 +70,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): layer on which the negato camera interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
+ * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2DCamera final : public ::fwRenderOgre::IAdaptor,

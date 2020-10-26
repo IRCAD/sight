@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,15 +37,15 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-/**
- * @brief Picks VR widgets and updates clipping cube.
- */
+/// Picks VR widgets and updates clipping cube.
 class FWRENDEROGRE_CLASS_API ClippingBoxInteractor : public IInteractor
 {
+
 public:
 
-    /// Constructor.
+    /// Creates the widget.
     FWRENDEROGRE_API ClippingBoxInteractor(SPTR(Layer)_layer,
+                                           bool _layerOrderDependant,
                                            const std::string& _id,
                                            ::Ogre::SceneNode* _parentSceneNode,
                                            const ::Ogre::Matrix4& _clippingMatrix,
@@ -53,7 +53,7 @@ public:
                                            const std::string& _boxMtlName,
                                            const std::string& _handleMtlName) noexcept;
 
-    /// Destructor.
+    /// Destroys the widget.
     FWRENDEROGRE_API virtual ~ClippingBoxInteractor() noexcept final;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
@@ -79,20 +79,21 @@ public:
 
 private:
 
+    /// Cancels further interaction on the layer.
     void cancelFurtherLayerInteractions();
 
-    /// Currently selected widget.
+    /// Containst the currently selected widget.
     ::Ogre::MovableObject* m_pickedObject { nullptr };
 
-    /// The widget with whom we interact.
+    /// Defines the widget with whom we interact.
     widget::ClippingBox m_widget;
 
-    /// The picker used by this interactor.
+    /// Defines the picker used by this interactor.
     ::fwRenderOgre::picker::IPicker m_picker;
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
     ::Ogre::MovableObject* pickObject(int x, int y);
 
 };
-} // namespace interactor
-} // namespace fwRenderOgre
+} // namespace interactor.
+} // namespace fwRenderOgre.

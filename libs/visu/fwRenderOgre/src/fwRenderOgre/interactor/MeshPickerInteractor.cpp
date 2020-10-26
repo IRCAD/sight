@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,8 @@ fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInter
 namespace fwRenderOgre::interactor
 {
 
-MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer) noexcept :
-    IInteractor(_layer)
+MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer, bool _layerOrderDependant) noexcept :
+    IInteractor(_layer, _layerOrderDependant)
 {
     if(_layer)
     {
@@ -70,7 +70,7 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
     {
         if(auto layer = m_layer.lock())
         {
-            if(!isInLayer(_x, _y, layer))
+            if(!isInLayer(_x, _y, layer, m_layerOrderDependant))
             {
                 return;
             }
@@ -144,4 +144,4 @@ void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, Modifier _mod
 
 //------------------------------------------------------------------------------
 
-} //namespace fwRenderOgre::interactor
+} //namespace fwRenderOgre::interactor.

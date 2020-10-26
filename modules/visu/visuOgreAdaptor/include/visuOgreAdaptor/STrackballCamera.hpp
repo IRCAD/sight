@@ -42,13 +42,14 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="::visuOgreAdaptor::STrackballCamera">
-        <config layer="..." priority="0" />
+        <config layer="..." priority="0" layerOrderDependant="true" />
    </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): layer on which the trackball interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
+ * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
 class VISUOGREADAPTOR_CLASS_API STrackballCamera final : public ::fwRenderOgre::IAdaptor
 {
@@ -85,6 +86,9 @@ private:
 
     /// Defines the interaction priority.
     int m_priority { 0 };
+
+    /// Defines if the interaction must take into account above layers.
+    bool m_layerOrderDependant { true };
 
 };
 

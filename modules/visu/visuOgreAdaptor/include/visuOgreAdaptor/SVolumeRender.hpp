@@ -103,6 +103,7 @@ namespace visuOgreAdaptor
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b priority (optional, int, default=2): interaction priority of the widget.
+ * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b ao (optional, bool, default=false): ambient occlusion usage.
  * - \b colorBleeding (optional, bool, default=false): color bleeding usage.
  * - \b shadows (optional, bool, default=false): soft shadows usage.
@@ -403,6 +404,9 @@ private:
 
     /// Stores the priority of the widget interactor.
     int m_priority { 2 };
+
+    /// Defines if the interaction must take into account above layers.
+    bool m_layerOrderDependant { true };
 
     /// Stores the sampling rate.
     std::uint16_t m_nbSamples { 512 };

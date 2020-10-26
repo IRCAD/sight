@@ -43,7 +43,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SPicker">
-            <config layer="..." priority="0" queryMask="0xFFFFFFFF" />
+            <config layer="..." priority="0" queryMask="0xFFFFFFFF" layerOrderDependant="true" />
        </service>
    @endcode
  *
@@ -51,6 +51,7 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory, string): layer on which the adaptor picks points.
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
+ * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
 class VISUOGREADAPTOR_CLASS_API SPicker final : public ::fwRenderOgre::IAdaptor
 {
@@ -87,6 +88,9 @@ private:
 
     /// Defines the mask used to filter out entities when picking.
     std::uint32_t m_queryMask { 0xFFFFFFFF };
+
+    /// Defines if the interaction must take into account above layers.
+    bool m_layerOrderDependant { true };
 
     /// Contains the interactor managed by the adaptor.
     std::shared_ptr< ::fwRenderOgre::interactor::MeshPickerInteractor > m_interactor;

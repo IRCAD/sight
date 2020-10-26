@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,13 +30,14 @@ namespace fwRenderOgre::interactor
 //------------------------------------------------------------------------------
 
 ClippingBoxInteractor::ClippingBoxInteractor(Layer::sptr _layer,
+                                             bool _layerOrderDependant,
                                              const std::string& _id,
                                              ::Ogre::SceneNode* _parentSceneNode,
                                              const ::Ogre::Matrix4& _clippingMatrix,
                                              const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
                                              const std::string& _boxMtlName,
                                              const std::string& _handleMtlName) noexcept :
-    IInteractor(_layer),
+    IInteractor(_layer, _layerOrderDependant),
     m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
              _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
 {
