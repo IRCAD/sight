@@ -31,7 +31,7 @@
 namespace arMDSemanticPatch
 {
 
-std::string PatchLoader::s_currentVersion = "V16AR";
+std::string PatchLoader::s_currentVersion = "V17AR";
 
 //------------------------------------------------------------------------------
 

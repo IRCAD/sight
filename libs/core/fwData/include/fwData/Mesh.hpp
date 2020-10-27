@@ -788,6 +788,15 @@ public:
      */
     bool hasRGBCellColors() const;
 
+    /// Returns current Attributes of the Mesh as binary mask @see ::fwData::Mesh::Attributes
+    Attributes getAttributes() const;
+
+    /// Sets current Attributes of the Mesh as binary mask @see ::fwData::Mesh::Attributes
+    /// @warning: Attributes are set automaticaly or using resize()/reserve methode, usualy it is not recommended to
+    // call this method.
+    ///  This is only used when converting from/to fwAtoms
+    void setAttributes(const Mesh::Attributes& _attributes);
+
     /**
      * @brief Return the buffer of point colors.
      *

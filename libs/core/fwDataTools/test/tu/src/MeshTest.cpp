@@ -314,11 +314,13 @@ void MeshTest::colorizeCellsTest()
 void MeshTest::transformTest()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto lock = mesh->lock();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::generatePointNormals(mesh);
     ::fwDataTools::Mesh::generateCellNormals(mesh);
 
     ::fwData::Mesh::sptr meshOrig = ::fwData::Mesh::copy(mesh);
+    const auto origLock = meshOrig->lock();
 
     ::glm::dmat4x4 matrix(1.);
     matrix = ::glm::rotate(matrix, ::glm::radians(90.), ::glm::dvec3(0., 0., 1.));

@@ -44,6 +44,7 @@ set( REQUIREMENTS
     style
 
     patchMedicalData
+    arPatchMedicalData
 
     filterUnknownSeries
 

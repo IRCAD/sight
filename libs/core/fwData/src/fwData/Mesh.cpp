@@ -153,6 +153,8 @@ void Mesh::shallowCopy(const Object::csptr& _source )
     m_cellTexCoords  = other->m_cellTexCoords;
     m_pointTexCoords = other->m_pointTexCoords;
 
+    m_attributes = other->m_attributes;
+
     m_arrayMap = other->m_arrayMap;
 }
 
@@ -169,6 +171,8 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
     m_nbPoints      = other->m_nbPoints;
     m_nbCells       = other->m_nbCells;
     m_cellsDataSize = other->m_cellsDataSize;
+
+    m_attributes = other->m_attributes;
 
     this->initArrays();
 
@@ -613,6 +617,20 @@ size_t Mesh::getAllocatedSizeInBytes() const
     }
 
     return size;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Attributes Mesh::getAttributes() const
+{
+    return m_attributes;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setAttributes(const Mesh::Attributes& _attributes)
+{
+    m_attributes = _attributes;
 }
 
 //------------------------------------------------------------------------------
