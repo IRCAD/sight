@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,6 +45,8 @@ namespace uiHandEye
  *
  * @see ::trackingCalibration::SHandEyeCalibration
  *
+ * @deprecated This service is not supported anymore, it will be removed in sight 21.0.
+ *
  * @section slots slots
  * - \b add(): Add new calibration points
  * - \b remove(): Remove calibration points
@@ -78,7 +80,7 @@ class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SHandEyeEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SHandEyeEditor, ::fwGui::editor::IEditor)
 
     /**
      * @name Slots API
@@ -101,6 +103,7 @@ public:
     /**
      * @brief Constructor.
      */
+    [[deprecated("This service is not supported anymore, it will be removed in sight 21.0.")]]
     UIHANDEYE_API SHandEyeEditor() noexcept;
 
     /**
