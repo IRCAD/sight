@@ -113,7 +113,6 @@ Lighting::Lighting()
     this->addRenderPass(m_cellNormalPass);
 
     // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
-    this->fixShaderSyntax();
     const auto vertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
     const auto fragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
@@ -274,40 +273,6 @@ void Lighting::updateRasterMode(int _rasterMode)
             m_rasterModeRenderState->setRasterMode(Qt3DRender::QRasterMode::Fill);
             m_edgeRenderPass->setEnabled(true);
         }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Lighting::fixShaderSyntax()
-{
-    const auto path = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/lighting.inc.glsl");
-
-    const auto outPath = path.u8string().append(".tmp");
-
-    std::ifstream lightingShaderIn(path);
-    std::ofstream lightingShaderOut(outPath);
-    if (lightingShaderIn.is_open() && lightingShaderOut.is_open())
-    {
-
-        std::string toErase = "#version";
-        std::string line;
-
-        while(std::getline(lightingShaderIn, line))
-        {
-            if(line.find(toErase) != std::string::npos)
-            {
-                line.erase(0, line.length());
-            }
-            lightingShaderOut << line << std::endl;
-        }
-
-        lightingShaderIn.close();
-        lightingShaderOut.close();
-
-        remove(path);
-        rename(outPath, path);
     }
 }
 

@@ -22,7 +22,6 @@ vec3 lighting(const in vec3 pos, const in vec3 n);
 
 void main()
 {
-
     v_out_f3Normal = normalize(modelViewNormal * vertexNormal);
     v_out_f3Position = vec3(modelView * vec4(vertexPosition, 1.0));
     v_out_f3Color = vec3(0);

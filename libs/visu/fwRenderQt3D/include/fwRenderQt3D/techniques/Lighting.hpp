@@ -135,10 +135,6 @@ private:
     /// Specifies if normal visualization is set to point or cell.
     bool m_isCellsNormalsEnabled { false };
 
-    /// This function needs to be called once before using a shader including
-    /// lighting.inc.glsl, due to incompatibilities between sheldon and qt3d rules.
-    void fixShaderSyntax();
-
 };
 
 } // namespace techniques.

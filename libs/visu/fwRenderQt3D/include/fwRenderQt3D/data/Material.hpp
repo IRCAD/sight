@@ -60,7 +60,7 @@ Q_PROPERTY(float shininess READ getShininess WRITE setShininess NOTIFY shininess
 public:
 
     /// Constructs a Qt3D Material.
-    FWRENDERQT3D_QT_API Material(Qt3DCore::QNode* _parent = 0);
+    FWRENDERQT3D_QT_API Material(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroys the material.
     FWRENDERQT3D_QT_API virtual ~Material();
