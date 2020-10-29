@@ -261,7 +261,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
 void MeshTest::testPointCloud()
 {
-    const std::uint64_t NB_POINTS = static_cast< std::uint64_t>(100 + rand()%1000);
+    const ::fwData::Mesh::Id NB_POINTS = static_cast< ::fwData::Mesh::Id >(100 + rand()%1000);
 
     const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
 
@@ -269,7 +269,7 @@ void MeshTest::testPointCloud()
 
     const auto dumpLock = mesh1->lock();
 
-    for (std::uint64_t i = 0; i < NB_POINTS; ++i)
+    for (::fwData::Mesh::Id i = 0; i < NB_POINTS; ++i)
     {
         ::fwData::Mesh::PointValueType point[3];
         point[0] = (static_cast<float>(rand()%1000) - 500.f) / 3.f;

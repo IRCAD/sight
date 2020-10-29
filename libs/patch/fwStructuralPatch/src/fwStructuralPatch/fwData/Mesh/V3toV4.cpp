@@ -27,6 +27,8 @@
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -78,59 +80,128 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
     ::fwData::Mesh::Attributes meshAttributes = ::fwData::Mesh::Attributes::NONE;
 
+    // Convert cell_data array from std::uint64_t to std::uint32_t
+    auto reformatBuffer
+        = [&](const std::string& _buffer)
+          {
+              // Retrieves values from previous atoms object.
+              ::fwAtoms::Object::sptr cellData     = previous->getAttribute< ::fwAtoms::Object >(_buffer);
+              ::fwAtoms::Blob::sptr cellDataBuffer = cellData->getAttribute< ::fwAtoms::Blob >("buffer");
+              ::fwAtoms::Sequence::sptr strides    = cellData->getAttribute< ::fwAtoms::Sequence >("strides");
+              ::fwAtoms::String::sptr stride       = ::fwAtoms::String::dynamicCast((*strides)[0]);
+              size_t cellDataElementSize = static_cast< size_t >(stoi(stride->getString()));
+
+              // Retrieves values from current atoms object.
+              ::fwAtoms::Object::sptr currentCellData     = current->getAttribute< ::fwAtoms::Object >(_buffer);
+              ::fwAtoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< ::fwAtoms::Blob >("buffer");
+              ::fwAtoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< ::fwAtoms::Sequence >(
+                  "strides");
+              ::fwAtoms::String::sptr currentType = currentCellData->getAttribute< ::fwAtoms::String >("type");
+
+              // Set the new strides to sizeof(std::uint32_t).
+              ::fwAtoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint32_t)));
+
+              // Set the new type.
+              currentType->setValue("uint32");
+
+              // Get buffers, and fill current one with uint32_t values.
+              const auto bo     = cellDataBuffer->getBufferObject();
+              const auto lock   = bo->lock();
+              const auto buff   = bo->getBuffer();
+              const auto bosize = bo->getSize();
+
+              // Divide the size in bytes by the size of one element to get the number of elements.
+              const size_t size = bosize / cellDataElementSize;
+
+              // Create a new buffer object with a size of size*32.
+              ::fwMemory::BufferObject::sptr bufferMemory = ::fwMemory::BufferObject::New();
+              const auto bufferMemoryLock = bufferMemory->lock();
+              bufferMemory->allocate(size * sizeof(std::uint32_t));
+
+              std::uint64_t* buff64 = static_cast<std::uint64_t*>( buff );
+              std::uint32_t* buff32 = static_cast<std::uint32_t*>( bufferMemory->getBuffer() );
+
+              // Iterate over buffers, and fill it with 32 bit values.
+              for(size_t i = 0; i < size; ++i)
+              {
+                  buff32[i] = static_cast<std::uint32_t>(buff64[i]);
+              }
+
+              // Give the new buffer to atom.
+              currentCellDataBuffer->setBufferObject(bufferMemory);
+          };
+
+    reformatBuffer("cell_data");
+    reformatBuffer("cell_data_offsets");
+
+    ::fwAtoms::Object::sptr pointC = previous->getAttribute< ::fwAtoms::Object >("point_colors");
+    if(pointC)
+    {
+        ::fwAtoms::Blob::sptr pointCBuffer = pointC->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(pointCBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_COLORS;
+        }
+    }
+
+    ::fwAtoms::Object::sptr pointN = previous->getAttribute< ::fwAtoms::Object >("point_normals");
+    if(pointN)
+    {
+        ::fwAtoms::Blob::sptr pointNBuffer = pointN->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(pointNBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_NORMALS;
+        }
+    }
+
+    ::fwAtoms::Object::sptr pointT = previous->getAttribute< ::fwAtoms::Object >("point_tex_coords");
+    if(pointT)
+    {
+        ::fwAtoms::Blob::sptr pointTBuffer = pointT->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(pointTBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_TEX_COORDS;
+        }
+    }
+
+    ::fwAtoms::Object::sptr cellC = previous->getAttribute< ::fwAtoms::Object >("cell_colors");
+    if(cellC)
+    {
+        ::fwAtoms::Blob::sptr cellCBuffer = cellC->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(cellCBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_COLORS;
+        }
+    }
+    ::fwAtoms::Object::sptr cellN = previous->getAttribute< ::fwAtoms::Object >("cell_normals");
+    if(cellN)
+    {
+        ::fwAtoms::Blob::sptr cellNBuffer = cellN->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(cellNBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_NORMALS;
+        }
+    }
+
+    ::fwAtoms::Object::sptr cellT = previous->getAttribute< ::fwAtoms::Object >("cell_tex_coords");
+    if(cellT)
+    {
+        ::fwAtoms::Blob::sptr cellTBuffer = cellT->getAttribute< ::fwAtoms::Blob >("buffer");
+
+        if(cellTBuffer->getBufferObject()->getBuffer())
+        {
+            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_TEX_COORDS;
+        }
+    }
+
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-
-    ::fwAtoms::Object::sptr pointC     = previous->getAttribute< ::fwAtoms::Object >("point_colors");
-    ::fwAtoms::Blob::sptr pointCBuffer = pointC->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(pointCBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_COLORS;
-    }
-
-    ::fwAtoms::Object::sptr pointN     = previous->getAttribute< ::fwAtoms::Object >("point_normals");
-    ::fwAtoms::Blob::sptr pointNBuffer = pointN->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(pointNBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_NORMALS;
-    }
-
-    ::fwAtoms::Object::sptr pointT     = previous->getAttribute< ::fwAtoms::Object >("point_tex_coords");
-    ::fwAtoms::Blob::sptr pointTBuffer = pointT->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(pointTBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_TEX_COORDS;
-    }
-
-    ::fwAtoms::Object::sptr cellC     = previous->getAttribute< ::fwAtoms::Object >("cell_colors");
-    ::fwAtoms::Blob::sptr cellCBuffer = cellC->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(cellCBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_COLORS;
-    }
-
-    ::fwAtoms::Object::sptr cellN     = previous->getAttribute< ::fwAtoms::Object >("cell_normals");
-    ::fwAtoms::Blob::sptr cellNBuffer = cellN->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(cellNBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_NORMALS;
-    }
-
-    ::fwAtoms::Object::sptr cellT     = previous->getAttribute< ::fwAtoms::Object >("cell_tex_coords");
-    ::fwAtoms::Blob::sptr cellTBuffer = cellT->getAttribute< ::fwAtoms::Blob >("buffer");
-
-    if(cellTBuffer->getBufferObject()->getBuffer())
-    {
-        meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_TEX_COORDS;
-    }
-
     helper.addAttribute("attributes", ::fwAtoms::Numeric::New<int>(static_cast<int>(meshAttributes)) );
-
 }
 
 } // namespace Mesh

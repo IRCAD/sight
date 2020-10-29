@@ -22,8 +22,13 @@
 
 #include "fwStructuralPatch/fwData/Mesh/V4ToV3.hpp"
 
+#include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
+#include <fwAtoms/Object.hpp>
+#include <fwAtoms/Object.hxx>
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -68,6 +73,59 @@ void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Update object version
     this->updateVersion(current);
+
+    auto reformatBuffer
+        = [&](const std::string& _buffer)
+          {
+              // Retrieves values from previous atoms object.
+              ::fwAtoms::Object::sptr cellData     = previous->getAttribute< ::fwAtoms::Object >(_buffer);
+              ::fwAtoms::Blob::sptr cellDataBuffer = cellData->getAttribute< ::fwAtoms::Blob >("buffer");
+              ::fwAtoms::Sequence::sptr strides    = cellData->getAttribute< ::fwAtoms::Sequence >("strides");
+              ::fwAtoms::String::sptr stride       = ::fwAtoms::String::dynamicCast((*strides)[0]);
+              size_t cellDataElementSize = static_cast< size_t >(stoi(stride->getString()));
+
+              // Retrieves values from current atoms object.
+              ::fwAtoms::Object::sptr currentCellData     = current->getAttribute< ::fwAtoms::Object >(_buffer);
+              ::fwAtoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< ::fwAtoms::Blob >("buffer");
+              ::fwAtoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< ::fwAtoms::Sequence >(
+                  "strides");
+              ::fwAtoms::String::sptr currentType = currentCellData->getAttribute< ::fwAtoms::String >("type");
+
+              // Set the new strides to sizeof(std::uint32_t).
+              ::fwAtoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint64_t)));
+
+              // Set the new type.
+              currentType->setValue("uint64");
+
+              // Get buffers, and fill current one with uint32_t values.
+              const auto bo     = cellDataBuffer->getBufferObject();
+              const auto lock   = bo->lock();
+              const auto buff   = bo->getBuffer();
+              const auto bosize = bo->getSize();
+
+              // Divide the size in bytes by the size of one element to get the number of elements.
+              const size_t size = bosize / cellDataElementSize;
+
+              // Create a new buffer object with a size of size*32.
+              ::fwMemory::BufferObject::sptr bufferMemory = ::fwMemory::BufferObject::New();
+              const auto bufferMemoryLock = bufferMemory->lock();
+              bufferMemory->allocate(size * sizeof(std::uint64_t));
+
+              std::uint32_t* buff32 = static_cast<std::uint32_t*>( buff );
+              std::uint64_t* buff64 = static_cast<std::uint64_t*>( bufferMemory->getBuffer() );
+
+              // Iterate over buffers, and fill it with 32 bit values.
+              for(size_t i = 0; i < size; ++i)
+              {
+                  buff64[i] = static_cast<std::uint64_t>(buff32[i]);
+              }
+
+              // Give the new buffer to atom.
+              currentCellDataBuffer->setBufferObject(bufferMemory);
+          };
+
+    reformatBuffer("cell_data");
+    reformatBuffer("cell_data_offsets");
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);

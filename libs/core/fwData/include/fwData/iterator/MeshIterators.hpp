@@ -36,6 +36,8 @@ class Mesh;
 namespace iterator
 {
 
+typedef std::uint32_t Id;
+
 struct Point {
     float x;
     float y;
@@ -100,9 +102,9 @@ struct PointInfoBase {
 template<bool isConst>
 struct CellInfoBase {
 
-    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_data_value_type;
+    typedef typename std::conditional<isConst, const Id, Id>::type cell_data_value_type;
     typedef typename std::conditional<isConst, const CellType, CellType>::type cell_type_value_type;
-    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
+    typedef typename std::conditional<isConst, const Id, Id>::type cell_offset_value_type;
 
     typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
     typedef rgba_value_type& rgba_reference;
@@ -129,7 +131,7 @@ struct CellInfoBase {
     rgba_value_type* rgba{nullptr};
     rgb_value_type* rgb{nullptr};
     tex_value_type* tex{nullptr};
-    size_t nbPoints{0};
+    Id nbPoints{0};
 };
 
 /**
@@ -326,7 +328,7 @@ public:
     pointer operator->() const;
 
     typename CellInfo::cell_data_value_type& operator[](size_t index);
-    size_t nbPoints() const;
+    Id nbPoints() const;
 
 protected:
 
@@ -338,7 +340,7 @@ protected:
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
-    std::uint64_t m_cellDataSize{0};
+    Id m_cellDataSize{0};
     difference_type m_currentOffset{0};
 };
 

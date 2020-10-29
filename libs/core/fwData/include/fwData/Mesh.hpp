@@ -289,7 +289,7 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Mesh))
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
-    typedef std::uint64_t Id;
+    typedef ::fwData::iterator::Id Id;
 
     [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
     {
@@ -369,7 +369,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
+    FWDATA_API size_t reserve(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType = CellType::TRIANGLE,
                               Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -389,7 +389,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, size_t nbCellsData,
+    FWDATA_API size_t reserve(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData,
                               Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -409,7 +409,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
+    FWDATA_API size_t resize(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType = CellType::TRIANGLE,
                              Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -428,7 +428,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, size_t nbCellsData,
+    FWDATA_API size_t resize(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData,
                              Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -600,7 +600,7 @@ public:
                            const std::vector<CellValueType> pointIds);
     FWDATA_API Id pushCell(CellType type,
                            const CellValueType* pointIds,
-                           size_t nbPoints );
+                           Mesh::Id nbPoints );
     /// @}
 
     /**
@@ -643,7 +643,7 @@ public:
                             CellValueType idP4,
                             CellType type = CellType::QUAD);
     FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType>& pointIds);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, size_t nbPoints );
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, Mesh::Id nbPoints );
     /// @}
 
     /**

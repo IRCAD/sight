@@ -92,10 +92,10 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             cellTexCoords = vtkFloatArray::SafeDownCast(polyData->GetCellData()->GetTCoords());
         }
 
+        const auto dumpLock = mesh->lock();
+
         mesh->reserve(static_cast< ::fwData::Mesh::Id>(numberOfPoints), static_cast< ::fwData::Mesh::Id>(numberOfCells),
                       ::fwData::Mesh::CellType::TRIANGLE, attributes);
-
-        const auto dumpLock = mesh->lock();
 
         const double* point;
         mesh->setNumberOfPoints(static_cast< ::fwData::Mesh::Id>(numberOfPoints));
@@ -187,7 +187,7 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                     FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
-        //mesh->adjustAllocatedMemory();
+        mesh->adjustAllocatedMemory();
 
         if (cellColors || cellNormals || cellTexCoords)
         {

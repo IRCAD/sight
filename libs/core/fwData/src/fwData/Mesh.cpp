@@ -199,9 +199,9 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellType cellType, Attributes arrayMask)
+size_t Mesh::reserve(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType, Attributes arrayMask)
 {
-    size_t nbCellsData = 0;
+    Mesh::Id nbCellsData = 0;
     switch (cellType)
     {
         case CellType::POINT:
@@ -231,7 +231,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellType cellType, Attributes
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, Attributes arrayMask)
+size_t Mesh::reserve(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData, Attributes arrayMask)
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Cannot not allocate empty size"), nbPts == 0 ||
                           nbCells == 0 || nbCellsData == 0);
@@ -279,10 +279,9 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute
 }
 
 //------------------------------------------------------------------------------
-
-size_t Mesh::resize(size_t nbPts, size_t nbCells, CellType cellType, Attributes arrayMask)
+size_t Mesh::resize(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType, Attributes arrayMask)
 {
-    size_t nbCellsData = 0;
+    Mesh::Id nbCellsData = 0;
     switch (cellType)
     {
         case CellType::POINT:
@@ -312,7 +311,7 @@ size_t Mesh::resize(size_t nbPts, size_t nbCells, CellType cellType, Attributes 
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attributes arrayMask)
+size_t Mesh::resize(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData, Attributes arrayMask)
 {
     const size_t size = this->reserve(nbPts, nbCells, nbCellsData, arrayMask);
     m_nbPoints      = nbPts;
@@ -696,14 +695,14 @@ Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType id
 Mesh::Id Mesh::pushCell(CellType type,
                         const std::vector<CellValueType> pointIds)
 {
-    return this->pushCell(type, pointIds.data(), pointIds.size());
+    return this->pushCell(type, pointIds.data(), static_cast< Mesh::Id >(pointIds.size()));
 }
 
 //------------------------------------------------------------------------------
 
 Mesh::Id Mesh::pushCell(CellType type,
                         const CellValueType* pointIds,
-                        size_t nbPoints )
+                        Mesh::Id nbPoints )
 {
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
                type != ::fwData::Mesh::CellType::NO_CELL || nbPoints == 0);
@@ -811,11 +810,11 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2
 
 void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType>& pointIds)
 {
-    this->setCell(id, type, pointIds.data(), pointIds.size());
+    this->setCell(id, type, pointIds.data(), static_cast< ::fwData::Mesh::Id>(pointIds.size()));
 }
 //------------------------------------------------------------------------------
 
-void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, size_t nbPoints )
+void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, Mesh::Id nbPoints )
 {
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
                type != ::fwData::Mesh::CellType::NO_CELL || nbPoints == 0);

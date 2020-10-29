@@ -84,14 +84,15 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     using boost::phoenix::ref;
     namespace phx = boost::phoenix;
 
-    size_t nbPoints = 1;
-    size_t nbCells  = 1;
-    size_t count    = 0;
+    ::fwData::Mesh::Id nbPoints = 1;
+    ::fwData::Mesh::Id nbCells  = 1;
+    ::fwData::Mesh::Id count    = 0;
 
     // Starting from boost 1.65, the function could not be deduced
     auto reserveFn =
         phx::bind(static_cast<size_t(::fwData::Mesh::*)(
-                                  size_t, size_t, ::fwData::Mesh::CellType, ::fwData::Mesh::Attributes)>(
+                                  ::fwData::Mesh::Id, ::fwData::Mesh::Id, ::fwData::Mesh::CellType,
+                                  ::fwData::Mesh::Attributes)>(
                       &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
                       nbCells), ::fwData::Mesh::CellType::TRIANGLE,
                   ::fwData::Mesh::Attributes::CELL_NORMALS);
@@ -206,8 +207,6 @@ void MeshReader::read()
 
     SLM_ASSERT("Empty path for Trian file", !path.empty() );
 
-    std::streamsize length;
-    //char *buffer;
     std::string buf;
     std::ifstream file;
     file.open(path.string().c_str(), std::ios::binary );
@@ -219,21 +218,21 @@ void MeshReader::read()
     }
 
     file.seekg(0, std::ios::end);
-    length = file.tellg();
+    const auto length = file.tellg();
     file.seekg(0, std::ios::beg);
 
     //buffer = new char [length];
     buf.resize(static_cast<size_t>(length));
     char* buffer = &buf[0];
 
-    file.read(buffer, length);
+    file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
     ::fwData::Mesh::sptr mesh = getConcreteObject();
 
     mesh->clear();
 
-    if (!parseTrian2(buffer, buffer+length, mesh))
+    if (!parseTrian2(buffer, buffer+static_cast<size_t>(length), mesh))
     {
         SLM_ERROR( "Bad file format : " << path.string());
         throw std::ios_base::failure("Unable to open " + path.string() + " : Bad file format.");

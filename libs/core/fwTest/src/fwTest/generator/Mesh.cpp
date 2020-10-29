@@ -67,13 +67,13 @@ void Mesh::generateMesh( const ::fwData::Mesh::sptr& mesh )
 void Mesh::generateTriangleQuadMesh(const ::fwData::Mesh::sptr& mesh,
                                     ::fwData::Mesh::Attributes attributes)
 {
-    size_t nbPointsByEdge = 10;
-    float edgeDim         = 100.;
+    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    float edgeDim = 100.;
     Mesh::PointsMapType points;
 
-    const size_t nbPoints        = nbPointsByEdge*nbPointsByEdge*2*4*2;
-    const size_t nbTriangleCells = nbPointsByEdge*nbPointsByEdge*2*2;
-    const size_t nbQuadCells     = nbPointsByEdge*nbPointsByEdge*2;
+    const ::fwData::Mesh::Id nbPoints        = nbPointsByEdge*nbPointsByEdge*2*4*2;
+    const ::fwData::Mesh::Id nbTriangleCells = nbPointsByEdge*nbPointsByEdge*2*2;
+    const ::fwData::Mesh::Id nbQuadCells     = nbPointsByEdge*nbPointsByEdge*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbTriangleCells + nbQuadCells, nbTriangleCells*3 + nbQuadCells*4, attributes);
@@ -86,11 +86,11 @@ void Mesh::generateTriangleQuadMesh(const ::fwData::Mesh::sptr& mesh,
 void Mesh::generateTriangleMesh(const ::fwData::Mesh::sptr& mesh,
                                 ::fwData::Mesh::Attributes attributes)
 {
-    size_t nbPointsByEdge = 10;
-    float edgeDim         = 100.;
+    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    float edgeDim = 100.;
     Mesh::PointsMapType points;
-    const size_t nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const size_t nbCells  = nbPointsByEdge*nbPointsByEdge*2*2;
+    const ::fwData::Mesh::Id nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
+    const ::fwData::Mesh::Id nbCells  = nbPointsByEdge*nbPointsByEdge*2*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::TRIANGLE, attributes);
@@ -103,11 +103,11 @@ void Mesh::generateTriangleMesh(const ::fwData::Mesh::sptr& mesh,
 void Mesh::generateQuadMesh(const ::fwData::Mesh::sptr& mesh,
                             ::fwData::Mesh::Attributes attributes)
 {
-    size_t nbPointsByEdge = 10;
-    float edgeDim         = 100.;
+    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    float edgeDim = 100.;
     Mesh::PointsMapType points;
-    const size_t nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const size_t nbCells  = nbPointsByEdge*nbPointsByEdge*2;
+    const ::fwData::Mesh::Id nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
+    const ::fwData::Mesh::Id nbCells  = nbPointsByEdge*nbPointsByEdge*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::QUAD, attributes);

@@ -108,9 +108,9 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
 {
     ::fwMemory::BufferObject::sptr buffer = ::fwMemory::BufferObject::New();
-    const size_t buffSize = std::filesystem::file_size(_path);
+    const auto buffSize = std::filesystem::file_size(_path);
     buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(_path),
-                               buffSize, _path, ::fwMemory::RAW);
+                               static_cast< ::fwMemory::BufferObject::SizeType>(buffSize), _path, ::fwMemory::RAW);
     m_dicomContainer[_instanceIndex] = buffer;
 }
 

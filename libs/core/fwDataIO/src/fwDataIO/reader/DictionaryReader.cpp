@@ -292,7 +292,6 @@ void DictionaryReader::read()
     SLM_ASSERT("Empty path for dictionary file", !path.empty());
 
     // Reading of the file
-    std::streamsize length;
     std::string buf;
     std::ifstream file;
     file.open(path.string().c_str(), std::ios::binary );
@@ -301,13 +300,13 @@ void DictionaryReader::read()
     FW_RAISE_IF(errorOpen, !file.is_open());
 
     file.seekg(0, std::ios::end);
-    length = file.tellg();
+    const auto length = file.tellg();
     file.seekg(0, std::ios::beg);
 
     buf.resize(static_cast<size_t>(length));
     char* buffer = &buf[0];
 
-    file.read(buffer, length);
+    file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
     std::vector < ::fwDataIO::line > dicolines;
