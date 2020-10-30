@@ -620,20 +620,6 @@ size_t Mesh::getAllocatedSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-Mesh::Attributes Mesh::getAttributes() const
-{
-    return m_attributes;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setAttributes(const Mesh::Attributes& _attributes)
-{
-    m_attributes = _attributes;
-}
-
-//------------------------------------------------------------------------------
-
 Mesh::Id Mesh::pushPoint(const PointValueType p[3])
 {
     ::fwData::Mesh::Id nbPoints = m_nbPoints;

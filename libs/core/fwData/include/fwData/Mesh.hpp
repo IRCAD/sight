@@ -1203,4 +1203,18 @@ inline bool Mesh::hasRGBCellColors() const
 
 //------------------------------------------------------------------------------
 
+inline Mesh::Attributes Mesh::getAttributes() const
+{
+    return m_attributes;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Mesh::setAttributes(const Mesh::Attributes& _attributes)
+{
+    m_attributes = _attributes;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace fwData
