@@ -236,13 +236,18 @@ private:
 
     /**
      * @brief Instantiates a new material adaptor
-     * @param _materialSuffix use for the material name.
+     * @param _materialSuffix used for the material name.
+     * @param _mesh used to create an unique material name.
      */
-    ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+    ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const ::fwData::Mesh::sptr& _mesh,
+                                                             const std::string& _materialSuffix = "");
 
-    /// Associates a new SMaterial to the managed SMesh.
-    /// With this method, SMesh is responsible for creating a SMaterial.
-    void updateNewMaterialAdaptor();
+    /**
+     * @brief Associates a new SMaterial to the managed SMesh.
+     * With this method, SMesh is responsible for creating a SMaterial.
+     * @param _mesh used to create the material service.
+     */
+    void updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh);
 
     /// Updates the associated material adaptor.
     /// This method is called when a material adaptor has been configured in the XML scene.

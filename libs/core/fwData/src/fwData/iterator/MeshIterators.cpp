@@ -44,19 +44,19 @@ PointIterator::PointIterator(::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo->point = static_cast<PointInfo::point_value_type*>(mesh->m_points->getBuffer());
 
-    if (mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 4)
+    if(mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_pointInfo->rgba = static_cast<PointInfo::rgba_value_type*>(mesh->m_pointColors->getBuffer());
     }
-    else if (mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 3)
+    else if(mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 3)
     {
         m_pointInfo->rgb = static_cast<PointInfo::rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
-    if (mesh->hasPointNormals())
+    if(mesh->hasPointNormals())
     {
         m_pointInfo->normal = static_cast<PointInfo::normal_value_type*>(mesh->m_pointNormals->getBuffer());
     }
-    if (mesh->hasPointTexCoords())
+    if(mesh->hasPointTexCoords())
     {
         m_pointInfo->tex = static_cast<PointInfo::tex_value_type*>(mesh->m_pointTexCoords->getBuffer());
     }
@@ -108,19 +108,19 @@ ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo->point = static_cast<PointInfo::point_value_type*>(mesh->m_points->getBuffer());
 
-    if (mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 4)
+    if(mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_pointInfo->rgba = static_cast<PointInfo::rgba_value_type*>(mesh->m_pointColors->getBuffer());
     }
-    else if (mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 3)
+    else if(mesh->hasPointColors() && mesh->m_pointColors->getElementSizeInBytes() == 3)
     {
         m_pointInfo->rgb = static_cast<PointInfo::rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
-    if (mesh->hasPointNormals())
+    if(mesh->hasPointNormals())
     {
         m_pointInfo->normal = static_cast<PointInfo::normal_value_type*>(mesh->m_pointNormals->getBuffer());
     }
-    if (mesh->hasPointTexCoords())
+    if(mesh->hasPointTexCoords())
     {
         m_pointInfo->tex = static_cast<PointInfo::tex_value_type*>(mesh->m_pointTexCoords->getBuffer());
     }
@@ -176,19 +176,19 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
 
     m_cellInfo->numberOfElements = m_numberOfElements;
 
-    if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
+    if(mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_cellInfo->rgba = static_cast<CellInfo::rgba_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    else if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 3)
+    else if(mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 3)
     {
         m_cellInfo->rgb = static_cast<CellInfo::rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    if (mesh->hasCellNormals())
+    if(mesh->hasCellNormals())
     {
         m_cellInfo->normal = static_cast<CellInfo::normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
-    if (mesh->hasCellTexCoords())
+    if(mesh->hasCellTexCoords())
     {
         m_cellInfo->tex = static_cast<CellInfo::tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
@@ -244,19 +244,19 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
 
     m_cellInfo->numberOfElements = m_numberOfElements;
 
-    if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
+    if(mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_cellInfo->rgba = static_cast<CellInfo::rgba_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    else if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 3)
+    else if(mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 3)
     {
         m_cellInfo->rgb = static_cast<CellInfo::rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    if (mesh->hasCellNormals())
+    if(mesh->hasCellNormals())
     {
         m_cellInfo->normal = static_cast<CellInfo::normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
-    if (mesh->hasCellTexCoords())
+    if(mesh->hasCellTexCoords())
     {
         m_cellInfo->tex = static_cast<CellInfo::tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
