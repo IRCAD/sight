@@ -132,6 +132,11 @@ struct CellInfoBase {
     rgb_value_type* rgb{nullptr};
     tex_value_type* tex{nullptr};
     Id nbPoints{0};
+    /// Stores current idx (from CellIterator).
+    std::ptrdiff_t idx {0};
+    /// Stores number of elements (from CellIterator).
+    std::ptrdiff_t numberOfElements {0};
+
 };
 
 /**

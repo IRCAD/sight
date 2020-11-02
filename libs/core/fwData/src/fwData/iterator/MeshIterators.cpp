@@ -174,6 +174,8 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
     m_cellInfo->offset   = static_cast<CellInfo::cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo->type     = static_cast<CellInfo::cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
+    m_cellInfo->numberOfElements = m_numberOfElements;
+
     if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_cellInfo->rgba = static_cast<CellInfo::rgba_value_type*>(mesh->m_cellColors->getBuffer());
@@ -217,6 +219,10 @@ CellIterator& CellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo->rgba     = other.m_cellInfo->rgba;
         m_cellInfo->tex      = other.m_cellInfo->tex;
         m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
+
+        m_cellInfo->idx              = other.m_cellInfo->idx;
+        m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
+
     }
     return *this;
 }
@@ -235,6 +241,8 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
     m_cellInfo->pointIdx = static_cast<CellInfo::cell_data_value_type*>(mesh->m_cellData->getBuffer());
     m_cellInfo->offset   = static_cast<CellInfo::cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo->type     = static_cast<CellInfo::cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
+
+    m_cellInfo->numberOfElements = m_numberOfElements;
 
     if (mesh->hasCellColors() && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
@@ -271,6 +279,9 @@ ConstCellIterator::ConstCellIterator(const CellIterator& other)
     m_cellInfo->rgba     = other.m_cellInfo->rgba;
     m_cellInfo->tex      = other.m_cellInfo->tex;
     m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
+
+    m_cellInfo->idx              = other.m_cellInfo->idx;
+    m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
 }
 
 //------------------------------------------------------------------------------
@@ -296,6 +307,9 @@ ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo->rgba     = other.m_cellInfo->rgba;
         m_cellInfo->tex      = other.m_cellInfo->tex;
         m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
+
+        m_cellInfo->idx              = other.m_cellInfo->idx;
+        m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
     }
     return *this;
 }
