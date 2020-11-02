@@ -23,6 +23,7 @@
             <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
 
             <object uid="2dPoints" type="::fwData::PointList" />
+            <object uid="2dPixels" type="::fwData::PointList" />
             <object uid="3dPoints" type="::fwData::PointList" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -222,6 +223,7 @@
                     <layer id="default" order="2" />
                     <adaptor uid="ARCameraAdp" />
                     <adaptor uid="ARMeshAdp" />
+                    <adaptor uid="ARTrfAdp" />
                 </scene>
             </service>
 
@@ -236,7 +238,7 @@
 
             <service uid="ARPointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="2dPoints" />
-                <config layer="video" color="#619647" radius="0.02" />
+                <config layer="video" color="#619647" radius="0.01" />
             </service>
 
             <service uid="ARCameraAdp" type="::visuOgreAdaptor::SCamera" autoConnect="yes" >
@@ -247,7 +249,7 @@
 
             <service uid="ARMeshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cube" />
-                <config layer="default" />
+                <config layer="default" autoresetcamera="no" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -261,6 +263,7 @@
                     <adaptor uid="VRPickerAdp" />
                     <adaptor uid="VRPointListAdp" />
                     <adaptor uid="VRMeshAdp" />
+                    <adaptor uid="VRAxisAdp" />
                 </scene>
             </service>
 
@@ -272,14 +275,18 @@
                 <config layer="default" />
             </service>
 
+            <service uid="VRAxisAdp" type="::visuOgreAdaptor::SAxis" >
+                <config layer="default" length="0.3" origin="false" label="false" />
+            </service>
+
             <service uid="VRPointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="3dPoints" />
-                <config layer="default" color="#619647" radius="0.02" />
+                <config layer="default" color="#619647" radius="0.01" />
             </service>
 
             <service uid="VRMeshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cube" />
-                <config layer="default" />
+                <config layer="default"/>
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -322,16 +329,18 @@
             </service>
 
             <service uid="solvePnPSrv" type="::registrationCV::SSolvePnP" >
-                <in key="pointList2d" uid="2dPoints" />
+                <in key="pointList2d" uid="2dPixels" />
                 <in key="pointList3d" uid="3dPoints" />
                 <in key="calibration" uid="camera" />
                 <inout key="matrix" uid="registrationMatrix" />
-                <config videoReference="top_left" inverse="true" />
+                <config inverse="true" />
             </service>
 
             <service uid="imagePickerSrv" type="::videoTools::SImagePicker" >
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
+                <inout key="pixelPointList" uid="2dPixels" />
+                <config videoReference="center" />
             </service>
 
             <service uid="pointListVRManagerSrv" type="::ctrlPicking::SManagePointList" >
@@ -403,6 +412,8 @@
             <start uid="VRPickerAdp" />
             <start uid="VRPointListAdp" />
             <start uid="VRMeshAdp" />
+            <start uid="VRAxisAdp" />
+
 
             <!-- ******************************* Update services ***************************************** -->
 
