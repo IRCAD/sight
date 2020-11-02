@@ -86,19 +86,21 @@ public:
     /// @returns the scene instantiated by this service.
     FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
 
-private:
+protected:
 
     /// Configures the render service.
-    void configuring() override;
+    FWRENDERQT3D_API void configuring() override;
 
     /// Creates a rendering context and instantiates a Qt3D generic scene.
-    void starting() override;
+    FWRENDERQT3D_API void starting() override;
 
     /// Does nothing.
-    void updating() override;
+    FWRENDERQT3D_API void updating() override;
 
     /// Destroys the service.
-    void stopping() override;
+    FWRENDERQT3D_API void stopping() override;
+
+private:
 
     /// Contains the 3D view.
     QPointer< Qt3DExtras::Qt3DWindow > m_3dView;
@@ -111,4 +113,4 @@ private:
 
 };
 
-} //namespace fwRenderQt3D
+} // namespace fwRenderQt3D.

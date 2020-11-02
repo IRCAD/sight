@@ -22,6 +22,11 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
     Qt5::3DInput
 )
 
+set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
+
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/resources.cfg.in"
+                "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/resources.cfg" @ONLY)
+
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
 # Disable C4251 warning: class 'class_1>' needs to have dll-interface to be used by clients of class 'class_2'

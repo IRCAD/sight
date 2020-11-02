@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,53 +24,57 @@
 
 #include "visuQt3DAdaptor/config.hpp"
 
-#include <fwRenderQt3D/data/Mesh.hpp>
+#include <fwData/Material.hpp>
+
+#include <fwRenderQt3D/data/Material.hpp>
 #include <fwRenderQt3D/IAdaptor.hpp>
 
 namespace visuQt3DAdaptor
 {
 
 /**
- * @brief This adaptor shows individual meshes.
+ * @brief Adapt a ::fwData::Material.
  *
- * This class handles the conversion of ::fwData::Mesh to Qt3D. It can handle triangles.
+ * This class handles the conversion of ::fwData::Material to Qt3D.
  *
- * @section Slot Slot
- * - \b updateVisibility(bool): shows or hides the mesh.
- * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
- * - \b modifyVertices(): called when the vertices are modified.
+ * @warning This adaptor must be started before every adaptor using it.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::visuQt3DAdaptor::SMesh" >
-        <in key="mesh" uid="..." />
-        <config autoresetcamera="true" visible="true" materialName="..." />
+    <service uid="..." type="::visuQt3DAdaptor::SMaterial" >
+        <inout key="material" uid="..." />
+        <config materialName="..." />
     </service>
    @endcode
  *
- * @subsection Input Input
- * - \b mesh [::fwData::Mesh]: adapted mesh.
+ * @subsection In-Out In-Out
+ * - \b mesh [::fwData::Material]: adapted material.
  *
  * @subsection Configuration Configuration:
- *  - \b autoresetcamera (optional, bool, default=false): reset the camera when this mesh is modified.
- *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
- *  - \b materialName (optional): need to be used when a material adaptor is defined in XML file.
- *        Must be set according to ::visuQt3D::SMaterial materialName property
- *        to retrieve the material managed by the adaptor.
+ * - \b materialName : used by other adaptors in the scene to retrieve the material handled by this adaptor.
  */
-class VISUQT3DADAPTOR_CLASS_API SMesh : public ::fwRenderQt3D::IAdaptor
+class VISUQT3DADAPTOR_CLASS_API SMaterial : public ::fwRenderQt3D::IAdaptor
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, ::fwRenderQt3D::IAdaptor)
+    fwCoreServiceMacro(SMaterial, ::fwRenderQt3D::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
-    VISUQT3DADAPTOR_API SMesh() noexcept;
+    VISUQT3DADAPTOR_API SMaterial() noexcept;
 
     /// Destroys the adaptor.
-    VISUQT3DADAPTOR_API ~SMesh() noexcept override;
+    VISUQT3DADAPTOR_API virtual ~SMaterial() noexcept;
+
+    /// Updates associated material.
+    VISUQT3DADAPTOR_API void setMaterial(::fwRenderQt3D::data::Material* _material);
+
+    /// @returns associated material.
+    VISUQT3DADAPTOR_API ::fwRenderQt3D::data::Material* getMaterial();
+
+    /// @returns material name.
+    VISUQT3DADAPTOR_API std::string getMaterialName();
 
 protected:
 
@@ -89,7 +93,7 @@ protected:
      */
     VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Updates the mesh.
+    /// Updates the material.
     VISUQT3DADAPTOR_API void updating() override;
 
     /// Does nothing.
@@ -97,24 +101,11 @@ protected:
 
 private:
 
-    /**
-     * @brief Sets whether the mesh is to be seen or not.
-     * @param _visibility the visibility status of the volume.
-     */
-    void updateVisibility(bool _visibility) override;
+    /// Contains a Qt3D Material.
+    QPointer< ::fwRenderQt3D::data::Material > m_material;
 
-    /// Updates mesh vertices.
-    void modifyVertices();
-
-    /// Contains a Qt3D mesh.
-    QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
-
-    /// Specifies the material adaptor used to configure mesh material.
+    /// Specifies adaptor's name.
     std::string m_materialName;
-
-    /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera { false };
-
 };
 
-} // namespace visuQt3DAdaptor.
+} // namespace visuQt3DAdaptor

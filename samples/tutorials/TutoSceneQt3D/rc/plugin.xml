@@ -30,6 +30,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="material" type="::fwData::Material" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -80,12 +81,18 @@
                     <background color="#2d2d2d" />
 
                     <adaptor uid="meshAdp" />
+                    <adaptor uid="materialAdp" />
                 </scene>
+            </service>
+
+            <service uid="materialAdp" type="::visuQt3DAdaptor::SMaterial" autoConnect="yes">
+                <inout key="material" uid="material" />
+                <config materialName="mat"/>
             </service>
 
             <service uid="meshAdp" type="::visuQt3DAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="mesh" />
-                <config autoresetcamera="true" visible="true" />
+                <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
@@ -102,6 +109,7 @@
             <!-- ******************************* Start/Stop services ***************************************** -->
 
             <start uid="mainView" />
+            <start uid="materialAdp" />
             <start uid="meshAdp" />
 
         </config>

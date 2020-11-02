@@ -65,6 +65,10 @@ ApplicationWindow {
 
             Sight.Mesh{
                 id: _mesh
+
+                material: Sight.Material {
+                    id: _material
+                }
             }
         }
     }
