@@ -129,6 +129,7 @@ DicomSurface::~DicomSurface()
 ::fwData::Mesh::sptr DicomSurface::convertToData()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto lock = mesh->lock();
 
     // Initialize number of points
     ::fwData::Mesh::Attributes attribute = ::fwData::Mesh::Attributes::NONE;
