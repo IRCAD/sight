@@ -195,7 +195,6 @@ protected:
     friend class ConstPointIterator;
 
     std::unique_ptr<PointInfo> m_pointInfo;
-    std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
 };
@@ -337,7 +336,6 @@ protected:
     friend class ConstCellIterator;
 
     std::unique_ptr<CellInfo> m_cellInfo;
-    std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
     Id m_cellDataSize{0};

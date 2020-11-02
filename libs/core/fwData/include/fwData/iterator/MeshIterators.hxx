@@ -291,7 +291,6 @@ PointIteratorBase<isConst>::PointIteratorBase()
 template<bool isConst>
 PointIteratorBase<isConst>::~PointIteratorBase()
 {
-    m_locks.clear();
     m_pointInfo.reset();
 }
 
@@ -306,7 +305,6 @@ PointIteratorBase<isConst>::PointIteratorBase(const PointIteratorBase& other)
     m_pointInfo->rgba   = other.m_pointInfo->rgba;
     m_pointInfo->normal = other.m_pointInfo->normal;
     m_pointInfo->tex    = other.m_pointInfo->tex;
-    m_locks             = other.m_locks;
     m_idx               = other.m_idx;
     m_numberOfElements  = other.m_numberOfElements;
 }
@@ -323,7 +321,6 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator=(const PointIte
         m_pointInfo->rgba   = other.m_pointInfo->rgba;
         m_pointInfo->normal = other.m_pointInfo->normal;
         m_pointInfo->tex    = other.m_pointInfo->tex;
-        m_locks             = other.m_locks;
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
@@ -622,7 +619,6 @@ CellIteratorBase<isConst>::CellIteratorBase()
 template<bool isConst>
 CellIteratorBase<isConst>::~CellIteratorBase()
 {
-    m_locks.clear();
     m_cellInfo.reset();
 }
 
@@ -632,7 +628,6 @@ template<bool isConst>
 CellIteratorBase<isConst>::CellIteratorBase(const CellIteratorBase& other)
 {
     m_cellInfo           = std::make_unique< CellInfo >();
-    m_locks              = other.m_locks;
     m_idx                = other.m_idx;
     m_numberOfElements   = other.m_numberOfElements;
     m_currentOffset      = other.m_currentOffset;
@@ -653,7 +648,6 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator=(const CellIterat
 {
     if (this != &other)
     {
-        m_locks              = other.m_locks;
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
         m_currentOffset      = other.m_currentOffset;

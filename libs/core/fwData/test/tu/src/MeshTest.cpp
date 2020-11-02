@@ -56,6 +56,7 @@ void MeshTest::deprecatedAllocation()
     size_t cellSize     = 2000;
     size_t cellDataSize = 8000;
     mesh->allocate(pointSize, cellSize, cellDataSize);
+    mesh->setAttributes(::fwData::Mesh::Attributes::CELL_COLORS);
     CPPUNIT_ASSERT_EQUAL(pointSize, mesh->getPointsArray()->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(cellSize, mesh->getCellTypesArray()->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(cellDataSize, mesh->getCellDataArray()->getSize()[0]);

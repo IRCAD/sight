@@ -88,7 +88,6 @@ PointIterator& PointIterator::operator=(const PointIteratorBase& other)
         m_pointInfo->rgba   = other.m_pointInfo->rgba;
         m_pointInfo->normal = other.m_pointInfo->normal;
         m_pointInfo->tex    = other.m_pointInfo->tex;
-        m_locks             = other.m_locks;
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
@@ -153,7 +152,6 @@ ConstPointIterator& ConstPointIterator::operator=(const PointIteratorBase& other
         m_pointInfo->rgba   = other.m_pointInfo->rgba;
         m_pointInfo->normal = other.m_pointInfo->normal;
         m_pointInfo->tex    = other.m_pointInfo->tex;
-        m_locks             = other.m_locks;
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
@@ -200,7 +198,6 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
 
 CellIterator::~CellIterator()
 {
-    m_locks.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -209,7 +206,6 @@ CellIterator& CellIterator::operator=(const CellIteratorBase& other)
 {
     if (this != &other)
     {
-        m_locks              = other.m_locks;
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
         m_cellDataSize       = other.m_cellDataSize;
@@ -264,7 +260,6 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
 
 ConstCellIterator::ConstCellIterator(const CellIterator& other)
 {
-    m_locks              = other.m_locks;
     m_idx                = other.m_idx;
     m_numberOfElements   = other.m_numberOfElements;
     m_cellDataSize       = other.m_cellDataSize;
@@ -282,7 +277,6 @@ ConstCellIterator::ConstCellIterator(const CellIterator& other)
 
 ConstCellIterator::~ConstCellIterator()
 {
-    m_locks.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -291,7 +285,6 @@ ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
 {
     if (this != &other)
     {
-        m_locks              = other.m_locks;
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
         m_cellDataSize       = other.m_cellDataSize;
