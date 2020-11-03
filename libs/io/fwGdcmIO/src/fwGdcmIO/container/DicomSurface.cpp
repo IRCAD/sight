@@ -35,7 +35,7 @@ namespace container
 
 struct CellDataOffsetGenerator
 {
-    ::fwData::Mesh::CellDataOffsetType current;
+    ::fwData::Mesh::CellId current;
     CellDataOffsetGenerator() :
         current(0)
     {
@@ -43,9 +43,9 @@ struct CellDataOffsetGenerator
 
     //------------------------------------------------------------------------------
 
-    ::fwData::Mesh::CellDataOffsetType operator()()
+    ::fwData::Mesh::CellId operator()()
     {
-        ::fwData::Mesh::CellDataOffsetType res = current;
+        ::fwData::Mesh::CellId res = current;
         current += 3;
         return res;
     }
@@ -97,9 +97,9 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
 //------------------------------------------------------------------------------
 
 DicomSurface::DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
-                           const ::fwData::Mesh::Id pointBufferSize,
+                           const ::fwData::Mesh::Size pointBufferSize,
                            const DicomCellValueType* cellBuffer,
-                           const ::fwData::Mesh::Id cellBufferSize,
+                           const ::fwData::Mesh::Size cellBufferSize,
                            const ::fwData::Mesh::NormalValueType* normalBuffer)
 {
     // Coordinates
@@ -168,7 +168,7 @@ DicomSurface::~DicomSurface()
         for(size_t index = 0; index != m_cellBuffer.size(); ++index)
         {
             // Index shall start at 0 in Sight
-            itr->pointIdx[index] = static_cast< ::fwData::Mesh::CellValueType >(m_cellBuffer[index]) - 1;
+            itr->pointIdx[index] = static_cast< ::fwData::Mesh::PointId >(m_cellBuffer[index]) - 1;
         }
     }
 

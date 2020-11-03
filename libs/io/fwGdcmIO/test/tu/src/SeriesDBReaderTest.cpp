@@ -674,9 +674,9 @@ void SeriesDBReaderTest::readSEGSeries()
 
     // Check mesh
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Id( 2498 ), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Id( 5000 ), mesh->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Id( 15000 ), mesh->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 2498 ), mesh->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 5000 ), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 15000 ), mesh->getCellDataSize());
 
     // Check material
     ::fwData::Material::sptr material = reconstruction->getMaterial();

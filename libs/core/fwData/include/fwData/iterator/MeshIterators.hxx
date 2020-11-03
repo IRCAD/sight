@@ -741,7 +741,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
 
     ++m_cellInfo->idx;
 
-    Id offset;
+    Size offset;
     if (m_idx < m_numberOfElements)
     {
         offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
@@ -754,7 +754,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx += newOffset - m_currentOffset;
     m_currentOffset       = newOffset;
-    Id nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -816,7 +816,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     m_cellInfo->offset += index;
     m_cellInfo->idx    += index;
 
-    Id offset;
+    Size offset;
     if (m_idx < m_numberOfElements)
     {
         offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
@@ -828,7 +828,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx += newOffset - m_currentOffset;
     m_currentOffset       = newOffset;
-    Id nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -873,7 +873,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
         *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
-    m_cellInfo->nbPoints  = static_cast<Id>(m_currentOffset - newOffset);
+    m_cellInfo->nbPoints  = static_cast<Size>(m_currentOffset - newOffset);
     m_currentOffset       = newOffset;
 
     if (m_cellInfo->rgba)
@@ -935,7 +935,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
     m_currentOffset       = newOffset;
 
-    Id nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -1012,7 +1012,7 @@ typename CellIteratorBase<isConst>::CellInfo::cell_data_value_type& CellIterator
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-Id CellIteratorBase<isConst>::nbPoints() const
+Size CellIteratorBase<isConst>::nbPoints() const
 {
     return m_cellInfo->nbPoints;
 }

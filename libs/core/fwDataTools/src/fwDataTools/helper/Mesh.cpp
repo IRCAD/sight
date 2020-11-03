@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -95,10 +95,10 @@ void Mesh::updateLock()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextPoint(const ::fwData::Mesh::PointValueType p[3])
+::fwData::Mesh::PointId Mesh::insertNextPoint(const ::fwData::Mesh::PointValueType p[3])
 {
-    ::fwData::Mesh::Id nbPoints  = m_mesh->getNumberOfPoints();
-    ::fwData::Array::sptr points = m_mesh->getPointsArray();
+    ::fwData::Mesh::Size nbPoints = m_mesh->getNumberOfPoints();
+    ::fwData::Array::sptr points  = m_mesh->getPointsArray();
     size_t allocatedPts = points->empty() ? 0 : points->getSize().at(0);
     if( allocatedPts <= nbPoints )
     {
@@ -111,9 +111,9 @@ void Mesh::updateLock()
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextPoint(::fwData::Mesh::PointValueType x,
-                                         ::fwData::Mesh::PointValueType y,
-                                         ::fwData::Mesh::PointValueType z)
+::fwData::Mesh::PointId Mesh::insertNextPoint(::fwData::Mesh::PointValueType x,
+                                              ::fwData::Mesh::PointValueType y,
+                                              ::fwData::Mesh::PointValueType z)
 {
     const ::fwData::Mesh::PointValueType p[3] = {x, y, z};
     return this->insertNextPoint(p);
@@ -121,14 +121,14 @@ void Mesh::updateLock()
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3])
+void Mesh::setPoint(::fwData::Mesh::PointId id, const ::fwData::Mesh::PointValueType p[3])
 {
     m_helperPoints->setItem( {id}, p);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPoint(::fwData::Mesh::Id id,
+void Mesh::setPoint(::fwData::Mesh::PointId id,
                     ::fwData::Mesh::PointValueType x,
                     ::fwData::Mesh::PointValueType y,
                     ::fwData::Mesh::PointValueType z )
@@ -139,51 +139,51 @@ void Mesh::setPoint(::fwData::Mesh::Id id,
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+void Mesh::setPointColor(::fwData::Mesh::PointId id, const ::fwData::Mesh::ColorValueType c[4])
 {
     m_helperPointColors->setItem({ id }, c);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+void Mesh::setCellColor(::fwData::Mesh::CellId id, const ::fwData::Mesh::ColorValueType c[4])
 {
     m_helperCellColors->setItem({ id }, c);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+void Mesh::setPointNormal(::fwData::Mesh::PointId id, const ::fwData::Mesh::NormalValueType n[3])
 {
     m_helperPointNormals->setItem({ id }, n);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+void Mesh::setCellNormal(::fwData::Mesh::CellId id, const ::fwData::Mesh::NormalValueType n[3])
 {
     m_helperCellNormals->setItem({ id }, n);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+void Mesh::setPointTexCoord(::fwData::Mesh::PointId id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
     m_helperPointTexCoords->setItem({ id }, t);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+void Mesh::setCellTexCoord(::fwData::Mesh::CellId id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
     m_helperCellTexCoords->setItem({ id }, t);
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellTypesEnum type,
-                                        const ::fwData::Mesh::CellValueType* cell,
-                                        size_t nb)
+::fwData::Mesh::CellId Mesh::insertNextCell(::fwData::Mesh::CellTypesEnum type,
+                                            const ::fwData::Mesh::CellId* cell,
+                                            size_t nb)
 {
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'",
                type != ::fwData::Mesh::NO_CELL || nb == 0);
@@ -200,8 +200,8 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'",
                type != ::fwData::Mesh::POLY || nb > 4);
 
-    ::fwData::Mesh::Id cellsDataSize      = m_mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbCells            = m_mesh->getNumberOfCells();
+    ::fwData::Mesh::Size cellsDataSize    = m_mesh->getCellDataSize();
+    ::fwData::Mesh::Size nbCells          = m_mesh->getNumberOfCells();
     ::fwData::Array::sptr cellTypes       = m_mesh->getCellTypesArray();
     ::fwData::Array::sptr cellDataOffsets = m_mesh->getCellDataOffsetsArray();
     ::fwData::Array::sptr cellData        = m_mesh->getCellDataArray();
@@ -228,12 +228,12 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
     const ::fwData::Mesh::CellTypes t[1] = {static_cast< ::fwData::Mesh::CellTypes >(type)};
     m_helperCellTypes->setItem({nbCells}, t);
 
-    ::fwData::Mesh::CellValueType* buf = reinterpret_cast< ::fwData::Mesh::CellValueType* >(
-        m_helperCellData->getBufferPtr({cellsDataSize}, 0, sizeof(::fwData::Mesh::CellValueType))
+    ::fwData::Mesh::CellId* buf = reinterpret_cast< ::fwData::Mesh::CellId* >(
+        m_helperCellData->getBufferPtr({cellsDataSize}, 0, sizeof(::fwData::Mesh::CellId))
         );
     std::copy(cell, cell+nb, buf);
 
-    const ::fwData::Mesh::CellDataOffsetType id[1] = {cellsDataSize};
+    const ::fwData::Mesh::CellId id[1] = {cellsDataSize};
     m_helperCellDataOffsets->setItem({nbCells}, id);
 
     cellsDataSize += nb;
@@ -244,40 +244,40 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p)
+::fwData::Mesh::CellId Mesh::insertNextCell(::fwData::Mesh::PointId p)
 {
-    ::fwData::Mesh::CellValueType point[1] = {p};
+    ::fwData::Mesh::PointId point[1] = {p};
     return this->insertNextCell(::fwData::Mesh::POINT, point, 1);
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
-                                        ::fwData::Mesh::CellValueType p2)
+::fwData::Mesh::CellId Mesh::insertNextCell(::fwData::Mesh::PointId p1,
+                                            ::fwData::Mesh::PointId p2)
 {
-    ::fwData::Mesh::CellValueType p[2] = {p1, p2};
+    ::fwData::Mesh::PointId p[2] = {p1, p2};
     return this->insertNextCell(::fwData::Mesh::EDGE, p, 2);
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
-                                        ::fwData::Mesh::CellValueType p2,
-                                        ::fwData::Mesh::CellValueType p3)
+::fwData::Mesh::CellId Mesh::insertNextCell(::fwData::Mesh::PointId p1,
+                                            ::fwData::Mesh::PointId p2,
+                                            ::fwData::Mesh::PointId p3)
 {
-    ::fwData::Mesh::CellValueType p[3] = {p1, p2, p3};
+    ::fwData::Mesh::PointId p[3] = {p1, p2, p3};
     return this->insertNextCell(::fwData::Mesh::TRIANGLE, p, 3);
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
-                                        ::fwData::Mesh::CellValueType p2,
-                                        ::fwData::Mesh::CellValueType p3,
-                                        ::fwData::Mesh::CellValueType p4,
-                                        ::fwData::Mesh::CellTypesEnum type)
+::fwData::Mesh::CellId Mesh::insertNextCell(::fwData::Mesh::PointId p1,
+                                            ::fwData::Mesh::PointId p2,
+                                            ::fwData::Mesh::PointId p3,
+                                            ::fwData::Mesh::PointId p4,
+                                            ::fwData::Mesh::CellTypesEnum type)
 {
-    ::fwData::Mesh::CellValueType p[4] = {p1, p2, p3, p4};
+    ::fwData::Mesh::PointId p[4] = {p1, p2, p3, p4};
 
     return this->insertNextCell(type, p, 4);
 }
@@ -401,16 +401,16 @@ bool Mesh::isClosed()
 {
     bool isClosed = false;
 
-    ::fwData::Mesh::Id cellDataSize = m_mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbOfCells    = m_mesh->getNumberOfCells();
+    ::fwData::Mesh::Size cellDataSize = m_mesh->getCellDataSize();
+    ::fwData::Mesh::Size nbOfCells    = m_mesh->getNumberOfCells();
 
-    ::fwData::Mesh::CellValueType* cellDataBegin =
-        m_helperCellData->begin< ::fwData::Mesh::CellValueType >();
-    ::fwData::Mesh::CellValueType* cellDataEnd               = cellDataBegin + cellDataSize;
-    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin =
-        m_helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
-    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
-    ::fwData::Mesh::CellTypes* cellTypesBegin              = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
+    ::fwData::Mesh::CellId* cellDataBegin =
+        m_helperCellData->begin< ::fwData::Mesh::CellId >();
+    ::fwData::Mesh::CellId* cellDataEnd          = cellDataBegin + cellDataSize;
+    ::fwData::Mesh::CellId* cellDataOffsetsBegin =
+        m_helperCellDataOffsets->begin< ::fwData::Mesh::CellId >();
+    ::fwData::Mesh::CellId* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+    ::fwData::Mesh::CellTypes* cellTypesBegin  = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
 
     isClosed = ::fwMath::isBorderlessSurface(cellDataBegin,
                                              cellDataEnd, cellDataOffsetsBegin,

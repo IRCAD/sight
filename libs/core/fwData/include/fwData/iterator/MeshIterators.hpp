@@ -36,8 +36,9 @@ class Mesh;
 
 namespace iterator
 {
-
-typedef std::uint32_t Id;
+typedef std::uint32_t CellId;
+typedef std::uint32_t PointId;
+typedef std::uint32_t Size;
 
 /// Stores a representation of a point.
 struct Point {
@@ -117,9 +118,9 @@ struct PointInfoBase {
 template<bool isConst>
 struct CellInfoBase {
 
-    typedef typename std::conditional< isConst, const Id, Id >::type cell_data_value_type;
+    typedef typename std::conditional< isConst, const CellId, CellId >::type cell_data_value_type;
     typedef typename std::conditional< isConst, const CellType, CellType >::type cell_type_value_type;
-    typedef typename std::conditional< isConst, const Id, Id >::type cell_offset_value_type;
+    typedef typename std::conditional< isConst, const CellId, CellId >::type cell_offset_value_type;
 
     typedef typename std::conditional< isConst, const RGBA, RGBA >::type rgba_value_type;
     typedef rgba_value_type& rgba_reference;
@@ -162,7 +163,7 @@ struct CellInfoBase {
     tex_value_type* tex { nullptr };
 
     /// Contains the number of point in the cell.
-    Id nbPoints { 0 };
+    Size nbPoints { 0 };
 
     /// Stores current idx (from CellIterator).
     std::ptrdiff_t idx { 0 };
@@ -370,7 +371,7 @@ public:
     pointer operator->() const;
 
     typename CellInfo::cell_data_value_type& operator[](size_t index);
-    Id nbPoints() const;
+    Size nbPoints() const;
 
 protected:
 
@@ -388,7 +389,7 @@ protected:
     difference_type m_numberOfElements { 0 };
 
     /// Defines the cell data size of the mesh.
-    Id m_cellDataSize { 0 };
+    Size m_cellDataSize { 0 };
 
     /// Defines the current offset of the cell.
     difference_type m_currentOffset { 0 };

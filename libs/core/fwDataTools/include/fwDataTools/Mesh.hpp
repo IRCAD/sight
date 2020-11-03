@@ -41,7 +41,7 @@ class Mesh
 
 public:
 
-    typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
+    typedef std::map<Point, ::fwData::Mesh::PointId> PointsMapType;
     typedef std::array<double, 3> PositionType;
     typedef std::array<size_t, 3> OrganizationType;
 

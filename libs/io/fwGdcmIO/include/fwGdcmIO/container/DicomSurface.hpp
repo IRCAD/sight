@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,9 +71,9 @@ public:
      * @param[in] normalBuffer Normals buffer
      */
     FWGDCMIO_API DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
-                              const ::fwData::Mesh::Id pointBufferSize,
+                              const ::fwData::Mesh::Size pointBufferSize,
                               const DicomCellValueType* cellBuffer,
-                              const ::fwData::Mesh::Id cellBufferSize,
+                              const ::fwData::Mesh::Size cellBufferSize,
                               const ::fwData::Mesh::NormalValueType* normalBuffer);
 
     /// Destructor

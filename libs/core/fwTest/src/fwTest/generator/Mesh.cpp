@@ -67,13 +67,13 @@ void Mesh::generateMesh( const ::fwData::Mesh::sptr& mesh )
 void Mesh::generateTriangleQuadMesh(const ::fwData::Mesh::sptr& mesh,
                                     ::fwData::Mesh::Attributes attributes)
 {
-    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    ::fwData::Mesh::Size nbPointsByEdge = 10;
     float edgeDim = 100.;
     Mesh::PointsMapType points;
 
-    const ::fwData::Mesh::Id nbPoints        = nbPointsByEdge*nbPointsByEdge*2*4*2;
-    const ::fwData::Mesh::Id nbTriangleCells = nbPointsByEdge*nbPointsByEdge*2*2;
-    const ::fwData::Mesh::Id nbQuadCells     = nbPointsByEdge*nbPointsByEdge*2;
+    const ::fwData::Mesh::Size nbPoints        = nbPointsByEdge*nbPointsByEdge*2*4*2;
+    const ::fwData::Mesh::Size nbTriangleCells = nbPointsByEdge*nbPointsByEdge*2*2;
+    const ::fwData::Mesh::Size nbQuadCells     = nbPointsByEdge*nbPointsByEdge*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbTriangleCells + nbQuadCells, nbTriangleCells*3 + nbQuadCells*4, attributes);
@@ -86,11 +86,11 @@ void Mesh::generateTriangleQuadMesh(const ::fwData::Mesh::sptr& mesh,
 void Mesh::generateTriangleMesh(const ::fwData::Mesh::sptr& mesh,
                                 ::fwData::Mesh::Attributes attributes)
 {
-    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    ::fwData::Mesh::Size nbPointsByEdge = 10;
     float edgeDim = 100.;
     Mesh::PointsMapType points;
-    const ::fwData::Mesh::Id nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const ::fwData::Mesh::Id nbCells  = nbPointsByEdge*nbPointsByEdge*2*2;
+    const ::fwData::Mesh::Size nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
+    const ::fwData::Mesh::Size nbCells  = nbPointsByEdge*nbPointsByEdge*2*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::TRIANGLE, attributes);
@@ -103,11 +103,11 @@ void Mesh::generateTriangleMesh(const ::fwData::Mesh::sptr& mesh,
 void Mesh::generateQuadMesh(const ::fwData::Mesh::sptr& mesh,
                             ::fwData::Mesh::Attributes attributes)
 {
-    ::fwData::Mesh::Id nbPointsByEdge = 10;
+    ::fwData::Mesh::Size nbPointsByEdge = 10;
     float edgeDim = 100.;
     Mesh::PointsMapType points;
-    const ::fwData::Mesh::Id nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const ::fwData::Mesh::Id nbCells  = nbPointsByEdge*nbPointsByEdge*2;
+    const ::fwData::Mesh::Size nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
+    const ::fwData::Mesh::Size nbCells  = nbPointsByEdge*nbPointsByEdge*2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::QUAD, attributes);
@@ -120,7 +120,7 @@ void Mesh::addQuadMesh(const ::fwData::Mesh::sptr& mesh, PointsMapType& points, 
 {
     const auto dumpLock = mesh->lock();
     ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
+    ::fwData::Mesh::Size idx1, idx2, idx3, idx4;
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Y = edgeDim
@@ -225,7 +225,7 @@ void Mesh::addTriangleMesh(const ::fwData::Mesh::sptr& mesh, PointsMapType& poin
     const auto dumpLock = mesh->lock();
 
     ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
+    ::fwData::Mesh::Size idx1, idx2, idx3, idx4;
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Z = 0
@@ -331,9 +331,9 @@ void Mesh::addTriangleMesh(const ::fwData::Mesh::sptr& mesh, PointsMapType& poin
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::addPoint(const ::fwData::Mesh::PointValueType* pt,
-                                  const ::fwData::Mesh::sptr& mesh,
-                                  PointsMapType& points)
+::fwData::Mesh::Size Mesh::addPoint(const ::fwData::Mesh::PointValueType* pt,
+                                    const ::fwData::Mesh::sptr& mesh,
+                                    PointsMapType& points)
 {
     RandFloat randFloat;
     std::array<float, 3> myPoint = {pt[0], pt[1], pt[2]};
@@ -343,7 +343,7 @@ void Mesh::addTriangleMesh(const ::fwData::Mesh::sptr& mesh, PointsMapType& poin
     {
         return it->second;
     }
-    const ::fwData::Mesh::Id idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
+    const ::fwData::Mesh::PointId idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
     if (mesh->hasPointColors())
     {
         const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);

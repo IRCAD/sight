@@ -72,7 +72,7 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
     const auto dumpLock = meshSrc->lock();
     auto cellItr        = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
 
-    const ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells();
+    const ::fwData::Mesh::Size nbCells = meshSrc->getNumberOfCells();
 
     dest->SetLines(::igtl::PolyDataCellArray::New());
     dest->SetTriangleStrips(::igtl::PolyDataCellArray::New());
@@ -409,7 +409,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
     {
         for(unsigned int i = 0; i < nbPoints; ++i )
         {
-            mesh->pushCell( (::fwData::Mesh::CellValueType) i);
+            mesh->pushCell( (::fwData::Mesh::PointId) i);
         }
     }
 

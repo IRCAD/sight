@@ -48,7 +48,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 struct cell_data_offset_generator {
-    ::fwData::Mesh::CellDataOffsetType current;
+    ::fwData::Mesh::CellId current;
     cell_data_offset_generator()
     {
         current = 0;
@@ -57,7 +57,7 @@ struct cell_data_offset_generator {
 
     int operator()()
     {
-        ::fwData::Mesh::CellDataOffsetType res = current;
+        ::fwData::Mesh::CellId res = current;
         current += 3;
         return static_cast<int>(res);
     }
@@ -84,14 +84,14 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     using boost::phoenix::ref;
     namespace phx = boost::phoenix;
 
-    ::fwData::Mesh::Id nbPoints = 1;
-    ::fwData::Mesh::Id nbCells  = 1;
-    ::fwData::Mesh::Id count    = 0;
+    ::fwData::Mesh::Size nbPoints = 1;
+    ::fwData::Mesh::Size nbCells  = 1;
+    ::fwData::Mesh::Size count    = 0;
 
     // Starting from boost 1.65, the function could not be deduced
     auto reserveFn =
         phx::bind(static_cast<size_t(::fwData::Mesh::*)(
-                                  ::fwData::Mesh::Id, ::fwData::Mesh::Id, ::fwData::Mesh::CellType,
+                                  ::fwData::Mesh::Size, ::fwData::Mesh::Size, ::fwData::Mesh::CellType,
                                   ::fwData::Mesh::Attributes)>(
                       &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
                       nbCells), ::fwData::Mesh::CellType::TRIANGLE,
@@ -117,7 +117,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                               [
                                   (float_ >> float_ >> float_)
                                   [
-                                      phx::bind(static_cast< ::fwData::Mesh::Id(::fwData::Mesh::*)(
+                                      phx::bind(static_cast< ::fwData::Mesh::PointId(::fwData::Mesh::*)(
                                                                  ::fwData::Mesh::PointValueType,
                                                                  ::fwData::Mesh::PointValueType,
                                                                  ::fwData::Mesh::PointValueType)>(
@@ -135,14 +135,14 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                               [
                                   (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
                                   [
-                                      phx::bind(static_cast< ::fwData::Mesh::Id(::fwData::Mesh::*)(
-                                                                 ::fwData::Mesh::CellValueType,
-                                                                 ::fwData::Mesh::CellValueType,
-                                                                 ::fwData::Mesh::CellValueType)>( &::fwData::Mesh::
-                                                                                                  pushCell),
+                                      phx::bind(static_cast< ::fwData::Mesh::CellId(::fwData::Mesh::*)(
+                                                                 ::fwData::Mesh::PointId,
+                                                                 ::fwData::Mesh::PointId,
+                                                                 ::fwData::Mesh::PointId)>( &::fwData::Mesh::
+                                                                                            pushCell),
                                                 mesh, _1, _2, _3),
                                       phx::bind(static_cast< void(::fwData::Mesh::*)(
-                                                                 ::fwData::Mesh::Id,
+                                                                 ::fwData::Mesh::CellId,
                                                                  ::fwData::Mesh::NormalValueType,
                                                                  ::fwData::Mesh::NormalValueType,
                                                                  ::fwData::Mesh::NormalValueType)>(

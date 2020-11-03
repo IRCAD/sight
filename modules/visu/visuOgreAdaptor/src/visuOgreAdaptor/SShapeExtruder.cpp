@@ -670,8 +670,8 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
         const auto lock = mesh->lock();
 
         // 3 points per triangles and one cell per triangles.
-        mesh->resize(static_cast< ::fwData::Mesh::Id >( _triangulation.size() * 3 ),
-                     static_cast< ::fwData::Mesh::Id >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
+        mesh->resize(static_cast< ::fwData::Mesh::Size >( _triangulation.size() * 3 ),
+                     static_cast< ::fwData::Mesh::Size >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
                      ::fwData::Mesh::Attributes::POINT_NORMALS);
 
         // Fill points.
@@ -701,7 +701,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
             const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
             const auto itPrevEnd = itEnd-1;
 
-            for(::fwData::Mesh::Id index = 0; index < _triangulation.size()*3; index += 3)
+            for(::fwData::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
             {
                 *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
                 *it->offset = index;

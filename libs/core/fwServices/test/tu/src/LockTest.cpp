@@ -272,7 +272,7 @@ void LockTest::testDumpLock()
         ::fwData::Mesh::PointValueType B[3] = {1., 0., 0. };
         ::fwData::Mesh::PointValueType C[3] = {1., 1., 0. };
 
-        ::fwData::Mesh::Id ids[3];
+        ::fwData::Mesh::PointId ids[3];
 
         ids[0] = mesh->pushPoint(A);
         ids[1] = mesh->pushPoint(B);

@@ -289,7 +289,6 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Mesh))
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
-    typedef ::fwData::iterator::Id Id;
 
     [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
     {
@@ -325,14 +324,16 @@ public:
     typedef std::uint8_t ColorValueType;
     typedef float NormalValueType;
     typedef float TexCoordValueType;
-    typedef Id CellValueType;
-    typedef Id CellDataOffsetType;
     typedef std::uint8_t CellTypes;
 
     typedef iterator::PointIterator PointIterator;
     typedef iterator::ConstPointIterator ConstPointIterator;
     typedef iterator::CellIterator CellIterator;
     typedef iterator::ConstCellIterator ConstCellIterator;
+
+    typedef ::fwData::iterator::CellId CellId;
+    typedef ::fwData::iterator::PointId PointId;
+    typedef ::fwData::iterator::Size Size;
 
     typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
     /**
@@ -369,7 +370,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t reserve(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType = CellType::TRIANGLE,
+    FWDATA_API size_t reserve(Size nbPts, Size nbCells, CellType cellType = CellType::TRIANGLE,
                               Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -389,7 +390,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t reserve(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData,
+    FWDATA_API size_t reserve(Size nbPts, Size nbCells, Size nbCellsData,
                               Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -409,7 +410,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t resize(Mesh::Id nbPts, Mesh::Id nbCells, CellType cellType = CellType::TRIANGLE,
+    FWDATA_API size_t resize(Size nbPts, Size nbCells, CellType cellType = CellType::TRIANGLE,
                              Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -428,7 +429,7 @@ public:
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t resize(Mesh::Id nbPts, Mesh::Id nbCells, Mesh::Id nbCellsData,
+    FWDATA_API size_t resize(Size nbPts, Size nbCells, Size nbCellsData,
                              Attributes arrayMask = Attributes::NONE);
 
     /**
@@ -485,22 +486,22 @@ public:
     FWDATA_API void clearCellTexCoords();
 
     /// Set number of points.
-    FWDATA_API void setNumberOfPoints(Id nb);
+    FWDATA_API void setNumberOfPoints(Size nb);
 
     /// Get number of points.
-    FWDATA_API Id getNumberOfPoints() const;
+    FWDATA_API Size getNumberOfPoints() const;
 
     /// Set number of cells.
-    FWDATA_API void setNumberOfCells(Id nb);
+    FWDATA_API void setNumberOfCells(Size nb);
 
     /// Get number of cells.
-    FWDATA_API Id getNumberOfCells() const;
+    FWDATA_API Size getNumberOfCells() const;
 
     /// Set cell data size.
-    FWDATA_API void setCellDataSize(Id nb);
+    FWDATA_API void setCellDataSize(Size nb);
 
     /// Get cell data size.
-    FWDATA_API Id getCellDataSize() const;
+    FWDATA_API Size getCellDataSize() const;
 
     /**
      * @brief Get the mesh data size in bytes.
@@ -576,10 +577,10 @@ public:
      *
      * @throw ::fwData::Exception if the allocation failed
      */
-    FWDATA_API Id pushPoint(const PointValueType p[3]);
-    FWDATA_API Id pushPoint(PointValueType x,
-                            PointValueType y,
-                            PointValueType z);
+    FWDATA_API PointId pushPoint(const PointValueType p[3]);
+    FWDATA_API PointId pushPoint(PointValueType x,
+                                 PointValueType y,
+                                 PointValueType z);
     /// @}
     /**
      * @{
@@ -591,16 +592,16 @@ public:
      *
      * @throw ::fwData::Exception if the allocation failed
      */
-    FWDATA_API Id pushCell(CellValueType idPt);
-    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2);
-    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3);
-    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
-                           CellType type = CellType::QUAD);
-    FWDATA_API Id pushCell(CellType type,
-                           const std::vector<CellValueType> pointIds);
-    FWDATA_API Id pushCell(CellType type,
-                           const CellValueType* pointIds,
-                           Mesh::Id nbPoints );
+    FWDATA_API CellId pushCell(PointId idPt);
+    FWDATA_API CellId pushCell(PointId idP1, PointId idP2);
+    FWDATA_API CellId pushCell(PointId idP1, PointId idP2, PointId idP3);
+    FWDATA_API CellId pushCell(PointId idP1, PointId idP2, PointId idP3, PointId idP4,
+                               CellType type = CellType::QUAD);
+    FWDATA_API CellId pushCell(CellType type,
+                               const std::vector<PointId> pointIds);
+    FWDATA_API CellId pushCell(CellType type,
+                               const PointId* pointIds,
+                               Size nbPoints );
     /// @}
 
     /**
@@ -612,7 +613,7 @@ public:
      * @param p point coordinates
      * @throw Raise ::fwData::Exception if the id is out of bounds
      */
-    FWDATA_API void setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3]);
+    FWDATA_API void setPoint(PointId id, const ::fwData::Mesh::PointValueType p[3]);
 
     /**
      * @brief Set a point coordinates.
@@ -622,10 +623,7 @@ public:
      * @see setPoint
      * @throw Raise ::fwData::Exception if the id is out of bounds
      */
-    FWDATA_API void setPoint(::fwData::Mesh::Id id,
-                             ::fwData::Mesh::PointValueType x,
-                             ::fwData::Mesh::PointValueType y,
-                             ::fwData::Mesh::PointValueType z);
+    FWDATA_API void setPoint(PointId id, PointValueType x, PointValueType y, PointValueType z);
 
     /**
      * @{
@@ -636,14 +634,14 @@ public:
      *
      * @throw ::fwData::Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
      */
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idPt);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
-                            CellValueType idP4,
+    FWDATA_API void setCell(CellId id, PointId idPt);
+    FWDATA_API void setCell(CellId id, PointId idP1, PointId idP2);
+    FWDATA_API void setCell(CellId id, PointId idP1, PointId idP2, PointId idP3);
+    FWDATA_API void setCell(CellId id, PointId idP1, PointId idP2, PointId idP3,
+                            PointId idP4,
                             CellType type = CellType::QUAD);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType>& pointIds);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, Mesh::Id nbPoints );
+    FWDATA_API void setCell(CellId id, CellType type, const std::vector<PointId>& pointIds);
+    FWDATA_API void setCell(CellId id, CellType type, const PointId* pointIds, Size nbPoints );
     /// @}
 
     /**
@@ -655,10 +653,8 @@ public:
      * @param id point index
      * @param c color
      */
-    FWDATA_API void setPointColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c);
-    FWDATA_API void setPointColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r,
-                                  ::fwData::Mesh::ColorValueType g, ::fwData::Mesh::ColorValueType b,
-                                  ::fwData::Mesh::ColorValueType a);
+    FWDATA_API void setPointColor(PointId id, const std::array< ColorValueType, 4>& c);
+    FWDATA_API void setPointColor(PointId id, ColorValueType r, ColorValueType g, ColorValueType b, ColorValueType a);
     /// @}
     ///
     /**
@@ -670,10 +666,8 @@ public:
      * @param id cell index
      * @param c color
      */
-    FWDATA_API void setCellColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c);
-    FWDATA_API void setCellColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r,
-                                 ::fwData::Mesh::ColorValueType g, ::fwData::Mesh::ColorValueType b,
-                                 ::fwData::Mesh::ColorValueType a);
+    FWDATA_API void setCellColor( CellId id, const std::array< ColorValueType, 4>& c);
+    FWDATA_API void setCellColor( CellId id, ColorValueType r, ColorValueType g, ColorValueType b, ColorValueType a);
     /// @}
 
     /**
@@ -685,9 +679,8 @@ public:
      * @param id point index
      * @param n normal
      */
-    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n);
-    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx,
-                                   ::fwData::Mesh::NormalValueType ny, ::fwData::Mesh::NormalValueType nz);
+    FWDATA_API void setPointNormal(PointId id, const std::array< NormalValueType, 3>& n);
+    FWDATA_API void setPointNormal(PointId id, NormalValueType nx, NormalValueType ny, NormalValueType nz);
     ///@}
     /**
      * @{
@@ -698,9 +691,9 @@ public:
      * @param id cell index
      * @param n normal
      */
-    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n);
-    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx,
-                                  ::fwData::Mesh::NormalValueType ny, ::fwData::Mesh::NormalValueType nz);
+    FWDATA_API void setCellNormal(CellId id, const std::array< NormalValueType, 3>& n);
+    FWDATA_API void setCellNormal(CellId id, NormalValueType nx,
+                                  NormalValueType ny, NormalValueType nz);
     /// @}
     /**
      * @{
@@ -711,9 +704,9 @@ public:
      * @param id point index
      * @param t texCoord
      */
-    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t);
-    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
-                                     ::fwData::Mesh::TexCoordValueType v);
+    FWDATA_API void setPointTexCoord(PointId id, const std::array< TexCoordValueType, 2>& t);
+    FWDATA_API void setPointTexCoord(PointId id, TexCoordValueType u,
+                                     TexCoordValueType v);
     /// @}
 
     /**
@@ -725,9 +718,9 @@ public:
      * @param id cell index
      * @param t texCoord
      */
-    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t);
-    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
-                                    ::fwData::Mesh::TexCoordValueType v);
+    FWDATA_API void setCellTexCoord(CellId id, const std::array< TexCoordValueType, 2>& t);
+    FWDATA_API void setCellTexCoord(CellId id, TexCoordValueType u,
+                                    TexCoordValueType v);
     /// @}
 
     /**
@@ -793,9 +786,9 @@ public:
 
     /// Sets current Attributes of the Mesh as binary mask @see ::fwData::Mesh::Attributes
     /// @warning: Attributes are set automaticaly or using resize()/reserve methode, usualy it is not recommended to
-    // call this method.
+    /// call this method.
     ///  This is only used when converting from/to fwAtoms
-    void setAttributes(const Mesh::Attributes& _attributes);
+    void setAttributes(const Attributes& _attributes);
 
     /**
      * @brief Return the buffer of point colors.
@@ -825,8 +818,8 @@ public:
 
     [[deprecated]] typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
     [[deprecated]] typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<CellValueType, 1> CellDataMultiArrayType;
-    [[deprecated]] typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<CellId, 1> CellDataMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<CellId, 1> CellDataOffsetsMultiArrayType;
     [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
     [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
     [[deprecated]] typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
@@ -836,8 +829,8 @@ public:
 
     [[deprecated]] typedef boost::const_multi_array_ref<PointValueType, 2> ConstPointsMultiArrayType;
     [[deprecated]] typedef boost::const_multi_array_ref<CellTypes, 1> ConstCellTypesMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<CellValueType, 1> ConstCellDataMultiArrayType;
-    [[deprecated]] typedef boost::const_multi_array_ref<CellDataOffsetType, 1> ConstCellDataOffsetsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<CellId, 1> ConstCellDataMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<CellId, 1> ConstCellDataOffsetsMultiArrayType;
     [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstPointColorsMultiArrayType;
     [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstCellColorsMultiArrayType;
     [[deprecated]] typedef boost::const_multi_array_ref<NormalValueType, 2> ConstPointNormalsMultiArrayType;
@@ -983,13 +976,13 @@ protected:
     FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /// Number of points defined for the mesh
-    Id m_nbPoints;
+    Size m_nbPoints;
 
     /// Number of cells defined for the mesh
-    Id m_nbCells;
+    Size m_nbCells;
 
     /// Number of point index defined for mesh (size of m_cellData)
-    Id m_cellsDataSize;
+    Size m_cellsDataSize;
 
     /**
      * @brief Mesh point array : 3-components 1-dimension float array, size = m_nbPoints x 3.
