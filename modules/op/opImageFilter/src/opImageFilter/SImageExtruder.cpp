@@ -126,8 +126,13 @@ void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::Reconstruction
     {
         for(const ::fwData::Reconstruction::csptr reconstruction : _reconstructions)
         {
-            const ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
-            this->extrudeMesh(mesh, imageOut.get_shared());
+            ::fwData::mt::locked_ptr lockedReconstruction(reconstruction);
+
+            const ::fwData::Mesh::csptr mesh = lockedReconstruction->getMesh();
+
+            ::fwData::mt::locked_ptr lockedMesh(mesh);
+
+            this->extrudeMesh(lockedMesh.get_shared(), imageOut.get_shared());
         }
     }
 }
@@ -137,10 +142,7 @@ void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::Reconstruction
 void SImageExtruder::extrudeMesh(const ::fwData::Mesh::csptr _mesh, const fwData::Image::sptr _image) const
 {
     // Extrude the image.
-    {
-        const auto lock = _mesh->lock();
-        ::imageFilterOp::ImageExtruder::extrude(_image, _mesh);
-    }
+    ::imageFilterOp::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
     const auto sig =

@@ -65,66 +65,28 @@ Mesh::Mesh(::fwData::Object::Key) :
     newSignal<PointTexCoordsModifiedSignalType>(s_POINT_TEX_COORDS_MODIFIED_SIG);
     newSignal<CellTexCoordsModifiedSignalType>(s_CELL_TEX_COORDS_MODIFIED_SIG);
 
-    this->initArrays();
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::~Mesh()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::initArrays()
-{
-    if (!m_points)
-    {
-        m_points = ::fwData::Array::New();
-    }
-    if (!m_cellTypes)
-    {
-        m_cellTypes = ::fwData::Array::New();
-    }
-    if (!m_cellData)
-    {
-        m_cellData = ::fwData::Array::New();
-    }
-    if (!m_cellDataOffsets)
-    {
-        m_cellDataOffsets = ::fwData::Array::New();
-    }
-    if(!m_pointColors)
-    {
-        m_pointColors = ::fwData::Array::New();
-    }
-    if(!m_cellColors)
-    {
-        m_cellColors = ::fwData::Array::New();
-    }
-    if(!m_pointNormals)
-    {
-        m_pointNormals = ::fwData::Array::New();
-    }
-    if(!m_cellNormals)
-    {
-        m_cellNormals = ::fwData::Array::New();
-    }
-    if(!m_pointTexCoords)
-    {
-        m_pointTexCoords = ::fwData::Array::New();
-    }
-    if(!m_cellTexCoords)
-    {
-        m_cellTexCoords = ::fwData::Array::New();
-    }
+    m_points          = ::fwData::Array::New();
+    m_cellTypes       = ::fwData::Array::New();
+    m_cellData        = ::fwData::Array::New();
+    m_cellDataOffsets = ::fwData::Array::New();
+    m_pointColors     = ::fwData::Array::New();
+    m_cellColors      = ::fwData::Array::New();
+    m_pointNormals    = ::fwData::Array::New();
+    m_cellNormals     = ::fwData::Array::New();
+    m_pointTexCoords  = ::fwData::Array::New();
+    m_cellTexCoords   = ::fwData::Array::New();
 
     // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
     m_points->setType(::fwTools::Type::create<PointValueType>());
     m_cellTypes->setType(::fwTools::Type::create<CellTypes>());
     m_cellData->setType(::fwTools::Type::create<CellValueType>());
     m_cellDataOffsets->setType(::fwTools::Type::create<CellDataOffsetType>());
+}
 
+//------------------------------------------------------------------------------
+
+Mesh::~Mesh()
+{
 }
 
 //------------------------------------------------------------------------------
@@ -173,8 +135,6 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
     m_cellsDataSize = other->m_cellsDataSize;
 
     m_attributes = other->m_attributes;
-
-    this->initArrays();
 
     m_points          = ::fwData::Object::copy( other->m_points, cache );
     m_cellTypes       = ::fwData::Object::copy( other->m_cellTypes, cache );
@@ -326,42 +286,37 @@ bool Mesh::adjustAllocatedMemory()
 {
     size_t oldAllocatedSize = this->getAllocatedSizeInBytes();
 
-    if(!m_points)
-    {
-        this->initArrays();
-    }
-
     m_points->resizeTMP({size_t(m_nbPoints)}, 3);
     m_cellTypes->resize({size_t(m_nbCells)});
     m_cellData->resize({size_t(m_cellsDataSize)});
     m_cellDataOffsets->resize({size_t(m_nbCells)});
 
-    if(static_cast<int>(m_attributes & Attributes::POINT_COLORS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_COLORS))
     {
         m_pointColors->resize( { size_t( m_nbPoints ) } );
     }
 
-    if(static_cast<int>(m_attributes & Attributes::CELL_COLORS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_COLORS))
     {
         m_cellColors->resize( { size_t( m_nbCells ) } );
     }
 
-    if(static_cast<int>(m_attributes & Attributes::POINT_NORMALS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_NORMALS))
     {
         m_pointNormals->resize( { size_t( m_nbPoints ) } );
     }
 
-    if(static_cast<int>(m_attributes & Attributes::CELL_NORMALS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_NORMALS))
     {
         m_cellNormals->resize( { size_t( m_nbCells ) } );
     }
 
-    if(static_cast<int>(m_attributes & Attributes::POINT_TEX_COORDS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_TEX_COORDS))
     {
         m_pointTexCoords->resize( { size_t( m_nbPoints ) } );
     }
 
-    if(static_cast<int>(m_attributes & Attributes::CELL_TEX_COORDS))
+    if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_TEX_COORDS))
     {
         m_cellTexCoords->resize( { size_t( m_nbCells ) } );
     }
@@ -1170,7 +1125,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getPointColorsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::POINT_COLORS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::POINT_COLORS) != 0;
 
     return hasData ? m_pointColors : nullptr;
 }
@@ -1179,7 +1134,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getCellColorsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::CELL_COLORS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::CELL_COLORS) != 0;
 
     return hasData ? m_cellColors : nullptr;
 }
@@ -1188,7 +1143,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getPointNormalsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::POINT_NORMALS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::POINT_NORMALS) != 0;
 
     return hasData ? m_pointNormals : nullptr;
 }
@@ -1197,7 +1152,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getCellNormalsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::CELL_NORMALS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::CELL_NORMALS) != 0;
 
     return hasData ? m_cellNormals : nullptr;
 }
@@ -1206,7 +1161,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getPointTexCoordsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::POINT_TEX_COORDS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::POINT_TEX_COORDS) != 0;
 
     return hasData ? m_pointTexCoords : nullptr;
 }
@@ -1215,7 +1170,7 @@ void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
 
 ::fwData::Array::sptr Mesh::getCellTexCoordsArray() const
 {
-    const bool hasData = static_cast<bool>(m_attributes & Attributes::CELL_TEX_COORDS);
+    const bool hasData = static_cast<std::uint8_t>(m_attributes & Attributes::CELL_TEX_COORDS) != 0;
 
     return hasData ? m_cellTexCoords : nullptr;
 }

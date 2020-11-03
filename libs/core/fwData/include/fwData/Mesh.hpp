@@ -982,11 +982,6 @@ protected:
      */
     FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
-    /**
-     * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.
-     */
-    FWDATA_API void initArrays();
-
     /// Number of points defined for the mesh
     Id m_nbPoints;
 
