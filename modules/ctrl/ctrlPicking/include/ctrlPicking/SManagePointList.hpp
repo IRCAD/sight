@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,12 +42,11 @@ namespace ctrlPicking
  * - \b clearPoints(): Remove all points from the point lists.
 
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service uid="..." type="::ctrlPicking::SManagePointList">
             <inout key="pointList" uid="..." />
             <in key="matrix" uid="..." />
-            <config max="0" removable="true" label="false" />
+            <config max="0" removable="true" label="false" tolerance="10.0" />
        </service>
    @endcode
  *
@@ -58,16 +57,18 @@ namespace ctrlPicking
  * - \b matrix [::fwData::TransformationMatrix3D](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
- * - \b max (optional, default=0): Set the maximum number of points contained in the point list, if it's 0, the capacity
- * is set to the maximum. If the maximum is reached, the first point in the list will be removed.
- * - \b removable (optional, default=true): Allow points to be removed.
- * - \b label (optional, default=false): Add an ID label to added points.
+ * - \b max (optional, size_t, default=0): set the maximum number of points contained in the point list, if it's 0, the
+ * capacity is set to the maximum. if the maximum is reached, the first point in the list will be removed.
+ * - \b removable (optional, bool, default=true): allow points to be removed.
+ * - \b label (optional, bool, default=false): add an ID label to added points.
+ * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
 class CTRLPICKING_CLASS_API SManagePointList : public ::fwServices::IController
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SManagePointList, ::fwServices::IController)
 
     /// Initialize slots.
@@ -119,6 +120,8 @@ private:
 
     /// Allows to add an ID label the points.
     bool m_label {false};
+
+    float m_tolerance { 10.f };
 
 };
 } // ctrlPicking
