@@ -139,9 +139,9 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
-                                                          message,
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Activity launch",
+                                             message,
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 }
 

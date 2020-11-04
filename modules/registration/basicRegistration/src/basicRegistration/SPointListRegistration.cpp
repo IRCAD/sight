@@ -238,16 +238,16 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error",
-                                                              "You must enter 3 or more points for the registration to work.",
-                                                              ::fwGui::dialog::IMessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Error",
+                                                 "You must enter 3 or more points for the registration to work.",
+                                                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }

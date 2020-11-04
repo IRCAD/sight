@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,12 +33,20 @@ namespace dialog
 
 //-----------------------------------------------------------------------------
 
-IMessageDialog::Buttons MessageDialog::showMessageDialog(
+IMessageDialog::Buttons MessageDialog::show(
     const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
     ::fwGui::dialog::MessageDialog messageBox(title, message, icon);
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     return messageBox.show();
+}
+
+//-----------------------------------------------------------------------------
+
+IMessageDialog::Buttons MessageDialog::showMessageDialog(
+    const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
+{
+    return show(title, message, icon);
 }
 
 //-----------------------------------------------------------------------------

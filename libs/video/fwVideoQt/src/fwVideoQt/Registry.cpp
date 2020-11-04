@@ -116,7 +116,7 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
                 catch(std::exception& e)
                 {
                     delete player;
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    ::fwGui::dialog::MessageDialog::show(
                         "Camera error",
                         e.what(),
                         ::fwGui::dialog::IMessageDialog::WARNING);

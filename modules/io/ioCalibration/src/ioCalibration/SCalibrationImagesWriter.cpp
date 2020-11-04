@@ -156,9 +156,9 @@ void SCalibrationImagesWriter::updating()
             catch(const ::cv::Exception& e)
             {
                 m_writeFailed = true;
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Error writing calibration images.",
-                                                                  e.what(),
-                                                                  ::fwGui::dialog::MessageDialog::CRITICAL);
+                ::fwGui::dialog::MessageDialog::show("Error writing calibration images.",
+                                                     e.what(),
+                                                     ::fwGui::dialog::MessageDialog::CRITICAL);
             }
         }
 

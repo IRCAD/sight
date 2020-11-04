@@ -809,9 +809,9 @@ void SOpenvslam::loadVocabulary(const std::string& _filePath)
 {
     if(_filePath.empty())
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Vocabulary",
-                                                          "Vocabulary file : "+_filePath + " can not be loaded.",
-                                                          ::fwGui::dialog::MessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Vocabulary",
+                                             "Vocabulary file : "+_filePath + " can not be loaded.",
+                                             ::fwGui::dialog::MessageDialog::WARNING);
         m_sigVocFileUnloaded->asyncEmit();
     }
     else

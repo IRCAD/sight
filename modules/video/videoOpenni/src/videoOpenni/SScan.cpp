@@ -209,7 +209,7 @@ void SScan::startCamera()
     if (m_status != ::openni::STATUS_OK)
     {
         SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Sense Error",
             "Sense device is not available. Please check if it is plugged in.",
             ::fwGui::dialog::IMessageDialog::CRITICAL);

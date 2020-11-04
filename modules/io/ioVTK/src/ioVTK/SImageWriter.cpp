@@ -181,7 +181,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             // Check data type
             if(type != "uint8" && type != "uint16")
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
                     ::fwGui::dialog::IMessageDialog::WARNING);
@@ -190,7 +190,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             // Check number of components
             if(noc < 1 || noc > 4)
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
@@ -203,7 +203,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         {
             if(type != "uint8")
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
                     ::fwGui::dialog::IMessageDialog::WARNING);
@@ -212,7 +212,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             // Check number of components
             if(noc < 1 || noc > 3)
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
@@ -245,7 +245,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -253,7 +253,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during saving.",
             ::fwGui::dialog::IMessageDialog::WARNING);

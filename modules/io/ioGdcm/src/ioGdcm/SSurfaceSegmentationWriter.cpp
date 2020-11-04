@@ -149,7 +149,7 @@ void SSurfaceSegmentationWriter::updating()
         if(!model->getDicomReference())
         {
             m_writeFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning", "DICOM image reference is missing, DICOM Surface Segmentation cannot be generated",
                 ::fwGui::dialog::IMessageDialog::WARNING);
             return;
@@ -192,13 +192,13 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
         m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving: " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_writeFailed = true;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }

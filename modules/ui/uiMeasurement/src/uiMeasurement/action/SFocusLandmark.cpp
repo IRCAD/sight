@@ -151,18 +151,18 @@ void SFocusLandmark::updating()
                 }
                 else
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Focus landmarks",
-                                                                      "It is impossible to focus image landmarks: "
-                                                                      "landmark is outside image.",
-                                                                      ::fwGui::dialog::IMessageDialog::WARNING);
+                    ::fwGui::dialog::MessageDialog::show("Focus landmarks",
+                                                         "It is impossible to focus image landmarks: "
+                                                         "landmark is outside image.",
+                                                         ::fwGui::dialog::IMessageDialog::WARNING);
                 }
             }
             catch (::fwData::Exception& e )
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Focus landmarks",
-                                                                  "It is impossible to focus image landmarks: "
-                                                                  + std::string(e.what()),
-                                                                  ::fwGui::dialog::IMessageDialog::WARNING);
+                ::fwGui::dialog::MessageDialog::show("Focus landmarks",
+                                                     "It is impossible to focus image landmarks: "
+                                                     + std::string(e.what()),
+                                                     ::fwGui::dialog::IMessageDialog::WARNING);
             }
 
         }

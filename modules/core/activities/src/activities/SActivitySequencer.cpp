@@ -211,7 +211,7 @@ bool SActivitySequencer::checkValidity(const fwMedData::ActivitySeries::csptr& a
 
     if (!ok && showDialog)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", errorMsg);
+        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
     }
     return ok;
 }

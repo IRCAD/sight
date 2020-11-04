@@ -91,9 +91,9 @@ void SServerListener::starting()
     }
     catch (::fwCore::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", "Cannot start the server: " +
-                                                          std::string(e.what()),
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
+                                             std::string(e.what()),
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SLM_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
@@ -116,7 +116,7 @@ void SServerListener::stopping()
     }
     catch (::fwCore::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
+        ::fwGui::dialog::MessageDialog::show("Error", e.what());
     }
     catch (std::future_error&)
     {
@@ -167,7 +167,7 @@ void SServerListener::receiveObject()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", ex.what());
+            ::fwGui::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else

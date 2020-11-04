@@ -209,7 +209,7 @@ void SStarter::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Service unavailable",
                 "The service is unavailable.",
                 ::fwGui::dialog::IMessageDialog::WARNING);

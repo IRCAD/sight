@@ -142,15 +142,15 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          ss.str(),
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             ss.str(),
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Warning during saving",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Warning during saving",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

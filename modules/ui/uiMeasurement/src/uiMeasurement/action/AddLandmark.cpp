@@ -102,7 +102,7 @@ void AddLandmark::updating()
 
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Add landmarks",
             "It is impossible to add image landmarks. There is no loaded image in the software.",
             ::fwGui::dialog::IMessageDialog::WARNING);

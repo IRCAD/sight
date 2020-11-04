@@ -149,7 +149,7 @@ void Player::play()
 
 void Player::onError(QMediaPlayer::Error error) const
 {
-    ::fwGui::dialog::MessageDialog::showMessageDialog("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
+    ::fwGui::dialog::MessageDialog::show("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
 }
 
 //-----------------------------------------------------------------------------

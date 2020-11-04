@@ -162,7 +162,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -172,7 +172,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);

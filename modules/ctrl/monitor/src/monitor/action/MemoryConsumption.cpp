@@ -62,7 +62,7 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         std::stringstream msg;
         msg << "Cannot allocate buffer ("<< memorySizeInBytes/(1024*1024) <<" Mo) :\n" << e.what() << std::endl;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Action increase memory",
             msg.str(),
             ::fwGui::dialog::IMessageDialog::CRITICAL);

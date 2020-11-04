@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,9 +44,9 @@
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
 
-const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT        = "remove";
+const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
 
@@ -103,8 +103,8 @@ void SCalibrationInfoEditor::updating()
             const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
                                 "Your images may be out of sync.";
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Inputs do not match",
-                                                              errMsg, ::fwGui::dialog::MessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Inputs do not match",
+                                                 errMsg, ::fwGui::dialog::MessageDialog::WARNING);
         }
     }
     else

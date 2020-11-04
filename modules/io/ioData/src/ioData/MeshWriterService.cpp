@@ -129,7 +129,7 @@ void MeshWriterService::updating()
             std::stringstream ss;
             ss << "Warning during writing Mesh : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);

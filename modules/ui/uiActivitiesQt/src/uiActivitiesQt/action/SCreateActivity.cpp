@@ -22,8 +22,6 @@
 
 #include "uiActivitiesQt/action/SCreateActivity.hpp"
 
-#include <boost/foreach.hpp>
-
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
 
@@ -43,6 +41,8 @@
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -245,9 +245,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                          "No available activity for the current selection.",
-                                                          ::fwGui::dialog::MessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Activity launcher",
+                                             "No available activity for the current selection.",
+                                             ::fwGui::dialog::MessageDialog::WARNING);
     }
 }
 

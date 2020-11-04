@@ -352,8 +352,8 @@ void SGrabberProxy::startCamera()
                 if (descriptions.size() == 0)
                 {
                     const std::string msg = "No video grabber implementation found.\n";
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg,
-                                                                      ::fwGui::dialog::MessageDialog::Icons::WARNING);
+                    ::fwGui::dialog::MessageDialog::show("Error", msg,
+                                                         ::fwGui::dialog::MessageDialog::Icons::WARNING);
                     return;
                 }
                 else if (descriptions.size() == 1)
@@ -379,7 +379,7 @@ void SGrabberProxy::startCamera()
             if(m_grabberImpl.empty())
             {
                 const std::string msg = "No video grabber chosen, aborting...\n";
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", msg);
+                ::fwGui::dialog::MessageDialog::show("Warning", msg);
                 return;
             }
             m_services.resize(implToNumTL[m_grabberImpl]);
