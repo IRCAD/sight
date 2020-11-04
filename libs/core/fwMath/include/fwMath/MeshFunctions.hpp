@@ -25,9 +25,9 @@
 #include "fwMath/config.hpp"
 #include "fwMath/IntrasecTypes.hpp"
 
-#include <boost/unordered_map.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <boost/unordered_map.hpp>
 
 #include <glm/glm.hpp>
 
@@ -135,9 +135,16 @@ FWMATH_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, con
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-FWMATH_API bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                                     const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
+FWMATH_API bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                    const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
 
+/**
+ * @brief Determine if the point _P is inside the tetrahedron made of (ABCD) based on P barycentric coordinates in
+ *(ABCD).
+ * @param barycentricCoordPInsideABCD: P coordinates expressed as barycentric coordinates in (ABCD).
+ * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
+ */
+FWMATH_API bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD);
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U>
