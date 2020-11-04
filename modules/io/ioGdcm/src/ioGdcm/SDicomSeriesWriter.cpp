@@ -199,12 +199,12 @@ void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }

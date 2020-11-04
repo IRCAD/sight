@@ -263,7 +263,7 @@ void SCameraConfigLauncher::onImportClicked()
 
     if (cameraSeries.size() == 0)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "No CameraSeries in SDB",
             "There are no CameraSeries present in the loaded SeriesDB",
             ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -287,7 +287,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         if (cameras.size() == 0)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "No Cameras in SDB",
                 "There are CameraSeries present in the loaded SeriesDB, but no Cameras were found",
                 ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -353,7 +353,7 @@ void SCameraConfigLauncher::onRemoveClicked()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", "The first camera can not be deleted");
+        ::fwGui::dialog::MessageDialog::show("Warning", "The first camera can not be deleted");
     }
 }
 
@@ -442,7 +442,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Calibration", "Cameras must be intrinsically calibrated.");
+        ::fwGui::dialog::MessageDialog::show("Calibration", "Cameras must be intrinsically calibrated.");
         m_extrinsicButton->setChecked(false);
     }
 }

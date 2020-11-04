@@ -116,7 +116,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -168,7 +168,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", ex.what());
+            ::fwGui::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -202,7 +202,7 @@ void SClientListener::stopping()
     }
     catch (::fwCore::Exception& ex)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+        ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
         SLM_ERROR(ex.what());
     }
 }

@@ -147,7 +147,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", errorMsg);
+        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

@@ -947,7 +947,7 @@ void SScan::setDoubleParameter(double _value, std::string _key)
 
 void SScan::popMessageDialog(const std::string& _message)
 {
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+    ::fwGui::dialog::MessageDialog::show(
         "RealSense Error", _message, ::fwGui::dialog::IMessageDialog::CRITICAL);
 }
 

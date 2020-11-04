@@ -349,9 +349,9 @@ void SWriter::updating()
         else
         {
             const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                              errorMessage,
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                                 errorMessage,
+                                                 ::fwGui::dialog::IMessageDialog::CRITICAL);
             m_writeFailed = true;
             return;
         }
@@ -524,9 +524,9 @@ void SWriter::updating()
 
         // Handle the error.
         SLM_ERROR(_e.what());
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          _e.what(),
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                             _e.what(),
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
     catch(...)
@@ -538,9 +538,9 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          "Writing process aborted",
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                             "Writing process aborted",
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
 

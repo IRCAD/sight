@@ -200,7 +200,7 @@ void SFilterSelectionEditor::onForceChecked(int state)
 {
     if(state == Qt::Checked)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Be careful",
             "You asked to ignore reading errors, there are high risks of issues for resulting image.",
             ::fwGui::dialog::IMessageDialog::WARNING);

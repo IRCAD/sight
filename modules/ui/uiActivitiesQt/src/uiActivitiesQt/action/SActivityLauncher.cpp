@@ -314,9 +314,9 @@ void SActivityLauncher::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                              "Not available activity for the current selection.",
-                                                              ::fwGui::dialog::MessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Activity launcher",
+                                                 "Not available activity for the current selection.",
+                                                 ::fwGui::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -396,8 +396,8 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     {
         const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
                                 "> failed.";
-        ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
-                                                           ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show( "Activity can not be launched", msg,
+                                              ::fwGui::dialog::IMessageDialog::WARNING);
         SLM_ERROR(msg);
         return;
     }
@@ -420,9 +420,9 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                                 validation.second;
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
-                                                                      message,
-                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    ::fwGui::dialog::MessageDialog::show("Activity launch",
+                                                         message,
+                                                         ::fwGui::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }
@@ -487,7 +487,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 
     if(!validation.first)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Activity can not be launched",
             "The activity " + info.title + " can't be launched. Reason : " + validation.second,
             ::fwGui::dialog::IMessageDialog::WARNING
@@ -554,9 +554,9 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                              "Not available activity for the current selection.",
-                                                              ::fwGui::dialog::MessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Activity launcher",
+                                                 "Not available activity for the current selection.",
+                                                 ::fwGui::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -586,9 +586,9 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                                 validation.second;
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
-                                                                      message,
-                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    ::fwGui::dialog::MessageDialog::show("Activity launch",
+                                                         message,
+                                                         ::fwGui::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }

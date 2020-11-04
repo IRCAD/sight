@@ -269,9 +269,9 @@ bool SImagesBlend::checkImageInformations()
                     errorMsg += (spacing != img->getSpacing2()) ? " spacing" : "";
                     errorMsg += (origin != img->getOrigin2()) ? " origin" : "";
                     errorMsg += ".\n Background image size, spacing and origin are use.";
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
-                                                                      errorMsg,
-                                                                      ::fwGui::dialog::IMessageDialog::WARNING);
+                    ::fwGui::dialog::MessageDialog::show("Images blending",
+                                                         errorMsg,
+                                                         ::fwGui::dialog::IMessageDialog::WARNING);
                     break;
                 }
             }

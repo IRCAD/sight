@@ -191,24 +191,24 @@ void SDisplayTestNotifications::updating( )
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the NotificationDialog.
         if(m_displayAll)
         {
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::TOP_LEFT );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::TOP_RIGHT );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::CENTERED_TOP );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::CENTERED );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::BOTTOM_LEFT );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::BOTTOM_RIGHT );
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                               ::dial::NotificationDialog::Position::CENTERED_BOTTOM );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::TOP_LEFT );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::TOP_RIGHT );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::CENTERED_TOP );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::CENTERED );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::BOTTOM_LEFT );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::BOTTOM_RIGHT );
+            ::dial::NotificationDialog::show("Notification Test !", m_type,
+                                             ::dial::NotificationDialog::Position::CENTERED_BOTTOM );
         }
         else
         {
-            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type, m_position );
+            ::dial::NotificationDialog::show("Notification Test !", m_type, m_position );
         }
     }
 }

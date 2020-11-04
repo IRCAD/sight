@@ -225,7 +225,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
                 }
                 else
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    ::fwGui::dialog::MessageDialog::show(
                         "Video recording",
                         "The extension "+ extensionToUse+ " is not supported. Unable to write the file: " +
                         path.string());
@@ -240,7 +240,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
                 if (!m_writer->isOpened())
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    ::fwGui::dialog::MessageDialog::show(
                         "Video recording", "Unable to write the video in the file: " + path.string());
                     this->stopRecord();
                 }

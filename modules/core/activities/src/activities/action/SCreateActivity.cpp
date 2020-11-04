@@ -263,9 +263,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                          "No available activity for the current selection.",
-                                                          ::fwGui::dialog::MessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Activity launcher",
+                                             "No available activity for the current selection.",
+                                             ::fwGui::dialog::MessageDialog::WARNING);
     }
 }
 

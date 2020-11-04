@@ -738,7 +738,7 @@ void DumpEditor::changeStatus( int index )
             }
             else
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Dump process information",
                     "Dump process is locked. It is impossible to dump or restore this object.",
                     ::fwGui::dialog::IMessageDialog::WARNING);
@@ -752,7 +752,7 @@ void DumpEditor::changeStatus( int index )
         {
             std::stringstream stream;
             stream << "Object " << selectedBuffer << " not found, please refresh the grid.";
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Dump process information",
                 stream.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);

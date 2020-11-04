@@ -177,7 +177,7 @@ void SMeshModifier::updating()
         std::stringstream ss;
         ss << "Warning during generating : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,8 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferInfo.hpp>
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -36,7 +36,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ void SDumpAll::updating( )
     }
     std::stringstream stream;
     stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped <<"/"<<buffInfoMap.size()<<").";
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+    ::fwGui::dialog::MessageDialog::show(
         "Dump all",
         stream.str(),
         ::fwGui::dialog::IMessageDialog::INFO);

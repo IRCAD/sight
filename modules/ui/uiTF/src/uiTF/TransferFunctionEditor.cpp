@@ -265,7 +265,7 @@ void TransferFunctionEditor::deleteTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
                 ::fwGui::dialog::IMessageDialog::WARNING );
@@ -312,7 +312,7 @@ void TransferFunctionEditor::newTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
                 ::fwGui::dialog::IMessageDialog::WARNING);

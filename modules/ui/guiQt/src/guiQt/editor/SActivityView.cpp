@@ -166,9 +166,9 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         }
         catch( std::exception& e )
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
-                                                              e.what(),
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Activity launch failed",
+                                                 e.what(),
+                                                 ::fwGui::dialog::IMessageDialog::CRITICAL);
             SLM_ERROR(e.what());
         }
     }

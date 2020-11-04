@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -184,7 +184,7 @@ void SScanBase::detectCameraOpenni()
 
 void SScanBase::errorPopup(std::string const& msg)
 {
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+    ::fwGui::dialog::MessageDialog::show(
         "videoOrbbec error",
         msg,
         ::fwGui::dialog::IMessageDialog::CRITICAL);

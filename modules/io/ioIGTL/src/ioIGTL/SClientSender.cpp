@@ -101,7 +101,7 @@ void SClientSender::starting()
         }
         catch (::fwCore::Exception& ex)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
@@ -122,7 +122,7 @@ void SClientSender::stopping()
     }
     catch (::fwCore::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
+        ::fwGui::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());
     }
 }

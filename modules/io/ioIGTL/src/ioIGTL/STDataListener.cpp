@@ -24,8 +24,6 @@
 
 #include <arData/MatrixTL.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -37,6 +35,8 @@
 #include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <functional>
 #include <string>
@@ -134,7 +134,7 @@ void STDataListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Connection error", ex.what());
+            msgDialog.show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -167,7 +167,7 @@ void STDataListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Error", ex.what());
+            msgDialog.show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else

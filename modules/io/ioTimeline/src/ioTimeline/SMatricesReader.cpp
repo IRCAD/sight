@@ -202,7 +202,7 @@ void SMatricesReader::readPrevious()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "MatricesReader", "No previous Matrices.");
         }
 
@@ -229,7 +229,7 @@ void SMatricesReader::readNext()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "MatricesReader", "No more matrices to read.");
         }
     }

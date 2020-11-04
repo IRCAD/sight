@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ void MemoryInfo::updating( )
     stream << "DumpedBuffer size   = "  << dumpedBufferSize/mo << " Mo" << std::endl;
 
     // Information message box
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+    ::fwGui::dialog::MessageDialog::show(
         "MemoryInfo",
         stream.str(),
         ::fwGui::dialog::IMessageDialog::INFO);

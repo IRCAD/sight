@@ -409,14 +409,14 @@ void SReader::updating()
         {
             m_readFailed = true;
             SLM_ERROR( e.what() );
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", e.what(),
+                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", "Aborting operation.",
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
+                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();

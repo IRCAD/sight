@@ -342,7 +342,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Reader Error", msg);
+                    ::fwGui::dialog::MessageDialog::show("Reader Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
                 if(reader->hasFailed())
@@ -395,7 +395,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to write : \n" +  std::string(e.what());
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Writer Error", msg);
+                    ::fwGui::dialog::MessageDialog::show("Writer Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
 

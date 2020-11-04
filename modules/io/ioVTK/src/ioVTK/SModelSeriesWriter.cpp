@@ -283,7 +283,7 @@ void SModelSeriesWriter::updating()
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();
 
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     ss.str(),
                     ::fwGui::dialog::IMessageDialog::WARNING);
@@ -291,7 +291,7 @@ void SModelSeriesWriter::updating()
             catch( ... )
             {
                 m_writeFailed = true;
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Warning",
                     "Warning during saving",
                     ::fwGui::dialog::IMessageDialog::WARNING);

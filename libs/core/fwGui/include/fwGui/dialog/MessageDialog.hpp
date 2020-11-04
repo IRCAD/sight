@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ class FWGUI_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, new MessageDialog);
+    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, new MessageDialog)
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -50,6 +50,19 @@ public:
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
+    FWGUI_API static IMessageDialog::Buttons show(
+        const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+
+    /**
+     * Opens a default message box with the specified title, text and icon.
+     *
+     * @param title Title of the message box
+     * @param message Message of the message box
+     * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
+     * @deprecated use show() instead
+     * @return Returns the button enum value corresponding to the pressed button
+     */
+    [[deprecated("Sight 22.0, use show() instead.")]]
     FWGUI_API static IMessageDialog::Buttons showMessageDialog(
         const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
 
