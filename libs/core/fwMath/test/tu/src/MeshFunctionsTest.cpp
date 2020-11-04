@@ -240,6 +240,11 @@ void MeshFunctionsTest::computeBarycenterTetrahedron()
     const ::glm::dvec3 P2 = ::fwMath::fromBarycentricCoord(barycentric, A, B, C, D);
 
     this->compare(P, P2);
+
+    CPPUNIT_ASSERT_MESSAGE(
+        "The two methods verifying if a point is inside a tetrahedron don't provide the same results", ::fwMath::isInsideTetrahedron(
+            P, A, B, C,
+            D) == ::fwMath::isInsideTetrahedron(barycentric) );
 }
 
 //------------------------------------------------------------------------------
@@ -259,10 +264,10 @@ void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
     const ::glm::dvec3 Pedge {0.5, 0., 0.};
     const ::glm::dvec3 Pvertex {0., 0., 0.};
 
-    const bool isInsidePin     = ::fwMath::isInsideThetrahedron(Pin, A, B, C, D);
-    const bool isInsidePout    = ::fwMath::isInsideThetrahedron(Pout, A, B, C, D);
-    const bool isInsidePedge   = ::fwMath::isInsideThetrahedron(Pedge, A, B, C, D);
-    const bool isInsidePvertex = ::fwMath::isInsideThetrahedron(Pvertex, A, B, C, D);
+    const bool isInsidePin     = ::fwMath::isInsideTetrahedron(Pin, A, B, C, D);
+    const bool isInsidePout    = ::fwMath::isInsideTetrahedron(Pout, A, B, C, D);
+    const bool isInsidePedge   = ::fwMath::isInsideTetrahedron(Pedge, A, B, C, D);
+    const bool isInsidePvertex = ::fwMath::isInsideTetrahedron(Pvertex, A, B, C, D);
 
     CPPUNIT_ASSERT_MESSAGE("Pin should be inside though is compute outside", isInsidePin);
     CPPUNIT_ASSERT_MESSAGE("Pout should be outside though is compute inside", !isInsidePout);

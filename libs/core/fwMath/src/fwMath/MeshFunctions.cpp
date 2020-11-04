@@ -376,14 +376,15 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
           if and only if 0 ≤ u, v, w, h ≤ 1, or alternatively
           if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
 
-       The main idea of the volumic baricentric coordinate is a proportionality with the sub-tetrahedron volumes ratio
-          over the whole volume. Considering one of the four vertex (_A, _B, _C, _D), the associated baricentric
+       The main idea of the barycentric volume coordinate is a proportionality with the ratio of the sub-tetrahedron
+          volumes over the whole volume. Considering one of the four vertexes (_A, _B, _C, _D), the associated
+             barycentric
           coordinate are equal to the volume of the tetrahedron build with the three other vertexes and P,
           divided by the total tetrahedron volume.
 
        As a result, the principle in the present algorithm, is to compute the three tetrahedron (_A,_B,_C,_P)
-          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectivemy,
-          _D, _C, _B vertexes are computed, and the last baricentric coordinate is obtained by the formula
+          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectively,
+          _D, _C, _B vertexes are computed, and the last barycentric coordinate is obtained by the formula
           u + v + w + h = 1
      */
 
@@ -476,21 +477,35 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
 
 //------------------------------------------------------------------------------
 
-bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                          const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
+bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                         const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
 {
 
     /*
        There are several ways to determine if a point is inside a tetrahedron.
        The present algorithm make use of the barycentric coordinates.
-       It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
+       It first computes the barycentric coordinate of the point inside the tetrahedron, and then checks if all of them
+          are
           in between 0 and 1.
      */
     const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
-    return 0 <= barycentricCoord[0] &&  barycentricCoord[0] <= 1
-           &&  0 <= barycentricCoord[1] &&  barycentricCoord[1] <= 1
-           &&  0 <= barycentricCoord[2] &&  barycentricCoord[2] <= 1
-           &&  0 <= barycentricCoord[3] &&  barycentricCoord[3] <= 1;
+    return isInsideTetrahedron(barycentricCoord);
+}
+//------------------------------------------------------------------------------
+
+bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD)
+{
+
+    /*
+       There are several ways to determine if a point is inside a tetrahedron.
+       The present algorithm make use of the barycentric coordinates.
+       It checks if all of the barycentric coordinates are in between 0 and 1.
+
+     */
+    return 0 <= barycentricCoordPInsideABCD[0] &&  barycentricCoordPInsideABCD[0] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[1] &&  barycentricCoordPInsideABCD[1] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[2] &&  barycentricCoordPInsideABCD[2] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[3] &&  barycentricCoordPInsideABCD[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------
