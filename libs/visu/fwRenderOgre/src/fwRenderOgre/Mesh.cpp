@@ -142,16 +142,16 @@ void Mesh::bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding,
     SLM_ASSERT("Invalid vertex buffer binding", bind);
 
     ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
-    size_t offset = 0;
 
+    // Create the buffer semantic if it does not exist.
     if(!vtxDecl->findElementBySemantic(_semantic))
     {
         m_binding[_binding] = static_cast<unsigned short>(bind->getBindings().size());
 
-        vtxDecl->addElement(m_binding[_binding], offset, _type, _semantic);
-        offset += ::Ogre::VertexElement::getTypeSize(_type);
+        vtxDecl->addElement(m_binding[_binding], 0, _type, _semantic);
     }
 
+    // Get requested buffer size and previous buffer size.
     ::Ogre::HardwareVertexBufferSharedPtr cbuf;
 
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
@@ -162,6 +162,7 @@ void Mesh::bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding,
         uiPrevNumVertices = cbuf->getNumVertices();
     }
 
+    // Allocate the buffer if it necessary.
     if(!bind->isBufferBound(m_binding[_binding]) || uiPrevNumVertices < uiNumVertices )
     {
         FW_PROFILE_AVG("REALLOC LAYER", 5);
@@ -170,6 +171,8 @@ void Mesh::bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding,
         ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
                                               ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
                                               ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+        const size_t offset = ::Ogre::VertexElement::getTypeSize(_type);
 
         ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
         cbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
