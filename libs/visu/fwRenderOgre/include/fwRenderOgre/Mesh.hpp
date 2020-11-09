@@ -58,7 +58,16 @@ public:
     /// Destructor
     FWRENDEROGRE_API ~Mesh();
 
-    /// Bind a vertex layer
+    /**
+     * @brief Adds the given buffer semantic if it does not exist, and allocate it if necessary.
+     *
+     * The buffer must contain a data type and must not be interleaved.
+     *
+     * @param _mesh used to find buffer data.
+     * @param _binding layer binfing.
+     * @param _semantic semantic of the buffer.
+     * @param _type data type in the buffer.
+     */
     void bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
                    ::Ogre::VertexElementType _type);
 

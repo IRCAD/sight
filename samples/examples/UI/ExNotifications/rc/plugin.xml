@@ -9,55 +9,58 @@ this mode is not recommanded since each service can pop notification without any
 are already displayed and where they are displayed on screen.
 
 -->
-<plugin id="ExNotifications" version="@PROJECT_VERSION@">
+<plugin id="ExNotifications" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
     <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExNotificationsConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExNotifications_AppCfg</id>
         <config>
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Example of Notifications popup @PROJECT_VERSION@</name>
+                        <name>ExNotifications</name>
+                        <icon>ExNotifications-@PROJECT_VERSION@/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbar" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
                     <view sid="mainview" start="yes" />
                 </registry>
             </service>
 
-           <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+           <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
                         <editor/>
                         <editor/>
                         <separator/>
-                        <menuItem name="NOTIFY !"/>
+                        <menuItem name="NOTIFY" />
                         <spacer />
                         <separator/>
-                        <menuItem name="Color Theme"/>
+                        <menuItem name="Color Theme" />
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="useSNotifier" start="yes"/>
-                    <editor sid="type" start="yes" />
-                    <editor sid="position" start="yes" />
-                    <menuItem sid="notify" start="yes" />
-                    <menuItem sid="actionChangeTheme" start ="yes" />
+                    <editor sid="useNotifierAct" start="yes" />
+                    <editor sid="typeAct" start="yes" />
+                    <editor sid="positionAct" start="yes" />
+                    <menuItem sid="notifyAct" start="yes" />
+                    <menuItem sid="changeThemeAct" start ="yes" />
                 </registry>
             </service>
 
-            <service uid="mainview" type="::gui::view::SDefaultView">
+            <service uid="mainview" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -65,98 +68,108 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-            <service uid="notify" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>testNotifier/update</slot>
-                </slots>
-            </service>
+            <!-- ************************************* Action ************************************ -->
 
-            <service uid="useSNotifier" type="::guiQt::editor::SParameters">
+            <service uid="useNotifierAct" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="position" type="::guiQt::editor::SParameters">
-                <parameters>
-                    <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
-                </parameters>
-            </service>
-
-            <service uid="type" type="::guiQt::editor::SParameters">
+            <service uid="typeAct" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
+            <service uid="positionAct" type="::guiQt::editor::SParameters" >
+                <parameters>
+                    <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
+                </parameters>
+                <config sendAtStart="false" />
+            </service>
+
+            <service uid="notifyAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>testNotifierSrv/update</slot>
+                </slots>
+            </service>
+
+            <!-- preference to apply new theme on app -->
+            <service uid="changeThemeAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+                <preference>
+                    <type>combobox</type>
+                    <name>Color Theme</name>
+                    <key>THEME</key>
+                    <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                    <default_value>FLATDARK</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************************* Services ******************************* -->
+
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifier" type="::uiGenericQt::action::SDisplayTestNotifications" />
+            <service uid="testNotifierSrv" type="::uiGenericQt::action::SDisplayTestNotifications" />
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
-            <service uid="notifier" type="::guiQt::SNotifier" >
-                <parent uid="mainview"/> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maiview" -->
+            <service uid="notifierSrv" type="::guiQt::SNotifier" >
+                <parent uid="mainview" /> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maiview" -->
                 <message>Default Message</message><!-- Default message printed if empty string is emitted in notify* signals -->
                 <position>TOP_RIGHT</position><!-- Default position for ALL notifications (overriden by setEnumParameter slot) -->
                 <maxNotifications>3</maxNotifications> <!-- Maximum number of queued notifications -->
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
 
+            <service uid="styleChangerSrv" type="::style::SStyleSelector" />
 
-            <!-- preference to apply new theme on app -->
-            <service uid="actionChangeTheme" type="::uiPreferences::action::SPreferencesConfiguration">
-                <preference>
-                    <type>combobox</type>
-                    <name>Color Theme</name>
-                    <key>THEME</key>
-                    <values>DEFAULT,DARKSTYLE,FLATDARK</values>
-                    <default_value>DEFAULT</default_value>
-                </preference>
-            </service>
-
-            <service uid="styleChanger" type="::style::SStyleSelector" />
+            <!-- ******************************* Connections ***************************************** -->
 
             <!-- connection from IService notify signals to the SNotifier,you can add as many service as you need -->
             <connect>
-                <signal>testNotifier/infoNotified</signal>
-                <slot>notifier/popInfo</slot>
+                <signal>testNotifierSrv/infoNotified</signal>
+                <slot>notifierSrv/popInfo</slot>
             </connect>
 
             <connect>
-                <signal>testNotifier/successNotified</signal>
-                <slot>notifier/popSuccess</slot>
+                <signal>testNotifierSrv/successNotified</signal>
+                <slot>notifierSrv/popSuccess</slot>
             </connect>
 
             <connect>
-                <signal>testNotifier/failureNotified</signal>
-                <slot>notifier/popFailure</slot>
+                <signal>testNotifierSrv/failureNotified</signal>
+                <slot>notifierSrv/popFailure</slot>
             </connect>
 
             <!-- Others connections -->
             <connect>
-                <signal>position/enumChanged</signal>
-                <slot>testNotifier/setEnumParameter</slot>
-                <slot>notifier/setEnumParameter</slot>
+                <signal>positionAct/enumChanged</signal>
+                <slot>testNotifierSrv/setEnumParameter</slot>
+                <slot>notifierSrv/setEnumParameter</slot>
             </connect>
 
             <connect>
-                <signal>type/enumChanged</signal>
-                <slot>testNotifier/setEnumParameter</slot>
+                <signal>typeAct/enumChanged</signal>
+                <slot>testNotifierSrv/setEnumParameter</slot>
             </connect>
 
             <connect>
-                <signal>useSNotifier/boolChanged</signal>
-                <slot>testNotifier/setBoolParameter</slot>
+                <signal>useNotifierSrv/boolChanged</signal>
+                <slot>testNotifierSrv/setBoolParameter</slot>
             </connect>
 
             <connect>
-                <signal>actionChangeTheme/parametersModified</signal>
-                <slot>styleChanger/updateFromPreferences</slot>
+                <signal>changeThemeAct/parametersModified</signal>
+                <slot>styleChangerSrv/updateFromPreferences</slot>
             </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-            <start uid="notifier" />
-            <start uid="testNotifier" />
-            <start uid="styleChanger" />
+            <start uid="notifierSrv" />
+            <start uid="testNotifierSrv" />
+            <start uid="styleChangerSrv" />
 
         </config>
     </extension>

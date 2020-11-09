@@ -134,7 +134,7 @@ void PointEditor::swapping()
 
 void PointEditor::getInteraction(::fwDataTools::PickingInfo info)
 {
-    if ( info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE )
+    if ( info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN )
     {
         m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 3));
         m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 3));

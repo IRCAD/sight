@@ -98,6 +98,8 @@ class Layer;
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
  *      - \b height (optional, int, default=720): height for off-screen rendering.
  *  - \b background (optional): defines the scene background color.
+ *      - \b color (optional, hexadecimal, default=#000000): color of the background, can't be used with topColor and
+ *           bottomColor.
  *      - \b topColor (optional, hexadecimal, default=#000000): top color of the background.
  *      - \b bottomColor (optional, hexadecimal, default=#000000): top color of the background.
  *      - \b topScale (optional, float, default=0): top background scale.

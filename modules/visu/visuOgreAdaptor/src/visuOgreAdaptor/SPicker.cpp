@@ -29,8 +29,9 @@ namespace visuOgreAdaptor
 
 static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
-static const std::string s_PRIORITY_CONFIG   = "priority";
-static const std::string s_QUERY_MASK_CONFIG = "queryMask";
+static const std::string s_PRIORITY_CONFIG              = "priority";
+static const std::string s_QUERY_MASK_CONFIG            = "queryMask";
+static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 
 //-----------------------------------------------------------------------------
 
@@ -55,7 +56,8 @@ void SPicker::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
 
     const std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
@@ -77,7 +79,7 @@ void SPicker::starting()
     this->initialize();
 
     const auto layer = this->getLayer();
-    m_interactor = std::make_shared< ::fwRenderOgre::interactor::MeshPickerInteractor >(layer);
+    m_interactor = std::make_shared< ::fwRenderOgre::interactor::MeshPickerInteractor >(layer, m_layerOrderDependant);
     m_interactor->setQueryMask(m_queryMask);
     m_interactor->setPointClickedSig(m_pickedSig);
 

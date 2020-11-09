@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,13 +41,13 @@ class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::inter
 
 public:
 
-    /// Type of signal sent when a picking query succeeded.
+    /// Defines the type of signal sent when a picking query succeeded.
     using PointClickedSigType = ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) >;
 
-    /// Constructor. Initializes the picker.
-    FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr) noexcept;
+    /// Initializes the picker.
+    FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;
 
-    /// Destructor. Destroys the interactor.
+    /// Destroys the picker.
     FWRENDEROGRE_API virtual ~MeshPickerInteractor() noexcept;
 
     /// Runs a picking query when a mouse button is released @see MeshPickerInteractor::pick().
@@ -81,9 +81,9 @@ private:
     /// Picking query mask. Filters out objects with mismatching flags.
     std::uint32_t m_queryMask { 0xffffffff };
 
-    /// Signal sent when picking succeeded.
+    /// Defines the signal sent when picking succeeded.
     PointClickedSigType::sptr m_pointClickedSig;
 
 };
 
-} //namespace fwRenderOgre::interactor
+} //namespace fwRenderOgre::interactor.

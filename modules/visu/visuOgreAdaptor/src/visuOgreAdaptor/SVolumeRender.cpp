@@ -74,6 +74,7 @@ static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
 static const std::string s_DYNAMIC_CONFIG               = "dynamic";
 static const std::string s_WIDGETS_CONFIG               = "widgets";
 static const std::string s_PRIORITY_CONFIG              = "priority";
+static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 static const std::string s_SAMPLES_CONFIG               = "samples";
 static const std::string s_SAT_SIZE_RATIO_CONFIG        = "satSizeRatio";
 static const std::string s_SAT_SHELLS_CONFIG            = "satShells";
@@ -136,6 +137,7 @@ void SVolumeRender::configuring()
     m_dynamic                = config.get<bool>(s_DYNAMIC_CONFIG, m_dynamic);
     m_widgetVisibilty        = config.get<std::string>(s_WIDGETS_CONFIG, "yes") == "yes";
     m_priority               = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_layerOrderDependant    = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
     m_nbSamples              = config.get<std::uint16_t>(s_SAMPLES_CONFIG, m_nbSamples);
 
     // Advanced illumination parameters.
@@ -803,7 +805,7 @@ void SVolumeRender::createWidget()
     const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
 
     this->destroyWidget(); // Destroys the old widgets if they were created.
-    m_widget = std::make_shared< ::fwRenderOgre::interactor::ClippingBoxInteractor>(layer,
+    m_widget = std::make_shared< ::fwRenderOgre::interactor::ClippingBoxInteractor>(layer, m_layerOrderDependant,
                                                                                     this->getID(), m_volumeSceneNode,
                                                                                     ogreClippingMx, clippingMxUpdate,
                                                                                     "BasicAmbient", "BasicPhong");

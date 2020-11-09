@@ -124,6 +124,11 @@ void SCompositorParameter::starting()
     // Association of a listener attached to this adaptor to the configured compositor
     m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));
     m_compositor->addListener(m_listener);
+
+    if(!m_isVisible)
+    {
+        this->slot(s_UPDATE_VISIBILITY_SLOT)->asyncRun(m_isVisible);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -147,6 +152,15 @@ void SCompositorParameter::stopping()
     // Association of a listener attached to this adaptor to the configured compositor
     m_compositor->removeListener(m_listener);
     delete m_listener;
+}
+
+//-----------------------------------------------------------------------------
+
+void SCompositorParameter::setVisible(bool _enable)
+{
+    const auto layer = this->getLayer();
+    layer->updateCompositorState(m_compositorName, _enable);
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

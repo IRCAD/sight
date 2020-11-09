@@ -54,6 +54,7 @@ static const std::string s_POINTLIST_INOUT = "pointList";
 static const std::string s_MAX_CONFIG       = "max";
 static const std::string s_REMOVABLE_CONFIG = "removable";
 static const std::string s_LABEL_CONFIG     = "label";
+static const std::string s_TOLERANCE_CONFIG = "tolerance";
 
 //------------------------------------------------------------------------------
 
@@ -81,6 +82,7 @@ void SManagePointList::configuring()
         m_max       = config->get<size_t>(s_MAX_CONFIG, m_max);
         m_removable = config->get<bool>(s_REMOVABLE_CONFIG, m_removable);
         m_label     = config->get<bool>(s_LABEL_CONFIG, m_label);
+        m_tolerance = config->get<float>(s_TOLERANCE_CONFIG, m_tolerance);
     }
 }
 
@@ -110,16 +112,15 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
     {
         const ::fwData::Point::sptr point = ::fwData::Point::New();
 
-        const ::fwData::TransformationMatrix3D::csptr matrix
-            = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT);
+        const auto matrixW = this->getWeakInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT);
+        const auto matrix  = matrixW.lock();
 
         if(matrix)
         {
-            const ::fwData::mt::ObjectReadLock lock(matrix);
-
             const double* const pickedCoord = _info.m_worldPos;
             const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const ::glm::dmat4x4 mat        = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
+            const ::glm::dmat4x4 mat        = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(
+                matrix.get_shared());
 
             const ::glm::dvec4 modifiedPickedPoint = mat*pickedPoint;
             point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
@@ -144,9 +145,7 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
 
 void SManagePointList::addPoint(const ::fwData::Point::sptr _point) const
 {
-    const auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    SLM_ASSERT("'" + s_POINTLIST_INOUT + "' does not exist.", pointList);
-    const ::fwData::mt::ObjectWriteLock lock(pointList);
+    const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
     if(m_label)
     {
@@ -176,12 +175,10 @@ void SManagePointList::removePoint(const ::fwData::Point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-        SLM_ASSERT("'" + s_POINTLIST_INOUT + "' does not exist.", pointList);
-        const ::fwData::mt::ObjectWriteLock lock(pointList);
+        const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
         const ::fwData::Point::sptr pointRes =
-            ::fwDataTools::helper::PointList::removeClosestPoint(pointList, _point, 10);
+            ::fwDataTools::helper::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
         if(pointRes != nullptr)
         {
@@ -196,9 +193,7 @@ void SManagePointList::removePoint(const ::fwData::Point::csptr _point) const
 
 void SManagePointList::clearPoints() const
 {
-    const auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    SLM_ASSERT("'" + s_POINTLIST_INOUT + "' does not exist.", pointList);
-    const ::fwData::mt::ObjectWriteLock lock(pointList);
+    const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
     using PLContainer = ::fwData::PointList::PointListContainer;
     const PLContainer container = pointList->getPoints();

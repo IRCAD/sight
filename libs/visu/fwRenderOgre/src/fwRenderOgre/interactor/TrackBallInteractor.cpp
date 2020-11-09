@@ -42,8 +42,8 @@ namespace interactor
 
 // ----------------------------------------------------------------------------
 
-TrackballInteractor::TrackballInteractor(Layer::sptr _layer) :
-    IInteractor(_layer)
+TrackballInteractor::TrackballInteractor(Layer::sptr _layer, bool _layerOrderDependant) :
+    IInteractor(_layer, _layerOrderDependant)
 {
 }
 
@@ -89,7 +89,7 @@ void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton, Modifier, i
 {
     if(auto layer = m_layer.lock())
     {
-        m_mouseMove = isInLayer(_x, _y, layer);
+        m_mouseMove = isInLayer(_x, _y, layer, m_layerOrderDependant);
     }
 }
 
@@ -106,7 +106,7 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
-        if(isInLayer(x, y, layer))
+        if(isInLayer(x, y, layer, m_layerOrderDependant))
         {
             constexpr float mouseScale = 0.01f;
 
@@ -139,7 +139,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
 {
     if(auto layer = m_layer.lock())
     {
-        if(isInLayer(_mouseX, _mouseY, layer))
+        if(isInLayer(_mouseX, _mouseY, layer, m_layerOrderDependant))
         {
             if(key == 'R' || key == 'r')
             {

@@ -1,31 +1,60 @@
-
 set( NAME ExSolvePnP )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    appXml
-    arData
-    ctrlCamp
+    fwlauncher              # Needed to build the launcher
+    appXml                  # XML configurations
+
+    preferences             # Start the module, load file location or window preferences
+    visuOgre                # Start the module, allow to use fwRenderOgre
+    material                # Start the module, load Ogre's materials
+    guiQt                   # Start the module, allow dark theme
+    visuOgreQt              # Enable Ogre to render things in Qt window
+
+    # Objects declaration
     fwData
-    fwlauncher
+    servicesReg             # fwService
+    arData
+
+    # UI declaration/Actions
     gui
-    guiQt
-    ioCalibration
+    style
+    flatIcon
+
+    # Reader
     ioVTK
-    uiPreferences
-    uiTools
-    preferences
-    servicesReg
-    registrationCV
+    ioCalibration
+
+    # Grabber
     videoQt
+    videoOpenCV
+
+    # Services
     videoTools
-    visuVTK
-    visuVTKAdaptor
-    visuVTKARAdaptor
-    visuVTKQt
+    ctrlCamp
+    uiPreferences
     ctrlPicking
-    media
+    uiTools
+    registrationCV
+
+    # Generic Scene
+    visuOgreAdaptor
     )
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES ExSolvePnPConfig)
+moduleParam(guiQt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        style-0.1/flatdark.rcc
+        style-0.1/flatdark.qss
+) # Allow dark theme via guiQt
+
+moduleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExSolvePnP_AppCfg
+) # Main application's configuration to launch

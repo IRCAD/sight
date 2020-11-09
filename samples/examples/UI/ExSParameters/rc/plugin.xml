@@ -4,19 +4,23 @@ This example shows the possibilities of SParameters:
 - The two lower SParameters allow to set the minimum/maximum values of the upper SParameters (with the same name).
    - The minimum of a parameter is connected to the minimum of the maximum parameter (and vice versa)
 -->
-<plugin id="ExSParameters" version="@PROJECT_VERSION@">
+<plugin id="ExSParameters" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="preferences" />
+    <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex07SParametersConfig</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExSParameters_AppCfg</id>
         <config>
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Example 08 SParameters @PROJECT_VERSION@</name>
+                        <name>ExSParameters</name>
+                        <icon>ExSParameters-@PROJECT_VERSION@/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -25,49 +29,51 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="mainview" type="::gui::view::SDefaultView">
+            <service uid="mainview" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
-                        <view caption="Parameters" proportion="1" />
-                        <view caption="Minimum parameters" proportion="0" />
+                        <view proportion="1" />
+                        <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="parametersView" start="yes" />
-                    <view sid="minMaxparametersView" start="yes" />
+                    <view sid="minmaxParametersSrvView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="parametersView" type="::gui::view::SDefaultView">
+            <service uid="parametersView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
-                        <view caption="Parameters 1" proportion="1" />
-                        <view caption="Parameters 2" proportion="1" />
+                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" backgroundColor="#36393E" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="parameters1" start="yes" />
-                    <view sid="parameters2" start="yes" />
+                    <view sid="parameters1Srv" start="yes" />
+                    <view sid="parameters2Srv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="minMaxparametersView" type="::gui::view::SDefaultView">
+            <service uid="minmaxParametersSrvView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
-                        <view caption="Minimum parameters" proportion="0" />
-                        <view caption="Maximum parameters" proportion="0" />
+                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" backgroundColor="#36393E" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="minParameters" start="yes" />
-                    <view sid="maxParameters" start="yes" />
+                    <view sid="minParametersSrv" start="yes" />
+                    <view sid="maxParametersSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="parameters1" type="::guiQt::editor::SParameters">
+            <!-- ******************************* Services ******************************* -->
+
+            <service uid="parameters1Srv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" depends="enable" />
@@ -82,9 +88,10 @@ This example shows the possibilities of SParameters:
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1,V2,V3" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="parameters2" type="::guiQt::editor::SParameters">
+            <service uid="parameters2Srv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" depends="enable"  />
@@ -99,9 +106,10 @@ This example shows the possibilities of SParameters:
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1,V2,V3" depends="enable"  />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="minParameters" type="::guiQt::editor::SParameters">
+            <service uid="minParametersSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.2" min="0." max="0.8" />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0." min="0." max="80." />
@@ -112,9 +120,10 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="0" min="0" max="80" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="0" min="0" max="80" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="maxParameters" type="::guiQt::editor::SParameters">
+            <service uid="maxParametersSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.7" min="0.2" max="1." />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." />
@@ -125,133 +134,140 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="20" min="0" max="100" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="20" min="0" max="100" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
+
+            <!-- ******************************* Connections ***************************************** -->
 
             <!-- Connect all the parameters to each other -->
             <connect>
-                <signal>parameters1/boolChanged</signal>
-                <slot>parameters2/setBoolParameter</slot>
+                <signal>parameters1Srv/boolChanged</signal>
+                <slot>parameters2Srv/setBoolParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/boolChanged</signal>
-                <slot>parameters1/setBoolParameter</slot>
+                <signal>parameters2Srv/boolChanged</signal>
+                <slot>parameters1Srv/setBoolParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/colorChanged</signal>
-                <slot>parameters2/setColorParameter</slot>
+                <signal>parameters1Srv/colorChanged</signal>
+                <slot>parameters2Srv/setColorParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/colorChanged</signal>
-                <slot>parameters1/setColorParameter</slot>
+                <signal>parameters2Srv/colorChanged</signal>
+                <slot>parameters1Srv/setColorParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/doubleChanged</signal>
-                <slot>parameters2/setDoubleParameter</slot>
+                <signal>parameters1Srv/doubleChanged</signal>
+                <slot>parameters2Srv/setDoubleParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/doubleChanged</signal>
-                <slot>parameters1/setDoubleParameter</slot>
+                <signal>parameters2Srv/doubleChanged</signal>
+                <slot>parameters1Srv/setDoubleParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/double2Changed</signal>
-                <slot>parameters2/setDouble2Parameter</slot>
+                <signal>parameters1Srv/double2Changed</signal>
+                <slot>parameters2Srv/setDouble2Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/double2Changed</signal>
-                <slot>parameters1/setDouble2Parameter</slot>
+                <signal>parameters2Srv/double2Changed</signal>
+                <slot>parameters1Srv/setDouble2Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/double3Changed</signal>
-                <slot>parameters2/setDouble3Parameter</slot>
+                <signal>parameters1Srv/double3Changed</signal>
+                <slot>parameters2Srv/setDouble3Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/double3Changed</signal>
-                <slot>parameters1/setDouble3Parameter</slot>
+                <signal>parameters2Srv/double3Changed</signal>
+                <slot>parameters1Srv/setDouble3Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/intChanged</signal>
-                <slot>parameters2/setIntParameter</slot>
+                <signal>parameters1Srv/intChanged</signal>
+                <slot>parameters2Srv/setIntParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/intChanged</signal>
-                <slot>parameters1/setIntParameter</slot>
+                <signal>parameters2Srv/intChanged</signal>
+                <slot>parameters1Srv/setIntParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/int2Changed</signal>
-                <slot>parameters2/setInt2Parameter</slot>
+                <signal>parameters1Srv/int2Changed</signal>
+                <slot>parameters2Srv/setInt2Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/int2Changed</signal>
-                <slot>parameters1/setInt2Parameter</slot>
+                <signal>parameters2Srv/int2Changed</signal>
+                <slot>parameters1Srv/setInt2Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/int3Changed</signal>
-                <slot>parameters2/setInt3Parameter</slot>
+                <signal>parameters1Srv/int3Changed</signal>
+                <slot>parameters2Srv/setInt3Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/int3Changed</signal>
-                <slot>parameters1/setInt3Parameter</slot>
+                <signal>parameters2Srv/int3Changed</signal>
+                <slot>parameters1Srv/setInt3Parameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters1/enumChanged</signal>
-                <slot>parameters2/setEnumParameter</slot>
+                <signal>parameters1Srv/enumChanged</signal>
+                <slot>parameters2Srv/setEnumParameter</slot>
             </connect>
 
             <connect>
-                <signal>parameters2/enumChanged</signal>
-                <slot>parameters1/setEnumParameter</slot>
+                <signal>parameters2Srv/enumChanged</signal>
+                <slot>parameters1Srv/setEnumParameter</slot>
             </connect>
 
             <!-- Connection to update the parameters minimum/maximum -->
             <connect>
-                <signal>minParameters/intChanged</signal>
-                <slot>parameters1/setIntMinParameter</slot>
-                <slot>parameters2/setIntMinParameter</slot>
-                <slot>maxParameters/setIntMinParameter</slot>
+                <signal>minParametersSrv/intChanged</signal>
+                <slot>parameters1Srv/setIntMinParameter</slot>
+                <slot>parameters2Srv/setIntMinParameter</slot>
+                <slot>maxParametersSrv/setIntMinParameter</slot>
             </connect>
 
             <connect>
-                <signal>maxParameters/intChanged</signal>
-                <slot>parameters1/setIntMaxParameter</slot>
-                <slot>parameters2/setIntMaxParameter</slot>
-                <slot>minParameters/setIntMaxParameter</slot>
+                <signal>maxParametersSrv/intChanged</signal>
+                <slot>parameters1Srv/setIntMaxParameter</slot>
+                <slot>parameters2Srv/setIntMaxParameter</slot>
+                <slot>minParametersSrv/setIntMaxParameter</slot>
             </connect>
 
             <connect>
-                <signal>minParameters/doubleChanged</signal>
-                <slot>parameters1/setDoubleMinParameter</slot>
-                <slot>parameters2/setDoubleMinParameter</slot>
-                <slot>maxParameters/setDoubleMinParameter</slot>
+                <signal>minParametersSrv/doubleChanged</signal>
+                <slot>parameters1Srv/setDoubleMinParameter</slot>
+                <slot>parameters2Srv/setDoubleMinParameter</slot>
+                <slot>maxParametersSrv/setDoubleMinParameter</slot>
             </connect>
 
             <connect>
-                <signal>maxParameters/doubleChanged</signal>
-                <slot>parameters1/setDoubleMaxParameter</slot>
-                <slot>parameters2/setDoubleMaxParameter</slot>
-                <slot>minParameters/setDoubleMaxParameter</slot>
+                <signal>maxParametersSrv/doubleChanged</signal>
+                <slot>parameters1Srv/setDoubleMaxParameter</slot>
+                <slot>parameters2Srv/setDoubleMaxParameter</slot>
+                <slot>minParametersSrv/setDoubleMaxParameter</slot>
             </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
 
-            <update uid="parameters2" />
-            <update uid="minParameters" />
-            <update uid="maxParameters" />
+            <!-- ******************************* Update services ***************************************** -->
+
+            <update uid="parameters2Srv" />
+            <update uid="minParametersSrv" />
+            <update uid="maxParametersSrv" />
 
         </config>
     </extension>

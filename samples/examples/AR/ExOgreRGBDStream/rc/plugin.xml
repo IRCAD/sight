@@ -1,13 +1,18 @@
-<plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@">
+<plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@" >
 
     <requirement id="scene2D" />
+    <requirement id="guiQt" />
     <requirement id="servicesReg" />
+    <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
+    <requirement id="material" />
     <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExOgreRGBDStream</id>
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExOgreRGBDStream_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="frameTLVideo" type="::arData::FrameTL" />
             <object uid="frameTLDepth" type="::arData::FrameTL" />
@@ -15,7 +20,7 @@
             <object uid="imageDepth" type="::fwData::Image" />
             <object uid="imageVideo" type="::fwData::Image" />
             <object uid="viewport" type="::fwRenderQt::data::Viewport" />
-            <object uid="tfDepth" type="::fwData::TransferFunction">
+            <object uid="tfDepth" type="::fwData::TransferFunction" >
                 <colors>
                     <step color="#000000ff" value="0" />
                     <step color="#ff0000ff" value="1" />
@@ -27,41 +32,48 @@
                 </colors>
             </object>
 
-            <!-- ******************************* Begin layouts declaration ***************************************** -->
-            <service uid="mainView" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExOgreRGBDStream</name>
-                        <icon>ExOgreRGBDStream-@PROJECT_VERSION@/ogre_head.svg</icon>
+                        <icon>ExOgreRGBDStream-@PROJECT_VERSION@/app.ico</icon>
                         <minSize width="1024" height="768" />
                     </frame>
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbar" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
                     <view sid="scanningView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start" icon="media-0.1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="media-0.1/icons/stop-cam.svg" />
+                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="cameraSelector" start="yes" />
-                    <menuItem sid="startVideo" start="yes" />
-                    <menuItem sid="stopVideo" start="yes" />
+                    <editor sid="videoSelectorSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="resumeVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
                 </registry>
             </service>
 
             <!-- Begin Scanning views -->
-            <service uid="scanningView" type="::gui::view::SDefaultView">
+            <service uid="scanningView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="30" />
                         <view proportion="70" />
@@ -73,179 +85,227 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="::gui::view::SDefaultView">
+            <service uid="TFView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="80" />
                         <view proportion="20" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="TFEditor" start="yes" />
-                    <view sid="TFEditorSettings" start="yes" />
+                    <view sid="genericSceneTFSrv" start="yes" />
+                    <view sid="genericSceneViewportSelectorSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::gui::view::SDefaultView">
+            <service uid="RGBDView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="distanceMapRender" start="yes" />
-                    <view sid="videoViewRender" start="yes" />
+                    <view sid="distanceMapRenderSrv" start="yes" />
+                    <view sid="videoRenderSrv" start="yes" />
                 </registry>
             </service>
 
-            <!-- ********************************* End layouts declaration ***************************************** -->
+            <!-- ************************************* Action ************************************ -->
 
-            <!-- *************************** Begin generic scene *************************** -->
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
 
-            <service uid="distanceMapRender" type="::fwRenderOgre::SRender">
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="distanceMapRenderSrv" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="default" order="1" background="0.0" />
-                    <adaptor uid="depthAdaptor" />
+                    <adaptor uid="depthAdp" />
                 </scene>
             </service>
 
-            <service uid="depthAdaptor" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
+            <service uid="depthAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="default" />
             </service>
 
-            <!-- *************************** End generic scene *************************** -->
+            <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <!-- *************************** Begin generic scene *************************** -->
-
-            <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
+            <service uid="videoRenderSrv" type="::fwRenderOgre::SRender" >
                 <scene>
                     <layer id="default" order="1" background="0.0" />
-                    <adaptor uid="videoAdaptor" />
+                    <adaptor uid="videoAdp" />
                 </scene>
             </service>
 
-            <service uid="videoAdaptor" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
+            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="default" />
             </service>
 
-            <!-- *************************** End generic scene *************************** -->
+            <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="TFEditor" type="::fwRenderQt::SRender">
+            <service uid="genericSceneTFSrv" type="::fwRenderQt::SRender" >
                 <scene>
-                    <scene x="-20" y="-1.1" width="5020" height="1.2" antialiasing="true" />
+                    <scene x="-20" y="-1.1" width="5020" height="1.2" antialiasing="true" background="#36393E" />
+
                     <viewport x="200" y="-1.1" width="400" height="1.2" />
+
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                    <adaptor uid="grid" />
-                    <adaptor uid="abscissa" />
-                    <adaptor uid="ordinate" />
-                    <adaptor uid="maxOpacity" />
-                    <adaptor uid="tf2" />
-                    <adaptor uid="viewportRangeUpdater" />
-                    <adaptor uid="scaleValuesLeft" />
-                    <adaptor uid="axisLeft" />
-                    <adaptor uid="scaleValuesBottom" />
-                    <adaptor uid="axisBottom" />
+
+                    <adaptor uid="TFGridAdp" />
+                    <adaptor uid="TFAbscissaAdp" />
+                    <adaptor uid="TFOrdinateAdp" />
+                    <adaptor uid="TFMaxOpacityAdp" />
+                    <adaptor uid="TFTransferFunctionAdp" />
+                    <adaptor uid="TFViewportRangeUpdaterAdp" />
+                    <adaptor uid="TFScaleValuesLeftAdp" />
+                    <adaptor uid="TFAxisLeftAdp" />
+                    <adaptor uid="TFScaleValuesBottomAdp" />
+                    <adaptor uid="TFAxisBottomAdp" />
                 </scene>
             </service>
 
-            <service uid="grid" type="::scene2D::adaptor::SGrid2D">
-                <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+            <service uid="TFGridAdp" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
 
-            <service uid="abscissa" type="::scene2D::adaptor::SLine">
-                <config x1="-20" x2="5020" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+            <service uid="TFAbscissaAdp" type="::scene2D::adaptor::SLine" >
+                <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="ordinate" type="::scene2D::adaptor::SLine">
-                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+            <service uid="TFOrdinateAdp" type="::scene2D::adaptor::SLine" >
+                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="maxOpacity" type="::scene2D::adaptor::SLine">
-                <config x1="-20" x2="5020" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+            <service uid="TFMaxOpacityAdp" type="::scene2D::adaptor::SLine" >
+                <config x1="-20" x2="5020" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
             </service>
 
-            <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
+            <service uid="TFTransferFunctionAdp" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" />
+                <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
-            <service uid="viewportRangeUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
+            <service uid="TFViewportRangeUpdaterAdp" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
 
-            <service uid="scaleValuesLeft" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+            <service uid="TFScaleValuesLeftAdp" type="::scene2D::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
-                <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+            <service uid="TFAxisLeftAdp" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
-                <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="scaleValuesBottom" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+            <service uid="TFScaleValuesBottomAdp" type="::scene2D::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
-                <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="axisBottom" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+            <service uid="TFAxisBottomAdp" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
-                <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" >
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneViewportSelectorSrv" type="::fwRenderQt::SRender" >
                 <scene>
-                    <scene x="-20" y="-1.1" width="5020" height="1.2" />
+                    <scene x="-20" y="-1.1" width="5020" height="1.2" background="#36393E" />
+
                     <viewport x="-20" y="-1.1" width="5020" height="1.2" />
+
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                    <adaptor uid="shutterGrid" />
+
                     <adaptor uid="shutterAbscissa" />
                     <adaptor uid="shutterOrdinate" />
-                    <adaptor uid="viewportRangeSelector" />
+                    <adaptor uid="VSRangeSelectorAdp" />
                 </scene>
             </service>
 
-            <service uid="shutterGrid" type="::scene2D::adaptor::SGrid2D">
-                <config xMin="-20" xMax="5020" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+            <service uid="shutterAbscissa" type="::scene2D::adaptor::SLine" >
+                <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="shutterAbscissa" type="::scene2D::adaptor::SLine">
-                <config x1="-20" x2="5020" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+            <service uid="shutterOrdinate" type="::scene2D::adaptor::SLine" >
+                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="shutterOrdinate" type="::scene2D::adaptor::SLine">
-                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-            </service>
-
-            <service uid="viewportRangeSelector" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes">
+            <service uid="VSRangeSelectorAdp" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
                 <inout key="viewport" uid="viewport" />
-                <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
+                <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>
 
-            <!-- ********************************** Begin services declarations ************************************ -->
-            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
-                <in group="frameTL">
-                <key uid="frameTLVideo" autoConnect="yes"/>
-                <key uid="frameTLDepth" autoConnect="yes"/>
-                </in>
-                <inout group="image">
-                    <key uid="imageVideo" />
-                    <key uid="imageDepth" />
-                </inout>
+            <!-- ************************************* Services ************************************ -->
+
+            <!-- The videoSelectorSrv creates 2 empty ::arData::Camera so we can use it without any prior calibration -->
+            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <videoSupport>yes</videoSupport>
+                <createCameraNumber>2</createCameraNumber>
             </service>
 
-            <service uid="grabber" type="::videoTools::SGrabberProxy" >
+            <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy" >
                 <in key="camera" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
@@ -256,62 +316,62 @@
                 </config>
             </service>
 
-            <!-- The CameraSelector creates 2 empty ::arData::Camera so we can use it without any prior calibration -->
-            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
-                <videoSupport>yes</videoSupport>
-                <createCameraNumber>2</createCameraNumber>
+            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer" >
+                <in group="frameTL" >
+                <key uid="frameTLVideo" autoConnect="yes" />
+                <key uid="frameTLDepth" autoConnect="yes" />
+                </in>
+                <inout group="image" >
+                    <key uid="imageVideo" />
+                    <key uid="imageDepth" />
+                </inout>
             </service>
 
-            <service uid="startVideo" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>startVideo/setInexecutable</slot>
-                    <slot>grabber/startCamera</slot>
-                    <slot>stopVideo/setExecutable</slot>
-                </slots>
-            </service>
+            <!-- ******************************* Connections ***************************************** -->
 
-            <service uid="stopVideo" type="::gui::action::SSlotCaller">
-                <state executable="false" />
-                <slots>
-                    <slot>stopVideo/setInexecutable</slot>
-                    <slot>grabber/stopCamera</slot>
-                    <slot>startVideo/setExecutable</slot>
-                </slots>
-            </service>
-
-            <!-- ***************************************** Begin connections declarations ************************** -->
             <connect>
-                <signal>cameraSelector/configuredCameras</signal>
-                <slot>grabber/reconfigure</slot>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
             </connect>
-            <!-- ***************************************** End connections declarations **************************** -->
 
-            <!-- layouts -->
-            <start uid="mainView" />
-            <!-- reconstruction services -->
-            <start uid="synchronizer" />
-            <start uid="grabber" />
-            <!-- TFEditor Scene2D -->
-            <start uid="grid" />
-            <start uid="abscissa" />
-            <start uid="ordinate" />
-            <start uid="maxOpacity" />
-            <start uid="tf2" />
-            <start uid="viewportRangeUpdater" />
-            <start uid="scaleValuesLeft" />
-            <start uid="axisLeft" />
-            <start uid="scaleValuesBottom" />
-            <start uid="axisBottom" />
-            <!-- TFEditorSettings Scene2D -->
-            <start uid="shutterGrid" />
+            <connect>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>videoSelectorSrv/configuredCameras</signal>
+                <slot>videoGrabberSrv/reconfigure</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="videoGrabberSrv" />
+
+            <start uid="TFGridAdp" />
+            <start uid="TFAbscissaAdp" />
+            <start uid="TFOrdinateAdp" />
+            <start uid="TFMaxOpacityAdp" />
+            <start uid="TFTransferFunctionAdp" />
+            <start uid="TFViewportRangeUpdaterAdp" />
+            <start uid="TFScaleValuesLeftAdp" />
+            <start uid="TFAxisLeftAdp" />
+            <start uid="TFScaleValuesBottomAdp" />
+            <start uid="TFAxisBottomAdp" />
+
             <start uid="shutterAbscissa" />
             <start uid="shutterOrdinate" />
-            <start uid="viewportRangeSelector" />
-            <!-- Ogre scene 'distanceMapRender' -->
-            <start uid="depthAdaptor" />
-            <!-- Ogre scene 'videoViewRender' -->
-            <start uid="videoAdaptor" />
+            <start uid="VSRangeSelectorAdp" />
+            <start uid="depthAdp" />
+            <start uid="videoAdp" />
+
         </config>
     </extension>
 </plugin>

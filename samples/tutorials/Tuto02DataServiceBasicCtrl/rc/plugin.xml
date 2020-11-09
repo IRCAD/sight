@@ -1,8 +1,0 @@
-<plugin id="Tuto02DataServiceBasicCtrl" class="::Tuto02DataServiceBasicCtrl::Plugin"  version="@PROJECT_VERSION@" >
-
-    <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
-
-    <library name="Tuto02DataServiceBasicCtrl" />
-    
-</plugin>

@@ -25,7 +25,8 @@
 namespace visuOgreAdaptor
 {
 
-static const std::string s_PRIORITY_CONFIG = "priority";
+static const std::string s_PRIORITY_CONFIG              = "priority";
+static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 
 //-----------------------------------------------------------------------------
 
@@ -50,7 +51,8 @@ void STrackballCamera::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +62,7 @@ void STrackballCamera::starting()
     this->initialize();
 
     const auto layer = this->getLayer();
-    m_trackball = std::make_shared< ::fwRenderOgre::interactor::TrackballInteractor >(layer);
+    m_trackball = std::make_shared< ::fwRenderOgre::interactor::TrackballInteractor >(layer, m_layerOrderDependant);
 
     layer->addInteractor(m_trackball, m_priority);
 }

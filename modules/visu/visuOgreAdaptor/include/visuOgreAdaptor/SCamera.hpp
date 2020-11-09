@@ -148,6 +148,12 @@ private:
     /// Handles connection with the layer.
     ::fwCom::helper::SigSlotConnection m_layerConnection;
 
+    /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
+    struct CameraNodeListener;
+    CameraNodeListener* m_cameraNodeListener { nullptr };
+
+    /// This avoids a self-call to updateTF3D() when we update() the camera
+    bool m_skipUpdate { false };
 };
 
 //------------------------------------------------------------------------------

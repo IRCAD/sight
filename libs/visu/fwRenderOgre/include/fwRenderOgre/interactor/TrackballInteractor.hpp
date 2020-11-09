@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,9 +43,9 @@ class FWRENDEROGRE_CLASS_API TrackballInteractor : public ::fwRenderOgre::intera
 public:
 
     /// Initializes the trackball.
-    FWRENDEROGRE_API TrackballInteractor(SPTR(Layer)_layer = nullptr);
+    FWRENDEROGRE_API TrackballInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
 
-    /// Destructs the trackball.
+    /// Destroys the trackball.
     virtual FWRENDEROGRE_API ~TrackballInteractor() override;
 
     /**
@@ -95,6 +95,7 @@ public:
     FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength) final;
 
 private:
+
     /**
      * @brief The camera's scene node will rotate around its point of interest (lookAt).
      * @param dx The mouse's X displacement
@@ -132,6 +133,7 @@ private:
 
     /// Timer used to animate the camera.
     ::fwThread::Timer::sptr m_timer;
+
 };
 
 } // namespace fwRenderOgre::interactor

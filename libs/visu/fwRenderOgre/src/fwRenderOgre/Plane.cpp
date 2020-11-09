@@ -112,6 +112,7 @@ void Plane::initializeMaterial()
 {
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
+    SLM_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
     // If the texture material exists, delete it.
     if(m_texMaterial)

@@ -87,20 +87,19 @@ const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
-    Layer* m_layer;
-    int m_frameId;
+    Layer* m_layer { nullptr };
+    int m_frameId { 0 };
 
     //------------------------------------------------------------------------------
 
     LayerCameraListener(Layer* renderer) :
-        m_layer(renderer),
-        m_frameId(0)
+        m_layer(renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void cameraPreRenderScene(::Ogre::Camera*) final
+    void cameraPreRenderScene(::Ogre::Camera*) final
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
@@ -162,26 +161,6 @@ Layer::Layer()
 
 Layer::~Layer()
 {
-    if(m_camera && m_cameraListener)
-    {
-        m_camera->removeListener(m_cameraListener);
-        delete m_cameraListener;
-        m_cameraListener = nullptr;
-    }
-
-    if(m_autostereoListener)
-    {
-        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
-    }
-
-    if(m_sceneManager)
-    {
-        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-        m_sceneManager = nullptr;
-    }
-    m_camera = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -381,11 +360,35 @@ void Layer::createScene()
 
 void Layer::destroyScene()
 {
+    // Remove the background material
+    ::Ogre::MaterialManager::getSingleton().remove(
+        this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
     if(m_lightAdaptor)
     {
         ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
         m_lightAdaptor.reset();
     }
+
+    if(m_camera && m_cameraListener)
+    {
+        m_camera->removeListener(m_cameraListener);
+        delete m_cameraListener;
+        m_cameraListener = nullptr;
+    }
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
+    if(m_sceneManager)
+    {
+        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+        m_sceneManager = nullptr;
+    }
+    m_camera = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -545,7 +548,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     }
 
     m_cancelFurtherInteraction = false;
-    this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------
