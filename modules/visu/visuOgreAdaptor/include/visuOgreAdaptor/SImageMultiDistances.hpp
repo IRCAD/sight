@@ -68,7 +68,7 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, int, default=16): font size in points.
  * - \b radius (optional, float, default=4.5): size of the distances spheres.
  * - \b interactive (optional, bool, default=true): enables interactions with distances.
- * - \b priority (optional, int, default=3): priority of the interactor.
+ * - \b priority (optional, int, default=2): priority of the interactor.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
  *      snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
@@ -199,7 +199,7 @@ private:
 
     /**
      * @brief Retrieves the picked distance and stores the result in m_pickedData.
-     * @param _button Mousse modifier.
+     * @param _button mouse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
