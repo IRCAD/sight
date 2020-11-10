@@ -669,7 +669,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     {
         const auto lock = mesh->lock();
 
-        // 3 points per triangles and one cell per triangles.
+        // 3 points per triangle and one cell per triangle.
         mesh->resize(static_cast< ::fwData::Mesh::Size >( _triangulation.size() * 3 ),
                      static_cast< ::fwData::Mesh::Size >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
                      ::fwData::Mesh::Attributes::POINT_NORMALS);

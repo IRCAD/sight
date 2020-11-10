@@ -160,8 +160,8 @@ void ConversionTest::dataToAtomTest()
                 continue;
             }
 
-            int type              = metaClass.property(elem.first).type();
-            std::string attribute = metaClass.property(elem.first).name();
+            const int type              = metaClass.property(elem.first).type();
+            const std::string attribute = metaClass.property(elem.first).name();
             switch(type)
             {
                 case camp::stringType:

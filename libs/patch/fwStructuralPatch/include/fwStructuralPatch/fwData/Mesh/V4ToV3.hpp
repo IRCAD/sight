@@ -35,7 +35,7 @@ namespace fwData
 namespace Mesh
 {
 
-/// Structural patch to convert a fwData::Mesh from version '3' to version '4'.
+/// Structural patch to convert a fwData::Mesh from version '4' to version '3'.
 class FWSTRUCTURALPATCH_CLASS_API V4ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:

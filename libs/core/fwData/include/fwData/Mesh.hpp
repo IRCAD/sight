@@ -257,7 +257,7 @@ namespace fwData
         // define the point indices
         for (size_t i = 0; i < 4; ++i)
         {
-            ::fwData::Mesh::CellValueType ptIdx = val;
+            ::fwData::Mesh::CellId ptIdx = val;
             it->pointIdx[i] = ptIdx;
         }
     }
@@ -785,7 +785,7 @@ public:
     Attributes getAttributes() const;
 
     /// Sets current Attributes of the Mesh as binary mask @see ::fwData::Mesh::Attributes
-    /// @warning: Attributes are set automaticaly or using resize()/reserve methode, usualy it is not recommended to
+    /// @warning: Attributes are set automatically or using resize()/reserve methode, usually it is not recommended to
     /// call this method.
     ///  This is only used when converting from/to fwAtoms
     void setAttributes(const Attributes& _attributes);

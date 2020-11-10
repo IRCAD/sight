@@ -44,7 +44,7 @@ public:
 
     /**
      * Typedef for cell index in DICOM world (32 bits see VR OL).
-     * Sight uses uint64_t (see ::fwData::Mesh::CellValueType).
+     * Sight uses uint64_t (see ::fwData::Mesh::CellId).
      */
     typedef std::uint32_t DicomCellValueType;
 

@@ -72,7 +72,7 @@ enum class CellType : std::uint8_t
     TETRA
 };
 
-/// Stores point iterator informations.
+/// Stores point iterator information.
 template<bool isConst>
 struct PointInfoBase {
 
@@ -114,7 +114,7 @@ struct PointInfoBase {
     tex_value_type* tex { nullptr };
 };
 
-/// Stores cell iterator informations.
+/// Stores cell iterator information.
 template<bool isConst>
 struct CellInfoBase {
 
@@ -162,7 +162,7 @@ struct CellInfoBase {
     /// Contains the current cell texture coordinates.
     tex_value_type* tex { nullptr };
 
-    /// Contains the number of point in the cell.
+    /// Contains the number of points in the cell.
     Size nbPoints { 0 };
 
     /// Stores current idx (from CellIterator).
@@ -239,7 +239,7 @@ protected:
     /// Defines the current index of the iterator.
     difference_type m_idx { 0 };
 
-    /// Defines the number of ellement of the iterator.
+    /// Defines the number of elements of the iterator.
     difference_type m_numberOfElements { 0 };
 };
 
@@ -379,13 +379,13 @@ protected:
     friend class CellIterator;
     friend class ConstCellIterator;
 
-    /// Contains iterator informations.
+    /// Contains iterator information.
     std::unique_ptr<CellInfo> m_cellInfo;
 
     /// Defines the current index of the iterator.
     difference_type m_idx { 0 };
 
-    /// Defines the number of ellement of the iterator.
+    /// Defines the number of elements of the iterator.
     difference_type m_numberOfElements { 0 };
 
     /// Defines the cell data size of the mesh.
