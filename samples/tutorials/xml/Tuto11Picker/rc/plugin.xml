@@ -128,7 +128,6 @@
                     <adaptor uid="meshAdp" />
                     <adaptor uid="negatoAdp" />
                     <adaptor uid="snapshotAdp" />
-                    <adaptor uid="pickedVoxelTextAdp" />
                 </scene>
             </service>
 
@@ -136,8 +135,9 @@
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SPicker" >
-                <config layer="default" />
+            <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SVoxelPicker" >
+                <in key="image" uid="image" />
+                <config layer="default" mode="3D" priority="1" />
             </service>
 
             <service uid="meshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
@@ -153,11 +153,6 @@
             <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot" />
                 <config layer="default" flip="true" />
-            </service>
-
-            <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText" >
-                <text></text>
-                <config layer="default" x="0.01" y="0.01" hAlign="left" vAlign="top" color="#D35151" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -227,12 +222,6 @@
                 <slot>pointEditorSrv/getInteraction</slot>
             </connect>
 
-            <!-- Display the picked voxel information -->
-            <connect>
-                <signal>negatoAdp/pickedVoxel</signal>
-                <slot>pickedVoxelTextAdp/setText</slot>
-            </connect>
-
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -243,7 +232,6 @@
             <start uid="meshAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
-            <start uid="pickedVoxelTextAdp" />
 
         </config>
     </extension>

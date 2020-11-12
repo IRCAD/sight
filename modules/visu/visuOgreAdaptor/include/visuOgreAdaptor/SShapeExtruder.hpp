@@ -224,7 +224,7 @@ private:
     /**
      * @brief Adds a new point to the lasso.
      * @pre @ref m_toolEnableState must be true.
-     * @param _button Mousse modifier.
+     * @param _button mouse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
@@ -233,16 +233,16 @@ private:
     /**
      * @brief Closes the lasso shape.
      * @pre @ref m_interactionEnableState must be true.
-     * @param _button Mousse modifier.
+     * @param _button mouse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
     virtual void buttonDoublePressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /**
-     * @brief Draws the last lasso line or add a point to the lasso in the mousse is dragged.
+     * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
      * @pre @ref m_interactionEnableState must be true.
-     * @param _button Mousse modifier.
+     * @param _button mouse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */

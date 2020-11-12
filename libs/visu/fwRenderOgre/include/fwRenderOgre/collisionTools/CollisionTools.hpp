@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -99,10 +99,10 @@ public:
                                              const float _rayHeightLevel  = 0.0f);
 
     /**
-     * @brief Check for collisions with entities along a ray define by a mousse position.
+     * @brief Check for collisions with entities along a ray define by a mouse position.
      * @param _rw The render window used to retrieve width and height.
      * @param _camera The camera use to get the origin of the ray.
-     * @param _mousecoords The mousse position used to get the ray destination.
+     * @param _mousecoords The mouse position used to get the ray destination.
      * @param _queryMask Mask used to query entities with matching flags.
      * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
      * and the intersected object.
