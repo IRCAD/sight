@@ -1,3 +1,187 @@
+# sight 20.2.0
+
+## New features:
+
+### graphics
+
+*Add a new picker to really pick the current slice image.*
+
+- When using an Ogre picker on a medical image, the picked position does not correspond to a voxel position of the image. In fact, the Ogre negato display the image between \[0;size\] and the picker needs to pick between \[0;size\].
+
+*Add Qt3D SMaterial adaptor.*
+
+Implement qt3d material service:
+
+* `::fwRenderQt3D`::data::Material``object handling a qt3d material
+* `::fwRenderQt3D`::techniques::Lighting``object handling a qt3d technique with shader programs to compute lighting mode and rendering options such as point/line/surface rendering or normals visualization
+* `::fwRenderQt3D`::SMaterial``adaptor used to create a qt3d material from sight data and attach it to the render service
+
+### io
+
+*Read tfp TF from directory with ::uiTF::SMultipleTF.*
+
+*Add setNotifyInterval method to the Graber interface.*
+
+Adds an option in the videoQt Player to change the notifyInterval option. This is useful to require frame through "setPosition".
+
+*Add birth date request field for PACS query editor.*
+
+### ui
+
+*Allow to manage opacity of the TF in TF editors.*
+
+Allow to manage a whole TF opacity at the same time from the TF editor.
+
+## Refactor:
+
+### core
+
+*SpyLog rework.*
+
+SpyLog has been unnecessarily complex for a long time. In this rework, we propose to:
+- deprecate the loglevel `TRACE`. Only `SLM_TRACE_FUNC()` remains, but its occurrences should never be committed.
+- deprecate `OSLM_*` macros in favor of `SLM_*` macros, which now take stringstreams as input (no performance penalty)
+- all loglevels are now always compiled, which means that the big bloat of `SPYLOG_*` CMake variables were removed.
+- occurrences of `OSLM_*` macros were replaced by `SLM_*` macros
+- occurrences of `O?SLM_TRACE*` macros were removed or replaced by higher levels logging macros
+- the default displayed log level is now `WARN`
+- the path of files displayed in the output was shortened to keep the minimum information needed: namespace(s), source fil
+
+*Deprecate configureWithIHM.*
+
+Deprecate `configureWithIHM` and use `openLocationDialog`, backward compatibility is kept until sight 22.0
+
+*Deprecate *dataReg modules and move *dataCamp content to *data.*
+
+This deprecates the usage of dataReg and arDataReg modules, which were so far mandatory as `REQUIREMENTS` for any XML configuration using data. This was done in several steps:
+
+1. a function was added in `fwRuntime` to allow the loading of any regular shared library (we could only load libraries from modules before).
+2. `AppConfigManager` was modified to guess the library name when parsing configuration, and load the library accordingly
+3. `dataReg` and `arDataReg` were emptied from the hacky symbols, and deprecated
+4. the only real useful code, i.e. the XML data parsers from `dataReg` were moved to `fwServices`, so that we can remove the whole module later.
+5. `dataReg` and `arDataReg` were replaced by `fwData`, `fwMedData` and `arData` in `Properties.cmake` files
+6. `dataReg` and `arDataReg` were removed from all `plugin.xml` requirements.
+7. all `*DataCamp` libraries were deprecated and most of their content imported in the corresponding `*Data` libraries. They were linked in an application thanks to the dataReg modules and hacky symbols. I could have loaded the modules manually like data libraries but I think it is simpler to gather everything related to a data into a single library. There is no real use case in my mind where we want only the data without any introspection. And we do not need to plan for a coexisting alternative to perform the introspection, we are anyway too tight with Camp.
+
+This is not a breaking change and it is still possible to keep the deprecated modules.
+
+### graphics
+
+*Deprecate VTK.*
+
+* Deprecates VTk generic scene
+* Updates all samples to use Ogre
+* Cleans all sample files (xml/hpp/cpp/cmake)
+* Fixes some errors in our samples
+* Adds a new module `visuBasic` for basic generics scenes
+* Rename samples
+
+### io
+
+*Deprecate VLC.*
+
+Deprecation of `videoVLC` since VLC package will no longer be available with new conan system (sight 21.0).
+
+### vision
+
+*Deprecate the bundle.*
+
+Deprecate the bundle `uiHandEye`
+
+## Enhancement:
+
+### core
+
+*Complete meshFunction baricentric  API.*
+
+Add a method `isInsideThetrahedron( const ::glm::dvec4 barycentricCoord);` in the MeshFunction.
+
+*Add [[nodiscard]] attribute for weak/shared_ptr::lock().*
+
+Adds `[[nodiscard]]` attributes in weak_ptr and shared_ptr lock() function. This avoids using lock() as lock function and force user to use returned lock_ptr object
+
+*Update conan.cmake file to v0.15".*
+
+Update conan.cmake file to v0.15.
+
+### graphics
+
+*Improve scene resetting.*
+
+### io
+
+*Increase the DICOM services log level.*
+
+Add detailed logs for our communications with the PACS.
+
+*Improve PACS research fields.*
+
+* Make research fields of ioPacs case insensitive.
+* Improve date research.
+* Avoid to read unreadable modalities with the series puller.
+
+*Execute PACS queries from a worker.*
+
+``::ioPacs::SeriesPuller``now retrieves series in a worker to avoid the app to freeze.
+
+*Improve ioPacs queries.*
+
+Adds a PACS series selection to `OgreViewer`.
+
+* `SPacsConfiguationEditor`: send notifications.
+* `NotificationDialog`: use the height of the notification instead of the width for computation.
+* `SSelector`: remove margin.
+* `SNegato2D` and `SNegato3D`: avoid a division by 0.
+* `Utils`: sometime the default texture as the same size than the image, so there is never initialized.
+
+### ui
+
+*Rename bad named functions.*
+
+* Deprecated `::fwGui::dialog::MessageDialog::showNotificationDialog()` and propose a new `::fwGui::dialog::MessageDialog::show()`
+* Deprecated `::fwGui::dialog::NotificationDialog::showNotificationDialog()` and propose a new `::fwGui::dialog::NotificationDialog::show()`
+* Renamed all occurrences.
+
+## Bug fixes:
+
+### build
+
+*Add deps between targets and their PCH for Unix Makefiles.*
+
+This fixes errors when building using the Unix Makefiles generator and multiple processes.
+
+### core
+
+*Load library is broken when launching activity using wizard.*
+
+Adds `loadLibrary` method in `new.cpp` file in order to load libraries before starting `AppConfigManager` or `ActivityWizard`
+
+### io
+
+*Cannot save json on mounted disk.*
+
+Create a custom `rename` function that will first try a `std`::filesystem::rename``and then fallback to a basic copy-remove scenario.
+
+Using this avoid the `Invalid cross-device link` error, when saving a json(z) file on a another disk/volume.
+
+*Tf names without extension are not saved.*
+
+### ui
+
+*Enable the current activity of the sequencer if no data are required.*
+
+* Enable the current activity of the sequencer if it's needed.
+* Avoid double start of the config launcher.
+
+*The TF editor suppresses points.*
+
+### vision
+
+*Display left and right view vertically.*
+
+Until a better fix, display left and right camera vertically in extrinsic calibration. Doing this provide a better width view of video.
+
+
 # sight 20.1.0
 
 ## Bug fixes:
