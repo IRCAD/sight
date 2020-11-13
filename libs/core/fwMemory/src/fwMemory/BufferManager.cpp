@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -102,8 +102,8 @@ std::shared_future<void> BufferManager::unregisterBuffer(BufferManager::BufferPt
 void BufferManager::unregisterBufferImpl(BufferManager::BufferPtrType bufferPtr)
 {
     auto& bufferInfo = m_bufferInfos[bufferPtr];
-    OSLM_ASSERT("There is still " << bufferInfo.lockCount() << " locks on this BufferObject (" << this << ")",
-                bufferInfo.lockCounter.expired());
+    SLM_ASSERT("There is still " << bufferInfo.lockCount() << " locks on this BufferObject (" << this << ")",
+               bufferInfo.lockCounter.expired());
 
     m_bufferInfos.erase(bufferPtr);
     m_updatedSig->asyncEmit();
@@ -300,8 +300,8 @@ struct AutoUnlock
         if ( !info.loaded )
         {
             bool restored = manager->restoreBuffer( bufferPtr ).get();
-            OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *bufferPtr <<" != 0 ).",
-                         restored && *bufferPtr != 0 );
+            SLM_ASSERT( "restore not OK ( "<< restored << " && " << *bufferPtr <<" != 0 ).",
+                        restored && *bufferPtr != 0 );
             FwCoreNotUsedMacro(restored);
         }
     }
@@ -314,11 +314,11 @@ struct AutoUnlock
         }
         catch(std::exception& e)
         {
-            OSLM_ASSERT( "Unlock Failed" << e.what(), 0 );
+            SLM_ASSERT( "Unlock Failed" << e.what(), 0 );
         }
         catch(...)
         {
-            OSLM_ASSERT( "Unlock Failed", 0 );
+            SLM_ASSERT( "Unlock Failed", 0 );
         }
     }
 
@@ -400,7 +400,6 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
     std::filesystem::path tmp        = ::fwTools::System::getTemporaryFolder();
     std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
 
-    OSLM_TRACE("dumping " << bufferPtr << " " << dumpedFile);
     info.lockCounter.reset();
 
     if ( this->writeBufferImpl(*bufferPtr, info.size, dumpedFile) )
@@ -446,7 +445,6 @@ bool BufferManager::restoreBuffer(BufferInfo& info,
     allocSize = ((allocSize) ? allocSize : info.size);
     if ( !info.loaded )
     {
-        OSLM_TRACE("Restoring " << bufferPtr);
 
         info.bufferPolicy->allocate(*bufferPtr, allocSize);
 
@@ -501,7 +499,6 @@ bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
     std::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
     const char* charBuf = static_cast< const char* >(buffer);
-    OSLM_TRACE("writing " << path);
     fs.write(charBuf, size);
     fs.close();
     return !fs.bad();
@@ -528,7 +525,6 @@ bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType si
     FW_RAISE_IF(path << ": Bad file size, expected: " << size << ", was: " << fileSize,
                 size - fileSize != 0);
 
-    OSLM_TRACE("reading " << path);
     char* charBuf = static_cast< char* >(buffer);
     fs.read(charBuf, size);
 

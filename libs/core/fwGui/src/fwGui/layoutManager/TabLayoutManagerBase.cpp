@@ -49,11 +49,10 @@ TabLayoutManagerBase::~TabLayoutManagerBase()
 
 void TabLayoutManagerBase::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     const std::vector < ConfigurationType > vectViews = configuration->find("view");
-    SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
     for (const ConfigurationType& view : vectViews)
     {
@@ -103,16 +102,16 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("selected") )
         {
             const std::string isSelected = view->getExistingAttributeValue("selected");
-            OSLM_ASSERT("The value "<<isSelected<<" it's incorrect, it should either be yes or no.",
-                        isSelected == "yes" || isSelected == "no");
+            SLM_ASSERT("The value "<<isSelected<<" it's incorrect, it should either be yes or no.",
+                       isSelected == "yes" || isSelected == "no");
             vi.m_isSelect = (isSelected == "yes");
         }
 
         if( view->hasAttribute("useScrollBar") )
         {
             const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-            OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                        (useScrollBar == "yes") || (useScrollBar == "no"));
+            SLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                       (useScrollBar == "yes") || (useScrollBar == "no"));
             vi.m_useScrollBar = (useScrollBar == "yes");
         }
 
@@ -121,7 +120,7 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
             const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
             if(!hexaColor.empty())
             {
-                OSLM_ASSERT(
+                SLM_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "
                     "hexadecimal digits. Given color: " << hexaColor,
                         hexaColor[0] == '#'

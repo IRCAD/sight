@@ -6,5 +6,5 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 )
-set( REQUIREMENTS dataReg )
+set( REQUIREMENTS fwData )
 

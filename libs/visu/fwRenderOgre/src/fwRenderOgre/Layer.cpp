@@ -87,20 +87,19 @@ const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
-    Layer* m_layer;
-    int m_frameId;
+    Layer* m_layer { nullptr };
+    int m_frameId { 0 };
 
     //------------------------------------------------------------------------------
 
     LayerCameraListener(Layer* renderer) :
-        m_layer(renderer),
-        m_frameId(0)
+        m_layer(renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void cameraPreRenderScene(::Ogre::Camera*) final
+    void cameraPreRenderScene(::Ogre::Camera*) final
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
@@ -162,26 +161,6 @@ Layer::Layer()
 
 Layer::~Layer()
 {
-    if(m_camera && m_cameraListener)
-    {
-        m_camera->removeListener(m_cameraListener);
-        delete m_cameraListener;
-        m_cameraListener = nullptr;
-    }
-
-    if(m_autostereoListener)
-    {
-        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
-        delete m_autostereoListener;
-        m_autostereoListener = nullptr;
-    }
-
-    if(m_sceneManager)
-    {
-        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-        m_sceneManager = nullptr;
-    }
-    m_camera = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -381,11 +360,35 @@ void Layer::createScene()
 
 void Layer::destroyScene()
 {
+    // Remove the background material
+    ::Ogre::MaterialManager::getSingleton().remove(
+        this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
     if(m_lightAdaptor)
     {
         ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
         m_lightAdaptor.reset();
     }
+
+    if(m_camera && m_cameraListener)
+    {
+        m_camera->removeListener(m_cameraListener);
+        delete m_cameraListener;
+        m_cameraListener = nullptr;
+    }
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
+    if(m_sceneManager)
+    {
+        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+        m_sceneManager = nullptr;
+    }
+    m_camera = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -545,7 +548,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     }
 
     m_cancelFurtherInteraction = false;
-    this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------
@@ -706,28 +708,36 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
         {
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
-            if(entity && entity->isVisible())
+            if(entity)
             {
-                worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                if(entity->isVisible())
+                {
+                    worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                }
             }
             else
             {
                 // Then try to cast into a ManualObject*
                 const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
 
-                if(manualObject && manualObject->isVisible())
+                if(manualObject)
                 {
-                    worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                    if(manualObject->isVisible())
+                    {
+                        worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                    }
                 }
                 else
                 {
                     // Last try to cast into a Camera*
                     const ::Ogre::Camera* cameraObject = dynamic_cast< ::Ogre::Camera* > (movable);
 
-                    if(cameraObject && cameraObject != this->getDefaultCamera() &&
-                       cameraObject->isDebugDisplayEnabled())
+                    if(cameraObject && cameraObject != this->getDefaultCamera())
                     {
-                        worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                        if(cameraObject->isDebugDisplayEnabled())
+                        {
+                            worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                        }
                     }
                 }
             }
@@ -823,7 +833,7 @@ bool Layer::isDefaultLight(const ::fwRenderOgre::ILight::csptr& _light) const
 
 void Layer::removeDefaultLight()
 {
-    OSLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
+    SLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
     ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
     m_lightAdaptor.reset();
 }
@@ -850,7 +860,7 @@ void Layer::resetCameraCoordinates()
                                                    worldCoordBoundingBox.getSize().length() : 0;
 
             float coeffZoom = static_cast<float>(boundingBoxLength);
-            OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
+            SLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
             ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
@@ -989,7 +999,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
-            OSLM_TRACE("Near SAO");
             maxNear = 1;
             minFar  = 10000;
         }
@@ -1085,7 +1094,7 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         }
         else
         {
-            OSLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
+            SLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
         }
     }
 

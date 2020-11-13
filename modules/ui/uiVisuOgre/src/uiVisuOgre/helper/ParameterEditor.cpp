@@ -207,17 +207,17 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
             }
             else
             {
-                OSLM_ERROR("Array type not handled: " << arrayObject->getType());
+                SLM_ERROR("Array type not handled: " << arrayObject->getType());
             }
         }
         else
         {
-            OSLM_ERROR("Array size not handled: " << numComponents);
+            SLM_ERROR("Array size not handled: " << numComponents);
         }
     }
     else
     {
-        OSLM_ERROR("No editor found for the object of type " << objType);
+        SLM_ERROR("No editor found for the object of type " << objType);
     }
 
     return paramConfig;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@
 
 #include <list>
 
-fwCampAutoDeclareDataMacro((arData)(CalibrationInfo), ARDATA_API);
+fwCampAutoDeclareDataMacro((arData)(CalibrationInfo));
 
 namespace arData
 {
@@ -48,7 +48,7 @@ class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
 {
 public:
 
-    fwCoreClassMacro(CalibrationInfo, ::fwData::Object, ::fwData::factory::New< CalibrationInfo >);
+    fwCoreClassMacro(CalibrationInfo, ::fwData::Object, ::fwData::factory::New< CalibrationInfo >)
 
     fwCampMakeFriendDataMacro((arData)(CalibrationInfo));
 

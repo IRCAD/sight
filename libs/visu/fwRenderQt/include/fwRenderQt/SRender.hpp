@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -100,7 +100,7 @@ class FWRENDERQT_CLASS_API SRender : public ::fwRender::IRender
 
 public:
 
-    fwCoreServiceMacro(SRender, ::fwRender::IRender);
+    fwCoreServiceMacro(SRender, ::fwRender::IRender)
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;
@@ -130,8 +130,7 @@ public:
     /// Get the axis.
     FWRENDERQT_API ::fwRenderQt::data::Axis::sptr getAxis(const std::string& id) const;
 
-    /// Iterate on the m_zValue2AdaptorID map and, if the event hasn't been accepted yet, call the adaptor
-    /// processInteraction function.
+    /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
     FWRENDERQT_API void dispatchInteraction(::fwRenderQt::data::Event& _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
@@ -190,11 +189,6 @@ private:
     /// create a SceneAdaptor2D,
     /// set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
     void configureAdaptor ( ConfigurationType _conf );
-
-    typedef std::map< AdaptorZValueType, AdaptorIDType > ZValue2AdaptorID;
-
-    /// Map of AdaptorIDType referenced by AdaptorZValueType;
-    ZValue2AdaptorID m_zValue2AdaptorID;
 
     std::map<std::string, ::fwRenderQt::data::Axis::sptr > m_axisMap;
 

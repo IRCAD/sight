@@ -14,4 +14,5 @@ set( DEPENDENCIES
     fwAtomConversion
 )
 set( REQUIREMENTS  )
+set( USE_PCH_FROM_TARGET pchCamp )
 set( WARNINGS_AS_ERRORS ON )

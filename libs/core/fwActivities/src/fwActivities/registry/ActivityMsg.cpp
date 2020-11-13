@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
- * Copyright (C) 2015-2019 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,7 +69,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
             submatch.replace(0, 1, "@");
 
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), submatch);
-            OSLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 
@@ -81,7 +81,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
             }
             else
             {
-                OSLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
             }
 
             submatch.replace(0, 1, "!");
@@ -117,7 +117,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
             }
 
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), parameterToReplace);
-            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
+#include "RawBufferTLTest.hpp"
+
 #include <arData/RawBufferTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
 #include <fwTest/Exception.hpp>
-
-#include "RawBufferTLTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::RawBufferTLTest );
@@ -37,15 +37,21 @@ namespace ut
 
 static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
+//------------------------------------------------------------------------------
+
 void RawBufferTLTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void RawBufferTLTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void RawBufferTLTest::pushTest()
 {
@@ -65,13 +71,11 @@ void RawBufferTLTest::pushTest()
     timeline->pushObject(data1);
     timeline->pushObject(data2);
 
-
     CSPTR(::arData::timeline::Object) dataPushed1 = timeline->getObject(time1);
     CPPUNIT_ASSERT(data1 == dataPushed1);
 
     CSPTR(::arData::timeline::Object) dataPushed2 = timeline->getObject(time2);
     CPPUNIT_ASSERT(data2 == dataPushed2);
-
 
     CSPTR(::arData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(::arData::timeline::RawBuffer) buff        =
@@ -117,7 +121,6 @@ void RawBufferTLTest::getObjectTest()
     timeline->pushObject(data3);
     timeline->pushObject(data4);
 
-
     CSPTR(::arData::timeline::Object) obj;
 
     obj = timeline->getObject(1);
@@ -126,8 +129,6 @@ void RawBufferTLTest::getObjectTest()
     CPPUNIT_ASSERT(data1 == obj);
     obj = timeline->getClosestObject(1.1);
     CPPUNIT_ASSERT(data1 == obj);
-
-
 
     obj = timeline->getObject(2);
     CPPUNIT_ASSERT(data2 == obj);
@@ -220,7 +221,6 @@ void RawBufferTLTest::setObjectTest()
     timeline->pushObject(data2);
     timeline->pushObject(data3);
     timeline->pushObject(data4);
-
 
     CSPTR(::arData::timeline::Object) obj;
 

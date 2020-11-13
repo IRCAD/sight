@@ -37,7 +37,6 @@ namespace ioPacs
  * @brief This service is used to initialize a PACS Configuration data and synchronize it with a preference key.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service type="::ioPacs::SPacsConfigurationInitializer">
             <inout key="config" uid="..." />
@@ -53,6 +52,7 @@ namespace ioPacs
             />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b config [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
  *
@@ -81,13 +81,13 @@ public:
     /// Destroyes the service.
     IOPACS_API virtual ~SPacsConfigurationInitializer() noexcept;
 
-private:
+protected:
 
     /// Configures members.
-    IOPACS_API virtual void configuring() override;
+    IOPACS_API void configuring() override;
 
     /// Retrieves the PACS configuration from preferences.
-    IOPACS_API virtual void starting() override;
+    IOPACS_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -96,7 +96,7 @@ private:
      * Connect ::fwPacsIO::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
      *::ioPacs::SPacsConfigurationInitializer::s_UPDATE_SLOT.
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
+    IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
 
     /// Stores the PACS configuration into preferences.
     IOPACS_API void updating() override;
@@ -106,7 +106,9 @@ private:
      *
      * @see updating()
      */
-    IOPACS_API virtual void stopping() override;
+    IOPACS_API void stopping() override;
+
+private:
 
     /// Defines the AET of the SCU (client name).
     std::string m_SCUAppEntityTitle;

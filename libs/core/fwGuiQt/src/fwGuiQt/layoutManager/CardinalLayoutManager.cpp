@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,6 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
-    SLM_TRACE_FUNC();
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 

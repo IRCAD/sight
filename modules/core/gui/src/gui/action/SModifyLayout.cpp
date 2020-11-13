@@ -54,7 +54,6 @@ SModifyLayout::~SModifyLayout() noexcept
 
 void SModifyLayout::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -62,7 +61,6 @@ void SModifyLayout::starting()
 
 void SModifyLayout::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -77,13 +75,12 @@ void SModifyLayout::info(std::ostream& _sstream )
 
 void SModifyLayout::updating()
 {
-    SLM_TRACE_FUNC();
 
     for(MoveSrvVectType::value_type elt :  m_moveSrv )
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
-        OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
+        SLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
         ::fwServices::IService::sptr service = ::fwServices::get( uid );
         SLM_ASSERT("service not found", service);
         ::fwGui::IGuiContainerSrv::sptr container = ::fwGui::IGuiContainerSrv::dynamicCast(service);
@@ -97,7 +94,7 @@ void SModifyLayout::updating()
     {
         std::string uid = elt.first;
         bool isEnable   = elt.second;
-        OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
+        SLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
         ::fwServices::IService::sptr service = ::fwServices::get( uid );
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
@@ -120,7 +117,7 @@ void SModifyLayout::updating()
         std::string wid = elt.first;
         ::boost::logic::tribool isVisible               = elt.second;
         ::fwGui::container::fwContainer::sptr container = ::fwGui::GuiRegistry::getWIDContainer(wid);
-        OSLM_ASSERT("::fwGui::IGuiContainerSrv " << wid << " is unknown", container);
+        SLM_ASSERT("::fwGui::IGuiContainerSrv " << wid << " is unknown", container);
 
         if(isVisible)
         {
@@ -140,7 +137,7 @@ void SModifyLayout::updating()
     {
         std::string uid = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
-        OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
+        SLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
         ::fwServices::IService::sptr service = ::fwServices::get( uid );
 
         ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
@@ -167,7 +164,6 @@ void SModifyLayout::updating()
 
 void SModifyLayout::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     if( !vectConfig.empty() )
@@ -227,7 +223,7 @@ void SModifyLayout::configuring()
             }
             else
             {
-                OSLM_FATAL( "Invalid tag name "<<actionCfg->getName());
+                SLM_FATAL( "Invalid tag name "<<actionCfg->getName());
             }
         }
     }

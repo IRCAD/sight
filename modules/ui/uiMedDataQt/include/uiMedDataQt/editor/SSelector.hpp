@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,11 +44,10 @@ namespace uiMedDataQt
 namespace editor
 {
 /**
- * @brief   This editor shows information about the medical data. It allows to manipulate
- *          (select, erase, ...) studies and series.
+ * @brief This editor shows information about the medical data. It allows to manipulate (select, erase, ...)
+ *        studies and series.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service uid="..." type="::uiMedDataQt::editor::SSelector">
         <inout key="seriesDB" uid="..." />
@@ -62,130 +61,121 @@ namespace editor
         </icons>
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
  * - \b selection [::fwData::Vector]: defines the id of the ::fwData::Vector where the selection will be put or get.
+ *
  * @subsection Configuration Configuration
- * - \b selectionMode : defines the selection mode for the series, among {"single", "extended"}, where extended means
- *"multiple"
- * - \b allowedRemove : allows user to remove series, among {"yes", "no"}
- * - \b insertMode : only allows selection of uiMedDataQt::InsertSeries, among {"yes", "no"}
- * - \b icons : defines the icon to associate for a series
- *    - \b series : the series classname, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}
- *    - \b icon : the icon path
+ * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where
+ *                    extended means "multiple".
+ * - \b allowedRemove (optional, yes/no, default=yes): allows user to remove series.
+ * - \b insertMode (optional, yes/no, default=no): only allows selection of uiMedDataQt::InsertSeries.
+ * - \b icons (optional): defines the icon to associate for a series.
+ *     - \b series (mandatory, string): series name, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}.
+ *     - \b icon (mandatory, string): icon path.
  */
-class UIMEDDATAQT_CLASS_API SSelector : public QObject,
-                                        public ::fwGui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SSelector final :
+    public QObject,
+    public ::fwGui::editor::IEditor
 {
-Q_OBJECT
-public:
-    fwCoreServiceMacro(SSelector, ::fwGui::editor::IEditor);
 
-    /// Constructor
+Q_OBJECT
+
+public:
+
+    fwCoreServiceMacro(SSelector, ::fwGui::editor::IEditor)
+
+    /// Creates the signal and slots.
     UIMEDDATAQT_API SSelector();
 
-    /// Destructor
+    /// Destroys the service.
     UIMEDDATAQT_API virtual ~SSelector() noexcept;
-
-    typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
-
-    /// Key in m_signals map of signal m_sigSeriesDoubleClicked
-    UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
-     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
-     */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    /// Installs GUI : create container and add selector.
-    virtual void starting() override;
+    /// Configures the service according to the xml tags found.
+    UIMEDDATAQT_API void configuring() override;
+
+    /// Creates container and add selector.
+    UIMEDDATAQT_API void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
+     * Connect ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+
+    /// Fills selector with the series contained in SeriesDB.
+    UIMEDDATAQT_API void updating() override;
 
     /// Destroys GUI.
-    virtual void stopping() override;
-
-    /// Configures the service according to the xml tags found.
-    virtual void configuring() override;
-
-    /// Fill selector with the series contained in SeriesDB.
-    virtual void updating() override;
-
-    virtual void info( std::ostream& _sstream ) override;
+    UIMEDDATAQT_API void stopping() override;
 
 protected Q_SLOTS:
 
     /**
      * @brief Manages the selection vector according to selection/deselection.
-     * @param[in] selection series to add in selection vector.
-     * @param[in] deselection series to remove from selection vector.
+     * @param _selection series to add in selection vector.
+     * @param _deselection series to remove from selection vector.
      */
-    void onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
-                          QVector< ::fwMedData::Series::sptr > deselection);
+    void onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
+                          QVector< ::fwMedData::Series::sptr > _deselection);
 
     /**
-     * @brief Send a 'seriesDoubleClicked' signal when the user double click on a series. This signal holds the
-     * clicked series.
-     * @param[in] index index of the clicked item in the selector.
-     * @todo  Manages double click on a study.
+     * @brief Sends a 'seriesDoubleClicked' signal when the user double click on a series.
+     * @param _index index of the clicked item in the selector.
+     * @todo Manages double click on a study.
      */
-    void onDoubleClick(const QModelIndex& index);
+    void onDoubleClick(const QModelIndex& _index);
 
     /**
      * @brief Removes series from seriesDB and notify.
-     * @param[in] selection series to remove from seriesDB.
+     * @param _selection series to remove from seriesDB.
      */
-    void onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection);
+    void onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection);
 
 private:
 
-    /**
-     * @name Slots
-     * @{
-     */
-    static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT;
-    static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT;
     typedef ::fwCom::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+    typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
 
-    /// Slot: add series into the selector
+    /// SLOT: adds series into the selector.
     void addSeries(::fwMedData::SeriesDB::ContainerType addedSeries);
-    /// Slot: remove series from the selector
+
+    /// SLOT: removes series from the selector.
     void removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
 
-    /// Slot used to remove series from the selector
-    RemoveSeriesSlotType::sptr m_slotRemoveSeries;
-    /**
-     * @}
-     */
-
-    /// Returns current selection vector given by its fwID m_selectionId.
+    /// Returns the current selection vector given by its ID m_selectionId.
     ::fwData::Vector::sptr getSelection();
 
-    /// fwID of the vector of selections
+    /// Contains the slot used to remove series from the selector.
+    RemoveSeriesSlotType::sptr m_slotRemoveSeries;
+
+    /// Defines the ID of the vector of selections.
     std::string m_selectionId;
 
-    /// Selector widget.
-    QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget;
+    /// Contains the selector widget.
+    QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget { nullptr };
 
-    /// Signal emitted when there is a double click on a series
-    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked;
+    /// Contains the signal emitted when there is a double click on a series.
+    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked { nullptr };
 
-    /// Map containing the specified icons for a series (map\<series classname, icon path\>)
+    /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
     ::uiMedDataQt::widget::Selector::SeriesIconType m_seriesIcons;
 
-    /// Permits the user to remove series. Default is yes
-    bool m_allowedRemove;
+    /// Defines if series can be removed.
+    bool m_allowedRemove { true };
 
-    /// Change the behaviour of the treeview selection mode
-    QAbstractItemView::SelectionMode m_selectionMode;
+    /// Defines the behaviour of the treeview selection mode.
+    QAbstractItemView::SelectionMode m_selectionMode { QAbstractItemView::ExtendedSelection };
 
-    /// If true, allows selection of uiMedDataQt::InsertSeries only
-    bool m_insertMode;
+    /// Allows selection of uiMedDataQt::InsertSeries only.
+    bool m_insertMode { false };
 
 };
-} // namespace editor
-} // namespace uiMedDataQt
+} // namespace editor.
+} // namespace uiMedDataQt.

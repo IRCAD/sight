@@ -131,7 +131,6 @@ void SnapshotEditor::info( std::ostream& _sstream )
 
 void SnapshotEditor::onSnapButton()
 {
-    SLM_TRACE_FUNC();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();

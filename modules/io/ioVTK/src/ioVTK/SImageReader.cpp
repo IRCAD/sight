@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,10 +54,9 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <filesystem>
-
 #include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <thread>
 
 namespace ioVTK
@@ -66,7 +65,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::fwData::Image )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -81,6 +80,13 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 void SImageReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     /* Initialize the available extensions for BitmapImageReader */
@@ -91,7 +97,7 @@ void SImageReader::configureWithIHM()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(int i = 1; i < ext.size(); i++)
+        for(size_t i = 1; i < ext.size(); i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -187,7 +193,6 @@ void SImageReader::updating()
         catch(::fwTools::Failed& e)
         {
             m_readFailed = true;
-            OSLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
 
@@ -273,7 +278,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -286,7 +291,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -294,7 +299,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);

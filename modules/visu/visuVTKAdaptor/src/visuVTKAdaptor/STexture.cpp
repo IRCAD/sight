@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STexture);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STexture)
 
 namespace visuVTKAdaptor
 {
@@ -148,7 +148,7 @@ void STexture::applyTexture( SPTR(::fwData::Material)_material )
     }
     else
     {
-        OSLM_WARN("STexture filtering type unknown or not supported : " << m_filtering);
+        SLM_WARN("STexture filtering type unknown or not supported : " << m_filtering);
     }
     _material->setDiffuseTextureFiltering(filtering);
 
@@ -162,7 +162,7 @@ void STexture::applyTexture( SPTR(::fwData::Material)_material )
     }
     else
     {
-        OSLM_WARN("STexture wrapping type unknown or not supported : " << m_wrapping);
+        SLM_WARN("STexture wrapping type unknown or not supported : " << m_wrapping);
     }
     _material->setDiffuseTextureWrapping(wrapping);
 

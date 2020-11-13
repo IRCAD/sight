@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@ namespace monitorQt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::monitorQt::DumpEditor );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::monitorQt::DumpEditor )
 
 ::fwMemory::BufferManager::BufferInfoMapType m_bufferInfos;
 ::fwMemory::BufferManager::BufferStats m_bufferStats = {0, 0};
@@ -536,7 +536,6 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
 }
 
@@ -739,7 +738,7 @@ void DumpEditor::changeStatus( int index )
             }
             else
             {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                ::fwGui::dialog::MessageDialog::show(
                     "Dump process information",
                     "Dump process is locked. It is impossible to dump or restore this object.",
                     ::fwGui::dialog::IMessageDialog::WARNING);
@@ -753,7 +752,7 @@ void DumpEditor::changeStatus( int index )
         {
             std::stringstream stream;
             stream << "Object " << selectedBuffer << " not found, please refresh the grid.";
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Dump process information",
                 stream.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);

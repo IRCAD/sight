@@ -279,7 +279,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     if(texUnitState == nullptr)
                     {
-                        OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
+                        SLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
                         texUnitState = ogrePass->createTextureUnitState();
                         texUnitState->setName(texUnitName);

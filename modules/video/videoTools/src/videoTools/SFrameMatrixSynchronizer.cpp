@@ -268,7 +268,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            OSLM_INFO("no available frame for timeline 'frame" << i << ".");
+            SLM_INFO("no available frame for timeline 'frame" << i << ".");
         }
     }
 
@@ -290,7 +290,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            OSLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
+            SLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
 
             // Notify each matrices in the ith TL that they are unsychronized
             for(const int sendStatus : m_sendMatricesStatus[i])
@@ -319,7 +319,7 @@ void SFrameMatrixSynchronizer::synchronize()
         CSPTR(::arData::FrameTL::BufferType) buffer;
         {
             const auto frameTL = m_frameTLs[i].lock();
-            OSLM_ASSERT("Image with index '" << i << "' does not exist", image);
+            SLM_ASSERT("Image with index '" << i << "' does not exist", image);
 
             const ::fwData::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
@@ -385,7 +385,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
         if(!buffer)
         {
-            OSLM_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
+            SLM_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
             continue;
         }
         const std::uint8_t* frameBuff = &buffer->getElement(0);
@@ -415,7 +415,7 @@ void SFrameMatrixSynchronizer::synchronize()
             for(unsigned int k = 0; k < matrixVector.size(); ++k)
             {
                 const auto matrix = matrixVector[k].lock();
-                OSLM_ASSERT("Matrix with indices '"<< tlIdx << ", " << k << "' does not exist", matrix);
+                SLM_ASSERT("Matrix with indices '"<< tlIdx << ", " << k << "' does not exist", matrix);
 
                 const int sendStatus = m_sendMatricesStatus[tlIdx][k];
 
@@ -492,7 +492,7 @@ void SFrameMatrixSynchronizer::setFrameDelay(int val, std::string key)
     }
     else
     {
-        OSLM_WARN("Unknown key");
+        SLM_WARN("Unknown key");
     }
 }
 

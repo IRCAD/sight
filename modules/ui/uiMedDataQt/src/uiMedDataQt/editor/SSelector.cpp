@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,106 +57,31 @@ namespace editor
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SSelector::s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
+static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
 
-const ::fwCom::Slots::SlotKeyType SSelector::s_ADD_SERIES_SLOT    = "addSeries";
-const ::fwCom::Slots::SlotKeyType SSelector::s_REMOVE_SERIES_SLOT = "removeSeries";
+static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+
+static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-SSelector::SSelector() :
-    m_allowedRemove(true),
-    m_selectionMode(QAbstractItemView::ExtendedSelection),
-    m_insertMode(false)
+SSelector::SSelector()
 {
-    // Init
-    m_sigSeriesDoubleClicked = SeriesDoubleClickedSignalType::New();
-
-    // Register
-    m_signals( s_SERIES_DOUBLE_CLICKED_SIG,  m_sigSeriesDoubleClicked);
+    m_sigSeriesDoubleClicked = newSignal<SeriesDoubleClickedSignalType>(s_SERIES_DOUBLE_CLICKED_SIG);
 
     newSlot(s_ADD_SERIES_SLOT, &SSelector::addSeries, this);
     m_slotRemoveSeries = newSlot(s_REMOVE_SERIES_SLOT, &SSelector::removeSeries, this);
-
 }
 
 //------------------------------------------------------------------------------
 
 SSelector::~SSelector() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SSelector::info(std::ostream& _sstream )
-{
-    // Update message
-    _sstream << std::string("SSelector");
-}
-
-//------------------------------------------------------------------------------
-
-void SSelector::starting()
-{
-    this->::fwGui::IGuiContainerSrv::create();
-
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-
-    m_selectorWidget = new ::uiMedDataQt::widget::Selector();
-    m_selectorWidget->setSeriesIcons(m_seriesIcons);
-    m_selectorWidget->setSelectionMode(m_selectionMode);
-    m_selectorWidget->setAllowedRemove(m_allowedRemove);
-    m_selectorWidget->setInsertMode(m_insertMode);
-
-    QVBoxLayout* layout = new QVBoxLayout();
-    layout->addWidget(m_selectorWidget);
-    qtContainer->setLayout(layout);
-
-    QObject::connect(m_selectorWidget, SIGNAL(selectSeries(QVector< ::fwMedData::Series::sptr >,
-                                                           QVector< ::fwMedData::Series::sptr >)),
-                     this, SLOT(onSelectedSeries(QVector< ::fwMedData::Series::sptr >,
-                                                 QVector< ::fwMedData::Series::sptr >)));
-
-    if(!m_insertMode)
-    {
-        QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex&)),
-                         this, SLOT(onDoubleClick(const QModelIndex&)));
-    }
-
-    if(m_allowedRemove)
-    {
-        SLM_TRACE("CONNECT remove series slot");
-        QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
-                         this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
-    }
-
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SSelector::stopping()
-{
-    this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void SSelector::updating()
-{
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
-
-    m_selectorWidget->clear();
-
-    for(::fwMedData::Series::sptr series :  seriesDB->getContainer())
-    {
-        m_selectorWidget->addSeries(series);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -248,18 +173,90 @@ void SSelector::configuring()
 
 //------------------------------------------------------------------------------
 
-void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
-                                 QVector< ::fwMedData::Series::sptr > deselection)
+void SSelector::starting()
+{
+    this->::fwGui::IGuiContainerSrv::create();
+
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
+
+    m_selectorWidget = new ::uiMedDataQt::widget::Selector();
+    m_selectorWidget->setSeriesIcons(m_seriesIcons);
+    m_selectorWidget->setSelectionMode(m_selectionMode);
+    m_selectorWidget->setAllowedRemove(m_allowedRemove);
+    m_selectorWidget->setInsertMode(m_insertMode);
+
+    QVBoxLayout* layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(m_selectorWidget);
+    qtContainer->setLayout(layout);
+
+    QObject::connect(m_selectorWidget, SIGNAL(selectSeries(QVector< ::fwMedData::Series::sptr >,
+                                                           QVector< ::fwMedData::Series::sptr >)),
+                     this, SLOT(onSelectedSeries(QVector< ::fwMedData::Series::sptr >,
+                                                 QVector< ::fwMedData::Series::sptr >)));
+
+    if(!m_insertMode)
+    {
+        QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex&)),
+                         this, SLOT(onDoubleClick(const QModelIndex&)));
+    }
+
+    if(m_allowedRemove)
+    {
+        QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
+                         this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
+    }
+
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::updating()
+{
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+
+    m_selectorWidget->clear();
+
+    for(::fwMedData::Series::sptr series :  seriesDB->getContainer())
+    {
+        m_selectorWidget->addSeries(series);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::stopping()
+{
+    this->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
+                                 QVector< ::fwMedData::Series::sptr > _deselection)
 {
     ::fwData::Vector::sptr selectionVector = this->getSelection();
     ::fwDataTools::helper::Vector vectorHelper(selectionVector);
 
-    for( ::fwMedData::Series::sptr series :  deselection)
+    for( ::fwMedData::Series::sptr series :  _deselection)
     {
         vectorHelper.remove(series);
     }
 
-    for( ::fwMedData::Series::sptr series :  selection)
+    for( ::fwMedData::Series::sptr series :  _selection)
     {
         vectorHelper.add(series);
     }
@@ -269,22 +266,14 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
 
 //------------------------------------------------------------------------------
 
-void SSelector::onDoubleClick(const QModelIndex& index)
+void SSelector::onDoubleClick(const QModelIndex& _index)
 {
     m_selectorWidget->clearSelection();
-    m_selectorWidget->setCurrentIndex(index);
+    m_selectorWidget->setCurrentIndex(_index);
 
     ::fwData::Vector::sptr selectionVector = this->getSelection();
 
-    if (m_selectorWidget->getItemType(index) == ::uiMedDataQt::widget::SelectorModel::STUDY)
-    {
-        std::stringstream str;
-        str << "Selected study. TODO";
-
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
-                                                          str.str());
-    }
-    else if (m_selectorWidget->getItemType(index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
+    if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
         ::fwData::Object::sptr obj       = selectionVector->front();
@@ -297,14 +286,14 @@ void SSelector::onDoubleClick(const QModelIndex& index)
 
 //------------------------------------------------------------------------------
 
-void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
+void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Remove duplicated series
     std::set< ::fwMedData::Series::sptr > seriesSet;
-    std::copy(selection.begin(), selection.end(), std::inserter(seriesSet, seriesSet.begin()));
+    std::copy(_selection.begin(), _selection.end(), std::inserter(seriesSet, seriesSet.begin()));
 
     for( ::fwMedData::Series::sptr series :  seriesSet)
     {
@@ -331,9 +320,9 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 
 //------------------------------------------------------------------------------
 
-void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
+void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType _addedSeries)
 {
-    for( ::fwMedData::Series::sptr series :  addedSeries )
+    for(::fwMedData::Series::sptr series : _addedSeries)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -341,9 +330,9 @@ void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
+void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries)
 {
-    for( ::fwMedData::Series::sptr series :  removedSeries )
+    for(::fwMedData::Series::sptr series : _removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }
@@ -351,16 +340,5 @@ void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT );
-    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace editor
-} // namespace uiMedDataQt
+} // namespace editor.
+} // namespace uiMedDataQt.

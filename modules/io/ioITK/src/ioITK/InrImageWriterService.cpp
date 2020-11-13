@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image )
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +74,13 @@ void InrImageWriterService::configuring()
 
 void InrImageWriterService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void InrImageWriterService::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -101,14 +107,12 @@ void InrImageWriterService::configureWithIHM()
 
 void InrImageWriterService::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageWriterService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +126,6 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
 
     myWriter->setObject(image);
@@ -139,15 +142,15 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          ss.str(),
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             ss.str(),
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Warning during saving",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Warning during saving",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -155,7 +158,6 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
 
 void InrImageWriterService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwJobs
@@ -75,12 +74,19 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SImageSeriesReader,  ::fwIO::IReader)
+
+    /**
+     * @brief Configure the image path.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
+    IOVTK_API virtual void configureWithIHM() override;
 
     /**
      * @brief Configure the image path.
      */
-    IOVTK_API virtual void configureWithIHM() override;
+    IOVTK_API virtual void openLocationDialog() override;
 
 protected:
 

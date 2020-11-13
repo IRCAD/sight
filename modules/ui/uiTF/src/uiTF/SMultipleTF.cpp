@@ -334,14 +334,10 @@ void SMultipleTF::initializePools()
         {
             // Creates the TF atoms reader.
             const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-            const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
-            reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+            const ::fwIO::IReader::sptr tfReader      = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            tfReader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
-            const ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-            const ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-            srvCfg->addConfigurationElement(fileCfg);
-
-            // Parse all path contained in m_path.
+            // Parse all paths contained in m_path and read basic TF.
             for(std::filesystem::path dirPath : m_paths)
             {
                 ::fwData::Composite::sptr composite = ::fwData::Composite::New();
@@ -358,12 +354,14 @@ void SMultipleTF::initializePools()
                         const std::filesystem::path file = *it;
 
                         // Add a new composite for each TF path.
-                        fileCfg->setValue(file.string());
-                        reader->setConfiguration(srvCfg);
-                        reader->configure();
-                        reader->start();
-                        reader->update();
-                        reader->stop();
+                        ::fwServices::IService::ConfigType config;
+                        config.add("file", file.string());
+
+                        tfReader->setConfiguration(config);
+                        tfReader->configure();
+                        tfReader->start();
+                        tfReader->update();
+                        tfReader->stop();
 
                         if(!tf->getName().empty())
                         {
@@ -401,7 +399,60 @@ void SMultipleTF::initializePools()
             }
 
             // Delete the reader.
-            ::fwServices::OSR::unregisterService(reader);
+            ::fwServices::OSR::unregisterService(tfReader);
+
+            // Creates the multiple TF atoms reader.
+            ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
+            const ::fwIO::IReader::sptr mulTFReader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            mulTFReader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
+
+            // Parse all path contained in m_path and read multiple TF.
+            for(std::filesystem::path dirPath : m_paths)
+            {
+
+                SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                for(std::filesystem::directory_iterator it(dirPath);
+                    it != std::filesystem::directory_iterator();
+                    ++it )
+                {
+
+                    if(!std::filesystem::is_directory(*it) &&
+                       it->path().extension().string() == ".tfp")
+                    {
+                        const std::filesystem::path file = *it;
+
+                        ::fwServices::IService::ConfigType config;
+                        config.add("archive.<xmlattr>.backend", "json");
+                        config.add("archive.extension", ".tfp");
+                        config.add("extensions.extension", ".tfp");
+                        config.add("file", file.string());
+
+                        mulTFReader->setConfiguration(config);
+                        mulTFReader->configure();
+                        mulTFReader->start();
+                        mulTFReader->update();
+                        mulTFReader->stop();
+
+                        // Check the loaded composite.
+                        if(tfPool->size() >= 1)
+                        {
+                            const ::fwData::Composite::sptr newTFPool
+                                = ::fwData::Object::copy< ::fwData::Composite >(tfPool);
+
+                            std::string poolName(file.stem().string());
+                            if(this->hasPoolName(poolName, sTFPools))
+                            {
+                                poolName = this->createPoolName(poolName, sTFPools);
+                            }
+
+                            compositeHelper.add(poolName, newTFPool);
+                        }
+                    }
+                }
+            }
+
+            // Delete the reader.
+            ::fwServices::OSR::unregisterService(mulTFReader);
         }
 
         // Sends signals.
@@ -741,7 +792,7 @@ void SMultipleTF::importPool()
 
     reader->configure(config);
     reader->start();
-    reader->configureWithIHM();
+    reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
@@ -788,10 +839,11 @@ void SMultipleTF::exportPool()
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tfp");
     config.add("extensions.extension", ".tfp");
+    config.add("extensions.extension.<xmlattr>.label", "Transfer Function Pool");
 
     writer->configure(config);
     writer->start();
-    writer->configureWithIHM();
+    writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);

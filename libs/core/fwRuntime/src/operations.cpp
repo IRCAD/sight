@@ -23,6 +23,7 @@
 #include "fwRuntime/operations.hpp"
 
 #include "fwRuntime/ConfigurationElement.hpp"
+#include "fwRuntime/detail/dl/Library.hpp"
 #include "fwRuntime/detail/ExtensionPoint.hpp"
 #include "fwRuntime/detail/io/ProfileReader.hpp"
 #include "fwRuntime/detail/Module.hpp"
@@ -328,6 +329,37 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
 
 //------------------------------------------------------------------------------
 
+bool loadLibrary(const std::string& identifier)
+{
+    static std::map<std::string, std::shared_ptr<detail::dl::Library> > s_LIBRARIES;
+
+    // Even if dlopen does not actually load twice the same library, we avoid this
+    if( s_LIBRARIES.find(identifier) != std::end(s_LIBRARIES) )
+    {
+        return true;
+    }
+
+    auto library                     = std::make_shared<detail::dl::Library>(identifier);
+    const ::fwRuntime::Runtime& rntm = ::fwRuntime::Runtime::get();
+    library->setSearchPath(rntm.getWorkingPath() / MODULE_LIB_PREFIX);
+
+    try
+    {
+        library->load();
+    }
+    catch (const RuntimeException& e)
+    {
+        SLM_ERROR("Could not load library '" + identifier + "': " + e.what() );
+        return false;
+    }
+
+    s_LIBRARIES[identifier] = library;
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRuntime::Profile::sptr startProfile( const std::filesystem::path& path )
 {
     try
@@ -391,9 +423,6 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     std::vector< ConfigurationElement::sptr > elements;
     std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
 
-    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << " Module" <<
-               point->getModule()->getIdentifier() );
-
     if( !point )
     {
         throw RuntimeException( identifier + ": invalid extension point identifier." );
@@ -405,7 +434,7 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     }
     else
     {
-        OSLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+        SLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
     }
 
     // The job is done!

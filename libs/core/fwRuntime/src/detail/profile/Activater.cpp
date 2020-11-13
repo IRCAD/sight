@@ -93,7 +93,7 @@ void Activater::apply()
         }
         else
         {
-            OSLM_ERROR(
+            SLM_ERROR(
                 "Unable to disable Extension Point " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }
@@ -110,7 +110,7 @@ void Activater::apply()
         }
         else
         {
-            OSLM_ERROR(
+            SLM_ERROR(
                 "Unable to disable Extension " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }

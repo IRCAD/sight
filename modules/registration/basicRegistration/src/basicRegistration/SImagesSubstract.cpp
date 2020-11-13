@@ -140,16 +140,16 @@ void SImagesSubstract::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                              "Both images must have the same size.",
-                                                              ::fwGui::dialog::IMessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Warning",
+                                                 "Both images must have the same size.",
+                                                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Both Images must have signed short as type.",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Both Images must have signed short as type.",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

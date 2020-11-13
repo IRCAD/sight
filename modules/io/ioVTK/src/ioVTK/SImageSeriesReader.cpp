@@ -84,6 +84,13 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 void SImageSeriesReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     // Initialize the available extensions for BitmapImageReader
@@ -201,7 +208,6 @@ void SImageSeriesReader::updating()
         }
         catch(::fwTools::Failed& e)
         {
-            OSLM_TRACE("Error : " << e.what());
             FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();

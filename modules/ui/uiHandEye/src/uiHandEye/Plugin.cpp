@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,6 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    FW_DEPRECATED_MSG("This module is not supported anymore, it will be removed in sight 21.0.", "21.0");
 }
 
 //------------------------------------------------------------------------------

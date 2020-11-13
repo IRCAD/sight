@@ -146,7 +146,6 @@ void Image::readImagePlaneModule()
     // Pixel Spacing - Type 1
     // Image dimension
     const unsigned int dimension = gdcmImage.GetNumberOfDimensions();
-    OSLM_TRACE("Image's dimension : " << dimension);
 
     // Image's spacing
     const double* gdcmSpacing = gdcmImage.GetSpacing();
@@ -194,7 +193,6 @@ void Image::readImagePlaneModule()
         }
     }
 
-    OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
     m_object->setSpacing2( spacing );
 }
 
@@ -214,7 +212,6 @@ void Image::readVOILUTModule()
         ::boost::split( splitedWindowCenters, windowCenter, ::boost::is_any_of( "\\" ) );
         m_object->setWindowCenter( ::boost::lexical_cast< double >(splitedWindowCenters[0]));
     }
-    OSLM_TRACE("Image's window center : " << m_object->getWindowCenter());
 
     //Image's window width (double)
     std::string windowWidth = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
@@ -225,7 +222,6 @@ void Image::readVOILUTModule()
         ::boost::split( splitedWindowWidth, windowWidth, ::boost::is_any_of( "\\" ) );
         m_object->setWindowWidth( ::boost::lexical_cast< double >(splitedWindowWidth[0]));
     }
-    OSLM_TRACE("Image's window width : " << m_object->getWindowWidth());
 
 }
 
@@ -325,15 +321,10 @@ void Image::readImagePixelModule()
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
     m_object->setSize2( { dimensions[0], dimensions[1], dimensions[2] });
 
-    OSLM_TRACE("Image dimensions : [" << dimensions[0] << "," <<dimensions[1] << "," << dimensions[2] << "]");
-
     const unsigned long imageBufferSize =
         dimensions[0] * dimensions[1] * dimensions[2] * (bitsAllocated/8);
     const unsigned long newImageBufferSize =
         dimensions[0] * dimensions[1] * dimensions[2] * (targetPixelFormat.GetBitsAllocated()/8);
-
-    OSLM_TRACE("Image buffer size : " << imageBufferSize);
-    OSLM_TRACE("New image buffer size : " << newImageBufferSize);
 
     // Let's read the image buffer
     bool performRescale = (photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR");

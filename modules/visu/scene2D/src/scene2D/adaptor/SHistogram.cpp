@@ -192,7 +192,7 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
         m_scale *= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
 
-        //_event.setAccepted( true );
+        _event.setAccepted( true );
         m_yAxis->setScale( m_scale );
 
         updatePointedPos = true;
@@ -202,7 +202,7 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
         m_scale /= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
 
-        //_event.setAccepted( true );
+        _event.setAccepted( true );
         m_yAxis->setScale( m_scale );
 
         updatePointedPos = true;

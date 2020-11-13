@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -82,7 +82,7 @@ DicomAnonymizer::DicomAnonymizer() :
         if(tagVec.size() < 3)
         {
             const std::string errorMessage = "Error when loading tag '" + ::boost::algorithm::join(tagVec, ", ") + "'";
-            OSLM_WARN_IF(errorMessage, tagVec.size() != 4);
+            SLM_WARN_IF(errorMessage, tagVec.size() != 4);
             FW_RAISE_EXCEPTION(::fwGdcmIO::exception::InvalidTag(errorMessage));
         }
 
@@ -119,7 +119,7 @@ DicomAnonymizer::DicomAnonymizer() :
         }
         else
         {
-            OSLM_ERROR("Action code '" + actionCode + "' is not managed.");
+            SLM_ERROR("Action code '" + actionCode + "' is not managed.");
         }
 
         tagVec = csvReader.getLine();
@@ -163,7 +163,7 @@ void moveDirectory(const std::filesystem::path& input,
     fs::directory_iterator it(input);
     fs::directory_iterator end;
     fs::permissions(output, fs::perms::owner_all, ec);
-    OSLM_ERROR_IF("set " << output.string() << " permission error : " << ec.message(), ec.value());
+    SLM_ERROR_IF("set " << output.string() << " permission error : " << ec.message(), ec.value());
 
     for(; it != end; ++it)
     {
@@ -180,7 +180,7 @@ void moveDirectory(const std::filesystem::path& input,
         }
 
         fs::permissions(dest, fs::perms::owner_all, ec);
-        OSLM_ERROR_IF("set " << dest.string() << " permission error : " << ec.message(), ec.value());
+        SLM_ERROR_IF("set " << dest.string() << " permission error : " << ec.message(), ec.value());
     }
 }
 
@@ -439,7 +439,7 @@ void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const st
 void DicomAnonymizer::preservePrivateTag(const ::gdcm::Tag& tag)
 {
     const bool found = std::find(m_privateTags.begin(), m_privateTags.end(), tag) != m_privateTags.end();
-    OSLM_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
+    SLM_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
 
     if(!found)
     {
@@ -702,7 +702,7 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         default:
         {
-            OSLM_ERROR(tag<<" is not supported. Emptied value. ");
+            SLM_ERROR(tag<<" is not supported. Emptied value. ");
             m_anonymizer.Empty(tag);
             break;
         }

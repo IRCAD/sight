@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,8 +64,8 @@ bool IPickerInteractor::isPickerInitialized() const
 
 void IPickerInteractor::initPicker()
 {
-    OSLM_ASSERT("The scene manager should always be initialized before the picker (as one needs the other)"
-                , m_sceneManager);
+    SLM_ASSERT("The scene manager should always be initialized before the picker (as one needs the other)"
+               , m_sceneManager);
     m_picker->setSceneManager(m_sceneManager);
 }
 

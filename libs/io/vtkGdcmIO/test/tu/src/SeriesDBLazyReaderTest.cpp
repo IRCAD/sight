@@ -87,7 +87,7 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
 
     #if (SPYLOG_LEVEL >= 4 )
     timer.stop();
-    OSLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
+    SLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
 #endif
 
 }

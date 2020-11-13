@@ -80,7 +80,7 @@ void SAxis::configuring()
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
-    OSLM_ASSERT(
+    SLM_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << m_originColor,
             m_originColor[0] == '#'

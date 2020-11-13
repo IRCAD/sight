@@ -40,9 +40,9 @@ Pool::Pool() :
 Pool::Pool(size_t _threads) :
     m_stop(false)
 {
-    OSLM_WARN_IF( _threads << " threads were allocated in this thread pool, but you only have " <<
-                  std::thread::hardware_concurrency() << " physical cores on this CPU",
-                  _threads > std::thread::hardware_concurrency());
+    SLM_WARN_IF( _threads << " threads were allocated in this thread pool, but you only have " <<
+                 std::thread::hardware_concurrency() << " physical cores on this CPU",
+                 _threads > std::thread::hardware_concurrency());
 
     for(size_t i = 0; i < _threads; ++i)
     {

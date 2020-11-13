@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@ namespace gui
 namespace frame
 {
 
-fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame );
+fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame )
 
 SDefaultFrame::SDefaultFrame() noexcept
 {
@@ -55,7 +55,6 @@ void SDefaultFrame::configuring()
 
 void SDefaultFrame::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
 }
 
@@ -63,7 +62,6 @@ void SDefaultFrame::starting()
 
 void SDefaultFrame::stopping()
 {
-    SLM_TRACE_FUNC();
     this->destroy();
 }
 
@@ -71,14 +69,12 @@ void SDefaultFrame::stopping()
 
 void SDefaultFrame::info(std::ostream& _sstream )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void SDefaultFrame::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

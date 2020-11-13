@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ class IOCALIBRATION_CLASS_API SCalibrationInfoReader : public ::fwIO::IReader
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationInfoReader, ::fwIO::IReader );
+    fwCoreServiceMacro(SCalibrationInfoReader, ::fwIO::IReader )
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationInfoReader() noexcept;
@@ -63,8 +63,15 @@ public:
     /// Destructor.
     IOCALIBRATION_API virtual ~SCalibrationInfoReader() noexcept override;
 
-    /// Configures the folder path.
+    /**
+     * @brief Configures the folder path.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOCALIBRATION_API virtual void configureWithIHM() override;
+
+    /// Configures the folder path.
+    IOCALIBRATION_API virtual void openLocationDialog() override;
 
 protected:
 

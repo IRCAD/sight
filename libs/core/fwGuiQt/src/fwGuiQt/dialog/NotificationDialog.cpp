@@ -30,7 +30,7 @@
 #include <QBoxLayout>
 #include <QTimer>
 
-fwGuiRegisterMacro(::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY)
 
 namespace fwGuiQt
 {
@@ -54,6 +54,12 @@ void NotificationDialog::show()
     // Checks if we have a Parent widget.
     QWidget* parent = qApp->activeWindow();
 
+    // If the activie window is a slide bar, we need to retrieve the nativ parent.
+    if(parent && parent->objectName() == "SlideBar")
+    {
+        parent = parent->nativeParentWidget();
+    }
+
     ::fwGuiQt::container::QtContainer::csptr parentContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(m_parentContainer);
 
@@ -61,6 +67,13 @@ void NotificationDialog::show()
     if(parentContainer)
     {
         parent = parentContainer->getQtContainer();
+    }
+
+    // If there is no parent here, we get the top one.
+    if(!parent)
+    {
+        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
+        return;
     }
 
     // Creates the clikable label.
@@ -135,7 +148,7 @@ void NotificationDialog::show()
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
-                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+                       const int height  = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - static_cast<int>(m_size[0] / 2),
                                      parentY + margin + (height * m_index));
@@ -148,7 +161,7 @@ void NotificationDialog::show()
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
-                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+                       const int height  = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - static_cast<int>(m_size[0] / 2),
                                      parentY - margin - (height * (m_index+1)));
@@ -161,7 +174,7 @@ void NotificationDialog::show()
                        const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
                        const int parentX         = parrentTopLeft.x();
                        const int parentY         = parrentTopLeft.y();
-                       const int height          = static_cast<int>(m_size[0]/2) + margin;
+                       const int height          = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX + margin,
                                      parentY + margin + (height * m_index));
@@ -174,7 +187,7 @@ void NotificationDialog::show()
                        const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
                        const int parentX          = parrentTopRight.x();
                        const int parentY          = parrentTopRight.y();
-                       const int height           = static_cast<int>(m_size[0]/2) + margin;
+                       const int height           = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - margin - static_cast<int>(m_size[0]),
                                      parentY + margin + (height * m_index));
@@ -187,7 +200,7 @@ void NotificationDialog::show()
                        const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
                        const int parentX            = parrentBottomLeft.x();
                        const int parentY            = parrentBottomLeft.y();
-                       const int height             = static_cast<int>(m_size[0]/2) + margin;
+                       const int height             = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX + margin,
                                      parentY - (height * (m_index+1)));
@@ -200,7 +213,7 @@ void NotificationDialog::show()
                        const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
                        const int parentX             = parrentBottomRight.x();
                        const int parentY             = parrentBottomRight.y();
-                       const int height              = static_cast<int>(m_size[0]/2) + margin;
+                       const int height              = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - margin - static_cast<int>(m_size[0]),
                                      parentY - (height * (m_index+1)));
@@ -216,15 +229,8 @@ void NotificationDialog::show()
     container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
     container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
-    // Get the activeWindow, if null print a message & ignore this notification.
-    const auto activeWin = qApp->activeWindow();
-    if(!activeWin)
-    {
-        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
-        return;
-    }
     // Moves the container when the main window is moved or is resized.
-    activeWin->installEventFilter(container);
+    parent->installEventFilter(container);
 
     // Gives it a layout with the clickable label.
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
@@ -268,5 +274,5 @@ void NotificationDialog::close() const
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-} // namespace fwGuiQt
+} // namespace dialog.
+} // namespace fwGuiQt.

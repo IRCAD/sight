@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "videoTools/SImagePicker.hpp"
 
+#include <arData/Camera.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -30,16 +32,22 @@
 namespace videoTools
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, ::fwData::PointList);
+fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, ::fwData::PointList)
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SImagePicker::s_GET_INTERACTION_SLOT = "getInteraction";
-const ::fwServices::IService::KeyType SImagePicker::s_POINTLIST_INOUT  = "pointList";
+const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+
+const ::fwServices::IService::KeyType s_POINTLIST_INOUT       = "pointList";
+const ::fwServices::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
+const ::fwServices::IService::KeyType s_CAMERA_INOUT          = "camera";
 
 SImagePicker::SImagePicker() noexcept
 {
     newSlot(s_GET_INTERACTION_SLOT, &SImagePicker::getInteraction, this);
+
+    m_videoRefMap["top_left"] = VideoReference::TOP_LEFT;
+    m_videoRefMap["center"]   = VideoReference::CENTER;
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +60,7 @@ SImagePicker::~SImagePicker() noexcept
 
 void SImagePicker::starting()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -64,6 +73,21 @@ void SImagePicker::stopping()
 
 void SImagePicker::configuring()
 {
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    const std::string videoRef = config.get< std::string >("videoReference", "center");
+
+    auto it = m_videoRefMap.find(videoRef);
+
+    if(it == m_videoRefMap.end())
+    {
+        SLM_WARN("'videoReference' of value '" + videoRef + "' is not handled.");
+    }
+    else
+    {
+        m_videoRef = it->second;
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -78,14 +102,14 @@ void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
 {
     if (info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL)
     {
-        const double x = info.m_worldPos[0];
-        const double y = -(info.m_worldPos[1]);
-        const double z = info.m_worldPos[2];
-
-        const std::array<double, 3> position = {{x, y, z}};
-
         if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
         {
+            const double x = info.m_worldPos[0];
+            const double y = info.m_worldPos[1];
+            const double z = info.m_worldPos[2];
+
+            const std::array<double, 3> position = {{ x, y, z }};
+
             this->addPoint(position);
         }
         else if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_DOWN)
@@ -100,39 +124,99 @@ void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
 
 void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 {
-    // set z to 0 as it is an image.
-    ::fwData::Point::sptr point         = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
-    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    // Set z to 0 as it is an image.
 
-    pointList->getPoints().push_back(point);
-    auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto pointList      = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    auto pixelPointList = this->getLockedInOut< ::fwData::PointList >(s_PIXEL_POINTLIST_INOUT);
 
-    auto sig2 = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
-        ::fwData::PointList::s_POINT_ADDED_SIG);
-    sig2->asyncEmit(point);
+    ::fwData::Point::sptr point = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+
+    const auto camera = this->getLockedInput< ::arData::Camera >(s_CAMERA_INOUT);
+
+    ::fwData::Point::sptr pixel;
+
+    switch (m_videoRef)
+    {
+        case VideoReference::CENTER:
+        {
+            const float offset[2] = { static_cast<float>(camera->getWidth()) / 2.f,
+                                      static_cast<float>(camera->getHeight()) / 2.f };
+
+            // Shift point to set reference at top_left corner & inverse y axis.
+            pixel = ::fwData::Point::New(currentPoint[0] + offset[0],
+                                         offset[1] - currentPoint[1], 0.);
+        }
+        break;
+        case VideoReference::TOP_LEFT:
+        {
+            pixel = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+        }
+        break;
+        default:
+            SLM_ERROR("Only video reference CENTER and TOP_LEFT are handled");
+            break;
+    }
+
+    // "World" points.
+    {
+        pointList->getPoints().push_back(point);
+        auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+            ::fwData::PointList::s_MODIFIED_SIG);
+        sig->asyncEmit();
+
+        auto sig2 = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
+            ::fwData::PointList::s_POINT_ADDED_SIG);
+        sig2->asyncEmit(point);
+    }
+
+    // Pixel points.
+    {
+        pixelPointList->getPoints().push_back(pixel);
+        auto sig = pixelPointList->signal< ::fwData::PointList::ModifiedSignalType >(
+            ::fwData::PointList::s_MODIFIED_SIG);
+        sig->asyncEmit();
+
+        auto sig2 = pixelPointList->signal< ::fwData::PointList::PointAddedSignalType >(
+            ::fwData::PointList::s_POINT_ADDED_SIG);
+        sig2->asyncEmit(point);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SImagePicker::removeLastPoint()
 {
-    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    auto pointList      = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    auto pixelPointList = this->getLockedInOut< ::fwData::PointList >(s_PIXEL_POINTLIST_INOUT);
     ::fwData::Point::sptr point;
 
-    if (!pointList->getPoints().empty())
+    if (!pointList->getPoints().empty() && !pixelPointList->getPoints().empty())
     {
-        point = pointList->getPoints().back();
-        pointList->getPoints().pop_back();
+        {
+            point = pointList->getPoints().back();
+            pointList->getPoints().pop_back();
 
-        auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-            ::fwData::PointList::s_MODIFIED_SIG);
-        sig->asyncEmit();
+            auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+                ::fwData::PointList::s_MODIFIED_SIG);
+            sig->asyncEmit();
 
-        auto sig2 = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
-        sig2->asyncEmit(point);
+            auto sig2 = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            sig2->asyncEmit(point);
+        }
+
+        {
+            point = pixelPointList->getPoints().back();
+            pixelPointList->getPoints().pop_back();
+
+            auto sig = pixelPointList->signal< ::fwData::PointList::ModifiedSignalType >(
+                ::fwData::PointList::s_MODIFIED_SIG);
+            sig->asyncEmit();
+
+            auto sig2 = pixelPointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            sig2->asyncEmit(point);
+        }
     }
 
 }

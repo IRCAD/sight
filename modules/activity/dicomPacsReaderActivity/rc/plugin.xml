@@ -1,7 +1,6 @@
 <plugin id="dicomPacsReaderActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="dataReg" />
     <requirement id="guiQt" />
     <requirement id="visuVTKQt" />
     <requirement id="ioPacs" />

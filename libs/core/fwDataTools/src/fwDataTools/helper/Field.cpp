@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -186,9 +186,9 @@ void Field::notify()
 
         sig->asyncEmit(m_addedFields);
     }
-    OSLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
-                 + "', nothing to notify.",
-                 m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
+    SLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
+                + "', nothing to notify.",
+                m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
 
     m_removedFields.clear();
     m_newChangedFields.clear();

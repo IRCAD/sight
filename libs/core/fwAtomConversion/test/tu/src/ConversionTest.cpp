@@ -108,7 +108,7 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
@@ -711,8 +711,7 @@ void ConversionTest::nullPtrManagmentTest()
 
 //-----------------------------------------------------------------------------
 
-#define EMTPY_CLASS_API
-fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged), EMTPY_CLASS_API);
+fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
 
 namespace fwAtomConversion
 {

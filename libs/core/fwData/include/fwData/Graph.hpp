@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 #include <map>
 #include <set>
 
-fwCampAutoDeclareDataMacro((fwData)(Graph), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Graph));
 
 namespace fwData
 {
@@ -46,7 +46,7 @@ class FWDATA_CLASS_API Graph : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Graph, ::fwData::Object, ::fwData::factory::New< Graph >);
+    fwCoreClassMacro(Graph, ::fwData::Object, ::fwData::factory::New< Graph >)
 
     fwCampMakeFriendDataMacro((fwData)(Graph));
 

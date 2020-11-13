@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -144,7 +144,7 @@ public:
             pixelData = (U*)pdata;
         }
 
-        OSLM_WARN_IF("Unable to read pixel data.", !pixelData);
+        SLM_WARN_IF("Unable to read pixel data.", !pixelData);
 
         for (unsigned int x = 0; x < columns; ++x)
         {

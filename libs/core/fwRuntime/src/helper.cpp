@@ -74,7 +74,7 @@ ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr confi
     {
         std::string cfgContribution                    = config->getExistingAttributeValue("config");
         std::vector< ConfigurationElement::sptr > cfgs = ::fwRuntime::getAllCfgForPoint( extension_pt  );
-        OSLM_FATAL_IF( "No configuration contribution found for extension point " <<  extension_pt, cfgs.empty());
+        SLM_FATAL_IF( "No configuration contribution found for extension point " <<  extension_pt, cfgs.empty());
 
         // Search for all matching contributions
         std::vector< ConfigurationElement::sptr > matchingCfg;
@@ -87,17 +87,17 @@ ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr confi
         }
 
         // If no contribution found
-        OSLM_FATAL_IF( "No contribution matching the requested requirement (" << cfgContribution
-                                                                              << " for extension point " << extension_pt << " )",
-                       matchingCfg.empty());
+        SLM_FATAL_IF( "No contribution matching the requested requirement (" << cfgContribution
+                                                                             << " for extension point " << extension_pt << " )",
+                      matchingCfg.empty());
 
         // Normal case : only one matching contribution has been found: matchingCfg.size == 1
         resultConfig = *matchingCfg.begin();
 
         // If several matching contributions
-        OSLM_WARN_IF("Several contribution identified by " << cfgContribution << "( for cfg extension point " << extension_pt << " )"
-                                                           << " has been found : the first one is returned",
-                     (matchingCfg.size() > 1));
+        SLM_WARN_IF("Several contribution identified by " << cfgContribution << "( for cfg extension point " << extension_pt << " )"
+                                                          << " has been found : the first one is returned",
+                    (matchingCfg.size() > 1));
     }
     SLM_WARN_IF("Configuration has no config attribute",  !config->hasAttribute("config"));
     return resultConfig;

@@ -66,33 +66,35 @@ namespace ioPacs
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
                          ::fwMedData::DicomSeries )
 
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT = "readImage";
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
+static const std::string s_DICOM_READER_CONFIG = "dicomReader";
+static const std::string s_READER_CONFIG_CONFIG = "dicomReaderConfig";
+static const std::string s_DELAY_CONFIG         = "delay";
+
+static const ::fwServices::IService::KeyType s_PACS_INPUT = "pacsConfig";
+
+static const ::fwServices::IService::KeyType s_DICOMSERIES_INOUT = "series";
+
+static const ::fwServices::IService::KeyType s_IMAGE_OUTPUT = "image";
+
+const ::fwCom::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
-    m_delay(500)
+SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept
 {
-    m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
-    ::fwCom::HasSlots::m_slots(s_READ_IMAGE_SLOT, m_slotReadImage);
+    FW_DEPRECATED_MSG(
+        "::ioPacs::SSliceIndexDicomPullerEditor will be removed in sight 21.0, use ::ioPacs::SSliceIndexDicomEditor instead",
+        "21.0");
 
     m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::displayErrorMessage, this);
     ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
 
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SSliceIndexDicomPullerEditor::info(std::ostream& _sstream )
-{
-    _sstream << "SSliceIndexDicomPullerEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -133,14 +135,14 @@ void SSliceIndexDicomPullerEditor::starting()
     m_delayTimer2 = m_associatedWorker->createTimer();
 
     // Get pacs configuration
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
+    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>(s_PACS_INPUT);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -187,16 +189,8 @@ void SSliceIndexDicomPullerEditor::starting()
 
     m_dicomReader = dicomReader;
 
-    // Image Indecies
-    m_axialIndex    = ::fwData::Integer::New(0);
-    m_frontalIndex  = ::fwData::Integer::New(0);
-    m_sagittalIndex = ::fwData::Integer::New(0);
-
     // Worker
     m_pullSeriesWorker = ::fwThread::Worker::New();
-
-    // Create enquirer
-    m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
     // Load a slice
     std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
@@ -208,6 +202,12 @@ void SSliceIndexDicomPullerEditor::starting()
     m_delayTimer2->setOneShot(true);
 
     this->triggerNewSlice();
+}
+
+//------------------------------------------------------------------------------
+
+void SSliceIndexDicomPullerEditor::updating()
+{
 }
 
 //------------------------------------------------------------------------------
@@ -233,13 +233,7 @@ void SSliceIndexDicomPullerEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::updating()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
+void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
 {
     // Update text
     std::stringstream ss;
@@ -256,12 +250,11 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
 void SSliceIndexDicomPullerEditor::triggerNewSlice()
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
     std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
-    OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
         if(m_pacsConfiguration)
@@ -275,17 +268,16 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     }
     else
     {
-        //m_slotReadImage->asyncRun(selectedSliceIndex);
         this->readImage(selectedSliceIndex);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
+void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR" && dicomSeries->getModality() != "XA")
     {
@@ -304,15 +296,15 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
     std::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
-    auto iter            = binaries.find(selectedSliceIndex);
-    OSLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
+    auto iter            = binaries.find(_selectedSliceIndex);
+    SLM_ASSERT("Index '"<<_selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
     const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 
-    std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
+    std::filesystem::path dest = tmpPath / std::to_string(_selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
@@ -320,13 +312,14 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
     fs.close();
 
     // Read image
-
-    m_dicomReader.lock()->setFolder(tmpPath);
-    if(!m_dicomReader.expired())
+    ::fwIO::IReader::sptr dicomReader = m_dicomReader.lock();
+    if(dicomReader)
     {
-        m_dicomReader.lock()->update();
+        dicomReader->setFolder(tmpPath);
 
-        if(m_dicomReader.expired() || m_dicomReader.lock()->isStopped())
+        dicomReader->update();
+
+        if(dicomReader->isStopped())
         {
             return;
         }
@@ -349,18 +342,16 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         ::fwData::Image::sptr newImage = imageSeries->getImage();
         const ::fwData::Image::Size newSize = newImage->getSize2();
 
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
-        m_frontalIndex->setValue(static_cast<int>(newSize[0]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
-        m_sagittalIndex->setValue(static_cast<int>(newSize[1]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+        ::fwData::Integer::sptr axialIndex    = ::fwData::Integer::New(0);
+        ::fwData::Integer::sptr frontalIndex  = ::fwData::Integer::New(newSize[0]/2);
+        ::fwData::Integer::sptr sagittalIndex = ::fwData::Integer::New(newSize[1]/2);
 
-        this->setOutput("image", newImage);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
+
+        this->setOutput(s_IMAGE_OUTPUT, newImage);
     }
-
-    std::error_code ec;
-    std::filesystem::remove_all(path, ec);
-    SLM_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------
@@ -375,34 +366,36 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         try
         {
             // DicomSeries
-            ::fwMedData::DicomSeries::sptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
+            ::fwMedData::DicomSeries::sptr dicomSeries =
+                this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
             SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
             // Get selected slice
             std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
 
-            m_seriesEnquirer->initialize(m_pacsConfiguration->getLocalApplicationTitle(),
-                                         m_pacsConfiguration->getPacsHostName(),
-                                         m_pacsConfiguration->getPacsApplicationPort(),
-                                         m_pacsConfiguration->getPacsApplicationTitle(),
-                                         m_pacsConfiguration->getMoveApplicationTitle());
+            ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
-            m_seriesEnquirer->connect();
+            seriesEnquirer->initialize(m_pacsConfiguration->getLocalApplicationTitle(),
+                                       m_pacsConfiguration->getPacsHostName(),
+                                       m_pacsConfiguration->getPacsApplicationPort(),
+                                       m_pacsConfiguration->getPacsApplicationTitle(),
+                                       m_pacsConfiguration->getMoveApplicationTitle());
+
+            seriesEnquirer->connect();
             std::string seriesInstanceUID = dicomSeries->getInstanceUID();
             std::string sopInstanceUID    =
-                m_seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, static_cast<unsigned int>(selectedSliceIndex));
+                seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, static_cast<unsigned int>(selectedSliceIndex));
 
             // Check if an instance with the selected Instance Number is found on the PACS
             if(!sopInstanceUID.empty())
             {
                 // Pull Selected Series using C-GET Requests
-                m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
+                seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
 
                 // Add path and trigger reading
                 std::filesystem::path path     = ::fwTools::System::getTemporaryFolder() / "dicom/";
                 std::filesystem::path filePath = path.string() + seriesInstanceUID + "/" + sopInstanceUID;
                 dicomSeries->addDicomPath(selectedSliceIndex, filePath);
-                //m_slotReadImage->asyncRun(selectedSliceIndex);
                 this->readImage(selectedSliceIndex);
             }
             else
@@ -414,7 +407,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
             }
 
             // Close connection
-            m_seriesEnquirer->disconnect();
+            seriesEnquirer->disconnect();
 
         }
         catch (::fwPacsIO::exceptions::Base& exception)
@@ -437,12 +430,12 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message) const
+void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& _message) const
 {
-    SLM_WARN("Error: " + message);
+    SLM_WARN("Error: " + _message);
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
-    messageBox.setMessage( message );
+    messageBox.setMessage(_message);
     messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();

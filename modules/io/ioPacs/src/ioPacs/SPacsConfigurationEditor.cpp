@@ -25,6 +25,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -42,13 +43,19 @@
 namespace ioPacs
 {
 
+static const ::fwCom::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
+
+static const ::fwServices::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
+
 static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
 
 SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
 {
+    m_slotShowDialog = this->newSlot(s_SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog, this);
 }
+
 //------------------------------------------------------------------------------
 
 SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
@@ -60,15 +67,24 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 void SPacsConfigurationEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
+
+    const ConfigType configType = this->getConfigTree();
+    const auto config           = configType.get_child_optional("config.<xmlattr>");
+
+    if(config)
+    {
+        m_showDialog = config->get< bool >(s_SHOW_DIALOG_CONFIG, m_showDialog);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::starting()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    // Create the worker.
+    m_requestWorker = ::fwThread::Worker::New();
+
+    const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -185,6 +201,10 @@ void SPacsConfigurationEditor::stopping()
     QObject::disconnect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
                         SLOT(onRetrieveMethodChanged(int)));
 
+    // Stop the worker.
+    m_requestWorker->stop();
+    m_requestWorker.reset();
+
     this->destroy();
 }
 
@@ -192,49 +212,62 @@ void SPacsConfigurationEditor::stopping()
 
 void SPacsConfigurationEditor::pingPACS()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    m_requestWorker->post([&]
+        {
+            const auto pacsConfiguration =
+                this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
-    ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
+            ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
-    bool success = false;
-    try
-    {
-        seriesEnquirer->initialize(
-            pacsConfiguration->getLocalApplicationTitle(),
-            pacsConfiguration->getPacsHostName(),
-            pacsConfiguration->getPacsApplicationPort(),
-            pacsConfiguration->getPacsApplicationTitle());
-        seriesEnquirer->connect();
-        success = seriesEnquirer->pingPacs();
-    }
-    catch (::fwPacsIO::exceptions::Base& _e)
-    {
-        SLM_TRACE(_e.what());
-        success = false;
-    }
+            bool success = false;
+            try
+            {
+                seriesEnquirer->initialize(
+                    pacsConfiguration->getLocalApplicationTitle(),
+                    pacsConfiguration->getPacsHostName(),
+                    pacsConfiguration->getPacsApplicationPort(),
+                    pacsConfiguration->getPacsApplicationTitle());
+                seriesEnquirer->connect();
+                success = seriesEnquirer->pingPacs();
+            }
+            catch (::fwPacsIO::exceptions::Base& _e)
+            {
+                SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
+            }
 
-    if(seriesEnquirer->isConnectedToPacs())
-    {
-        seriesEnquirer->disconnect();
-    }
+            if(seriesEnquirer->isConnectedToPacs())
+            {
+                seriesEnquirer->disconnect();
+            }
 
-    // Display a message with the ping result.
-    ::fwGui::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Ping Pacs");
-    if(success)
-    {
-        messageBox.setMessage( "Ping succeed !" );
-    }
-    else
-    {
-        messageBox.setMessage( "Ping failed !" );
-    }
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-    messageBox.show();
+            // Display a message with the ping result.
+            if(m_showDialog)
+            {
+                if(success)
+                {
+                    m_slotShowDialog->asyncRun("Ping Pacs", "Ping succeeded!");
+                }
+                else
+                {
+                    m_slotShowDialog->asyncRun("Ping Pacs", "Ping failed!");
+                }
+            }
 
+            if(success)
+            {
+                const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+                    ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+                notif->asyncEmit("Ping succeeded!");
+                SLM_INFO("Ping succeeded")
+            }
+            else
+            {
+                const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+                    ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+                notif->asyncEmit("Ping failed!");
+                SLM_INFO("Ping failed")
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -252,94 +285,92 @@ void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguratio
 
 void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onSCPHostNameChanged()
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+
     pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-            s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 {
-    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setRetrieveMethod(
         (_index ==
          0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::
                                                                             GET_RETRIEVE_METHOD));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration.get_shared());
+}
+
+//------------------------------------------------------------------------------
+
+void SPacsConfigurationEditor::showDialog(const std::string _title, const std::string _message)
+{
+    ::fwGui::dialog::MessageDialog messageBox;
+    messageBox.setTitle(_title);
+    messageBox.setMessage(_message);
+    messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
+    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.show();
 }
 
 } // namespace ioPacs

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,9 +39,9 @@ namespace guiQt
 {
 namespace editor
 {
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SListView );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SListView )
 
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG          = "itemAdded";
+const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
 const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
 const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
 
@@ -118,7 +118,6 @@ void SListView::starting()
 
 void SListView::stopping()
 {
-    SLM_TRACE_FUNC();
 
     this->destroy();
 }

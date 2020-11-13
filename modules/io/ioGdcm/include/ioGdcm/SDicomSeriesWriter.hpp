@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwJobs
@@ -66,7 +65,7 @@ class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SDicomSeriesWriter,  ::fwIO::IWriter)
 
     /**
      * @brief   constructor
@@ -78,8 +77,15 @@ public:
      */
     IOGDCM_API virtual ~SDicomSeriesWriter() noexcept override;
 
-    /// Propose select a directory where to save the DICOM files.
+    /**
+     * @brief Propose select a directory where to save the DICOM files.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
+
+    /// Propose select a directory where to save the DICOM files.
+    IOGDCM_API virtual void openLocationDialog() override;
 
 protected:
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace fwData
 class Composite;
 }
 
-fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Composite));
 
 namespace fwData
 {
@@ -50,7 +50,7 @@ namespace fwData
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassMacro(Composite, ::fwData::Object, ::fwData::factory::New< Composite >);
+    fwCoreClassMacro(Composite, ::fwData::Object, ::fwData::factory::New< Composite >)
     fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
@@ -309,7 +309,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     for( ::fwData::Composite::value_type elem : *this )
     {
         castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
+        SLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
 
@@ -326,11 +326,9 @@ SPTR(DATATYPE) Composite::at(const std::string& key)
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {
-        SLM_TRACE( "Object '" + key + "' not found.");
     }
     return castData;
 }
@@ -345,11 +343,9 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {
-        SLM_TRACE( "Object '" + key + "' not found.");
     }
     return castData;
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -98,9 +98,9 @@ bool IActivityView::validateActivity(fwMedData::ActivitySeries::sptr activitySer
 
     if (!isValid)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
-                                                          message,
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Activity launch",
+                                             message,
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 
     return isValid;
@@ -114,7 +114,7 @@ fwMedData::ActivitySeries::sptr IActivityView::createMainActivity() const
 
     if (nullptr == actSeries)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Main activity",
             "The main activity " + m_mainActivityId + " can not be launched. \n"
             "This activity needs parameters that cannot be defined",

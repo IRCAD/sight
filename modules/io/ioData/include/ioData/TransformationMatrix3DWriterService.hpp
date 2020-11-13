@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,8 +64,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IODATA_API virtual void configureWithIHM() override;
+
+    /**
+     * @brief Configure the matrix path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    IODATA_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FILE
     IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;

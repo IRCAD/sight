@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,17 @@
  *
  ***********************************************************************/
 
+#include "fwAtomsPatch/StructuralCreatorDB.hpp"
 
 #include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/IStructuralCreator.hpp"
-#include "fwAtomsPatch/StructuralCreatorDB.hpp"
 
 namespace fwAtomsPatch
 {
 
 StructuralCreatorDB::sptr StructuralCreatorDB::s_default = std::make_shared<StructuralCreatorDB>();
+
+//------------------------------------------------------------------------------
 
 void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sptr creator)
 {
@@ -61,7 +63,7 @@ void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sp
 ::fwAtoms::Object::sptr StructuralCreatorDB::create(const std::string& classname, const std::string& version)
 {
     ::fwAtomsPatch::IStructuralCreator::sptr creator = this->getCreator( classname, version );
-    OSLM_ASSERT( "object creator of type '"<< classname <<"' and version '"<< version <<"' not found", creator );
+    SLM_ASSERT( "object creator of type '"<< classname <<"' and version '"<< version <<"' not found", creator );
     fwAtomsPatchInfoLogMacro("Create '" + classname + "|" + version + "'");
     ::fwAtoms::Object::sptr obj = creator->create();
     return obj;
@@ -74,7 +76,5 @@ size_t StructuralCreatorDB::size() const
     ::fwCore::mt::ReadLock lock(m_mutex);
     return m_creators.size();
 }
-
-
 
 } //fwAtomsPatch

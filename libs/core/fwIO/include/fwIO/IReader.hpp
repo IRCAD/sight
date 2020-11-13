@@ -70,9 +70,18 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     FWIO_API virtual void configureWithIHM() = 0;
 
+    /**
+     * @brief Configure the image path (by default does nothing).
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    FWIO_API virtual void openLocationDialog();
     /**
      * @brief   returns  (filename) extension
      */
@@ -154,7 +163,7 @@ public:
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
 
-    /// Returns if reading has been cancelled by user
+    /// Returns if reading has failed.
     FWIO_API bool hasFailed() const;
 
     //@}
@@ -221,7 +230,7 @@ protected:
     FWIO_API virtual void configuring() override;
 
     /**
-     * @brief Title of the window that will open when the `configureWithIHM` slot is called
+     * @brief Title of the window that will open when the `openLocationDialog` slot is called
      */
     std::string m_windowTitle;
 
@@ -230,6 +239,8 @@ protected:
 
 private:
 
+    /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.
+    void deprecateConfigureWithIHM();
     /// Slot to read folder
     void readFolder(std::filesystem::path path);
     /// Slot to read file

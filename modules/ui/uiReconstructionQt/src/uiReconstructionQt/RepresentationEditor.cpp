@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ namespace uiReconstructionQt
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor,
-                         ::fwData::Reconstruction );
+                         ::fwData::Reconstruction )
 
 //------------------------------------------------------------------------------
 
@@ -68,7 +68,6 @@ RepresentationEditor::~RepresentationEditor() noexcept
 
 void RepresentationEditor::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -165,7 +164,6 @@ void RepresentationEditor::starting()
 
 void RepresentationEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
     QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked(int)), this, SLOT(onChangeShading(int)));
@@ -179,7 +177,6 @@ void RepresentationEditor::stopping()
 
 void RepresentationEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 

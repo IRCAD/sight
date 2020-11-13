@@ -69,7 +69,7 @@ void SImage::starting()
 
     if(pixmap->isNull())
     {
-        OSLM_ERROR("Image could not be found: " << m_path);
+        SLM_ERROR("Image could not be found: " << m_path);
     }
 
     if(m_width != -1 && m_height != -1)

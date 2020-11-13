@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ModelSeries.hpp"
-
 #include "SeriesDBTest.hpp"
 
+#include <fwMedData/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::SeriesDBTest );
@@ -72,9 +71,6 @@ void SeriesDBTest::containerTest()
     CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (0), m_series->size() );
     CPPUNIT_ASSERT( m_series->empty() );
 
-
-
-
     ::fwMedData::SeriesDB::ContainerType series;
 
     series.push_back(series1);
@@ -92,7 +88,6 @@ void SeriesDBTest::containerTest()
     CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (0), m_series->size() );
     CPPUNIT_ASSERT( m_series->empty() );
 
-
     CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (3), series.size() );
     CPPUNIT_ASSERT_EQUAL( series1, series[0] );
     CPPUNIT_ASSERT_EQUAL( series2, series[1] );
@@ -101,8 +96,6 @@ void SeriesDBTest::containerTest()
 }
 
 //------------------------------------------------------------------------------
-
-
 
 } //namespace ut
 } //namespace fwMedData

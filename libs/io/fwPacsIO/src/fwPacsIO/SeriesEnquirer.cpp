@@ -43,19 +43,21 @@ namespace fwPacsIO
 
 const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
+//------------------------------------------------------------------------------
+
 SeriesEnquirer::SeriesEnquirer() :
     m_progressCallback(ProgressCallbackSlotType::sptr())
 {
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 SeriesEnquirer::~SeriesEnquirer()
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::initialize(const std::string& _applicationTitle,
                                 const std::string& _peerHostName,
@@ -82,6 +84,11 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     this->setPeerHostName(_peerHostName.c_str());
     this->setPeerPort(_peerPort);
     this->setPeerAETitle(_peerApplicationTitle.c_str());
+
+    SLM_INFO("Initialize connection to (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
 
     // Clear presentation context.
     this->clearPresentationContexts();
@@ -137,13 +144,17 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     {
         this->addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], transferSyntaxes, ASC_SC_ROLE_SCP);
     }
-
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::connect()
 {
+    SLM_INFO("Connect to (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
+
     // Initialize network.
     OFCondition result = this->initNetwork();
     if (result.bad())
@@ -164,28 +175,33 @@ bool SeriesEnquirer::connect()
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::isConnectedToPacs() const
 {
     return this->isConnected();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool SeriesEnquirer::pingPacs()
 {
+    SLM_INFO("Send C-ECHO request")
     return this->sendECHORequest(0).good();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::disconnect()
 {
+    SLM_INFO("Disconnect from (" +
+             std::string(this->getPeerAETitle().c_str()) + ") " +
+             std::string(this->getPeerHostName().c_str()) + ":" +
+             std::to_string(this->getPeerPort()))
     this->releaseAssociation();
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
 {
@@ -200,12 +216,15 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
     }
 
     // Send the request
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-FIND request : " + stream.str())
     this->sendFINDRequest(presID, &_dataset, &findResponses);
 
     return findResponses;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 {
@@ -219,10 +238,13 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-MOVE request : " + stream.str())
     return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &_dataset, &dataResponse);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 {
@@ -239,10 +261,13 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
+    std::ostringstream stream;
+    _dataset.print(stream);
+    SLM_INFO("Send C-GET request : " + stream.str())
     return this->sendCGETRequest(presID, &_dataset, &dataResponse);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
 {
@@ -255,12 +280,12 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
     }
 
     Uint16 rspStatusCode;
+    SLM_INFO("Send C-STORE request")
     OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
-    OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
 {
@@ -275,12 +300,12 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
     Uint16 rspStatusCode;
     // const_cast required to use bad DCMTK sendSTORERequest API
     DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
-    OFCondition result     = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
-    OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
+    SLM_INFO("Send C-STORE request")
+    OFCondition result = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string& _name)
 {
@@ -340,7 +365,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string&
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& _uid)
 {
@@ -399,7 +424,67 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& 
 
     return this->sendFindRequest(dataset);
 }
-// ----------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientBirthDate(const std::string& _birthDate)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series birthdate.
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, _birthDate.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromDate, const std::string& _toDate)
 {
@@ -459,7 +544,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromD
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
 {
@@ -519,7 +604,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _modality)
 {
@@ -579,7 +664,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _m
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string& _description)
 {
@@ -639,7 +724,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string&
     return this->sendFindRequest(dataset);
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanceUID, unsigned int _instanceNumber)
 {
@@ -673,7 +758,7 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
@@ -693,7 +778,6 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
 
         if (result.good())
         {
-            SLM_TRACE("Received series " + seriesInstanceUID);
         }
         else
         {
@@ -706,7 +790,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
 
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
@@ -726,7 +810,6 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
 
         if (result.good())
         {
-            SLM_TRACE("Received series " + seriesInstanceUID);
         }
         else
         {
@@ -738,7 +821,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
                                                          const std::string& _sopInstanceUID)
@@ -759,7 +842,6 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
@@ -770,7 +852,7 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
                                                         const std::string& _sopInstanceUID)
@@ -791,7 +873,6 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seri
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
@@ -802,7 +883,7 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seri
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
 {
@@ -818,7 +899,6 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
 
         if (result.good())
         {
-            SLM_TRACE("Instance sent.");
         }
         else
         {
@@ -835,7 +915,7 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 {
@@ -849,7 +929,6 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 
         if (result.good())
         {
-            SLM_TRACE("Instance sent.");
         }
         else
         {
@@ -865,7 +944,7 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
     }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID _presID,
                                                RetrieveResponse* _response,
@@ -886,7 +965,7 @@ OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID,
                                                DcmDataset* _incomingObject,
@@ -901,14 +980,12 @@ OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID
         OFString seriesID;
         if(_incomingObject->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
         {
-            SLM_TRACE("Series Instance UID: " + std::string(seriesID.c_str()));
         }
 
         // Find the instance UID.
         OFString iname;
         if(_incomingObject->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
         {
-            SLM_TRACE("SOP Instance UID: " + std::string(iname.c_str()));
         }
 
         // Create Folder.
@@ -934,7 +1011,7 @@ OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID
     return result;
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
 {
@@ -951,6 +1028,4 @@ Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
     return pc;
 }
 
-// ----------------------------------------------------------------------------
-
-} //namespace fwPacsIO
+} // namespace fwPacsIO.

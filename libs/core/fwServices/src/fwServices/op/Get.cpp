@@ -33,7 +33,7 @@ namespace fwServices
 
 ::fwServices::IService::sptr get( std::string uid )
 {
-    OSLM_ASSERT("service does not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
+    SLM_ASSERT("service does not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
     return ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( uid ) );
 }
 

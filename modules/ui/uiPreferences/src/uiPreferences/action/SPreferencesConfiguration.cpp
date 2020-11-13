@@ -146,7 +146,7 @@ void SPreferencesConfiguration::configuring()
         }
         else
         {
-            OSLM_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
+            SLM_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
         }
 
         ConfigurationType nameCfg = elt->findConfigurationElement("name");

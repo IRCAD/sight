@@ -1,0 +1,203 @@
+<plugin id="Tuto04MeshGeneratorCpp" class="::Tuto04MeshGeneratorCpp::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="Tuto04MeshGeneratorCpp" />
+
+    <requirement id="preferences" />
+    <requirement id="visuOgre" />
+    <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="guiQt" />
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::ServiceFactory" >
+        <type>::fwGui::IActionSrv</type>
+        <service>::Tuto04MeshGeneratorCpp::SMeshModifier</service>
+        <object>::fwData::Mesh</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>Tuto04MeshGeneratorCpp_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="mesh" type="::fwData::Mesh" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto04MeshGeneratorCpp</name>
+                        <icon>Tuto04MeshGeneratorCpp-@PROJECT_VERSION@/tuto.ico</icon>
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="progressBarView" type="::gui::editor::SJobBar" />
+
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Modify" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="modifierFileView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                        <menuItem name="Save mesh" shortcut="Ctrl+S" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="saveMeshAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="modifierFileView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Shake mesh point" shortcut="Q" />
+                        <separator/>
+                        <menuItem name="Colorize mesh point" shortcut="U" />
+                        <menuItem name="Colorize mesh cells" shortcut="I" />
+                        <separator/>
+                        <menuItem name="Compute points normals" shortcut="O" />
+                        <menuItem name="Compute cells normals" shortcut="P" />
+                        <separator/>
+                        <menuItem name="Shake points normals" shortcut="L" />
+                        <menuItem name="Shake cells normals" shortcut="M" />
+                        <separator/>
+                        <menuItem name="mesh deformation" shortcut="D" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="shakeMeshPointAct" start="yes" />
+                    <menuItem sid="colorizeMeshPointAct" start="yes" />
+                    <menuItem sid="colorizeMeshCellsAct" start="yes" />
+                    <menuItem sid="colorizeComputePointsNormalsAct" start="yes" />
+                    <menuItem sid="colorizeComputeCellsNormalsAct" start="yes" />
+                    <menuItem sid="shakePointsNormalsAct" start="yes" />
+                    <menuItem sid="shakeCellsNormalsAct" start="yes" />
+                    <menuItem sid="meshDeformationAct" start="yes" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="trackballInteractorAdp" />
+                    <adaptor uid="meshAdp" />
+                </scene>
+            </service>
+
+            <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="meshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="openMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshReaderSrv" />
+            </service>
+
+            <service uid="saveMeshAct" type="::gui::action::SStarter" >
+                <start uid="meshWriterSrv" />
+            </service>
+
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <service uid="shakeMeshPointAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ShakeMeshPoint" />
+            </service>
+
+            <service uid="colorizeMeshPointAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ColorizeMeshPoints" />
+            </service>
+
+            <service uid="colorizeMeshCellsAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ColorizeMeshCells" />
+            </service>
+
+            <service uid="colorizeComputePointsNormalsAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ComputePointNormals" />
+            </service>
+
+            <service uid="colorizeComputeCellsNormalsAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ComputeCellNormals" />
+            </service>
+
+            <service uid="shakePointsNormalsAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ShakePointNormals" />
+            </service>
+
+            <service uid="shakeCellsNormalsAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="ShakeCellNormals" />
+            </service>
+
+            <service uid="meshDeformationAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+                <inout key="mesh" uid="mesh" />
+                <config functor="MeshDeformation" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="meshWriterSrv" type="::uiIO::editor::SIOSelector" >
+                <inout key="data" uid="mesh" />
+                <type mode="writer" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+            <connect>
+                <signal>meshReaderSrv/jobCreated</signal>
+                <signal>meshWriterSrv/jobCreated</signal>
+                <slot>progressBarView/showJob</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="progressBarView" />
+            <start uid="trackballInteractorAdp" />
+            <start uid="meshAdp" />
+
+        </config>
+    </extension>
+</plugin>

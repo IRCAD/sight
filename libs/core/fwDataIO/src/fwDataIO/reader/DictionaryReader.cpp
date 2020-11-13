@@ -285,11 +285,10 @@ DictionaryReader::~DictionaryReader()
 
 void DictionaryReader::read()
 {
-    SLM_TRACE_FUNC();
     assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-    OSLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
+    SLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
     SLM_ASSERT("Empty path for dictionary file", !path.empty());
 
     // Reading of the file
@@ -367,7 +366,6 @@ void DictionaryReader::read()
 
 std::string DictionaryReader::extension()
 {
-    SLM_TRACE_FUNC();
     return (".dic");
 }
 

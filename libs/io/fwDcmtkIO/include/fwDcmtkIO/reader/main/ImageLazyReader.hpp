@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -227,7 +227,7 @@ protected:
         {
             const Uint8* pixelData;
             dataset->findAndGetUint8Array(DCM_PixelData, pixelData);
-            OSLM_WARN_IF("Unable to read pixel data.", !pixelData);
+            SLM_WARN_IF("Unable to read pixel data.", !pixelData);
 
             for (unsigned int x = 0; x < columns; ++x)
             {
@@ -244,7 +244,7 @@ protected:
         {
             const Uint16* pixelData;
             dataset->findAndGetUint16Array(DCM_PixelData, pixelData);
-            OSLM_WARN_IF("Unable to read pixel data.", !pixelData);
+            SLM_WARN_IF("Unable to read pixel data.", !pixelData);
 
             for (unsigned int x = 0; x < columns; ++x)
             {

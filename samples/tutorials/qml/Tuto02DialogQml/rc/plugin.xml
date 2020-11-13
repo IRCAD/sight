@@ -1,0 +1,7 @@
+<plugin id="Tuto02DialogQml" class="::Tuto02DialogQml::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="Tuto02DialogQml" />
+
+    <requirement id="styleQml" />
+
+</plugin>

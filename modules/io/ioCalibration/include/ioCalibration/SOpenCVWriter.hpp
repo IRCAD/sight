@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,7 @@ namespace ioCalibration
 class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::fwIO::IWriter
 {
 public:
-    fwCoreServiceMacro(SOpenCVWriter, ::fwIO::IWriter);
+    fwCoreServiceMacro(SOpenCVWriter, ::fwIO::IWriter)
 
     ///Constructor
     IOCALIBRATION_API SOpenCVWriter();
@@ -88,8 +88,15 @@ public:
 
 protected:
 
-    /// configure with IHM
+    /**
+     * @brief configure the service using GUI.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOCALIBRATION_API void configureWithIHM() override;
+
+    /// configure the service using GUI.
+    IOCALIBRATION_API void openLocationDialog() override;
 
     /**
      * @brief Prompt a dialog to define file location.

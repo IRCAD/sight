@@ -6,12 +6,13 @@
     <requirement id="visuOgre" />
     <requirement id="material" />
     <requirement id="guiQt" />
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="scene2D" />
     <requirement id="patchMedicalData" />
+    <requirement id="ioPacs" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig" >
@@ -58,6 +59,9 @@
             <object uid="volumeTF" type="::fwData::TransferFunction" >
                 <colors default="true" />
             </object>
+
+            <object uid="previewSeriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="localSeriesDB" type="::fwMedData::SeriesDB" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -189,8 +193,6 @@
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="1" />
                         <spacer />
                     </layout>
                 </gui>
@@ -203,7 +205,7 @@
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
-                        <view proportion="1" />
+                        <view proportion="0" />
                         <spacer />
                     </layout>
                 </gui>
@@ -232,6 +234,7 @@
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Open PACS" icon="flatIcon-0.1/icons/GreenServerConnected.svg" style="check" />
                         <separator/>
                         <menuItem name="Negato view" icon="flatIcon-0.1/icons/Layers.svg" />
                         <menuItem name="Volume view" icon="flatIcon-0.1/icons/Volume.svg" />
@@ -255,6 +258,7 @@
                 </gui>
                 <registry>
                     <menuItem sid="openSeriesDBAct" start="yes" />
+                    <menuItem sid="pacsAct" start="yes" />
                     <menuItem sid="negatoViewAct" start="yes" />
                     <menuItem sid="volumeViewAct" start="yes" />
                     <menuItem sid="volumeTFAct" start="yes" />
@@ -278,6 +282,8 @@
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="::ioVtkGdcm::SSeriesDBLazyReader" />
+                <addSelection service="::ioGdcm::SSeriesDBReader" />
+                <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
                 <config id="OgreViewer_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
                 <config id="OgreViewer_vtk_SrvCfg" service="::ioVTK::SSeriesDBReader" />
                 <config id="OgreViewer_vtkGdcmd_SrvCfg" service="::ioVtkGdcm::SSeriesDBReader" />
@@ -370,6 +376,16 @@
                 <inout key="currentTF" uid="volumeCurrentTF" optional="yes" />
                 <inout key="mergedTF" uid="volumeTF" />
                 <state executable="false" />
+            </service>
+
+            <!-- PACS manager -->
+            <service uid="pacsAct" type="::gui::action::SConfigLauncher" >
+                <appConfig id="OgreViewer_PACSSelector_AppCfg" />
+                <parameter replace="WINDOW_TITLE" by="PACS" />
+                <parameter replace="WINDOW_ICON" by="OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
+                <inout key="previewSeriesDB" uid="previewSeriesDB" />
+                <inout key="localSeriesDB" uid="localSeriesDB" />
+                <inout key="image" uid="image" />
             </service>
 
             <!-- Adaptors visibility -->

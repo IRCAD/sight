@@ -552,7 +552,7 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Check origin
     const ::fwData::Image::Origin origin = image->getOrigin2();
-    OSLM_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
+    SLM_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -112.828 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -180.058 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 97.1478 ), origin[2], delta);

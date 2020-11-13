@@ -53,14 +53,12 @@ ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key )  :
     ::fwData::location::enableSingleFile<
         IObjectReader >(this)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -79,8 +77,8 @@ struct ITKLoaderFunctor
     template<class PIXELTYPE>
     void operator()(Parameter& param)
     {
-        OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
-                   ::fwTools::Type::create<PIXELTYPE>().string());
+        SLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
+                  ::fwTools::Type::create<PIXELTYPE>().string());
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -134,7 +132,7 @@ struct ITKLoaderFunctor
 void ImageReader::read()
 {
     std::filesystem::path file = getFile();
-    OSLM_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
+    SLM_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,9 +33,9 @@
 namespace ctrlCamp
 {
 
-fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractObj);
+fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractObj)
 
-static const std::string s_SOURCE_INOUT  = "source";
+static const std::string s_SOURCE_INOUT = "source";
 static const std::string s_TARGET_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void SExtractObj::updating()
         }
         catch(std::exception& e)
         {
-            OSLM_FATAL("Unhandled exception: " << e.what());
+            SLM_FATAL("Unhandled exception: " << e.what());
         }
 
         SLM_WARN_IF("Object from '"+ from +"' not found", !object);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,23 @@
  *
  ***********************************************************************/
 
-#include "fwItkIO/ImageIOFactoryRegistrar.hxx"
-
 #include "inr2itk/itkInrImageIOFactory.hpp"
 
-#include <itkCreateObjectFunction.h>
+#include "fwItkIO/ImageIOFactoryRegistrar.hxx"
+
 #include "inr2itk/itkInrImageIO.hpp"
-#include <itkVersion.h>
 
 #include <fwCore/base.hpp>
 
+#include <itkCreateObjectFunction.h>
+#include <itkVersion.h>
 
 REGISTER_IMAGEIOFACTORY( itk::InrImageIOFactory );
 
-
 namespace itk
 {
+
+//------------------------------------------------------------------------------
 
 void InrImageIOFactory::PrintSelf(std::ostream&, Indent) const
 {
@@ -45,7 +46,6 @@ void InrImageIOFactory::PrintSelf(std::ostream&, Indent) const
 
 InrImageIOFactory::InrImageIOFactory()
 {
-    SLM_TRACE_FUNC();
     this->RegisterOverride("itkImageIOBase",
                            "itkInrImageIO",
                            "InrImage IO",

@@ -167,7 +167,7 @@ MaterialMgrListener::~MaterialMgrListener()
             }
             else
             {
-                OSLM_FATAL("DepthPeeling logical error");
+                SLM_FATAL("DepthPeeling logical error");
             }
 
             auto params = pass->getFragmentProgramParameters();
@@ -330,7 +330,7 @@ MaterialMgrListener::~MaterialMgrListener()
             }
             else
             {
-                OSLM_FATAL("DualDepthPeeling logical error");
+                SLM_FATAL("DualDepthPeeling logical error");
             }
 
             auto numTexUnit = pass->getNumTextureUnitStates();
@@ -356,7 +356,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        OSLM_INFO("not found : " << _schemeName );
+        SLM_INFO("not found : " << _schemeName );
     }
 
     return newTech;
@@ -433,7 +433,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        OSLM_FATAL("Unreachable code");
+        SLM_FATAL("Unreachable code");
     }
 
     return ::fwRenderOgre::helper::Shading::createProgramFrom(_name, sourceFileName, parameters,

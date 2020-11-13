@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,8 +55,8 @@ Vector::~Vector()
 void Vector::add( ::fwData::Object::sptr _newObject )
 {
     ::fwData::Vector::sptr vector = m_vector.lock();
-    OSLM_ASSERT( "The object " << _newObject->getID() << " must not exist in vector.",
-                 std::find(vector->begin(), vector->end(), _newObject) == vector->end());
+    SLM_ASSERT( "The object " << _newObject->getID() << " must not exist in vector.",
+                std::find(vector->begin(), vector->end(), _newObject) == vector->end());
 
     // Modify vector
     vector->getContainer().push_back(_newObject );
@@ -70,8 +70,8 @@ void Vector::remove( ::fwData::Object::sptr _oldObject )
 {
     ::fwData::Vector::sptr vector   = m_vector.lock();
     ::fwData::Vector::iterator iter = std::find(vector->begin(), vector->end(), _oldObject);
-    OSLM_ASSERT( "The object " << _oldObject->getID() << " must exist in vector.",
-                 iter != vector->end());
+    SLM_ASSERT( "The object " << _oldObject->getID() << " must exist in vector.",
+                iter != vector->end());
 
     // Modify vector
     vector->getContainer().erase( iter );
@@ -108,8 +108,8 @@ void Vector::notify()
             ::fwData::Vector::s_ADDED_OBJECTS_SIG);
         sig->asyncEmit(m_addedObjects);
     }
-    OSLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
-                 m_addedObjects.empty() && m_removedObjects.empty());
+    SLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
+                m_addedObjects.empty() && m_removedObjects.empty());
 
     m_removedObjects.clear();
     m_addedObjects.clear();

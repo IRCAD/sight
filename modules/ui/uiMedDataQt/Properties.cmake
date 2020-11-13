@@ -20,6 +20,8 @@ set( DEPENDENCIES
     fwIO
     )
 set( REQUIREMENTS
+    fwMedData
+    servicesReg
     uiImageQt
     ctrlSelection
     )

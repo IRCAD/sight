@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,8 @@
 
 #ifndef CAMP_COMPILATION
 
-#define fwCampAutoDeclareMacro( desc, export)
-#define fwCampAutoDeclareDataMacro( desc, export)
+#define fwCampAutoDeclareMacro( desc, ...)
+#define fwCampAutoDeclareDataMacro( desc, ...)
 #define fwCampMakeFriendDataMacro(desc)
 
 #else
@@ -105,7 +105,7 @@
 
 //----------------------------------------------------------------------------
 
-#define fwCampAutoDeclareDataMacro( desc, export) \
+#define fwCampAutoDeclareDataMacro( desc, ...) \
     namespace fwCamp \
     { \
     template<typename T> \
@@ -116,9 +116,9 @@
 
 //----------------------------------------------------------------------------
 
-#define fwCampAutoDeclareMacro( desc, export) \
+#define fwCampAutoDeclareMacro( desc, ...) \
     __FWCAMP_PREDECLARE_MACRO(desc) \
-    export __FWCAMP__AUTO__DECLARE__MACRO(desc)
+    __FWCAMP__AUTO__DECLARE__MACRO(desc)
 
 //----------------------------------------------------------------------------
 

@@ -33,11 +33,19 @@ namespace dialog
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::showNotificationDialog( const std::string& _message,
-                                                 INotificationDialog::Type _type, INotificationDialog::Position _pos)
+void NotificationDialog::show( const std::string& _message,
+                               INotificationDialog::Type _type, INotificationDialog::Position _pos)
 {
     ::fwGui::dialog::NotificationDialog notif( _message, _type, _pos);
     notif.show();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::showNotificationDialog( const std::string& _message,
+                                                 INotificationDialog::Type _type, INotificationDialog::Position _pos)
+{
+    ::fwGui::dialog::NotificationDialog::show(_message, _type, _pos);
 }
 
 //-----------------------------------------------------------------------------

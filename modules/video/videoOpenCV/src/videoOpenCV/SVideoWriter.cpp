@@ -90,6 +90,13 @@ void SVideoWriter::starting()
 
 void SVideoWriter::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
@@ -191,8 +198,8 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
             if(m_timestamps.size() >= 5 )
             {
                 // computes number of fps
-                const double fps = 1000 * m_timestamps.size() / (m_timestamps.back() - m_timestamps.front());
-                OSLM_TRACE("Estimated FPS: " << fps);
+                const double fps = 1000 * m_timestamps.size() /
+                                   (m_timestamps.back() - m_timestamps.front());
                 const int width                     = static_cast<int>( frameTL->getWidth() );
                 const int height                    = static_cast<int>( frameTL->getHeight() );
                 std::filesystem::path path          = this->getFile();
@@ -218,7 +225,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
                 }
                 else
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    ::fwGui::dialog::MessageDialog::show(
                         "Video recording",
                         "The extension "+ extensionToUse+ " is not supported. Unable to write the file: " +
                         path.string());
@@ -233,7 +240,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
                 if (!m_writer->isOpened())
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    ::fwGui::dialog::MessageDialog::show(
                         "Video recording", "Unable to write the video in the file: " + path.string());
                     this->stopRecord();
                 }
@@ -264,7 +271,7 @@ void SVideoWriter::startRecord()
 {
     if (!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())

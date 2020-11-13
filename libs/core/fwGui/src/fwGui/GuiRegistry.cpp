@@ -68,7 +68,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("The service '"+sid+"' must be stopped before unregistering the container.", service->isStopped());
+        SLM_ASSERT("The service '"+sid+"' must be stopped before unregistering the container.", service->isStopped());
     }
 
     SLM_ASSERT("The service '"+sid+"' is not registered in the container map, it cannot be removed.",
@@ -142,8 +142,8 @@ bool GuiRegistry::hasWIDContainer(std::string wid)
 
 void GuiRegistry::registerSIDMenuBar(std::string sid, ::fwGui::container::fwMenuBar::sptr menuBar)
 {
-    OSLM_ASSERT("The menuBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                m_globalSIDToFwMenuBar.find(sid) == m_globalSIDToFwMenuBar.end());
+    SLM_ASSERT("The menuBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
+               m_globalSIDToFwMenuBar.find(sid) == m_globalSIDToFwMenuBar.end());
     m_globalSIDToFwMenuBar[sid] = menuBar;
 }
 
@@ -152,12 +152,12 @@ void GuiRegistry::registerSIDMenuBar(std::string sid, ::fwGui::container::fwMenu
 void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists );
+    SLM_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
-                    service->isStopped());
+        SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
+                   service->isStopped());
     }
 
     SLM_ASSERT("The menuBar '"+sid+"' is not registered in the container map, it cannot be removed.",
@@ -171,8 +171,8 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 
 ::fwGui::container::fwMenuBar::sptr GuiRegistry::getSIDMenuBar(std::string sid)
 {
-    OSLM_ASSERT("The menuBar '"+sid+"' is not registered in the container map.",
-                m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end());
+    SLM_ASSERT("The menuBar '"+sid+"' is not registered in the container map.",
+               m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end());
     // returns container in SID container map
     return m_globalSIDToFwMenuBar[sid];
 }
@@ -181,8 +181,8 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 
 void GuiRegistry::registerSIDToolBar(std::string sid, ::fwGui::container::fwToolBar::sptr toolBar)
 {
-    OSLM_ASSERT("The toolBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                m_globalSIDToFwToolBar.find(sid) == m_globalSIDToFwToolBar.end());
+    SLM_ASSERT("The toolBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
+               m_globalSIDToFwToolBar.find(sid) == m_globalSIDToFwToolBar.end());
     m_globalSIDToFwToolBar[sid] = toolBar;
 }
 
@@ -191,12 +191,12 @@ void GuiRegistry::registerSIDToolBar(std::string sid, ::fwGui::container::fwTool
 void GuiRegistry::unregisterSIDToolBar(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists );
+    SLM_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
-                    service->isStopped());
+        SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
+                   service->isStopped());
     }
 
     SLM_ASSERT("The toolBar '"+sid+"' is not registered in the container map, it cannot be removed.",
@@ -210,8 +210,8 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
 
 ::fwGui::container::fwToolBar::sptr GuiRegistry::getSIDToolBar(std::string sid)
 {
-    OSLM_ASSERT("The toolBar '"+sid+"' is not registered in the container map.",
-                m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end());
+    SLM_ASSERT("The toolBar '"+sid+"' is not registered in the container map.",
+               m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end());
     // returns container in SID container map
     return m_globalSIDToFwToolBar[sid];
 }
@@ -220,8 +220,8 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
 
 void GuiRegistry::registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::sptr menu)
 {
-    OSLM_ASSERT("The menu '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                m_globalSIDToFwMenu.find(sid) == m_globalSIDToFwMenu.end());
+    SLM_ASSERT("The menu '" + sid + "' is already registered in the container map, it cannot be added twice.",
+               m_globalSIDToFwMenu.find(sid) == m_globalSIDToFwMenu.end());
     m_globalSIDToFwMenu[sid] = menu;
 }
 
@@ -230,11 +230,11 @@ void GuiRegistry::registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::s
 void GuiRegistry::unregisterSIDMenu(std::string sid)
 {
     bool service_exists = ::fwTools::fwID::exist(sid );
-    OSLM_INFO_IF("The menu "<<sid <<" does not exist.", !service_exists );
+    SLM_INFO_IF("The menu "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
         ::fwServices::IService::sptr service = ::fwServices::get( sid );
-        OSLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->isStopped());
+        SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->isStopped());
     }
 
     SLM_ASSERT("The menu '"+sid+"' is not registered in the container map, it cannot be removed.",
@@ -248,8 +248,8 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
 
 ::fwGui::container::fwMenu::sptr GuiRegistry::getSIDMenu(std::string sid)
 {
-    OSLM_ASSERT("The menu '"+sid+"' is not registered in the container map.",
-                m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end());
+    SLM_ASSERT("The menu '"+sid+"' is not registered in the container map.",
+               m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end());
     // returns container in SID container map
     return m_globalSIDToFwMenu[sid];
 }
@@ -273,19 +273,19 @@ void GuiRegistry::registerActionSIDToParentSID(std::string actionSid, std::strin
 void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::string parentSid)
 {
 
-    OSLM_ASSERT("The action '"+actionSid+"' is not registered.",
-                m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
+    SLM_ASSERT("The action '"+actionSid+"' is not registered.",
+               m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
 
     if (m_actionSIDToParentSID[actionSid].size() == 1)
     {
         // Action has one parent
         bool service_exists = ::fwTools::fwID::exist(actionSid );
-        OSLM_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists );
+        SLM_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists );
         if(service_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( actionSid );
-            OSLM_ASSERT("The service '" + actionSid + "' must be stopped before unregistering the action.",
-                        service->isStopped());
+            SLM_ASSERT("The service '" + actionSid + "' must be stopped before unregistering the action.",
+                       service->isStopped());
         }
         m_actionSIDToParentSID.erase(actionSid);
     }

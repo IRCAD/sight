@@ -157,6 +157,7 @@ void SWriter::configuring()
             {
                 m_allowedExts.insert(m_allowedExts.end(), ext);
                 m_allowedExtLabels[ext] = it->second.get("<xmlattr>.label", "");
+                SLM_ASSERT("No label given for extension '" + ext + "'", !m_allowedExtLabels[ext].empty());
             }
         }
     }
@@ -233,7 +234,7 @@ bool SWriter::versionSelection()
                     }
                     catch ( std::out_of_range e)
                     {
-                        OSLM_ERROR("Bad version format: either " + _a + " or " + _b);
+                        SLM_ERROR("Bad version format: either " + _a + " or " + _b);
                         return false;
                     }
                 });
@@ -255,7 +256,7 @@ bool SWriter::versionSelection()
                 }
                 catch ( std::out_of_range e)
                 {
-                    OSLM_ERROR("Bad version format: " + v);
+                    SLM_ERROR("Bad version format: " + v);
 
                     prettyVersionsAll.push_back(v);
                     prettyVersionsToVersions[ v ] = v;
@@ -348,9 +349,9 @@ void SWriter::updating()
         else
         {
             const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                              errorMessage,
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                                 errorMessage,
+                                                 ::fwGui::dialog::IMessageDialog::CRITICAL);
             m_writeFailed = true;
             return;
         }
@@ -430,7 +431,7 @@ void SWriter::updating()
                                                          );
 
     // Generate a temporary file name for saving the file.
-    const std::filesystem::path tmpFolderPath = std::filesystem::temp_directory_path();
+    const std::filesystem::path tmpFolderPath = ::fwTools::System::getTemporaryFolder();
     const std::filesystem::path tmpFilePath   = tmpFolderPath / (::fwTools::System::genTempFileName() + ".sight");
     const std::filesystem::path tmpFilename   = tmpFilePath.filename();
 
@@ -490,10 +491,12 @@ void SWriter::updating()
             }
 
             // Rename the temporary file with the real name and move it to the right folder.
-            std::filesystem::rename(tmpFilePath, filePath);
+
+            ::fwTools::System::robustRename(tmpFilePath, filePath);
+
             if(std::filesystem::exists(tmpFolderPath/folderDirName))
             {
-                std::filesystem::rename(tmpFolderPath/folderDirName, folderPath/folderDirName);
+                ::fwTools::System::robustRename(tmpFolderPath/folderDirName, folderPath/folderDirName);
             }
 
             runningJob.done();
@@ -520,10 +523,10 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        OSLM_ERROR(_e.what());
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          _e.what(),
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        SLM_ERROR(_e.what());
+        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                             _e.what(),
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
     catch(...)
@@ -535,9 +538,9 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          "Writing process aborted",
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
+                                             "Writing process aborted",
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
 
@@ -554,6 +557,13 @@ void SWriter::updating()
 //-----------------------------------------------------------------------------
 
 void SWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void SWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
@@ -586,7 +596,6 @@ void SWriter::configureWithIHM()
         }
 
     }
-
 }
 
 //-----------------------------------------------------------------------------

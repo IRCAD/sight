@@ -226,7 +226,7 @@ std::string SScan::selectDevice()
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
-        OSLM_DEBUG("selecting camera: "<< index);
+        SLM_DEBUG("selecting camera: "<< index);
     }
 
     return selectedDevice;
@@ -405,7 +405,7 @@ void SScan::startCamera()
 {
     if (m_running)
     {
-        OSLM_WARN("Camera is still running. Nothing is done.");
+        SLM_WARN("Camera is still running. Nothing is done.");
         return;
     }
 
@@ -947,7 +947,7 @@ void SScan::setDoubleParameter(double _value, std::string _key)
 
 void SScan::popMessageDialog(const std::string& _message)
 {
-    ::fwGui::dialog::MessageDialog::showMessageDialog(
+    ::fwGui::dialog::MessageDialog::show(
         "RealSense Error", _message, ::fwGui::dialog::IMessageDialog::CRITICAL);
 }
 

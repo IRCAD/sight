@@ -1,173 +1,246 @@
-<plugin id="ExVideoRecorder" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
-    <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
+<plugin id="ExVideoRecorder" version="@PROJECT_VERSION@" >
 
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExVideoRecorderConfig</id>
+    <requirement id="guiQt" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgre" />
+    <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExVideoRecorder_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
             <object uid="camera" type="::arData::Camera" />
-            <object uid="frameTL" type="::arData::FrameTL">
+            <object uid="frameTL" type="::arData::FrameTL" >
                 <value>100</value>
             </object>
             <object uid="videoImage" type="::fwData::Image" />
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoRecorder</name>
-                        <icon>ExVideoRecorder-0.1/exvideorecorder.ico</icon>
+                        <icon>ExVideoRecorder-0.1/app.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbar" start="yes" />
-                    <view sid="genericScene" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start/stop" icon="media-0.1/icons/start-cam.svg" icon2="media-0.1/icons/stop-cam.svg" style="check"/>
-                        <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Frame recording" icon="media-0.1/icons/start-record.svg" icon2="media-0.1/icons/stop-record.svg" style="check" />
-                        <menuItem name="Video recording" icon="media-0.1/icons/start-record.svg" icon2="media-0.1/icons/stop-record.svg" style="check"  />
+                        <menuItem name="Frame recording" icon="flatIcon-0.1/icons/RedCircle.svg" style="check" />
+                        <menuItem name="Video recording" icon="flatIcon-0.1/icons/RedCircle.svg"  style="check"  />
                         <editor/>
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="cameraSelector" start="yes" />
-                    <menuItem sid="startStopVideo" start="yes" />
-                    <menuItem sid="pauseVideo" start="yes" />
-                    <menuItem sid="frameRecording" start="yes" />
-                    <menuItem sid="videoRecording" start="yes" />
-                    <editor sid="parameters" start="yes" />
+                    <editor sid="videoSelectorSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="resumeVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
+                    <menuItem sid="frameRecordingAct" start="yes" />
+                    <menuItem sid="videoRecordingAct" start="yes" />
+                    <editor sid="parametersSrv" start="yes" />
                 </registry>
             </service>
 
-            <service uid="startStopVideo" type="::gui::action::SDefault" />
-            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>frameGrabber/pauseCamera</slot>
+                    <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
+                <state executable="false" />
             </service>
 
-            <service uid="frameRecording" type="::gui::action::SDefault" />
-            <service uid="videoRecording" type="::gui::action::SDefault" />
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
 
-            <!-- *************************** Begin generic scene *************************** -->
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <service uid="frameRecordingAct" type="::gui::action::SDefault" />
+
+            <service uid="videoRecordingAct" type="::gui::action::SDefault" />
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <renderer id="default" background="0.0" />
-                    <adaptor uid="videoAdpt" />
-                    <adaptor uid="interactorStyle" />
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="videoAdp" />
                 </scene>
             </service>
 
-            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
-                <config renderer="default" />
+            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage" />
+                <config layer="default" />
             </service>
 
-            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
-            </service>
+            <!-- ******************************* Services ***************************************** -->
 
-            <!-- *************************** End generic scene *************************** -->
-
-            <service uid="parameters" type="::guiQt::editor::SParameters">
+            <service uid="parametersSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="frameWriter" type="::videoOpenCV::SFrameWriter" worker="videoRecordingWorker">
+            <service uid="frameWriterSrv" type="::videoOpenCV::SFrameWriter" worker="videoRecordingActWorker" >
                 <in key="data" uid="frameTL" autoConnect="yes" />
                 <format>.tiff</format>
             </service>
 
-            <service uid="videoWriter" type="::videoOpenCV::SVideoWriter" worker="videoRecordingWorker">
+            <service uid="videoWriterSrv" type="::videoOpenCV::SVideoWriter" worker="videoRecordingActWorker" >
                 <in key="data" uid="frameTL" autoConnect="yes" />
             </service>
 
-            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
-                <in group="frameTL">
+            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker" >
+                <in group="frameTL" >
                     <key uid="frameTL" />
                 </in>
-                <inout group="image">
+                <inout group="image" >
                     <key uid="videoImage" />
                 </inout>
                 <framerate>30</framerate>
             </service>
 
-            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
-                <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
-            </service>
-
-            <service uid="frameGrabber" type="::videoTools::SGrabberProxy">
-                <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
-            </service>
+            <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>parameters/enumChanged</signal>
-                <slot>frameWriter/setFormatParameter</slot>
+                <signal>videoSelectorSrv/configuredCameras</signal>
+                <slot>videoGrabberSrv/reconfigure</slot>
             </connect>
 
             <connect>
-                <signal>frameRecording/checked</signal>
-                <slot>frameWriter/startRecord</slot>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>frameRecording/unchecked</signal>
-                <slot>frameWriter/stopRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>videoRecording/checked</signal>
-                <slot>videoWriter/startRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>videoRecording/unchecked</signal>
-                <slot>videoWriter/stopRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>startStopVideo/checked</signal>
-                <slot>frameGrabber/startCamera</slot>
-            </connect>
-
-            <connect>
-                <signal>startStopVideo/unchecked</signal>
-                <slot>frameGrabber/stopCamera</slot>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
             </connect>
 
             <connect>
                 <signal>camera/idModified</signal>
-                <slot>frameGrabber/stopCamera</slot>
+                <slot>videoGrabberSrv/stopCamera</slot>
             </connect>
 
             <connect>
-                <signal>cameraSelector/configuredCameras</signal>
-                <slot>frameGrabber/reconfigure</slot>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
             </connect>
 
+            <connect>
+                <signal>parametersSrv/enumChanged</signal>
+                <slot>frameWriterSrv/setFormatParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>frameRecordingAct/checked</signal>
+                <slot>frameWriterSrv/startRecord</slot>
+            </connect>
+
+            <connect>
+                <signal>frameRecordingAct/unchecked</signal>
+                <slot>frameWriterSrv/stopRecord</slot>
+            </connect>
+
+            <connect>
+                <signal>videoRecordingAct/checked</signal>
+                <slot>videoWriterSrv/startRecord</slot>
+            </connect>
+
+            <connect>
+                <signal>videoRecordingAct/unchecked</signal>
+                <slot>videoWriterSrv/stopRecord</slot>
+            </connect>
+
+
+            <!-- ******************************* Start services ***************************************** -->
+
             <start uid="mainFrame" />
-            <start uid="frameGrabber" />
-            <start uid="synchronizer" />
-            <start uid="frameWriter" />
-            <start uid="videoWriter" />
-            <!-- VTK scene 'genericScene' -->
-            <start uid="videoAdpt" />
-            <start uid="interactorStyle" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="frameWriterSrv" />
+            <start uid="videoWriterSrv" />
+            <start uid="videoAdp" />
+
         </config>
     </extension>
 </plugin>

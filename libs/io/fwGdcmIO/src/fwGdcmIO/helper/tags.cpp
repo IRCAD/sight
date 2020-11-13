@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@
 #include <boost/numeric/conversion/cast.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace fwGdcmIO
@@ -90,8 +89,8 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 
     while(!tag.empty())
     {
-        OSLM_WARN_IF("Unxpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
-                     tag.size() != 3);
+        SLM_WARN_IF("Unxpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
+                    tag.size() != 3);
         FW_RAISE_IF("Unable to read private tag file", tag.size() < 2);
 
         privateTags.push_back(::fwGdcmIO::helper::getGdcmTag(tag[0], tag[1]));

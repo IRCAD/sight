@@ -45,6 +45,8 @@
 #include <boost/foreach.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
 
+#include <regex>
+
 namespace fwServices
 {
 
@@ -192,7 +194,7 @@ void AppConfigManager::stop()
     }
     this->stopStartedServices();
 
-    OSLM_INFO("Parsing OSR after stopping the config :" << std::endl
+    SLM_DEBUG("Parsing OSR after stopping the config :" << std::endl
                                                         << ::fwServices::OSR::getRegistryInformation());
     m_state = STATE_STOPPED;
 }
@@ -209,7 +211,7 @@ void AppConfigManager::destroy()
     }
     this->destroyCreatedServices();
 
-    OSLM_INFO("Parsing OSR after destroying the config :" << std::endl
+    SLM_DEBUG("Parsing OSR after destroying the config :" << std::endl
                                                           << ::fwServices::OSR::getRegistryInformation());
 
     m_cfgElem.reset();
@@ -364,7 +366,7 @@ void AppConfigManager::stopStartedServices()
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
+        SLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
@@ -380,7 +382,7 @@ void AppConfigManager::destroyCreatedServices()
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.", srv->isStopped());
+        SLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.", srv->isStopped());
         ::fwServices::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
@@ -405,9 +407,9 @@ void AppConfigManager::processStartItems()
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
                     m_deferredStartSrv.push_back(uid);
-                    SLM_INFO( this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
-                              "of its data is missing. With DEBUG log level, you can know which are the "
-                              "missing objects.");
+                    SLM_DEBUG( this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
+                               "of its data is missing. With DEBUG log level, you can know which are the "
+                               "missing objects.");
                 }
                 else
                 {
@@ -450,9 +452,9 @@ void AppConfigManager::processUpdateItems()
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
                     m_deferredUpdateSrv.push_back(uid);
-                    SLM_INFO( this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
-                              "of its data is missing. With DEBUG log level, you can know which are the "
-                              "missing objects.");
+                    SLM_DEBUG( this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
+                               "of its data is missing. With DEBUG log level, you can know which are the "
+                               "missing objects.");
                 }
                 else
                 {
@@ -520,7 +522,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
                 const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
                 FwCoreNotUsedMacro(ret);
-                SLM_INFO_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
+                SLM_DEBUG_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
             }
             else
             {
@@ -614,8 +616,8 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                            !::fwTools::fwID::exist(srvConfig.m_uid));
 
                 const std::string msg = AppConfigManager::getUIDListAsString(uids);
-                SLM_INFO(this->msgHead() + "Service '" + srvConfig.m_uid +
-                         "' has not been created because the object" + msg + "not available.");
+                SLM_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
+                          "' has not been created because the object" + msg + "not available.");
             }
         }
         else if (elem->getName() == "serviceList")
@@ -1034,7 +1036,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                     if(_id == objCfg.m_uid)
                     {
                         ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                        OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                        SLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                         optional &= objCfg.m_optional;
                         if(objCfg.m_optional)
@@ -1056,9 +1058,9 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                 {
                     // 1. Stop the service
                     ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                    SLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                    OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
+                    SLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
                     srv->stop().wait();
 
                     for(auto it = m_startedSrv.begin(); it != m_startedSrv.end(); ++it)
@@ -1071,8 +1073,8 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                     }
 
                     // 2. Destroy the service
-                    OSLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
-                                srv->isStopped());
+                    SLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
+                               srv->isStopped());
                     ::fwServices::OSR::unregisterService(srv);
 
                     for(auto it = m_createdSrv.begin(); it != m_createdSrv.end(); ++it)
@@ -1100,7 +1102,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
                 {
                     // Update auto connections
                     ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                    SLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                     srv->autoDisconnect();
                     srv->autoConnect();

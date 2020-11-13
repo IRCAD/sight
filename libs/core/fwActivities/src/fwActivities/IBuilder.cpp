@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace fwActivities
     ::fwData::Vector::sptr subSelection = ::fwData::Vector::New();
     for(::fwData::Vector::value_type obj :  *currentSelection)
     {
-        OSLM_ASSERT("Object not instanced in selection", obj);
+        SLM_ASSERT("Object not instanced in selection", obj);
         if(obj->isA(type))
         {
             subSelection->getContainer().push_back(obj);

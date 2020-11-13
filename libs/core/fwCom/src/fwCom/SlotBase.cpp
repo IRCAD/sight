@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,27 @@
  *
  ***********************************************************************/
 
+#include "fwCom/SlotBase.hpp"
 
 #include "fwCom/exception/BadRun.hpp"
-
-#include "fwCom/SlotBase.hpp"
 #include "fwCom/SlotBase.hxx"
 
 namespace fwCom
 {
 
+//------------------------------------------------------------------------------
+
 void SlotBase::run() const
 {
     typedef SlotRun< void () > SlotFuncType;
-    const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
+    const SlotFuncType* fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
         fun->run();
     }
     else
     {
-        OSLM_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        SLM_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
         FW_RAISE_EXCEPTION( fwCom::exception::BadRun( "Failed to find right signature for run"  ) );
     }
 }
@@ -49,17 +50,16 @@ void SlotBase::run() const
 SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
 {
     typedef SlotRun< void () > SlotFuncType;
-    const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
+    const SlotFuncType* fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
         return fun->asyncRun();
     }
     else
     {
-        OSLM_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        SLM_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
         FW_RAISE_EXCEPTION( fwCom::exception::BadRun( "Failed to find right signature for asyncRun"  ) );
     }
 }
 
 } // namespace fwCom
-

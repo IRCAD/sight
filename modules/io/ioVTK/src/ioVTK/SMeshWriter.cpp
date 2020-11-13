@@ -72,6 +72,13 @@ SMeshWriter::SMeshWriter() noexcept
 
 void SMeshWriter::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SMeshWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -205,7 +212,7 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -218,7 +225,7 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -226,7 +233,7 @@ void SMeshWriter::updating()
         catch( ... )
         {
             m_writeFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during saving",
                 ::fwGui::dialog::IMessageDialog::WARNING);

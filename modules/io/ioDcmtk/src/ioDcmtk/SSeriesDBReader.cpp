@@ -68,6 +68,12 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -142,7 +148,6 @@ void SSeriesDBReader::configuring()
             const ::fwRuntime::ConfigurationElement::AttributePair attributePair = (*it)->getSafeAttributeValue("uid");
             if(attributePair.first)
             {
-                SLM_TRACE("New SOP class supported : " + attributePair.second);
                 m_supportedSOPClassSelection.push_back(attributePair.second);
             }
         }
@@ -160,14 +165,12 @@ void SSeriesDBReader::configuring()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -188,7 +191,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwDcmtkIO::SeriesDBReader::sptr myLoader = ::fwDcmtkIO::SeriesDBReader::New();
     ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
@@ -219,12 +221,12 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
@@ -235,7 +237,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 void SSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
@@ -252,11 +253,13 @@ void SSeriesDBReader::updating()
             cursor.setCursor(::fwGui::ICursor::BUSY);
             this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
+
+            m_readFailed = false;
         }
         else
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }

@@ -18,7 +18,7 @@ set( DEPENDENCIES
     fwActivities
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
 )
 

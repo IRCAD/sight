@@ -163,7 +163,7 @@ void SArucoTracker::starting()
         ::arData::MarkerTL::sptr markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
         if(markerTL)
         {
-            OSLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
+            SLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
             markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
         }
     }
@@ -220,7 +220,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         {
             const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
-            OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+            SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
 
             if(buffer)
             {
@@ -399,7 +399,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         if(val >= m_detectorParams->adaptiveThreshWinSizeMax)
         {
             val = m_detectorParams->adaptiveThreshWinSizeMax - 1;
-            OSLM_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
+            SLM_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
         }
         m_detectorParams->adaptiveThreshWinSizeMin = val;
     }
@@ -409,7 +409,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         if(m_detectorParams->adaptiveThreshWinSizeMin >= val)
         {
             val = m_detectorParams->adaptiveThreshWinSizeMin + 1;
-            OSLM_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
+            SLM_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
         }
         m_detectorParams->adaptiveThreshWinSizeMax = val;
     }
@@ -431,7 +431,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         if(val <= 0)
         {
             val = 1;
-            OSLM_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
+            SLM_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
         }
         m_detectorParams->cornerRefinementMaxIterations = val;
     }
@@ -483,7 +483,7 @@ void SArucoTracker::setDoubleParameter(double _val, std::string _key)
         if(val <= 0.)
         {
             val = 0.01;
-            OSLM_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
+            SLM_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
         }
         m_detectorParams->cornerRefinementMinAccuracy = val;
     }

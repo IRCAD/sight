@@ -102,7 +102,7 @@ void SCompositorParameter::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
-    OSLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
+    SLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -124,6 +124,11 @@ void SCompositorParameter::starting()
     // Association of a listener attached to this adaptor to the configured compositor
     m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));
     m_compositor->addListener(m_listener);
+
+    if(!m_isVisible)
+    {
+        this->slot(s_UPDATE_VISIBILITY_SLOT)->asyncRun(m_isVisible);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -147,6 +152,15 @@ void SCompositorParameter::stopping()
     // Association of a listener attached to this adaptor to the configured compositor
     m_compositor->removeListener(m_listener);
     delete m_listener;
+}
+
+//-----------------------------------------------------------------------------
+
+void SCompositorParameter::setVisible(bool _enable)
+{
+    const auto layer = this->getLayer();
+    layer->updateCompositorState(m_compositorName, _enable);
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

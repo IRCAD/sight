@@ -9,3 +9,6 @@ fwInclude(
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Qml Qt5::Quick vtkGUISupportQt vtkRenderingExternal)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+message(DEPRECATION "The VTK renderer is deprecated and will be removed in sight 22.0.
+                     Please switch to the Ogre renderer.")

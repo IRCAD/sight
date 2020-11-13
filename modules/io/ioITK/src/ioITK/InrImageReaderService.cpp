@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, ::fwData::Image )
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +77,13 @@ void InrImageReaderService::configuring()
 
 void InrImageReaderService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void InrImageReaderService::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -113,7 +119,6 @@ void InrImageReaderService::info(std::ostream& _sstream )
 bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
                                          const ::fwData::Image::sptr& _pImg )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
@@ -130,16 +135,16 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          ss.str(),
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             ss.str(),
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Warning during loading",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Warning during loading",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -149,7 +154,6 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
 
 void InrImageReaderService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {
@@ -178,7 +182,6 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 

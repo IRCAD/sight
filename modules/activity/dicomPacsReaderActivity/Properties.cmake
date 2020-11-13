@@ -8,7 +8,8 @@ set( REQUIREMENTS
     activities
     ctrlMemory
     ctrlSelection
-    dataReg
+    fwData
+    fwMedData
     gui
     guiQt
     ioDicom

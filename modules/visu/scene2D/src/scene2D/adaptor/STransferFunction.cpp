@@ -88,7 +88,9 @@ void STransferFunction::configuring()
 
 void STransferFunction::starting()
 {
+    // Adds the layer item to the scene.
     m_layer = new QGraphicsItemGroup();
+    this->getScene2DRender()->getScene()->addItem(m_layer);
 
     m_pointsPen.setCosmetic(true);
     m_pointsPen.setWidthF(0);
@@ -116,6 +118,17 @@ void STransferFunction::starting()
 
 void STransferFunction::updating()
 {
+    {
+        const auto tf = this->getLockedInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+
+        if(m_unclampedTFData.first != tf->getID())
+        {
+            const ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
+            m_unclampedTFData.first  = tf->getID();
+            m_unclampedTFData.second = tfData;
+        }
+    }
+
     // Clears old data.
     this->destroyTFPolygon();
     this->destroyTFPoints();
@@ -391,9 +404,6 @@ void STransferFunction::buildLayer()
     // Adjusts the layer's position and zValue depending on the associated axis.
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
-
-    // Adds the layer item to the scene.
-    this->getScene2DRender()->getScene()->addItem(m_layer);
 }
 
 //------------------------------------------------------------------------------
@@ -508,7 +518,6 @@ void STransferFunction::processInteraction(::fwRenderQt::data::Event& _event)
        _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
     {
         this->midButtonClickEvent(_event);
-        _event.setAccepted(true);
         return;
     }
 
@@ -518,6 +527,15 @@ void STransferFunction::processInteraction(::fwRenderQt::data::Event& _event)
     {
         this->rightButtonCLickEvent(_event);
         _event.setAccepted(true);
+        return;
+    }
+
+    // If the middle button wheel moves, change the whole subTF opacity.
+    if(_event.getButton() == ::fwRenderQt::data::Event::NoButton &&
+       (_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ||
+        _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp))
+    {
+        this->midButtonWheelMoveEvent(_event);
         return;
     }
 }
@@ -582,25 +600,25 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
     const double delta = 1.;
     if(*m_capturedTFPoint == m_TFPoints.front())
     {
-        if(newCoord.getX() > nextPointXCoord)
+        if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
     }
     else if(*m_capturedTFPoint == m_TFPoints.back())
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
     }
     else
     {
-        if(newCoord.getX() < previousPointXCoord)
+        if(newCoord.getX() <= previousPointXCoord)
         {
             newCoord.setX(previousPointXCoord + delta);
         }
-        else if(newCoord.getX() > nextPointXCoord)
+        else if(newCoord.getX() >= nextPointXCoord)
         {
             newCoord.setX(nextPointXCoord - delta);
         }
@@ -633,8 +651,8 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
         pointIndex = m_TFPoints.size() - 1 - pointIndex;
     }
     // Retrieves the TF point.
-    ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-    auto tfDataIt = tfData.begin();
+    const ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
+    auto tfDataIt                                       = tfData.begin();
     for(unsigned i = 0; i < pointIndex; ++i)
     {
         tfDataIt++;
@@ -667,6 +685,10 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
 
     // Adds the new TF point.
     tf->addTFColor(newTFValue, tfColor);
+
+    // Update unclamped data.
+    m_unclampedTFData.second.erase(oldTFValue);
+    m_unclampedTFData.second[newTFValue] = tfColor;
 
     // Updates the window/level.
     if(window > 0)
@@ -808,6 +830,9 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
         const ::fwData::TransferFunction::TFValueType tfValue = tfDataIt->first;
         tf->eraseTFValue(tfValue);
 
+        // Update unclamped data.
+        m_unclampedTFData.second.erase(tfValue);
+
         // Gets new window/level min max value in the window/level space.
         double min = m_TFPoints.begin()->first.first;
         double max = m_TFPoints.rbegin()->first.first;
@@ -916,6 +941,9 @@ void STransferFunction::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Eve
         // Adds the new TF point.
         tf->addTFColor(tfValue, newColor);
 
+        // Update unclamped data.
+        m_unclampedTFData.second[tfValue] = newColor;
+
         // Gets new window/level min max value in the window/level space.
         double min = m_TFPoints.begin()->first.first;
         double max = m_TFPoints.rbegin()->first.first;
@@ -954,7 +982,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Eve
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::midButtonClickEvent(const ::fwRenderQt::data::Event& _event)
+void STransferFunction::midButtonClickEvent(::fwRenderQt::data::Event& _event)
 {
     const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
                                    static_cast< int >(_event.getCoord().getY()));
@@ -973,6 +1001,8 @@ void STransferFunction::midButtonClickEvent(const ::fwRenderQt::data::Event& _ev
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF =
             std::make_pair(tf, ::fwRenderQt::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
+
+        _event.setAccepted(true);
     }
 }
 
@@ -1058,6 +1088,77 @@ void STransferFunction::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _
         contextMenu->exec(QCursor::pos());
 
         delete contextMenu;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void STransferFunction::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
+{
+    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
+                                   static_cast< int >(_event.getCoord().getY()));
+    QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
+
+    // Checks if a polygon is clicked.
+    if(items.indexOf(m_TFPolygon) >= 0)
+    {
+        // Get the TF.
+        const double scale = _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ? -0.05 : 0.05;
+
+        // Find unclamped data.
+        ::fwData::TransferFunction::TFDataType tfData = m_unclampedTFData.second;
+
+        // Check if the scaling is usefull.
+        bool usefull = false;
+        for(auto& data : tfData)
+        {
+            if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelUp && data.second.a > 0. &&
+               data.second.a < 1.)
+            {
+                usefull = true;
+                break;
+            }
+            else if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown && data.second.a > 0.)
+            {
+                usefull = true;
+                break;
+            }
+        }
+
+        // Scale data.
+        if(usefull)
+        {
+            for(auto& data : tfData)
+            {
+                data.second.a += data.second.a * scale;
+            }
+
+            // Store unclamped data.
+            m_unclampedTFData.second = tfData;
+
+            // Clamp data.
+            for(auto& data : tfData)
+            {
+                data.second.a = std::clamp(data.second.a, 0., 1.);
+            }
+
+            // Updates the TF.
+            const auto tf = this->getLockedInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+            tf->setTFData(tfData);
+
+            // Sends the signal.
+            const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
+                ::fwData::TransferFunction::s_MODIFIED_SIG);
+            {
+                const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
+            }
+        }
+
+        // Re-draw all the scene.
+        this->updating();
+
+        _event.setAccepted(true);
     }
 }
 

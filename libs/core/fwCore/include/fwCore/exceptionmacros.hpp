@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_EXCEPTIONMACROS_HPP__
-#define __FWCORE_EXCEPTIONMACROS_HPP__
+#pragma once
 
 # include <boost/exception/exception.hpp>
 # include <boost/throw_exception.hpp>
@@ -50,7 +49,7 @@
 
 # ifdef LOG_FWEXCEPTIONS
 #  define __FWCORE_EXCEPTION_LOG(excep)         \
-    OSLM_WARN(__FWCORE_EXCEPTION_INFO(excep))
+    SLM_WARN(__FWCORE_EXCEPTION_INFO(excep))
 # else
 # define __FWCORE_EXCEPTION_LOG(excep)
 # endif
@@ -87,19 +86,19 @@
 
 #  undef __FWCORE_EXCEPT_RAISE_EXCEPTION
 #  define __FWCORE_EXCEPT_RAISE_EXCEPTION(excep)        \
-    OSLM_ASSERT(__FWCORE_EXCEPTION_INFO(excep), false)
+    SLM_ASSERT(__FWCORE_EXCEPTION_INFO(excep), false)
 
 #  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION
 #  define __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep)           \
-    OSLM_ASSERT(                                             \
-        "[Forwarded] " << __FWCORE_EXCEPTION_INFO (excep),   \
-        false)
+    SLM_ASSERT(                                             \
+        "[Forwarded] " << __FWCORE_EXCEPTION_INFO(excep),   \
+            false)
 
 #  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF
 #  define __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond)     \
-    OSLM_ASSERT(                                                \
-        "[Forwarded] " << __FWCORE_EXCEPTION_INFO (excep),      \
-        cond)
+    SLM_ASSERT(                                                \
+        "[Forwarded] " << __FWCORE_EXCEPTION_INFO(excep),      \
+            cond)
 
 # endif
 
@@ -132,5 +131,3 @@
 # define FW_FORWARD_EXCEPTION_IF(excep, cond) __FWCORE_EXPR_BLOCK(       \
         __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond);               \
         )
-
-#endif  // __FWCORE_EXCEPTIONMACROS_HPP__

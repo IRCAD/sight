@@ -16,7 +16,7 @@ set( DEPENDENCIES
     fwGui
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     ioVtkGdcm
 )

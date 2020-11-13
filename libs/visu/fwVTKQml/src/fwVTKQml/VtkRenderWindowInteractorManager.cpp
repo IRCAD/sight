@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,8 +69,8 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 
 vtkRenderWindowInteractor* VtkRenderWindowInteractorManager::getInteractor()
 {
-    OSLM_ASSERT("FrameBuffer is not defined", m_frameBufferItem);
-    OSLM_ASSERT("RenderWindow is not defined", m_frameBufferItem->getRenderWindow());
+    SLM_ASSERT("FrameBuffer is not defined", m_frameBufferItem);
+    SLM_ASSERT("RenderWindow is not defined", m_frameBufferItem->getRenderWindow());
     return m_frameBufferItem->getRenderWindow()->GetInteractor();
 }
 

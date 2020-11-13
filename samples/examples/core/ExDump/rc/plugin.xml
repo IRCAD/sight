@@ -1,0 +1,202 @@
+<plugin id="ExDump" version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="filterUnknownSeries" />
+    <requirement id="preferences" />
+    <requirement id="memory" />
+    <requirement id="guiQt" />
+
+    <!-- This example allows to test the different dump policy. -->
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExDump_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="selections" type="::fwData::Vector" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>ExDump</name>
+                        <icon>ExDump-@PROJECT_VERSION@/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                    <toolBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <toolBar sid="toolBarView" start="yes" />
+                    <view sid="mainview" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Monitor" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuMonitorView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open Series..." shortcut="Ctrl+O" />
+                        <menuItem name="Save Series..." shortcut="Ctrl+S" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openAct" start="yes" />
+                    <menuItem sid="saveAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuMonitorView" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="ClassFactoryRegistry information" />
+                        <menuItem name="Framework related object metrics" />
+                        <separator />
+                        <menuItem name="Show contributions tree" />
+                        <separator />
+                        <menuItem name="Memory" />
+                        <menuItem name="Dump all" />
+                        <menuItem name="Increase memory consumption" />
+                        <menuItem name="Decrease memory consumption" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="classFactoryRegistryInfoAct" start="yes" />
+                    <menuItem sid="metricsAct" start="yes" />
+                    <menuItem sid="componentsTreeAct" start="yes" />
+                    <menuItem sid="memInfoAct" start="yes" />
+                    <menuItem sid="dumpAllAct" start="yes" />
+                    <menuItem sid="incMemConsumAct" start="yes" />
+                    <menuItem sid="decMemConsumAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open..." icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Save..." icon="flatIcon-0.1/icons/BlueSave.svg" />
+                        <separator />
+                        <menuItem name="Dump all" icon="monitorQt-0.1/icon-dump.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openAct" start="no" />
+                    <menuItem sid="saveAct" start="no" />
+                    <menuItem sid="dumpAllAct" start="no" />
+                </registry>
+            </service>
+
+            <service uid="mainview" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="subView" start="yes" />
+                    <view sid="dumpEditorSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="subView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                            <view proportion="1" backgroundColor="#36393E" />
+                            <view proportion="1" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="selectorSrv" start="yes" />
+                    <view wid="previewView" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <service uid="openAct" type="::uiIO::action::SSeriesDBMerger" >
+                <inout key="seriesDB" uid="seriesDB" />
+                <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
+            </service>
+
+            <service uid="saveAct" type="::gui::action::SStarter" >
+                <start uid="SDBWriterSrv" />
+            </service>
+
+            <service uid="metricsAct" type="::monitor::action::fwMetrics" />
+
+            <service uid="memInfoAct" type="::monitor::action::MemoryInfo" />
+
+            <service uid="incMemConsumAct" type="::monitor::action::MemoryConsumption" >
+                <config mode="increase" value="256" />
+            </service>
+
+            <service uid="decMemConsumAct" type="::monitor::action::MemoryConsumption" >
+                <config mode="decrease" />
+            </service>
+
+            <service uid="classFactoryRegistryInfoAct" type="::monitorQt::action::ClassFactoryRegistryInfo" />
+
+            <service uid="componentsTreeAct" type="::monitorQt::action::ComponentsTree" />
+
+            <service uid="dumpAllAct" type="::monitor::action::SDumpAll" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="SDBWriterSrv" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+                <inout key="data" uid="seriesDB" />
+            </service>
+
+            <service uid="selectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+                <inout key="seriesDB" uid="seriesDB" />
+                <inout key="selection" uid="selections" />
+            </service>
+
+            <!-- This editor allows to change the dump policy, and displays the managed buffer. -->
+            <service uid="dumpEditorSrv" type="::monitorQt::DumpEditor" />
+
+            <!-- Service to display the preview when an image or an mesh is selected -->
+            <service uid="seriesViewerSrv" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes" >
+                <in key="series" uid="selections" />
+                <parentView wid="previewView" />
+                <configs>
+                    <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries" >
+                        <extract path="@image" pattern="imageID" />
+                    </config>
+                    <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
+                </configs>
+            </service>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="seriesViewerSrv" />
+
+        </config>
+    </extension>
+
+
+</plugin>

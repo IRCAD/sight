@@ -41,7 +41,7 @@ namespace fwRenderQt3D
 {
 
 /**
- * @brief   Defines an abstract class to manage Qt3D RenderWindow in a qt container.
+ * @brief Defines an abstract class to manage Qt3D RenderWindow in a qt container.
  *
  */
 class FWRENDERQT3D_CLASS_API IRenderWindowInteractorManager : public ::fwCore::BaseObject

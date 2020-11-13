@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMeshNormals);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMeshNormals)
 
 namespace visuVTKAdaptor
 {
@@ -300,7 +300,7 @@ void SMeshNormals::updateNormalMode(std::uint8_t mode)
         }
         default:
         {
-            OSLM_ERROR("mode " << mode << " is not allowed");
+            SLM_ERROR("mode " << mode << " is not allowed");
             break;
         }
     }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,12 +37,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <filesystem>
 
 namespace videoOpenCV
 {
@@ -103,6 +103,13 @@ void SFrameWriter::starting()
 //------------------------------------------------------------------------------
 
 void SFrameWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -210,7 +217,7 @@ void SFrameWriter::startRecord()
 {
     if (!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())
@@ -235,8 +242,8 @@ void SFrameWriter::startRecord()
         }
         else
         {
-            OSLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
-                       std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
+            SLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
+                      std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
             return;
         }
 

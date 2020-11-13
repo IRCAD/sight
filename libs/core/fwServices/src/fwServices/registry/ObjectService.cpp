@@ -233,7 +233,7 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
     this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
 
     const bool hasID = service->hasObjectId(objKey);
-    OSLM_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
+    SLM_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
     if (hasID)
     {
         const auto id = service->getObjectId(objKey);
@@ -385,7 +385,7 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
     SLM_ASSERT("Can't register a null service in OSR.", service);
     SLM_ASSERT("Can't register a null object in OSR.", object);
 
-    OSLM_FATAL_IF("object key is not defined", objKey.empty());
+    SLM_FATAL_IF("object key is not defined", objKey.empty());
 
     // new behavior with N objects -> N Services
     if(access == ::fwServices::IService::AccessType::INPUT)
@@ -421,7 +421,6 @@ void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& ob
 
 void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 {
-    SLM_TRACE_FUNC();
 
     auto it = m_services.find(service);
     FW_RAISE_IF("service '" + service->getID() + "' is not found in the OSR", it == m_services.end());

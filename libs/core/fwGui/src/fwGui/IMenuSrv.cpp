@@ -217,14 +217,14 @@ void IMenuSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
 
 void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-                layoutConfig->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
+               layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
         ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IMenuLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
-                m_layoutManager);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
+               m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

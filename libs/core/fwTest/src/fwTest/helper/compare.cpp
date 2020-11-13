@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,15 +23,17 @@
 #include "fwTest/helper/compare.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <boost/algorithm/string.hpp>
-
 
 namespace fwTest
 {
 namespace helper
 {
+
+//------------------------------------------------------------------------------
 
 bool compare(
     ::fwData::Object::sptr objRef,
@@ -39,17 +41,17 @@ bool compare(
     ExcludeSetType excludeCompare,
     ExcludeSetType excludeByPrefix)
 {
-    ::fwDataCamp::visitor::CompareObjects visitor;
+    ::fwData::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
 
     for(const ExcludeSetType::value_type& key: excludeCompare)
     {
         props->erase(key);
     }
 
-    std::set< ::fwDataCamp::visitor::CompareObjects::PropsMapType::key_type > propsKey;
-    for(const ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type &prop: *props)
+    std::set< ::fwData::reflection::visitor::CompareObjects::PropsMapType::key_type > propsKey;
+    for(const ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type& prop: *props)
     {
         bool erased = false;
         for(const ExcludeSetType::value_type& key: excludeByPrefix)
@@ -61,10 +63,10 @@ bool compare(
             }
         }
 
-        OSLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
+        SLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
 
-    for(const ::fwDataCamp::visitor::CompareObjects::PropsMapType::key_type &key: propsKey)
+    for(const ::fwData::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)
     {
         props->erase(key);
     }
@@ -74,5 +76,3 @@ bool compare(
 
 } // namespace helper
 } // namespace fwTest
-
-

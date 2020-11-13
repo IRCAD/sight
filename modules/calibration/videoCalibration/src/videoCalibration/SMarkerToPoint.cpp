@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,10 +39,10 @@
 
 namespace videoCalibration
 {
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList);
+fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList)
 
 const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
-const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
+const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
 
 const ::fwServices::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
 const ::fwServices::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
@@ -102,7 +102,7 @@ void SMarkerToPoint::addPoint()
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
-    OSLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
+    SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
     const float* values = buffer->getElement(0);
 
@@ -114,9 +114,9 @@ void SMarkerToPoint::addPoint()
         }
     }
 
-    OSLM_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
-                                          <<matrix3D->getCoefficient(1, 3)<<" , "
-                                          <<matrix3D->getCoefficient(2, 3));
+    SLM_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
+                                         <<matrix3D->getCoefficient(1, 3)<<" , "
+                                         <<matrix3D->getCoefficient(2, 3));
 
     //Save the position and drop the orientation
     ::fwData::Point::sptr p = ::fwData::Point::New(matrix3D->getCoefficient(0, 3),

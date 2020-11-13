@@ -110,10 +110,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
         {_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]};
 
         //on enleve les triangles s'ils sont situes au dessus du point
-        OSLM_TRACE(
-            "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
-                _p[Z] );
-
         if ( !(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z] ) ) //trianglePotentiallyWellPositionned
         {
             //on teste la presence des vertex de part et d'autre des 3 axes.
@@ -126,8 +122,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 const double Delta2 = P2[axe] - _p[axe];
                 const double Delta3 = P3[axe] - _p[axe];
 
-                OSLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
-
                 if ( Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f )
                 {
                     stop = true; break;
@@ -139,7 +133,6 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
             }
             if ( !stop )
             {
-                OSLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
 
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
@@ -153,14 +146,12 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                     //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
                     if (t < 0.f)
                     {
-                        OSLM_TRACE(" t = " << t << " u = " << u << " v = " << v);
                         ++intersectionNbr;
                     }
                 }
             }
         }
     }
-    OSLM_TRACE("Nb intersection : " << intersectionNbr);
     return ( intersectionNbr%2 == 1 );
 }
 
@@ -175,7 +166,7 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 
     for(const fwVertexIndex::value_type& vertex :  _vertexIndex)
     {
-        OSLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
+        SLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]) )];
@@ -385,14 +376,15 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
           if and only if 0 ≤ u, v, w, h ≤ 1, or alternatively
           if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
 
-       The main idea of the volumic baricentric coordinate is a proportionality with the sub-tetrahedron volumes ratio
-          over the whole volume. Considering one of the four vertex (_A, _B, _C, _D), the associated baricentric
+       The main idea of the barycentric volume coordinate is a proportionality with the ratio of the sub-tetrahedron
+          volumes over the whole volume. Considering one of the four vertexes (_A, _B, _C, _D), the associated
+             barycentric
           coordinate are equal to the volume of the tetrahedron build with the three other vertexes and P,
           divided by the total tetrahedron volume.
 
        As a result, the principle in the present algorithm, is to compute the three tetrahedron (_A,_B,_C,_P)
-          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectivemy,
-          _D, _C, _B vertexes are computed, and the last baricentric coordinate is obtained by the formula
+          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectively,
+          _D, _C, _B vertexes are computed, and the last barycentric coordinate is obtained by the formula
           u + v + w + h = 1
      */
 
@@ -485,21 +477,35 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
 
 //------------------------------------------------------------------------------
 
-bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                          const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
+bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                         const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
 {
 
     /*
        There are several ways to determine if a point is inside a tetrahedron.
        The present algorithm make use of the barycentric coordinates.
-       It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
+       It first computes the barycentric coordinate of the point inside the tetrahedron, and then checks if all of them
+          are
           in between 0 and 1.
      */
     const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
-    return 0 <= barycentricCoord[0] &&  barycentricCoord[0] <= 1
-           &&  0 <= barycentricCoord[1] &&  barycentricCoord[1] <= 1
-           &&  0 <= barycentricCoord[2] &&  barycentricCoord[2] <= 1
-           &&  0 <= barycentricCoord[3] &&  barycentricCoord[3] <= 1;
+    return isInsideTetrahedron(barycentricCoord);
+}
+//------------------------------------------------------------------------------
+
+bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD)
+{
+
+    /*
+       There are several ways to determine if a point is inside a tetrahedron.
+       The present algorithm make use of the barycentric coordinates.
+       It checks if all of the barycentric coordinates are in between 0 and 1.
+
+     */
+    return 0 <= barycentricCoordPInsideABCD[0] &&  barycentricCoordPInsideABCD[0] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[1] &&  barycentricCoordPInsideABCD[1] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[2] &&  barycentricCoordPInsideABCD[2] <= 1
+           &&  0 <= barycentricCoordPInsideABCD[3] &&  barycentricCoordPInsideABCD[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------

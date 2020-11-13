@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwMedData
@@ -58,7 +57,7 @@ class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SSeriesDBWriter,  ::fwIO::IWriter)
 
     /**
      * @brief Constructor
@@ -70,8 +69,15 @@ public:
      */
     IOGDCM_API virtual ~SSeriesDBWriter() noexcept override;
 
-    /// Propose a directory selection where to save the DICOM files.
+    /**
+     * @brief Propose a directory selection where to save the DICOM files.
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOGDCM_API virtual void configureWithIHM() override;
+
+    /// Propose a directory selection where to save the DICOM files.
+    IOGDCM_API virtual void openLocationDialog() override;
 
 protected:
 

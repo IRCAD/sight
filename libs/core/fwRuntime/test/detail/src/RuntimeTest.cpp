@@ -69,23 +69,23 @@ void RuntimeTest::tearDown()
 void RuntimeTest::testPosix()
 {
     const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
-    auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
+    auto module         = std::make_shared<Module>(location / "servicesReg-0.1", "servicesReg", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Posix>("dataReg");
-    nativeLibrary->setModule(module.get());
+    auto nativeLibrary = std::make_unique<dl::Posix>("servicesReg");
+    nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("libdataReg.so.0.1", nativeName));
-    CPPUNIT_ASSERT( std::regex_match("libdataReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libdataReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("dataReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libservicesReg.so.0.1", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libservicesReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libservicesReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("servicesReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();
     // The library picked will be one of these
-    const bool testPath = std::filesystem::path("libdataReg.so.0.1") == path ||
-                          std::filesystem::path("libdataReg.so.0") == path ||
-                          std::filesystem::path("libdataReg.so") == path;
+    const bool testPath = std::filesystem::path("libservicesReg.so.0.1") == path ||
+                          std::filesystem::path("libservicesReg.so.0") == path ||
+                          std::filesystem::path("libservicesReg.so") == path;
     CPPUNIT_ASSERT_EQUAL( testPath, true);
 }
 
@@ -96,20 +96,20 @@ void RuntimeTest::testPosix()
 void RuntimeTest::testWin32()
 {
     const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
-    auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
+    auto module         = std::make_shared<Module>(location / "servicesReg-0.1", "servicesReg", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Win32>("dataReg");
-    nativeLibrary->setModule(module.get());
+    auto nativeLibrary = std::make_unique<dl::Win32>("servicesReg");
+    nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("dataReg.dll", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libdataReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libdataReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("dataReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("servicesReg.dll", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libservicesReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libservicesReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("servicesReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();
-    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("dataReg.dll"), path );
+    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("servicesReg.dll"), path );
 }
 #endif
 
@@ -122,9 +122,9 @@ void RuntimeTest::testRuntime()
 
     ::fwRuntime::detail::Runtime& runtime = ::fwRuntime::detail::Runtime::get();
 
-    // Test module dataReg
-    CPPUNIT_ASSERT(runtime.findModule("dataReg"));
-    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::detail::Module >(runtime.findModule("dataReg"));
+    // Test module servicesReg
+    CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
+    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::detail::Module >(runtime.findModule("servicesReg"));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnabled());
 

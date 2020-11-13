@@ -151,7 +151,6 @@ void SDynamicView::starting()
 
 void SDynamicView::stopping()
 {
-    SLM_TRACE_FUNC();
     while(m_tabWidget->count())
     {
         this->closeTab(0, true);
@@ -213,10 +212,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
     if (iter != m_activityIds.end())
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Launch Activity",
-                                                          "The current activity is already launched. \n"
-                                                          "It cannot be launched twice.",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Launch Activity",
+                                             "The current activity is already launched. \n"
+                                             "It cannot be launched twice.",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
 
@@ -257,10 +256,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     }
     catch( std::exception& e )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
-                                                          e.what(),
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
-        OSLM_ERROR(e.what());
+        ::fwGui::dialog::MessageDialog::show("Activity launch failed",
+                                             e.what(),
+                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        SLM_ERROR(e.what());
         return;
     }
 
@@ -334,9 +333,9 @@ void SDynamicView::closeTab( int index, bool forceClose )
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Close tab",
-                                                          "The tab " + info.title + " can not be closed.",
-                                                          ::fwGui::dialog::IMessageDialog::INFO);
+        ::fwGui::dialog::MessageDialog::show("Close tab",
+                                             "The tab " + info.title + " can not be closed.",
+                                             ::fwGui::dialog::IMessageDialog::INFO);
     }
 }
 
@@ -420,7 +419,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
             submatch.replace(0, 1, "@");
 
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(activitySeries->getData(), submatch);
-            OSLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+            SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 
@@ -432,7 +431,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
             }
             else
             {
-                OSLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
             }
 
             submatch.replace(0, 1, "!");

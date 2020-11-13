@@ -251,7 +251,7 @@ void SActivitySequencer::goTo(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
     {
-        OSLM_ERROR("no activity to launch at index " << index)
+        SLM_ERROR("no activity to launch at index " << index)
         return;
     }
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
@@ -277,10 +277,11 @@ void SActivitySequencer::goTo(int index)
         m_currentActivity = index;
         QObject* object = m_widget->rootObject();
         QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, index));
+        QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, index));
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", errorMsg);
+        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

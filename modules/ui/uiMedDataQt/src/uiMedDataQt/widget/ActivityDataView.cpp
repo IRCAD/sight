@@ -721,7 +721,7 @@ void ActivityDataView::importObjectFromSDB()
     ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
     if (newObject)
     {
-        OSLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
+        SLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
         auto obj      = this->readObject("::fwMedData::SeriesDB", m_sdbIoSelectorSrvConfig);
@@ -749,7 +749,7 @@ void ActivityDataView::importObjectFromSDB()
     else
     {
         std::string msg = "Can not create object '" + type + "'";
-        OSLM_ERROR(msg);
+        SLM_ERROR(msg);
         QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
     }
 }
@@ -831,7 +831,7 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
 
         newItem->setText(int(ColumnSeriesType::STUDY_DESC),
                          QString::fromStdString(series->getStudy()->getDescription()));
-        std::string date = series->getStudy()->getDate();
+        std::string date = series->getDate();
         if(!date.empty())
         {
             date.insert(4, "/");
@@ -839,7 +839,7 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         }
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
 
-        std::string time = series->getStudy()->getTime();
+        std::string time = series->getTime();
         if(!time.empty())
         {
             time.insert(2, ":");
@@ -868,11 +868,11 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
             {
                 // Code string can contains leading or trailing spaces, we removed it frist.
                 const std::string::const_iterator forward
-                    = std::remove_if( patientPosition.begin(), patientPosition.end(), [&](unsigned char _c)
+                    = std::remove_if(patientPosition.begin(), patientPosition.end(), [&](unsigned char _c)
                         {
                             return _c == ' ';
                         });
-                patientPosition.erase(forward);
+                patientPosition.erase(forward, patientPosition.end());
                 if(patientPosition.compare("HFP") == 0)
                 {
                     patientPosition = "Head First-Prone";

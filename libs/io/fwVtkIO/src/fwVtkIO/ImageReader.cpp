@@ -46,14 +46,12 @@ ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("VTK Image reader"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ImageReader::~ImageReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

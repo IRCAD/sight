@@ -40,18 +40,24 @@ namespace editor
 {
 
 /**
- * @brief   This editor shows a button and send a signal when it is clicked.
+ * @brief This editor shows a button and send a signal when it is clicked.
  *
  * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  *
  * @section Signals Signals
- * - \b clicked(): This signal is emitted when the button is clicked
- * - \b toggled(bool):  This signal is emitted when the button is checked
+ * - \b clicked(): This signal is emitted when the button is clicked.
+ * - \b toggled(bool):  This signal is emitted when the button is checked.
  *
  * @section Slot Slot
- * - \b setChecked(bool): This slot allows to check/uncheck the button
- * - \b check(): This slot allows to check the button
- * - \b uncheck(): This slot allows to uncheck the button
+ * - \b setChecked(bool): allows to check/uncheck the button.
+ * - \b check(): allows to check the button.
+ * - \b uncheck(): allows to uncheck the button.
+ * - \b setIsExecutable(bool): sets the button executability.
+ * - \b setExecutable(): sets the button executable.
+ * - \b setInexecutable(): sets the button inexecutable.
+ * - \b setVisible(bool):s ets the button visibility.
+ * - \b show(): shows the button.
+ * - \b hide(): hides the button.
  *
  * @section XML XML configuration
  * @code{.xml}
@@ -68,107 +74,126 @@ namespace editor
        </config>
    </service>
    @endcode
- * - \b text (optional): text displayed on the button
- * - \b icon (optional): icon displayed on the button
- * - \b checkable (optional, default: false): if true, the button is checkable
- * - \b text2 (optional): text displayed if the button is checked
- * - \b icon2 (optional): icon displayed if the button is checked
- * - \b checked (optional, default: false): if true, the button is checked at start
- * - \b iconWidth (optional): icon width
- * - \b iconHeight (optional): icon height
+ *
+ * @subsection Configuration Configuration:
+ * - \b text (optional, string, default=""): text displayed on the button.
+ * - \b icon (optional, string, default=""): icon displayed on the button.
+ * - \b checkable (optional, bool, default=false): if true, the button is checkable.
+ * - \b executable (optional, bool, default=true): if true, the button is executable.
+ * - \b text2 (optional, string, default=""): text displayed if the button is checked.
+ * - \b icon2 (optional, string, default=""): icon displayed if the button is checked.
+ * - \b checked (optional, bool, default=false): if true, the button is checked at start.
+ * - \b iconWidth (optional, unsigned, default=0): icon width.
+ * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
 class GUIQT_CLASS_API SSignalButton : public QObject,
                                       public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SSignalButton, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Creates signals and slots.
     GUIQT_API SSignalButton() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Destroys the service.
     GUIQT_API virtual ~SSignalButton() noexcept;
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
-     * @{
-     */
-    /**
-     * @brief This method launches the IEditor::starting method.
-     */
-    GUIQT_API virtual void starting() override;
+    /// Configures the class parameters.
+    GUIQT_API void configuring() override;
 
-    /**
-     * @brief This method launches the IEditor::stopping method.
-     */
-    GUIQT_API virtual void stopping() override;
+    /// Launches the IEditor::starting method.
+    GUIQT_API void starting() override;
 
-    /**
-     * @brief This method is used to update services. Do nothing.
-     */
-    GUIQT_API virtual void updating() override;
+    ///Does nothing.
+    GUIQT_API void updating() override;
 
-    /// This method is used to configure the class parameters.
-    GUIQT_API virtual void configuring() override;
-
-    /**
-     * @brief This method is used to give information about the service. Do nothing.
-     */
-    GUIQT_API virtual void info(std::ostream& _sstream ) override;
-
-    ///@}
+    /// Launches the IEditor::stopping method.
+    GUIQT_API void stopping() override;
 
 private Q_SLOTS:
+
     void onClicked();
+
     void onToggled(bool);
 
 private:
 
-    /**
-     * @name Signal
-     * @{
-     */
-    /// Signal emitted when button is clicked
-    typedef ::fwCom::Signal< void () > ClickedSignalType;
-    ClickedSignalType::sptr m_sigClicked;
-
-    /// Signal emitted when button is checked/unchecked
-    typedef ::fwCom::Signal< void (bool) > ToggledSignalType;
-    ToggledSignalType::sptr m_sigToggled;
-    /**
-     * @}
-     */
-
-    /**
-     * @name Slots
-     * @{
-     */
-    /// Slot: check/uncheck the button
+    /// SLOT: checks or unchecks the button.
     void setChecked(bool checked);
 
-    /// Slot: check the button
+    /// SLOT: checks the button.
     void check();
 
-    /// Slot: uncheck the button
+    /// SLOT: unchecks the button.
     void uncheck();
-    /**
-     * @}
-     */
 
-    QPointer <QPushButton> m_button; /// button
+    /// SLOT: sets the button executability.
+    void setIsExecutable(bool _isExecutable);
 
-    std::string m_text; /// Button's text
-    std::string m_text2; /// Button's text when it is checked
-    std::filesystem::path m_icon; /// Path of the button's icon
-    std::filesystem::path m_icon2; /// Path of the button's icon displayed when it is checked
-    bool m_checkable; /// If true, the button is checkable
-    bool m_checkAtStart; /// If true, the button is checked at start
-    unsigned int m_iconWidth; /// icon width
-    unsigned int m_iconHeight; /// icon height
+    /// SLOT: sets the button executable.
+    void setExecutable();
+
+    /// SLOT: sets the button inexecutable.
+    void setInexecutable();
+
+    /// SLOT: sets the button visibility.
+    void setVisible(bool _isVisible);
+
+    /// SLOT: shows the button.
+    void show();
+
+    /// SLOT: hides he button.
+    void hide();
+
+    typedef ::fwCom::Signal< void () > ClickedSignalType;
+    /// Contains the signal emitted when button is clicked.
+    ClickedSignalType::sptr m_sigClicked { nullptr };
+
+    typedef ::fwCom::Signal< void (bool) > ToggledSignalType;
+    /// Contains the signal emitted when button is checked/unchecked
+    ToggledSignalType::sptr m_sigToggled { nullptr };
+
+    /// Contains the button
+    QPointer <QPushButton> m_button { nullptr };
+
+    /// Defines the button's text.
+    std::string m_text { "" };
+
+    /// Defines the button's text when it is checked.
+    std::string m_text2 { "" };
+
+    /// Defines the path of the button's icon.
+    std::filesystem::path m_icon;
+
+    /// Defines the path of the button's icon when it is checked.
+    std::filesystem::path m_icon2;
+
+    /// Defines if the button is checkable.
+    bool m_checkable { false };
+
+    /// Defines if the button is executable.
+    bool m_executable { true };
+
+    /// Defines if the button is checked at start.
+    bool m_checkAtStart { false };
+
+    /// Defines the icon width.
+    unsigned m_iconWidth { 0 };
+
+    /// Defines the icon height.
+    unsigned m_iconHeight { 0 };
+
+    /// Defines the button tooltip.
+    std::string m_toolTip { "" };
+
 };
 
-}
-}
+} // namespace editor.
+} // namespace gui.

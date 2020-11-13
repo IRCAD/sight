@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,16 +57,15 @@ namespace registrationCV
  * - \b matrix [::fwData::TransformationMatrix3D]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
- * - \b videoRef (optionnal): origin of image, OpenCV requires top left image origin.
  *      Values are "top_left" or "center" (default: "top_left")
- * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the object pose is computed,
- *      camera pose is computed otherwise.(default: "false").
+ * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
+ *      object pose is computed otherwise.(default: "false").
  */
 class REGISTRATIONCV_CLASS_API SSolvePnP : public ::fwServices::IRegisterer
 {
 public:
 
-    fwCoreServiceMacro(SSolvePnP, ::fwServices::IRegisterer);
+    fwCoreServiceMacro(SSolvePnP, ::fwServices::IRegisterer)
 
     /// Constructor.
     REGISTRATIONCV_API SSolvePnP() noexcept;
@@ -95,13 +94,6 @@ protected:
 
 private:
 
-    /// Manages several video coordinate system.
-    typedef enum VideoReference
-    {
-        TOP_LEFT = 0,
-        CENTER,
-    } VideoReferenceType;
-
     /**
      * @brief Camera structure: handles intrinsic parameters and distorsion coefficients in OpenCV format.
      */
@@ -119,14 +111,8 @@ private:
         ::cv::Mat distCoef;
     };
 
-    /// Manages video coordinate system
-    VideoReferenceType m_videoRef;
-    /// Map that handles conversion between xml configuration string and VideoReferenceType
-    std::map<std::string, VideoReferenceType > m_videoRefMap;
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
-    /// offset to apply if image reference is not at top left
-    std::array< float, 2 > m_offset;
 
 };
 

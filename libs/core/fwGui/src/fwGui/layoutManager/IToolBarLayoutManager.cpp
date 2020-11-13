@@ -22,9 +22,9 @@
 
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <fwRuntime/operations.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {
@@ -49,8 +49,8 @@ IToolBarLayoutManager::~IToolBarLayoutManager()
 
 void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                configuration->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+               configuration->getName() == "layout");
 
     if(configuration->hasAttribute("style"))
     {
@@ -62,7 +62,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            OSLM_ERROR(
+            SLM_ERROR(
                 "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`");
         }
     }

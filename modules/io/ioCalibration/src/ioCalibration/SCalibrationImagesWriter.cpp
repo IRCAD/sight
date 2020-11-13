@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,9 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
-
 #include <opencv2/opencv.hpp>
 
+#include <filesystem>
 #include <sstream>
 
 namespace ioCalibration
@@ -67,6 +66,13 @@ SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
 //------------------------------------------------------------------------------
 
 void SCalibrationImagesWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SCalibrationImagesWriter::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
@@ -150,9 +156,9 @@ void SCalibrationImagesWriter::updating()
             catch(const ::cv::Exception& e)
             {
                 m_writeFailed = true;
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Error writing calibration images.",
-                                                                  e.what(),
-                                                                  ::fwGui::dialog::MessageDialog::CRITICAL);
+                ::fwGui::dialog::MessageDialog::show("Error writing calibration images.",
+                                                     e.what(),
+                                                     ::fwGui::dialog::MessageDialog::CRITICAL);
             }
         }
 

@@ -88,7 +88,7 @@ public:
     FWPACSIO_API SeriesEnquirer();
 
     /// Destroyes the instance.
-    FWPACSIO_API virtual ~SeriesEnquirer();
+    FWPACSIO_API ~SeriesEnquirer() override;
 
     /**
      * @brief Initializes the connection.
@@ -132,6 +132,13 @@ public:
      * @return The dcmtk response list.
      */
     FWPACSIO_API OFList< QRResponse* > findSeriesByPatientUID(const std::string& _uid);
+
+    /**
+     * @brief Finds series by birthdate.
+     * @param _birthDate birthdate of the series.
+     * @return The dcmtk response list.
+     */
+    FWPACSIO_API OFList< QRResponse* > findSeriesByPatientBirthDate(const std::string& _birthDate);
 
     /**
      * @brief Finds series by study date.
@@ -256,9 +263,9 @@ protected:
      * @param _waitForNextResponse
      * @return
      */
-    FWPACSIO_API virtual OFCondition handleMOVEResponse(const T_ASC_PresentationContextID _presID,
-                                                        RetrieveResponse* _response,
-                                                        OFBool& _waitForNextResponse) override;
+    FWPACSIO_API OFCondition handleMOVEResponse(const T_ASC_PresentationContextID _presID,
+                                                RetrieveResponse* _response,
+                                                OFBool& _waitForNextResponse) override;
 
     /**
      * @brief Handles a C-STORE response.
@@ -268,16 +275,18 @@ protected:
      * @param _cStoreReturnStatus
      * @return
      */
-    FWPACSIO_API virtual OFCondition handleSTORERequest(const T_ASC_PresentationContextID,
-                                                        DcmDataset* _incomingObject,
-                                                        OFBool&,
-                                                        Uint16&) override;
+    FWPACSIO_API OFCondition handleSTORERequest(const T_ASC_PresentationContextID,
+                                                DcmDataset* _incomingObject,
+                                                OFBool&,
+                                                Uint16&) override;
 
     /**
      * @brief Finds uncompressed presentation context.
      * @param _sopClass The sOP class which needs the presentation context.
      */
     FWPACSIO_API Uint8 findUncompressedPC(const OFString& _sopClass);
+
+private:
 
     /// Defines the MOVE destination AE Title.
     std::string m_moveApplicationTitle;
@@ -289,7 +298,8 @@ protected:
     ProgressCallbackSlotType::sptr m_progressCallback;
 
     /// Sets the dowloaded instance index.
-    unsigned int m_instanceIndex {0};
+    unsigned int m_instanceIndex { 0 };
+
 };
 
-} // namespace fwPacsIO
+} // namespace fwPacsIO.

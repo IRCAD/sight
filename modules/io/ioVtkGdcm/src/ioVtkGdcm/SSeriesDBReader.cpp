@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -70,6 +70,13 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
@@ -93,14 +100,12 @@ void SSeriesDBReader::configureWithIHM()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +141,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
     ::fwMedData::SeriesDB::sptr dummy        = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
@@ -147,19 +151,20 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     try
     {
         reader->read();
+        m_readFailed = false;
     }
     catch (const std::exception& e)
     {
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
@@ -170,7 +175,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 void SSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
@@ -203,7 +207,7 @@ void SSeriesDBReader::updating()
         else
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
@@ -218,7 +222,6 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
 

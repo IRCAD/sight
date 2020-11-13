@@ -88,6 +88,13 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -134,6 +141,8 @@ void SSeriesDBReader::configureWithIHM()
         ::fwServices::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
+
+        m_readFailed = false;
     }
     else
     {
@@ -198,14 +207,12 @@ void SSeriesDBReader::configuring()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -226,7 +233,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
@@ -305,13 +311,13 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
@@ -322,7 +328,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 void SSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr localSeriesDB = this->createSeriesDB(this->getFolder());
@@ -344,6 +349,8 @@ void SSeriesDBReader::updating()
             }
 
             ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+
+            m_readFailed = false;
 
             auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
                 ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);

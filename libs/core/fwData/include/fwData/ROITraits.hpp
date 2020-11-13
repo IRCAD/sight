@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(ROITraits), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(ROITraits));
 
 namespace fwData
 {
@@ -46,7 +46,7 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassMacro(ROITraits, ::fwData::Object, ::fwData::factory::New< ROITraits >);
+    fwCoreClassMacro(ROITraits, ::fwData::Object, ::fwData::factory::New< ROITraits >)
     fwCampMakeFriendDataMacro((fwData)(ROITraits));
 
     /**

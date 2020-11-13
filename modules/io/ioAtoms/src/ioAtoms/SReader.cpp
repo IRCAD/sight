@@ -323,7 +323,7 @@ void SReader::updating()
                     if(!m_filter.empty())
                     {
                         ::fwAtomsFilter::IFilter::sptr filter = ::fwAtomsFilter::factory::New(m_filter);
-                        OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
+                        SLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
                         filter->apply(atom);
                     }
                     runningJob.done();
@@ -408,15 +408,15 @@ void SReader::updating()
         catch( std::exception& e )
         {
             m_readFailed = true;
-            OSLM_ERROR( e.what() );
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+            SLM_ERROR( e.what() );
+            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", e.what(),
+                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", "Aborting operation.",
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
+                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();
@@ -452,6 +452,13 @@ void SReader::notificationOfUpdate()
 //-----------------------------------------------------------------------------
 
 void SReader::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void SReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -119,7 +119,7 @@ void SActivitySequencer::goTo(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
     {
-        OSLM_ERROR("no activity to launch at index " << index)
+        SLM_ERROR("no activity to launch at index " << index)
         return;
     }
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
@@ -147,7 +147,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", errorMsg);
+        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

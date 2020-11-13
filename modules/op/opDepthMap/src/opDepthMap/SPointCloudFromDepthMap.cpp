@@ -207,7 +207,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const auto type = depthMap->getType();
     if(type != ::fwTools::Type::s_UINT16)
     {
-        OSLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
@@ -271,7 +271,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const auto type = depthMap->getType();
     if(type != ::fwTools::Type::s_UINT16)
     {
-        OSLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
@@ -283,12 +283,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const auto rgbType = colorMap->getType();
     if(rgbType != ::fwTools::Type::s_UINT8)
     {
-        OSLM_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
+        SLM_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;
     }
     if(4 != colorMap->getNumberOfComponents())
     {
-        OSLM_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
+        SLM_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
         return;
     }
 

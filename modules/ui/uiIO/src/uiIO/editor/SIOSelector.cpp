@@ -272,7 +272,7 @@ void SIOSelector::updating()
                 {
                     m_sigJobFailed->asyncEmit();
                 }
-                OSLM_ASSERT("Problem to find the selected string.", extensionIdFound );
+                SLM_ASSERT("Problem to find the selected string.", extensionIdFound );
             }
             else
             {
@@ -324,7 +324,7 @@ void SIOSelector::updating()
                 try
                 {
                     reader->start();
-                    reader->configureWithIHM();
+                    reader->openLocationDialog();
 
                     ::fwGui::Cursor cursor;
                     cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -342,7 +342,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Reader Error", msg);
+                    ::fwGui::dialog::MessageDialog::show("Reader Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
                 if(reader->hasFailed())
@@ -382,7 +382,7 @@ void SIOSelector::updating()
                 try
                 {
                     writer->start();
-                    writer->configureWithIHM();
+                    writer->openLocationDialog();
 
                     ::fwGui::Cursor cursor;
                     cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -395,7 +395,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to write : \n" +  std::string(e.what());
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Writer Error", msg);
+                    ::fwGui::dialog::MessageDialog::show("Writer Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
 

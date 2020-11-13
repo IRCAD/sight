@@ -1,116 +1,161 @@
-<plugin id="ExVideoTracking" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
+<plugin id="ExVideoTracking" version="@PROJECT_VERSION@" >
+
+    <requirement id="guiQt" />
     <requirement id="servicesReg" />
-    <requirement id="visuVTKQt" />
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExVideoTrackingConfig</id>
+    <requirement id="visuOgre" />
+    <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig" >
+        <id>ExVideoTracking_AppCfg</id>
         <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
             <object uid="camera" type="::arData::Camera" />
-            <object uid="frameTL" type="::arData::FrameTL">
+            <object uid="frameTL" type="::arData::FrameTL" >
                 <value>100</value>
             </object>
-
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
-                        <icon>ExVideoTracking-0.1/videotracking.ico</icon>
+                        <icon>ExVideoTracking-@PROJECT_VERSION@/app.ico</icon>
+                        <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbar" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
                     <view sid="cameraView" start="yes" />
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start" icon="media-0.1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="media-0.1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="CameraSelector" start="yes" />
-                    <menuItem sid="startVideo" start="yes" />
-                    <menuItem sid="stopVideo" start="yes" />
-                    <menuItem sid="pauseVideo" start="yes" />
+                    <editor sid="videoSelectorSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="resumeVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
                 </registry>
             </service>
 
-            <service uid="startVideo" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>frameGrabber/startCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="stopVideo" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>frameGrabber/stopCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>frameGrabber/pauseCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="cameraView" type="::gui::view::SDefaultView">
+            <service uid="cameraView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
-                        <view proportion="0" />
+                        <view proportion="0" backgroundColor="#36393E" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericScene" start="yes" />
-                    <view sid="parameters" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
+                    <view sid="parametersSrv" start="yes" />
                 </registry>
             </service>
 
-            <!-- *************************** Begin generic scene *************************** -->
+            <!-- ************************************* Action ************************************ -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" >
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <renderer id="default" background="0.0" />
-                    <adaptor uid="videoAdpt" />
-                    <adaptor uid="interactorStyle" />
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="videoAdp" />
                 </scene>
             </service>
 
-            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
-                <config renderer="default" />
+            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage" />
+                <config layer="default" />
             </service>
 
-            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
-            </service>
+            <!-- ******************************* Services ***************************************** -->
 
-            <!-- *************************** End generic scene *************************** -->
-
-            <service uid="parameters" type="::guiQt::editor::SParameters">
+            <service uid="parametersSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
                     <!--  do corner refinement or not. -->
                     <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
                     <!-- minimum window size for adaptive thresholding before finding contours -->
-                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <param type="int" name="Adp. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
                     <!-- maximum window size for adaptive thresholding before finding contours -->
-                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <param type="int" name="Adp. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
                     <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
-                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <param type="int" name="Adp. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
                     <!-- constant for adaptive thresholding before finding contours -->
-                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="Adp. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
                     <!-- determine minimum perimeter for marker contour to be detected.
                         This is defined as a rate respect to the maximum dimension of the input image -->
                     <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
@@ -149,12 +194,33 @@
                     <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
                     <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
                 </parameters>
+                <config sendAtStart="false" />
             </service>
 
-            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
+            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker" >
+                <in group="frameTL" >
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image" >
+                    <key uid="videoImage" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <service uid="trackerSrv" type="::trackerAruco::SArucoTracker" worker="tracking" >
                 <in key="timeline" uid="frameTL" autoConnect="yes" />
                 <in key="camera" uid="camera" />
-                <inout group="tagTL">
+                <inout group="tagTL" >
                     <key uid="tagTL" />
                 </inout>
                 <track>
@@ -163,53 +229,62 @@
                 <debugMarkers>yes</debugMarkers>
             </service>
 
-            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
-                <in group="frameTL">
-                    <key uid="frameTL" />
-                </in>
-                <inout group="image">
-                    <key uid="videoImage" />
-                </inout>
-                <framerate>30</framerate>
-            </service>
-
-            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
-                <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
-            </service>
-
-            <service uid="frameGrabber" type="::videoTools::SGrabberProxy">
-                <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
-            </service>
+            <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>parameters/boolChanged</signal>
-                <slot>tracker/setBoolParameter</slot>
+                <signal>videoSelectorSrv/configuredCameras</signal>
+                <slot>videoGrabberSrv/reconfigure</slot>
             </connect>
 
             <connect>
-                <signal>parameters/intChanged</signal>
-                <slot>tracker/setIntParameter</slot>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
             </connect>
 
             <connect>
-                <signal>parameters/doubleChanged</signal>
-                <slot>tracker/setDoubleParameter</slot>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
             </connect>
 
             <connect>
                 <signal>camera/idModified</signal>
-                <slot>frameGrabber/stopCamera</slot>
+                <slot>videoGrabberSrv/stopCamera</slot>
             </connect>
 
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/boolChanged</signal>
+                <slot>trackerSrv/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/intChanged</signal>
+                <slot>trackerSrv/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/doubleChanged</signal>
+                <slot>trackerSrv/setDoubleParameter</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
             <start uid="mainFrame" />
-            <start uid="frameGrabber" />
-            <start uid="synchronizer" />
-            <start uid="tracker" />
-            <!-- VTK scene 'genericScene' -->
-            <start uid="videoAdpt" />
-            <start uid="interactorStyle" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="trackerSrv" />
+            <start uid="videoAdp" />
+
         </config>
     </extension>
 </plugin>

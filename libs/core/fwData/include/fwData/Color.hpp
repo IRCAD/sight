@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 
 #include <array>
 
-fwCampAutoDeclareDataMacro((fwData)(Color), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Color));
 
 namespace fwData
 {
@@ -44,7 +44,7 @@ public:
     typedef float ColorType;
     typedef std::array<ColorType, 4> ColorArray;
 
-    fwCoreClassMacro(Color, ::fwData::Object, ::fwData::factory::New< Color >);
+    fwCoreClassMacro(Color, ::fwData::Object, ::fwData::factory::New< Color >)
 
     fwCampMakeFriendDataMacro((fwData)(Color));
 

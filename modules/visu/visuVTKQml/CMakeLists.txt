@@ -14,3 +14,5 @@ fwLink(
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
+message(DEPRECATION "The VTK renderer is deprecated and will be removed in sight 22.0.
+                     Please switch to the Ogre renderer.")

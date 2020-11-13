@@ -112,6 +112,7 @@ void Plane::initializeMaterial()
 {
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
+    SLM_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
     // If the texture material exists, delete it.
     if(m_texMaterial)
@@ -264,27 +265,33 @@ void Plane::initializePlane()
 
         if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
         {
-            m_border->position(::Ogre::Vector3(0, -m_height/2.f, -m_width/2.f));
-            m_border->position(::Ogre::Vector3(0, m_height/2.f, -m_width/2.f));
-            m_border->position(::Ogre::Vector3(0, m_height/2.f, m_width/2.f));
-            m_border->position(::Ogre::Vector3(0, -m_height/2.f, m_width/2.f));
-            m_border->position(::Ogre::Vector3(0, -m_height/2.f, -m_width/2.f));
+            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f));
+            m_border->position(::Ogre::Vector3(0.f, m_height/2.f, -m_width/2.f));
+            m_border->position(::Ogre::Vector3(0.f, m_height/2.f, m_width/2.f));
+            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, m_width/2.f));
+            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f));
+            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f),
+                                                            ::Ogre::Vector3(0.f, m_height/2.f, m_width/2.f)));
         }
         else if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
         {
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, -m_height/2.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, 0, -m_height/2.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, 0, m_height/2.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, m_height/2.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, -m_height/2.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, -m_height/2.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, 0.f, -m_height/2.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, 0.f, m_height/2.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, m_height/2.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, -m_height/2.f));
+            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-m_height/2.f, 0.f, -m_width/2.f),
+                                                            ::Ogre::Vector3(m_height/2.f, 0.f, m_width/2.f)));
         }
         else
         {
-            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
-            m_border->position(::Ogre::Vector3(m_width/2.f, -m_height/2.f, 0));
-            m_border->position(::Ogre::Vector3(m_width/2.f, m_height/2.f, 0));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, m_height/2.f, 0));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, -m_height/2.f, 0.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, m_height/2.f, 0.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, m_height/2.f, 0.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0.f));
+            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-m_height/2.f, -m_width/2.f, 0.f),
+                                                            ::Ogre::Vector3(m_height/2.f, m_width/2.f, 0.f)));
         }
 
         m_border->end();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::fwServices::IRegisterer, ::basicRegistration::SPointListRegistration );
+fwServicesRegisterMacro( ::fwServices::IRegisterer, ::basicRegistration::SPointListRegistration )
 
 namespace basicRegistration
 {
@@ -89,7 +89,7 @@ void SPointListRegistration::configuring()
         else
         {
             SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
-                      " Defaulting to 'rigid'.")
+                      " Defaulting to 'rigid'.");
         }
     }
     else
@@ -149,19 +149,8 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
                         auto coord = pointRef->getCoord();
                         sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                        OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
-                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                        OSLM_TRACE(
-                            "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
-                                pointRef->getCoord()[2] );
-
                         coord = pointReg->getCoord();
                         targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
-                        OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
-                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                        OSLM_TRACE(
-                            "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
-                                pointReg->getCoord()[2] );
                     }
                 }
             }
@@ -236,8 +225,6 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
 
         errorValue /= sourcePts->GetNumberOfPoints();
 
-        OSLM_TRACE("RMSE : "<<errorValue);
-
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 
         // Notify Matrix modified
@@ -251,16 +238,16 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error",
-                                                              "You must enter 3 or more points for the registration to work.",
-                                                              ::fwGui::dialog::IMessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Error",
+                                                 "You must enter 3 or more points for the registration to work.",
+                                                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
+            ::fwGui::dialog::MessageDialog::show("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }

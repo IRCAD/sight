@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,9 +49,9 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB )
 
-const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
+const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
 const static std::string s_SERIESDB_INOUT = "seriesDB";
@@ -125,7 +125,7 @@ void SExportSeries::updating()
     {
         ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
         std::string id = activitySeries->getActivityConfigId();
-        OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+        SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
         ::fwActivities::registry::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);

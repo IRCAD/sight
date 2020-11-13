@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ struct RemoveTemporaryFolder
     {
         std::error_code er;
         std::filesystem::remove_all(m_path, er);
-        OSLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
+        SLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
     std::filesystem::path m_path;
 };
@@ -112,7 +112,7 @@ const std::filesystem::path& System::getTempPath() noexcept
 #else
         fs::path fallback("/tmp");
 #endif
-        OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
+        SLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
         sysTmp = fallback;
     }
     return sysTmp;
@@ -202,7 +202,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
         tmpDir = createUniqueFolder(tmpDir/subDirName);
     }
 
-    OSLM_INFO("Temporary folder is : " << tmpDirPath);
+    SLM_INFO("Temporary folder is : " << tmpDirPath);
     return tmpDir;
 }
 
@@ -316,15 +316,49 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 
         if(pid && !isProcessRunning(pid))
         {
-            OSLM_INFO("Removing old temp dir : " << foundTmpDir);
+            SLM_INFO("Removing old temp dir : " << foundTmpDir);
 
             std::error_code er;
             fs::remove_all(foundTmpDir, er);
 
-            OSLM_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
+            SLM_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+void System::robustRename(const std::filesystem::path& _p1, const std::filesystem::path& _p2)
+{
+    std::error_code renameError;
+    // First try a basic rename.
+    std::filesystem::rename(_p1, _p2, renameError);
+    if(renameError) // Error
+    {
+        // Handle the Invalid cross-device link case: _p1 & _p2 are not on the same disk/volume.
+        if(renameError == std::make_error_code(std::errc::cross_device_link))
+        {
+            // Use a copy-remove scenario instead of the rename.
+            std::error_code copyError;
+            std::filesystem::copy(_p1, _p2, copyError);
+            if(!copyError) // Success
+            {
+                //Remove old file.
+                std::filesystem::remove(_p1); // throw an exception if it fails.
+            }
+            else // Error
+            {
+                throw std::filesystem::filesystem_error(copyError.message(), copyError);
+            }
+
+            // Early return, copy-remove is done.
+            return;
+        }
+
+        // Throw all others errors.
+        throw std::filesystem::filesystem_error(renameError.message(), renameError);
+    }
 }
 
 //------------------------------------------------------------------------------

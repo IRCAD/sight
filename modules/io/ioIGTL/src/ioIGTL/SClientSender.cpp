@@ -101,7 +101,7 @@ void SClientSender::starting()
         }
         catch (::fwCore::Exception& ex)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
@@ -122,7 +122,7 @@ void SClientSender::stopping()
     }
     catch (::fwCore::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
+        ::fwGui::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());
     }
 }
@@ -131,7 +131,7 @@ void SClientSender::stopping()
 
 void SClientSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
-    OSLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
+    SLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
 
     if (m_client.isConnected())
     {

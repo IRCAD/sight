@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -199,7 +199,7 @@ void ValveDump::refresh()
 
 bool ValveDump::setParam(const std::string& name, const std::string& value)
 {
-    OSLM_INFO("Set " << name << " to " << value);
+    SLM_INFO("Set " << name << " to " << value);
     try
     {
         if(name == "min_free_mem")
@@ -216,10 +216,10 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
     }
     catch( ::fwMemory::exception::BadCast const& )
     {
-        OSLM_ERROR("Bad value for " << name << " : " << value);
+        SLM_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
-    OSLM_ERROR("Bad parameter name " << name );
+    SLM_ERROR("Bad parameter name " << name );
     return false;
 }
 

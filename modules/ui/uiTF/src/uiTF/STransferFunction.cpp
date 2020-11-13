@@ -341,7 +341,7 @@ void STransferFunction::deleteTF()
         else
         {
             poolTFLock.unlock();
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
                 ::fwGui::dialog::IMessageDialog::WARNING );
@@ -391,7 +391,7 @@ void STransferFunction::newTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -499,7 +499,7 @@ void STransferFunction::importTF()
 
     reader->configure(config);
     reader->start();
-    reader->configureWithIHM();
+    reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
@@ -537,10 +537,11 @@ void STransferFunction::exportTF()
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tf");
     config.add("extensions.extension", ".tf");
+    config.add("extensions.extension.<xmlattr>.label", "Transfer Function");
 
     writer->configure(config);
     writer->start();
-    writer->configureWithIHM();
+    writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ namespace uiVisu
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image )
 
 static const ::fwCom::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
@@ -69,7 +69,6 @@ CrossTypeAction::~CrossTypeAction() noexcept
 
 void CrossTypeAction::starting()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::actionServiceStarting();
 }
 
@@ -77,7 +76,6 @@ void CrossTypeAction::starting()
 
 void CrossTypeAction::stopping()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::actionServiceStopping();
 }
 
@@ -85,7 +83,6 @@ void CrossTypeAction::stopping()
 
 void CrossTypeAction::configuring()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::initialize();
 
     if( this->m_configuration->size() > 0 )

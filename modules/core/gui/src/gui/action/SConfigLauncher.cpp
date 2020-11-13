@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher )
 
 const ::fwCom::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
@@ -91,14 +91,18 @@ void SConfigLauncher::configuring()
 void SConfigLauncher::setIsActive(bool isActive)
 {
     this->::fwGui::IActionSrv::setIsActive(isActive);
-    if ( isActive )
+    if(isActive)
     {
-        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
-        proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
-        ::fwServices::helper::ConfigLauncher::FieldAdaptorType replaceMap;
-        replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
-        m_configLauncher->startConfig(this->getSptr(), replaceMap);
-        m_sigLaunched->asyncEmit();
+        // Check if the config is already running, this avoids to start a running config.
+        if(!m_configLauncher->configIsRunning())
+        {
+            ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+            proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
+            ::fwServices::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+            replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+            m_configLauncher->startConfig(this->getSptr(), replaceMap);
+            m_sigLaunched->asyncEmit();
+        }
     }
     else
     {

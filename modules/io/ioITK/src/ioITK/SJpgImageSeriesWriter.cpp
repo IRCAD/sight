@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +75,13 @@ void SJpgImageSeriesWriter::configuring()
 
 void SJpgImageSeriesWriter::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SJpgImageSeriesWriter::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialog;
@@ -121,14 +127,12 @@ void SJpgImageSeriesWriter::configureWithIHM()
 
 void SJpgImageSeriesWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SJpgImageSeriesWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -142,7 +146,6 @@ void SJpgImageSeriesWriter::info(std::ostream& _sstream )
 
 void SJpgImageSeriesWriter::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

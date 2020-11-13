@@ -85,7 +85,6 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::initialize();
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
@@ -194,7 +193,6 @@ void SSliceIndexDicomEditor::starting()
 
 void SSliceIndexDicomEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     // Stop dicom reader
     if(!m_dicomReader.expired())
@@ -247,7 +245,6 @@ void SSliceIndexDicomEditor::triggerNewSlice()
     // Compute slice index
     size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                 dicomSeries->getFirstInstanceNumber();
-    OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
 
     SLM_ERROR_IF("There is no instance available for selected slice index.",
                  !dicomSeries->isInstanceAvailable(selectedSliceIndex));
@@ -291,7 +288,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     const auto& binaries = dicomSeries->getDicomContainer();
     auto iter            = binaries.find(selectedSliceIndex);
-    OSLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
+    SLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
     const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
     const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);

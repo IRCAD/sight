@@ -8,5 +8,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    servicesReg
+)
 

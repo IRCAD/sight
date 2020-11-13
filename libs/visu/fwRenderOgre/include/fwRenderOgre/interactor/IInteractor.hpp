@@ -52,10 +52,12 @@ class FWRENDEROGRE_CLASS_API IInteractor
 {
 
 public:
+
     typedef std::weak_ptr< IInteractor > wptr;
+
     typedef std::shared_ptr< IInteractor > sptr;
 
-    /// List of recognized mouse buttons.
+    /// Defines the list of recognized mouse buttons.
     enum MouseButton
     {
         NONE,
@@ -65,6 +67,7 @@ public:
         UNKNOWN
     };
 
+    /// Defines the list of recognized mouse modifier.
     enum class Modifier : std::uint8_t
     {
         NONE     = 0x0,
@@ -91,22 +94,21 @@ public:
         }
     };
 
-    /**
-     * @name Signals API
-     * @{
-     */
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
     [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
-    /** @} */
 
-    /// Constructor. Sets the scene manager from the layer if it exists.
-    FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr);
+    /**
+     * @brief Sets the scene manager from the layer if it exists.
+     * @param _layer the layer on which the interator work.
+     * @param _layerOrderDependant define if the interaction must take into account above layers.
+     */
+    FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
 
-    /// Destructor
+    /// Destroys the interactor.
     FWRENDEROGRE_API virtual ~IInteractor();
 
-    /// Change point of interest viewed by the camera
+    /// Changes point of interest viewed by the camera
     [[deprecated("Set the scene from the layer instead.")]]
     FWRENDEROGRE_API void setSceneID(const std::string&);
 
@@ -184,8 +186,9 @@ public:
      * @param mouseX width coordinate of the mouse in pixels.
      * @param mouseY height coordinate of the mouse in pixels.
      * @param _layer layer on which to check the cursor's belonging.
+     * @param _layerOrderDependant define if interaction must take into account above layers.
      */
-    FWRENDEROGRE_API static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
+    FWRENDEROGRE_API static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer, bool _layerOrderDependant);
 
     /**
      * @brief Listen to render window resize events.
@@ -215,9 +218,9 @@ public:
     FWRENDEROGRE_API virtual void focusInEvent();
     [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual void focusOutEvent();
-/**
- * @}
- */
+    /**
+     * @}
+     */
 
 protected:
 
@@ -242,6 +245,9 @@ protected:
 /**
  * @}
  */
+
+    /// Defines if the interaction must take into account above layers.
+    bool m_layerOrderDependant { true };
 
 private:
 
@@ -295,5 +301,5 @@ static inline IInteractor::Modifier operator|=(IInteractor::Modifier& _m1, IInte
     return _m1 = _m1 | _m2;
 }
 
-} // interactor
-} // fwRenderOgre
+} // namespace interactor.
+} // namespace fwRenderOgre.

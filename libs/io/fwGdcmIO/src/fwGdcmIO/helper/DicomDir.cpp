@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,9 +37,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <filesystem>
 #include <gdcmMediaStorage.h>
 #include <gdcmReader.h>
+
+#include <filesystem>
 
 namespace fwGdcmIO
 {
@@ -152,8 +153,8 @@ void processDirInformation(const std::filesystem::path& dicomdir,
                     SLM_WARN_IF("Dicom instance doesn't have a referenced file id.", file.empty());
 
                     const std::filesystem::path path = rootDicomDirPath / file;
-                    OSLM_WARN_IF("Unable to find path :" << path, !std::filesystem::exists(path));
-                    OSLM_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
+                    SLM_WARN_IF("Unable to find path :" << path, !std::filesystem::exists(path));
+                    SLM_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
 
                     if(!currentSeries || file.empty())
                     {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SText);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SText)
 
 namespace visuVTKAdaptor
 {
@@ -226,7 +226,7 @@ void SText::setStyle()
     }
     else
     {
-        OSLM_FATAL("Unknown font family : '" << m_fontFamily << "'");
+        SLM_FATAL("Unknown font family : '" << m_fontFamily << "'");
     }
 }
 

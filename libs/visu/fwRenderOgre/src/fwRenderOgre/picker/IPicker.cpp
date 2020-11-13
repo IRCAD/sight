@@ -91,11 +91,11 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
         m_selectedObject->getParentSceneNode()->showBoundingBox(true);
 #endif
 
-        OSLM_DEBUG("Entity find and intersect at " << getIntersectionInWorldSpace() << "(WS)");
+        SLM_DEBUG("Entity find and intersect at " << getIntersectionInWorldSpace() << "(WS)");
 
-        OSLM_DEBUG("Entity find and intersect at " << getIntersectionInViewSpace() << "(VS)");
+        SLM_DEBUG("Entity find and intersect at " << getIntersectionInViewSpace() << "(VS)");
 
-        OSLM_DEBUG("Entity find and intersect at " << getIntersectionInPixel() << "(Px)");
+        SLM_DEBUG("Entity find and intersect at " << getIntersectionInPixel() << "(Px)");
 
     }
     else

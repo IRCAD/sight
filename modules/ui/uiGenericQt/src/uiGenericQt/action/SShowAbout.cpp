@@ -91,13 +91,11 @@ void SShowAbout::configuring()
 
         m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
-        SLM_TRACE("Filename found '" + filename + "'");
     }
 
     if(cfgTitle)
     {
         m_title = cfgTitle->getValue();
-        SLM_TRACE("Set title to '" + m_title + "'");
     }
 
     if(cfgSize)
@@ -108,7 +106,6 @@ void SShowAbout::configuring()
         m_size.setWidth(std::stoi(w));
         m_size.setHeight(std::stoi(h));
 
-        OSLM_TRACE("Set frame size to (" << m_size.width() << ", " << m_size.height() << ")");
     }
 }
 
@@ -116,7 +113,6 @@ void SShowAbout::configuring()
 
 void SShowAbout::updating( )
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
 
     QDialog* dialog = new QDialog(qApp->activeWindow());

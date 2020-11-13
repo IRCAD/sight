@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ namespace guiQt
 
 static const ::fwCom::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut );
+fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 
@@ -71,11 +71,11 @@ void SSignalShortcut::configuring()
     const auto configTree     = this->getConfigTree();
     const auto configShortcut = configTree.get_child("config.<xmlattr>");
     m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
-    OSLM_ASSERT("Shortcut must not be empty", m_shortcut != "");
+    SLM_ASSERT("Shortcut must not be empty", m_shortcut != "");
 
     m_wid = configShortcut.get<std::string>("wid", m_wid);
     m_sid = configShortcut.get<std::string>("sid", m_sid);
-    OSLM_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
+    SLM_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void SSignalShortcut::starting()
         }
         else
         {
-            OSLM_ERROR("Invalid service id " << m_sid);
+            SLM_ERROR("Invalid service id " << m_sid);
         }
     }
     // or a window id
@@ -106,7 +106,7 @@ void SSignalShortcut::starting()
         fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
         if(!fwc)
         {
-            OSLM_ERROR("Invalid window id " << m_wid);
+            SLM_ERROR("Invalid window id " << m_wid);
         }
     }
 
@@ -132,8 +132,8 @@ void SSignalShortcut::starting()
     }
     else
     {
-        OSLM_ERROR("Cannot setup shortcut " << m_shortcut << " on invalid "
-                                            << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid));
+        SLM_ERROR("Cannot setup shortcut " << m_shortcut << " on invalid "
+                                           << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid));
     }
 }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
-fwServicesRegisterMacro(::fwServices::IRegisterer, ::registrationCV::SPoseFrom2d);
+fwServicesRegisterMacro(::fwServices::IRegisterer, ::registrationCV::SPoseFrom2d)
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ void SPoseFrom2d::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_patternWidth                            = config.get<double>("patternWidth", m_patternWidth);
-    OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+    SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
     auto inoutCfg = config.equal_range("inout");
     for (auto itCfg = inoutCfg.first; itCfg != inoutCfg.second; ++itCfg)
@@ -185,7 +185,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                     ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
                     if(timestamp <= 0.)
                     {
-                        OSLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
+                        SLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
                         return;
                     }
                     newerTimestamp = std::min(timestamp, newerTimestamp);
@@ -316,7 +316,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                 ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(
                     s_MATRIX_INOUT, markerIndex);
-                OSLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
+                SLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
                 {
                     SLM_WARN("No Markers!")
@@ -390,7 +390,7 @@ void SPoseFrom2d::initialize()
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
-        OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
+        SLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
         ::fwData::mt::ObjectReadLock cameraLock(camera);
 
         Camera cam;

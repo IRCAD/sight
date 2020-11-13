@@ -374,8 +374,8 @@ void SParameters::updating()
                 if (!m_blockSignals)
                 {
                     this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
-                    OSLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
-                               ")" );
+                    SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
+                              ")" );
 
                 }
             }
@@ -403,10 +403,10 @@ void SParameters::updating()
                 if (!m_blockSignals)
                 {
                     this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
-                    OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
+                    SLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
                     this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
                                                                                                 key);
-                    OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key << ")");
+                    SLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key << ")");
                 }
             }
         }
@@ -496,9 +496,9 @@ void SParameters::onChangeEnum(int value)
     if (!m_blockSignals)
     {
         this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key.toStdString());
-        OSLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")" );
+        SLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")" );
         this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-        OSLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
+        SLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
     }
 }
 
@@ -513,8 +513,8 @@ void SParameters::onChangeBoolean(int value)
     if (!m_blockSignals)
     {
         this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(checked, key.toStdString());
-        OSLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (checked ? "true" : "false") << ", " << key.toStdString()
-                             << ")" );
+        SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (checked ? "true" : "false") << ", " << key.toStdString()
+                            << ")" );
     }
 }
 
@@ -583,7 +583,7 @@ void SParameters::emitIntegerSignal(QObject* widget)
                 value = slider->value();
             }
             this->signal<IntegerChangedSignalType>(INTEGER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            OSLM_DEBUG("[EMIT] " << INTEGER_CHANGED_SIG << "(" <<value << ", " << key.toStdString() << ")" );
+            SLM_DEBUG("[EMIT] " << INTEGER_CHANGED_SIG << "(" <<value << ", " << key.toStdString() << ")" );
         }
         else
         {
@@ -611,8 +611,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
             {
                 this->signal<Integer2ChangedSignalType>(INTEGER2_CHANGED_SIG)->asyncEmit(value1, value2,
                                                                                          key.toStdString());
-                OSLM_DEBUG("[EMIT] " << INTEGER2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " <<
-                           key.toStdString() << ")" );
+                SLM_DEBUG("[EMIT] " << INTEGER2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " <<
+                          key.toStdString() << ")" );
             }
             else
             {
@@ -630,8 +630,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
 
                 this->signal<Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG)->asyncEmit(value1, value2, value3,
                                                                                          key.toStdString());
-                OSLM_DEBUG("[EMIT] " << INTEGER3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " << value3 <<
-                           ", " << key.toStdString() << ")" );
+                SLM_DEBUG("[EMIT] " << INTEGER3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " << value3 <<
+                          ", " << key.toStdString() << ")" );
             }
         }
     }
@@ -661,7 +661,7 @@ void SParameters::emitDoubleSignal(QObject* widget)
         {
             const double value = this->getDoubleSliderValue(slider);
             this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            OSLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
+            SLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
         }
         else if (spinbox)
         {
@@ -671,8 +671,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
             {
                 this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(spinbox->value(),
                                                                                      key.toStdString());
-                OSLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << spinbox->value() << ", "
-                                     << key.toStdString() << ")" );
+                SLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << spinbox->value() << ", "
+                                    << key.toStdString() << ")" );
 
             }
             else
@@ -687,8 +687,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
                 {
                     this->signal<Double2ChangedSignalType>(DOUBLE2_CHANGED_SIG)->asyncEmit(value1, value2,
                                                                                            key.toStdString());
-                    OSLM_DEBUG("[EMIT] " << DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
-                                         << ", " << key.toStdString() << ")" );
+                    SLM_DEBUG("[EMIT] " << DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
+                                        << ", " << key.toStdString() << ")" );
 
                 }
                 else
@@ -698,8 +698,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
 
                     this->signal<Double3ChangedSignalType>(DOUBLE3_CHANGED_SIG)->asyncEmit(value1, value2, value3,
                                                                                            key.toStdString());
-                    OSLM_DEBUG("[EMIT] " << DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
-                                         << ", " << value3 << ", " << key.toStdString() << ")" );
+                    SLM_DEBUG("[EMIT] " << DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
+                                        << ", " << value3 << ", " << key.toStdString() << ")" );
                 }
             }
         }
@@ -768,8 +768,8 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
         if (!m_blockSignals)
         {
             this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            OSLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
-                                 << key.toStdString() << ")" );
+            SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
+                                << key.toStdString() << ")" );
         }
     }
 }
@@ -798,9 +798,9 @@ void SParameters::onResetColorMapped(QWidget* widget)
         if (!m_blockSignals)
         {
             this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key.toStdString());
-            OSLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
-                                 << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", "
-                                 << key.toStdString() << ")" );
+            SLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
+                                << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", "
+                                << key.toStdString() << ")" );
         }
     }
 }
@@ -1499,8 +1499,8 @@ void SParameters::emitColorSignal(const QColor color, const std::string& key)
     if (!m_blockSignals)
     {
         this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key);
-        OSLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", " <<
-                   int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", " << key << ")" );
+        SLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", " <<
+                  int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", " << key << ")" );
     }
 }
 

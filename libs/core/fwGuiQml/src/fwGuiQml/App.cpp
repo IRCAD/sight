@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,10 @@
 
 #include <fwTools/Os.hpp>
 
-#include <filesystem>
 #include <locale.h>
 #include <QCursor>
 
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 
@@ -43,7 +43,6 @@ namespace fwGuiQml
 App::App(int& argc, char** argv) :
     QGuiApplication(argc, argv)
 {
-    SLM_TRACE_FUNC();
 
     setlocale(LC_ALL, "C"); // needed for mfo save process
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
@@ -66,14 +65,12 @@ App::App(int& argc, char** argv) :
 
 void App::aboutToQuit()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void App::onExit()
 {
-    SLM_TRACE_FUNC();
 
     QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QGuiApplication::restoreOverrideCursor();

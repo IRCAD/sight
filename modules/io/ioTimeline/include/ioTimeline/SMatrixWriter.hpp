@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,8 +76,15 @@ public:
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     IOTIMELINE_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Display a location dialog allowing to select the video file to save
+    /**
+     * @brief Display a location dialog allowing to select the video file to save
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOTIMELINE_API virtual void configureWithIHM() override;
+
+    /// Display a location dialog allowing to select the video file to save
+    IOTIMELINE_API virtual void openLocationDialog() override;
 
     /// Return file type (::fwIO::FOLDER)
     IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;

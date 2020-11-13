@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@
 namespace memory
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object )
 
 SDumpPolicy::SDumpPolicy()
 {
@@ -93,16 +93,16 @@ void SDumpPolicy::starting()
             for(const ParametersType::value_type& param :  m_policyParams)
             {
                 success = policy->setParam(param.first, param.second);
-                OSLM_ERROR_IF( "[" << m_policy << "] Unable to set '"
-                                   << param.first << "' parameter to " << param.second,
-                               !success);
-                OSLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
+                SLM_ERROR_IF( "[" << m_policy << "] Unable to set '"
+                                  << param.first << "' parameter to " << param.second,
+                              !success);
+                SLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
             }
             ::fwCore::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
-            OSLM_INFO("Set dump policy to : " << m_policy);
+            SLM_INFO("Set dump policy to : " << m_policy);
         }
-        OSLM_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
+        SLM_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
     }
 }
 
@@ -127,4 +127,3 @@ void SDumpPolicy::swapping()
 }
 
 } // namespace memory
-

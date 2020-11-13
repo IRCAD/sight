@@ -44,7 +44,7 @@ namespace visuQt3DAdaptor
  * @code{.xml}
     <service uid="..." type="::visuQt3DAdaptor::SMesh" >
         <in key="mesh" uid="..." />
-        <config autoresetcamera="yes" visible="yes" />
+        <config autoresetcamera="true" visible="true" materialName="..." />
     </service>
    @endcode
  *
@@ -54,6 +54,9 @@ namespace visuQt3DAdaptor
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, bool, default=false): reset the camera when this mesh is modified.
  *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
+ *  - \b materialName (optional): need to be used when a material adaptor is defined in XML file.
+ *        Must be set according to ::visuQt3D::SMaterial materialName property
+ *        to retrieve the material managed by the adaptor.
  */
 class VISUQT3DADAPTOR_CLASS_API SMesh : public ::fwRenderQt3D::IAdaptor
 {
@@ -69,13 +72,13 @@ public:
     /// Destroys the adaptor.
     VISUQT3DADAPTOR_API ~SMesh() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    VISUQT3DADAPTOR_API void configuring() override;
 
-    ///
-    void starting() override;
+    /// Starts the adaptor.
+    VISUQT3DADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -84,13 +87,15 @@ private:
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
      * Connect ::fwData::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the mesh.
-    void updating() override;
+    VISUQT3DADAPTOR_API void updating() override;
 
     /// Does nothing.
-    void stopping() override;
+    VISUQT3DADAPTOR_API void stopping() override;
+
+private:
 
     /**
      * @brief Sets whether the mesh is to be seen or not.
@@ -103,6 +108,9 @@ private:
 
     /// Contains a Qt3D mesh.
     QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
+
+    /// Specifies the material adaptor used to configure mesh material.
+    std::string m_materialName;
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { false };

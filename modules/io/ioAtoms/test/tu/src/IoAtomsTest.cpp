@@ -80,7 +80,7 @@ void compareLog(T& comparator)
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
     for(::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        OSLM_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
+        SLM_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
     }
 }
 

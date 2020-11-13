@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -68,6 +68,13 @@ SSeriesDBWriter::~SSeriesDBWriter() noexcept
 //------------------------------------------------------------------------------
 
 void SSeriesDBWriter::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
@@ -185,13 +192,13 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, ::fwMedD
         m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_writeFailed = true;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }

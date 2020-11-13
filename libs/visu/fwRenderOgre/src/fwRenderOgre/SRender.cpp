@@ -70,6 +70,7 @@ const ::fwCom::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fulls
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
+const ::fwCom::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 const ::fwCom::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
@@ -89,6 +90,7 @@ SRender::SRender() noexcept
     m_fullscreenSetSig = newSignal<FullscreenSetSignalType>(s_FULLSCREEN_SET_SIG);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
+    newSlot(s_RESET_CAMERAS_SLOT, &SRender::resetCameras, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
     newSlot(s_DISABLE_FULLSCREEN, &SRender::disableFullscreen, this);
@@ -171,7 +173,6 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-    SLM_TRACE_FUNC();
 
     bool bHasBackground = false;
 
@@ -195,14 +196,14 @@ void SRender::starting()
     auto bkgConfigs = sceneCfg.equal_range("background");
     for( auto it = bkgConfigs.first; it != bkgConfigs.second; ++it )
     {
-        OSLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
+        SLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
         try
         {
             this->configureBackgroundLayer(it->second);
         }
         catch (std::exception& e)
         {
-            OSLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
+            SLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
         }
 
         bHasBackground = true;
@@ -373,10 +374,15 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);
 
-    if (attributes.count("topColor") && attributes.count("bottomColor"))
+    if (attributes.count("color") )
     {
-        std::string topColor = attributes.get<std::string>("topColor");
-        std::string botColor = attributes.get<std::string>("bottomColor");
+        const std::string color = attributes.get<std::string>("color");
+        ogreLayer->setBackgroundColor(color, color);
+    }
+    else if (attributes.count("topColor") && attributes.count("bottomColor"))
+    {
+        const std::string topColor = attributes.get<std::string>("topColor");
+        const std::string botColor = attributes.get<std::string>("bottomColor");
 
         ogreLayer->setBackgroundColor(topColor, botColor);
     }
@@ -387,6 +393,10 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
         const float botScaleVal = attributes.get<float>("bottomScale");
 
         ogreLayer->setBackgroundScale(topScaleVal, botScaleVal);
+    }
+    else
+    {
+        ogreLayer->setBackgroundScale(0.5f, 0.5f);
     }
 
     m_layers[s_OGREBACKGROUNDID] = ogreLayer;
@@ -483,6 +493,18 @@ void SRender::resetCameraCoordinates(const std::string& _layerId)
 
 //-----------------------------------------------------------------------------
 
+void SRender::resetCameras()
+{
+    for(auto layer : m_layers)
+    {
+        layer.second->resetCameraCoordinates();
+    }
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
 void SRender::computeCameraClipping()
 {
     for (auto it : m_layers)
@@ -518,8 +540,8 @@ bool SRender::isShownOnScreen()
 
 ::fwRenderOgre::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
-    OSLM_ASSERT("Empty sceneID", !sceneID.empty());
-    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
+    SLM_ASSERT("Empty sceneID", !sceneID.empty());
+    SLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
 
     ::fwRenderOgre::Layer::sptr layer = m_layers.at(sceneID);
 

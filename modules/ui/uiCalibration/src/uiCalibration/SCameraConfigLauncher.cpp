@@ -187,8 +187,8 @@ void SCameraConfigLauncher::swapping()
 
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
-    OSLM_ASSERT("Bad index: " << index,
-                index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
+    SLM_ASSERT("Bad index: " << index,
+               index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
 
     if (index == 0)
     {
@@ -232,7 +232,7 @@ void SCameraConfigLauncher::onImportClicked()
     {
         ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(readerService);
         reader->start();
-        reader->configureWithIHM();
+        reader->openLocationDialog();
         reader->update();
         reader->stop();
     }
@@ -263,7 +263,7 @@ void SCameraConfigLauncher::onImportClicked()
 
     if (cameraSeries.size() == 0)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "No CameraSeries in SDB",
             "There are no CameraSeries present in the loaded SeriesDB",
             ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -287,7 +287,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         if (cameras.size() == 0)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "No Cameras in SDB",
                 "There are CameraSeries present in the loaded SeriesDB, but no Cameras were found",
                 ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -353,7 +353,7 @@ void SCameraConfigLauncher::onRemoveClicked()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning", "The first camera can not be deleted");
+        ::fwGui::dialog::MessageDialog::show("Warning", "The first camera can not be deleted");
     }
 }
 
@@ -362,7 +362,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    OSLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
+    SLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);
@@ -442,7 +442,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Calibration", "Cameras must be intrinsically calibrated.");
+        ::fwGui::dialog::MessageDialog::show("Calibration", "Cameras must be intrinsically calibrated.");
         m_extrinsicButton->setChecked(false);
     }
 }

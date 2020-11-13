@@ -194,7 +194,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        OSLM_DEBUG("Calibration error :" << err);
+        SLM_DEBUG("Calibration error :" << err);
 
         ::fwData::mt::ObjectWriteLock camLock(cam);
 

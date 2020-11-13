@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing )
 
 SDoNothing::SDoNothing() noexcept
 {
@@ -53,7 +53,6 @@ void SDoNothing::configuring()
 
 void SDoNothing::starting()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -61,7 +60,6 @@ void SDoNothing::starting()
 
 void SDoNothing::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -69,7 +67,6 @@ void SDoNothing::stopping()
 
 void SDoNothing::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

@@ -985,8 +985,8 @@ typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator-
 template<bool isConst>
 typename CellIteratorBase<isConst>::CellInfo::cell_data_value_type& CellIteratorBase<isConst>::operator[](size_t index)
 {
-    OSLM_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo->nbPoints << " points",
-                index < m_cellInfo->nbPoints);
+    SLM_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo->nbPoints << " points",
+               index < m_cellInfo->nbPoints);
     return *(m_cellInfo->pointIdx+index);
 }
 

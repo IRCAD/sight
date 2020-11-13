@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwVtkIO
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     visuVTK
 )

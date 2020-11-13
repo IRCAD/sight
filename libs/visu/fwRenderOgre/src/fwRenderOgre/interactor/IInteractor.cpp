@@ -40,8 +40,9 @@ const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_R
 
 // ----------------------------------------------------------------------------
 
-IInteractor::IInteractor(Layer::sptr _layer)  :
-    m_layer(_layer)
+IInteractor::IInteractor(Layer::sptr _layer, bool _layerOrderDependant) :
+    m_layer(_layer),
+    m_layerOrderDependant(_layerOrderDependant)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -177,20 +178,23 @@ void IInteractor::focusOutEvent()
 
 // ----------------------------------------------------------------------------
 
-bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer)
+bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer, bool _layerOrderDependant)
 {
     const auto* const layerVp = _layer->getViewport();
     bool isInLayer            = isInViewport(_mouseX, _mouseY, layerVp);
 
     // Check if there's no layer above.
-    auto* const renderWindow       = layerVp->getTarget();
-    const unsigned short numLayers = renderWindow->getNumViewports();
-    for(unsigned short i = 0; i < numLayers && isInLayer; ++i)
+    if(_layerOrderDependant)
     {
-        const auto* const vp = renderWindow->getViewport(i);
-        if(vp->getZOrder() > layerVp->getZOrder())
+        auto* const renderWindow       = layerVp->getTarget();
+        const unsigned short numLayers = renderWindow->getNumViewports();
+        for(unsigned short i = 0; i < numLayers && isInLayer; ++i)
         {
-            isInLayer = !isInViewport(_mouseX, _mouseY, vp);
+            const auto* const vp = renderWindow->getViewport(i);
+            if(vp->getZOrder() > layerVp->getZOrder())
+            {
+                isInLayer = !isInViewport(_mouseX, _mouseY, vp);
+            }
         }
     }
 

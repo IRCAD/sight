@@ -182,7 +182,7 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     if(!buffer)
     {
-        OSLM_INFO("Buffer not found with timestamp "<< timestamp);
+        SLM_INFO("Buffer not found with timestamp "<< timestamp);
         return;
     }
 

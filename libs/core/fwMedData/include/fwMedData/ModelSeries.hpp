@@ -34,7 +34,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API)
+fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries))
 
 namespace fwData
 {

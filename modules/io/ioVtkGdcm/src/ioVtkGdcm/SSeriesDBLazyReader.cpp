@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB )
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
@@ -67,6 +67,13 @@ SSeriesDBLazyReader::~SSeriesDBLazyReader() noexcept
 //------------------------------------------------------------------------------
 
 void SSeriesDBLazyReader::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBLazyReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
@@ -90,14 +97,12 @@ void SSeriesDBLazyReader::configureWithIHM()
 
 void SSeriesDBLazyReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBLazyReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +138,6 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 
 ::fwMedData::SeriesDB::sptr SSeriesDBLazyReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
-    SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();
     ::fwMedData::SeriesDB::sptr dummy              = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
@@ -144,19 +148,20 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
     try
     {
         myLoader->read();
+        m_readFailed = false;
     }
     catch (const std::exception& e)
     {
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
@@ -194,7 +199,7 @@ void SSeriesDBLazyReader::updating()
         else
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }

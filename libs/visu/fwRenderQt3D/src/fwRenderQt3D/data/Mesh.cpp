@@ -45,10 +45,7 @@ namespace data
 Mesh::Mesh(Qt3DCore::QNode* _parent) :
     QEntity(_parent)
 {
-    // Specifies a default material for the mesh.
-    QPointer< Qt3DExtras::QPhongMaterial > const defaultMaterial = new Qt3DExtras::QPhongMaterial;
-    defaultMaterial->setAmbient("darkGray");
-    defaultMaterial->setAmbient("white");
+    ::fwRenderQt3D::data::Material* defaultMaterial = new ::fwRenderQt3D::data::Material();
 
     m_material = defaultMaterial;
     m_scene    = qobject_cast< ::fwRenderQt3D::core::GenericScene* >(_parent);
@@ -70,21 +67,13 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
 
 //------------------------------------------------------------------------------
 
-Mesh::Mesh(::fwData::Mesh::sptr _mesh, Qt3DCore::QNode* _parent) :
-    Mesh(_parent)
-{
-    this->setMesh(_mesh);
-}
-
-//------------------------------------------------------------------------------
-
 Mesh::~Mesh()
 {
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DRender::QMaterial* const Mesh::getMaterial() const
+::fwRenderQt3D::data::Material* const Mesh::getMaterial() const
 {
     return m_material;
 }
@@ -98,10 +87,12 @@ Qt3DRender::QMaterial* const Mesh::getMaterial() const
 
 //------------------------------------------------------------------------------
 
-void Mesh::setMaterial(Qt3DRender::QMaterial* _material)
+void Mesh::setMaterial(::fwRenderQt3D::data::Material* _material)
 {
     SLM_ASSERT("Material can't be set to null value.", _material);
+    this->removeComponent(m_material);
     m_material = _material;
+    this->addComponent(m_material);
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,14 +43,12 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

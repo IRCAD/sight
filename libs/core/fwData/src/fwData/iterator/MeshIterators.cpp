@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <fwData/Mesh.hpp>
+#include "fwData/Mesh.hpp"
 
 #include <iterator>
 

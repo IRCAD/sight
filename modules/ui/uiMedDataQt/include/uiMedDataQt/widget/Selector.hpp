@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIMEDDATAQT_WIDGET_SELECTOR_HPP__
-#define __UIMEDDATAQT_WIDGET_SELECTOR_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/SelectorModel.hpp"
@@ -45,105 +44,107 @@ namespace widget
 {
 
 /**
- * @brief   This selector represents the Series in a hierarchical view (Study/Patient->Series).
+ * @brief This selector represents the Series in a hierarchical view (Study/Patient->Series).
  */
 class UIMEDDATAQT_CLASS_API Selector : public QTreeView
 {
+
 Q_OBJECT
 
 public:
 
-    typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
-
-    /// Map associating icons to series (map\<series classname, icon path\>)
+    /// Defines a map associating icons to series (map\<series classname, icon path\>)
     typedef SelectorModel::SeriesIconType SeriesIconType;
 
-    /// Constructor. Init tree view.
-    UIMEDDATAQT_API Selector(QWidget* parent = 0);
+    /// Initializes the tree view.
+    UIMEDDATAQT_API Selector(QWidget* _parent = nullptr);
 
-    /// Destrucotr
+    /// Destroys the selector.
     UIMEDDATAQT_API ~Selector();
 
-    /// Clear all items in the tree.
+    /// Clears all items in the tree.
     UIMEDDATAQT_API void clear();
 
     /**
      * @brief Adds the Series in the tree. If the associated study already exists in the tree, the series is added to
      * this study.
-     * @param[in] series series to add in the tree.
+     * @param _series series to add in the tree.
      */
-    UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr series);
+    UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
-     * @param[in] series series to remove from the tree.
+     * @param _series series to remove from the tree.
      */
-    UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
+    UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex& index);
+    UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
 
-    /// Catch the delete key event and remove the selected items.
-    UIMEDDATAQT_API void keyPressEvent(QKeyEvent* event);
+    /// Catches the delete key event and remove the selected items.
+    UIMEDDATAQT_API void keyPressEvent(QKeyEvent* _event);
 
     /**
      * @brief Sets the specific icons for series in selector.
-     * @param[in]  seriesIcons map\<series classname, icon path\>
+     * @param _seriesIcons map\<series classname, icon path\>
      */
-    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& seriesIcons);
+    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Allows removing items or not.
-    UIMEDDATAQT_API void setAllowedRemove(bool allowed);
+    UIMEDDATAQT_API void setAllowedRemove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
-    UIMEDDATAQT_API void setInsertMode(bool insert);
+    UIMEDDATAQT_API void setInsertMode(bool _insert);
 
 Q_SIGNALS:
     /**
      * @brief Signal emitted when the selection change.
-     * @param selection contains the new selection of series.
-     * @param deselection contains the new deselection of series.
+     * @param _selection contains the new selection of series.
+     * @param _deselection contains the new deselection of series.
      * @note selection and deselection contain only the change of selection. The series always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectSeries(QVector< ::fwMedData::Series::sptr > selection, QVector< ::fwMedData::Series::sptr > deselection);
+    void selectSeries(QVector< ::fwMedData::Series::sptr > _selection,
+                      QVector< ::fwMedData::Series::sptr > _deselection);
 
     /**
      * @brief Signal emitted when series are deleted.
-     * @param selection contains the deleted series.
+     * @param _selection contains the deleted series.
      */
-    void removeSeries(QVector< ::fwMedData::Series::sptr > selection);
+    void removeSeries(QVector< ::fwMedData::Series::sptr > _selection);
 
 protected Q_SLOTS:
     /**
      * @brief Slot called when the selection changed. Emits a signal containing the new selected/deselected series. If a
      * Study is selected, no series are added in signal.
-     * @param selected contains the new selected items.
-     * @param deselected contains the new deselected items.
+     * @param _selected contains the new selected items.
+     * @param _deselected contains the new deselected items.
      * @note selection and deselection contain only the change of selection. The items always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectionChanged(const QItemSelection& _selected, const QItemSelection& _deselected);
 
 protected:
+
+    typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
 
     /**
      * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
-    SeriesVectorType getSeries( const QItemSelection& selection );
+    SeriesVectorType getSeries(const QItemSelection& _selection);
 
     /**
      * @brief Returns all the Series associated to the selection.
      * @note It ignores the studies.
      */
-    SeriesVectorType getSeries(const QModelIndexList& indexList);
+    SeriesVectorType getSeries(const QModelIndexList& _indexList);
 
     /// Returns all the study indexes contained in the given indexList
-    QModelIndexList getStudyIndexes(const QModelIndexList& indexList);
+    QModelIndexList getStudyIndexes(const QModelIndexList& _indexList);
 
     /// Returns all the series associated with the study index
-    SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& index);
+    SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& _index);
 
     /// Deletes the selected items and notify the deleted series.
     void deleteSelection();
@@ -151,14 +152,12 @@ protected:
 private:
 
     /// Tree model
-    QPointer<SelectorModel> m_model;
+    QPointer<SelectorModel> m_model { nullptr };
 
     /// Allows to remove items.
-    bool m_allowedRemove;
+    bool m_allowedRemove { true };
 
 };
 
-} // namespace widget
-} // namespace uiMedDataQt
-
-#endif // __UIMEDDATAQT_WIDGET_SELECTOR_HPP__
+} // namespace widget.
+} // namespace uiMedDataQt.

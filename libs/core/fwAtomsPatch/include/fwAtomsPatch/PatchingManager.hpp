@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_PATCHINGMANAGER_HPP__
-#define __FWATOMSPATCH_PATCHINGMANAGER_HPP__
-
-#include <fwCore/macros.hpp>
-
-#include "fwAtomsPatch/VersionsGraph.hpp"
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
+#include "fwAtomsPatch/VersionsGraph.hpp"
+
+#include <fwCore/macros.hpp>
 
 namespace fwAtoms
 {
@@ -38,7 +36,6 @@ namespace fwAtomsPatch
 {
 
 /**
- * @class PatchingManager
  * @brief Manages object patching.
  *
  * To be used, PatchingManager requires that available contexts and versions are loaded into
@@ -61,7 +58,7 @@ public:
      * @throw ::fwAtomsPatch::exceptions::MissingInformation if an information about patching is missing
      * @throw ::fwAtomsPatch::exceptions::ImpossibleConversion if there is no patch available to transform an object
      */
-    FWATOMSPATCH_API ::fwAtoms::Object::sptr transformTo(const std::string& newVersion);
+    FWATOMSPATCH_API SPTR(::fwAtoms::Object) transformTo(const std::string& newVersion);
 
 protected:
 
@@ -70,5 +67,3 @@ protected:
 };
 
 }
-
-#endif //__FWATOMSPATCH_PATCHINGMANAGER_HPP__

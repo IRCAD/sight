@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,9 @@
 
 #include "vtkGdcmIO/helper/ImageDicomStream.hpp"
 
-#include <filesystem>
 #include <vtkStringArray.h>
+
+#include <filesystem>
 
 namespace vtkGdcmIO
 {
@@ -65,7 +66,6 @@ bool ImageDicomSource::readImage()
     fileArray->Initialize();
     for( std::string file :  m_dcmInfo->m_seriesFiles )
     {
-        OSLM_TRACE("Add " << file << " to vtkGdcmReader");
         fileArray->InsertNextValue( file.c_str() );
     }
 
@@ -86,13 +86,13 @@ bool ImageDicomSource::readImage()
         {
             m_reader      = 0;
             m_inputReader = 0;
-            OSLM_ERROR( "Error during conversion : " << e.what() );
+            SLM_ERROR( "Error during conversion : " << e.what() );
         }
         catch (...)
         {
             m_reader      = 0;
             m_inputReader = 0;
-            OSLM_ERROR( "Unexpected error during conversion" );
+            SLM_ERROR( "Unexpected error during conversion" );
         }
     }
 
@@ -106,7 +106,7 @@ std::streamsize ImageDicomSource::read(char* s, std::streamsize n)
     if ( m_pos == 0 )
     {
         m_success = this->readImage();
-        OSLM_ERROR_IF( "Error while reading dicom files : " << m_dcmInfo->m_seriesFiles[0] << " ...", !m_success );
+        SLM_ERROR_IF( "Error while reading dicom files : " << m_dcmInfo->m_seriesFiles[0] << " ...", !m_success );
     }
 
     using namespace std;

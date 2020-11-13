@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -72,7 +72,6 @@ OrganMaterialEditor::~OrganMaterialEditor() noexcept
 
 void OrganMaterialEditor::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
@@ -114,7 +113,6 @@ void OrganMaterialEditor::starting()
 
 void OrganMaterialEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     QObject::disconnect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
     QObject::disconnect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
@@ -126,7 +124,6 @@ void OrganMaterialEditor::stopping()
 
 void OrganMaterialEditor::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 

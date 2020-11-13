@@ -72,6 +72,12 @@ SSeriesDBReader::SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -112,14 +118,12 @@ void SSeriesDBReader::configureWithIHM()
 
 void SSeriesDBReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -150,6 +154,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
     try
     {
         reader->read();
+        m_readFailed = false;
     }
     catch (const std::exception& e)
     {
@@ -157,7 +162,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -167,7 +172,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);

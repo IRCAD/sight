@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,63 +47,89 @@ namespace videoTools
  * @code{.xml}
    <service uid="..." type="::videoTools::SImagePicker" >
         <inout key="pointList" uid="..." />
+        <inout key="pixelPointList" uid="..." />
+        <config videoReference="center" />
    </service>
    @endcode
  * @section InOut InOut
- * - \b pointList [::fwData::PointList] : Pointlist of clicked points
+ * - \b pointList [::fwData::PointList] : Pointlist of clicked points, real coordinates given by picker.
+ * - \b pixelPointList [::fwData::PointList] : PointList of clicked points, transformed in pixel world.
+ *
+ * @section Configuration Configuration
+ * - \b videoReference: specifies where is the reference system of picker interactor
+ * it can be at center of the video plane, or on the top left corner (eg: "center" or "top_left").
+ *
+ * This is needed to transform picked points from "scene" reference to pixel.
+ *
+ * Here's an illustration of center & top_left coordinate system
+ *
+ * the origin of coordinates system is represented by an ascii "+"
+ *
+ *      CENTER
+ *          X
+ *    -------------
+ *   |     ^       |
+ * Y |     + >     |
+ *   |             |
+ *    -------------
+ *
+ *     TOP_LEFT
+ *          X
+ *   + >----------
+ *   v            |
+ * Y |            |
+ *   |            |
+ *    ------------
  **/
-
 class VIDEOTOOLS_CLASS_API SImagePicker : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceMacro(SImagePicker, ::fwServices::IController);
+    fwCoreServiceMacro(SImagePicker, ::fwServices::IController)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT;
-    ///@}
-
-    /**
-     * @name Data API
-     * @{
-     */
-    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_POINTLIST_INOUT;
-    /** @} */
-
-    /// Does nothing
+    /// Creates the video reference map..
     VIDEOTOOLS_API SImagePicker() noexcept;
 
-    /// Does nothing
+    /// Destroys the service.
     VIDEOTOOLS_API virtual ~SImagePicker() noexcept;
 
 protected:
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Does nothing.
-    VIDEOTOOLS_API virtual void starting() override;
+    VIDEOTOOLS_API void configuring() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API virtual void stopping() override;
+    VIDEOTOOLS_API void starting() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API virtual void updating() override;
+    VIDEOTOOLS_API void updating() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API virtual void configuring() override;
+    VIDEOTOOLS_API void stopping() override;
 
 private:
 
-    /// Adds a point in the pointlist.
+    /// Manages several video coordinate system.
+    typedef enum VideoReference
+    {
+        TOP_LEFT = 0,
+        CENTER,
+    } VideoReferenceType;
+
+    /// Adds a point in both pointlists.
     void addPoint(const std::array<double, 3>& currentPoint);
 
-    /// Removes the last point in the pointlist.
+    /// Removes the last point in both pointlists.
     void removeLastPoint();
 
     /// Slot: retrieves the 2d coordinates from the interaction point.
     void getInteraction(::fwDataTools::PickingInfo info);
+
+    /// Map that handles conversion between xml configuration string and VideoReferenceType
+    std::map<std::string, VideoReferenceType > m_videoRefMap;
+
+    /// Manages video coordinate system
+    VideoReferenceType m_videoRef { VideoReferenceType::CENTER };
 
 };
 

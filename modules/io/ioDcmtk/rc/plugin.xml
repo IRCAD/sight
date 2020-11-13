@@ -1,7 +1,6 @@
 <plugin id="ioDcmtk" class="ioDcmtk::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioDcmtk" />
 
-    <requirement id="dataReg"/>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>

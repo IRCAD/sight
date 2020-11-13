@@ -22,7 +22,7 @@ set( DEPENDENCIES
     fwThread
     )
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     )
 set( CONAN_DEPS

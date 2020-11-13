@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@
 namespace ctrlCamera
 {
 
-fwServicesRegisterMacro(::fwServices::IController, ::ctrlCamera::SExtractDeviceInfo, ::fwData::Object);
+fwServicesRegisterMacro(::fwServices::IController, ::ctrlCamera::SExtractDeviceInfo, ::fwData::Object)
 
 //-----------------------------------------------------------------------------
 
@@ -209,10 +209,10 @@ void SExtractDeviceInfo::updating()
     camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
     camera->setSkew(skew);
 
-    OSLM_DEBUG("cx: " << camera->getCx() << ", cy: "<< camera->getCy() <<
-               ", fx: "<< camera->getFx() <<  ", fy: " << camera->getFy());
+    SLM_DEBUG("cx: " << camera->getCx() << ", cy: "<< camera->getCy() <<
+              ", fx: "<< camera->getFx() <<  ", fy: " << camera->getFy());
 
-    OSLM_DEBUG("k1: " <<k1 << ", k2: "<< k2 << ", p1: "<< p1 <<  ", p2: " << p2 << ", k3: " << k3);
+    SLM_DEBUG("k1: " <<k1 << ", k2: "<< k2 << ", p1: "<< p1 <<  ", p2: " << p2 << ", k3: " << k3);
 
     ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
     sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >

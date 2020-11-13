@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh )
 
 namespace ioData
 {
@@ -76,7 +76,13 @@ void MeshWriterService::configuring()
 
 void MeshWriterService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshWriterService::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -103,7 +109,6 @@ void MeshWriterService::configureWithIHM()
 
 void MeshWriterService::updating()
 {
-    SLM_TRACE_FUNC();
     if(this->hasLocationDefined())
     {
         // Retrieve object
@@ -124,7 +129,7 @@ void MeshWriterService::updating()
             std::stringstream ss;
             ss << "Warning during writing Mesh : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);

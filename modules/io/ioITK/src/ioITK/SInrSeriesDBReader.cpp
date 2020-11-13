@@ -88,7 +88,13 @@ void SInrSeriesDBReader::configuring()
 
 void SInrSeriesDBReader::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SInrSeriesDBReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -121,7 +127,6 @@ void SInrSeriesDBReader::configureWithIHM()
 
 bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
@@ -138,16 +143,16 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwD
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          ss.str(),
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             ss.str(),
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Warning during loading",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Warning during loading",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -157,7 +162,6 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwD
 
 void SInrSeriesDBReader::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

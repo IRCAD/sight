@@ -85,6 +85,13 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 void SModelSeriesReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void SModelSeriesReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -122,14 +129,12 @@ void SModelSeriesReader::configureWithIHM()
 
 void SModelSeriesReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -242,7 +247,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData:
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -254,7 +259,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData:
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -263,7 +268,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData:
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);

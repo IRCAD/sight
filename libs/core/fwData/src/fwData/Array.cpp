@@ -538,7 +538,7 @@ size_t Array::getNumberOfComponents() const
 
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const
 {
-    OSLM_ASSERT(
+    SLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
             id.size() == m_size.size()
         );

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,68 +22,53 @@
 
 #include "ioPacs/SSeriesPuller.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
+#include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
+#include <fwPacsIO/SeriesEnquirer.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 #include <fwTools/System.hpp>
 
 #include <filesystem>
-
 #include <sstream>
 
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPuller, ::fwData::Vector );
+static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
+static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
+static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
 
-//------------------------------------------------------------------------------
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
 
-const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_READ_SLOT    = "readDicom";
-const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_DISPLAY_SLOT = "displayMessage";
+static const std::string s_DICOM_READER_CONFIG = "dicomReader";
+static const std::string s_READER_CONFIG       = "readerConfig";
 
-const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_PROGRESSED_SIG       = "progressed";
-const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STARTED_PROGRESS_SIG = "startedProgress";
-const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
+static const ::fwServices::IService::KeyType s_PACS_INPUT     = "pacsConfig";
+static const ::fwServices::IService::KeyType s_SELECTED_INPUT = "selectedSeries";
 
-SSeriesPuller::SSeriesPuller() noexcept :
-    m_isPulling(false),
-    m_progressbarId("pullDicomProgressBar"),
-    m_seriesCount(0),
-    m_seriesIndex(0)
+static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+
+SSeriesPuller::SSeriesPuller() noexcept
 {
-    // Internal slots
-    m_slotReadLocalSeries = newSlot(s_READ_SLOT, &SSeriesPuller::readLocalSeries, this);
-    m_slotDisplayMessage  = newSlot(s_DISPLAY_SLOT, &SSeriesPuller::displayErrorMessage, this);
+    m_slotStoreInstanceCallbackUsingMoveRequests = this->newSlot(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
+                                                                 &SSeriesPuller::storeInstanceCallback, this);
 
-    m_slotStoreInstanceCallbackUsingMoveRequests = newSlot(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
-                                                           &SSeriesPuller::storeInstanceCallback, this);
-    m_slotStoreInstanceCallbackUsingGetRequests = newSlot(::fwPacsIO::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
-                                                          &SSeriesPuller::storeInstanceCallback, this);
+    m_sigProgressed      = this->newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
+    m_sigProgressStarted = this->newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
+    m_sigProgressStopped = this->newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
 
-    m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
-    m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
-    m_sigStoppedProgress = newSignal<StoppedProgressSignalType>(s_STOPPED_PROGRESS_SIG);
-
+    newSlot(s_REMOVE_SERIES_SLOT, &SSeriesPuller::removeSeries, this);
 }
+
 //------------------------------------------------------------------------------
 
 SSeriesPuller::~SSeriesPuller() noexcept
@@ -92,318 +77,355 @@ SSeriesPuller::~SSeriesPuller() noexcept
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::info(std::ostream& _sstream )
-{
-    _sstream << "SSeriesPuller::info";
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesPuller::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.", config);
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    bool success;
+    m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
+    SLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
 
-    // Dicom Reader
-    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" in the ::ioPacs::SSeriesPuller config element.", success);
-
-    // Dicom Reader Config
-    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+    m_readerConfig = configType.get(s_READER_CONFIG, m_readerConfig);
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::starting()
 {
-    // Create enquirer
-    m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
+    // Create the worker.
+    m_requestWorker = ::fwThread::Worker::New();
 
-    // Get Destination SeriesDB
-    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
-    SLM_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
+    // Create the DICOM reader.
+    m_seriesDB = ::fwMedData::SeriesDB::New();
 
-    // Create temporary SeriesDB
-    m_tempSeriesDB = ::fwMedData::SeriesDB::New();
-
-    // Create reader
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-    m_dicomReader                                           =
-        ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
-    SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioPacs::SSeriesPuller.",
-               m_dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
-                                       ::fwServices::IService::AccessType::INOUT, m_dicomReader);
-    if(!m_dicomReaderSrvConfig.empty())
+    m_dicomReader = this->registerService< ::fwIO::IReader >(m_dicomReaderImplementation);
+    SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
+    m_dicomReader->setWorker(m_requestWorker);
+    m_dicomReader->registerInOut(m_seriesDB, "data");
+    if(!m_readerConfig.empty())
     {
-        // Get the config
         ::fwRuntime::ConfigurationElement::csptr readerConfig =
             ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_dicomReaderSrvConfig, "::fwIO::IReader");
+                m_readerConfig, "::fwIO::IReader");
 
-        SLM_ASSERT("Sorry, there is no service configuration "
-                   << m_dicomReaderSrvConfig
-                   << " for ::fwIO::IReader", readerConfig);
+        SLM_ASSERT("No service configuration " << m_readerConfig << " for ::fwIO::IReader", readerConfig);
 
         m_dicomReader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(readerConfig) );
-
     }
 
     m_dicomReader->configure();
-    m_dicomReader->start();
-
-    // Worker
-    m_pullSeriesWorker = ::fwThread::Worker::New();
-
-    // Get pacs configuration
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
-    SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesPuller::stopping()
-{
-    // Stop reader service
-    m_dicomReader->stop();
-    ::fwServices::OSR::unregisterService(m_dicomReader);
-
-    // Worker
-    m_pullSeriesWorker.reset();
+    m_dicomReader->start().wait();
+    SLM_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::updating()
 {
-    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
+    const auto selectedSeries = this->getLockedInput< const ::fwData::Vector >(s_SELECTED_INPUT);
 
-    if(m_isPulling)
+    if(selectedSeries->empty())
     {
-        // Display a message to inform the user that the service is already pulling data.
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Pulling Series");
-        messageBox.setMessage( "The service is already pulling data. Please wait until the pulling is done "
-                               "before sending a new pull request." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-    }
-    else if(selectedSeries->empty())
-    {
-        // Display a message to inform the user that there is no series selected.
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Pulling Series");
-        messageBox.setMessage( "Unable to pull series, there is no series selected." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        notif->asyncEmit("No series selected");
     }
     else
     {
-        m_pullSeriesWorker->post(std::bind(&::ioPacs::SSeriesPuller::pullSeries, this));
+        m_requestWorker->post(std::bind(&SSeriesPuller::pullSeries, this));
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesPuller::stopping()
+{
+    // Unregister the DICOM reader.
+    this->unregisterServices();
+
+    // Stop the worker.
+    m_requestWorker->stop();
+    m_requestWorker.reset();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::pullSeries()
 {
-    // Catch any errors
-    try
+    // Set pulling boolean to true.
+    bool success = true;
+
+    // Clear map of Dicom series being pulled.
+    m_pullingDicomSeriesMap.clear();
+
+    // Reset Counters
+    m_instanceCount = 0;
+
+    // Retrieve data.
+    const auto selectedSeries = this->getLockedInput< const ::fwData::Vector >(s_SELECTED_INPUT);
+    const auto localEnd       = m_localSeries.end();
+
+    // Find which selected series must be pulled.
+    DicomSeriesContainerType pullSeriesVector;
+    DicomSeriesContainerType selectedSeriesVector;
+    ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
+    const ::fwData::Vector::ConstIteratorType itEnd = selectedSeries->end();
+    for(; it != itEnd; ++it)
     {
-        // Clear map of Dicom series being pulled
-        m_pullingDicomSeriesMap.clear();
+        // Check that the series is a DICOM series.
+        ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
 
-        // Set pulling boolean to true
-        m_isPulling = true;
-
-        // Reset Counters
-        m_seriesIndex   = 0;
-        m_instanceCount = 0;
-
-        ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
-
-        // Find which selected series must be pulled
-        DicomSeriesContainerType pullSeriesVector;
-        DicomSeriesContainerType selectedSeriesVector;
-
-        ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
-        for(; it != selectedSeries->end(); ++it)
+        // Check if the series must be pulled.
+        if(series && std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID()) == localEnd)
         {
-            ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+            // Add series in the pulling series map.
+            m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
 
-            // Check if the series must be pulled
-            if(series &&
-               std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID()) == m_localSeries.end())
-            {
-                // Add series in the pulling series map
-                m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
+            pullSeriesVector.push_back(series);
+            m_instanceCount += series->getNumberOfInstances();
+        }
+        selectedSeriesVector.push_back(series);
+    }
 
-                pullSeriesVector.push_back(series);
-                m_instanceCount += series->getNumberOfInstances();
-            }
-            selectedSeriesVector.push_back(series);
+    // Pull series.
+    if(!pullSeriesVector.empty())
+    {
+        const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        infoNotif->asyncEmit("Downloading series...");
+
+        // Notify Progress Dialog.
+        m_sigProgressStarted->asyncEmit(m_progressbarId);
+
+        // Retrieve informations.
+        const auto pacsConfig = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
+
+        ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
+
+        // Initialize connection.
+        try
+        {
+            seriesEnquirer->initialize(
+                pacsConfig->getLocalApplicationTitle(),
+                pacsConfig->getPacsHostName(),
+                pacsConfig->getPacsApplicationPort(),
+                pacsConfig->getPacsApplicationTitle(),
+                pacsConfig->getMoveApplicationTitle());
+            seriesEnquirer->connect();
+        }
+        catch(const ::fwPacsIO::exceptions::Base& _e)
+        {
+            SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
+            const auto failureNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+                ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+            failureNotif->asyncEmit("Unable to connect to the PACS");
+            return;
         }
 
-        m_seriesCount = pullSeriesVector.size();
+        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
-        if(m_seriesCount > 0)
+        try
         {
-            //Notify Progress Dialog
-            m_sigStartedProgress->asyncEmit(m_progressbarId);
-        }
-
-        // Pull series
-        if(!pullSeriesVector.empty())
-        {
-            m_seriesEnquirer->initialize(
-                m_pacsConfiguration->getLocalApplicationTitle(),
-                m_pacsConfiguration->getPacsHostName(),
-                m_pacsConfiguration->getPacsApplicationPort(),
-                m_pacsConfiguration->getPacsApplicationTitle(),
-                m_pacsConfiguration->getMoveApplicationTitle(),
-                m_slotStoreInstanceCallbackUsingGetRequests);
-
-            // Use C-GET Requests
-            if(m_pacsConfiguration->getRetrieveMethod() == ::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD)
+            if(pacsConfig->getRetrieveMethod() == ::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD)
             {
-                // Pull Selected Series
-                m_seriesEnquirer->connect();
-                m_seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
-                                                                       pullSeriesVector));
-                m_seriesEnquirer->disconnect();
+                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
+                                                                     pullSeriesVector));
             }
-            // Use C-MOVE Requests
-            else
+            else if(pacsConfig->getRetrieveMethod() ==
+                    ::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
             {
                 ::fwPacsIO::SeriesRetriever::sptr seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
                 seriesRetriever->initialize(
-                    m_pacsConfiguration->getMoveApplicationTitle(),
-                    m_pacsConfiguration->getMoveApplicationPort(),
+                    pacsConfig->getMoveApplicationTitle(),
+                    pacsConfig->getMoveApplicationPort(),
                     1,
                     m_slotStoreInstanceCallbackUsingMoveRequests);
 
-                // Start Series Retriever
-                ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+                // Start series retriever in a worker.
                 worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, seriesRetriever));
 
-                // Pull Selected Series
-                m_seriesEnquirer->connect();
-                m_seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
-                                                                        pullSeriesVector));
-                m_seriesEnquirer->disconnect();
-
-                worker.reset();
+                // Pull Selected Series.
+                seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
+                                                                      pullSeriesVector));
             }
-
-            // Notify Progress Dialog
-            m_sigStoppedProgress->asyncEmit(m_progressbarId);
+            else
+            {
+                SLM_ERROR("Unknown retrieve method, 'get' will be used");
+                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
+                                                                     pullSeriesVector));
+            }
         }
-
-        // Read series if there is no error
-        if(m_isPulling)
+        catch(const ::fwPacsIO::exceptions::Base& _e)
         {
-            m_slotReadLocalSeries->asyncRun(selectedSeriesVector);
+            SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
+            const auto failureNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+                ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+            failureNotif->asyncEmit("Unable to execute query");
+
+            success = false;
         }
 
-        // Set pulling boolean to false
-        m_isPulling = false;
+        // Stop the worker.
+        worker->stop();
+        worker.reset();
 
+        // Disconnect the series enquirer.
+        if(seriesEnquirer->isConnectedToPacs())
+        {
+            seriesEnquirer->disconnect();
+        }
     }
-    catch (::fwPacsIO::exceptions::Base& exception)
+    else
     {
-        ::std::stringstream ss;
-        ss << "Unable to connect to the pacs. Please check your configuration: \n"
-           << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-           << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-           << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
-        m_slotDisplayMessage->asyncRun(ss.str());
-        SLM_WARN(exception.what());
-        //Notify Progress Dialog
-        m_sigStoppedProgress->asyncEmit(m_progressbarId);
-        m_isPulling = false;
+        const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        infoNotif->asyncEmit("Series already downloaded");
+
+        return;
     }
+
+    // Read series if there is no error.
+    if(success)
+    {
+        const auto sucessNotif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+            ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+        sucessNotif->asyncEmit("Series downloaded");
+
+        this->readLocalSeries(selectedSeriesVector);
+    }
+    else
+    {
+        const auto failNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        failNotif->asyncEmit("Series download failed");
+    }
+
+    // Notify Progress Dialog.
+    m_sigProgressStopped->asyncEmit(m_progressbarId);
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
+void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 {
-    // Read only series that are not in the SeriesDB
-    InstanceUIDContainerType alreadyLoadedSeries =
-        ::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
+    const auto destinationSeriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
 
-    // Create temporary series helper
-    ::fwMedDataTools::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
+    // Read only series that are not in the series DB.
+    std::vector< std::string > alreadyLoadedSeries =
+        ::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
-    for(const ::fwMedData::Series::sptr& series: selectedSeries)
+    // Create temporary series helper.
+    ::fwMedDataTools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
+
+    const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+        ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+    const auto failNotif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+        ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+    const auto sucessNotif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+
+    for(const ::fwMedData::Series::sptr& series: _selectedSeries)
     {
-        const std::string selectedSeriesUID = series->getInstanceUID();
-
-        // Add the series to the local series vector
-        if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+        const std::string modality = series->getModality();
+        if(modality != "CT" && modality != "MR" && modality != "XA")
         {
-            m_localSeries.push_back(selectedSeriesUID);
+            infoNotif->asyncEmit("Unable to read the modality '" + modality + "'");
+            return;
         }
 
-        // Check if the series is loaded
+        const std::string selectedSeriesUID = series->getInstanceUID();
+
+        // Check if the series is loaded.
         if(std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
                      selectedSeriesUID) == alreadyLoadedSeries.end())
         {
-            // Clear temporary series
-            tempSDBhelper.clear();
+            infoNotif->asyncEmit("Reading serie...");
+
+            // Clear temporary series.
+            readerSeriesHelper.clear();
 
             std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
             m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 
-            // Merge series
-            ::fwMedDataTools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
-            sDBhelper.merge(m_tempSeriesDB);
-            sDBhelper.notify();
+            // Merge series.
+            if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+            {
+                sucessNotif->asyncEmit("Serie read");
+
+                // Add the series to the local series vector.
+                if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
+                {
+                    m_localSeries.push_back(selectedSeriesUID);
+                }
+
+                ::fwMedDataTools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
+                seriesHelper.merge(m_seriesDB);
+                seriesHelper.notify();
+            }
+            else
+            {
+                failNotif->asyncEmit("Serie read failed");
+            }
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::storeInstanceCallback(const ::std::string& seriesInstanceUID, unsigned int instanceNumber,
-                                          const ::std::string& filePath)
+void SSeriesPuller::removeSeries( ::fwMedData::SeriesDB::ContainerType _removedSeries)
 {
-    //Add path in the Dicom series
-    if(!m_pullingDicomSeriesMap[seriesInstanceUID].expired())
+    // Find which series to delete
+    if(!m_localSeries.empty())
     {
-        ::fwMedData::DicomSeries::sptr series = m_pullingDicomSeriesMap[seriesInstanceUID].lock();
-        series->addDicomPath(instanceNumber, filePath);
+        for(const auto series : _removedSeries)
+        {
+            const auto it = std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID());
+            if(it != m_localSeries.end())
+            {
+                m_localSeries.erase(it);
+
+                const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+                    ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+                infoNotif->asyncEmit("Local series deleted");
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUID, unsigned int _instanceNumber,
+                                          const ::std::string& _filePath)
+{
+    // Add path in the DICOM series.
+    if(!m_pullingDicomSeriesMap[_seriesInstanceUID].expired())
+    {
+        ::fwMedData::DicomSeries::sptr series = m_pullingDicomSeriesMap[_seriesInstanceUID].lock();
+        series->addDicomPath(_instanceNumber, _filePath);
     }
     else
     {
-        SLM_WARN("The Dicom Series " + seriesInstanceUID + " has expired.");
+        SLM_WARN("The Dicom Series " + _seriesInstanceUID + " has expired.");
     }
 
-    //Notify Progress Dialog
+    // Notify progress dialog.
     ::std::stringstream ss;
-    ss << "Downloading file " << instanceNumber << "/" << m_instanceCount;
-    float percentage = static_cast<float>(instanceNumber)/static_cast<float>(m_instanceCount);
+    ss << "Downloading file " << _instanceNumber << "/" << m_instanceCount;
+    float percentage = static_cast<float>(_instanceNumber)/static_cast<float>(m_instanceCount);
     m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::displayErrorMessage(const ::std::string& message) const
+::fwServices::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 {
-    SLM_WARN("Error: " + message);
-    ::fwGui::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Error");
-    messageBox.setMessage( message );
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-    messageBox.show();
+    KeyConnectionsMap connections;
+    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ioPacs
+} // namespace ioPacs.

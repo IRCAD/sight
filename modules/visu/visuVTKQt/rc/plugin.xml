@@ -2,7 +2,6 @@
 
     <library name="visuVTKQt" />
 
-    <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
 
 </plugin>

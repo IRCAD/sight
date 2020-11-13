@@ -107,9 +107,9 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
     ::fwGui::container::fwMenu::sptr menu;
     for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
-        OSLM_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
-                                    << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
-                    sid.second.first < menus.size());
+        SLM_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+                                   << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
+                   sid.second.first < menus.size());
         menu = menus.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?

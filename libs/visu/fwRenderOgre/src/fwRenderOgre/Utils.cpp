@@ -78,7 +78,7 @@ void Utils::loadResources()
             // Check file existence
             if(!std::filesystem::exists(path))
             {
-                OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
+                SLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
             const auto tmpPath = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
@@ -86,7 +86,7 @@ void Utils::loadResources()
 
             if(!std::filesystem::exists(tmpPath))
             {
-                OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
+                SLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
             }
 
             // Copy the resource file and make paths absolute.
@@ -154,7 +154,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
         // Check file existence
         if(!std::filesystem::exists(confPath))
         {
-            OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
+            SLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
         const auto tmpPluginCfg = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
@@ -165,7 +165,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         if(!std::filesystem::exists(tmpPluginCfg))
         {
-            OSLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
+            SLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
         const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
@@ -477,7 +477,7 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
     }
     else if (pixelType == ::fwTools::Type::s_DOUBLE)
     {
-        OSLM_FATAL("Pixel format not handled.");
+        SLM_FATAL("Pixel format not handled.");
     }
     SLM_WARN("Pixel format not found, trying with the default 8-bits RGBA.");
     return ::Ogre::PF_BYTE_RGBA;
@@ -536,7 +536,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
             break;
 
         default:
-            OSLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
+            SLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
             numComponents = 4;
     }
     _image->setNumberOfComponents(numComponents);
@@ -584,7 +584,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_FLOAT32_RGBA: pixelType = ::fwTools::Type::s_FLOAT; break;
 
         default:
-            OSLM_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
+            SLM_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
             pixelType = ::fwTools::Type::s_UINT8;
     }
     _image->setType(pixelType);
@@ -651,9 +651,9 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 #pragma omp parallel for shared(pDest, srcBuffer)
         for(::Ogre::int32 i = 0; i < size; ++i)
         {
-            OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
-                        *srcBuffer >= std::numeric_limits< DST_TYPE >::min() &&
-                        *srcBuffer <= std::numeric_limits< DST_TYPE >::max());
+            SLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
+                       *srcBuffer >= std::numeric_limits< DST_TYPE >::min() &&
+                       *srcBuffer <= std::numeric_limits< DST_TYPE >::max());
             pDest[i] = static_cast< unsignedType >(srcBuffer[i] - lowBound);
         }
 
@@ -666,46 +666,31 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
-    const auto srcType = _image->getType();
+    // Allocate texture memory.
+    if( _texture->getWidth() != _image->getSize2()[0] ||
+        _texture->getHeight() != _image->getSize2()[1] ||
+        _texture->getDepth() != _image->getSize2()[2] ||
+        _texture->getTextureType() != ::Ogre::TEX_TYPE_3D ||
+        _texture->getFormat() != ::Ogre::PF_L16 ||
+        _texture->getUsage() != ::Ogre::TU_STATIC_WRITE_ONLY)
+    {
+        ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
+                                               _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
 
+    }
+
+    // Fill the texture buffer.
+    const auto srcType = _image->getType();
     if(srcType == ::fwTools::Type::s_INT16)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
-
-        }
-
         copyNegatoImage< std::int16_t, std::int16_t >(_texture, _image);
     }
     else if(srcType == ::fwTools::Type::s_INT32)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
-                                                   false);
-
-        }
-
         copyNegatoImage< std::int32_t, std::int16_t >(_texture, _image);
     }
     else if(srcType == ::fwTools::Type::s_UINT8)
     {
-        if( _texture->getWidth() != _image->getSize2()[0] ||
-            _texture->getHeight() != _image->getSize2()[1] ||
-            _texture->getDepth() != _image->getSize2()[2]    )
-        {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
-                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
-
-        }
-
         copyNegatoImage< std::uint8_t, std::int16_t >(_texture, _image);
     }
     else

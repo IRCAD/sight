@@ -265,7 +265,7 @@ void TransferFunctionEditor::deleteTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
                 ::fwGui::dialog::IMessageDialog::WARNING );
@@ -312,7 +312,7 @@ void TransferFunctionEditor::newTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -417,7 +417,7 @@ void TransferFunctionEditor::importTF()
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
     reader->start();
-    reader->configureWithIHM();
+    reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
     ::fwServices::OSR::unregisterService(reader);
@@ -446,7 +446,7 @@ void TransferFunctionEditor::exportTF()
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
     writer->start();
-    writer->configureWithIHM();
+    writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
     ::fwServices::OSR::unregisterService(writer);

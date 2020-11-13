@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -198,8 +198,8 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
     const std::string linePattern("(\\[[0-9]+\\])");
     const std::string timePattern("(\\[.+\\])");
     const std::string levelPattern("( *\\[[a-z]+\\])");
-    const std::string filePattern("( .*:)");
-    const std::string fileLinePattern("([0-9]+: )");
+    const std::string filePattern("( \\[.*:)");
+    const std::string fileLinePattern("([0-9]+\\] )");
     const std::string messagePattern("(.*)$");
 
     std::regex re(
@@ -216,12 +216,10 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
 
     for(const std::string& log :  logMessages)
     {
-        bool doMatch = std::regex_match(log, match, re);
-
-        CPPUNIT_ASSERT_MESSAGE(log + " don't match regex.", doMatch);
+        const bool doMatch = std::regex_match(log, match, re);
+        CPPUNIT_ASSERT_MESSAGE(log + " doesn't match regex.", doMatch);
 
         regexMessage.assign(match[6].first, match[6].second);
-
         CPPUNIT_ASSERT_EQUAL(logMessagesRef[i], regexMessage);
         ++i;
     }

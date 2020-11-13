@@ -113,13 +113,11 @@ void signal_handler(int signal)
     }
     catch(const std::exception& e)
     {
-        OSLM_FATAL( e.what() );
-        exit(1);
+        SLM_FATAL( e.what() );
     }
     catch(...)
     {
         SLM_FATAL( "An unrecoverable error has occurred." );
-        exit(2);
     }
 
     // We use brutal exit because when interrupted by a signal, we never get out from run,
@@ -151,7 +149,7 @@ int main(int argc, char* argv[])
     const std::string defaultLogFile = "SLM.log";
 
     typedef ::fwCore::log::SpyLogger SpyLogger;
-    int logLevel = SpyLogger::SL_TRACE;
+    int logLevel = SpyLogger::SL_WARN;
 
     po::options_description logOptions("Log options");
     logOptions.add_options()
@@ -277,8 +275,8 @@ int main(int argc, char* argv[])
         }
         else
         {
-            OSLM_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
-                                                                                SIGHT_MODULE_RC_PREFIX) ));
+            SLM_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
+                                                                               SIGHT_MODULE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
@@ -287,17 +285,17 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    OSLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
+    SLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
 
-    OSLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
-    OSLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
+    SLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
+    SLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
     // Check if path exist
-    OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
-                       rwd), !std::filesystem::exists(rwd.string()) );
+    SLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
+                      rwd), !std::filesystem::exists(rwd.string()) );
 
-    OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-                       profileFile), !std::filesystem::exists(profileFile.string()));
+    SLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
+                      profileFile), !std::filesystem::exists(profileFile.string()));
 
     std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
@@ -320,14 +318,14 @@ int main(int argc, char* argv[])
 #if SLM_INFO_ENABLED
     for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
-                      vm.count("module-path") );
+        SLM_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
+                     vm.count("module-path") );
     }
 #endif
     for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
-                           modulePath), !std::filesystem::exists(modulePath.string()) );
+        SLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
+                          modulePath), !std::filesystem::exists(modulePath.string()) );
     }
 
 #ifdef _WIN32
@@ -335,7 +333,7 @@ int main(int argc, char* argv[])
 #else
     const bool isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
 #endif // _WIN32
-    OSLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
+    SLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
     ::fwRuntime::init();
 
@@ -347,7 +345,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            OSLM_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
+            SLM_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
         }
     }
 
@@ -381,7 +379,7 @@ int main(int argc, char* argv[])
         }
         catch(const std::exception& e)
         {
-            OSLM_FATAL( e.what() );
+            SLM_FATAL( e.what() );
             retValue = 3;
         }
         catch(...)
@@ -392,7 +390,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        OSLM_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
+        SLM_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
         retValue = 5;
     }
 

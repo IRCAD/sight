@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,16 +34,22 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void FloatTest::setUp()
 {
     // Set up context before running a test.
 
 }
 
+//------------------------------------------------------------------------------
+
 void FloatTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void FloatTest::methode1()
 {
@@ -71,16 +77,16 @@ void FloatTest::methode1()
         ::fwData::Float::sptr f1 = ::fwData::Float::New( VALUE );
 
         CPPUNIT_ASSERT( !( VALUE == f0->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  < f0->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  > f0->value() ) );
+        CPPUNIT_ASSERT( !( VALUE < f0->value() ) );
+        CPPUNIT_ASSERT( !( VALUE > f0->value() ) );
 
         CPPUNIT_ASSERT( !( VALUE == f1->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  < f1->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  > f1->value() ) );
+        CPPUNIT_ASSERT( !( VALUE < f1->value() ) );
+        CPPUNIT_ASSERT( !( VALUE > f1->value() ) );
 
         CPPUNIT_ASSERT( !( VALUE == ::fwData::Float::New( VALUE )->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  < ::fwData::Float::New( VALUE )->value() ) );
-        CPPUNIT_ASSERT( !( VALUE  > ::fwData::Float::New( VALUE )->value() ) );
+        CPPUNIT_ASSERT( !( VALUE < ::fwData::Float::New( VALUE )->value() ) );
+        CPPUNIT_ASSERT( !( VALUE > ::fwData::Float::New( VALUE )->value() ) );
     }
 }
 

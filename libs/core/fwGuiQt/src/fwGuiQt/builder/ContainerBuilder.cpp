@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -98,7 +98,6 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
     {
         if(!qtParent->layout())
         {
-            SLM_TRACE("New parent container hasn't layout");
             QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
             layout->setContentsMargins(0, 0, 0, 0);
             qtParent->setLayout(layout);
@@ -114,4 +113,3 @@ void ContainerBuilder::setParent(::fwGui::container::fwContainer::sptr parent)
 
 } // namespace builder
 } // namespace fwGui
-

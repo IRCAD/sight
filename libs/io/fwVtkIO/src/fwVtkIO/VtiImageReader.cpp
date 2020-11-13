@@ -47,14 +47,12 @@ VtiImageReader::VtiImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Vti image reader"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtiImageReader::~VtiImageReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

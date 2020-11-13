@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace fwData
 class Field;
 }
 
-fwCampAutoDeclareDataMacro((fwData)(ProcessObject), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(ProcessObject));
 
 namespace fwData
 {
@@ -44,7 +44,7 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassMacro(ProcessObject, ::fwData::Object, ::fwData::factory::New< ProcessObject >);
+    fwCoreClassMacro(ProcessObject, ::fwData::Object, ::fwData::factory::New< ProcessObject >)
 
     fwCampMakeFriendDataMacro((fwData)(ProcessObject));
 

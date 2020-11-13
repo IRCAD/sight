@@ -46,14 +46,12 @@ MetaImageWriter::MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("MetaImage writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 MetaImageWriter::~MetaImageWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

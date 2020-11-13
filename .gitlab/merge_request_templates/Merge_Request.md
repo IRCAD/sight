@@ -1,6 +1,6 @@
 ## Description
 
-(Briefly describe what this MR is about)
+(Briefly describe what this merge request is about)
 
 Closes #number
 
@@ -10,15 +10,15 @@ Closes #number
 
 ## Data
 
-(link to the needed data)
+(Links to the needed data)
 
 ## Some results
 
-(Some interesting results, screenshot, perfs, ...)
+(Some interesting results, screenshots, perfs, ...)
 
-## Additional tests to run
+## Additional tests/tasks to run
 
-(If you need some specific test e.g Windows compilation...)
+(If you need some specific tests/tasks...)
 
-- [ ] Build on Windows
+- [ ] Additional test 1
 - [ ] ...

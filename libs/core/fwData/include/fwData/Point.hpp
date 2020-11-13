@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 
 #include <array>
 
-fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
+fwCampAutoDeclareDataMacro((fwData)(Point));
 
 namespace fwData
 {
@@ -43,7 +43,7 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    fwCoreClassMacro(Point, ::fwData::Object, ::fwData::factory::New< Point >);
+    fwCoreClassMacro(Point, ::fwData::Object, ::fwData::factory::New< Point >)
 
     /// Point factory
     FWDATA_API static Point::sptr New(float x, float y = 0.f, float z = 0.f);

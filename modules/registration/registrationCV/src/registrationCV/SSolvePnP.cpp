@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,23 +46,15 @@ const ::fwServices::IService::KeyType s_MATRIX_INOUT      = "matrix";
 
 //-----------------------------------------------------------------------------
 
-SSolvePnP::SSolvePnP() noexcept :
-    m_videoRef(TOP_LEFT)
+SSolvePnP::SSolvePnP() noexcept
 {
-    m_videoRefMap.insert( std::make_pair("top_left", TOP_LEFT));
-    m_videoRefMap.insert( std::make_pair("center", CENTER));
-
-    m_offset = {{0.f, 0.f}};
 }
 
 //-----------------------------------------------------------------------------
 
 void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
-    const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
-    SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
-
-    ::fwData::mt::ObjectReadLock cameraLock(camera);
+    const auto camera = this->getLockedInput< ::arData::Camera > (s_CALIBRATION_INPUT);
 
     if(!camera->getIsCalibrated())
     {
@@ -70,29 +62,18 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
     }
 
     Camera cvCamera;
-    std::tie(cvCamera.intrinsicMat, cvCamera.imageSize, cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);
-
-    // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
-    if(m_videoRef == CENTER)
-    {
-        m_offset[0] = static_cast<float>(cvCamera.imageSize.width) / 2.f;
-        m_offset[1] = static_cast<float>(cvCamera.imageSize.height) / 2.f;
-    }
+    std::tie(cvCamera.intrinsicMat, cvCamera.imageSize, cvCamera.distCoef) =
+        ::cvIO::Camera::copyToCv(camera.get_shared());
 
     //get points
     std::vector< ::cv::Point2f > points2d;
     std::vector< ::cv::Point3f > points3d;
 
-    const auto fwPoints2d = this->getInput< ::fwData::PointList >(s_POINTLIST2D_INPUT);
-    SLM_ASSERT("'" + s_POINTLIST2D_INPUT + "' should not be null", fwPoints2d);
-    const auto fwPoints3d = this->getInput< ::fwData::PointList >(s_POINTLIST3D_INPUT);
-    SLM_ASSERT("'" + s_POINTLIST3D_INPUT + "' should not be null", fwPoints3d);
+    const auto fwPoints2d = this->getLockedInput< ::fwData::PointList >(s_POINTLIST2D_INPUT);
 
-    auto fwMatrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
-    SLM_ASSERT("'" + s_MATRIX_INOUT + "' should not be null", fwMatrix);
+    const auto fwPoints3d = this->getLockedInput< ::fwData::PointList >(s_POINTLIST3D_INPUT);
 
-    ::fwData::mt::ObjectReadLock readLock2d(fwPoints2d);
-    ::fwData::mt::ObjectReadLock readLock3d(fwPoints3d);
+    auto fwMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
     //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
@@ -105,25 +86,29 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
 
     const size_t numberOfPoints = fwPoints2d->getPoints().size();
 
+    const float cxcyShift[2] = {(static_cast< float >(camera->getWidth()) / 2.f ) - static_cast<float>(camera->getCx()),
+                                (static_cast< float >(camera->getHeight()) / 2.f ) -
+                                static_cast<float>(camera->getCy())};
+
     for(size_t i = 0; i < numberOfPoints; ++i)
     {
         // 2d
         ::fwData::Point::csptr p2d = fwPoints2d->getPoints()[i];
-        ::fwData::mt::ObjectReadLock readLockp2d(p2d);
         ::cv::Point2f cvP2d;
 
-        cvP2d.x = static_cast<float>(p2d->getCoord()[0]) + m_offset[0];
-        cvP2d.y = static_cast<float>(p2d->getCoord()[1]) + m_offset[1];
+        cvP2d.x = static_cast<float>(p2d->getCoord()[0]) - cxcyShift[0];
+        cvP2d.y = static_cast<float>(p2d->getCoord()[1]) - cxcyShift[1];
 
         points2d.push_back(cvP2d);
 
         // 3d
         ::fwData::Point::csptr p3d = fwPoints3d->getPoints()[i];
-        ::fwData::mt::ObjectReadLock readLockp3d(p3d);
         ::cv::Point3f cvP3d;
+
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
         cvP3d.y = static_cast<float>(p3d->getCoord()[1]);
         cvP3d.z = static_cast<float>(p3d->getCoord()[2]);
+
         points3d.push_back(cvP3d);
 
     }
@@ -137,8 +122,10 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
         cvMat = cvMat.inv();
     }
 
-    ::fwData::mt::ObjectWriteLock writeLock(fwMatrix);
-    ::cvIO::Matrix::copyFromCv(cvMat, fwMatrix);
+    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+    ::cvIO::Matrix::copyFromCv(cvMat, matrix);
+
+    fwMatrix->deepCopy(matrix);
 
     const auto sig = fwMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                          ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
@@ -151,20 +138,8 @@ void SSolvePnP::configuring()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    const std::string videoRef = config.get< std::string >("videoReference", "top_left");
-
     m_reverseMatrix = config.get< bool >("inverse", false);
 
-    auto it = m_videoRefMap.find(videoRef);
-
-    if(it == m_videoRefMap.end())
-    {
-        SLM_WARN("'videoReference' of value '" + videoRef + "' is not handled.")
-    }
-    else
-    {
-        m_videoRef = it->second;
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -73,6 +73,13 @@ SMeshReader::SMeshReader() noexcept
 
 void SMeshReader::configureWithIHM()
 {
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SMeshReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -189,7 +196,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -202,7 +209,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -212,7 +219,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);

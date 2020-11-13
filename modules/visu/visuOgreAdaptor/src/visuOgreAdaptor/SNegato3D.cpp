@@ -337,17 +337,26 @@ void SNegato3D::newImage()
         this->createPlanes(spacing, origin);
 
         // Update Slice
-        const auto axialIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-        const auto frontalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-        const auto sagittalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        const auto imgSize       = image->getSize2();
+        const auto axialIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
+        SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
+        const auto axialIdx = axialIdxField ? axialIdxField->getValue() : static_cast<int>(imgSize[2]/2);
+
+        const auto frontalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
+        SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
+        const auto frontalIdx = frontalIdxField ? frontalIdxField->getValue() : static_cast<int>(imgSize[1]/2);
+
+        const auto sagittalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
+        SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
+        const auto sagittalIdx = sagittalIdxField ? sagittalIdxField->getValue() : static_cast<int>(imgSize[0]/2);
 
         this->changeSliceIndex(
-            static_cast<int>(axialIndex),
-            static_cast<int>(frontalIndex),
-            static_cast<int>(sagittalIndex)
+            static_cast<int>(axialIdx),
+            static_cast<int>(frontalIdx),
+            static_cast<int>(sagittalIdx)
             );
     }
 
@@ -383,12 +392,19 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    const auto& imgSize = image->getSize2();
+    auto imgSize = image->getSize2();
+
+    // Sometimes, the image can contain only one slice,
+    // it results into a division by 0 when the range is transformed between [0-1].
+    // So we increase the image size to 2 to divide by 1.
+    imgSize[0] = imgSize[0] == 1 ? 2 : imgSize[0];
+    imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
+    imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
     const ::Ogre::Vector3 sliceIndices = {
-        static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
-        static_cast<float>(_frontalIndex  ) / (static_cast<float>(imgSize[1] - 1)),
-        static_cast<float>(_axialIndex    ) / (static_cast<float>(imgSize[2] - 1))
+        static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
+        static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
+        static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
     };
 
     for (std::uint8_t i = 0; i < 3; ++i)

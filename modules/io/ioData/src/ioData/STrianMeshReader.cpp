@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,11 +40,10 @@
 #include <fwServices/macros.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh )
 
 namespace ioData
 {
@@ -84,7 +83,13 @@ void STrianMeshReader::configuring()
 
 void STrianMeshReader::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void STrianMeshReader::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -111,7 +116,6 @@ void STrianMeshReader::configureWithIHM()
 
 void STrianMeshReader::updating()
 {
-    SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         // Retrieve object
@@ -140,7 +144,7 @@ void STrianMeshReader::updating()
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
                 ::fwGui::dialog::IMessageDialog::WARNING);
@@ -148,7 +152,7 @@ void STrianMeshReader::updating()
         catch( ... )
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during loading.",
                 ::fwGui::dialog::IMessageDialog::WARNING);

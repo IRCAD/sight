@@ -24,8 +24,6 @@
 
 #include "visuVTKAdaptor/SImage.hpp"
 
-#include <boost/foreach.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
@@ -50,6 +48,8 @@
 #include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/vtk.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageCheckerboard.h>
@@ -249,17 +249,17 @@ bool SImagesBlend::checkImageInformations()
                       !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(origin,
                                                                                    img->getOrigin2()) )
                 {
-                    OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
-                    OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
-                    OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
+                    SLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
+                    SLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
+                    SLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
 
-                    OSLM_ERROR(
+                    SLM_ERROR(
                         "imgB size : " << img->getSize2()[0] << " / " << img->getSize2()[1] << " / "<<
                             img->getSize2()[2] );
-                    OSLM_ERROR(
+                    SLM_ERROR(
                         "imgB spacing : " << img->getSpacing2()[0] << " / " << img->getSpacing2()[1] << " / "<<
                             img->getSpacing2()[2] );
-                    OSLM_ERROR(
+                    SLM_ERROR(
                         "imgB origin : " << img->getOrigin2()[0] << " / " << img->getOrigin2()[1] << " / "<<
                             img->getOrigin2()[2] );
 
@@ -269,9 +269,9 @@ bool SImagesBlend::checkImageInformations()
                     errorMsg += (spacing != img->getSpacing2()) ? " spacing" : "";
                     errorMsg += (origin != img->getOrigin2()) ? " origin" : "";
                     errorMsg += ".\n Background image size, spacing and origin are use.";
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
-                                                                      errorMsg,
-                                                                      ::fwGui::dialog::IMessageDialog::WARNING);
+                    ::fwGui::dialog::MessageDialog::show("Images blending",
+                                                         errorMsg,
+                                                         ::fwGui::dialog::IMessageDialog::WARNING);
                     break;
                 }
             }

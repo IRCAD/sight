@@ -38,7 +38,7 @@ namespace dl
 //------------------------------------------------------------------------------
 
 Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
-    Native(modulePath),
+    Native(modulePath.string()),
     m_handle( 0 )
 {
 }
@@ -72,7 +72,6 @@ void Win32::load()
     {
         // Opens the dynamic library.
         std::string lib(getFullPath().string());
-        OSLM_TRACE("Opens the dynamic library " << lib);
         m_handle = LoadLibrary( lib.c_str() );
         if(m_handle == 0)
         {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include <QPaintEvent>
+#include "fwGuiQt/dialog/ProgressDialog.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwGui/registry/macros.hpp>
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/IFrameSrv.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/dialog/ProgressDialog.hpp"
+#include <QPaintEvent>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -39,18 +39,18 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string &title, const std::string &message)
-    :   m_title (""),
-      m_pdialog ( NULL ),
-      m_pprogressbar ( NULL ),
-      m_pcancelButton ( NULL ),
-      m_pmainWindow ( NULL )
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message) :
+    m_title(""),
+    m_pdialog( NULL ),
+    m_pprogressbar( NULL ),
+    m_pcancelButton( NULL ),
+    m_pmainWindow( NULL )
 {
 
     // Use progress widget defined by IFrameSrv
     ::fwGui::container::fwContainer::sptr progressWidget = ::fwGui::IFrameSrv::getProgressWidget();
-    QWidget *activeWindow = ::fwGuiQt::container::QtContainer::dynamicCast( progressWidget )->getQtContainer();
-    m_pmainWindow = qobject_cast< QMainWindow * >( activeWindow );
+    QWidget* activeWindow = ::fwGuiQt::container::QtContainer::dynamicCast( progressWidget )->getQtContainer();
+    m_pmainWindow = qobject_cast< QMainWindow* >( activeWindow );
 
 //    QWidget *activeWindow = NULL;
 //
@@ -71,10 +71,10 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     if ( m_pmainWindow )
     {
         m_pprogressbar = new QProgressBar();
-        m_pprogressbar->setRange(0,100);
+        m_pprogressbar->setRange(0, 100);
         m_pprogressbar->setValue(0);
-        m_pmainWindow->statusBar()->addPermanentWidget(m_pprogressbar,0);
-        m_pmainWindow->statusBar()->addPermanentWidget(m_pcancelButton,0);
+        m_pmainWindow->statusBar()->addPermanentWidget(m_pprogressbar, 0);
+        m_pmainWindow->statusBar()->addPermanentWidget(m_pcancelButton, 0);
         m_pmainWindow->statusBar()->setMinimumHeight(25);
         m_pmainWindow->statusBar()->setMaximumHeight(25);
     }
@@ -134,7 +134,6 @@ void ProgressDialog::operator()(float percent, std::string msg)
     int value = (int)(percent*100);
     if(value != this->m_value)
     {
-        OSLM_TRACE( "ProgressDialog msg" << msg << " : " << value <<"%");
         this->setMessage(msg);
 
         if ( m_pprogressbar )
@@ -160,8 +159,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 //------------------------------------------------------------------------------
 
-
-void ProgressDialog::setTitle(const std::string &title)
+void ProgressDialog::setTitle(const std::string& title)
 {
     m_title = QString::fromStdString(title);
     if ( m_pprogressbar )
@@ -176,7 +174,7 @@ void ProgressDialog::setTitle(const std::string &title)
 
 //------------------------------------------------------------------------------
 
-void ProgressDialog::setMessage(const std::string &msg)
+void ProgressDialog::setMessage(const std::string& msg)
 {
     QString message("");
     if (!m_title.isEmpty())

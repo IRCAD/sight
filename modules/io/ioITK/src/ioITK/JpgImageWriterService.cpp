@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image )
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +73,13 @@ void JpgImageWriterService::configuring()
 
 void JpgImageWriterService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void JpgImageWriterService::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -100,14 +106,12 @@ void JpgImageWriterService::configureWithIHM()
 
 void JpgImageWriterService::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void JpgImageWriterService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +125,6 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
 {
-    SLM_TRACE_FUNC();
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
@@ -140,15 +143,15 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          ss.str(),
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             ss.str(),
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Warning during saving",
-                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        ::fwGui::dialog::MessageDialog::show("Warning",
+                                             "Warning during saving",
+                                             ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -156,7 +159,6 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
 
 void JpgImageWriterService::updating()
 {
-    SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {

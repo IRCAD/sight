@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,6 @@
 #include <fwServices/macros.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 #include <iostream>
 
@@ -49,7 +48,7 @@ namespace ioData
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::TransformationMatrix3DReaderService,
-                         ::fwData::TransformationMatrix3D );
+                         ::fwData::TransformationMatrix3D )
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +78,6 @@ std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExte
 
 void TransformationMatrix3DReaderService::starting( )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +91,13 @@ void TransformationMatrix3DReaderService::configuring()
 
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
+    this->openLocationDialog();
+}
+
+//-----------------------------------------------------------------------------
+
+void TransformationMatrix3DReaderService::openLocationDialog()
+{
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -120,14 +124,12 @@ void TransformationMatrix3DReaderService::configureWithIHM()
 
 void TransformationMatrix3DReaderService::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DReaderService::updating()
 {
-    SLM_TRACE_FUNC();
     if(this->hasLocationDefined())
     {
         // Retrieve object

@@ -107,7 +107,7 @@ void SMatricesReader::configuring()
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
-    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
+    SLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
 
     m_useTimelapse = config.get<bool>("useTimelapse", m_useTimelapse);
 
@@ -116,7 +116,7 @@ void SMatricesReader::configuring()
     m_oneShot = config.get<bool>("oneShot", m_oneShot);
 
     m_step = config.get<unsigned long>("step", m_step);
-    OSLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    SLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
 
@@ -130,6 +130,13 @@ void SMatricesReader::starting()
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configureWithIHM()
+{
+    this->openLocationDialog();
+}
+
+//------------------------------------------------------------------------------
+
+void SMatricesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -195,7 +202,7 @@ void SMatricesReader::readPrevious()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "MatricesReader", "No previous Matrices.");
         }
 
@@ -222,7 +229,7 @@ void SMatricesReader::readNext()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
+            ::fwGui::dialog::MessageDialog::show(
                 "MatricesReader", "No more matrices to read.");
         }
     }
@@ -234,13 +241,13 @@ void SMatricesReader::setStep(int _step, std::string _key)
 {
     if(_key == "step")
     {
-        OSLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+        SLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<unsigned long>(_step);
     }
     else
     {
-        OSLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+        SLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
     }
 }
 
@@ -255,7 +262,7 @@ void SMatricesReader::startReading()
 
     if (!this->hasLocationDefined())
     {
-        this->configureWithIHM();
+        this->openLocationDialog();
     }
 
     if (this->hasLocationDefined())
@@ -280,7 +287,7 @@ void SMatricesReader::startReading()
                 const long int nbOfElements = std::distance(tok.begin(), tok.end());
                 if(nbOfElements < 17)
                 {
-                    OSLM_WARN("Too few elements("<<nbOfElements<< ") to convert this csv line into matrices");
+                    SLM_WARN("Too few elements("<<nbOfElements<< ") to convert this csv line into matrices");
                     continue;
                 }
                 const unsigned int nbOfMatrices = static_cast< unsigned int>((nbOfElements - 1 )/ 16);
@@ -317,7 +324,7 @@ void SMatricesReader::startReading()
         }
         else
         {
-            OSLM_ERROR("The csv file '" + this->getFile().string() +"' can not be openned.");
+            SLM_ERROR("The csv file '" + this->getFile().string() +"' can not be openned.");
         }
 
         if(m_oneShot)
@@ -436,7 +443,7 @@ void SMatricesReader::readMatrices()
         matrixBuf = matrixTL->createBuffer(timestamp);
         matrixTL->pushObject(matrixBuf);
 
-        OSLM_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
+        SLM_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
         for(unsigned int i = 0; i < currentMatrices.matrices.size(); ++i)
         {
             float mat[16];

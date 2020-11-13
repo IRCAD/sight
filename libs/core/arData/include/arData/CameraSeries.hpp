@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@
 #include <map>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((arData)(CameraSeries), ARDATA_API);
+fwCampAutoDeclareDataMacro((arData)(CameraSeries));
 
 namespace arData
 {
@@ -49,7 +49,7 @@ namespace arData
 class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
 {
 public:
-    fwCoreClassMacro(CameraSeries, ::fwData::Object, ::fwData::factory::New< CameraSeries >);
+    fwCoreClassMacro(CameraSeries, ::fwData::Object, ::fwData::factory::New< CameraSeries >)
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
 

@@ -80,7 +80,6 @@ void SFilterSelectionEditor::configuring()
 
 void SFilterSelectionEditor::starting()
 {
-    SLM_TRACE_FUNC();
 
     // Get Destination SeriesDB
     m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
@@ -201,7 +200,7 @@ void SFilterSelectionEditor::onForceChecked(int state)
 {
     if(state == Qt::Checked)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
+        ::fwGui::dialog::MessageDialog::show(
             "Be careful",
             "You asked to ignore reading errors, there are high risks of issues for resulting image.",
             ::fwGui::dialog::IMessageDialog::WARNING);
@@ -248,7 +247,6 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
 void SFilterSelectionEditor::stopping()
 {
-    SLM_TRACE_FUNC();
 
     // Disconnect the signals
     QObject::disconnect(m_selectedFilterListWidget, SIGNAL(currentRowChanged(int)), this,

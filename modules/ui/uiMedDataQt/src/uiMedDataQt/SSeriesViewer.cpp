@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ namespace uiMedDataQt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector);
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector)
 
 static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 
@@ -115,7 +115,7 @@ void SSeriesViewer::updating()
             for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
-                OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
+                SLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
@@ -159,8 +159,8 @@ void SSeriesViewer::configuring()
         SLM_ASSERT("'id' attribute must not be empty", !info.configId.empty());
         std::string seriesType = elt->getAttributeValue("type");
         SLM_ASSERT("'type' attribute must not be empty", !seriesType.empty());
-        OSLM_ASSERT("Type " << seriesType << " is already defined.",
-                    m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
+        SLM_ASSERT("Type " << seriesType << " is already defined.",
+                   m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
 
         for(const ::fwRuntime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
         {

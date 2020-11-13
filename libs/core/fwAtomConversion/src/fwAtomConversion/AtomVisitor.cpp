@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,22 @@
  *
  ***********************************************************************/
 
-#include <fwData/Object.hpp>
-
 #include "fwAtomConversion/AtomVisitor.hpp"
-#include "fwAtomConversion/DataVisitor.hpp"
+
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
+#include "fwAtomConversion/DataVisitor.hpp"
+#include "fwAtomConversion/exception/ClassnameMismatch.hpp"
 #include "fwAtomConversion/exception/DataFactoryNotFound.hpp"
 #include "fwAtomConversion/exception/DuplicatedDataUUID.hpp"
-#include "fwAtomConversion/exception/ClassnameMismatch.hpp"
+
+#include <fwData/Object.hpp>
 
 namespace fwAtomConversion
 {
 
-::fwData::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string &uuid, const std::string &classname) const
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid, const std::string& classname) const
 {
     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::UUID::get(uuid));
 
@@ -44,28 +47,43 @@ namespace fwAtomConversion
 
     if (!obj)
     {
-        ::fwData::Object::sptr obj = ::fwData::factory::New(classname);
-
-
+        try
+        {
+            obj = ::fwData::factory::New(classname);
+        }
+        catch(const ::fwCore::Exception& e)
+        {
+            SLM_ERROR(e.what());
+        }
         FW_RAISE_EXCEPTION_IF(
             exception::DataFactoryNotFound(
                 std::string("Unable to build '") + classname + "': the data factory may be missing.")
             , !obj
             );
+
         bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
 
-        OSLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
+        SLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
     }
 
     return obj;
 }
 
-::fwData::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string &uuid,
-                                                             const std::string &classname) const
-{
-    ::fwData::Object::sptr obj = ::fwData::factory::New(classname);
-    // uuid is set only if the given uuid is available
+//------------------------------------------------------------------------------
 
+::fwData::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid,
+                                                             const std::string& classname) const
+{
+    ::fwData::Object::sptr obj;
+    try
+    {
+        obj = ::fwData::factory::New(classname);
+        // uuid is set only if the given uuid is available
+    }
+    catch(const ::fwCore::Exception& e)
+    {
+        SLM_ERROR(e.what());
+    }
     FW_RAISE_EXCEPTION_IF(
         exception::DataFactoryNotFound(
             std::string("Unable to build '") + classname + "': the data factory may be missing.")
@@ -76,19 +94,26 @@ namespace fwAtomConversion
     return obj;
 }
 
-::fwData::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string &uuid,
-                                                             const std::string &classname) const
+//------------------------------------------------------------------------------
+
+::fwData::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid,
+                                                             const std::string& classname) const
 {
-
-    ::fwData::Object::sptr obj = ::fwData::factory::New(classname);
-
+    ::fwData::Object::sptr obj;
+    try
+    {
+        obj = ::fwData::factory::New(classname);
+    }
+    catch(const ::fwCore::Exception& e)
+    {
+        SLM_ERROR(e.what());
+    }
     FW_RAISE_EXCEPTION_IF(
         exception::DataFactoryNotFound(
             std::string("Unable to build '") + classname + "': the data factory may be missing.")
         , !obj
         );
-
-    bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
+    const bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
 
     FW_RAISE_EXCEPTION_IF(
         exception::DuplicatedDataUUID(
@@ -100,12 +125,10 @@ namespace fwAtomConversion
 
 }
 
-
-
-AtomVisitor::AtomVisitor(const ::fwAtoms::Object::sptr &atomObj, DataCacheType & cache, const IReadPolicy &uuidPolicy)
-    : m_atomObj ( atomObj ),
-      m_cache ( cache ),
-      m_uuidPolicy(uuidPolicy)
+AtomVisitor::AtomVisitor(const ::fwAtoms::Object::sptr& atomObj, DataCacheType& cache, const IReadPolicy& uuidPolicy) :
+    m_atomObj( atomObj ),
+    m_cache( cache ),
+    m_uuidPolicy(uuidPolicy)
 {
 }
 
@@ -113,13 +136,17 @@ AtomVisitor::~AtomVisitor()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void AtomVisitor::visit()
 {
     this->processMetaInfos( m_atomObj->getMetaInfos() );
     this->processAttributes( m_atomObj->getAttributes() );
 }
 
-void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & metaInfos )
+//------------------------------------------------------------------------------
+
+void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType& metaInfos )
 {
     const DataVisitor::ClassnameType& classname = metaInfos.find( DataVisitor::CLASSNAME_METAINFO )->second;
     const ::fwTools::UUID::UUIDType& uuid       = metaInfos.find( DataVisitor::ID_METAINFO )->second;
@@ -128,12 +155,16 @@ void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & met
     m_cache[uuid] = m_dataObj;
 }
 
-void AtomVisitor::processAttributes( const ::fwAtoms::Object::AttributesType & attributes )
+//------------------------------------------------------------------------------
+
+void AtomVisitor::processAttributes( const ::fwAtoms::Object::AttributesType& attributes )
 {
     const camp::Class& metaclass = ::camp::classByName( m_dataObj->getClassname() );
-    ::fwAtomConversion::AtomToDataMappingVisitor visitor ( m_dataObj, m_atomObj, m_cache, m_uuidPolicy );
+    ::fwAtomConversion::AtomToDataMappingVisitor visitor( m_dataObj, m_atomObj, m_cache, m_uuidPolicy );
     metaclass.visit(visitor);
 }
+
+//------------------------------------------------------------------------------
 
 ::fwData::Object::sptr AtomVisitor::getDataObject() const
 {

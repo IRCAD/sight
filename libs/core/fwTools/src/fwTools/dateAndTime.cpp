@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,13 +38,13 @@ namespace fwTools
     ::boost::gregorian::date resDate( ::boost::gregorian::from_undelimited_string( "19000101" ) );
     if ( dateStr.size() < 8 )
     {
-        OSLM_WARN(
+        SLM_WARN(
             "The string length is too short (<8) : " << dateStr <<
                 ". The string is initialized with \"19000101\".");
     }
     else if ( dateStr.size() > 8 )
     {
-        OSLM_WARN("The string length is too long (>8) : " << dateStr << ".. The string is trunked to 8 characters.");
+        SLM_WARN("The string length is too long (>8) : " << dateStr << ".. The string is trunked to 8 characters.");
         resDate = strToBoostDate( dateStr.substr(0, 8) );
     }
     else
@@ -57,7 +57,7 @@ namespace fwTools
         }
         else
         {
-            OSLM_WARN(
+            SLM_WARN(
                 "The string not contains 8 numbers : " << dateStr <<
                     ". The string is initialized with \"19000101\".");
         }
@@ -77,13 +77,13 @@ namespace fwTools
     time_duration td;
     if ( timeStr.size() < 6 )
     {
-        OSLM_WARN("The string length is too short (<6) : " << timeStr <<
-                  ".  The string is initialized with \"000000\".");
+        SLM_WARN("The string length is too short (<6) : " << timeStr <<
+                 ".  The string is initialized with \"000000\".");
         td = hours(0) + minutes(0) + seconds(0);
     }
     else if ( timeStr.size() > 6 )
     {
-        OSLM_WARN("The string length is too short (>6) : " << timeStr << ". This string is trunked.");
+        SLM_WARN("The string length is too short (>6) : " << timeStr << ". This string is trunked.");
         td = strToBoostTime( timeStr.substr(0, 6) );
     }
     else
@@ -98,8 +98,8 @@ namespace fwTools
         }
         else
         {
-            OSLM_WARN("The string not contains 6 numbers : " << timeStr <<
-                      ". The string is initialized with \"000000\".");
+            SLM_WARN("The string not contains 6 numbers : " << timeStr <<
+                     ". The string is initialized with \"000000\".");
             td = hours(0) + minutes(0) + seconds(0);
         }
     }

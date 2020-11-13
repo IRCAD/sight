@@ -44,8 +44,9 @@ static const ::fwCom::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
-static const std::string s_PRIORITY_CONFIG    = "priority";
-static const std::string s_ORIENTATION_CONFIG = "orientation";
+static const std::string s_PRIORITY_CONFIG              = "priority";
+static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
+static const std::string s_ORIENTATION_CONFIG           = "orientation";
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +75,8 @@ void SNegato2DCamera::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
 
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
 
@@ -160,7 +162,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
-    if(IInteractor::isInLayer(_x, _y, layer))
+    if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant))
     {
         const auto* const viewport = layer->getViewport();
         auto* const camera         = layer->getDefaultCamera();
@@ -224,9 +226,9 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
     const auto layer = this->getLayer();
     if(_button == MouseButton::MIDDLE)
     {
-        m_isInteracting = IInteractor::isInLayer(_x, _y, layer);
+        m_isInteracting = IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant);
     }
-    else if(_button == MouseButton::RIGHT && IInteractor::isInLayer(_x, _y, layer))
+    else if(_button == MouseButton::RIGHT && IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant))
     {
         m_isInteracting = true;
 
@@ -252,7 +254,7 @@ void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int
 void SNegato2DCamera::keyPressEvent(int _key, Modifier, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    if(IInteractor::isInLayer(_x, _y, layer) && (_key == 'R' || _key == 'r'))
+    if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant) && (_key == 'R' || _key == 'r'))
     {
         this->resetCamera();
     }

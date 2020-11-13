@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ public:
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceMacro(SReader, ::fwIO::IReader);
+    fwCoreServiceMacro(SReader, ::fwIO::IReader)
 
     /// Does nothing
     SReader();
@@ -119,8 +119,15 @@ public:
     {
     }
 
-    /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
+    /**
+     * @brief Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
+     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
+     */
+    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
     IOATOMS_API void configureWithIHM() override;
+
+    /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
+    IOATOMS_API void openLocationDialog() override;
 
     /// Maps file extension to format name.
     typedef std::map< std::string, std::string > FileExtension2NameType;

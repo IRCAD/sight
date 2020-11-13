@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -359,7 +359,7 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     {
         ::fwData::Node::sptr newNode = ::fwData::Object::copy(node, cache);
         bool addOK = this->addNode(newNode);
-        OSLM_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
+        SLM_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
         FwCoreNotUsedMacro(addOK);
         correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
     }

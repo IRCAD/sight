@@ -8,11 +8,12 @@ set( REQUIREMENTS
     dicomAppConfig
     ctrlMemory
     ctrlSelection
-    dataReg
+    fwData
     gui
     guiQt
     ioGdcm
     ioDicomWeb
+    ioPacs
     media
     servicesReg
     visuVTK

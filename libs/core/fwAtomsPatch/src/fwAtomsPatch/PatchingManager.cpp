@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,21 +20,22 @@
  *
  ***********************************************************************/
 
-#include <fwAtoms/Object.hpp>
+#include "fwAtomsPatch/PatchingManager.hpp"
 
 #include "fwAtomsPatch/exceptions/ImpossibleConversion.hpp"
 #include "fwAtomsPatch/exceptions/MissingInformation.hpp"
 #include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/patcher/IPatcher.hpp"
-#include "fwAtomsPatch/PatchingManager.hpp"
 #include "fwAtomsPatch/VersionsGraph.hpp"
 #include "fwAtomsPatch/VersionsManager.hpp"
+
+#include <fwAtoms/Object.hpp>
 
 namespace fwAtomsPatch
 {
 
-PatchingManager::PatchingManager(::fwAtoms::Object::sptr object)
-    : m_object(object)
+PatchingManager::PatchingManager(::fwAtoms::Object::sptr object) :
+    m_object(object)
 {
 }
 
@@ -53,7 +54,7 @@ PatchingManager::~PatchingManager()
 
     if(currentVersion == newVersion)
     {
-        OSLM_WARN("Trying to patch an object with the same version (" << currentVersion << ").");
+        SLM_WARN("Trying to patch an object with the same version (" << currentVersion << ").");
         return m_object;
     }
 
@@ -65,14 +66,12 @@ PatchingManager::~PatchingManager()
         ::fwAtomsPatch::exceptions::MissingInformation("Version information is missing."),
         currentVersion.empty());
 
-
     ::fwAtomsPatch::VersionsGraph::sptr versionsGraph;
     versionsGraph = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(context);
 
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::ImpossibleConversion(
                                "There is no way to go from version '" + currentVersion + "' to version '" +
                                newVersion + "' for context '" + context +"'."), !versionsGraph);
-
 
     ::fwAtomsPatch::VersionsGraph::VersionSeriesType series
         = versionsGraph->shortestPath(currentVersion, newVersion);
@@ -86,8 +85,6 @@ PatchingManager::~PatchingManager()
 
     ::fwAtomsPatch::patcher::IPatcher::sptr patcher;
     std::string currentName, targetName;
-
-    SLM_TRACE("[PATCHING] Starting...");
 
     for(::fwAtomsPatch::VersionsGraph::VersionSeriesType::value_type elt :  series)
     {
@@ -103,9 +100,8 @@ PatchingManager::~PatchingManager()
 
         //Retrieve patcher
         patcher = ::fwAtomsPatch::patcher::factory::New(link.getPatcher());
-        OSLM_ASSERT("There is no patcher called \"" << link.getPatcher() << "\".", patcher);
+        SLM_ASSERT("There is no patcher called \"" << link.getPatcher() << "\".", patcher);
 
-        OSLM_TRACE("[PATCHING] '" << currentName << "' -> '" << targetName << "'.");
         fwAtomsPatchInfoLogMacro("Begin patcher '" + link.getPatcher() + "'");
 
         //Patching

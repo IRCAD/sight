@@ -138,8 +138,8 @@ void SCharucoBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType ti
         const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
         const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
 
-        OSLM_ERROR_IF("Different number of input timelines and detected point lists.",
-                      numDetection > 0 && numTimeline != numDetection);
+        SLM_ERROR_IF("Different number of input timelines and detected point lists.",
+                     numDetection > 0 && numTimeline != numDetection);
 
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
@@ -337,7 +337,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
     if(buffer)
     {
         const auto pixType = tl->getType();
-        OSLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
+        SLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
@@ -357,7 +357,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
         }
         else
         {
-            OSLM_FATAL("Wrong type of image (nb of components = "<<tl->getNumberOfComponents()<<").");
+            SLM_FATAL("Wrong type of image (nb of components = "<<tl->getNumberOfComponents()<<").");
         }
 
         std::vector<std::vector< ::cv::Point2f> > arucoCorners;

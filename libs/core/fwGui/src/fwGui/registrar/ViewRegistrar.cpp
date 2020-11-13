@@ -179,30 +179,29 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
     ::fwGui::container::fwContainer::sptr container;
     for( SIDContainerMapType::value_type sid :  m_sids)
     {
-        OSLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
-                                 << (sid.second.first+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
-                    sid.second.first < subViews.size());
+        SLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
+                                << (sid.second.first+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
+                   sid.second.first < subViews.size());
         container = subViews.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' view, "
-                        "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
-                        "it at the end of the configuration",
-                        ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' view, "
+                       "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
+                       "it at the end of the configuration",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
-            SLM_TRACE("The service '" + sid.first + "' is started by '" + m_sid + "'");
             service->start();
         }
     }
 
     for( WIDContainerMapType::value_type wid :  m_wids)
     {
-        OSLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
-                                 << (wid.second+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
-                    wid.second < subViews.size());
+        SLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
+                                << (wid.second+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
+                   wid.second < subViews.size());
         container = subViews.at( wid.second );
         ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
     }
@@ -244,11 +243,10 @@ void ViewRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                        ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                       "It may have been destroyed by the configuration if it uses deferred objects.",
+                       ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            SLM_TRACE("The service '" + sid.first + "' is stopped by '" + m_sid + "'");
             service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);

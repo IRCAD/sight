@@ -23,5 +23,7 @@ set( DEPENDENCIES
     fwCom
     fwIO
 )
-set( REQUIREMENTS )
+set( REQUIREMENTS
+    servicesReg
+)
 

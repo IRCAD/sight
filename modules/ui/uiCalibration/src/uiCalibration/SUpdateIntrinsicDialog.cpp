@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,31 +24,32 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QObject>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <sstream>
-
 
 namespace uiCalibration
 {
 //-----------------------------------------------------------------------------
 
-SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() : QDialog(), m_ratio(0.)
+SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
+    QDialog(),
+    m_ratio(0.)
 {
     //Design of the QDialog
-    QHBoxLayout              *validateButtonLayout;
-    QHBoxLayout              *computeButtonLayout;
-    QHBoxLayout              *resolutionLayout;
-    QVBoxLayout              *mainLayout;
-    QGridLayout              *parametersLayout;
-    QPushButton              *validateButton;
-    QPushButton              *cancelButton;
-    QPushButton              *computeButton;
-    QPushButton              *resetButton;
+    QHBoxLayout* validateButtonLayout;
+    QHBoxLayout* computeButtonLayout;
+    QHBoxLayout* resolutionLayout;
+    QVBoxLayout* mainLayout;
+    QGridLayout* parametersLayout;
+    QPushButton* validateButton;
+    QPushButton* cancelButton;
+    QPushButton* computeButton;
+    QPushButton* resetButton;
 
     parametersLayout = new QGridLayout;
     resolutionLayout = new QHBoxLayout;
@@ -127,7 +128,7 @@ SUpdateIntrinsicDialog::~SUpdateIntrinsicDialog()
 
 //-----------------------------------------------------------------------------
 
-void SUpdateIntrinsicDialog::setParameters(std::array< double, 12 > &parameters)
+void SUpdateIntrinsicDialog::setParameters(std::array< double, 12 >& parameters)
 {
     m_calibration       = parameters;
     m_originCalibration = parameters;
@@ -160,8 +161,8 @@ void SUpdateIntrinsicDialog::onPushCompute()
     if(std::abs(m_ratio - ratio) > 0.0001)
     {
         ::fwGui::dialog::MessageDialog::sptr warningMess = ::fwGui::dialog::MessageDialog::New();
-        warningMess->showMessageDialog("Warning","The new resolution don't respect the original resolution ratio !"
-                                       ,::fwGui::dialog::IMessageDialog::WARNING);
+        warningMess->show("Warning", "The new resolution don't respect the original resolution ratio !"
+                          , ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
 
@@ -208,7 +209,7 @@ void SUpdateIntrinsicDialog::onPushCompute()
 
 void SUpdateIntrinsicDialog::onPushReset()
 {
-    for(unsigned int i = 0; i< m_originCalibration.size(); ++i)
+    for(unsigned int i = 0; i < m_originCalibration.size(); ++i)
     {
         m_calibration[i] = m_originCalibration[i];
     }
