@@ -98,8 +98,8 @@ Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Poin
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::Id regionMin,
-                               const ::fwData::Mesh::Id regionMax)
+void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::CellId regionMin,
+                               const ::fwData::Mesh::CellId regionMax)
 {
 
     const auto pointBegin = mesh->begin< ::fwData::iterator::ConstPointIterator >();
@@ -190,7 +190,7 @@ void vectorSum( std::vector< std::vector<T> >& vectors, size_t regionMin, size_t
 
 void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
-    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+    const ::fwData::Mesh::Size numberOfCells = mesh->getNumberOfCells();
     if(numberOfCells > 0)
     {
         if (!mesh->hasCellNormals())
@@ -214,12 +214,12 @@ typedef std::vector< std::vector< float > > FloatVectors;
 //------------------------------------------------------------------------------
 
 void generateRegionCellNormalsByPoints(FloatVectors& normalsData, size_t dataId,
-                                       const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::Id regionMin,
-                                       const ::fwData::Mesh::Id regionMax)
+                                       const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::CellId regionMin,
+                                       const ::fwData::Mesh::CellId regionMax)
 {
     FloatVectors::value_type& normalsResults = normalsData[dataId];
 
-    const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
+    const ::fwData::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
     normalsResults.resize(3*nbOfPoints, 0.f);
 
     auto cellItr          = mesh->begin< ::fwData::iterator::ConstCellIterator >() + regionMin;
@@ -242,8 +242,8 @@ void generateRegionCellNormalsByPoints(FloatVectors& normalsData, size_t dataId,
 //------------------------------------------------------------------------------
 
 void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
-                                        ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin,
-                                        const ::fwData::Mesh::Id regionMax)
+                                        ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::CellId regionMin,
+                                        const ::fwData::Mesh::CellId regionMax)
 {
     Vector< ::fwData::Mesh::NormalValueType >* normalSum =
         reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsData.begin()) );
@@ -251,7 +251,7 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
     auto pointItr          = mesh->begin< ::fwData::iterator::PointIterator >() + regionMin;
     const auto pointItrEnd = mesh->begin< ::fwData::iterator::PointIterator >() + regionMax;
 
-    for ( ::fwData::Mesh::Id i = regionMin; i < regionMax; ++i, ++pointItr)
+    for ( ::fwData::Mesh::CellId i = regionMin; i < regionMax; ++i, ++pointItr)
     {
         Vector< ::fwData::Mesh::NormalValueType > normal = normalSum[i];
 
@@ -266,10 +266,10 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
 
 void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 {
-    const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
+    const ::fwData::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
     if(nbOfPoints > 0)
     {
-        const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
+        const ::fwData::Mesh::Size numberOfCells = mesh->getNumberOfCells();
 
         // To generate point normals, we need to use the cell normals
         if (!mesh->hasCellNormals())
@@ -312,10 +312,10 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 template <typename T>
-void regionShakeNormals(T normals, const ::fwData::Mesh::Id regionMin, const ::fwData::Mesh::Id regionMax)
+void regionShakeNormals(T normals, const ::fwData::Mesh::CellId regionMin, const ::fwData::Mesh::CellId regionMax)
 {
     RandFloat randFloat;
-    for (::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
+    for (::fwData::Mesh::CellId i = regionMin; i < regionMax; ++i)
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
         normals[i] += v;
@@ -338,7 +338,7 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
         const auto dumpLock = array->lock();
         void* buf;
         buf = array->getBuffer();
-        const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
+        const auto nbOfNormals = array->getSize().at(0);
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
             static_cast<NormalsMultiArrayType::element*>(buf),
@@ -671,7 +671,7 @@ bool Mesh::isClosed(const ::fwData::Mesh::csptr& mesh)
 {
     bool isClosed = true;
 
-    typedef std::pair< ::fwData::Mesh::Id, ::fwData::Mesh::Id >  Edge;
+    typedef std::pair< ::fwData::Mesh::CellId, ::fwData::Mesh::CellId >  Edge;
     typedef std::map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
 

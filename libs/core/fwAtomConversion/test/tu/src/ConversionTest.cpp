@@ -153,55 +153,53 @@ void ConversionTest::dataToAtomTest()
         for( ::fwAtoms::Object::AttributesType::value_type elem :  atom->getAttributes() )
         {
             std::string classname = atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
-            if ( !(  classname == "::fwData::Graph" &&
-                     elem.first == "connections" ) )
+            // Drop attributes from fwAtomConversion::mappers.
+            if( ( classname == "::fwData::Mesh" && elem.first == "attributes" ) ||
+                ( classname == "::fwData::Graph" && elem.first == "connections" ) )
             {
-                int type              = metaClass.property(elem.first).type();
-                std::string attribute = metaClass.property(elem.first).name();
-                switch(type)
-                {
-                    case camp::stringType:
-                        CPPUNIT_ASSERT(elem.second->isString());
-                        CPPUNIT_ASSERT(elem.second->isValue());
-                        break;
-                    case camp::realType:
-                    case camp::intType:
-                        CPPUNIT_ASSERT(elem.second->isNumeric());
-                        CPPUNIT_ASSERT(elem.second->isValue());
-                        break;
-                    case camp::boolType:
-                        CPPUNIT_ASSERT(elem.second->isBoolean());
-                        CPPUNIT_ASSERT(elem.second->isValue());
-                        break;
-                    case camp::userType:
-                        if( ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_colors" ) ) ||
-                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_normals" ) ) ||
-                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_colors" ) ) ||
-                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_normals" ) ) ||
-                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_tex_coords" ) ) ||
-                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_tex_coords" ) ) ||
-                            ( ( classname == "::fwData::Material" ) && ( attribute == "diffuse_texture" ) ) ||
-                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
-                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
-                        {
-                            CPPUNIT_ASSERT(!elem.second);
-                        }
-                        else
-                        {
-                            CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
-                        }
-                        break;
-                    case camp::mappingType:
-                        CPPUNIT_ASSERT(elem.second->isMapping());
-                        break;
-                    case camp::enumType:
-                        CPPUNIT_ASSERT(elem.second->isString());
-                        CPPUNIT_ASSERT(elem.second->isValue());
-                        break;
-                    case camp::arrayType:
-                        CPPUNIT_ASSERT(elem.second->isSequence());
-                        break;
-                }
+                continue;
+            }
+
+            const int type              = metaClass.property(elem.first).type();
+            const std::string attribute = metaClass.property(elem.first).name();
+            switch(type)
+            {
+                case camp::stringType:
+                    CPPUNIT_ASSERT(elem.second->isString());
+                    CPPUNIT_ASSERT(elem.second->isValue());
+                    break;
+                case camp::realType:
+                case camp::intType:
+                    CPPUNIT_ASSERT(elem.second->isNumeric());
+                    CPPUNIT_ASSERT(elem.second->isValue());
+                    break;
+                case camp::boolType:
+                    CPPUNIT_ASSERT(elem.second->isBoolean());
+                    CPPUNIT_ASSERT(elem.second->isValue());
+                    break;
+                case camp::userType:
+                    if( ( ( classname == "::fwData::Material" ) && ( attribute == "diffuse_texture" ) ) ||
+                        ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
+                        ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
+                    {
+                        CPPUNIT_ASSERT_MESSAGE("classname: " + classname + ", attribute: " + attribute,
+                                               !elem.second);
+                    }
+                    else
+                    {
+                        CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
+                    }
+                    break;
+                case camp::mappingType:
+                    CPPUNIT_ASSERT(elem.second->isMapping());
+                    break;
+                case camp::enumType:
+                    CPPUNIT_ASSERT(elem.second->isString());
+                    CPPUNIT_ASSERT(elem.second->isValue());
+                    break;
+                case camp::arrayType:
+                    CPPUNIT_ASSERT(elem.second->isSequence());
+                    break;
             }
         }
     }
@@ -226,6 +224,27 @@ void ConversionTest::materialConversionTest()
     ::fwData::Material::sptr materialResultat = ::fwData::Material::dynamicCast(materialRes);
 
     compare(material, materialResultat);
+}
+
+//-----------------------------------------------------------------------------
+
+void ConversionTest::meshConversionTest()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto lock = mesh->lock();
+
+    mesh->reserve(90, 30, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_COLORS
+                  | ::fwData::Mesh::Attributes::POINT_NORMALS
+                  | ::fwData::Mesh::Attributes::POINT_TEX_COORDS);
+
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( mesh );
+
+    // Create Data from Atom
+    ::fwData::Object::sptr convertedMesh = ::fwAtomConversion::convert(atom);
+    ::fwData::Mesh::sptr mesh2           = ::fwData::Mesh::dynamicCast(convertedMesh);
+
+    compare(mesh, mesh2);
+
 }
 
 //-----------------------------------------------------------------------------

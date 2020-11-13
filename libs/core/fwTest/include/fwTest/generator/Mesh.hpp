@@ -41,7 +41,7 @@ class Mesh
 
 public:
 
-    typedef std::map< std::array<float, 3>, ::fwData::Mesh::Id> PointsMapType;
+    typedef std::map< std::array<float, 3>, ::fwData::Mesh::PointId> PointsMapType;
 
     /**
      * @brief Initialize 'rand' seed
@@ -119,9 +119,9 @@ private:
                                 size_t nbPointsByEdge = 10,
                                 float edgeDim         = 100.f);
 
-    static ::fwData::Mesh::Id addPoint(const fwData::Mesh::PointValueType* pt,
-                                       const ::fwData::Mesh::sptr& mesh,
-                                       PointsMapType& points);
+    static ::fwData::Mesh::PointId addPoint(const fwData::Mesh::PointValueType* pt,
+                                            const ::fwData::Mesh::sptr& mesh,
+                                            PointsMapType& points);
     /**
      * @brief Shake points of the mesh.
      *

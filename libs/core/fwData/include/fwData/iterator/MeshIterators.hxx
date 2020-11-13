@@ -160,10 +160,16 @@ CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
     FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
-    *type       = *other.type;
-    *offset     = *other.offset;
-    nbPoints    = other.nbPoints;
-    *(offset+1) = *offset + nbPoints;
+    *type    = *other.type;
+    *offset  = *other.offset;
+    nbPoints = other.nbPoints;
+
+    // Check if we are still in the bound of offset array.
+    if(idx + 1 < numberOfElements)
+    {
+        *(offset+1) = *offset + nbPoints;
+    }
+
     std::copy(other.pointIdx, other.pointIdx+nbPoints, pointIdx);
 
     if(normal && other.normal)
@@ -201,10 +207,16 @@ CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
     FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
-    *type       = *other.type;
-    *offset     = *other.offset;
-    nbPoints    = other.nbPoints;
-    *(offset+1) = *offset + nbPoints;
+    *type    = *other.type;
+    *offset  = *other.offset;
+    nbPoints = other.nbPoints;
+
+    // Check if we are still in the bound of offset array.
+    if(idx + 1 < numberOfElements)
+    {
+        *(offset+1) = *offset + nbPoints;
+    }
+
     std::copy(other.pointIdx, other.pointIdx+nbPoints, pointIdx);
 
     if(normal && other.normal)
@@ -291,7 +303,6 @@ PointIteratorBase<isConst>::PointIteratorBase()
 template<bool isConst>
 PointIteratorBase<isConst>::~PointIteratorBase()
 {
-    m_locks.clear();
     m_pointInfo.reset();
 }
 
@@ -306,7 +317,6 @@ PointIteratorBase<isConst>::PointIteratorBase(const PointIteratorBase& other)
     m_pointInfo->rgba   = other.m_pointInfo->rgba;
     m_pointInfo->normal = other.m_pointInfo->normal;
     m_pointInfo->tex    = other.m_pointInfo->tex;
-    m_locks             = other.m_locks;
     m_idx               = other.m_idx;
     m_numberOfElements  = other.m_numberOfElements;
 }
@@ -323,7 +333,6 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator=(const PointIte
         m_pointInfo->rgba   = other.m_pointInfo->rgba;
         m_pointInfo->normal = other.m_pointInfo->normal;
         m_pointInfo->tex    = other.m_pointInfo->tex;
-        m_locks             = other.m_locks;
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
@@ -622,7 +631,6 @@ CellIteratorBase<isConst>::CellIteratorBase()
 template<bool isConst>
 CellIteratorBase<isConst>::~CellIteratorBase()
 {
-    m_locks.clear();
     m_cellInfo.reset();
 }
 
@@ -632,7 +640,6 @@ template<bool isConst>
 CellIteratorBase<isConst>::CellIteratorBase(const CellIteratorBase& other)
 {
     m_cellInfo           = std::make_unique< CellInfo >();
-    m_locks              = other.m_locks;
     m_idx                = other.m_idx;
     m_numberOfElements   = other.m_numberOfElements;
     m_currentOffset      = other.m_currentOffset;
@@ -644,6 +651,9 @@ CellIteratorBase<isConst>::CellIteratorBase(const CellIteratorBase& other)
     m_cellInfo->rgba     = other.m_cellInfo->rgba;
     m_cellInfo->tex      = other.m_cellInfo->tex;
     m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
+
+    m_cellInfo->idx              = other.m_cellInfo->idx;
+    m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
 }
 
 //------------------------------------------------------------------------------
@@ -653,7 +663,6 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator=(const CellIterat
 {
     if (this != &other)
     {
-        m_locks              = other.m_locks;
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
         m_currentOffset      = other.m_currentOffset;
@@ -665,6 +674,9 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator=(const CellIterat
         m_cellInfo->rgba     = other.m_cellInfo->rgba;
         m_cellInfo->tex      = other.m_cellInfo->tex;
         m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
+
+        m_cellInfo->idx              = other.m_cellInfo->idx;
+        m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
     }
     return *this;
 }
@@ -727,7 +739,9 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
     ++m_cellInfo->type;
     ++m_cellInfo->offset;
 
-    std::uint64_t offset;
+    ++m_cellInfo->idx;
+
+    Size offset;
     if (m_idx < m_numberOfElements)
     {
         offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
@@ -740,7 +754,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx += newOffset - m_currentOffset;
     m_currentOffset       = newOffset;
-    std::uint64_t nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -800,7 +814,9 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
 
     m_cellInfo->type   += index;
     m_cellInfo->offset += index;
-    std::uint64_t offset;
+    m_cellInfo->idx    += index;
+
+    Size offset;
     if (m_idx < m_numberOfElements)
     {
         offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
@@ -812,7 +828,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx += newOffset - m_currentOffset;
     m_currentOffset       = newOffset;
-    std::uint64_t nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -851,12 +867,13 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
     --m_idx;
     --m_cellInfo->type;
     --m_cellInfo->offset;
+    --m_cellInfo->idx;
 
     const typename CellInfo::cell_data_value_type offset =
         *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
-    m_cellInfo->nbPoints  = static_cast<size_t>(m_currentOffset - newOffset);
+    m_cellInfo->nbPoints  = static_cast<Size>(m_currentOffset - newOffset);
     m_currentOffset       = newOffset;
 
     if (m_cellInfo->rgba)
@@ -910,13 +927,15 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type
 
     m_cellInfo->type   -= index;
     m_cellInfo->offset -= index;
+    m_cellInfo->idx    -= index;
+
     const typename CellInfo::cell_data_value_type offset =
         *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
     const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
     m_currentOffset       = newOffset;
 
-    std::uint64_t nextOffset;
+    Size nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
         nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
@@ -993,7 +1012,7 @@ typename CellIteratorBase<isConst>::CellInfo::cell_data_value_type& CellIterator
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-size_t CellIteratorBase<isConst>::nbPoints() const
+Size CellIteratorBase<isConst>::nbPoints() const
 {
     return m_cellInfo->nbPoints;
 }

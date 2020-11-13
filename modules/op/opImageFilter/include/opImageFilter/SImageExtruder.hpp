@@ -107,7 +107,7 @@ private:
     void addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const;
 
     /// Extrudes one mesh from the image.
-    void extrudeMesh(const ::fwData::Mesh::csptr _mesh) const;
+    void extrudeMesh(const ::fwData::Mesh::csptr _mesh, const ::fwData::Image::sptr _image) const;
 
 };
 

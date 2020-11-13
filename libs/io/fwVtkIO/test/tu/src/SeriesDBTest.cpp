@@ -105,8 +105,8 @@ void SeriesDBTest::testImportSeriesDB()
     ::fwData::Mesh::sptr mesh1 = rec1->getMesh();
     ::fwData::Mesh::sptr mesh2 = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)362);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Size)720);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Size)362);
 
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);

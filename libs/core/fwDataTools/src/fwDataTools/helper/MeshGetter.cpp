@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -207,12 +207,12 @@ bool MeshGetter::isClosed()
 {
     bool isClosed = false;
 
-    ::fwData::Mesh::Id cellDataSize = m_mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbOfCells    = m_mesh->getNumberOfCells();
+    ::fwData::Mesh::Size cellDataSize = m_mesh->getCellDataSize();
+    ::fwData::Mesh::Size nbOfCells    = m_mesh->getNumberOfCells();
 
-    auto cellDataBegin        = m_helperCellData->begin< ::fwData::Mesh::CellValueType >();
+    auto cellDataBegin        = m_helperCellData->begin< ::fwData::Mesh::CellId >();
     auto cellDataEnd          = cellDataBegin + cellDataSize;
-    auto cellDataOffsetsBegin = m_helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
+    auto cellDataOffsetsBegin = m_helperCellDataOffsets->begin< ::fwData::Mesh::CellId >();
     auto cellDataOffsetsEnd   = cellDataOffsetsBegin + nbOfCells;
     auto cellTypesBegin       = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
 

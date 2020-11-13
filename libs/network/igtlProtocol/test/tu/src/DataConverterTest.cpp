@@ -79,7 +79,7 @@ void DataConverterTest::meshConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-
+    const auto lock = mesh->lock();
     ::fwTest::generator::Mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
@@ -90,6 +90,7 @@ void DataConverterTest::meshConverterTest()
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
+    const auto lock2 = mesh2->lock();
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());

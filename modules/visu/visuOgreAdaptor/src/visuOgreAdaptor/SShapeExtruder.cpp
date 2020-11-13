@@ -666,57 +666,62 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 {
     // Creates the mesh from a list a 3D triangles.
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-
-    // 3 points per triangles and one cell per triangles.
-    mesh->resize(_triangulation.size()*3, _triangulation.size(), ::fwData::Mesh::CellType::TRIANGLE);
-
-    // Fill points.
     {
-        auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+        const auto lock = mesh->lock();
 
-        for(const Triangle3D& triangle : _triangulation)
+        // 3 points per triangle and one cell per triangle.
+        mesh->resize(static_cast< ::fwData::Mesh::Size >( _triangulation.size() * 3 ),
+                     static_cast< ::fwData::Mesh::Size >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
+                     ::fwData::Mesh::Attributes::POINT_NORMALS);
+
+        // Fill points.
         {
-            it->point->x = triangle.a.x;
-            it->point->y = triangle.a.y;
-            it->point->z = triangle.a.z;
-            ++it;
-            it->point->x = triangle.b.x;
-            it->point->y = triangle.b.y;
-            it->point->z = triangle.b.z;
-            ++it;
-            it->point->x = triangle.c.x;
-            it->point->y = triangle.c.y;
-            it->point->z = triangle.c.z;
-            ++it;
-        }
-    }
+            auto it = mesh->begin< ::fwData::iterator::PointIterator >();
 
-    // Fill cell coordinates.
-    {
-        auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
-        const auto itPrevEnd = itEnd-1;
-
-        for(size_t index = 0; index < _triangulation.size()*3; index += 3)
-        {
-            *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
-            *it->offset = index;
-
-            if(it != itPrevEnd)
+            for(const Triangle3D& triangle : _triangulation)
             {
-                (*(it+1)->offset) = index+3;
+                it->point->x = triangle.a.x;
+                it->point->y = triangle.a.y;
+                it->point->z = triangle.a.z;
+                ++it;
+                it->point->x = triangle.b.x;
+                it->point->y = triangle.b.y;
+                it->point->z = triangle.b.z;
+                ++it;
+                it->point->x = triangle.c.x;
+                it->point->y = triangle.c.y;
+                it->point->z = triangle.c.z;
+                ++it;
             }
-
-            it->pointIdx[0] = index;
-            it->pointIdx[1] = index+1;
-            it->pointIdx[2] = index+2;
-
-            ++it;
         }
-    }
 
-    // Generate normals.
-    ::fwDataTools::Mesh::generatePointNormals(mesh);
+        // Fill cell coordinates.
+        {
+            auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
+            const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+            const auto itPrevEnd = itEnd-1;
+
+            for(::fwData::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
+            {
+                *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
+                *it->offset = index;
+
+                if(it != itPrevEnd)
+                {
+                    (*(it+1)->offset) = index+3;
+                }
+
+                it->pointIdx[0] = index;
+                it->pointIdx[1] = index+1;
+                it->pointIdx[2] = index+2;
+
+                ++it;
+            }
+        }
+
+        // Generate normals.
+        ::fwDataTools::Mesh::generatePointNormals(mesh);
+    }
 
     // Get the reconstruction list.
     const ::fwMedData::ModelSeries::sptr extrudedMeshes

@@ -177,12 +177,9 @@ void SMesh::starting()
         m_material = m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT);
     }
 
-    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
-
-    this->updateMesh(mesh);
+    this->updateMesh(mesh.get_shared());
 }
 
 //-----------------------------------------------------------------------------
@@ -206,18 +203,15 @@ void SMesh::updating()
     {
         return;
     }
-    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
-
-    if(m_meshGeometry->hasColorLayerChanged(mesh))
+    if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
     }
-    this->updateMesh(mesh);
+    this->updateMesh(mesh.get_shared());
     this->requestRender();
 }
 
@@ -315,7 +309,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
     if(m_useNewMaterialAdaptor)
     {
-        this->updateNewMaterialAdaptor();
+        this->updateNewMaterialAdaptor(_mesh);
     }
     else
     {
@@ -342,7 +336,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
             else
             {
                 // Instantiate a material adaptor for the r2vb process for this primitive type
-                adaptor = this->createMaterialService(renderable->getName());
+                adaptor = this->createMaterialService(_mesh, renderable->getName());
 
                 auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
                 r2vbMtlAdaptor->setR2VBObject(renderable);
@@ -377,7 +371,8 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const std::string& _materialSuffix)
+::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const ::fwData::Mesh::sptr& _mesh,
+                                                                const std::string& _materialSuffix)
 {
     auto materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
     materialAdaptor->registerInOut(m_material, "material", true);
@@ -391,7 +386,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
 
-    const std::string meshName = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT)->getID();
+    const std::string meshName = _mesh->getID();
     const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
@@ -403,13 +398,13 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-void SMesh::updateNewMaterialAdaptor()
+void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
 {
     if(!m_materialAdaptor)
     {
         if(m_entity)
         {
-            m_materialAdaptor = this->createMaterialService();
+            m_materialAdaptor = this->createMaterialService(_mesh);
             m_materialAdaptor->start();
 
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
@@ -438,7 +433,8 @@ void SMesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            std::string meshName = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT)->getID();
+            const auto mesh      = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+            std::string meshName = mesh->getID();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
 
@@ -468,14 +464,12 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
-    m_meshGeometry->updateVertices(mesh);
+    m_meshGeometry->updateVertices(mesh.get_shared());
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
-    m_meshGeometry->updateR2VB(mesh, *sceneMgr,
+    m_meshGeometry->updateR2VB(mesh.get_shared(), *sceneMgr,
                                m_materialAdaptor->getMaterialName(), m_materialAdaptor->hasDiffuseTexture());
 
     // Necessary to update the bounding box in the adaptor
@@ -501,21 +495,18 @@ void SMesh::modifyPointColors()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
-
-    if(m_meshGeometry->hasColorLayerChanged(mesh))
+    if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
-        this->updateMesh(mesh);
+        this->updateMesh(mesh.get_shared());
     }
     else
     {
-        m_meshGeometry->updateColors(mesh);
+        m_meshGeometry->updateColors(mesh.get_shared());
     }
 
     this->requestRender();
@@ -533,11 +524,9 @@ void SMesh::modifyTexCoords()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
-    m_meshGeometry->updateTexCoords(mesh);
+    m_meshGeometry->updateTexCoords(mesh.get_shared());
 
     this->requestRender();
 }
