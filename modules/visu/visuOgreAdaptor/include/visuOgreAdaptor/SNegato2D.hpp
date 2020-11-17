@@ -45,7 +45,6 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b sliceType(int, int): updates image slice index .
  * - \b sliceIndex(int, int, int): updates image slice type.
- * - @deprecated \b newImage(): updates the image display to show the new content. call \b update() instead.
  * - \b updateVisibility(bool): shows or hides the negato.
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
@@ -86,7 +85,7 @@ public:
     /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SNegato2D() noexcept override;
 
 protected:
@@ -137,9 +136,6 @@ private:
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
-
-    /// SLOT: updates the image buffer, @deprecated call @ref update() instead.
-    void newImageDeprecatedSlot();
 
     /**
      * @brief SLOT: updates the image slice type.

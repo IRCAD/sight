@@ -192,14 +192,6 @@ void SReconstruction::setVisible(bool _hide)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::setForceHide(bool _hide)
-{
-    FW_DEPRECATED_MSG("::visuOgreAdaptor::SReconstruction::setForceHide is no longer supported", "21.0")
-    this->updateVisibility(_hide);
-}
-
-//------------------------------------------------------------------------------
-
 void SReconstruction::changeMesh(::fwData::Mesh::sptr)
 {
     if (!m_meshAdaptor.expired())

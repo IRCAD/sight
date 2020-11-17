@@ -84,7 +84,7 @@ public:
     /// Creates the service.
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SLight() noexcept override;
 
     /**
@@ -172,17 +172,6 @@ public:
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VISUOGREADAPTOR_API void setPhiOffset(float _phiOffset) override;
-
-    /**
-     * @brief Indicates if the light is attached to a parent node or not.
-     * @return True if the light is attached.
-     */
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API bool isOrphanNode() const override;
-
-    /// Parent tranform id setter.
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API void setParentTransformName(const fwRenderOgre::SRender::OgreObjectIdType&) override;
 
     /**
      * @brief Enables the light visual feedback.
@@ -302,14 +291,6 @@ inline ::Ogre::ColourValue SLight::getSpecularColor() const
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _id)
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
-    this->setTransformId(_id);
-}
-
-//------------------------------------------------------------------------------
-
 inline bool SLight::isSwitchedOn() const
 {
     return m_switchedOn;
@@ -327,14 +308,6 @@ inline float SLight::getThetaOffset() const
 inline float SLight::getPhiOffset() const
 {
     return m_phiOffset;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SLight::isOrphanNode() const
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
-    return false;
 }
 
 //------------------------------------------------------------------------------

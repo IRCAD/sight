@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SLightSelector, ::fwGui::editor::IEditor)
 
     /**
      * @name Signals API
@@ -102,11 +102,11 @@ protected:
 
 protected Q_SLOTS:
 
-    /// Slot: called when a layer is selected.
+    /// SLOT: called when a layer is selected.
     /// Sets the current layer and initializes the light adaptors list.
     void onSelectedLayerItem(int _index);
 
-    /// Slot: called when a light is selected.
+    /// SLOT: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
     void onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous);
 
@@ -114,23 +114,23 @@ protected Q_SLOTS:
     /// Switched on or off the light according to its current state.
     void onCheckedLightItem(QListWidgetItem* _item);
 
-    /// Slot: called when the add light button is clicked.
+    /// SLOT: called when the add light button is clicked.
     /// Adds a new light to the current scene.
-    void onAddLight(bool _checked);
+    void onAddLight(bool);
 
-    /// Slot: called when the remove light button is clicked.
+    /// SLOT: called when the remove light button is clicked.
     /// Removes the selected light.
-    void onRemoveLight(bool _checked);
+    void onRemoveLight(bool);
 
-    /// Slot: called when the scene ambient color button is clicked.
+    /// SLOT: called when the scene ambient color button is clicked.
     /// Opens a color picker and lets the user choose a new ambient color.
-    void onEditAmbientColor(bool _checked);
+    void onEditAmbientColor(bool);
 
-    /// Slot: called when the "check all" button is clicked.
+    /// SLOT: called when the "check all" button is clicked.
     /// Call onCheckAllBoxes(true).
     void onCheckAllCheckBox();
 
-    /// Slot: called when the "uncheck all" button is clicked.
+    /// SLOT: called when the "uncheck all" button is clicked.
     /// Call onCheckAllBoxes(false).
     void onUnCheckAllCheckBox();
 

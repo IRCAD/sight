@@ -41,7 +41,6 @@
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
-#include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 
 #include <fwServices/macros.hpp>
 

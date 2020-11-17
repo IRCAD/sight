@@ -62,7 +62,6 @@ static const std::string s_BORDER_CONFIG      = "border";
 SNegato2D::SNegato2D() noexcept :
     m_helperTF(std::bind(&SNegato2D::updateTF, this))
 {
-    newSlot("newImage", &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
 
@@ -241,14 +240,6 @@ void SNegato2D::newImage()
 
         this->requestRender();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::newImageDeprecatedSlot()
-{
-    FW_DEPRECATED_MSG("The 'newImage' slot will be removed in sight 21.0. Call 'update' instead.", "21.0");
-    this->newImage();
 }
 
 //------------------------------------------------------------------------------

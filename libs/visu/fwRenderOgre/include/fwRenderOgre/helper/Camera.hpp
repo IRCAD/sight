@@ -62,27 +62,6 @@ public:
                                                                              int _renderWindowX, int _renderWindowY);
 
     /**
-     * @brief Converts relative viewport coordinates to view space coordinates.
-     * @param[in] _camera defines the view in which the coordinates are transformed.
-     * @param[in] _viewportPos viewport point.
-     */
-    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
-    static FWRENDEROGRE_API ::Ogre::Vector3 convertFromScreenToViewSpace(const ::Ogre::Camera& _camera,
-                                                                         const ::Ogre::Vector3& _viewportPos);
-
-    /// Convenience function, casts the inputs and
-    /// calls @ref convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&)
-    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
-    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
-                                                                    int _screenX, int _screenY);
-
-    /// @deprecated, call @ref convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.
-    /// Removed in sight 21.0
-    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
-    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
-                                                                    const float _pixelPoint[3]);
-
-    /**
      * @brief Converts from screen space (u, v, w) to view space (x, y, z).
      * @param _camera ogre camera.
      * @param _screenPos screen position (u, v, w).

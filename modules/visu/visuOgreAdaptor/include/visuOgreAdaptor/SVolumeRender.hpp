@@ -133,7 +133,7 @@ public:
     /// Creates slots.
     VISUOGREADAPTOR_API SVolumeRender() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SVolumeRender() noexcept override;
 
 protected:

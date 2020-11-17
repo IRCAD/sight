@@ -36,33 +36,18 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_RENDER_REQUESTED_SIG = "renderRequested";
-
 // ----------------------------------------------------------------------------
 
 IInteractor::IInteractor(Layer::sptr _layer, bool _layerOrderDependant) :
     m_layer(_layer),
     m_layerOrderDependant(_layerOrderDependant)
 {
-    m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
-
-    if(_layer)
-    {
-        m_sceneManager = _layer->getSceneManager();
-    }
 }
 
 // ----------------------------------------------------------------------------
 
 IInteractor::~IInteractor()
 {
-}
-
-// ----------------------------------------------------------------------------
-
-void IInteractor::setSceneID(const std::string& sceneID)
-{
-    m_sceneManager = m_ogreRoot->getSceneManager(sceneID);
 }
 
 // ----------------------------------------------------------------------------
@@ -115,63 +100,7 @@ void IInteractor::keyReleaseEvent(int, Modifier, int, int)
 
 //------------------------------------------------------------------------------
 
-void IInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::wheelEvent(int, int, int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void IInteractor::resizeEvent(int, int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::keyPressEvent(int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::keyReleaseEvent(int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::buttonReleaseEvent(MouseButton, int, int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::buttonPressEvent(MouseButton, int, int)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::focusInEvent()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::focusOutEvent()
 {
 
 }

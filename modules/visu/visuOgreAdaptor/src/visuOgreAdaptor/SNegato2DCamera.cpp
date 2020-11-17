@@ -172,7 +172,10 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
         const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
         // Compute the mouse's position in the camera's view.
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real >(_x),
+                                        static_cast< ::Ogre::Real >(_y),
+                                        ::Ogre::Real(0));
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         // Zoom in.
         const float orthoHeight    = camera->getOrthoWindowHeight();
@@ -186,7 +189,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
         camera->setOrthoWindowHeight(clampedHeight);
 
         // Compute the mouse's position in the zoomed view.
-        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         // Translate the camera back to the cursor's previous position.
         camNode->translate(mousePosView - newMousePosView);
@@ -204,9 +207,17 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier,
         auto* const camera  = layer->getDefaultCamera();
         auto* const camNode = camera->getParentNode();
 
+        const ::Ogre::Vector3 deltaScreenPos(static_cast< ::Ogre::Real >(_x - _dx),
+                                             static_cast< ::Ogre::Real >(_y - _dy),
+                                             ::Ogre::Real(0));
+        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real >(_x),
+                                        static_cast< ::Ogre::Real >(_y),
+                                        ::Ogre::Real(0));
+
         const auto previousMousePosView =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x - _dx, _y - _dy);
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, deltaScreenPos);
+        const auto mousePosView =
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         camNode->translate(mousePosView - previousMousePosView);
     }

@@ -76,7 +76,7 @@ public:
     /// Creates the adaptor and the signal.
     VISUOGREADAPTOR_API STexture() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~STexture() noexcept override;
 
     /// Gets the Ogre texture.

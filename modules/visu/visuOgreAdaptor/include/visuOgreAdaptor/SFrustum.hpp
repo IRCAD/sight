@@ -77,7 +77,7 @@ public:
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
 
-    /// Does nothing
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SFrustum() noexcept override;
 
 protected:

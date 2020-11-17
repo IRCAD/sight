@@ -33,8 +33,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
 
-fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::TrackballInteractor );
-
 namespace fwRenderOgre
 {
 namespace interactor
@@ -180,7 +178,8 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
 
 void TrackballInteractor::resizeEvent(int, int)
 {
-    ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
+    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    ::Ogre::Camera* const camera = sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     const float width  = static_cast< float >(camera->getViewport()->getActualWidth());
     const float height = static_cast <float >(camera->getViewport()->getActualHeight());
 
@@ -272,7 +271,9 @@ void TrackballInteractor::cameraTranslate(int xmove, int ymove)
 {
     float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
     float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
+
+    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    ::Ogre::Camera* camera     = sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     ::Ogre::Vector3 vec(dx, dy, 0.f);
@@ -300,7 +301,9 @@ void TrackballInteractor::updateCameraFocalLength()
     // For a FPS camera style for instance, we would fix the focal length once and for all according
     // to the scale of the world
     const float focalLength = std::max(0.001f, std::abs(m_lookAtZ));
-    ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
+
+    const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
+    ::Ogre::Camera* const camera = sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     camera->setFocalLength(focalLength);
 }
 

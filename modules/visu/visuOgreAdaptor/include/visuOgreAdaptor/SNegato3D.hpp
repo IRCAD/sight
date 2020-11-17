@@ -59,7 +59,6 @@ namespace visuOgreAdaptor
  * - \b toggleVisibility(): toggle whether the negato is shown or not.
  * - \b show(): shows the negato.
  * - \b hide(): hides the negato.
- * - @deprecated - \b setVisibility(bool): sets the image visibility fields.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -104,7 +103,7 @@ public:
     /// Creates slots.
     VISUOGREADAPTOR_API SNegato3D() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SNegato3D() noexcept override;
 
 protected:
@@ -232,13 +231,6 @@ private:
 
     /// Updates the intensity picking widget's position.
     void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
-
-    /**
-     * @brief Sets the negato visibility.
-     * @param _visible the visibility status of the negato.
-     */
-    [[deprecated("will be removed in sight 21.0")]]
-    void setVisibilityDeprecatedSlot(bool _visible);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };

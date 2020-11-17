@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -168,7 +168,7 @@ void SLightSelector::onSelectedLayerItem(int _index)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem*)
 {
     if(_item)
     {
@@ -193,7 +193,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onAddLight(bool /*_checked*/)
+void SLightSelector::onAddLight(bool)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -221,7 +221,7 @@ void SLightSelector::onAddLight(bool /*_checked*/)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onRemoveLight(bool /*_checked*/)
+void SLightSelector::onRemoveLight(bool)
 {
     if(m_currentLight)
     {
@@ -257,7 +257,7 @@ void SLightSelector::onRemoveLight(bool /*_checked*/)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onEditAmbientColor(bool /*_checked*/)
+void SLightSelector::onEditAmbientColor(bool)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -456,7 +456,7 @@ NewLightDialog::~NewLightDialog()
 
 //------------------------------------------------------------------------------
 
-void NewLightDialog::onOkBtn(bool _checked)
+void NewLightDialog::onOkBtn(bool)
 {
     if(!m_lightNameEdit->text().isEmpty())
     {

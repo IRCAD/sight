@@ -37,7 +37,7 @@ namespace fwRenderOgre::interactor
  *
  * @todo make the class final once VRWidgetInteractor is deleted.
  */
-class FWRENDEROGRE_CLASS_API TrackballInteractor : public ::fwRenderOgre::interactor::IInteractor
+class FWRENDEROGRE_CLASS_API TrackballInteractor final : public ::fwRenderOgre::interactor::IInteractor
 {
 
 public:
@@ -46,7 +46,7 @@ public:
     FWRENDEROGRE_API TrackballInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
 
     /// Destroys the trackball.
-    virtual FWRENDEROGRE_API ~TrackballInteractor() override;
+    FWRENDEROGRE_API ~TrackballInteractor() override;
 
     /**
      * @brief Moves the camera according to the pressed button.
@@ -61,20 +61,20 @@ public:
      *
      * @todo set to final when the vr interactor is deleted.
      */
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y,
-                                                 int _dx, int _dy) override;
+    FWRENDEROGRE_API void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y,
+                                         int _dx, int _dy) override;
 
     /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
-    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    FWRENDEROGRE_API void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /// Disables mouse movements.
-    virtual void buttonReleaseEvent(MouseButton _button, Modifier, int, int) override;
+    FWRENDEROGRE_API void buttonReleaseEvent(MouseButton _button, Modifier, int, int) override;
 
     /**
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    FWRENDEROGRE_API virtual void wheelEvent(Modifier, int _delta, int, int) final;
+    FWRENDEROGRE_API void wheelEvent(Modifier, int _delta, int, int) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -84,15 +84,15 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier, int _mouseX, int _mouseY) final;
+    FWRENDEROGRE_API void keyPressEvent(int _key, Modifier, int _mouseX, int _mouseY) override;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
      */
-    FWRENDEROGRE_API virtual void resizeEvent(int, int) final;
+    FWRENDEROGRE_API void resizeEvent(int, int) override;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength) final;
+    FWRENDEROGRE_API void setSceneLength(float _sceneLength) override;
 
 private:
 

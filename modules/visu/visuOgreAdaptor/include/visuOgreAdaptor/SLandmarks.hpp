@@ -94,7 +94,7 @@ public:
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SLandmarks() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SLandmarks() noexcept override;
 
 protected:

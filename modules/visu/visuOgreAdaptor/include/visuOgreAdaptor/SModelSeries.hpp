@@ -45,7 +45,6 @@ namespace visuOgreAdaptor
  * - \b toggleVisibility(): toggle whether all reconstructions are shown or not.
  * - \b show(): shows all reconstructions.
  * - \b hide(): hides all reconstructions.
- * - @deprecated - \b showReconstructions(bool): update all reconstructions visibility.
  *
  * @section XML XML Configuration
  *
@@ -85,8 +84,8 @@ public:
     /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
 
-    /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept override;
+    /// Destroys the adaptor.
+    VISUOGREADAPTOR_API ~SModelSeries() noexcept override;
 
 protected:
 
@@ -122,14 +121,6 @@ protected:
     VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
-
-    /**
-     * @brief SOT: updates all reconstructions visibility.
-     * @param _show use true to show reconstructions.
-     * @deprecated use updateVisibility(bool)
-     */
-    [[deprecated("will be removed in sight 21.0")]]
-    void showReconstructionsDeprecatedSlot(bool _show);
 
     /// SLOT: updates all reconstructions visibility from the input data field.
     void showReconstructionsOnFieldChanged();

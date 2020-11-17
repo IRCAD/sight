@@ -65,7 +65,7 @@ public:
     /// Creates the service.
     VISUOGREADAPTOR_API STransform() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~STransform() noexcept override;
 
 protected:

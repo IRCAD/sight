@@ -80,7 +80,7 @@ public:
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;
 
-    /// Does nothing
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SCompositorParameter() noexcept override;
 
 protected:

@@ -81,7 +81,7 @@ public:
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SAxis() noexcept override;
 
 protected:

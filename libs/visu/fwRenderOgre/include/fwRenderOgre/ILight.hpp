@@ -92,18 +92,6 @@ public:
      * @param _diffuse diffuse color of the light.
      * @param _specular specular color of the light.
      * @return A new ligh adaptor with registered inputs.
-     * @deprecated This method have been moved to @ref createLightAdaptor(::fwData::Color::sptr, ::fwData::Color::sptr)
-     */
-    [[deprecated("Deprecated constructor. Removed in sight 21.0")]]
-    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::TransformationMatrix3D::sptr,
-                                                            ::fwData::Color::sptr _diffuse,
-                                                            ::fwData::Color::sptr _specular);
-
-    /**
-     * @brief Creates a light adaptor.
-     * @param _diffuse diffuse color of the light.
-     * @param _specular specular color of the light.
-     * @return A new ligh adaptor with registered inputs.
      */
     FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
@@ -169,15 +157,6 @@ public:
     FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) = 0;
 
     /**
-     * @brief Sets the parent node transform ID.
-     * @param _parentTransformName the ID of the node.
-     * @deprecated This method is no longer supported.
-     */
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    FWRENDEROGRE_API virtual void setParentTransformName(
-        const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
-
-    /**
      * @brief Indicates if the light is activated.
      * @return True if the light is activated.
      */
@@ -214,14 +193,6 @@ public:
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     FWRENDEROGRE_API virtual void setPhiOffset(float _phiOffset) = 0;
-
-    /**
-     * @brief Indicates if the light is attached to a parent node or not.
-     * @return True is the light is attached to a node.
-     * @deprecated This method is no longer supported.
-     */
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    FWRENDEROGRE_API virtual bool isOrphanNode() const = 0;
 
     /**
      * @brief Enables the light visual feedback.

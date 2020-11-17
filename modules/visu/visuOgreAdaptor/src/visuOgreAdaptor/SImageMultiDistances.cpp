@@ -447,7 +447,7 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
+void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
     if(_button == LEFT)
     {
@@ -525,7 +525,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
+void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedData.m_data != nullptr)
     {
@@ -600,7 +600,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonReleaseEvent(MouseButton, int, int)
+void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedData.m_data != nullptr)
     {

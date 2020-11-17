@@ -64,7 +64,7 @@ public:
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SRenderStats() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SRenderStats() noexcept override;
 
 protected:

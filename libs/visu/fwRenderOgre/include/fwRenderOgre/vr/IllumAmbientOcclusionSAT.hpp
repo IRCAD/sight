@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,11 @@ namespace vr
 /**
  * @brief Computes the illumination volume for extinction based shading.
  */
-class FWRENDEROGRE_CLASS_API IllumAmbientOcclusionSAT
+class FWRENDEROGRE_CLASS_API IllumAmbientOcclusionSAT final
 {
+
 public:
+
     typedef std::shared_ptr<IllumAmbientOcclusionSAT> sptr;
 
     /// Initializes the illumination volume with the give dimensions.
@@ -46,7 +48,7 @@ public:
                                               int samplesAlongCone = 50);
 
     /// Destructor, does nothing.
-    FWRENDEROGRE_API ~IllumAmbientOcclusionSAT();
+    FWRENDEROGRE_API virtual ~IllumAmbientOcclusionSAT();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
     FWRENDEROGRE_API void updateSatFromRatio(float _satSizeRatio);

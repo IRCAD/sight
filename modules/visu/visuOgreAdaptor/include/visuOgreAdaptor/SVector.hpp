@@ -78,7 +78,7 @@ public:
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SVector() noexcept override;
 
 protected:

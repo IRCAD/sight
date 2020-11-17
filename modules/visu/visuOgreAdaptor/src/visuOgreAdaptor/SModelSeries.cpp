@@ -59,7 +59,6 @@ static const std::string s_QUERY_CONFIG            = "queryFlags";
 SModelSeries::SModelSeries() noexcept
 {
     newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
-    newSlot("showReconstructions", &SModelSeries::showReconstructionsDeprecatedSlot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -177,14 +176,6 @@ void SModelSeries::setVisible(bool _visible)
         auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
         recAdaptor->updateVisibility(!_visible);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SModelSeries::showReconstructionsDeprecatedSlot(bool _show)
-{
-    FW_DEPRECATED_MSG("::visuOgreAdaptor::SModelSeries::showReconstructions is no longer supported", "21.0")
-    this->setVisible(_show);
 }
 
 //------------------------------------------------------------------------------

@@ -72,7 +72,7 @@ public:
     VISUOGREADAPTOR_API SFragmentsInfo() noexcept;
 
     /// Destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SFragmentsInfo() noexcept override;
+    VISUOGREADAPTOR_API ~SFragmentsInfo() noexcept override;
 
 protected:
 

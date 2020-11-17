@@ -113,7 +113,7 @@ protected:
 private:
 
     /// Runs a picking query.
-    VISUOGREADAPTOR_API void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
+    void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;

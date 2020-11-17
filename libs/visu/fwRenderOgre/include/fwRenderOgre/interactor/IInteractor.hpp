@@ -24,7 +24,6 @@
 
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
-#include <fwRenderOgre/registry/detail.hpp>
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
@@ -78,27 +77,6 @@ public:
     };
 
     /**
-     * @brief Class used to register a class factory in factory registry.
-     * This class defines also the object factory ( 'create' )
-     *
-     * @tparam T Factory product type
-     */
-    template <typename T>
-    class Registrar
-    {
-    public:
-        Registrar(std::string functorKey)
-        {
-            ::fwRenderOgre::registry::getInteractorRegistry()->addFactory(functorKey,
-                                                                          &::fwRenderOgre::interactorFactory::New<T>);
-        }
-    };
-
-    typedef ::fwCom::Signal< void () > RenderRequestedSigType;
-    [[deprecated("Removed in sight 21.0")]]
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
-
-    /**
      * @brief Sets the scene manager from the layer if it exists.
      * @param _layer the layer on which the interator work.
      * @param _layerOrderDependant define if the interaction must take into account above layers.
@@ -107,10 +85,6 @@ public:
 
     /// Destroys the interactor.
     FWRENDEROGRE_API virtual ~IInteractor();
-
-    /// Changes point of interest viewed by the camera
-    [[deprecated("Set the scene from the layer instead.")]]
-    FWRENDEROGRE_API void setSceneID(const std::string&);
 
     /// Sets the scene's length, that is the length of the scene's bounding cube.
     FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength);
@@ -197,54 +171,10 @@ public:
      */
     FWRENDEROGRE_API virtual void resizeEvent(int _width, int _height);
 
-    /** @brief Legacy API, use the equivalent with keyboard modifiers.
-     *
-     * @deprecated removed in sight 21.0
-     * @{
-     */
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void keyPressEvent(int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int);
-    [[deprecated("Removed in sight 21.0.")]]
-    FWRENDEROGRE_API virtual void focusInEvent();
-    [[deprecated("Removed in sight 21.0.")]]
-    FWRENDEROGRE_API virtual void focusOutEvent();
-    /**
-     * @}
-     */
-
 protected:
-
-    /// Ogre Root
-    [[deprecated("Removed in sight 21.0")]]
-    ::Ogre::Root* m_ogreRoot { nullptr };
-
-    /// Current scene manager
-    [[deprecated("Retrieve the scene manager from the layer instead. Removed in sight 21.0")]]
-    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
     /// Weak reference to the layer on which the interactor interacts.
     WPTR(Layer) m_layer;
-
-    /**
-     * @name Signals attributes
-     * @{
-     */
-    /// Signal triggered when a render is requested
-    [[deprecated("Call the render request on the Layer directly.")]]
-    RenderRequestedSigType::sptr m_sigRenderRequested;
-/**
- * @}
- */
 
     /// Defines if the interaction must take into account above layers.
     bool m_layerOrderDependant { true };

@@ -85,7 +85,6 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
-    newSlot("setVisibility", &SNegato3D::updateVisibility, this);
 
     m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
@@ -483,14 +482,6 @@ void SNegato3D::setVisible(bool _visible)
         const ::fwCom::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
         visUpdateSig->asyncEmit(_visible);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::setVisibilityDeprecatedSlot(bool _visible)
-{
-    FW_DEPRECATED_MSG("::visuOgreAdaptor::SNegato3D::setVisibility is no longer supported", "21.0")
-    ::fwRenderOgre::IAdaptor::updateVisibility(_visible);
 }
 
 //------------------------------------------------------------------------------
