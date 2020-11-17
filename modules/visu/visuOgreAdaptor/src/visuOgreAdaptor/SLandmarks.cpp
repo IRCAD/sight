@@ -536,9 +536,9 @@ void SLandmarks::changeSliceType(int _from, int _to)
 
 void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const ::fwData::mt::weak_ptr< const ::fwData::Image > image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
 
-    const ::fwData::mt::locked_ptr< const ::fwData::Image > imageLock = image.lock();
+    const auto imageLock = image.lock();
 
     if(imageLock)
     {
@@ -564,9 +564,9 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 void SLandmarks::hideLandmarks()
 {
-    const ::fwData::mt::weak_ptr< const ::fwData::Image > image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
 
-    const ::fwData::mt::locked_ptr< const ::fwData::Image > imageLock = image.lock();
+    const auto imageLock = image.lock();
 
     // Hide landmarks only if there is an image.
     if(imageLock)
@@ -583,9 +583,9 @@ void SLandmarks::hideLandmarks()
 void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 {
     // Get image.
-    const ::fwData::mt::weak_ptr< const ::fwData::Image > image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
 
-    const ::fwData::mt::locked_ptr< const ::fwData::Image > imageLock = image.lock();
+    const auto imageLock = image.lock();
 
     // Get landmarks.
     const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);

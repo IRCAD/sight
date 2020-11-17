@@ -220,12 +220,6 @@ private:
     /// Sets the type of the associated Ogre light.
     ::Ogre::Light::LightTypes m_lightType { ::Ogre::Light::LT_DIRECTIONAL };
 
-    /// Containes the diffuse color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightDiffuseColor { nullptr };
-
-    /// Contains the specular color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightSpecularColor { nullptr };
-
     /// Enables the light.
     bool m_switchedOn { true };
 

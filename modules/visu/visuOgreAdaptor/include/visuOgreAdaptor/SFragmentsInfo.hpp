@@ -74,19 +74,31 @@ public:
     /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SFragmentsInfo() noexcept override;
 
+    /**
+     * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
+     *
+     * Call @ref ::visuOgreAdaptor::destroyCompositor() and ::visuOgreAdaptor::createCompositor(int, int).
+     *
+     * @param _viewport related layer's viewport.
+     */
+    VISUOGREADAPTOR_API void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
+
+    /// Calls @ref updating(), called just after the layer render target has been rendered to.
+    VISUOGREADAPTOR_API void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
+
 protected:
 
     /// Configures the layer and retrieves the size of the output image.
-    VISUOGREADAPTOR_API void configuring() final;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Intializes adaptor and connection to layer signals.
-    VISUOGREADAPTOR_API void starting() final;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the service. Convert render target texture to ::fwData::Image.
-    VISUOGREADAPTOR_API void updating() noexcept final;
+    VISUOGREADAPTOR_API void updating() noexcept override;
 
     /// Destroys adaptor, only calls ::visuOgreAdaptor::destroyCompositor().
-    VISUOGREADAPTOR_API void stopping() final;
+    VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
@@ -99,18 +111,6 @@ private:
 
     /// Destroys compositor.
     void destroyCompositor();
-
-    /**
-     * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
-     *
-     * Call @ref ::visuOgreAdaptor::destroyCompositor() and ::visuOgreAdaptor::createCompositor(int, int).
-     *
-     * @param _viewport related layer's viewport.
-     */
-    virtual void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
-
-    /// Calls @ref updating(), called just after a thelayer render target has been rendered to.
-    virtual void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
 
     /// Contains the created compositor.
     ::Ogre::CompositorPtr m_compositor { nullptr };
@@ -140,4 +140,4 @@ private:
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

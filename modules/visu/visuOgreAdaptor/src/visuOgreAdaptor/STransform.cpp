@@ -25,9 +25,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
 #include <fwServices/macros.hpp>
 
 namespace visuOgreAdaptor
@@ -100,12 +97,9 @@ void STransform::starting()
 
 void STransform::updating()
 {
-    const auto fwTransform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", fwTransform);
-
     {
-        const ::fwData::mt::ObjectReadLock lock(fwTransform);
-        m_ogreTransform = ::Ogre::Affine3(::fwRenderOgre::Utils::convertTM3DToOgreMx(fwTransform));
+        const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+        m_ogreTransform = ::Ogre::Affine3(::fwRenderOgre::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 
     if(m_ogreTransform == ::Ogre::Affine3::ZERO)

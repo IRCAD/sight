@@ -26,9 +26,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -107,12 +104,6 @@ void SLight::starting()
     this->initialize();
 
     this->getRenderService()->makeCurrent();
-
-    m_lightDiffuseColor = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
-    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
-
-    m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
-    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     m_light                              = sceneMgr->createLight(this->getID() + "_" + m_lightName);
@@ -219,24 +210,20 @@ void SLight::starting()
 
 void SLight::updating()
 {
-    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
-    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
+    const auto lightDiffuseColor  = this->getLockedInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    const auto lightSpecularColor = this->getLockedInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
     this->getRenderService()->makeCurrent();
 
-    ::fwData::mt::ObjectReadLock diffuseLock(m_lightDiffuseColor);
-    const ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
-                                           m_lightDiffuseColor->green(),
-                                           m_lightDiffuseColor->blue(),
-                                           m_lightDiffuseColor->alpha());
-    diffuseLock.unlock();
+    const ::Ogre::ColourValue diffuseColor(lightDiffuseColor->red(),
+                                           lightDiffuseColor->green(),
+                                           lightDiffuseColor->blue(),
+                                           lightDiffuseColor->alpha());
 
-    ::fwData::mt::ObjectReadLock specularLock(m_lightSpecularColor);
-    const ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
-                                            m_lightSpecularColor->green(),
-                                            m_lightSpecularColor->blue(),
-                                            m_lightSpecularColor->alpha());
-    specularLock.unlock();
+    const ::Ogre::ColourValue specularColor(lightSpecularColor->red(),
+                                            lightSpecularColor->green(),
+                                            lightSpecularColor->blue(),
+                                            lightSpecularColor->alpha());
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
@@ -280,11 +267,9 @@ void SLight::stopping()
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+    const auto lightDiffuseColor = this->getLockedInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
 
-    ::fwData::mt::ObjectWriteLock lock(m_lightDiffuseColor);
-    m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
-    lock.unlock();
+    lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 
     m_light->setDiffuseColour(_diffuseColor);
     this->requestRender();
@@ -294,11 +279,9 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
+    const auto lightSpecularColor = this->getLockedInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
-    ::fwData::mt::ObjectWriteLock lock(m_lightSpecularColor);
-    m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
-    lock.unlock();
+    lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 
     m_light->setSpecularColour(_specularColor);
     this->requestRender();

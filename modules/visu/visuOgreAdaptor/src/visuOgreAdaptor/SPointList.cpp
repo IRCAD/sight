@@ -27,7 +27,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -172,24 +171,24 @@ void SPointList::starting()
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode                      = this->getTransformNode(rootSceneNode);
 
-    const auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointList  = pointListW.lock();
     if(pointList)
     {
-        ::fwData::mt::ObjectReadLock lock(pointList);
-        this->updateMesh(pointList);
+        this->updateMesh(pointList.get_shared());
     }
     else
     {
-        const auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto mesh  = meshW.lock();
         if(mesh)
         {
-            ::fwData::mt::ObjectReadLock lock(mesh);
             if(!m_customMaterial && mesh->hasPointColors())
             {
                 m_materialTemplateName += "_PerPointColor";
             }
 
-            this->updateMesh(mesh);
+            this->updateMesh(mesh.get_shared());
         }
         else
         {
@@ -245,18 +244,21 @@ void SPointList::updating()
         return;
     }
 
-    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     this->destroyLabel();
+
+    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointList  = pointListW.lock();
     if(pointList)
     {
-        this->updateMesh(pointList);
+        this->updateMesh(pointList.get_shared());
     }
     else
     {
-        auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto mesh  = meshW.lock();
         if(mesh)
         {
-            this->updateMesh(mesh);
+            this->updateMesh(mesh.get_shared());
         }
         else
         {
@@ -450,14 +452,16 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
     std::string meshName;
-    auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointList  = pointListW.lock();
     if(pointList)
     {
         meshName = pointList->getID();
     }
     else
     {
-        auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto mesh  = meshW.lock();
         if(mesh)
         {
             meshName = mesh->getID();
@@ -500,7 +504,8 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
+    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+            m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);

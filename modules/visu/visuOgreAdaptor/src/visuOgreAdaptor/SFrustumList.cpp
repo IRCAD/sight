@@ -26,7 +26,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -43,12 +42,12 @@ namespace visuOgreAdaptor
 static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
 static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
 
-static const std::string s_CAMERA_NAME_INPUT = "camera";
-static const std::string s_NEAR_CONFIG       = "near";
-static const std::string s_FAR_CONFIG        = "far";
-static const std::string s_COLOR_CONFIG      = "color";
-static const std::string s_TRANSFORM_INPUT   = "transform";
-static const std::string s_NB_MAX_CONFIG     = "nbMax";
+static const std::string s_CAMERA_INPUT    = "camera";
+static const std::string s_NEAR_CONFIG     = "near";
+static const std::string s_FAR_CONFIG      = "far";
+static const std::string s_COLOR_CONFIG    = "color";
+static const std::string s_TRANSFORM_INPUT = "transform";
+static const std::string s_NB_MAX_CONFIG   = "nbMax";
 
 //-----------------------------------------------------------------------------
 
@@ -152,47 +151,42 @@ void SFrustumList::setVisible(bool _visible)
 void SFrustumList::addFrustum()
 {
     //Get camera parameters
-    const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_CAMERA_NAME_INPUT);
-    SLM_ASSERT("input '" + s_CAMERA_NAME_INPUT + "' does not exist.", fwCamera);
+    const auto cameraData = this->getLockedInput< ::arData::Camera >(s_CAMERA_INPUT);
 
-    ::Ogre::Camera* camera;
-    camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
-                                                                  + std::to_string(m_currentCamIndex)));
-    camera->setMaterial(m_materialAdaptor->getMaterial());
-    camera->setVisible(m_isVisible);
-    camera->setDebugDisplayEnabled(m_isVisible);
+    ::Ogre::Camera* ogreCamera =
+        this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
+                                                             + std::to_string(m_currentCamIndex)));
+    ogreCamera->setMaterial(m_materialAdaptor->getMaterial());
+    ogreCamera->setVisible(m_isVisible);
+    ogreCamera->setDebugDisplayEnabled(m_isVisible);
 
     // Clipping
     if(m_near != 0.f)
     {
-        camera->setNearClipDistance(m_near);
+        ogreCamera->setNearClipDistance(m_near);
     }
     if(m_far != 0.f)
     {
-        camera->setFarClipDistance(m_far);
+        ogreCamera->setFarClipDistance(m_far);
     }
 
     // Set data to camera
-    const float width  = static_cast< float >(fwCamera->getWidth());
-    const float height = static_cast< float >(fwCamera->getHeight());
+    const float width  = static_cast< float >(cameraData->getWidth());
+    const float height = static_cast< float >(cameraData->getHeight());
     ::Ogre::Matrix4 m =
-        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*fwCamera, width, height, m_near, m_far);
-    camera->setCustomProjectionMatrix(true, m);
+        ::fwRenderOgre::helper::Camera::computeProjectionMatrix(*cameraData, width, height, m_near, m_far);
+    ogreCamera->setCustomProjectionMatrix(true, m);
 
     // Set position
     ::Ogre::Affine3 ogreMat;
-    const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
-    SLM_ASSERT("input '" + s_TRANSFORM_INPUT + "' does not exist.", fwTransform);
-
-    // Multithreaded lock
     {
-        ::fwData::mt::ObjectReadLock lock(fwTransform);
+        const auto transform = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
         for(size_t lt = 0; lt < 4; lt++)
         {
             for(size_t ct = 0; ct < 4; ct++)
             {
-                ogreMat[ct][lt] = static_cast< ::Ogre::Real >(fwTransform->getCoefficient(ct, lt));
+                ogreMat[ct][lt] = static_cast< ::Ogre::Real >(transform->getCoefficient(ct, lt));
             }
         }
     }
@@ -207,8 +201,8 @@ void SFrustumList::addFrustum()
     const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
     orientation = orientation * rotateZ * rotateX;
 
-    camera->setOrientation(orientation);
-    camera->setPosition(position);
+    ogreCamera->setOrientation(orientation);
+    ogreCamera->setPosition(position);
 
     if(m_frustumList.full())
     {
@@ -216,7 +210,7 @@ void SFrustumList::addFrustum()
         this->getSceneManager()->destroyCamera(m_frustumList.back());
     }
     //Add the new one
-    m_frustumList.push_front(camera);
+    m_frustumList.push_front(ogreCamera);
 
     m_currentCamIndex++;
 

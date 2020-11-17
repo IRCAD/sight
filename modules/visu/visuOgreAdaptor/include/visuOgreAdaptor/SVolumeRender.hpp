@@ -188,12 +188,6 @@ private:
     /// Sets a new image.
     void newImage();
 
-    /**
-     * @brief Resets the camera coordinates.
-     * @param _image data of the input volume.
-     */
-    void resetCameraPosition(const ::fwData::Image::csptr& _image);
-
     /// Updates renderer and the GPU volume texture with the new input image data.
     void updateImage();
 

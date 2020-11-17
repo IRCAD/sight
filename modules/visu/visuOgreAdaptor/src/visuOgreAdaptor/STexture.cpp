@@ -27,7 +27,6 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -119,17 +118,13 @@ void STexture::starting()
 void STexture::updating()
 {
     // Retrieves associated Sight image
-    ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
-    SLM_ASSERT("input '" + s_TEXTURE_INOUT + "' does not exist.", imageSight);
+    const auto image = this->getLockedInput< ::fwData::Image>(s_TEXTURE_INOUT);
 
-    if(imageSight->getAllocatedSizeInBytes() != 0)
+    if(image->getAllocatedSizeInBytes() != 0)
     {
-        ::fwData::mt::ObjectReadLock lock(imageSight);
-
         // Loads the new image
         this->getRenderService()->makeCurrent();
-        ::fwRenderOgre::Utils::loadOgreTexture(imageSight, m_texture, ::Ogre::TEX_TYPE_2D, m_isDynamic);
-        lock.unlock();
+        ::fwRenderOgre::Utils::loadOgreTexture(image.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, m_isDynamic);
 
         m_sigTextureSwapped->asyncEmit();
     }

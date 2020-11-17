@@ -31,7 +31,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -125,12 +124,9 @@ void SModelSeries::starting()
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
+    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();
-
-    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -182,10 +178,7 @@ void SModelSeries::setVisible(bool _visible)
 
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
-
-    ::fwData::mt::ObjectReadLock lock(modelSeries);
+    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 

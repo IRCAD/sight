@@ -460,16 +460,12 @@ void SRender::requestRender()
     {
         FW_PROFILE("Offscreen rendering");
 
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
-        SLM_ASSERT("Offscreen image not found.", image);
-
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
         {
-            ::fwData::mt::ObjectWriteLock lock(image);
-
             this->makeCurrent();
             ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
             SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
 
         auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

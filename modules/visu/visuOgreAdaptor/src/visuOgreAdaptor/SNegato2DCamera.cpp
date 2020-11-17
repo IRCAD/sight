@@ -25,8 +25,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -127,11 +125,11 @@ void SNegato2DCamera::swapping(const KeyType& _key)
 {
     if(_key == s_TF_INOUT)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 }
 
@@ -244,7 +242,7 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
         m_isInteracting = true;
 
         const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
 
         m_initialLevel  = tf->getLevel();
         m_initialWindow = tf->getWindow();
@@ -277,11 +275,11 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
+    const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const auto tf  = tfW.lock();
+    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
@@ -299,7 +297,6 @@ void SNegato2DCamera::resetCamera()
     camNode->setPosition(::Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
-    const ::fwData::mt::ObjectReadLock imageLock(image);
     const auto origin  = image->getOrigin2();
     const auto size    = image->getSize2();
     const auto spacing = image->getSpacing2();
@@ -427,7 +424,7 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
 
     const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );
