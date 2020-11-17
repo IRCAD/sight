@@ -63,7 +63,7 @@ public:
     UIMEDDATAQT_API ~Selector();
 
     /// Clears all items in the tree.
-    UIMEDDATAQT_API void clear();
+    void clear();
 
     /**
      * @brief Adds the Series in the tree. If the associated study already exists in the tree, the series is added to
@@ -94,7 +94,13 @@ public:
     UIMEDDATAQT_API void setAllowedRemove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
-    UIMEDDATAQT_API void setInsertMode(bool _insert);
+    void setInsertMode(bool _insert);
+
+    /// Sets the remove study button icon.
+    void setRemoveStudyIcon(const std::filesystem::path& _path);
+
+    /// Sets the remove serie button icon.
+    void setRemoveSerieIcon(const std::filesystem::path& _path);
 
 Q_SIGNALS:
     /**
@@ -170,6 +176,35 @@ private:
     bool m_allowedRemove { true };
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline void Selector::clear()
+{
+    m_model->clear();
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Selector::setInsertMode(bool _insert)
+{
+    m_model->setInsertMode(_insert);
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Selector::setRemoveStudyIcon(const std::filesystem::path& _path)
+{
+    m_model->setRemoveStudyIcon(_path);
+}
+//-----------------------------------------------------------------------------
+
+inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
+{
+    m_model->setRemoveSerieIcon(_path);
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace widget.
 } // namespace uiMedDataQt.

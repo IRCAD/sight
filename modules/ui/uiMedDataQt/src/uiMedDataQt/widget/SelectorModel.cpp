@@ -95,13 +95,6 @@ void SelectorModel::init()
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::setInsertMode(bool _insert)
-{
-    m_insert = _insert;
-}
-
-//-----------------------------------------------------------------------------
-
 SelectorModel::ItemType SelectorModel::getItemType(const QModelIndex& _index)
 {
     QModelIndex idx     = this->createIndex(_index.row(), 0, _index.internalPointer());
@@ -227,14 +220,14 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         this->setItem(m_studyRowCount, int(ColumnSeriesType::CONTRAST_BOLUS_START_TIME), new QStandardItem());
 
         // Add a remove button to each studies.
-        if(m_allowedRemove)
+        if(m_allowedRemove && !m_removeStudyIcon.empty())
         {
             this->setItem(m_studyRowCount, int(ColumnSeriesType::REMOVE), new QStandardItem(QString("")));
 
             QTreeView* const selector = static_cast< QTreeView* >(this->parent());
             SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
-            QPushButton* const removeButton = new QPushButton();
+            QPushButton* const removeButton = new QPushButton(QIcon(m_removeStudyIcon.string().c_str()), "");
             selector->setIndexWidget(this->index(m_studyRowCount, int(ColumnSeriesType::REMOVE)), removeButton);
 
             // When the remove button is clicked, emit a signal with the study UID.
@@ -284,7 +277,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::TIME), seriesTimeItem);
 
     // Add a remove button to each series.
-    if(m_allowedRemove)
+    if(m_allowedRemove && !m_removeSerieIcon.empty())
     {
         QStandardItem* const removeItem = new QStandardItem(QString(""));
         studyRootItem->setChild(nbRow, int(ColumnSeriesType::REMOVE), removeItem);
@@ -292,7 +285,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         QTreeView* const selector = static_cast< QTreeView* >(this->parent());
         SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
-        QPushButton* const removeButton = new QPushButton();
+        QPushButton* const removeButton = new QPushButton(QIcon(m_removeSerieIcon.string().c_str()), "");
         selector->setIndexWidget(this->indexFromItem(removeItem), removeButton);
 
         // When the remove button is clicked, emit a signal with the study UID.

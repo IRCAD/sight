@@ -65,20 +65,6 @@ Selector::~Selector()
 
 //-----------------------------------------------------------------------------
 
-void Selector::clear()
-{
-    m_model->clear();
-}
-
-//-----------------------------------------------------------------------------
-
-void Selector::setInsertMode(bool _insert)
-{
-    m_model->setInsertMode(_insert);
-}
-
-//-----------------------------------------------------------------------------
-
 void Selector::addSeries(::fwMedData::Series::sptr _series)
 {
     m_model->addSeries(_series);

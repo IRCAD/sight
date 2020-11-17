@@ -421,10 +421,10 @@
         <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
-            <selectionMode>extended</selectionMode>
             <icons>
                 <icon series="::fwMedData::DicomSeries" icon="flatIcon-0.1/icons/GreenMedicine.svg" />
             </icons>
+            <config selectionMode="extended" allowedRemove="false" />
         </service>
 
         <service uid="extractPreviewSrv" type="::ctrlCamp::SCopy" >
@@ -452,10 +452,12 @@
         <service uid="localSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
-            <selectionMode>extended</selectionMode>
             <icons>
                 <icon series="::fwMedData::ImageSeries" icon="flatIcon-0.1/icons/Volume.svg" />
             </icons>
+            <config selectionMode="extended"
+                    removeStudyIcon="flatIcon-0.1/icons/RedCross.svg"
+                    removeSerieIcon="flatIcon-0.1/icons/RemoveMedecine.svg" />
         </service>
 
         <service uid="extractLocalSrv" type="::ctrlCamp::SCopy" >
