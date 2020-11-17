@@ -221,12 +221,13 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         m_items[studyUID] = studyRootItem;
     }
 
+    QStandardItem* seriesRole = new QStandardItem();
+    seriesRole->setData(QVariant((int)ItemType::SERIES), Role::ITEM_TYPE);
+    seriesRole->setData(QVariant(QString::fromStdString(_series->getID())), Role::UID);
+
     QStandardItem* seriesIcon        = new QStandardItem();
     QStandardItem* seriesModality    = new QStandardItem(QString::fromStdString(_series->getModality()));
     QStandardItem* seriesDescription = new QStandardItem(QString::fromStdString(_series->getDescription()));
-    seriesDescription->setData(QVariant((int)ItemType::SERIES), Role::ITEM_TYPE);
-    // /!\ Series Description is used as UID to retrieve object
-    seriesDescription->setData(QVariant(QString::fromStdString(_series->getID())), Role::UID);
 
     std::string seriesDate = _series->getDate();
     if(!seriesDate.empty())
@@ -245,9 +246,10 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     QStandardItem* seriesTimeItem = new QStandardItem( QString::fromStdString(seriesTime));
 
     const int nbRow = studyRootItem->rowCount();
+    studyRootItem->setChild(nbRow, int(ColumnSeriesType::NAME), seriesRole);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::BIRTHDATE), seriesIcon);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::MODALITY), seriesModality);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription); // Used also as UID.
+    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::DATE), seriesDateItem);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::TIME), seriesTimeItem);
 
@@ -454,7 +456,7 @@ void SelectorModel::removeRows(const QModelIndexList _indexes)
 
     for(QModelIndex index : _indexes)
     {
-        SLM_ASSERT("Index must be in first column.", index.column() == 0);
+        SLM_ASSERT("Index must be in the name column.", index.column() == int(ColumnSeriesType::NAME));
         QStandardItem* item = this->itemFromIndex(index);
         if (item->data(Role::ITEM_TYPE) == ItemType::STUDY)
         {
@@ -530,7 +532,7 @@ QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr _series)
     int nbRow = studyItem->rowCount();
     for(int row = 0; row < nbRow; ++row)
     {
-        QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::DESCRIPTION));
+        QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
         std::string seriesId = child->data(Role::UID).toString().toStdString();
         if(seriesId == _series->getID())
         {

@@ -171,7 +171,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
     for(int row = 0; row < nbRow; ++row)
     {
         // Retrieve UID of the series using the DESCRIPTION column.
-        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::DESCRIPTION));
+        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
         SLM_ASSERT("Child is null", child);
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SLM_ASSERT("UID must not be empty.", !uid.empty());
@@ -208,13 +208,14 @@ void Selector::keyPressEvent(QKeyEvent* _event)
 
 void Selector::deleteSelection()
 {
-    QModelIndexList selection = this->selectionModel()->selectedRows(0);
+    QModelIndexList selection =
+        this->selectionModel()->selectedRows(static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
 
     SeriesVectorType vSeries     = this->getSeries(selection);
     QModelIndexList studyIndexes = this->getStudyIndexes(selection);
     for(QModelIndex index :  studyIndexes)
     {
-        SeriesVectorType series = getSeriesFromStudyIndex(index);
+        SeriesVectorType series = this->getSeriesFromStudyIndex(index);
         std::copy(series.begin(), series.end(), std::back_inserter(vSeries));
     }
 
