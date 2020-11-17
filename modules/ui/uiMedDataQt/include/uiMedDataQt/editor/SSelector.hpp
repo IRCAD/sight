@@ -149,14 +149,8 @@ private:
     /// SLOT: removes series from the selector.
     void removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
 
-    /// Returns the current selection vector given by its ID m_selectionId.
-    ::fwData::Vector::sptr getSelection();
-
     /// Contains the slot used to remove series from the selector.
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
-
-    /// Defines the ID of the vector of selections.
-    std::string m_selectionId;
 
     /// Contains the selector widget.
     QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget { nullptr };

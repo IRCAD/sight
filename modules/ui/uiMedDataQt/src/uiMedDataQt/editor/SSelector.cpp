@@ -67,6 +67,7 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
 
 static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+static const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 
@@ -226,11 +227,11 @@ void SSelector::starting()
 
 void SSelector::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
 
     m_selectorWidget->clear();
 
-    for(::fwMedData::Series::sptr series :  seriesDB->getContainer())
+    for(::fwMedData::Series::sptr series : seriesDB->getContainer())
     {
         m_selectorWidget->addSeries(series);
     }
@@ -248,8 +249,8 @@ void SSelector::stopping()
 void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
                                  QVector< ::fwMedData::Series::sptr > _deselection)
 {
-    ::fwData::Vector::sptr selectionVector = this->getSelection();
-    ::fwDataTools::helper::Vector vectorHelper(selectionVector);
+    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    ::fwDataTools::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for( ::fwMedData::Series::sptr series :  _deselection)
     {
@@ -271,7 +272,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(_index);
 
-    ::fwData::Vector::sptr selectionVector = this->getSelection();
+    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
     if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
@@ -288,8 +289,8 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Remove duplicated series
     std::set< ::fwMedData::Series::sptr > seriesSet;
@@ -306,16 +307,6 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
         seriesDBHelper.notify();
     }
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Vector::sptr SSelector::getSelection()
-{
-    ::fwData::Vector::sptr selection = this->getInOut< ::fwData::Vector >("selection");
-    SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
-
-    return selection;
 }
 
 //------------------------------------------------------------------------------
