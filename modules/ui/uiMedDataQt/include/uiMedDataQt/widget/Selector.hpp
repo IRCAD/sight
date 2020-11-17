@@ -124,7 +124,21 @@ protected Q_SLOTS:
      */
     void selectionChanged(const QItemSelection& _selected, const QItemSelection& _deselected);
 
-protected:
+private Q_SLOTS:
+
+    /**
+     * @brief SLOT: called when the selector model sends a signal to remove the study.
+     * @param _uid the instance UID of the study to remove.
+     */
+    void onRemoveStudyInstanceUID(const std::string& _uid);
+
+    /**
+     * @brief SLOT: called when the selector model sends a signal to remove the serie.
+     * @param _id the ID of the serie to remove.
+     */
+    void onRemoveSerieID(const std::string& _id);
+
+private:
 
     typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
 
@@ -148,8 +162,6 @@ protected:
 
     /// Deletes the selected items and notify the deleted series.
     void deleteSelection();
-
-private:
 
     /// Tree model
     QPointer<SelectorModel> m_model { nullptr };

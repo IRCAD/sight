@@ -43,8 +43,10 @@
 #include <boost/math/special_functions/round.hpp>
 
 #include <QFont>
+#include <QPushButton>
 #include <QStandardItem>
 #include <QString>
+#include <QTreeView>
 
 #include <regex>
 
@@ -82,6 +84,12 @@ void SelectorModel::init()
             << "Patient age"
             << "Body part examined" << "Patient position" << "Contrast agent"
             << "Acquisition time" << "Contrast/bolus time";
+
+    if(m_allowedRemove)
+    {
+        headers << "Remove";
+    }
+
     this->setHorizontalHeaderLabels(headers);
 }
 
@@ -169,9 +177,11 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         ::fwMedData::Patient::sptr patient     = _series->getPatient();
         ::fwMedData::Equipment::sptr equipment = _series->getEquipment();
 
+        const std::string studyInstanceUID = study->getInstanceUID();
+
         QStandardItem* patientName = new QStandardItem( QString::fromStdString(patient->getName()) );
         patientName->setData(QVariant((int)ItemType::STUDY), Role::ITEM_TYPE);
-        patientName->setData(QVariant(QString::fromStdString(study->getInstanceUID())), Role::UID);
+        patientName->setData(QVariant(QString::fromStdString(studyInstanceUID)), Role::UID);
 
         QStandardItem* patientSex = new QStandardItem( QString::fromStdString(patient->getSex()) );
 
@@ -216,14 +226,34 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
         this->setItem(m_studyRowCount, int(ColumnSeriesType::ACQUISITION_TIME), new QStandardItem());
         this->setItem(m_studyRowCount, int(ColumnSeriesType::CONTRAST_BOLUS_START_TIME), new QStandardItem());
 
+        // Add a remove button to each studies.
+        if(m_allowedRemove)
+        {
+            this->setItem(m_studyRowCount, int(ColumnSeriesType::REMOVE), new QStandardItem(QString("")));
+
+            QTreeView* const selector = static_cast< QTreeView* >(this->parent());
+            SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
+
+            QPushButton* const removeButton = new QPushButton();
+            selector->setIndexWidget(this->index(m_studyRowCount, int(ColumnSeriesType::REMOVE)), removeButton);
+
+            // When the remove button is clicked, emit a signal with the study UID.
+            QObject::connect(removeButton, &QPushButton::clicked, this, [ = ]()
+                    {
+                        Q_EMIT removeStudyInstanceUID(studyInstanceUID);
+                    });
+        }
+
         m_studyRowCount++;
         studyRootItem     = patientName;
         m_items[studyUID] = studyRootItem;
     }
 
+    const std::string serieID = _series->getID();
+
     QStandardItem* seriesRole = new QStandardItem();
     seriesRole->setData(QVariant((int)ItemType::SERIES), Role::ITEM_TYPE);
-    seriesRole->setData(QVariant(QString::fromStdString(_series->getID())), Role::UID);
+    seriesRole->setData(QVariant(QString::fromStdString(serieID)), Role::UID);
 
     QStandardItem* seriesIcon        = new QStandardItem();
     QStandardItem* seriesModality    = new QStandardItem(QString::fromStdString(_series->getModality()));
@@ -252,6 +282,25 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::DATE), seriesDateItem);
     studyRootItem->setChild(nbRow, int(ColumnSeriesType::TIME), seriesTimeItem);
+
+    // Add a remove button to each series.
+    if(m_allowedRemove)
+    {
+        QStandardItem* const removeItem = new QStandardItem(QString(""));
+        studyRootItem->setChild(nbRow, int(ColumnSeriesType::REMOVE), removeItem);
+
+        QTreeView* const selector = static_cast< QTreeView* >(this->parent());
+        SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
+
+        QPushButton* const removeButton = new QPushButton();
+        selector->setIndexWidget(this->indexFromItem(removeItem), removeButton);
+
+        // When the remove button is clicked, emit a signal with the study UID.
+        QObject::connect(removeButton, &QPushButton::clicked, this, [ = ]()
+                {
+                    Q_EMIT removeSerieID(serieID);
+                });
+    }
 
     const ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(_series);
     if(imageSeries)
