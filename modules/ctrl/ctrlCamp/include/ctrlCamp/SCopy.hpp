@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,40 +38,79 @@ namespace ctrlCamp
  * It can either copy the data when starting or when updating (default).
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
        <service uid="..." type="::ctrlCamp::SCopy" >
-           <in key="source" uid="sourceObject">
+           <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
-           <inout key="target" uid="targetObject" />
+           <inout key="target" uid="..." />
            <mode>copyOnStart</mode>
        </service>
-      @endcode
+
+       <service uid="..." type="::ctrlCamp::SCopy" >
+           <in key="source" uid="..." />
+           <inout key="target" uid="..." />
+           <mode>copyOnStart</mode>
+       </service>
+
+       <service uid="..." type="::ctrlCamp::SCopy" >
+           <in key="source" uid="..." >
+             <extract from="@path.to.data.0" />
+           </in>
+           <out key="target" uid="..." />
+           <mode>copyOnStart</mode>
+       </service>
+
+       <service uid="..." type="::ctrlCamp::SCopy" >
+           <in key="source" uid="..." />
+           <out key="target" uid="..." />
+           <mode>copyOnStart</mode>
+       </service>
+   @endcode
+ *
  * @subsection Input Input
  * - \b source [::fwData::Object]: define the source object to copy.
  *    - \b extract (optional): define the camp path used to retrieve the object to copy.
  *
  * @subsection In-Out In-Out
- * - \b target [::fwData::Object]: define the target object to update.
+ * - \b target [::fwData::Object]: define the target object to update, can't be used with Output.
+ *
+ * @subsection Output Output
+ * - \b target [::fwData::Object]: define the target object to create, can't be used with In-Out.
  *
  * @subsection Configuration Configuration
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
  * updating ("copyOnUpdate" - default).
  */
-class CTRLCAMP_CLASS_API SCopy : public ::ctrlCamp::ICamp
+class CTRLCAMP_CLASS_API SCopy final : public ::ctrlCamp::ICamp
 {
+
 public:
 
-    fwCoreServiceMacro(SCopy, ::ctrlCamp::ICamp);
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SCopy, ::ctrlCamp::ICamp)
 
-    /// Constructor
+    /// Creates the service.
     CTRLCAMP_API SCopy();
 
-    /// Destructor
+    /// Destroys the service.
     CTRLCAMP_API ~SCopy();
 
 protected:
+
+    //// Configures the service
+    CTRLCAMP_API void configuring() override;
+
+    /// Calls copy() if the mode if START.
+    CTRLCAMP_API void starting() override;
+
+    /// Calls copy() if the mode if UPDATE.
+    CTRLCAMP_API void updating() override;
+
+    /// Sets the output to null.
+    CTRLCAMP_API void stopping() override;
+
+private:
 
     enum class ModeType : std::int8_t
     {
@@ -79,31 +118,18 @@ protected:
         UPDATE,
     };
 
-    /// Does nothing
-    CTRLCAMP_API virtual void starting() override;
-
-    //// Configure the service
-    CTRLCAMP_API virtual void configuring() override;
-
-    /// Does nothing
-    CTRLCAMP_API virtual void stopping() override;
-
-    /// Does nothing
-    CTRLCAMP_API virtual void updating() override;
-
-private:
-
-    /// Copy method
+    /// Copies the object to the output.
     void copy();
 
-    /// sesh@ path for appXml
+    /// Defines the sesh@ path for appXml
     std::string m_path;
 
-    /// boolean to know if the object to copy is a sesh@ path or an object
+    /// Defines if the object to copy is a sesh@ path or an object
     bool m_hasExtractTag;
 
-    /// Determine when the data is copied (start or update)
+    /// Determines when the data is copied (start or update)
     ModeType m_mode;
+
 };
 
-} // namespace ctrlCamp
+} // namespace ctrlCamp.
