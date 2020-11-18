@@ -88,7 +88,6 @@ This example shows the possibilities of SParameters:
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1,V2,V3" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="parameters2Srv" type="::guiQt::editor::SParameters" >
@@ -106,7 +105,6 @@ This example shows the possibilities of SParameters:
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1,V2,V3" depends="enable"  />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="minParametersSrv" type="::guiQt::editor::SParameters" >
@@ -120,7 +118,6 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="0" min="0" max="80" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="0" min="0" max="80" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="maxParametersSrv" type="::guiQt::editor::SParameters" >
@@ -134,7 +131,6 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="20" min="0" max="100" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="20" min="0" max="100" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

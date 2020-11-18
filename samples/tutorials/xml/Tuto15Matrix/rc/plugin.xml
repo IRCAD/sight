@@ -231,7 +231,6 @@
              <parameters>
                  <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
              </parameters>
-             <config sendAtStart="false" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

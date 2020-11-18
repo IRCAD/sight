@@ -124,12 +124,6 @@ void SParameters::configuring()
     this->initialize();
 
     const ConfigType configTree = this->getConfigTree();
-
-    const ::boost::optional< bool > sendAtStart = configTree.get_optional< bool >("config.<xmlattr>.sendAtStart");
-    if(sendAtStart)
-    {
-        m_sendSignalAtStart = sendAtStart.value();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -335,12 +329,6 @@ void SParameters::starting()
     qtContainer->setLayout(layout);
 
     this->blockSignals(false);
-
-    if(m_sendSignalAtStart)
-    {
-        FW_DEPRECATED_MSG("The service should not emit signals at start", "21.0");
-        this->updating(); // emits the signals with the default values
-    }
 }
 
 //-----------------------------------------------------------------------------

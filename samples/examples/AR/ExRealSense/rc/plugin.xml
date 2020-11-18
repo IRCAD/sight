@@ -398,7 +398,6 @@
                     MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
                     Hand,ShortRange,BodyScan,RemoveIR" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="alignmentSrv" type="::guiQt::editor::SParameters" >
@@ -406,21 +405,18 @@
                     <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
                     values="None,Color,Depth,Infrared" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="infraredEmitterSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="IR Emitter" key="IREmitter" defaultValue="true" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="switchInfraToColorSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Infra to Color" key="switchToIR" defaultValue="false" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="rangeEditorSrv" type="::guiQt::editor::SParameters" >
@@ -428,28 +424,24 @@
                     <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
                     <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="enableSpacialFilterParamsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="enableTemporalFilterParamsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="enableHoleFillingFilterParamsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="spacialFilterParamsSrv" type="::guiQt::editor::SParameters" >
@@ -459,7 +451,6 @@
                     <param type="int"    name="Smooth Delta"          key="spacialSmoothDelta"  defaultValue="20"  min="1" max="50" />
                     <param type="enum"   name="Hole filling (pixels)" key="spacialHoleFilling"  defaultValue="0"   values="0,2,4,8,16,unlimited" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="temporalFilterParamsSrv" type="::guiQt::editor::SParameters" >
@@ -470,14 +461,12 @@
                            values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
                                    Valid_in_1/last_8,Persist_Indefinitely" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="holeFillingFilterParamsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="distanceSrv" type="::uiTools::editor::STextStatus" >

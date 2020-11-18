@@ -296,7 +296,6 @@
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <!-- Parameter to tune the threshold value from the SRGBDImageMasking service -->
@@ -304,7 +303,6 @@
                 <parameters>
                     <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >

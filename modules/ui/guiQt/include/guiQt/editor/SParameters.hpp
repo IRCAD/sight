@@ -97,7 +97,6 @@ namespace editor
             <param type="int" name="integer parameter" key="intParam2" defaultValue="1" min="0" max="255"
                 depends="enumParam" dependsValue="p2" />
         </parameters>
-        <config sendAtStart="true" />
        </service>
    @endcode
  *
@@ -119,8 +118,6 @@ namespace editor
  * depends (optional, string): key of the dependency.
  * dependsValue (optional, string): value of the dependency in case of enum.
  * dependsReverse (optional, bool, default=false): reverse the dependency status checking.
- * - \b sendAtStart (optional, default=true): whether or not to trigger parameter update signals when the service
- * starts.
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::fwGui::editor::IEditor
@@ -350,8 +347,6 @@ private:
     /// if true, the signals are not emitted
     bool m_blockSignals;
 
-    /// Send signals at the starting of this service.
-    bool m_sendSignalAtStart{true};
 };
 
 //------------------------------------------------------------------------------
