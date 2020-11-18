@@ -46,13 +46,17 @@ namespace visuOgreAdaptor
  * - \b sliceType(int, int): updates image slice index .
  * - \b sliceIndex(int, int, int): updates image slice type.
  * - @deprecated \b newImage(): updates the image display to show the new content. call \b update() instead.
+ * - \b updateVisibility(bool): shows or hides the negato.
+ * - \b toggleVisibility(): toggle whether the negato is shown or not.
+ * - \b show(): shows the negato.
+ * - \b hide(): hides the negato.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="::visuOgreAdaptor::SNegato2D">
         <inout key="image" uid="..." />
         <inout key="tf" uid="..." optional="yes" />
-        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" visible="true" />
    </service>
    @endcode
  *
@@ -67,6 +71,7 @@ namespace visuOgreAdaptor
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
  * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): allows to display the plane border.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdaptor
 {
@@ -115,6 +120,12 @@ protected:
 
     /// Disconnects the attached data from the received slot.
     VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the negato visibility.
+     * @param _visible the visibility status of the negato.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
 

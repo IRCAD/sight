@@ -149,6 +149,7 @@ void SNegato2D::starting()
                                                         m_orientation, m_3DOgreTexture, m_filtering, m_border);
 
     this->newImage();
+    this->setVisible(m_isVisible);
 }
 
 //------------------------------------------------------------------------------
@@ -173,6 +174,7 @@ void SNegato2D::stopping()
 void SNegato2D::updating()
 {
     this->newImage();
+    this->setVisible(m_isVisible);
     this->requestRender();
 }
 
@@ -360,10 +362,24 @@ void SNegato2D::updateTF()
 void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
+
     // Fits the plane to the new texture
     m_plane->setVoxelSpacing(_spacing);
     m_plane->initializePlane();
+
     m_plane->enableAlpha(m_enableAlpha);
 }
 
+//------------------------------------------------------------------------------
+void SNegato2D::setVisible(bool _visible)
+{
+    if(m_negatoSceneNode)
+    {
+        m_negatoSceneNode->setVisible(_visible);
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
 } // namespace visuOgreAdaptor.
