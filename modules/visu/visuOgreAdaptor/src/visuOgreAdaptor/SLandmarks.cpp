@@ -414,6 +414,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
         // Attach data.
         node->attachObject(text);
+        text->setVisible(m_isVisible);
     }
 
     // Store the created data.
@@ -421,6 +422,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
     // Hide landmarks if an image is given to the service.
     this->hideLandmark(m_manualObjects.back());
+    object->setVisible(m_isVisible);
 
     // Request the rendering.
     this->requestRender();
@@ -623,4 +625,19 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     _landmark->m_object->setVisible(show && group.m_visibility);
 }
 
+//------------------------------------------------------------------------------
+void SLandmarks::setVisible(bool _visible)
+{
+    m_transNode->setVisible(_visible);
+
+    if(m_enableLabels)
+    {
+        for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
+        {
+            (*objectIt)->m_label->setVisible(_visible);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 } // namespace visuOgreAdaptor.

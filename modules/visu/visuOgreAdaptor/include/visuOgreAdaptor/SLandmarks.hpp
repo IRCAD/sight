@@ -46,7 +46,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SLandmarks">
         <in key="landmarks" uid="..." />
         <in key="image" uid="..." />
-        <config layer="default" transform="transformUID" />
+        <config layer="default" transform="transformUID" visible="true" />
     </service>
    @endcode
  *
@@ -63,6 +63,7 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b label (optional, bool, default=true): display label.
  * - \b orientation (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b visible (optional, default=true): the visibility of the landmarks.
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks final :
     public ::fwRenderOgre::IAdaptor,
@@ -110,6 +111,12 @@ protected:
 
     /// Destroys Ogre's resources.
     VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the landmarks visibility.
+     * @param _visible the visibility status of the landmarks.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
 
