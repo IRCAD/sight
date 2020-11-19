@@ -41,6 +41,22 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor displays landmarks.
  *
+ * @section Slots Slots
+ * - \b removeGroup(std::string): removes an entire group.
+ * - \b modifyGroup(std::string): removes an entire group and re-create it.
+ * - \b addPoint(std::string): adds the last point of a landmarks group.
+ * - \b removePoint(std::string, size_t): removes a point.
+ * - \b insertPoint(std::string, size_t): inserts a point.
+ * - \b selectPoint(std::string, size_t) hightlights the selected landmark.
+ * - \b deselectPoint(std::string, size_t): resets the hightlighting of the selected landmark.
+ * - \b initializeImage(): initializes image slices index if there is one.
+ * - \b changeSliceType(int, int): updates the image slice type.
+ * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
+ * - \b updateVisibility(bool): shows or hides the landmarks.
+ * - \b toggleVisibility(): toggle whether the landmarks are shown or not.
+ * - \b show(): shows the landmarks.
+ * - \b hide(): hides the landmarks.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLandmarks">

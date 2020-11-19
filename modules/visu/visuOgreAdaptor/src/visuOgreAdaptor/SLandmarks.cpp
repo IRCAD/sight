@@ -636,6 +636,8 @@ void SLandmarks::setVisible(bool _visible)
             landmark->m_label->setVisible(_visible && group.m_visibility);
         }
     }
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
