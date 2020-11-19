@@ -410,11 +410,10 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
         text = fwRenderOgre::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
         text->setText(pointName);
         text->setTextColor(color);
-        text->setVisible(group.m_visibility);
+        text->setVisible(group.m_visibility && m_isVisible);
 
         // Attach data.
         node->attachObject(text);
-        text->setVisible(m_isVisible);
     }
 
     // Store the created data.
@@ -422,7 +421,6 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
     // Hide landmarks if an image is given to the service.
     this->hideLandmark(m_manualObjects.back());
-    object->setVisible(m_isVisible);
 
     // Request the rendering.
     this->requestRender();
@@ -622,19 +620,20 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     }
 
     // Show or hide the landmark.
-    _landmark->m_object->setVisible(show && group.m_visibility);
+    _landmark->m_object->setVisible(show && group.m_visibility && m_isVisible);
 }
 
 //------------------------------------------------------------------------------
 void SLandmarks::setVisible(bool _visible)
 {
-    m_transNode->setVisible(_visible);
-
-    if(m_enableLabels)
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    for(std::shared_ptr<Landmark> landmark : m_manualObjects)
     {
-        for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
+        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
+        landmark->m_object->setVisible(_visible && group.m_visibility);
+        if(m_enableLabels)
         {
-            (*objectIt)->m_label->setVisible(_visible);
+            landmark->m_label->setVisible(_visible && group.m_visibility);
         }
     }
 }
