@@ -53,7 +53,7 @@ namespace visuOgreAdaptor
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
  * - \b updateVisibility(bool): shows or hides the landmarks.
- * - \b toggleVisibility(): toggle whether the landmarks are shown or not.
+ * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
  * - \b show(): shows the landmarks.
  * - \b hide(): hides the landmarks.
  *
