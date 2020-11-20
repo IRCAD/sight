@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QString>
 
+#include <filesystem>
 #include <map>
 
 namespace uiMedDataQt

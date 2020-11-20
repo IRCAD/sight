@@ -28,6 +28,7 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/reflection/exception/NullPointer.hpp>
 
 #include <fwDataCamp/exception/ObjectNotFound.hpp>
 #include <fwDataCamp/getObject.hpp>
@@ -156,9 +157,13 @@ void SCopy::copy()
         {
             object = ::fwDataCamp::getObject(sourceObject.get_shared(), m_path, true );
         }
-        catch(::fwDataCamp::exception::ObjectNotFound&)
+        catch(const ::fwDataCamp::exception::ObjectNotFound&)
         {
-            SLM_WARN("Object from '"+ m_path +"' not found");
+            SLM_WARN("Object from '" + m_path + "' not found");
+        }
+        catch(const ::fwData::reflection::exception::NullPointer&)
+        {
+            SLM_WARN("Can't get object from '" + m_path + "'");
         }
         catch(std::exception& _e)
         {

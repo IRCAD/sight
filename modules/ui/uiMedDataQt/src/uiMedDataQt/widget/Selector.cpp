@@ -55,6 +55,9 @@ Selector::Selector(QWidget* _parent) :
 
     QObject::connect(m_model, &SelectorModel::removeStudyInstanceUID, this, &Selector::onRemoveStudyInstanceUID);
     QObject::connect(m_model, &SelectorModel::removeSerieID, this, &Selector::onRemoveSerieID);
+
+    this->setDragEnabled(false);
+    this->setAcceptDrops(false);
 }
 
 //-----------------------------------------------------------------------------
