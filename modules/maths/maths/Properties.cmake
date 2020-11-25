@@ -9,6 +9,7 @@ set( DEPENDENCIES
     fwCore
     fwCom
     fwServices
+    fwGui
 )
 set( REQUIREMENTS fwData servicesReg)
 

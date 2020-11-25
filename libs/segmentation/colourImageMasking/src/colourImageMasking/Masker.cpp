@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,6 +43,7 @@ Masker::Masker(const ColSpace& c, const DetectionMode& d) :
     m_threshold(0.0),
     m_hasSetThreshold(false)
 {
+    FW_DEPRECATED_MSG("This service is not supported anymore, it will be removed in sight 22.0.", "22.0");
 }
 
 //------------------------------------------------------------------------------

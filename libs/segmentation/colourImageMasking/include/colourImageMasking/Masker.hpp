@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __COLOURIMAGEMASKING_MASKER_HPP__
-#define __COLOURIMAGEMASKING_MASKER_HPP__
+#pragma once
 
 #include "colourImageMasking/config.hpp"
 
@@ -33,6 +32,7 @@ namespace colourImageMasking
 
 /**
  * @brief Define supported color spaces
+ * @deprecated will be removed in sight 22.0
  */
 enum ColSpace
 {
@@ -131,5 +131,3 @@ private:
 };
 
 }
-
-#endif // __COLOURIMAGEMASKING_MASKER_HPP__

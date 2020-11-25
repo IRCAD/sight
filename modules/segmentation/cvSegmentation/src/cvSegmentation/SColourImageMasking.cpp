@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "colourSegmentation/SColourImageMasking.hpp"
+#include "cvSegmentation/SColourImageMasking.hpp"
 
 #include <arData/FrameTL.hpp>
 
@@ -36,18 +36,18 @@
 
 #include <boost/tokenizer.hpp>
 
-namespace colourSegmentation
+namespace cvSegmentation
 {
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking)
+fwServicesRegisterMacro( ::fwServices::IOperator, ::cvSegmentation::SColourImageMasking)
 
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_SLOT            = "setForeground";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT             = "setThreshold";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
+const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
+const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
+const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT             = "setThreshold";
+const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
+const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
+const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 const ::fwServices::IService::KeyType s_MASK_KEY          = "mask";
 const ::fwServices::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
@@ -65,8 +65,6 @@ SColourImageMasking::SColourImageMasking() noexcept :
     m_backgroundComponents(5),
     m_foregroundComponents(5)
 {
-    FW_DEPRECATED_MSG("This service is not supported anymore, it will be removed in sight 22.0.", "22.0");
-
     newSlot( s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this );
     newSlot( s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this );
     newSlot( s_SET_THRESHOLD_SLOT, &SColourImageMasking::setThreshold, this );
@@ -385,4 +383,4 @@ void SColourImageMasking::clearMaskTL()
 
 // ------------------------------------------------------------------------------
 
-} // namespace colourSegmentation
+} // namespace cvSegmentation

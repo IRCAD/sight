@@ -1,0 +1,31 @@
+<plugin id="usSimulation" class="usSimulation::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="usSimulation" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::arServices::ISimulator</type>
+        <service>::usSimulation::SGenerateMeshUS</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IOperator</type>
+        <service>::usSimulation::SExtractImageUS</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::usSimulation::SPointToLandmarkDistance</service>
+        <object>::fwData::Object</object>
+        <desc>Compute the transformation matrix between needle tip and the current landmark</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+    <type>::fwServices::IService</type>
+    <service>::usSimulation::STransformPickedPoint</service>
+    <object>::fwData::Object</object>
+    <desc>Apply a transformation on a picked point</desc>
+    </extension>
+</plugin>
