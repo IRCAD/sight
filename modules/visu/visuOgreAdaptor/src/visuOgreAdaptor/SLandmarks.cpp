@@ -410,7 +410,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
         text = fwRenderOgre::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
         text->setText(pointName);
         text->setTextColor(color);
-        text->setVisible(group.m_visibility);
+        text->setVisible(group.m_visibility && m_isVisible);
 
         // Attach data.
         node->attachObject(text);
@@ -620,7 +620,25 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     }
 
     // Show or hide the landmark.
-    _landmark->m_object->setVisible(show && group.m_visibility);
+    _landmark->m_object->setVisible(show && group.m_visibility && m_isVisible);
 }
 
+//------------------------------------------------------------------------------
+void SLandmarks::setVisible(bool _visible)
+{
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    for(std::shared_ptr<Landmark> landmark : m_manualObjects)
+    {
+        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
+        landmark->m_object->setVisible(_visible && group.m_visibility);
+        if(m_enableLabels)
+        {
+            landmark->m_label->setVisible(_visible && group.m_visibility);
+        }
+    }
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
 } // namespace visuOgreAdaptor.

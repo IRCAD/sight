@@ -41,12 +41,28 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor displays landmarks.
  *
+ * @section Slots Slots
+ * - \b removeGroup(std::string): removes an entire group.
+ * - \b modifyGroup(std::string): removes an entire group and re-create it.
+ * - \b addPoint(std::string): adds the last point of a landmarks group.
+ * - \b removePoint(std::string, size_t): removes a point.
+ * - \b insertPoint(std::string, size_t): inserts a point.
+ * - \b selectPoint(std::string, size_t) hightlights the selected landmark.
+ * - \b deselectPoint(std::string, size_t): resets the hightlighting of the selected landmark.
+ * - \b initializeImage(): initializes image slices index if there is one.
+ * - \b changeSliceType(int, int): updates the image slice type.
+ * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
+ * - \b updateVisibility(bool): shows or hides the landmarks.
+ * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
+ * - \b show(): shows the landmarks.
+ * - \b hide(): hides the landmarks.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLandmarks">
         <in key="landmarks" uid="..." />
         <in key="image" uid="..." />
-        <config layer="default" transform="transformUID" />
+        <config layer="default" transform="transformUID" visible="true" />
     </service>
    @endcode
  *
@@ -63,6 +79,7 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b label (optional, bool, default=true): display label.
  * - \b orientation (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b visible (optional, default=true): the visibility of the landmarks.
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks final :
     public ::fwRenderOgre::IAdaptor,
@@ -110,6 +127,12 @@ protected:
 
     /// Destroys Ogre's resources.
     VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the landmarks visibility.
+     * @param _visible the visibility status of the landmarks.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
 
