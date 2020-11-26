@@ -99,9 +99,6 @@ void SAddDistance::updating()
 
         vectDist->getContainer().push_back(pl);
 
-        // force distance to be shown
-        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility,  ::fwData::Boolean::New(true));
-
         const auto sig =
             image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
         sig->asyncEmit(pl);
