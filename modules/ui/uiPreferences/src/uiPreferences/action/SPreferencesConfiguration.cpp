@@ -28,7 +28,6 @@
 #include <fwData/Integer.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwData/String.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -55,8 +54,6 @@ namespace action
 
 const ::fwCom::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPreferences::action::SPreferencesConfiguration, ::fwData::Object )
-
 //-----------------------------------------------------------------------------
 
 SPreferencesConfiguration::SPreferencesConfiguration() noexcept
@@ -68,39 +65,6 @@ SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 
 SPreferencesConfiguration::~SPreferencesConfiguration() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::starting()
-{
-    this->actionServiceStarting();
-
-    // Check preferences
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
-    if(prefs)
-    {
-        for(PreferenceElt& pref : m_preferences)
-        {
-            pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);
-            ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
-            if ( iterPref != prefs->end() )
-            {
-                pref.m_dataPreference = ::fwData::String::dynamicCast(iterPref->second);
-            }
-            else
-            {
-                (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::stopping()
-{
-    this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -197,6 +161,32 @@ void SPreferencesConfiguration::configuring()
             }
         }
         m_preferences.push_back(pref);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SPreferencesConfiguration::starting()
+{
+    this->actionServiceStarting();
+
+    // Check preferences
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    if(prefs)
+    {
+        for(PreferenceElt& pref : m_preferences)
+        {
+            pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);
+            ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
+            if ( iterPref != prefs->end() )
+            {
+                pref.m_dataPreference = ::fwData::String::dynamicCast(iterPref->second);
+            }
+            else
+            {
+                (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
+            }
+        }
     }
 }
 
@@ -312,6 +302,13 @@ void SPreferencesConfiguration::updating()
 
 //------------------------------------------------------------------------------
 
+void SPreferencesConfiguration::stopping()
+{
+    this->actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
 void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
     static std::filesystem::path _sDefaultPath;
@@ -354,17 +351,6 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::swapping()
-{
-}
+} // namespace action.
 
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace action
-} // namespace uiPreferences
+} // namespace uiPreferences.

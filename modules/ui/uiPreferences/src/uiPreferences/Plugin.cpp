@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,14 +19,36 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
 #include "uiPreferences/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/macros.hpp>
 
 namespace uiPreferences
 {
 
+//------------------------------------------------------------------------------
+
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiPreferences::Plugin");
 
-} // namespace uiServer
+//------------------------------------------------------------------------------
+
+Plugin::~Plugin() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::start()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace uiPreferences.
