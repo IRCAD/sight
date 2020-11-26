@@ -22,27 +22,26 @@
 
 #pragma once
 
+#include "uiMeasurement/config.hpp"
+
 #include <fwRuntime/Plugin.hpp>
 
 namespace uiMeasurement
 {
 
-/**
- *
- */
-struct Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+struct UIMEASUREMENT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept;
 
-    // Overrides
-    void start();
+    /// Destroys the plugin.
+    UIMEASUREMENT_API ~Plugin() noexcept;
 
-    // Overrides
-    void stop() noexcept;
+    /// Starts the plugin, does nothing here.
+    UIMEASUREMENT_API void start();
+
+    /// Stops the plugin, does nothing here.
+    UIMEASUREMENT_API void stop() noexcept;
 
 };
 
-} // namespace uiMeasurement
+} // namespace uiMeasurement.

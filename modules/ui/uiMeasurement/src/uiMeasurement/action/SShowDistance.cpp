@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMeasurement/action/ShowDistance.hpp"
+#include "uiMeasurement/action/SShowDistance.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -43,58 +43,61 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image )
-
 static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
-ShowDistance::ShowDistance( ) noexcept
+SShowDistance::SShowDistance( ) noexcept
 {
-    FW_DEPRECATED("::uiMeasurement::action::ShowDistance", "::uiMeasurement::action::SShowDistance", "22.0");
-    newSlot(s_SHOW_DISTANCE_SLOT, &ShowDistance::showDistance, this);
+    newSlot(s_SHOW_DISTANCE_SLOT, &SShowDistance::showDistance, this);
 }
 
 //------------------------------------------------------------------------------
 
-ShowDistance::~ShowDistance() noexcept
+SShowDistance::~SShowDistance() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::info(std::ostream& _sstream )
+void SShowDistance::configuring()
 {
-    _sstream << "Action for show distance" << std::endl;
+    this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::updating()
+void SShowDistance::starting()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    this->::fwGui::IActionSrv::actionServiceStarting();
+}
 
-    if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
+//------------------------------------------------------------------------------
+
+void SShowDistance::updating()
+{
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         this->::fwGui::IActionSrv::setIsActive(false);
     }
     else
     {
-        ::fwData::Boolean::sptr showDistances =
+        const ::fwData::Boolean::sptr showDistances =
             image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
                                                      true));
-        bool isShown = showDistances->value();
+        const bool isShown = showDistances->value();
 
-        bool toShow = !isShown;
+        const bool toShow = !isShown;
         image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(toShow));
 
-        // auto manage hide/show : use Field Information instead let gui manage checking
+        // Manage hide/show from the field information.
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
+        const auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
             ::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
         {
             ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
@@ -105,42 +108,14 @@ void ShowDistance::updating()
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::showDistance(bool)
-{
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
-
-    ::fwData::Boolean::sptr showDistances =
-        image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
-                                                 true));
-
-    this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
-}
-
-//------------------------------------------------------------------------------
-
-void ShowDistance::configuring()
-{
-    this->::fwGui::IActionSrv::initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void ShowDistance::starting()
-{
-    this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void ShowDistance::stopping()
+void SShowDistance::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
@@ -150,5 +125,19 @@ void ShowDistance::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-} // namespace uiMeasurement
+void SShowDistance::showDistance(bool)
+{
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+    ::fwData::Boolean::sptr SShowDistances =
+        image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
+                                                 true));
+
+    this->::fwGui::IActionSrv::setIsActive( !(SShowDistances->value()) );
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace action.
+
+} // namespace uiMeasurement.

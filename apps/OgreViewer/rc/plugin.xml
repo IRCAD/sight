@@ -425,7 +425,7 @@
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="::uiMeasurement::action::ShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="::uiMeasurement::action::SShowDistance" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>

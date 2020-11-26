@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,12 +37,12 @@ namespace action
  * @brief This action adds distances on an image field.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service uid="..." type="::uiMeasurement::action::SAddDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: Image containing the distance field.
  */
@@ -51,30 +51,31 @@ class UIMEASUREMENT_CLASS_API SAddDistance final : public ::fwGui::IActionSrv
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SAddDistance,  ::fwGui::IActionSrv)
 
     /// Creates the service.
     UIMEASUREMENT_API SAddDistance() noexcept;
 
     /// Destroys the service.
-    UIMEASUREMENT_API virtual ~SAddDistance() noexcept override final;
+    UIMEASUREMENT_API ~SAddDistance() noexcept override;
 
-private:
+protected:
 
     /// Configures the action.
-    virtual void configuring() override final;
+    UIMEASUREMENT_API void configuring() override;
 
     /// Starts the action.
-    virtual void starting() override final;
+    UIMEASUREMENT_API void starting() override;
 
     /// Adds a new distance to the image field.
-    virtual void updating() override final;
+    UIMEASUREMENT_API void updating() override;
 
     /// Stops the action.
-    virtual void stopping() override final;
+    UIMEASUREMENT_API void stopping() override;
 
 };
 
-} // namespace action
+} // namespace action.
 
-} // namespace uiMeasurement
+} // namespace uiMeasurement.

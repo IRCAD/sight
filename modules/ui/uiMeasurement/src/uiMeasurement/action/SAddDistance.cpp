@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
@@ -71,46 +70,42 @@ void SAddDistance::starting()
 
 void SAddDistance::updating()
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectWriteLock lock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        SLM_ASSERT("'" + s_IMAGE_INOUT + "' is invalid.", image);
-        return;
+        const ::fwData::Point::sptr pt1 = ::fwData::Point::New();
+        std::copy( image->getOrigin2().begin(), image->getOrigin2().begin() +3, pt1->getCoord().begin() );
+
+        const ::fwData::Point::sptr pt2 = ::fwData::Point::New();
+        std::copy( image->getSize2().begin(), image->getSize2().begin() +3, pt2->getCoord().begin() );
+
+        std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
+                        image->getSpacing2().begin(),
+                        pt2->getCoord().begin(),
+                        std::multiplies<double>() );
+        std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
+                        image->getOrigin2().begin(),
+                        pt2->getCoord().begin(),
+                        std::plus<double>() );
+
+        const ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+
+        pl->getPoints().push_back( pt1 );
+        pl->getPoints().push_back( pt2 );
+
+        const ::fwData::Vector::sptr vectDist
+            = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());
+
+        vectDist->getContainer().push_back(pl);
+
+        // force distance to be shown
+        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility,  ::fwData::Boolean::New(true));
+
+        const auto sig =
+            image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
+        sig->asyncEmit(pl);
     }
-
-    const ::fwData::Point::sptr pt1 = ::fwData::Point::New();
-    std::copy( image->getOrigin2().begin(), image->getOrigin2().begin() +3, pt1->getCoord().begin() );
-
-    const ::fwData::Point::sptr pt2 = ::fwData::Point::New();
-    std::copy( image->getSize2().begin(), image->getSize2().begin() +3, pt2->getCoord().begin() );
-
-    std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
-                    image->getSpacing2().begin(),
-                    pt2->getCoord().begin(),
-                    std::multiplies<double>() );
-    std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
-                    image->getOrigin2().begin(),
-                    pt2->getCoord().begin(),
-                    std::plus<double>() );
-
-    const ::fwData::PointList::sptr pl = ::fwData::PointList::New();
-
-    pl->getPoints().push_back( pt1 );
-    pl->getPoints().push_back( pt2 );
-
-    const ::fwData::Vector::sptr vectDist
-        = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());
-
-    vectDist->getContainer().push_back(pl);
-
-    // force distance to be shown
-    image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility,  ::fwData::Boolean::New(true));
-
-    auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
-    sig->asyncEmit(pl);
 }
 
 //------------------------------------------------------------------------------
@@ -122,6 +117,6 @@ void SAddDistance::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
+} // namespace action.
 
-} // namespace uiMeasurement
+} // namespace uiMeasurement.
