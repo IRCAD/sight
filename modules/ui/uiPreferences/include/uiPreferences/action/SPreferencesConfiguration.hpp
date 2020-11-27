@@ -96,16 +96,26 @@ namespace action
             <values>trakStar,Aurora</values>
             <default_value>trakStar</default_value>
         </preference>
+        <preference>
+            <min>50</min>
+            <max>500</max>
+            <type>int</type>
+            <name>Device port</name>
+            <key>DEVICE_PORT</key>
+            <default_value>104</default_value>
+        </preference>
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b type: the type of the parameter field (path, text, checkbox, int, double, combobox).
- * - \b name: the name of the parameter.
- * - \b key: the key of the parameter.
- * - \b default_value: the default value of the parameter.
- * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for 'combobox'
- * type).
+ * - \b type (mandatory, path/text/checkbox/int/double/combobox): the type of the parameter field.
+ * - \b name (mandatory, string): the name of the parameter.
+ * - \b key (mandatory, string): the key of the parameter.
+ * - \b default_value (mandatory): the default value of the parameter.
+ * - \b values (optional): list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for
+ *                         'combobox' type).
+ * - \b min (optional, int/double, default=0/-1000000.0): minimum value allowed in the field.
+ * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
  */
 class UIPREFERENCES_CLASS_API SPreferencesConfiguration final :
     public QObject,
@@ -166,6 +176,8 @@ private:
         std::string m_preferenceKey;
         std::string m_name;
         std::string m_defaultValue;
+        std::pair< int, int > m_iMinMax { 0, 999999 };
+        std::pair< double, double > m_dMinMax { -1000000.0, 1000000.0 };
     };
 
     void onSelectDir(QPointer<QLineEdit> _lineEdit);
