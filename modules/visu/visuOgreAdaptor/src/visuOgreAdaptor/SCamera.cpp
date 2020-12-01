@@ -235,7 +235,7 @@ void SCamera::updateTF3D()
 
     const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
-    // Received input lign and column data from Sight transformation matrix
+    // Received input line and column data from Sight transformation matrix
     for (size_t lt = 0; lt < 4; lt++)
     {
         for (size_t ct = 0; ct < 4; ct++)

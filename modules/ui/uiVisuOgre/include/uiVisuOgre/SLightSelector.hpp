@@ -128,7 +128,7 @@ private:
 
     typedef ::fwCom::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
 
-    /// Checks or unchecks all item in m_lightsList
+    /// Checks or unchecks all item in m_lightsList.
     void onCheckAllBoxes(bool visible);
 
     void initLightList(::fwRenderOgre::Layer::sptr _layer);
@@ -162,7 +162,7 @@ private:
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
 
-    /// Stores all light adaptors (existing in the configuration and those created by this editor)
+    /// Stores all light adaptors (existing in the configuration and those created by this editor).
     std::vector< ::fwRenderOgre::ILight::sptr > m_lightAdaptors;
 
     /// Stores a light adaptor and it's data to keep a reference on them.
@@ -173,10 +173,10 @@ private:
         ::fwData::Color::sptr m_specular;
     };
 
-    /// Stores adaptors managed by this editor
+    /// Stores adaptors managed by this editor.
     std::vector< Light > m_managedLightAdaptors;
 
-    /// Defines thecurrently selected light
+    /// Defines the current selected light.
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
     /// Handles connections with the layer.

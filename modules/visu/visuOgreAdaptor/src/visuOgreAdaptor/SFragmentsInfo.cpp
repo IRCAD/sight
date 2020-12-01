@@ -389,4 +389,4 @@ void SFragmentsInfo::postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&)
 
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor.
+} // namespace visuOgreAdaptor.

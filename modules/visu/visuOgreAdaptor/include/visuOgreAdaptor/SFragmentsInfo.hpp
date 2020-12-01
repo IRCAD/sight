@@ -83,7 +83,7 @@ public:
      */
     VISUOGREADAPTOR_API void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
 
-    /// Calls @ref updating(), called just after the layer render target has been rendered to.
+    /// Calls updating(). This is called right after the layer render target has been rendered.
     VISUOGREADAPTOR_API void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
 
 protected:
