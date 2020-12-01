@@ -26,6 +26,8 @@
 
 #include <fwCom/Signals.hpp>
 
+#include <fwData/String.hpp>
+
 #include <fwGui/IActionSrv.hpp>
 
 #include <fwTools/Failed.hpp>
@@ -50,102 +52,108 @@ namespace action
 {
 
 /**
- * @brief   This action shows a dialog to configure preferences of an application.
+ * @brief This action shows a dialog to configure preferences of an application.
  *
- * @note    This service works with preferences and does nothing if the preferences service is not found.
+ * @note This service works with preferences and does nothing if the preferences service is not found.
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service type="::uiPreferences::action::SPreferencesConfiguration">
-            <preference>
-                <type>path</type>
-                <name>Video path</name>
-                <key>VIDEO_REF_DIR</key>
-                <default_value>...</default_value>
-            </preference>
-            <preference>
-                <type>file</type>
-                <name>Video file</name>
-                <key>VIDEO_REF_FILE</key>
-                <default_value>...</default_value>
-            </preference>
-            <preference>
-                <type>text</type>
-                <name>DICOM/MPPS port</name>
-                <key>DICOM_PORT_KEY</key>
-                <default_value>11112</default_value>
-            </preference>
-            <preference>
-                <type>text</type>
-                <name>AE Title</name>
-                <key>DICOM_AETITLE_KEY</key>
-                <default_value>dicom</default_value>
-            </preference>
-            <preference>
-                <type>checkbox</type>
-                <name>Keep PixelData (C-STORE)</name>
-                <key>KEEP_PIXELDATA_KEY</key>
-                <default_value>true</default_value>
-            </preference>
-            <preference>
-                <type>combobox</type>
-                <name>Device name</name>
-                <key>DEVICE_NAME</key>
-                <values>trakStar,Aurora</values>
-                <default_value>trakStar</default_value>
-            </preference>
-       </service>
+    <service type="::uiPreferences::action::SPreferencesConfiguration">
+        <preference>
+            <type>path</type>
+            <name>Video path</name>
+            <key>VIDEO_REF_DIR</key>
+            <default_value>...</default_value>
+        </preference>
+        <preference>
+            <type>file</type>
+            <name>Video file</name>
+            <key>VIDEO_REF_FILE</key>
+            <default_value>...</default_value>
+        </preference>
+        <preference>
+            <type>text</type>
+            <name>DICOM/MPPS port</name>
+            <key>DICOM_PORT_KEY</key>
+            <default_value>11112</default_value>
+        </preference>
+        <preference>
+            <type>text</type>
+            <name>AE Title</name>
+            <key>DICOM_AETITLE_KEY</key>
+            <default_value>dicom</default_value>
+        </preference>
+        <preference>
+            <type>checkbox</type>
+            <name>Keep PixelData (C-STORE)</name>
+            <key>KEEP_PIXELDATA_KEY</key>
+            <default_value>true</default_value>
+        </preference>
+        <preference>
+            <type>combobox</type>
+            <name>Device name</name>
+            <key>DEVICE_NAME</key>
+            <values>trakStar,Aurora</values>
+            <default_value>trakStar</default_value>
+        </preference>
+        <preference>
+            <min>50</min>
+            <max>500</max>
+            <type>int</type>
+            <name>Device port</name>
+            <key>DEVICE_PORT</key>
+            <default_value>104</default_value>
+        </preference>
+    </service>
    @endcode
- * - \b type: the type of the parameter field (path, text, checkbox, int, double, combobox).
- * - \b name: the name of the parameter.
- * - \b key: the key of the parameter.
- * - \b default_value: the default value of the parameter.
- * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for 'combobox'
- * type).
+ *
+ * @subsection Configuration Configuration:
+ * - \b type (mandatory, path/text/checkbox/int/double/combobox): the type of the parameter field.
+ * - \b name (mandatory, string): the name of the parameter.
+ * - \b key (mandatory, string): the key of the parameter.
+ * - \b default_value (mandatory): the default value of the parameter.
+ * - \b values (optional): list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for
+ *                         'combobox' type).
+ * - \b min (optional, int/double, default=0/-1000000.0): minimum value allowed in the field.
+ * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
  */
-class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
-                                                          public ::fwGui::IActionSrv
+class UIPREFERENCES_CLASS_API SPreferencesConfiguration final :
+    public QObject,
+    public ::fwGui::IActionSrv
 {
+
 Q_OBJECT
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv)
 
-    /// Constructor. Do nothing.
+    /// Initializes the signal.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;
 
-    /// Destructor. Do nothing.
-    UIPREFERENCES_API virtual ~SPreferencesConfiguration() noexcept;
+    /// Destroys the service.
+    UIPREFERENCES_API ~SPreferencesConfiguration() noexcept override;
+
+protected:
+
+    /// Configures the service.
+    UIPREFERENCES_API void configuring() override;
+
+    /// Gets the preference composite.
+    UIPREFERENCES_API void starting() override;
+
+    /// Shows a dialog to configure preferences declared in xml.
+    UIPREFERENCES_API void updating() override;
+
+    /// Does nothing.
+    UIPREFERENCES_API void stopping() override;
+
+private:
 
     /// Type of signal when parameters are updated.
     typedef ::fwCom::Signal< void () > ParametersModifiedSignalType;
     UIPREFERENCES_API static const ::fwCom::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
-
-protected:
-
-    /// Start the action. Gets the preference composite
-    virtual void starting() override;
-
-    /// Does nothing
-    virtual void stopping() override;
-
-    /// Shows a dialog to configure preferences declared in xml.
-    virtual void updating() override;
-
-    /// Does nothing
-    virtual void swapping() override;
-
-    /// Configures the service
-    virtual void configuring() override;
-
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
-
-    void onSelectDir(QPointer<QLineEdit> lineEdit);
-
-    void onSelectFile(QPointer<QLineEdit> lineEdit);
-
-private:
 
     enum class PreferenceType : std::int8_t
     {
@@ -164,17 +172,24 @@ private:
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
         QPointer<QComboBox> m_comboBox;
-        SPTR(::fwData::String) m_dataPreference;
+        ::fwData::String::sptr m_dataPreference;
         std::string m_preferenceKey;
         std::string m_name;
         std::string m_defaultValue;
+        std::pair< int, int > m_iMinMax { 0, 999999 };
+        std::pair< double, double > m_dMinMax { -1000000.0, 1000000.0 };
     };
+
+    void onSelectDir(QPointer<QLineEdit> _lineEdit);
+
+    void onSelectFile(QPointer<QLineEdit> _lineEdit);
 
     ParametersModifiedSignalType::sptr m_sigParametersModified;
 
-    typedef std::vector<PreferenceElt> PreferenceEltType;
-    PreferenceEltType m_preferences;
+    std::vector<PreferenceElt> m_preferences;
+
 };
 
-} // namespace action
-} // namespace uiPreferences
+} // namespace action.
+
+} // namespace uiPreferences.

@@ -376,6 +376,11 @@ QLineEdit
     color: #eff0f1;
 }
 
+QLineEdit[type="error"]
+{
+    color: rgb(218, 73, 57);
+}
+
 QAbstractItemView QLineEdit
 {
     padding: 0;
