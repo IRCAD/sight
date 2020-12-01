@@ -375,12 +375,26 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="negatoStoperSrv" type="::gui::action::SStarter" >
+        <service uid="resetLocalSrv" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="previewImageReset" />
+            <inout key="target" uid="localImage" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <service uid="previewNegatoStopperSrv" type="::gui::action::SStarter" >
             <stop uid="pNegatoAdp" />
         </service>
 
-        <service uid="negatoStarterSrv" type="::gui::action::SStarter" >
+        <service uid="previewNegatoStarterSrv" type="::gui::action::SStarter" >
             <start uid="pNegatoAdp" />
+        </service>
+
+        <service uid="localNegatoStopperSrv" type="::gui::action::SStarter" >
+            <stop uid="lNegatoAdp" />
+        </service>
+
+        <service uid="localNegatoStarterSrv" type="::gui::action::SStarter" >
+            <start uid="lNegatoAdp" />
         </service>
 
         <service uid="medicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
@@ -507,27 +521,40 @@
 
         <connect>
             <signal>previewSelections/addedObjects</signal>
-            <slot>negatoStoperSrv/update</slot>
+            <signal>previewSelections/removedObjects</signal>
+            <slot>previewNegatoStopperSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>negatoStoperSrv/updated</signal>
+            <signal>previewNegatoStopperSrv/updated</signal>
             <slot>resetPreviewSrv/update</slot>
         </connect>
 
         <connect>
             <signal>resetPreviewSrv/updated</signal>
-            <slot>negatoStarterSrv/update</slot>
+            <slot>previewNegatoStarterSrv/update</slot>
             <slot>extractPreviewSrv/update</slot>
         </connect>
 
         <connect>
             <signal>localSelections/addedObjects</signal>
-            <slot>extractLocalSrv/update</slot>
+            <signal>localSelections/removedObjects</signal>
+            <slot>localNegatoStopperSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>localNegatoStopperSrv/updated</signal>
+            <slot>resetLocalSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>resetLocalSrv/updated</signal>
+            <slot>localNegatoStarterSrv/update</slot>
+            <slot>extractLocalSrv/update</slot>
         </connect>
 
         <connect>
@@ -614,8 +641,11 @@
         <start uid="leftNotifierSrv" />
         <start uid="rightNotifierSrv" />
         <start uid="resetPreviewSrv" />
-        <start uid="negatoStoperSrv" />
-        <start uid="negatoStarterSrv" />
+        <start uid="resetLocalSrv" />
+        <start uid="previewNegatoStopperSrv" />
+        <start uid="previewNegatoStarterSrv" />
+        <start uid="localNegatoStopperSrv" />
+        <start uid="localNegatoStarterSrv" />
         <start uid="medicalImageSrv" />
         <start uid="extractPreviewSrv" />
         <start uid="extractLocalSrv" />
