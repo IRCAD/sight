@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,18 +22,32 @@
 
 #pragma once
 
-/**
- * @brief The namespace opVTKMesh contains an implementation of a VTK mesher.
- */
+#include "opVTKMesh/config.hpp"
+
+#include <fwServices/IService.hpp>
+
 namespace opVTKMesh
 {
 
 /**
- * @brief The namespace opVTKMesh::action contains operator to create mesh with VTK .
+ * @brief This interface defines generator service API.
+ * Must be implemented for services that generate data.
  */
-namespace action
+class OPVTKMESH_CLASS_API IGenerator : public ::fwServices::IService
 {
 
-} // namespace action.
+public:
 
-} // namespace opVTKMesh.
+    fwCoreServiceMacro(IGenerator, ::fwServices::IService)
+
+protected:
+
+    /// Does nothing.
+    OPVTKMESH_API IGenerator();
+
+    /// Destroys the interface.
+    OPVTKMESH_API ~IGenerator() override;
+
+};
+
+}//namespace opVTKMesh.

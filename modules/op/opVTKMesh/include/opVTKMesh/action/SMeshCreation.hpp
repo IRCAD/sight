@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,14 +35,7 @@ namespace action
 /**
  * @brief   Action to create a mesh from an image using VTK library
  *
- * @section Signals Signals
- * - \b sent(int): Emitted when .
- *
- * @section Slots Slots
- * - \b receive(int): .
-
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service type="::opVTKMesh::action::SMeshCreation">
             <in key="image" uid="..." />
@@ -50,41 +43,50 @@ namespace action
             <percentReduction value="0" />
        </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b image [::fwData::Image]: source image.
+ *
  * @subsection In-Out In-Out:
  * - \b mesh [::fwData::Mesh]: target mesh.
+ *
  * @subsection Configuration Configuration:
  * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..
  */
-class OPVTKMESH_CLASS_API SMeshCreation : public ::fwGui::IActionSrv
+class OPVTKMESH_CLASS_API SMeshCreation final : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SMeshCreation, ::fwGui::IActionSrv);
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SMeshCreation, ::fwGui::IActionSrv)
 
+    /// Initializes  members variables.
     OPVTKMESH_API SMeshCreation() noexcept;
 
-    OPVTKMESH_API virtual ~SMeshCreation() noexcept;
+    /// Destroys service.
+    OPVTKMESH_API ~SMeshCreation() noexcept override;
 
 protected:
 
+    /// Starts the action.
     OPVTKMESH_API void starting() override;
 
+    /// Stops the action.
     OPVTKMESH_API void stopping() override;
 
-    /// Configure the service.
+    /// Configures the service.
     OPVTKMESH_API void configuring() override;
 
-    /// Process the mesh creation from the image.
+    /// Processes the mesh creation from the image.
     OPVTKMESH_API void updating() override;
 
 private:
 
+    /// image size reduction value.
     unsigned int m_reduction;
 };
 
-} // namespace action
-} // namespace opVTKMesh
+} // namespace action.
+} // namespace opVTKMesh.

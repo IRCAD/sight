@@ -28,22 +28,19 @@ namespace opImageFilter
 {
 
 /**
- * @brief   Implements a plugin for the opImageFilter module.
+ * @brief Implements a plugin for the opImageFilter module.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
-
-    /**
-     * @brief   destructor
-     */
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
+    /// Does nothing.
     void start();
 
-    // Overrides
+    // Does nothing.
     void stop() noexcept;
 
 };
 
-} // namespace opImageFilter
+} // namespace opImageFilter.

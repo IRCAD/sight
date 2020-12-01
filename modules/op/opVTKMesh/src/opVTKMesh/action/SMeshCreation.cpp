@@ -171,5 +171,5 @@ void SMeshCreation::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace action
-} // namespace opVTKMesh
+} // namespace action.
+} // namespace opVTKMesh.

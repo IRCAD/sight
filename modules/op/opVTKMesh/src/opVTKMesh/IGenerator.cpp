@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,23 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "opVTKMesh/IGenerator.hpp"
 
-/**
- * @brief The namespace opVTKMesh contains an implementation of a VTK mesher.
- */
 namespace opVTKMesh
 {
 
-/**
- * @brief The namespace opVTKMesh::action contains operator to create mesh with VTK .
- */
-namespace action
-{
+//-----------------------------------------------------------------------------
 
-} // namespace action.
+IGenerator::IGenerator()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+IGenerator::~IGenerator()
+{
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace opVTKMesh.
