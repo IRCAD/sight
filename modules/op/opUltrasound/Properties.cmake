@@ -13,8 +13,6 @@ set( DEPENDENCIES
         fwVtkIO
         fwGui
         fwMath
-        dataOp
-        meshOp
         )
 set( REQUIREMENTS fwData servicesReg)
 set( CONAN_DEPS
