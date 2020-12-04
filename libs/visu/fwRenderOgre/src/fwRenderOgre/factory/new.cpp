@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,18 +64,5 @@ namespace lightFactory
 }
 
 } // namespace lightFactory
-
-namespace interactorFactory
-{
-
-SPTR(::fwRenderOgre::interactor::IInteractor) New( const ::fwRenderOgre::registry::KeyType& classname,
-                                                   const std::string& sceneManagerName)
-{
-    auto interactor = ::fwRenderOgre::registry::getInteractorRegistry()->create(classname);
-    interactor->setSceneID(sceneManagerName);
-    return interactor;
-}
-
-} // namespace interactorFactory
 
 } // namespace fwRenderOgre

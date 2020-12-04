@@ -83,10 +83,10 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SText, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Creates the adaptor.
     VISUOGREADAPTOR_API SText() noexcept;
 
-    /// Destructor.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SText() noexcept override;
 
 protected:

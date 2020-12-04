@@ -392,7 +392,6 @@
                     <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
                     <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="reprojectionParamametersSrv" type="::guiQt::editor::SParameters" >
@@ -400,7 +399,6 @@
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->

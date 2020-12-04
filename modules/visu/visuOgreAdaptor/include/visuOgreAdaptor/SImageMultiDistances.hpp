@@ -86,8 +86,26 @@ public:
     /// Initialize slots.
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SImageMultiDistances() noexcept override;
+
+    /**
+     * @brief Retrieves the picked distance and stores the result in m_pickedData.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+
+    /**
+     * @brief Moves a distance stores in m_pickedData.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void mouseMoveEvent(MouseButton, Modifier _mod, int _x, int _y, int, int) override;
+
+    /// Resets m_pickedData.
+    VISUOGREADAPTOR_API void buttonReleaseEvent(MouseButton, Modifier _mod, int, int) override;
 
 protected:
 
@@ -196,24 +214,6 @@ private:
      * @return The picked world coordinates.
      */
     std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
-
-    /**
-     * @brief Retrieves the picked distance and stores the result in m_pickedData.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override;
-
-    /**
-     * @brief Moves a distance stores in m_pickedData.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override;
-
-    /// Resets m_pickedData.
-    virtual void buttonReleaseEvent(MouseButton, int, int) override;
 
     /**
      * @brief Creates a distance and add it into m_distances.

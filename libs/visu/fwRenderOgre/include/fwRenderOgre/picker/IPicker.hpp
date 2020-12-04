@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,9 +55,6 @@ public:
      * @return True if an object has been selected.
      */
     FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask);
-
-    [[deprecated("Use the version with three arguments instead. Removed in sight 21.0")]]
-    FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _queryMask);
 
     /**
      * @brief Get the selected object if there is one.

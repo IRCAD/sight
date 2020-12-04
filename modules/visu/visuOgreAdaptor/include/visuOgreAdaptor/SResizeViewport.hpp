@@ -64,7 +64,7 @@ public:
     /// Initializes slots.
     VISUOGREADAPTOR_API SResizeViewport() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SResizeViewport() noexcept override;
 
 protected:

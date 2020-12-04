@@ -36,7 +36,7 @@ namespace fwRenderOgre::interactor
  *
  * Emits a signal with the relevant intersection data when picking succeeds.
  */
-class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::interactor::IInteractor
+class FWRENDEROGRE_CLASS_API MeshPickerInteractor final : public ::fwRenderOgre::interactor::IInteractor
 {
 
 public:
@@ -48,13 +48,13 @@ public:
     FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;
 
     /// Destroys the picker.
-    FWRENDEROGRE_API virtual ~MeshPickerInteractor() noexcept;
+    FWRENDEROGRE_API ~MeshPickerInteractor() noexcept override;
 
     /// Runs a picking query when a mouse button is released @see MeshPickerInteractor::pick().
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+    FWRENDEROGRE_API void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
     /// Runs a picking query when a mouse button is pressed @see MeshPickerInteractor::pick().
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+    FWRENDEROGRE_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
     /// Sets the signal to be called when picking succeeded.
     FWRENDEROGRE_API void setPointClickedSig(const PointClickedSigType::sptr& _sig);

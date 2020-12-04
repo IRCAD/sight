@@ -78,7 +78,7 @@ public:
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;
 
-    /// Does nothing
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SLine() noexcept override;
 
 protected:

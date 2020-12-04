@@ -26,8 +26,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwDataTools/Color.hpp>
@@ -724,10 +722,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     }
 
     // Get the reconstruction list.
-    const ::fwMedData::ModelSeries::sptr extrudedMeshes
-        = this->getInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
-    SLM_ASSERT("inout '" + s_EXTRUDED_MESHES_INOUT + "' does not exist.", extrudedMeshes);
-    ::fwData::mt::ObjectWriteLock lock(extrudedMeshes);
+    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
 
     ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 

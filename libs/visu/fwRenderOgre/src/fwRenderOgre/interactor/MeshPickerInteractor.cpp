@@ -28,8 +28,6 @@
 
 #include <fwCom/Signal.hxx>
 
-fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInteractor );
-
 namespace fwRenderOgre::interactor
 {
 

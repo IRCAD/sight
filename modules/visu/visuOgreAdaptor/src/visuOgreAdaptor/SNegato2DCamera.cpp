@@ -25,8 +25,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -127,11 +125,11 @@ void SNegato2DCamera::swapping(const KeyType& _key)
 {
     if(_key == s_TF_INOUT)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 }
 
@@ -172,7 +170,10 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
         const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
         // Compute the mouse's position in the camera's view.
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real >(_x),
+                                        static_cast< ::Ogre::Real >(_y),
+                                        ::Ogre::Real(0));
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         // Zoom in.
         const float orthoHeight    = camera->getOrthoWindowHeight();
@@ -186,7 +187,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
         camera->setOrthoWindowHeight(clampedHeight);
 
         // Compute the mouse's position in the zoomed view.
-        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         // Translate the camera back to the cursor's previous position.
         camNode->translate(mousePosView - newMousePosView);
@@ -204,9 +205,17 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier,
         auto* const camera  = layer->getDefaultCamera();
         auto* const camNode = camera->getParentNode();
 
+        const ::Ogre::Vector3 deltaScreenPos(static_cast< ::Ogre::Real >(_x - _dx),
+                                             static_cast< ::Ogre::Real >(_y - _dy),
+                                             ::Ogre::Real(0));
+        const ::Ogre::Vector3 screenPos(static_cast< ::Ogre::Real >(_x),
+                                        static_cast< ::Ogre::Real >(_y),
+                                        ::Ogre::Real(0));
+
         const auto previousMousePosView =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x - _dx, _y - _dy);
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, deltaScreenPos);
+        const auto mousePosView =
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         camNode->translate(mousePosView - previousMousePosView);
     }
@@ -233,7 +242,7 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
         m_isInteracting = true;
 
         const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
 
         m_initialLevel  = tf->getLevel();
         m_initialWindow = tf->getWindow();
@@ -266,11 +275,11 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
+    const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const auto tf  = tfW.lock();
+    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
@@ -288,7 +297,6 @@ void SNegato2DCamera::resetCamera()
     camNode->setPosition(::Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
-    const ::fwData::mt::ObjectReadLock imageLock(image);
     const auto origin  = image->getOrigin2();
     const auto size    = image->getSize2();
     const auto spacing = image->getSpacing2();
@@ -416,7 +424,7 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
 
     const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );

@@ -27,8 +27,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -174,7 +172,7 @@ void SMesh::starting()
 
         SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
                    result != mtlAdaptors.end());
-        m_material = m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT);
+        m_material = m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared();
     }
 
     const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
@@ -413,7 +411,8 @@ void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
     }
-    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
+    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+            m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -446,7 +445,8 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
-    else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
+    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+            m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }

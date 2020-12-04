@@ -232,7 +232,7 @@
         </service>
 
         <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
-            <config layer="defaultLayer" queryMask="0x40000000" />
+            <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
@@ -255,7 +255,7 @@
         <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D" >
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
-            <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" />
+            <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
         <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
@@ -265,7 +265,7 @@
 
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" />
+            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
         <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >

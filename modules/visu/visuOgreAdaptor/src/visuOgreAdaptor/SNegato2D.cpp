@@ -26,8 +26,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -62,7 +60,6 @@ static const std::string s_BORDER_CONFIG      = "border";
 SNegato2D::SNegato2D() noexcept :
     m_helperTF(std::bind(&SNegato2D::updateTF, this))
 {
-    newSlot("newImage", &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
 
@@ -124,12 +121,13 @@ void SNegato2D::starting()
 {
     this->initialize();
     this->getRenderService()->makeCurrent();
+    {
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+    }
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -184,11 +182,11 @@ void SNegato2D::swapping(const KeyType& _key)
 {
     if (_key == s_TF_INOUT)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         this->updateTF();
     }
@@ -203,61 +201,66 @@ void SNegato2D::newImage()
         // The adaptor hasn't start yet (the window is maybe not visible)
         return;
     }
+
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-
-    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
-
-    const ::fwData::mt::ObjectReadLock imgLock(image);
-
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    int axialIdx    = 0;
+    int frontalIdx  = 0;
+    int sagittalIdx = 0;
     {
-        // Retrieves or creates the slice index fields
-        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+
+        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+        {
+            return;
+        }
+
+        // Retrieves or creates the slice index fields
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
+
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared());
         this->createPlane(spacing);
         m_plane->setOriginPosition(origin);
 
         // Update Slice
-        const auto axialIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-        const auto frontalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-        const auto sagittalIndex =
-            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        const auto imgSize       = image->getSize2();
+        const auto axialIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
+        SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
+        axialIdx = axialIdxField ?
+                   static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
-        this->changeSliceIndex(
-            static_cast<int>(axialIndex),
-            static_cast<int>(frontalIndex),
-            static_cast<int>(sagittalIndex)
-            );
+        const auto frontalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
+        SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
+        frontalIdx = frontalIdxField ?
+                     static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
-        // Update tranfer function in Gpu programs
-        this->updateTF();
-
-        this->requestRender();
+        const auto sagittalIdxField = image->getField< ::fwData::Integer >(
+            ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
+        SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
+        sagittalIdx = sagittalIdxField ?
+                      static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0]/2);
     }
-}
 
-//------------------------------------------------------------------------------
+    this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
 
-void SNegato2D::newImageDeprecatedSlot()
-{
-    FW_DEPRECATED_MSG("The 'newImage' slot will be removed in sight 21.0. Call 'update' instead.", "21.0");
-    this->newImage();
+    // Update tranfer function in Gpu programs
+    this->updateTF();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato2D::changeSliceType(int _from, int _to)
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectReadLock imgLock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
@@ -272,7 +275,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
         m_plane->setOrientationMode(newOrientation);
 
-        const auto origin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+        const auto origin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared()).second;
         m_plane->setOriginPosition(origin);
 
         // Update threshold if necessary
@@ -288,9 +291,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectReadLock imgLock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -332,7 +333,7 @@ void SNegato2D::updateTF()
 
     const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
 
         m_plane->switchThresholding(tf->getIsClamped());

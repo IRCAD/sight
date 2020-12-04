@@ -29,8 +29,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/Color.hpp>
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -85,7 +83,6 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
-    newSlot("setVisibility", &SNegato3D::updateVisibility, this);
 
     m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
@@ -153,11 +150,13 @@ void SNegato3D::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
+    {
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+    }
 
     // TF texture initialization
     m_gpuTF = std::make_unique< ::fwRenderOgre::TransferFunction>();
@@ -247,11 +246,11 @@ void SNegato3D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         this->updateTF();
     }
@@ -317,23 +316,25 @@ void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vect
 void SNegato3D::newImage()
 {
     this->getRenderService()->makeCurrent();
+
+    int axialIdx    = 0;
+    int frontalIdx  = 0;
+    int sagittalIdx = 0;
     {
-        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tf  = tfW.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-        const ::fwData::mt::ObjectReadLock imageLock(image);
-
-        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
         {
             return;
         }
 
-        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
 
-        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared());
         this->createPlanes(spacing, origin);
 
         // Update Slice
@@ -341,24 +342,23 @@ void SNegato3D::newImage()
         const auto axialIdxField = image->getField< ::fwData::Integer >(
             ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
         SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
-        const auto axialIdx = axialIdxField ? axialIdxField->getValue() : static_cast<int>(imgSize[2]/2);
+        axialIdx = axialIdxField ?
+                   static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
         const auto frontalIdxField = image->getField< ::fwData::Integer >(
             ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
         SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
-        const auto frontalIdx = frontalIdxField ? frontalIdxField->getValue() : static_cast<int>(imgSize[1]/2);
+        frontalIdx = frontalIdxField ?
+                     static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
         const auto sagittalIdxField = image->getField< ::fwData::Integer >(
             ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
         SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
-        const auto sagittalIdx = sagittalIdxField ? sagittalIdxField->getValue() : static_cast<int>(imgSize[0]/2);
-
-        this->changeSliceIndex(
-            static_cast<int>(axialIdx),
-            static_cast<int>(frontalIdx),
-            static_cast<int>(sagittalIdx)
-            );
+        sagittalIdx = sagittalIdxField ?
+                      static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0]/2);
     }
+
+    this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
 
     // Update tranfer function in Gpu programs
     this->updateTF();
@@ -388,9 +388,7 @@ void SNegato3D::changeSliceType(int, int)
 
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
-    const ::fwData::mt::ObjectReadLock imgLock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     auto imgSize = image->getSize2();
 
@@ -421,7 +419,7 @@ void SNegato3D::updateTF()
 {
     const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
 
         for(const auto& plane : m_planes)
@@ -444,9 +442,7 @@ void SNegato3D::setPlanesOpacity()
 
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
-        const ::fwData::mt::ObjectReadLock imageLock(image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
         const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
         const auto isVisible    = image->setDefaultField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(true));
@@ -468,29 +464,21 @@ void SNegato3D::setPlanesOpacity()
 
 void SNegato3D::setVisible(bool _visible)
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
-    const ::fwData::mt::ObjectReadLock imageLock(image);
-
-    image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
+    {
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
+    }
 
     this->setPlanesOpacity();
 
     using VisModSigType = ::fwData::Image::VisibilityModifiedSignalType;
-    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
 
+    const auto image  = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
     {
         const ::fwCom::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
         visUpdateSig->asyncEmit(_visible);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::setVisibilityDeprecatedSlot(bool _visible)
-{
-    FW_DEPRECATED_MSG("::visuOgreAdaptor::SNegato3D::setVisibility is no longer supported", "21.0")
-    ::fwRenderOgre::IAdaptor::updateVisibility(_visible);
 }
 
 //------------------------------------------------------------------------------
@@ -545,7 +533,7 @@ void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         if(this->getPickedSlices(_x, _y) != std::nullopt)
         {
             const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-            const ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::mt::locked_ptr lock(tf);
 
             m_initialLevel  = tf->getLevel();
             m_initialWindow = tf->getWindow();
@@ -586,9 +574,7 @@ void SNegato3D::moveSlices(int _x, int _y)
 
     if(pickRes.has_value())
     {
-        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
-        const ::fwData::mt::ObjectReadLock imgLock(image);
+        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
         auto pickedPt = pickRes.value();
 
@@ -600,7 +586,7 @@ void SNegato3D::moveSlices(int _x, int _y)
             }
         }
 
-        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared());
         pickedPt                     = (pickedPt - origin) / spacing;
 
         const ::Ogre::Vector3i pickedPtI(pickedPt);
@@ -620,18 +606,16 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
         if(pickedPos.has_value())
         {
-            const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
-            const ::fwData::mt::ObjectReadLock imgLock(image);
+            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-            if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+            if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
             {
                 return;
             }
 
             const auto imageBufferLock = image->lock();
 
-            const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+            const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared());
             const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
 
             this->updatePickingCross(pickedPos.value(), origin);
@@ -725,7 +709,7 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
 
     const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const ::fwData::mt::locked_ptr lock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );

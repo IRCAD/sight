@@ -74,21 +74,18 @@ are already displayed and where they are displayed on screen.
                 <parameters>
                     <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="typeAct" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="positionAct" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="notifyAct" type="::gui::action::SSlotCaller" >

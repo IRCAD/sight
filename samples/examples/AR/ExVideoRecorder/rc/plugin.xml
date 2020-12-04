@@ -141,7 +141,6 @@
                 <parameters>
                     <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="frameWriterSrv" type="::videoOpenCV::SFrameWriter" worker="videoRecordingActWorker" >

@@ -100,9 +100,6 @@ public:
     /// Color bleeding factor setter.
     FWRENDEROGRE_API virtual void setColorBleedingFactor(double colorBleedingFactor);
 
-    [[deprecated("replaced by setAmbientOcclusionSAT (sight 21.0)")]]
-    FWRENDEROGRE_API virtual void setIlluminationVolume(IllumAmbientOcclusionSAT::sptr illuminationVolume);
-
     /**
      * @brief Sets the ambient occlsuion and soft shadows SAT.
      * @param _ambientOcclusionSAT SAT that store importances values.

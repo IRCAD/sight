@@ -386,14 +386,6 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setIlluminationVolume(IllumAmbientOcclusionSAT::sptr illuminationVolume)
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
-    this->setAmbientOcclusionSAT(illuminationVolume);
-}
-
-//-----------------------------------------------------------------------------
-
 void RayTracingVolumeRenderer::setAmbientOcclusionSAT(IllumAmbientOcclusionSAT::sptr _ambientOcclusionSAT)
 {
     m_ambientOcclusionSAT = _ambientOcclusionSAT;

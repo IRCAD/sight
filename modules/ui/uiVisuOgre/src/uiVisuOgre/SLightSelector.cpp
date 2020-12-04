@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,8 +54,8 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector,
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SLightSelector::s_LIGHT_SELECTED_SIG = "lightSelected";
-const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT = "initLightList";
+const ::fwCom::Signals::SignalKeyType s_LIGHT_SELECTED_SIG = "lightSelected";
+const ::fwCom::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT = "initLightList";
 
 //------------------------------------------------------------------------------
 
@@ -69,6 +69,13 @@ SLightSelector::SLightSelector() noexcept
 
 SLightSelector::~SLightSelector() noexcept
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::configuring()
+{
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -112,20 +119,20 @@ void SLightSelector::starting()
 
     this->updateLightsList();
 
-    QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
+    QObject::connect(m_layersBox,  qOverload<int>(&QComboBox::activated), this, &SLightSelector::onSelectedLayerItem);
+    QObject::connect(m_lightsList, &QListWidget::currentItemChanged, this, &SLightSelector::onSelectedLightItem);
+    QObject::connect(m_lightsList, &QListWidget::itemChanged, this, &SLightSelector::onCheckedLightItem);
+    QObject::connect(m_addLightBtn, &QPushButton::clicked, this, &SLightSelector::onAddLight);
+    QObject::connect(m_removeLightBtn, &QPushButton::clicked, this, &SLightSelector::onRemoveLight);
+    QObject::connect(m_ambientColorBtn, &QPushButton::clicked, this, &SLightSelector::onEditAmbientColor);
+    QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &SLightSelector::onCheckAllCheckBox);
+    QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &SLightSelector::onUnCheckAllCheckBox);
+}
 
-    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-                     this, SLOT(onSelectedLightItem(QListWidgetItem*,QListWidgetItem*)));
-    QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
-                     this, SLOT(onCheckedLightItem(QListWidgetItem*)));
+//------------------------------------------------------------------------------
 
-    QObject::connect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
-    QObject::connect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
-
-    QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
-
-    QObject::connect(m_checkAllButton, SIGNAL(clicked()), this, SLOT(onCheckAllCheckBox()));
-    QObject::connect(m_unCheckAllButton, SIGNAL(clicked()), this, SLOT(onUnCheckAllCheckBox()));
+void SLightSelector::updating()
+{
 }
 
 //------------------------------------------------------------------------------
@@ -134,26 +141,13 @@ void SLightSelector::stopping()
 {
     m_connections.disconnect();
 
-    for(auto& lightAdaptor : m_managedLightAdaptors)
+    for(auto& light : m_managedLightAdaptors)
     {
-        ::fwRenderOgre::ILight::destroyLightAdaptor(lightAdaptor);
+        ::fwRenderOgre::ILight::destroyLightAdaptor(light.m_light);
     }
     m_managedLightAdaptors.clear();
 
     this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void SLightSelector::configuring()
-{
-    this->initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void SLightSelector::updating()
-{
 }
 
 //------------------------------------------------------------------------------
@@ -168,7 +162,7 @@ void SLightSelector::onSelectedLayerItem(int _index)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem*)
 {
     if(_item)
     {
@@ -193,7 +187,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onAddLight(bool /*_checked*/)
+void SLightSelector::onAddLight(bool)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -221,13 +215,18 @@ void SLightSelector::onAddLight(bool /*_checked*/)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onRemoveLight(bool /*_checked*/)
+void SLightSelector::onRemoveLight(bool)
 {
     if(m_currentLight)
     {
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
-        const std::vector< ::fwRenderOgre::ILight::sptr >::iterator position
-            = std::find(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), m_currentLight);
+
+        const std::vector< Light >::iterator position
+            = std::find_if(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), [&](const Light& _light)
+            {
+                return _light.m_light == m_currentLight;
+            });
+
         if (position != m_managedLightAdaptors.end())
         {
             m_managedLightAdaptors.erase(position);
@@ -257,7 +256,7 @@ void SLightSelector::onRemoveLight(bool /*_checked*/)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onEditAmbientColor(bool /*_checked*/)
+void SLightSelector::onEditAmbientColor(bool)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -364,7 +363,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setName(_name);
         lightAdaptor->start();
 
-        m_managedLightAdaptors.push_back(lightAdaptor);
+        m_managedLightAdaptors.push_back({lightAdaptor, lightDiffuseColor, lightSpecularColor});
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 
@@ -444,19 +443,19 @@ NewLightDialog::NewLightDialog(QWidget* _parent) :
     this->setModal(true);
     this->setLayout(newLightLayout);
 
-    QObject::connect(m_okBtn, SIGNAL(clicked(bool)), this, SLOT(onOkBtn(bool)));
+    QObject::connect(m_okBtn, &QPushButton::clicked, this, &NewLightDialog::onOkBtn);
 }
 
 //------------------------------------------------------------------------------
 
 NewLightDialog::~NewLightDialog()
 {
-    QObject::disconnect(m_okBtn, SIGNAL(clicked(bool)), this, SLOT(onOkBtn(bool)));
+    QObject::disconnect(m_okBtn, &QPushButton::clicked, this, &NewLightDialog::onOkBtn);
 }
 
 //------------------------------------------------------------------------------
 
-void NewLightDialog::onOkBtn(bool _checked)
+void NewLightDialog::onOkBtn(bool)
 {
     if(!m_lightNameEdit->text().isEmpty())
     {
