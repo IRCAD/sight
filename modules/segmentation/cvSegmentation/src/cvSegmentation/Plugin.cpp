@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,27 @@
  *
  ***********************************************************************/
 
-/**
- * @brief The namespace cvSegmentation contains services for the simulation of ultrasound images
- */
-#pragma once
+#include "cvSegmentation/Plugin.hpp"
+
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace cvSegmentation
 {
+
+Plugin::~Plugin() noexcept
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void Plugin::start()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
 } // namespace cvSegmentation

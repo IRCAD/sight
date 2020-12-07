@@ -32,7 +32,6 @@ namespace colourImageMasking
 
 /**
  * @brief Define supported color spaces
- * @deprecated will be removed in sight 22.0
  */
 enum ColSpace
 {

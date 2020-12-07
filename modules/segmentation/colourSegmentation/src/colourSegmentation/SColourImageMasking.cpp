@@ -65,7 +65,9 @@ SColourImageMasking::SColourImageMasking() noexcept :
     m_backgroundComponents(5),
     m_foregroundComponents(5)
 {
-    FW_DEPRECATED_MSG("This service is not supported anymore, it will be removed in sight 22.0.", "22.0");
+    FW_DEPRECATED_MSG("::segmentation::colourSegmentation::SColourImageMasking is no longer supported, the methods have been moved to "
+                      "::cvSegmentation::SColourImageMasking",
+                      "22.0")
 
     newSlot( s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this );
     newSlot( s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this );

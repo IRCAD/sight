@@ -269,4 +269,4 @@ void STargeting::removePoint()
 
 // -----------------------------------------------------------------------------
 
-} // uiTools
+}// namespace uiTools

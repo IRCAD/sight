@@ -101,7 +101,7 @@ public:
 
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
     ///@}
-    [[deprecated("This service is not supported anymore, it will be removed in sight 22.0.")]]
+    [[deprecated("moved to ::cvSegmentation::SColourImageMasking.")]]
     ///Constructor
     COLOURSEGMENTATION_API SColourImageMasking() noexcept;
 

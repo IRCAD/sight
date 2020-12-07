@@ -33,13 +33,13 @@ namespace uiTools
 
 /**
  * @brief  Return a pointList containing the position of a landmark on a CrossHair
-
+ *
  * @section Slots Slots
  * - \b updateSelectedPoint( std::string, size_t ): update selected landmark point position on the crosshair
  * - \b updatePoint( std::string ): update last landmark point position on the crosshair
  * - \b removePoint(): remove the landmark's position on the crosshair
  *
- *  * @section XML XML Configuration
+ * @section XML XML Configuration
  * @code{.xml}
         <service type="::uiTools::STargeting">
             <in key="landmark" uid="..." />

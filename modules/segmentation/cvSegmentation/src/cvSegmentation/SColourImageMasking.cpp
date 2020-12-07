@@ -30,8 +30,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <boost/tokenizer.hpp>
@@ -166,9 +164,9 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        auto mask        = this->getInput< ::fwData::Image >(s_MASK_KEY);
-        auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
-        auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+        const auto mask    = this->getLockedInput< ::fwData::Image >(s_MASK_KEY);
+        const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
+        auto videoMaskTL   = this->getLockedInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
         // Sanity checks
         SLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
@@ -213,20 +211,20 @@ void SColourImageMasking::updating()
         m_lastVideoTimestamp = videoTimestamp;
 
         // convert the ::fw::Data::Image mask to an OpenCV image
-        ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
+        ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask.get_shared());
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
         maskCV = (maskCV > 0);
 
         //convert the ::arData::FrameTL videoTL to an OpenCV image
-        const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
+        const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
         SPTR(::arData::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
         std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
 
-        ::cv::Mat videoMaskCV = ::cvIO::FrameTL::moveToCv(videoMaskTL, frameBuffOutMask);
+        ::cv::Mat videoMaskCV = ::cvIO::FrameTL::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
 
         // Get the foreground mask
         ::cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
@@ -247,8 +245,8 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    auto mask    = this->getInput< ::fwData::Image >(s_MASK_KEY);
-    auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
+    const auto mask    = this->getLockedInput< ::fwData::Image >(s_MASK_KEY);
+    const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
@@ -260,10 +258,10 @@ void SColourImageMasking::setBackground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert the ::arData::FrameTL videoTL to an OpenCV image
-    const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
+    const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // convert the ::fwData::Image mask to an OpenCV image
-    ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
+    ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask.get_shared());
 
     // Convert color mask to grayscale value
     ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
@@ -290,7 +288,7 @@ void SColourImageMasking::setBackground()
     m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
 
     // Initialize the mask timeline
-    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    auto videoMaskTL = this->getLockedInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
     videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), ::fwTools::Type::s_UINT8, 4);
 }
 
@@ -298,7 +296,7 @@ void SColourImageMasking::setBackground()
 
 void SColourImageMasking::setForeground()
 {
-    auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
+    const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
@@ -310,7 +308,7 @@ void SColourImageMasking::setForeground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert mask to an OpenCV image:
-    ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
+    ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // Convert RGB to HSV
     ::cv::Mat videoBGR, videoHSV;
@@ -373,7 +371,7 @@ void SColourImageMasking::setForegroundComponents(int fgComponents)
 
 void SColourImageMasking::clearMaskTL()
 {
-    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    auto videoMaskTL = this->getLockedInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
     videoMaskTL->clearTimeline();
     auto sigTLCleared = videoMaskTL->signal< ::arData::FrameTL::ObjectClearedSignalType >(
         ::arData::FrameTL::s_CLEARED_SIG );

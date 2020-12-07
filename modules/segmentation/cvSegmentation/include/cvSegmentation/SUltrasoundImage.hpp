@@ -57,7 +57,6 @@ namespace cvSegmentation
  * - \b resetEchoPlane(): Reset the ultrasound plane extraction.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service type="::cvSegmentation::SUltrasoundImage">
        <in key="ultrasoundImage" uid="..." />
@@ -77,11 +76,12 @@ namespace cvSegmentation
  * - \b debug (optional, default=no) : Debug mode.
  * - \b convex (optional, default=yes) : Convex shape of extracted image.
  */
-class CVSEGMENTATION_CLASS_API SUltrasoundImage : public ::fwServices::IOperator
+class CVSEGMENTATION_CLASS_API SUltrasoundImage final : public ::fwServices::IOperator
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SUltrasoundImage, ::fwServices::IOperator)
 
     typedef ::fwCom::Signal< void (int, std::string) > IntegerChangedSignalType;
@@ -89,8 +89,8 @@ public:
     /// Initialize members.
     CVSEGMENTATION_API SUltrasoundImage() noexcept;
 
-    /// Does nothing.
-    CVSEGMENTATION_API virtual ~SUltrasoundImage() noexcept;
+    /// Destroys the service.
+    CVSEGMENTATION_API ~SUltrasoundImage() noexcept override;
 
     struct ProbeSimulationSettings
     {
@@ -128,7 +128,7 @@ private:
     void configuring() final;
 
     /**
-     * @brief compute the equation of a line (ax+b).
+     * @brief Computes the equation of a line (ax+b).
      * @param p1 coordinates of the first point of the line.
      * @param p2 coordinates of the second point of the line.
      * @return the line equation passing through the 2 points p1 and p2.
@@ -136,7 +136,7 @@ private:
     ::cv::Vec2d computeLineEquation(const ::cv::Vec2d& p1, const ::cv::Vec2d& p2) const;
 
     /**
-     * @brief compute intersection between two lines.
+     * @brief Computes intersection between two lines.
      * @param eql1 first line equation (eql1[0]x + eql1[1]).
      * @param eql2 second line equation (eql2[0]x + eql2[1]).
      * @return the coordinates of the intersection point between the two lines eql1 and eql2.
@@ -144,7 +144,7 @@ private:
     ::cv::Vec2d computeLinesIntersection(const ::cv::Vec2d& eql1, const ::cv::Vec2d& eql2) const;
 
     /**
-     * @brief compute intersections between a circle and a line.
+     * @brief Computes intersections between a circle and a line.
      * @param eql line equation (eql1[0]x + eql1[1]).
      * @param center circle center coordinates.
      * @param R circle radius.
@@ -155,7 +155,7 @@ private:
                                                              const double R) const;
 
     /**
-     * @brief compute angle between vertical line and a line equation.
+     * @brief Computes angle between vertical line and a line equation.
      * @param center coordinates of a point on the vertical line.
      * @param arcPoint line equation of a side of an arc.
      * @return angle (degrees) between vertical line and a line equation.
@@ -163,7 +163,7 @@ private:
     double computeArcAngle(const ::cv::Vec2d& center, const std::vector< ::cv::Vec2d>& arcPoint) const;
 
     /**
-     * @brief check if there is data (pixel value !=0) under the arc equation define by a set of 2D points.
+     * @brief Checks if there is data (pixel value !=0) under the arc equation define by a set of 2D points.
      * @param input image to process.
      * @param points arc points.
      * @return true if there is data under the arc equation, false otherwise.
@@ -171,13 +171,13 @@ private:
     bool isDataUnderArc(const ::cv::Mat& input, const std::vector< ::cv::Point2d>& points) const;
 
     /**
-     * @brief extract the data from the ultrasound plane as a texture.
+     * @brief Extracts the data from the ultrasound plane as a texture.
      * @param input image to process.
      */
     void process(const cv::Mat& input);
 
     /**
-     * @brief extract the data from the ultrasound plane as a texture with an ultrasound shape.
+     * @brief Extracts the data from the ultrasound plane as a texture with an ultrasound shape.
      * @param input image to process.
      * @param lines equations of sides of the convex US shape to extract inside the input image.
      * @param thresh rough binary image after a threshold applied on the input image.
@@ -190,38 +190,38 @@ private:
                                                ::cv::Mat binaryConvex);
 
     /**
-     * @brief extract the data from the ultrasound plane as a texture with a rectangular shape.
+     * @brief Extracts the data from the ultrasound plane as a texture with a rectangular shape.
      * @param lines equations of the lines corresponding to rectangular sides.
      * @return rectangular probe simulation settings.
      */
     ProbeSimulationSettings processRectangularShape(std::vector< ::cv::Vec2d> lines);
 
     /**
-     * @brief SLOT: Update integer extraction parameters used to extract the ultrasound plane.
+     * @brief SLOT: Updates integer extraction parameters used to extract the ultrasound plane.
      * @param val value to set.
      * @param key the key used to select the member to change.
      */
     void updateIntExtractionParameter(int val, std::string key);
 
     /**
-     * @brief SLOT: Update double extraction parameters used to extract the ultrasound plane.
+     * @brief SLOT: Updates double extraction parameters used to extract the ultrasound plane.
      * @param val value to set.
      * @param key the key used to select the member to change.
      */
     void updateDoubleExtractionParameter(double val, std::string key);
 
-    /// SLOT: Reset ultrasound plane extraction and compute new "palmito" extraction parameters.
+    /// SLOT: Resets ultrasound plane extraction and compute new "palmito" extraction parameters.
     void resetEchoPlane();
 
     /**
-     * @brief SLOT: change debug mode.
+     * @brief SLOT: Changes debug mode.
      * @param val value to set.
      * @param key the key used to select the member to change.
      */
     void changeDebugEchoPlane(bool debug, std::string key);
 
     /**
-     * @brief SLOT: change echo shape.
+     * @brief SLOT: changes echo shape.
      * @param val value to set.
      * @param key the key used to select the member to change.
      */
@@ -230,7 +230,7 @@ private:
     /// Updates the beam extraction map using the current probe settings.
     void updateBeamExtractionMap();
 
-    /// Handle if the probe settings are initialized.
+    /// Handles if the probe settings are initialized.
     bool m_probeSettingsInitialized {false};
 
     /// Probe settings.
@@ -241,10 +241,10 @@ private:
     /// Order is: top-left, top-right, bottom-left and bottom-right.
     std::array< fwVec3d, 4> m_echoRefPoints;
 
-    /// Store the minimum threshold used for ultrasound plane extraction.
+    /// Stores the minimum threshold used for ultrasound plane extraction.
     int m_thresholdMin {4};
 
-    /// Store the current value of depth of the US probe (must be read from the monitor).
+    /// Stores the current value of depth of the US probe (must be read from the monitor).
     double m_usDepth {19.};
 
     /// Debug mode.
@@ -257,4 +257,4 @@ private:
     ::cv::Mat m_extractionMap { 1, 1, CV_32FC2 };
 };
 
-} // cvSegmentation
+} // namespace cvSegmentation.
