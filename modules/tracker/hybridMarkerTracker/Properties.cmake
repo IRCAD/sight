@@ -15,14 +15,8 @@ set( DEPENDENCIES
         arServices
         cvIO
 
-        )
+)
 set( REQUIREMENTS fwData
         servicesReg
         arData
-        )
-
-set( CONAN_DEPS
-        ${CONAN_OPENCV}
-        ${CONAN_IPPE}
-        ${CONAN_HYBRIDMARKERTRACKER}
-        )
+)

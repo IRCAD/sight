@@ -8,7 +8,3 @@ set( DEPENDENCIES
      calibration3d
 )
 set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_CPPUNIT}
-    ${CONAN_GLM}
-)

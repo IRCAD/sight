@@ -9,8 +9,4 @@ set( DEPENDENCIES
     fwCore
     fwDataTools
 )
-set( REQUIREMENTS)
-
-set( CONAN_DEPS
-    ${CONAN_ITK}
-)
+set( REQUIREMENTS )

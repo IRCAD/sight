@@ -3,14 +3,12 @@ fwLoadProperties()
 message(DEPRECATION "Module 'videoVLC' is deprecated and will be removed after sight 21.0.")
 
 find_path(VLC_INCLUDE_DIR vlc/vlc.h PATHS
-    "${CONAN_VLC_ROOT}/include"
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/include"
     /usr/local/include
     /usr/include
 )
 
 find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
-    "${CONAN_VLC_ROOT}/lib"
     "$ENV{ProgramW6432}/VideoLAN/VLC/sdk/lib"
     /usr/local/lib
     /usr/lib
@@ -21,8 +19,6 @@ find_library(VLC_LIBRARY NAMES libvlc vlc PATHS
 #   - on windows, it contains directories (like video_output)
 #   - on macOS, it contains only libraries (like libzip_plugin.dylib)
 find_path(VLC_PLUGINS_DIR NAMES plugins PATHS
-    "${CONAN_VLC_ROOT}"
-    "${CONAN_VLC_ROOT}/lib/vlc"
     "$ENV{ProgramW6432}/VideoLAN/VLC"
     /usr/local/lib/vlc
     /usr/lib/vlc
@@ -33,15 +29,6 @@ if(VLC_PLUGINS_DIR)
     set(VLC_PLUGINS_DIR "${VLC_PLUGINS_DIR}/plugins")
     install(DIRECTORY ${VLC_PLUGINS_DIR} DESTINATION "vlc")
     add_definitions("-DVLC_PLUGINS_DIR=\"${VLC_PLUGINS_DIR}\"")
-endif()
-
-# Manual installation of vlc to avoid "fatal error LNK1328: missing string table" in fixup_bundle
-if(WIN32)
-    install(
-        FILES "${CONAN_VLC_ROOT}/bin/libvlc.dll"
-              "${CONAN_VLC_ROOT}/bin/libvlccore.dll"
-        DESTINATION "bin"
-    )
 endif()
 
 fwLink( ${VLC_LIBRARY} )

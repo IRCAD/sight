@@ -82,10 +82,3 @@ set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/resources.cfg.in"
                 "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/resources.cfg" @ONLY)
-
-if(NOT USE_SYSTEM_LIB)
-    # manage Ogre3D transitive dependencies
-    fwForwardLink(
-        CONAN_PKG::zzip
-    )
-endif()

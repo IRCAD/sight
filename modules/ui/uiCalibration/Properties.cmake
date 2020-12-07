@@ -16,6 +16,3 @@ set( DEPENDENCIES
         fwMedData
         fwIO
 )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

@@ -37,7 +37,3 @@ moduleParam(
     PARAM_VALUES
         Tuto05MultithreadConsoleCpp_AppCfg
 ) # Main application's configuration to launch
-
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-)

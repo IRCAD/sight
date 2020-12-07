@@ -13,9 +13,4 @@ set( DEPENDENCIES
     fwServices
 )
 set( REQUIREMENTS )
-
 set( WARNINGS_AS_ERRORS ON )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

@@ -23,7 +23,3 @@ set( PLUGINS
     QtQuick
     QtQuick.2
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

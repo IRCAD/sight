@@ -14,10 +14,4 @@ set( DEPENDENCIES
     fwServices
     fwTools
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_QT}
-    ${CONAN_GLM}
-)
+set( REQUIREMENTS )

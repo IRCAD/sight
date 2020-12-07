@@ -16,8 +16,4 @@ set( DEPENDENCIES
         arServices
         cvIO
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_OPENCV}
-)
+set( REQUIREMENTS )

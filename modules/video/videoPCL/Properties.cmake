@@ -14,8 +14,4 @@ set( DEPENDENCIES
         arServices
         arPreferences
 )
-set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_PCL}
-)
+set( REQUIREMENTS )

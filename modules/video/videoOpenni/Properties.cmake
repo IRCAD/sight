@@ -12,6 +12,3 @@ set( DEPENDENCIES
         fwThread
 )
 set( REQUIREMENTS )
-set( CONAN_DEPS
-    ${CONAN_OPENNI}
-)

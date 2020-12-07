@@ -15,11 +15,11 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwMedDataTools
-    )
+)
 set( REQUIREMENTS
     fwData
     servicesReg
-    )
+)
 
 if(NOT ${ENABLE_QML_APPLICATION})
 
@@ -31,6 +31,3 @@ if(NOT ${ENABLE_QML_APPLICATION})
         )
     add_definitions ( -DKEEP_OLD_SERVICE )
 endif()
-set( CONAN_DEPS
-    ${CONAN_QT}
-    )

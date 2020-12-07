@@ -101,14 +101,14 @@ endif()
 # External libraries management
 ########################################################################################################################
 
-if(UNIX AND NOT APPLE)
+if(UNIX)
     option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
 endif()
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 if(USE_SYSTEM_LIB)
-    # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
+    # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
@@ -119,11 +119,6 @@ if(USE_SYSTEM_LIB)
         message(STATUS "include: ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
-else()
-    option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
-    mark_as_advanced(CONAN_BUILD_MISSING)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan-deps.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan.cmake)
 endif()
 
 ########################################################################################################################
@@ -254,7 +249,6 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_DEPENDENCIES      "${DEPENDENCIES}")
     set(${NAME}_REQUIREMENTS      "${REQUIREMENTS}")
     set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
-    set(${NAME}_CONAN_DEPS        "${CONAN_DEPS}")
     set(${NAME}_WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
     set(${NAME}_GENERATE_OBJECT_LIB "${GENERATE_OBJECT_LIB}")
 
@@ -340,16 +334,6 @@ if(BUILD_TESTS)
 endif()
 
 ########################################################################################################################
-# Conan packages and definition
-########################################################################################################################
-
-if(NOT USE_SYSTEM_LIB)
-    findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
-    installConanDeps("${CONAN_DEPS_LIST}")
-    add_definitions(${CONAN_DEFINES})
-endif()
-
-########################################################################################################################
 # Compiler flags (We assume that we use the same flags fo C and C++ and we do only C++ here)
 ########################################################################################################################
 
@@ -385,11 +369,6 @@ if(BUILD_SDK)
       COMPATIBILITY AnyNewerVersion
     )
 
-    if(NOT USE_SYSTEM_LIB)
-        file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-             "set(CONAN_DEFINES ${CONAN_DEFINES})\n")
-    endif()
-
     # Install the SightConfig.cmake and SightConfigVersion.cmake
     install(
       FILES
@@ -397,8 +376,6 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/conan/conan.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/conan/conan-deps.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}

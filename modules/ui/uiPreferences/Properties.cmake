@@ -9,8 +9,4 @@ set( DEPENDENCIES
         fwCom
         fwPreferences
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)
+set( REQUIREMENTS )

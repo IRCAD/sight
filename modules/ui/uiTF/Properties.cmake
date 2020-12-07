@@ -16,7 +16,3 @@ set( DEPENDENCIES
 set( REQUIREMENTS 
     ioAtoms
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

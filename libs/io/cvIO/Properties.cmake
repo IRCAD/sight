@@ -9,7 +9,3 @@ set( DEPENDENCIES
     fwDataTools
 )
 set( REQUIREMENTS )
-
-set( CONAN_DEPS
-    ${CONAN_OPENCV}
-)

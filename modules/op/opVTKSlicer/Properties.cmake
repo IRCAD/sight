@@ -10,6 +10,3 @@ set( DEPENDENCIES
     fwServices
     fwVtkIO
 )
-set( CONAN_DEPS
-    ${CONAN_VTK}
-)

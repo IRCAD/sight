@@ -17,6 +17,3 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     servicesReg
 )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

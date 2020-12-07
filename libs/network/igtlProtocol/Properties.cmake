@@ -14,9 +14,4 @@ set( DEPENDENCIES
     fwAtomsBoostIO
     fwDataTools
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_LIBARCHIVE}
-    ${CONAN_OPENIGTLINK}
-)
+set( REQUIREMENTS )

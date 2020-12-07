@@ -15,7 +15,3 @@ set( REQUIREMENTS
     gui
     guiQt
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

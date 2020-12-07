@@ -14,7 +14,3 @@ set( REQUIREMENTS  )
 set( PLUGINS
     styles
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

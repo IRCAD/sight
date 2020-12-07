@@ -18,6 +18,3 @@ set( DEPENDENCIES
     fwDataIO
     )
 set( REQUIREMENTS )
-set( CONAN_DEPS
-    ${CONAN_GDCM}
-)

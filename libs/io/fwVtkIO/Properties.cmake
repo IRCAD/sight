@@ -14,7 +14,4 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
-set( CONAN_DEPS
-    ${CONAN_VTK}
-)
 set( WARNINGS_AS_ERRORS ON )

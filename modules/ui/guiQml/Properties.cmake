@@ -23,7 +23,3 @@ set( PLUGINS
     platforms
     imageformats
 )
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_QT}
-)

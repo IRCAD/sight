@@ -14,8 +14,3 @@ set( DEPENDENCIES
     fwCom
 )
 set( REQUIREMENTS )
-
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_QT}
-)

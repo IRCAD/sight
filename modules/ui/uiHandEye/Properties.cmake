@@ -15,7 +15,4 @@ set( DEPENDENCIES
         fwMedData
         fwDataTools
 )
-set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)
+set( REQUIREMENTS )

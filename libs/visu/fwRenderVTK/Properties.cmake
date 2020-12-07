@@ -13,8 +13,4 @@ set( DEPENDENCIES
     fwTools
     fwVtkIO
 )
-
-set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_VTK}
-)
+set( REQUIREMENTS )

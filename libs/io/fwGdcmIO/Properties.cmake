@@ -14,7 +14,3 @@ set( DEPENDENCIES
     fwZip
     )
 set( REQUIREMENTS )
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_GDCM}
-)

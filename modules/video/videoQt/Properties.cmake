@@ -14,6 +14,3 @@ set( REQUIREMENTS  )
 set( PLUGINS
     mediaservice
 )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

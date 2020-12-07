@@ -17,7 +17,4 @@ set( DEPENDENCIES
     fwPreferences
     cvIO
 )
-set( REQUIREMENTS fwData servicesReg)
-set( CONAN_DEPS
-    ${CONAN_OPENCV}
-)
+set( REQUIREMENTS fwData servicesReg )

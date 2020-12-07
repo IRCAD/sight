@@ -19,7 +19,3 @@ set( REQUIREMENTS
         material
         uiIO
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

@@ -38,7 +38,6 @@ set( REQUIREMENTS
     videoCalibration
     videoCharucoCalibration
     videoOpenCV
-    videoOpenni
     videoTools
     registrationCV
     ctrlCamp

@@ -24,8 +24,4 @@ set( REQUIREMENTS
     servicesReg
     uiImageQt
     ctrlSelection
-    )
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_QT}
 )

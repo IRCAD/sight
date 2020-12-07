@@ -24,7 +24,4 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     fwData
     servicesReg
-    )
-set( CONAN_DEPS
-    ${CONAN_QT}
 )

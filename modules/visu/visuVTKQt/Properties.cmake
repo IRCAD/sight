@@ -19,6 +19,3 @@ set( REQUIREMENTS
 )
 set( USE_PCH_FROM_TARGET fwRenderVTK )
 set( START_BEFORE guiQt )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

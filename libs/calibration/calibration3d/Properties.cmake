@@ -8,9 +8,3 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( DISABLE_PCH TRUE)
-set( CONAN_DEPS
-    ${CONAN_CERES}
-    ${CONAN_OPENCV}
-    ${CONAN_FFMPEG}
-    ${CONAN_QT}
-)

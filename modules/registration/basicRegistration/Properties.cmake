@@ -8,9 +8,4 @@ set( DEPENDENCIES
     fwItkIO
     fwGui
 )
-set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_VTK}
-    ${CONAN_QT}
-    ${CONAN_ITK}
-)
+set( REQUIREMENTS )

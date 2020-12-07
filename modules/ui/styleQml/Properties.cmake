@@ -14,6 +14,3 @@ set( PLUGINS
     platforms
     imageformats
 )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

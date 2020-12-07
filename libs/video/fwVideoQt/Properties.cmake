@@ -8,6 +8,3 @@ set( DEPENDENCIES
         fwGui
 )
 set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

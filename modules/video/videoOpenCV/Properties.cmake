@@ -15,9 +15,4 @@ set( DEPENDENCIES
         arServices
         arPreferences
 )
-set( REQUIREMENTS  )
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_OPENCV}
-    ${CONAN_FFMPEG}
-)
+set( REQUIREMENTS )

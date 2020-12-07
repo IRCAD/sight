@@ -12,11 +12,5 @@ set( DEPENDENCIES
     fwMedData
     fwGdcmIO
     fwLog
-    )
-set( REQUIREMENTS
-
-    )
-set( CONAN_DEPS
-    ${CONAN_GDCM}
-    ${CONAN_DCMTK}
 )
+set( REQUIREMENTS )

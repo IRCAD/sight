@@ -17,9 +17,3 @@ set( DEPENDENCIES
         openvslamIO
 )
 set( REQUIREMENTS )
-
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-    ${CONAN_OPENCV}
-    ${CONAN_EIGEN}
-    ${CONAN_OPENVSLAM})

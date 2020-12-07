@@ -16,9 +16,4 @@ set( DEPENDENCIES
     fwGui
     fwCom
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)
-
+set( REQUIREMENTS )

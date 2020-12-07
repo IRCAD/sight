@@ -5,6 +5,3 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES fwData fwMath fwRuntime)
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
-set( CONAN_DEPS
-    ${CONAN_GLM}
-)

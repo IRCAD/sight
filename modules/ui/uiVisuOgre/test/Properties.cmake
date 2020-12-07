@@ -10,7 +10,3 @@ set( REQUIREMENTS
     uiIO
     uiVisuOgre
 )
-
-set( CONAN_DEPS
-    ${CONAN_QT}
-)

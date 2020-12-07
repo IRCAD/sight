@@ -7,11 +7,5 @@ set( DEPENDENCIES
     fwItkIO
     fwTools
 )
-set( REQUIREMENTS)
-
-set( CONAN_DEPS
-    ${CONAN_ITK}
-    ${CONAN_GLM}
-)
-
+set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchServicesOmp )

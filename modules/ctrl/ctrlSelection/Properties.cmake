@@ -14,8 +14,4 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_BOOST}
-)
+set( REQUIREMENTS )

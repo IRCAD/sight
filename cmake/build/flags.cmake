@@ -10,117 +10,16 @@ macro(replace_flags FLAGS_BEFORE FLAGS_AFTER)
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 endmacro()
 
-# We try to load our defaults from a conan python package because we share some settings with conan
-find_package(PythonInterp 3 QUIET)
+# We simply use CMAKE one plus some very basic stuff
+add_compile_options(
+    "$<$<CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+    "$<$<CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:AVX;/MP;/bigobj>"
+)
 
-if(USE_SYSTEM_LIB OR NOT PYTHONINTERP_FOUND)
-    # No conan or python, means we must use hard coded default
-    # We simply use CMAKE one plus some very basic stuff
-    add_compile_options(
-        "$<$<CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
-        "$<$<CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
-        "$<$<CXX_COMPILER_ID:AppleClang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
-        "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:AVX;/MP;/bigobj>"
-    )
-
-    add_compile_definitions(
-         "$<$<CXX_COMPILER_ID:AppleClang>:-DGL_SILENCE_DEPRECATION>"
-         "$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>"
-    )
-elseif(PYTHONINTERP_FOUND)
-    # Get our default from common.py
-    # Set PYTHONPATH environment to be able to import common
-    set(OLD_PYTHONPATH $ENV{PYTHONPATH})
-    set(ENV{PYTHONPATH} ${CONAN_COMMON_ROOT})
-
-    # Common flags
-    # Execute common.get_cxx_flags() and store it to ${SIGHT_CXX_FLAGS}
-    execute_process(
-        COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags()), sep='', end='', flush=True)"
-        OUTPUT_VARIABLE SIGHT_CXX_FLAGS
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    # Add common flags
-    separate_arguments(SIGHT_CXX_FLAGS)
-
-    # Release flags
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        # Execute common.get_cxx_flags_release() and store it to ${SIGHT_CXX_FLAGS_RELEASE}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_release_cxx_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELEASE
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-
-        # Add Release flags
-        separate_arguments(SIGHT_CXX_FLAGS_RELEASE)
-        list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_RELEASE})
-        unset(SIGHT_CXX_FLAGS_RELEASE)
-
-    # Debug flags
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        option(SIGHT_ENABLE_FULL_DEBUG "Compile Sight in Full Debug Mode: slow but all the debug symbols are enabled (Default: OFF)" OFF)
-
-        if(SIGHT_ENABLE_FULL_DEBUG)
-            message(STATUS "Compiling Sight in full debug.")
-            set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_thorough_debug_cxx_flags()), sep='', end='', flush=True)")
-        else()
-            set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_debug_cxx_flags()), sep='', end='', flush=True)")
-        endif()
-
-        # Execute common.get_cxx_flags_debug() and store it to ${SIGHT_CXX_FLAGS_DEBUG}
-            execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "${PYTHON_DEBUG_COMMAND}"
-            OUTPUT_VARIABLE SIGHT_CXX_FLAGS_DEBUG
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-
-        unset(PYTHON_DEBUG_COMMAND)
-
-        # Add Debug flags
-        separate_arguments(SIGHT_CXX_FLAGS_DEBUG)
-        list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_DEBUG})
-        unset(SIGHT_CXX_FLAGS_DEBUG)
-
-    # RelWithDebInfo flags
-    elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        # Execute common.get_cxx_flags_relwithdebinfo() and store it to ${SIGHT_CXX_FLAGS_RELWITHDEBINFO}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_relwithdebinfo_cxx_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELWITHDEBINFO
-        )
-
-        # Add RelWithDebInfo flags
-        separate_arguments(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
-        list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_RELWITHDEBINFO})
-        unset(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
-    endif()
-
-    # Restore old PYTHONPATH environment
-    set(ENV{PYTHONPATH} ${OLD_PYTHONPATH})
-    unset(OLD_PYTHONPATH)
-
-    # Filter incompatible flags on MSVC to avoid errors and command-line warning D9025
-    if(MSVC)
-        if(SIGHT_CXX_FLAGS MATCHES "/O[x12]")
-            # /RTC[1csu] is incompatible with optimization
-            replace_flags("/RTC[1csu]+" "")
-
-            # Avoid errors and command-line Warning D9025
-            replace_flags("/O[x12d]" "")
-        endif()
-
-        if(SIGHT_CXX_FLAGS MATCHES "/Ob[012]")
-            # Avoid errors and command-line Warning D9025
-            replace_flags("/Ob[012]" "")
-        endif()
-    endif()
-
-    # Finally, add the flags
-    add_compile_options(${SIGHT_CXX_FLAGS})
-    unset(SIGHT_CXX_FLAGS)
-endif()
+add_compile_definitions(
+    "$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>"
+)
 
 # C/C++ standard
 set(CMAKE_CXX_STANDARD 17)
