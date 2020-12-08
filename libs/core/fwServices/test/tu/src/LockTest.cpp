@@ -257,7 +257,27 @@ void LockTest::testDumpLock()
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->getBuffer());
     }
-    CPPUNIT_ASSERT_THROW(image->getBuffer(), ::fwData::Exception);
+
+    bool exceptionReceived = false;
+
+    for(int i = 3; --i > 0 && !exceptionReceived;)
+    {
+        try
+        {
+            image->getBuffer();
+        }
+        catch(::fwData::Exception&)
+        {
+            exceptionReceived = true;
+        }
+
+        if(!exceptionReceived)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
+    CPPUNIT_ASSERT(exceptionReceived);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
@@ -293,7 +313,27 @@ void LockTest::testDumpLock()
         CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[1], color));
         CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[2], color));
     }
-    CPPUNIT_ASSERT_THROW(mesh->pushPoint(0.f, 0.f, 0.f), ::fwData::Exception);
+
+    exceptionReceived = false;
+
+    for(int i = 3; --i > 0 && !exceptionReceived;)
+    {
+        try
+        {
+            mesh->pushPoint(0.f, 0.f, 0.f);
+        }
+        catch(::fwData::Exception&)
+        {
+            exceptionReceived = true;
+        }
+
+        if(!exceptionReceived)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
+    CPPUNIT_ASSERT(exceptionReceived);
 }
 
 //------------------------------------------------------------------------------
