@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,6 +43,7 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
 {
     MessageFactory::CreatorContainer container;
 
+    // Create messages without parameters.
     container["TRANSFORM"] = &MessageMaker< ::igtl::TransformMessage, false >::createMessage;
     container["IMAGE"]     = &MessageMaker< ::igtl::ImageMessage, false >::createMessage;
     container["POINT"]     = &MessageMaker< ::igtl::PointMessage, false >::createMessage;
@@ -52,9 +53,11 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
     container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::createMessage;
     container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::createMessage;
     container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::createMessage;
-    container["ATOMS"]     = std::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
-    container["INTEGER"]   = std::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
-    container["FLOAT"]     = std::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");
+
+    // Messages with parameters (custom igtl message from sight).
+    container["ATOMS"]   = std::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
+    container["INTEGER"] = std::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
+    container["FLOAT"]   = std::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");
     return container;
 }
 
