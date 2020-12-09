@@ -48,13 +48,6 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
     return new ::fwRenderOgre::R2VBRenderable(name);
 }
 
-//-----------------------------------------------------------------------------
-
-void R2VBRenderable::destroyInstance( ::Ogre::MovableObject* obj)
-{
-    delete obj;
-}
-
 } // namespace factory
 
 } // namespace fwRenderOgre

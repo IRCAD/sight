@@ -36,6 +36,7 @@
 #include <vtkPoints.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkSmartPointer.h>
+#include <vtkUnsignedCharArray.h>
 
 namespace fwVtkIO
 {

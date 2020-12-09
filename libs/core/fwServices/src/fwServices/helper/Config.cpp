@@ -35,6 +35,7 @@
 
 #include <fwTools/Object.hpp>
 
+#include <array>
 #include <regex>
 #include <string>
 #include <vector>

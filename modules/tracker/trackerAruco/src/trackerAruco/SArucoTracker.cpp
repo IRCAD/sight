@@ -247,11 +247,11 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
         if(nbOfComponents == 4) // RGBA or BGRA.
         {
-            ::cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
+            ::cv::cvtColor(inImage, grey, ::cv::COLOR_BGRA2GRAY);
         }
         else if(nbOfComponents == 3) // RGB or BGR.
         {
-            ::cv::cvtColor(inImage, grey, CV_BGR2GRAY);
+            ::cv::cvtColor(inImage, grey, ::cv::COLOR_BGR2GRAY);
         }
         else if(nbOfComponents == 1) // Grey level.
         {
@@ -286,9 +286,9 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             if(nbOfComponents == 4) // RGBA or BGRA.
             {
                 // since drawDetectedMarkers does not handle 4 channels ::cv::mat
-                ::cv::cvtColor(inImage, bgr, CV_BGRA2BGR);
+                ::cv::cvtColor(inImage, bgr, cv::COLOR_BGRA2BGR);
                 ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
-                ::cv::cvtColor(bgr, inImage, CV_BGR2BGRA);
+                ::cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
             // It is useless to test other values since "wrong" number of components has previoulsy been discarded.

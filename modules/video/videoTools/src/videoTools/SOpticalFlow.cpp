@@ -128,11 +128,11 @@ void SOpticalFlow::updating()
         }
         else if (frameTL->getNumberOfComponents() == 3)
         {
-            ::cv::cvtColor(tempImg, grayImg, CV_RGB2GRAY);
+            ::cv::cvtColor(tempImg, grayImg, ::cv::COLOR_RGB2GRAY);
         }
         else if(frameTL->getNumberOfComponents() == 4)
         {
-            ::cv::cvtColor(tempImg, grayImg, CV_RGBA2GRAY);
+            ::cv::cvtColor(tempImg, grayImg, ::cv::COLOR_RGBA2GRAY);
         }
         else
         {

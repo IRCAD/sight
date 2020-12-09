@@ -250,7 +250,7 @@ void SOpenCVExtrinsic::updating()
                                            cameraMatrix2, distortionCoefficients2,
                                            imgsize, rotationMatrix, translationVector, essentialMatrix,
                                            fundamentalMatrix,
-                                           CV_CALIB_FIX_INTRINSIC,
+                                           ::cv::CALIB_FIX_INTRINSIC,
                                            ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
                                                               100, 1e-5));
 

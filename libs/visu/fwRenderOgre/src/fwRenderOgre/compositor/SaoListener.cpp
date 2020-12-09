@@ -22,8 +22,7 @@
 
 #include "fwRenderOgre/compositor/SaoListener.hpp"
 
-#include "OGRE/OgreCamera.h"
-
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>

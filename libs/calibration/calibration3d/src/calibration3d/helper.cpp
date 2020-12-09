@@ -55,7 +55,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     errorAndProjectedPoints.second = imagePoints2;
 
     //difference
-    err = ::cv::norm(::cv::Mat(_imagePoints), ::cv::Mat(imagePoints2), CV_L2);
+    err = ::cv::norm(::cv::Mat(_imagePoints), ::cv::Mat(imagePoints2), ::cv::NORM_L2);
 
     int n = static_cast<int>(_objectPoints.size());
     totalErr    += err*err;
@@ -112,7 +112,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     extrinsic( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = _R * 1;
     extrinsic( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = _T * 1;
 
-    ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, CV_ITERATIVE);
+    ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, ::cv::SOLVEPNP_ITERATIVE);
 
     std::vector<double> optimVector = {{
                                            rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2),
@@ -373,7 +373,7 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
     }
     else
     {
-        const auto cvtMethod = _img.channels() == 3 ? CV_RGB2GRAY : CV_RGBA2GRAY;
+        const auto cvtMethod = _img.channels() == 3 ? ::cv::COLOR_RGB2GRAY : ::cv::COLOR_RGBA2GRAY;
 
         ::cv::cvtColor(img2d, grayImg, cvtMethod);
     }
@@ -381,8 +381,8 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
     const ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
     std::vector< ::cv::Point2f > corners;
 
-    const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS |
-                      CV_CALIB_CB_FAST_CHECK;
+    const int flags = ::cv::CALIB_CB_ADAPTIVE_THRESH | ::cv::CALIB_CB_NORMALIZE_IMAGE | ::cv::CALIB_CB_FILTER_QUADS |
+                      ::cv::CALIB_CB_FAST_CHECK;
 
     ::cv::Mat detectionImage;
 

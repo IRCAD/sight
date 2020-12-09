@@ -163,14 +163,6 @@ public:
         return FACTORY_TYPE_NAME;
     }
 
-    //------------------------------------------------------------------------------
-
-    /// Deletes an instance of a produced object.
-    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override
-    {
-        delete obj;
-    }
-
 protected:
 
     //------------------------------------------------------------------------------

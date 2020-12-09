@@ -74,7 +74,7 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Poi
                                                     const std::vector< ::cv::Point2f >& _imagePoints,
                                                     const ::cv::Mat _cameraMatrix,
                                                     const ::cv::Mat& _distCoeffs,
-                                                    const int _flag = CV_ITERATIVE);
+                                                    const int _flag = ::cv::SOLVEPNP_ITERATIVE);
 
 /**
  * @brief cameraPoseStereo compute pose from stereo camera

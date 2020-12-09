@@ -230,7 +230,7 @@ void SChessboardReprojection::updating()
 
                 for (const auto& pt : drawnReprojPts)
                 {
-                    ::cv::circle(img, pt, reprojRadius, ::cv::Scalar(255, 255, 0, 255), CV_FILLED);
+                    ::cv::circle(img, pt, reprojRadius, ::cv::Scalar(255, 255, 0, 255), ::cv::FILLED);
                 }
             }
 

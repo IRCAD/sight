@@ -1,11 +1,4 @@
 fwLoadProperties()
 
 find_package(VTK QUIET COMPONENTS vtkIOImport REQUIRED)
-
-fwForwardInclude(
-    ${VTK_INCLUDE_DIRS}
-)
-
-fwLink(
-    vtkIOImport
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC VTK::IOImport)

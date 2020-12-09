@@ -52,9 +52,6 @@ public:
     /// Get the produced object's type. Always returns 'Text'.
     FWRENDEROGRE_API virtual const ::Ogre::String& getType(void) const override;
 
-    /// Destroys a 'Text' object instance.
-    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
-
 protected:
 
     /// Create a 'Text' instance with the given name and parameters.

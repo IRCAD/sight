@@ -51,7 +51,6 @@ public:
     FWRENDEROGRE_API static ::Ogre::String FACTORY_TYPE_NAME;
 
     FWRENDEROGRE_API virtual const ::Ogre::String& getType(void) const override;
-    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
 
 protected:
     FWRENDEROGRE_API ::Ogre::MovableObject* createInstanceImpl(const ::Ogre::String& name,

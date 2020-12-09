@@ -47,13 +47,6 @@ const ::Ogre::String& Text::getType(void) const
     return new ::fwRenderOgre::Text(name);
 }
 
-//-----------------------------------------------------------------------------
-
-void Text::destroyInstance( ::Ogre::MovableObject* obj)
-{
-    delete obj;
-}
-
 } // namespace factory
 
 } // namespace fwRenderOgre
