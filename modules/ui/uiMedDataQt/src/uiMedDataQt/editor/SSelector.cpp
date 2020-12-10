@@ -55,6 +55,7 @@ namespace uiMedDataQt
 
 namespace editor
 {
+
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB )
@@ -66,7 +67,16 @@ static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG = "seri
 static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
 
+static const std::string s_SELECTION_MODE_CONFIG    = "selectionMode";
+static const std::string s_ALLOWED_REMOVE_CONFIG    = "allowedRemove";
+static const std::string s_INSERT_MODE_CONFIG       = "insertMode";
+static const std::string s_ICONS_CONFIG             = "icons";
+static const std::string s_ICON_CONFIG              = "icon";
+static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
+static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
+
 static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+static const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 
@@ -90,9 +100,14 @@ void SSelector::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg = m_configuration->find("selectionMode");
+    // Deprecated configuration.
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg =
+        m_configuration->find(s_SELECTION_MODE_CONFIG);
     if(!selectionModeCfg.empty())
     {
+        FW_DEPRECATED_MSG("'" << s_SELECTION_MODE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
+
         const std::string& selectionMode = selectionModeCfg.front()->getValue();
 
         if(!selectionMode.empty())
@@ -112,9 +127,12 @@ void SSelector::configuring()
         }
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > allowedRemoveCfg = m_configuration->find("allowedRemove");
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > allowedRemoveCfg =
+        m_configuration->find(s_ALLOWED_REMOVE_CONFIG);
     if(!allowedRemoveCfg.empty())
     {
+        FW_DEPRECATED_MSG("'" << s_ALLOWED_REMOVE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
+
         const std::string& allowedRemove = allowedRemoveCfg.front()->getValue();
 
         if(allowedRemove == "yes")
@@ -131,9 +149,12 @@ void SSelector::configuring()
         }
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > insertCfg = m_configuration->find("insertMode");
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > insertCfg =
+        m_configuration->find(s_INSERT_MODE_CONFIG);
     if(!insertCfg.empty())
     {
+        FW_DEPRECATED_MSG("'" << s_INSERT_MODE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
+
         const std::string& insert = insertCfg.front()->getValue();
 
         if(insert == "yes")
@@ -150,12 +171,14 @@ void SSelector::configuring()
         }
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
+    // Better configuration.
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find(s_ICONS_CONFIG);
     if (!iconsCfg.empty())
     {
         SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
 
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find("icon");
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find(s_ICON_CONFIG);
 
         for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
         {
@@ -168,6 +191,43 @@ void SSelector::configuring()
             const auto file = ::fwRuntime::getResourceFilePath(icon);
             m_seriesIcons[series] = file.string();
         }
+    }
+
+    const ConfigType tree = this->getConfigTree();
+    const auto config     = tree.get_child_optional("config");
+
+    if(config)
+    {
+        const auto configAttr = config->get_child_optional("<xmlattr>");
+
+        const auto removeStudyIconCfg = configAttr->get_optional< std::string >(s_REMOVE_STUDY_ICON_CONFIG);
+        if(removeStudyIconCfg)
+        {
+            m_removeStudyIcon = ::fwRuntime::getModuleResourceFilePath(removeStudyIconCfg.value());
+        }
+
+        const auto removeSerieIconCfg = configAttr->get_optional< std::string >(s_REMOVE_SERIE_ICON_CONFIG);
+        if(removeSerieIconCfg)
+        {
+            m_removeSerieIcon = ::fwRuntime::getModuleResourceFilePath(removeSerieIconCfg.value());
+        }
+
+        const auto selectionMode = configAttr->get< std::string >(s_SELECTION_MODE_CONFIG, "extended");
+        if(selectionMode == "single")
+        {
+            m_selectionMode = QAbstractItemView::SingleSelection;
+        }
+        else if(selectionMode == "extended")
+        {
+            m_selectionMode = QAbstractItemView::ExtendedSelection;
+        }
+        else
+        {
+            SLM_WARN("value " + selectionMode + " is not managed for '" + s_SELECTION_MODE_CONFIG + "'");
+        }
+
+        m_allowedRemove = configAttr->get< bool >(s_ALLOWED_REMOVE_CONFIG, m_allowedRemove);
+        m_insertMode    = configAttr->get< bool >(s_INSERT_MODE_CONFIG, m_insertMode);
     }
 }
 
@@ -185,6 +245,8 @@ void SSelector::starting()
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
     m_selectorWidget->setInsertMode(m_insertMode);
+    m_selectorWidget->setRemoveStudyIcon(m_removeStudyIcon);
+    m_selectorWidget->setRemoveSerieIcon(m_removeSerieIcon);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -226,11 +288,11 @@ void SSelector::starting()
 
 void SSelector::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
 
     m_selectorWidget->clear();
 
-    for(::fwMedData::Series::sptr series :  seriesDB->getContainer())
+    for(::fwMedData::Series::sptr series : seriesDB->getContainer())
     {
         m_selectorWidget->addSeries(series);
     }
@@ -248,8 +310,8 @@ void SSelector::stopping()
 void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
                                  QVector< ::fwMedData::Series::sptr > _deselection)
 {
-    ::fwData::Vector::sptr selectionVector = this->getSelection();
-    ::fwDataTools::helper::Vector vectorHelper(selectionVector);
+    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    ::fwDataTools::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for( ::fwMedData::Series::sptr series :  _deselection)
     {
@@ -271,7 +333,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(_index);
 
-    ::fwData::Vector::sptr selectionVector = this->getSelection();
+    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
     if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
@@ -288,8 +350,8 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Remove duplicated series
     std::set< ::fwMedData::Series::sptr > seriesSet;
@@ -306,16 +368,6 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
         seriesDBHelper.notify();
     }
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Vector::sptr SSelector::getSelection()
-{
-    ::fwData::Vector::sptr selection = this->getInOut< ::fwData::Vector >("selection");
-    SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
-
-    return selection;
 }
 
 //------------------------------------------------------------------------------

@@ -163,11 +163,20 @@ void SSliceIndexDicomEditor::updating()
     const auto dicomSeries   = this->getLockedInOut< const ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
     const size_t sliceNumber = dicomSeries->getNumberOfInstances();
 
-    // Fill slider informations.
-    m_slider->setRange(0, static_cast<unsigned int>(sliceNumber-1));
-    m_slider->setValue(static_cast<unsigned int>(sliceNumber/2));
+    // If the current slice index is the initial value of the slider, we just send a signal to trigger other services.
+    const int currentSlice = m_slider->value();
+    if(currentSlice == static_cast<int>(sliceNumber/2))
+    {
+        this->changeSliceIndex(currentSlice);
+    }
+    else
+    {
+        // Fill slider informations.
+        m_slider->setRange(0, static_cast<int>(sliceNumber-1));
+        m_slider->setValue(static_cast<int>(sliceNumber/2));
 
-    this->setSliderInformation(static_cast<unsigned int>(sliceNumber/2));
+        this->setSliderInformation(static_cast<unsigned int>(sliceNumber/2));
+    }
 }
 
 //------------------------------------------------------------------------------

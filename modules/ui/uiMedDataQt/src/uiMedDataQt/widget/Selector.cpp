@@ -46,32 +46,24 @@ namespace widget
 Selector::Selector(QWidget* _parent) :
     QTreeView(_parent)
 {
-    m_model = new SelectorModel();
+    m_model = new SelectorModel(this);
     this->setModel(m_model);
 
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->setAlternatingRowColors( true );
     this->setDragEnabled(true);
+
+    QObject::connect(m_model, &SelectorModel::removeStudyInstanceUID, this, &Selector::onRemoveStudyInstanceUID);
+    QObject::connect(m_model, &SelectorModel::removeSerieID, this, &Selector::onRemoveSerieID);
+
+    this->setDragEnabled(false);
+    this->setAcceptDrops(false);
 }
 
 //-----------------------------------------------------------------------------
 
 Selector::~Selector()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void Selector::clear()
-{
-    m_model->clear();
-}
-
-//-----------------------------------------------------------------------------
-
-void Selector::setInsertMode(bool _insert)
-{
-    m_model->setInsertMode(_insert);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +92,7 @@ void Selector::removeSeries(::fwMedData::Series::sptr _series)
 void Selector::setAllowedRemove(bool _allowed)
 {
     m_allowedRemove = _allowed;
+    m_model->setAllowedRemove(_allowed);
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +164,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
     for(int row = 0; row < nbRow; ++row)
     {
         // Retrieve UID of the series using the DESCRIPTION column.
-        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::DESCRIPTION));
+        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
         SLM_ASSERT("Child is null", child);
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SLM_ASSERT("UID must not be empty.", !uid.empty());
@@ -208,13 +201,14 @@ void Selector::keyPressEvent(QKeyEvent* _event)
 
 void Selector::deleteSelection()
 {
-    QModelIndexList selection = this->selectionModel()->selectedRows(0);
+    QModelIndexList selection =
+        this->selectionModel()->selectedRows(static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
 
     SeriesVectorType vSeries     = this->getSeries(selection);
     QModelIndexList studyIndexes = this->getStudyIndexes(selection);
     for(QModelIndex index :  studyIndexes)
     {
-        SeriesVectorType series = getSeriesFromStudyIndex(index);
+        SeriesVectorType series = this->getSeriesFromStudyIndex(index);
         std::copy(series.begin(), series.end(), std::back_inserter(vSeries));
     }
 
@@ -222,6 +216,81 @@ void Selector::deleteSelection()
 
     // Remove item in Selector.
     m_model->removeRows(selection);
+}
+
+//-----------------------------------------------------------------------------
+
+void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
+{
+    if(m_allowedRemove)
+    {
+        SeriesVectorType series;
+        QModelIndexList selection;
+
+        for(int studyIdx = 0; studyIdx < m_model->rowCount(); ++studyIdx)
+        {
+            const QStandardItem* const studyItem = m_model->item(studyIdx);
+            if(studyItem->index().data(SelectorModel::UID) == QString::fromStdString(_uid))
+            {
+                selection.push_back(studyItem->index());
+                for(int serieIdx = 0; serieIdx < studyItem->rowCount(); ++serieIdx)
+                {
+                    const QStandardItem* const serieItem =
+                        studyItem->child(serieIdx, int(SelectorModel::ColumnSeriesType::NAME));
+                    selection.push_back(serieItem->index());
+                    const std::string serieUID = serieItem->index().data(SelectorModel::UID).toString().toStdString();
+                    ::fwTools::Object::sptr obj     = ::fwTools::fwID::getObject(serieUID);
+                    ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
+
+                    series.push_back(serie);
+                }
+
+                break;
+            }
+        }
+
+        Q_EMIT removeSeries(series);
+
+        // Remove item in Selector.
+        m_model->removeRows(selection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Selector::onRemoveSerieID(const std::string& _id)
+{
+    if(m_allowedRemove)
+    {
+        SeriesVectorType series;
+        QModelIndexList selection;
+
+        for(int studyIdx = 0; studyIdx < m_model->rowCount(); ++studyIdx)
+        {
+            const QStandardItem* const studyItem = m_model->item(studyIdx);
+            for(int serieIdx = 0; serieIdx < studyItem->rowCount(); ++serieIdx)
+            {
+                const QStandardItem* const serieItem =
+                    studyItem->child(serieIdx, int(SelectorModel::ColumnSeriesType::NAME));
+                const std::string serieUID = serieItem->index().data(SelectorModel::UID).toString().toStdString();
+
+                if(serieUID == _id)
+                {
+                    selection.push_back(serieItem->index());
+                    ::fwTools::Object::sptr obj     = ::fwTools::fwID::getObject(serieUID);
+                    ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
+
+                    series.push_back(serie);
+                    break;
+                }
+            }
+        }
+
+        Q_EMIT removeSeries(series);
+
+        // Remove item in Selector.
+        m_model->removeRows(selection);
+    }
 }
 
 //-----------------------------------------------------------------------------

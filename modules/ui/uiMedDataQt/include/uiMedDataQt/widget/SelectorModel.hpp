@@ -31,8 +31,8 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QString>
-#include <QTreeView>
 
+#include <filesystem>
 #include <map>
 
 namespace uiMedDataQt
@@ -62,6 +62,31 @@ public:
     {
         STUDY = 1,  ///< Type to represent Study/Patient
         SERIES      ///< Type to represent Series
+    };
+
+    /// Defines header columns used in the tree widget of all series.
+    enum class ColumnSeriesType : int
+    {
+        NAME = 0,
+        SEX,
+        BIRTHDATE,
+
+        MODALITY,
+
+        DESCRIPTION,
+
+        DATE,
+        TIME,
+
+        PATIENT_AGE,
+
+        BODY_PART_EXAMINED,
+        PATIENT_POSITION,
+        CONTRAST_AGENT,
+        ACQUISITION_TIME,
+        CONTRAST_BOLUS_START_TIME,
+
+        REMOVE
     };
 
     /// Defines the map associating icons to series (map\<series classname, icon path\>)
@@ -120,30 +145,30 @@ public:
     UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Sets if the selector must be in insert mode.
-    UIMEDDATAQT_API void setInsertMode(bool _insert);
+    void setInsertMode(bool _insert);
 
-    /// Defines header columns used in the tree widget of all series.
-    enum class ColumnSeriesType : int
-    {
-        NAME = 0,
-        SEX,
-        BIRTHDATE,
+    /// Allows removing items or not.
+    void setAllowedRemove(bool _allowed);
 
-        MODALITY,
+    /// Sets the remove study button icon.
+    void setRemoveStudyIcon(const std::filesystem::path& _path);
 
-        DESCRIPTION,
+    /// Sets the remove serie button icon.
+    void setRemoveSerieIcon(const std::filesystem::path& _path);
 
-        DATE,
-        TIME,
+Q_SIGNALS:
 
-        PATIENT_AGE,
+    /**
+     * @brief SIGNAL: sent when the button to remove a study is clicked.
+     * @param _uid the instance UID of the study to remove.
+     */
+    void removeStudyInstanceUID(const std::string& _uid);
 
-        BODY_PART_EXAMINED,
-        PATIENT_POSITION,
-        CONTRAST_AGENT,
-        ACQUISITION_TIME,
-        CONTRAST_BOLUS_START_TIME
-    };
+    /**
+     * @brief SIGNAL: sent when the button to remove a serie is clicked.
+     * @param _id the ID of the serie to remove.
+     */
+    void removeSerieID(const std::string& _id);
 
 private:
 
@@ -183,6 +208,15 @@ private:
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
     SeriesIconType m_seriesIcons;
 
+    /// Allows to remove items.
+    bool m_allowedRemove { true };
+
+    /// Defines the path of the remove study button icon.
+    std::filesystem::path m_removeStudyIcon;
+
+    /// Defines the path of the remove serie button icon.
+    std::filesystem::path m_removeSerieIcon;
+
 };
 
 //------------------------------------------------------------------------------
@@ -208,6 +242,36 @@ QStandardItem* SelectorModel::getInfo(T _data, QString _separator)
     QStandardItem* item = new QStandardItem(dataStr);
     return item;
 }
+
+//-----------------------------------------------------------------------------
+
+inline void SelectorModel::setInsertMode(bool _insert)
+{
+    m_insert = _insert;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SelectorModel::setAllowedRemove(bool _allowed)
+{
+    m_allowedRemove = _allowed;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SelectorModel::setRemoveStudyIcon(const std::filesystem::path& _path)
+{
+    m_removeStudyIcon = _path;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SelectorModel::setRemoveSerieIcon(const std::filesystem::path& _path)
+{
+    m_removeSerieIcon = _path;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace widget.
 } // namespace uiMedDataQt.

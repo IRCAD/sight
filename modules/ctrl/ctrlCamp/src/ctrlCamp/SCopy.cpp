@@ -28,6 +28,7 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/reflection/exception/NullPointer.hpp>
 
 #include <fwDataCamp/exception/ObjectNotFound.hpp>
 #include <fwDataCamp/getObject.hpp>
@@ -38,7 +39,8 @@ namespace ctrlCamp
 fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, ::fwData::Object)
 
 const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
-const ::fwServices::IService::KeyType s_TARGET_INOUT = "target";
+const ::fwServices::IService::KeyType s_TARGET_INOUT  = "target";
+const ::fwServices::IService::KeyType s_TARGET_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
 
@@ -117,7 +119,7 @@ void SCopy::updating()
     }
     else
     {
-        SLM_ERROR("Object copy was request but the mode is to 'copyOnStart'");
+        SLM_WARN("Object copy was request but the mode is to 'copyOnStart'");
     }
 }
 
@@ -126,42 +128,46 @@ void SCopy::updating()
 void SCopy::stopping()
 {
     // Unregister output
-    this->setOutput(s_TARGET_INOUT, nullptr);
+    this->setOutput(s_TARGET_OUTPUT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
 void SCopy::copy()
 {
+    // Check if we use inout or output.
     bool create = false;
-    ::fwData::Object::sptr target;
-    ::fwData::Object::csptr source;
-    target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
-    if(!target)
     {
-        create = true;
+        const auto target     = this->getWeakInOut< ::fwData::Object >(s_TARGET_INOUT);
+        const auto targetLock = target.lock();
+        if(!targetLock)
+        {
+            create = true;
+        }
     }
 
-    ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
-    SLM_ASSERT("Source '" + s_SOURCE_INPUT + "' not found", sourceObject);
+    // Extract the object.
+    const auto sourceObject = this->getLockedInput< ::fwData::Object >(s_SOURCE_INPUT);
 
-    // Lock the source before copy
-    ::fwData::mt::ObjectReadLock sourceObjectLock(sourceObject);
-
-    if (m_hasExtractTag)
+    ::fwData::Object::csptr source;
+    if(m_hasExtractTag)
     {
         ::fwData::Object::sptr object;
         try
         {
-            object = ::fwDataCamp::getObject( sourceObject, m_path, true );
+            object = ::fwDataCamp::getObject(sourceObject.get_shared(), m_path, true );
         }
-        catch(::fwDataCamp::exception::ObjectNotFound&)
+        catch(const ::fwDataCamp::exception::ObjectNotFound&)
         {
-            SLM_WARN("Object from '"+ m_path +"' not found");
+            SLM_WARN("Object from '" + m_path + "' not found");
         }
-        catch(std::exception& e)
+        catch(const ::fwData::reflection::exception::NullPointer&)
         {
-            SLM_FATAL("Unhandled exception: " << e.what());
+            SLM_WARN("Can't get object from '" + m_path + "'");
+        }
+        catch(std::exception& _e)
+        {
+            SLM_FATAL("Unhandled exception: " << _e.what());
         }
 
         SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
@@ -172,35 +178,49 @@ void SCopy::copy()
     }
     else
     {
-        source = sourceObject;
+        source = sourceObject.get_shared();
     }
 
     if(source)
     {
-        // Lock the source before copy, but only if not already locked
-        ::fwData::mt::ObjectReadLock sourceLock(source, source != sourceObject);
+        const auto setOutputData =
+            [&]()
+            {
+                if(create)
+                {
+                    // Set the data as output.
+                    ::fwData::Object::sptr target = ::fwData::Object::copy(source);
+                    this->setOutput(s_TARGET_OUTPUT, target);
+                }
+                else
+                {
+                    // Copy the object to the inout.
+                    const auto target = this->getLockedInOut< ::fwData::Object >(s_TARGET_INOUT);
+                    target->deepCopy(source);
 
-        if(create)
+                    auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(
+                        ::fwData::Object::s_MODIFIED_SIG);
+                    {
+                        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                        sig->asyncEmit();
+                    }
+                }
+            };
+
+        if(source != sourceObject.get_shared())
         {
-            target = ::fwData::Object::copy(source);
-            this->setOutput(s_TARGET_INOUT, target);
+            // Lock the source before copy, but only if not already locked
+            ::fwData::mt::locked_ptr sourceLock(source);
+
+            setOutputData();
         }
         else
         {
-            ::fwData::mt::ObjectWriteLock lock(target);
-
-            // copy the object
-            target->deepCopy(source);
-
-            auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                sig->asyncEmit();
-            }
+            setOutputData();
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace ctrlCamp
+} // namespace ctrlCamp.
