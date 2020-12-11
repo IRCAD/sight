@@ -1,4 +1,3 @@
-
 set( NAME fwDicomIOFilterTest )
 set( VERSION  )
 set( TYPE TEST )

@@ -1,4 +1,3 @@
-
 set( NAME vtkGdcmIOTest )
 set( VERSION  )
 set( TYPE TEST )

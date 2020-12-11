@@ -1,4 +1,3 @@
-
 set( NAME fwVtkIOTest )
 set( VERSION  )
 set( TYPE TEST )

@@ -1,11 +1,4 @@
 fwLoadProperties()
 
-find_package(CppUnit QUIET REQUIRED)
-
-fwForwardInclude(
-    ${CPPUNIT_INCLUDE_DIR}
-)
-
-fwForwardLink(
-    ${CPPUNIT_LIBRARY}
-)
+find_package(CppUnit QUIET CONFIG REQUIRED)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC CppUnit)

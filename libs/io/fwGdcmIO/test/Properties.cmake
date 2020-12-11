@@ -1,4 +1,3 @@
-
 set( NAME fwGdcmIOTest )
 set( VERSION  )
 set( TYPE TEST )

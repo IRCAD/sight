@@ -1,4 +1,3 @@
-
 set( NAME fwNetworkIOTest )
 set( VERSION  )
 set( TYPE TEST )

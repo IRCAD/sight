@@ -1,4 +1,3 @@
-
 set( NAME fwPacsIOTest )
 set( VERSION  )
 set( TYPE TEST )
