@@ -37,7 +37,7 @@ IMAGEFILTEROP_API ::fwData::Image::sptr labeling(::fwData::Image::sptr image, un
 
 /// Labels filter with centroids.
 IMAGEFILTEROP_API void computeCentroids(::fwData::Image::sptr image,
-                                std::vector< ::fwData::PointList::sptr > pointListCentroids,
-                                std::vector< std::vector<size_t> > pointListLabels);
+                                        std::vector< ::fwData::PointList::sptr > pointListCentroids,
+                                        std::vector< std::vector<size_t> > pointListLabels);
 
 } //namespace imageFilterOp.

@@ -63,10 +63,12 @@ public:
      * @param maxIter the maximum number of iterations for the solver.
      * @return the 'average' matrix
      */
-    IMAGEFILTEROP_API ::fwData::TransformationMatrix3D::sptr minimize(const ::fwData::TransformationMatrix3D::csptr& initValue,
-                                                              double stepLength = 1., double stepTolerance = 1e-2,
-                                                              double valueTolerance = 1e-2,
-                                                              unsigned int maxIter  = 10000);
+    IMAGEFILTEROP_API ::fwData::TransformationMatrix3D::sptr minimize(
+        const ::fwData::TransformationMatrix3D::csptr& initValue,
+        double stepLength     = 1.,
+        double stepTolerance  = 1e-2,
+        double valueTolerance = 1e-2,
+        unsigned int maxIter  = 10000);
 
 private:
 

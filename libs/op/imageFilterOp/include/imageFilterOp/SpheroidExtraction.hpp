@@ -47,9 +47,11 @@ public:
      * @param[in] _elongationMax maximum elongation to recognize a sphere, perfect spheres have an elongation of one.
      * @return detected spheres' center
      */
-    IMAGEFILTEROP_API static ::fwData::PointList::sptr extract(const ::fwData::Image::csptr& _image, const double _threshold,
-                                                       const double _radiusMin, const double _radiusMax,
-                                                       const double _elongationMin, const double _elongationMax);
+    IMAGEFILTEROP_API static ::fwData::PointList::sptr extract(const ::fwData::Image::csptr& _image,
+                                                               const double _threshold,
+                                                               const double _radiusMin, const double _radiusMax,
+                                                               const double _elongationMin,
+                                                               const double _elongationMax);
 
 };
 

@@ -54,7 +54,7 @@ public:
      * @param _maximumIterations maximum number of iterations allowed.
      */
     IMAGEFILTEROP_API PowellOptimizer(const OptimizedFunctionType& _f, double _stepTolerance, double _valueTolerance,
-                              double _stepLength, std::uint32_t _maximumIterations);
+                                      double _stepLength, std::uint32_t _maximumIterations);
 
     /**
      * @brief Runs the optimization function.

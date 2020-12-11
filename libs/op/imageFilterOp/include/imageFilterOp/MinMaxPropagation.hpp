@@ -63,7 +63,7 @@ public:
      * @param[in] roi region of interest.
      */
     IMAGEFILTEROP_API MinMaxPropagation(const ::fwData::Image::csptr& inImage, const ::fwData::Image::sptr& outImage,
-                                const ::fwData::Image::csptr& roi);
+                                        const ::fwData::Image::csptr& roi);
 
     /**
      * @brief propagates through the image starting from each seed as along as the encountered voxel value
@@ -76,7 +76,7 @@ public:
      * @return the differences in the image before and after propagation.
      */
     IMAGEFILTEROP_API ::fwDataTools::ImageDiff propagate(SeedsType& seeds, ::fwData::Image::BufferType* value,
-                                                 const double radius, const bool overwrite, const Mode mode);
+                                                         const double radius, const bool overwrite, const Mode mode);
 
 private:
 
