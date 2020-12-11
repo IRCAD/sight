@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,28 +21,27 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "maths/config.hpp"
+#include "cvSegmentation/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace maths
+namespace cvSegmentation
 {
 
-/**
- * @brief This class is started when the module is loaded.
- */
-struct MATHS_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class CVSEGMENTATION_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
+
+public:
+
     /// Destroys the plugin.
-    MATHS_API ~Plugin() noexcept override;
+    CVSEGMENTATION_API ~Plugin() noexcept override;
 
-    /// Starts the plugin, does nothing here.
-    MATHS_API void start() override;
+    /// Starts the module.
+    CVSEGMENTATION_API void start() override;
 
-    /// Stops the plugin, does nothing here.
-    MATHS_API void stop() noexcept override;
+    /// Stops the module.
+    CVSEGMENTATION_API void stop() noexcept override;
 
 };
 
-} // namespace maths
+} // namespace cvSegmentation

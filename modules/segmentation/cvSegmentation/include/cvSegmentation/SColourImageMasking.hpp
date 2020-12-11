@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "colourSegmentation/config.hpp"
+#include "cvSegmentation/config.hpp"
 
 #include <colourImageMasking/Masker.hpp>
 
@@ -30,13 +30,12 @@
 
 #include <fwServices/IOperator.hpp>
 
-namespace colourSegmentation
+namespace cvSegmentation
 {
 
 /**
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
- * image using an Expectation Maximization algorithm
- * @deprecated: will be removed in sight 22.0
+ * image using an Expectation Maximization algorithm.
  *
  * @see ::fwServices::IOperator
  *
@@ -50,9 +49,8 @@ namespace colourSegmentation
  * - \b clearMaskTL() : Slot to clear the output foreground mask timeline and reset the last timestamp.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
-        <service uid="..." type="::colourSegmentation::SColourImageMasking" >
+        <service uid="..." type="::cvSegmentation::SColourImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
@@ -83,97 +81,85 @@ namespace colourSegmentation
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
+class CVSEGMENTATION_CLASS_API SColourImageMasking final : public ::fwServices::IOperator
 {
 public:
+
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT;
+    /// Initializes the slots and member variables.
+    CVSEGMENTATION_API SColourImageMasking() noexcept;
 
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
-    ///@}
-    [[deprecated("moved to ::cvSegmentation::SColourImageMasking.")]]
-    ///Constructor
-    COLOURSEGMENTATION_API SColourImageMasking() noexcept;
-
-    /// Destructor
-    COLOURSEGMENTATION_API virtual ~SColourImageMasking() noexcept;
+    /// Destroys the service.
+    CVSEGMENTATION_API ~SColourImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    /// Initialize segmentation method parameters
-    COLOURSEGMENTATION_API virtual void configuring() override;
+    /// Initializes segmentation method parameters.
+    CVSEGMENTATION_API void configuring() override;
 
-    /// Initializes the colour image masker
-    COLOURSEGMENTATION_API virtual void starting() override;
+    /// Initializes the colour image masker.
+    CVSEGMENTATION_API void starting() override;
 
-    /// Does nothing
-    COLOURSEGMENTATION_API virtual void stopping() override;
+    /// Does nothing.
+    CVSEGMENTATION_API void stopping() override;
 
-    /// Compute the image mask on a frame
-    COLOURSEGMENTATION_API virtual void updating() override;
+    /// Computes the image mask on a frame.
+    CVSEGMENTATION_API void updating() override;
 
 private:
 
-    /// Slot: Set background image and learn background model
+    /// SLOT: Sets background image and learn background model.
     void setBackground();
 
-    /// Slot: Set foreground image and learn foreground model
+    /// SLOT: Sets foreground image and learn foreground model.
     void setForeground();
 
-    /// Slot: Set the threshold value to compute final binary image
+    /// SLOT: Sets the threshold value to compute final binary image.
     void setThreshold(int threshold);
 
-    /// Slot: Set the noise level added in the learning steps
+    /// SLOT: Sets the noise level added in the learning steps.
     void setNoiseLevel(double noiseLevel);
 
-    /// Slot: Set the number of background components learned
+    /// SLOT: Sets the number of background components learned.
     void setBackgroundComponents(int bgComponents);
 
-    /// Slot: Set the number of foreground components learned
+    /// SLOT: Sets the number of foreground components learned.
     void setForegroundComponents(int fgComponents);
 
-    /// Slot: Clear the output mask timeline and reset the last timestamp.
+    /// SLOT: Clears the output mask timeline and reset the last timestamp.
     void clearMaskTL();
 
-    /// Object performing the Expectation Maximization segmentation
+    /// Object performing the Expectation Maximization segmentation.
     std::unique_ptr< ::colourImageMasking::Masker > m_masker;
 
-    /// Current timestamp
+    /// Current timestamp.
     ::fwCore::HiResClock::HiResClockType m_lastVideoTimestamp;
 
-    /// Reduction factor
+    /// Reduction factor.
     float m_scaleFactor;
 
-    /// Opencv scale factor
+    /// Opencv scale factor.
     ::cv::Size m_maskDownsize;
 
-    /// Opencv HSV lower value to threshold the image used during foreground color model learning step
+    /// Opencv HSV lower value to threshold the image used during foreground color model learning step.
     ::cv::Scalar m_lowerColor;
 
-    /// Opencv HSV upper value to threshold the image used during foreground color model learning step
+    /// Opencv HSV upper value to threshold the image used during foreground color model learning step.
     ::cv::Scalar m_upperColor;
 
-    /// Noise level to add during the foreground learning step
+    /// Noise level to add during the foreground learning step.
     double m_noise;
 
-    /// Number of background components
+    /// Number of background components.
     int m_backgroundComponents;
 
-    /// Number of foreground components
+    /// Number of foreground components.
     int m_foregroundComponents;
 };
 
-} // namespace colourSegmentation
+} // namespace cvSegmentation.
