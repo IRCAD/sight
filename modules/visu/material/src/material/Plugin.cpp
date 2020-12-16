@@ -39,6 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    FW_DEPRECATED_MSG("This module is no longer supported", "23.0");
 }
 
 //-----------------------------------------------------------------------------

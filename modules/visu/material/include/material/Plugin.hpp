@@ -29,7 +29,11 @@
 namespace material
 {
 
-/// This class is started when the module is loaded.
+/**
+ * @brief This class is started when the module is loaded.
+ *
+ * @deprecated This module is no longer supported and will be removed in sight 23.0
+ */
 struct MATERIAL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
