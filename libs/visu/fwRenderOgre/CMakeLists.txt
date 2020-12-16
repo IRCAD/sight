@@ -14,6 +14,45 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC OgreOverlay)
 find_package(OpenGL QUIET REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 
+# This is a hack to copy plugins inside the build directory
+# Most developers executes apps inside the build directory so this is done as a convenience
+
+# Fixup VCPKG paths
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
+        get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
+    endif()
+
+    if(EXISTS "${OGRE_CONFIG_DIR}/../debug/bin")
+        get_filename_component(OGRE_CONFIG_DIR "${OGRE_CONFIG_DIR}/../debug/bin" ABSOLUTE)
+    endif()
+endif()
+
+file(GLOB OGRE_PLUGINS
+    "${OGRE_PLUGIN_DIR}/*RenderSystem*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+    "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+    "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+)
+
+if(WIN32)
+    set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/ogreplugins/")
+
+    # This copies the plugins into the build directory
+    file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
+
+    # This copies the plugins into the install directory
+    install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "ogrePlugins/")
+else()
+    set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/lib/ogreplugins/")
+
+    # This copies the plugins into the build directory
+    file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
+
+    # This copies the plugins into the install directory
+    install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "lib/ogreplugins/")
+endif()
+
+
 set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/resources.cfg.in"
