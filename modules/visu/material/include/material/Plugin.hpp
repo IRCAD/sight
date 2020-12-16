@@ -29,26 +29,18 @@
 namespace material
 {
 
-static const std::string s_MATERIAL_RESOURCEGROUP_NAME         = "materialsTemplate";
-static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME       = "compositorsPostFX";
-static const std::string s_DEFAULT_MATERIAL_RESOURCEGROUP_NAME = "Materials";
-
-/**
- * @brief   This class is started when the module is loaded.
- */
-
+/// This class is started when the module is loaded.
 struct MATERIAL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
-    MATERIAL_API ~Plugin() noexcept;
 
-    // Overrides
-    MATERIAL_API void start();
+    /// Destroys the plugin.
+    MATERIAL_API ~Plugin() noexcept override;
 
-    // Overrides
-    MATERIAL_API void stop() noexcept;
+    /// Starts the plugin, does nothing here.
+    MATERIAL_API void start() override;
+
+    /// Stops the plugin, does nothing here.
+    MATERIAL_API void stop() noexcept override;
 };
 
-} // namespace material
+} // namespace material.
