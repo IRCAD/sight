@@ -9,7 +9,6 @@ set( REQUIREMENTS
 
     preferences             # Start the module, load file location or window preferences
     visuOgre                # Start the module, allow to use fwRenderOgre
-    material                # Start the module, load Ogre's materials
     guiQt                   # Start the module, allow dark theme
     visuOgreQt              # Enable Ogre to render things in Qt window
     scene2D                 # Start the module, allow to use fwRenderQt

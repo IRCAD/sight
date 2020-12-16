@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
     
     <extension implements="::fwServices::registry::AppConfig" >

@@ -5,7 +5,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
