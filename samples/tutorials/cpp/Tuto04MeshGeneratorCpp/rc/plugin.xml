@@ -5,7 +5,6 @@
     <requirement id="preferences" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="guiQt" />
     <requirement id="servicesReg" />
 

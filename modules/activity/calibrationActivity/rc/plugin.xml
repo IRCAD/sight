@@ -5,7 +5,6 @@
     <requirement id="validators" />
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="material" />
     <requirement id="activities" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
