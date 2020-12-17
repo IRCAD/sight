@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,64 @@ SRemoveDistance::~SRemoveDistance() noexcept
 
 //------------------------------------------------------------------------------
 
+void SRemoveDistance::configuring()
+{
+    this->::fwGui::IActionSrv::initialize();
+}
+
+//------------------------------------------------------------------------------
+
+void SRemoveDistance::starting()
+{
+    this->::fwGui::IActionSrv::actionServiceStarting();
+}
+
+//------------------------------------------------------------------------------
+
+void SRemoveDistance::updating( )
+{
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+    ::fwData::Vector::sptr vectDist
+        = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
+        && vectDist)
+    {
+        bool requestAll;
+        ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image.get_shared(), requestAll );
+
+        if(distToRemove)
+        {
+            SLM_ASSERT("No field image distances id", vectDist);
+            const ::fwData::Vector::ConstIteratorType newEnd = std::remove(vectDist->begin(),
+                                                                           vectDist->end(), distToRemove);
+            vectDist->getContainer().erase(newEnd, vectDist->end());
+
+            this->notifyDeleteDistance(image.get_shared(), distToRemove);
+        }
+        if(requestAll)
+        {
+            ::fwData::PointList::sptr backupDistance = image->getField< ::fwData::PointList >(
+                ::fwDataTools::fieldHelper::Image::m_imageDistancesId );
+
+            image->removeField(::fwDataTools::fieldHelper::Image::m_imageDistancesId );
+            const auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(
+                ::fwData::Image::s_DISTANCE_ADDED_SIG);
+            sig->asyncEmit(backupDistance);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SRemoveDistance::stopping()
+{
+    this->::fwGui::IActionSrv::actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
 std::string SRemoveDistance::distanceToStr(double _dist)
 {
     std::stringstream ss;
@@ -85,7 +143,7 @@ std::string SRemoveDistance::distanceToStr(double _dist)
         selections.push_back("ALL");
         std::map< std::string, ::fwData::PointList::sptr > correspondance;
 
-        for(const ::fwData::Object::sptr obj : *vectDist)
+        for(const ::fwData::Object::sptr& obj : *vectDist)
         {
             const ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
             SLM_ASSERT("The distance should be a point list", pl);
@@ -132,88 +190,24 @@ std::string SRemoveDistance::distanceToStr(double _dist)
 
 //------------------------------------------------------------------------------
 
-void SRemoveDistance::configuring()
-{
-    this->::fwGui::IActionSrv::initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void SRemoveDistance::updating( )
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectWriteLock lock(image);
-
-    ::fwData::Vector::sptr vectDist
-        = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
-
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
-        && vectDist)
-    {
-        bool requestAll;
-        ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image, requestAll );
-
-        // perform action only available distance
-        if(distToRemove)
-        {
-            SLM_ASSERT("No field image distances id", vectDist);
-            const ::fwData::Vector::ConstIteratorType newEnd = std::remove(vectDist->begin(),
-                                                                           vectDist->end(), distToRemove);
-            vectDist->getContainer().erase(newEnd, vectDist->end());
-
-            this->notifyDeleteDistance(image, distToRemove);
-        }
-        if(requestAll)
-        {
-            // backup
-            ::fwData::PointList::sptr backupDistance = image->getField< ::fwData::PointList >(
-                ::fwDataTools::fieldHelper::Image::m_imageDistancesId );
-
-            image->removeField(::fwDataTools::fieldHelper::Image::m_imageDistancesId );
-            const auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(
-                ::fwData::Image::s_DISTANCE_ADDED_SIG);
-            sig->asyncEmit(backupDistance);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SRemoveDistance::starting()
-{
-    this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void SRemoveDistance::stopping()
-{
-    this->::fwGui::IActionSrv::actionServiceStopping();
-}
-
-//------------------------------------------------------------------------------
-
-void SRemoveDistance::notifyDeleteDistance(const ::fwData::Image::csptr& image,
-                                           const ::fwData::PointList::csptr& distance) const
+void SRemoveDistance::notifyDeleteDistance(const ::fwData::Image::csptr& _image,
+                                           const ::fwData::PointList::csptr& _distance) const
 {
     const auto sig =
-        image->signal< ::fwData::Image::DistanceRemovedSignalType >(::fwData::Image::s_DISTANCE_REMOVED_SIG);
-    sig->asyncEmit(distance);
+        _image->signal< ::fwData::Image::DistanceRemovedSignalType >(::fwData::Image::s_DISTANCE_REMOVED_SIG);
+    sig->asyncEmit(_distance);
 }
 
 //------------------------------------------------------------------------------
 
 void SRemoveDistance::removeLastDistance()
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectWriteLock lock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const ::fwData::Vector::sptr vectDist
         = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
         && vectDist)
     {
         const ::fwData::PointList::sptr distToRemove = ::fwData::PointList::dynamicCast(*(*vectDist).rbegin());
@@ -222,12 +216,13 @@ void SRemoveDistance::removeLastDistance()
         {
             ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
             vectDist->getContainer().erase(newEnd, vectDist->end());
-            this->notifyDeleteDistance(image, distToRemove);
+            this->notifyDeleteDistance(image.get_shared(), distToRemove);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-} // namespace uiMeasurement
+} // namespace action.
+
+} // namespace uiMeasurement.

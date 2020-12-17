@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,15 +45,14 @@ namespace action
  * - \b removeLastDistance: Remove the last added point.
  *
  * @section XML XML Configuration
- *
- * Example to remove a selected point:
+ * Example to remove a selected distance:
  * @code{.xml}
    <service type="::uiMeasurement::action::SRemoveDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
  *
- * Example to remove the last added point:
+ * Example to remove the last added distance:
  * @code{.xml}
     <service uid="SRemoveDistanceAct" type="::uiMeasurement::action::SRemoveDistance">
             <inout key="image" uid="${image}" />
@@ -65,22 +64,37 @@ namespace action
         </slots>
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: Image containing the distance field.
  */
-
 class UIMEASUREMENT_CLASS_API SRemoveDistance final : public ::fwGui::IActionSrv
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SRemoveDistance,  ::fwGui::IActionSrv)
 
     /// Initialize slots.
     UIMEASUREMENT_API SRemoveDistance() noexcept;
 
     /// Destroys the service.
-    UIMEASUREMENT_API virtual ~SRemoveDistance() noexcept final;
+    UIMEASUREMENT_API ~SRemoveDistance() noexcept override;
+
+protected:
+
+    /// Configures the action.
+    UIMEASUREMENT_API void configuring() override;
+
+    /// Starts the action.
+    UIMEASUREMENT_API void starting() override;
+
+    /// Removes a distance chosen from a gui dialog.
+    UIMEASUREMENT_API void updating() override;
+
+    /// Stops the action.
+    UIMEASUREMENT_API void stopping() override;
 
 private:
 
@@ -96,18 +110,6 @@ private:
      */
     static ::fwData::PointList::sptr getDistanceToRemove(const ::fwData::Image::csptr _image, bool& _removeAll);
 
-    /// Configures the action.
-    virtual void configuring() override final;
-
-    /// Starts the action.
-    virtual void starting() override final;
-
-    /// Removes a distance chosen from a gui dialog.
-    virtual void updating() override final;
-
-    /// Stops the action.
-    virtual void stopping() override final;
-
     /**
      * @brief Sends a signal when a distance is removed.
      * @param _image The image where the distance has been added.
@@ -119,6 +121,6 @@ private:
     void removeLastDistance();
 };
 
-} // namespace action
+} // namespace action.
 
-} // namespace uiMeasurement
+} // namespace uiMeasurement.

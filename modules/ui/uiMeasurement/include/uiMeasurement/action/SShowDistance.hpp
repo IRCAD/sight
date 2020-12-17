@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,6 @@ namespace action
 {
 
 /**
- * @deprecated This service is deprecated and will be remove in sight 22.0,
- *             please use ::uiMeasurement::action::SShowDistance.
- *
  * @brief This action allows to show/hide image distances.
  *
  * @section Slots Slots
@@ -44,7 +41,7 @@ namespace action
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::uiMeasurement::action::ShowDistance">
+   <service type="::uiMeasurement::action::SShowDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
@@ -52,42 +49,47 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distances.
  */
-class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::fwGui::IActionSrv
+class UIMEASUREMENT_CLASS_API SShowDistance final : public ::fwGui::IActionSrv
 {
 
 public:
-    fwCoreServiceMacro(ShowDistance,  ::fwGui::IActionSrv)
 
-    UIMEASUREMENT_API ShowDistance() noexcept;
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SShowDistance,  ::fwGui::IActionSrv)
 
-    UIMEASUREMENT_API virtual ~ShowDistance() noexcept;
+    /// Initialize slots.
+    UIMEASUREMENT_API SShowDistance() noexcept;
+
+    /// Destroys the service.
+    UIMEASUREMENT_API ~SShowDistance() noexcept override;
+
+protected:
+
+    UIMEASUREMENT_API void configuring() override;
+
+    UIMEASUREMENT_API void starting() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_SHOW_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG of s_IMAGE_INOUT to s_SHOW_DISTANCE_SLOT
      */
-    UIMEASUREMENT_API virtual KeyConnectionsMap getAutoConnections() const override;
-protected:
+    UIMEASUREMENT_API KeyConnectionsMap getAutoConnections() const override;
 
-    void configuring() override;
+    /// Shos or hide distances.
+    UIMEASUREMENT_API void updating() override;
 
-    void starting() override;
-
-    void updating() override;
-
-    void stopping() override;
-
-    void info(std::ostream& _sstream ) override;
+    /// Stops the action.
+    UIMEASUREMENT_API void stopping() override;
 
 private:
 
-    /// Slot: show/hide distance
-    void showDistance(bool isShown);
+    /// SLOT: shows or hides distance from the image field.
+    void showDistance(bool);
 
 };
 
-} // namespace action
+} // namespace action.
 
-} // namespace uiMeasurement
+} // namespace uiMeasurement.
