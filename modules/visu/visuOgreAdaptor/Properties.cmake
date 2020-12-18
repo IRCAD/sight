@@ -7,6 +7,7 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwGui
+    fwIO
     fwMedData
     fwRenderOgre
     fwRuntime
@@ -16,5 +17,5 @@ set( DEPENDENCIES
     fwDataTools
     arData
 )
-set( REQUIREMENTS )
+set( REQUIREMENTS ioVTK )
 set( WARNINGS_AS_ERRORS ON )

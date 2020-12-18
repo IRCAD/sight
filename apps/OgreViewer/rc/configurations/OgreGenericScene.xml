@@ -224,6 +224,12 @@
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
                 <adaptor uid="frontalPickerInteractorAdp" />
                 <adaptor uid="frontalLandmarksAdp" />
+
+                <layer id="orientationMarkerLayer" order="8" >
+                    <viewport hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
+                </layer>
+                <adaptor uid="orientationMarkerAdp" />
+
             </scene>
         </service>
 
@@ -289,6 +295,10 @@
         <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
             <config layer="defaultLayer" flip="true" />
+        </service>
+
+        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker">
+            <config layer="orientationMarkerLayer" />
         </service>
 
         <!-- Axial -->
@@ -629,6 +639,8 @@
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
+        <start uid="orientationMarkerAdp" />
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />
