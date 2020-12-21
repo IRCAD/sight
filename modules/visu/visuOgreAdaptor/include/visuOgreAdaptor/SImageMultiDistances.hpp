@@ -98,7 +98,7 @@ public:
     VISUOGREADAPTOR_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
 
     /**
-     * @brief Moves a distance stores in m_pickedData.
+     * @brief Moves a distance stored in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
@@ -256,7 +256,7 @@ private:
     /// Defines the mask used to filter out entities when the distance is auto snapped.
     std::uint32_t m_queryMask { 0xFFFFFFFF };
 
-    /// Defines the mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
+    /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
     std::uint32_t m_distanceQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
     /// Defines the material name with no depth check for spheres.

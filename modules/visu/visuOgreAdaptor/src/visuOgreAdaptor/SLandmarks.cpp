@@ -320,7 +320,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
     // Remove the group.
     this->removeGroup(_groupName);
 
-    size_t groupeSize = 0;
+    size_t groupSize = 0;
     {
         // Get landmarks.
         const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
@@ -328,11 +328,11 @@ void SLandmarks::modifyGroup(std::string _groupName)
         // Retreive group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
-        groupeSize = group.m_points.size();
+        groupSize = group.m_points.size();
     }
 
     // Re-create the group.
-    for(size_t index = 0; index < groupeSize; ++index)
+    for(size_t index = 0; index < groupSize; ++index)
     {
         this->insertPoint(_groupName, index);
     }
@@ -486,7 +486,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
         ::fwRenderOgre::Text* text = nullptr;
         if(m_enableLabels)
         {
-            // Get nesecaries data.
+            // Get necessary data.
             const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
             ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
             const std::string textName = this->getID() + "_" + pointName + "_text";
