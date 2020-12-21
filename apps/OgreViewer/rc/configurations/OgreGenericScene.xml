@@ -259,8 +259,8 @@
         </service>
 
         <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
-            <config layer="defaultLayer" />
+            <inout key="landmarks" uid="${landmarks}" />
+            <config layer="defaultLayer" priority="4" />
         </service>
 
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
@@ -333,9 +333,9 @@
         </service>
 
         <service uid="axialLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="axialNegatoLayer" label="false" orientation="axial" />
+            <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
         </service>
 
         <!-- Sagittal -->
@@ -380,9 +380,9 @@
         </service>
 
         <service uid="sagittalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" />
+            <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
         </service>
 
         <!-- Frontal -->
@@ -427,9 +427,9 @@
         </service>
 
         <service uid="frontalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="frontalNegatoLayer" label="false" orientation="frontal" />
+            <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
