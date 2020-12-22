@@ -770,7 +770,7 @@ std::optional< ::Ogre::Vector3 > SLandmarks::getNearestPickedPosition(int _x, in
 
 void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
-    if(_button == LEFT || _button == RIGHT)
+    if(_button == LEFT)
     {
         const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
 
@@ -787,7 +787,7 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         bool found = false;
         ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
         raySceneQuery->setSortByDistance(false);
-        if (raySceneQuery->execute().size() != 0)
+        if(raySceneQuery->execute().size() != 0)
         {
             const ::Ogre::Real scale = 1.15f;
 
@@ -801,25 +801,9 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
                     {
                         const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
-                        if(_button == LEFT)
-                        {
-                            m_pickedData = landmark;
-                            landmark->m_node->setScale(scale, scale, scale);
+                        m_pickedData = landmark;
+                        landmark->m_node->setScale(scale, scale, scale);
 
-                            // Update the data, the autoconnection will select the point.
-                            const auto& sig = landmarks->signal< ::fwData::Landmarks::PointSelectedSignalType >(
-                                ::fwData::Landmarks::s_POINT_SELECTED_SIG);
-
-                            sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
-                        }
-                        else if(_button == RIGHT)
-                        {
-                            // Update the data, the autoconnection will deselect the point.
-                            const auto& sig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
-                                ::fwData::Landmarks::s_POINT_DESELECTED_SIG);
-
-                            sig->asyncEmit(landmark->m_groupName, landmark->m_index);
-                        }
                         found = true;
                         break;
                     }
