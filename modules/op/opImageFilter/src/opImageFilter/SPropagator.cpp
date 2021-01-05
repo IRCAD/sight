@@ -263,8 +263,8 @@ void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
     CoordinatesType newPoint = {{ static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[0]),
-        static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[1]),
-        static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[2]) }};
+                                  static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[1]),
+                                  static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[2]) }};
 
     bool imgBufferModified = false;
     if(pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)

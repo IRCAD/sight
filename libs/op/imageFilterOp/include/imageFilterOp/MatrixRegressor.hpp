@@ -68,7 +68,7 @@ public:
         double stepLength     = 1.,
         double stepTolerance  = 1e-2,
         double valueTolerance = 1e-2,
-        unsigned int maxIter = 10000);
+        unsigned int maxIter  = 10000);
 
 private:
 

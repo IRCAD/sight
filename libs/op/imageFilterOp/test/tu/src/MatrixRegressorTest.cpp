@@ -64,15 +64,15 @@ void MatrixRegressorTest::identityTest()
     }
 
     const std::vector< MatrixRegressor::PointType > ptList = {{
-        { 0., 0., 0., 1. },
-        { 0., 0., 1., 1. },
-        { 0., 1., 0., 1. },
-        { 0., 1., 1., 1. },
-        { 1., 0., 0., 1. },
-        { 1., 0., 1., 1. },
-        { 1., 1., 0., 1. },
-        { 1., 1., 1., 1. }
-    }};
+                                                                  { 0., 0., 0., 1. },
+                                                                  { 0., 0., 1., 1. },
+                                                                  { 0., 1., 0., 1. },
+                                                                  { 0., 1., 1., 1. },
+                                                                  { 1., 0., 0., 1. },
+                                                                  { 1., 0., 1., 1. },
+                                                                  { 1., 1., 0., 1. },
+                                                                  { 1., 1., 1., 1. }
+                                                              }};
 
     MatrixRegressor regressor(matList, ptList);
 
@@ -107,15 +107,15 @@ void MatrixRegressorTest::avgTranslationTest()
     matList->getContainer().push_back(trans2);
 
     const std::vector< MatrixRegressor::PointType > ptList = {{
-        { 0., 0., 0., 1. },
-        { 0., 0., 1., 1. },
-        { 0., 1., 0., 1. },
-        { 0., 1., 1., 1. },
-        { 1., 0., 0., 1. },
-        { 1., 0., 1., 1. },
-        { 1., 1., 0., 1. },
-        { 1., 1., 1., 1. }
-    }};
+                                                                  { 0., 0., 0., 1. },
+                                                                  { 0., 0., 1., 1. },
+                                                                  { 0., 1., 0., 1. },
+                                                                  { 0., 1., 1., 1. },
+                                                                  { 1., 0., 0., 1. },
+                                                                  { 1., 0., 1., 1. },
+                                                                  { 1., 1., 0., 1. },
+                                                                  { 1., 1., 1., 1. }
+                                                              }};
 
     MatrixRegressor regressor(matList, ptList);
 
@@ -153,15 +153,15 @@ void MatrixRegressorTest::avgRotationTest()
     matList->getContainer().push_back(rot);
 
     const std::vector< MatrixRegressor::PointType > ptList = {{
-        { 0., 0., 0., 1. },
-        { 0., 0., 1., 1. },
-        { 0., 1., 0., 1. },
-        { 0., 1., 1., 1. },
-        { 1., 0., 0., 1. },
-        { 1., 0., 1., 1. },
-        { 1., 1., 0., 1. },
-        { 1., 1., 1., 1. }
-    }};
+                                                                  { 0., 0., 0., 1. },
+                                                                  { 0., 0., 1., 1. },
+                                                                  { 0., 1., 0., 1. },
+                                                                  { 0., 1., 1., 1. },
+                                                                  { 1., 0., 0., 1. },
+                                                                  { 1., 0., 1., 1. },
+                                                                  { 1., 1., 0., 1. },
+                                                                  { 1., 1., 1., 1. }
+                                                              }};
 
     MatrixRegressor regressor(matList, ptList);
 

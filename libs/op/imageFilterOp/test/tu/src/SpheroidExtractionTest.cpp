@@ -139,13 +139,13 @@ void SpheroidExtractionTest::extractionTest()
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory< ImageType >(image);
 
     const std::vector< std::array<double, 3> > spheroidCenters = {{{ 16., 16., 16.}},
-        {{ 54., 67., 12.}},
-        {{113., 87., 98.}}};
+                                                                  {{ 54., 67., 12.}},
+                                                                  {{113., 87., 98.}}};
     const double radius[3] = {5, 5, 5};
 
     const std::vector< std::array<double, 3> > ellipsoidCenters = {{{ 16., 100., 64.}},
-        {{ 64., 64., 64. }},
-        {{ 10., 17., 108. }}};
+                                                                   {{ 64., 64., 64. }},
+                                                                   {{ 10., 17., 108. }}};
 
     const double ellipseRadius[3] = {8, 3, 5};
 
