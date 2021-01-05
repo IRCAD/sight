@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(VTK QUIET COMPONENTS
+find_package(VTK QUIET REQUIRED COMPONENTS
     vtkFiltersGeometry
     vtkFiltersModeling
     vtkIOExport
@@ -11,7 +11,7 @@ find_package(VTK QUIET COMPONENTS
     vtkIOXML
     vtkRenderingFreeType
     vtkRenderingOpenGL2  # Needed notably for the VtkObjExporter
-    REQUIRED)
+)
 
 if(WIN32)
     # VTK9

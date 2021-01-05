@@ -1,18 +1,28 @@
 fwLoadProperties()
 
 find_package(DCMTK QUIET REQUIRED)
-fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} ${DCMTK_INCLUDE_DIRS} )
-fwForwardLink( ${DCMTK_LIBRARIES} )
 
-if(UNIX)
-    if(USE_SYSTEM_LIB)
-        file(COPY "/etc/dcmtk/storescp.cfg"
-             DESTINATION "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
-    else()
-        file(COPY "${DCMTK_DIR}/../../../etc/dcmtk/storescp.cfg"
-             DESTINATION "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+# original system dcmtk resources path
+set(STORESCP "/etc/dcmtk/storescp.cfg")
+
+# try various paths, depending of the package manager / platforms / ...
+if(WIN32 OR (NOT USE_SYSTEM_LIB))    
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND (EXISTS "${DCMTK_DIR}/../../debug${STORESCP}"))
+        set(STORESCP "${DCMTK_DIR}/../../debug${STORESCP}")
+    elseif(EXISTS "${DCMTK_DIR}/..${STORESCP}")
+        set(STORESCP "${DCMTK_DIR}/..${STORESCP}")
+    elseif(EXISTS "${DCMTK_DIR}/../..${STORESCP}")
+        set(STORESCP "${DCMTK_DIR}/../..${STORESCP}")
+    elseif(EXISTS "${DCMTK_DIR}/../../..${STORESCP}")
+        set(STORESCP "${DCMTK_DIR}/../../..${STORESCP}")
     endif()
-else()
-    file(COPY "${DCMTK_DIR}/../etc/dcmtk/storescp.cfg"
-         DESTINATION "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 endif()
+
+# Copy dcmtk resources
+file(COPY
+    "${STORESCP}"
+    DESTINATION
+    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}"
+)
+
+unset(STORESCP)
