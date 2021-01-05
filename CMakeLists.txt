@@ -112,6 +112,9 @@ if(USE_SYSTEM_LIB)
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    if(UNIX)
+      list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+    endif()
 
     # Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
     file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )

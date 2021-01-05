@@ -251,7 +251,11 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}.bin-${PROJECT_VERSION}")
 
         # Use the right path separator on unix
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+        if(EXTERNAL_LIBRARIES)
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${EXTERNAL_LIBRARIES}/lib")
+        else()
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+        endif()
 
         # Build the shell script from template_exe.sh.in
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
@@ -368,7 +372,12 @@ macro(fwCppunitTest FWPROJECT_NAME)
         set(PROJECT_EXECUTABLE ${FWPROJECT_NAME}.bin)
 
         # Use the right path separator on unix
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+        if(EXTERNAL_LIBRARIES)
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${EXTERNAL_LIBRARIES}/lib")
+        else()
+            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+        endif()
+
 
         # Build the shell script from template_test.sh.in
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
@@ -709,7 +718,12 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
 
             # Configure launcher script
             # Replace all ';' path separator to unix style path separator ':'
-            string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+            if(EXTERNAL_LIBRARIES)
+                string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${EXTERNAL_LIBRARIES}/lib")
+            else()
+                string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
+            endif()
+
             configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             unset(FW_EXTERNAL_LIBRARIES_DIRS)
 

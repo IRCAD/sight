@@ -30,7 +30,6 @@ set( REQUIREMENTS
     uiMeasurementQt
 
     # Reader
-    ioVtkGdcm
     ioVTK
     ioAtoms
     ioGdcm
