@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwGuiQt
 )
 set( REQUIREMENTS
-    material
     visuOgre
     visuOgreQt
     visuOgreAdaptor

@@ -18,7 +18,6 @@ set( REQUIREMENTS
     ioAtoms
     ioITK
     ioVTK
-    ioVtkGdcm
     ioData
 
     uiIO

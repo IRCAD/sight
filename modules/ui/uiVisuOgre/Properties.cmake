@@ -16,6 +16,5 @@ set( DEPENDENCIES
 )
 
 set( REQUIREMENTS
-        material
         uiIO
 )

@@ -12,7 +12,6 @@ set( REQUIREMENTS
     gui
     guiQt
     ioGdcm
-    ioVtkGdcm
     ioDicomWeb
     media
     servicesReg
