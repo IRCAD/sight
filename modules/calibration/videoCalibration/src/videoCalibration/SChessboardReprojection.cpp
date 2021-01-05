@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessboardReprojection);
+fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessboardReprojection)
 
 namespace videoCalibration
 {

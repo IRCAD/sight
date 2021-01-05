@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -112,7 +112,8 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     extrinsic( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = _R * 1;
     extrinsic( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = _T * 1;
 
-    ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, ::cv::SOLVEPNP_ITERATIVE);
+    ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false,
+                   ::cv::SOLVEPNP_ITERATIVE);
 
     std::vector<double> optimVector = {{
                                            rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2),

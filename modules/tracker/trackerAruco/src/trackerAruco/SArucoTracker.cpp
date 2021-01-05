@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -286,9 +286,9 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             if(nbOfComponents == 4) // RGBA or BGRA.
             {
                 // since drawDetectedMarkers does not handle 4 channels ::cv::mat
-                ::cv::cvtColor(inImage, bgr, cv::COLOR_BGRA2BGR);
+                ::cv::cvtColor(inImage, bgr, ::cv::COLOR_BGRA2BGR);
                 ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
-                ::cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
+                ::cv::cvtColor(bgr, inImage, ::cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
             // It is useless to test other values since "wrong" number of components has previoulsy been discarded.
