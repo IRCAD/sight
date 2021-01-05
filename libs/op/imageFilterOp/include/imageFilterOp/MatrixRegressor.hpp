@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ public:
         double stepLength     = 1.,
         double stepTolerance  = 1e-2,
         double valueTolerance = 1e-2,
-        unsigned int maxIter  = 10000);
+        unsigned int maxIter = 10000);
 
 private:
 
