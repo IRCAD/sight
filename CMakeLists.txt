@@ -119,6 +119,18 @@ if(USE_SYSTEM_LIB)
         message(STATUS "include: ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
+
+    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+
+    if(EXTERNAL_LIBRARIES)
+      get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
+      set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
+      unset(ABSOLUTE_EXTERNAL_LIBRARIES)
+
+      list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+      list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+      list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+  endif()
 endif()
 
 ########################################################################################################################
