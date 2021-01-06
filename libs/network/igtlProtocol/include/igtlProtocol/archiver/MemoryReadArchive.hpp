@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@
 #include <boost/iostreams/categories.hpp>
 
 #include <map>
+#include <vector>
 
 namespace igtlProtocol
 {
