@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,18 +22,26 @@
 
 #include "visuOgreAdaptor/SOrientationMarker.hpp"
 
+#include "fwDataTools/TransformationMatrix3D.hpp"
+
 #include "fwIO/IReader.hpp"
 
 #include "fwServices/IService.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace visuOgreAdaptor
 {
+
+static const std::string s_MATRIX_INOUT = "matrix";
 
 //-----------------------------------------------------------------------------
 
 SOrientationMarker::SOrientationMarker() noexcept
 {
-    m_mesh = ::fwData::Mesh::New();
+    m_mesh            = ::fwData::Mesh::New();
+    m_cameraTransform = ::fwData::TransformationMatrix3D::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -49,9 +57,6 @@ SOrientationMarker::~SOrientationMarker() noexcept
 void SOrientationMarker::configuring()
 {
     this->configureParams();
-
-    // const ConfigType configType = this->getConfigTree();
-    // const ConfigType config     = configType.get_child("config.<xmlattr>");
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +69,6 @@ void SOrientationMarker::starting()
     meshReader->registerInOut(m_mesh, "data", false);
 
     ::fwServices::IService::ConfigType config;
-    // config.add("resource", filePath);
     config.add("resource", "visuOgreAdaptor-" VISUOGREADAPTOR_VER "/human.vtk");
 
     meshReader->setConfiguration(config);
@@ -85,24 +89,67 @@ void SOrientationMarker::starting()
     meshAdaptor->start();
     SLM_ASSERT("SMesh is not started", meshAdaptor->isStarted());
 
-    // 1. Transfer camera motion from the main scene:
-    // - Add a VisuOgreAdaptor::SCamera in xml, it will get the values from the default camera
-    // - Pass the associated transformation matrix to this service -> TransformationMatrix3D as param
-    // 2. Add an SCamera in the service to transform the mesh
-    // - connect the service input matrix to the internal SCamera to allow the transofrmation of the scene to reflect on
-    // the human mesh
-    // 3. Do the reverse connection to update the main camera from the scene camera
+    // Initialize the internal matrix for the first time
+    this->updateCameraMatrix();
+
+    ::fwServices::IService::ConfigType cameraConfigAdp;
+    cameraConfigAdp.add("config.<xmlattr>.layer", this->getLayerID());
+
+    auto cameraAdaptor = this->registerService< ::fwRenderOgre::IAdaptor >("::visuOgreAdaptor::SCamera");
+    cameraAdaptor->setRenderService(this->getRenderService());
+    cameraAdaptor->registerInOut(m_cameraTransform, "transform", true);
+    cameraAdaptor->setConfiguration(cameraConfigAdp);
+    cameraAdaptor->configure();
+    cameraAdaptor->start();
+    SLM_ASSERT("SCamera is not started", cameraAdaptor->isStarted());
 
     this->updateVisibility(m_isVisible);
 
     this->requestRender();
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MATRIX_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
 //-----------------------------------------------------------------------------
 
 void SOrientationMarker::updating()
 {
+    this->updateCameraMatrix();
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SOrientationMarker::updateCameraMatrix()
+{
+    const auto inMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    if (inMatrix)
+    {
+        m_cameraTransform->shallowCopy(inMatrix.get_shared());
+
+        // Convert the matrix to the glm format
+        ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(inMatrix.get_shared());
+
+        // Nullify the translation vector, to reset the camera to the origin
+        mat[3][0] = mat[3][1] = mat[3][2] = 0.0;
+
+        // Translate the camera position to a fixed position
+        ::glm::dvec3 v1(0.0, 0.0, -32.0);
+        mat = ::glm::translate(mat, v1);
+
+        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(m_cameraTransform, mat);
+
+        auto sig = m_cameraTransform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >(
+            ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------

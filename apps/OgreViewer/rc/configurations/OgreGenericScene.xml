@@ -40,6 +40,8 @@
             <value>#2E3034</value>
         </object>
         <object uid="snapshot" type="::fwData::Image" />
+        <!-- Camera matrix -->
+        <object uid="globalCamera" type="::fwData::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -160,6 +162,7 @@
                 <background topColor="#36393E" bottomColor="#36393E" />
 
                 <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
+                <adaptor uid="globalCameraAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -226,11 +229,17 @@
                 <adaptor uid="frontalLandmarksAdp" />
 
                 <layer id="orientationMarkerLayer" order="8" >
-                    <viewport hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
+                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
                 </layer>
                 <adaptor uid="orientationMarkerAdp" />
 
             </scene>
+        </service>
+
+        <!-- Camera for the 3D layer -->
+        <service uid="globalCameraAdp" type="::visuOgreAdaptor::SCamera" >
+            <inout key="transform" uid="globalCamera" />
+            <config layer="defaultLayer" />
         </service>
 
         <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
@@ -297,12 +306,12 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker">
+        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker" autoConnect="yes" >
+            <inout key="matrix" uid="globalCamera" />
             <config layer="orientationMarkerLayer" />
         </service>
 
         <!-- Axial -->
-
         <service uid="axialBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
@@ -626,6 +635,7 @@
         <start uid="imageWriterSrv" />
         <start uid="imageExtruderSrv" />
 
+        <start uid="globalCameraAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />

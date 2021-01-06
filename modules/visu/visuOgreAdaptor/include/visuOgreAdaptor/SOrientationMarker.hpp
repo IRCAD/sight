@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,8 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SOrientationMarker">
-        <config layer="default" transform="transformUID" length="30" label="true" />
+        <inout key="matrix" uid="..." />
+        <config layer="default" />
     </service>
    @endcode
  *
@@ -54,24 +55,32 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SOrientationMarker, ::fwRenderOgre::IAdaptor)
 
-    /// TODO
+    /// Constructor
     VISUOGREADAPTOR_API SOrientationMarker() noexcept;
 
-    /// TODO
+    /// Desctructor
     VISUOGREADAPTOR_API ~SOrientationMarker() noexcept override;
 
 protected:
 
-    /// TODO
+    /// Configure the service parameters
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// TODO
+    /// Initialize and start child services
     VISUOGREADAPTOR_API void starting() override;
 
-    /// TODO
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to s_UPDATE_SLOT
+     */
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Update the camera from the input transform
     VISUOGREADAPTOR_API void updating() override;
 
-    /// TODO
+    /// Unregister child services
     VISUOGREADAPTOR_API void stopping() override;
 
     /**
@@ -82,7 +91,16 @@ protected:
 
 private:
 
+    /// Update the internal camera matrix from the input transform
+    void updateCameraMatrix();
+
+    /// Human model
     ::fwData::Mesh::sptr m_mesh { nullptr };
+
+    /// Internal matrix updating the mesh position
+    std::shared_ptr< ::fwData::TransformationMatrix3D > m_cameraTransform;
+
+    ::fwCom::helper::SigSlotConnection m_connections;
 
 };
 
