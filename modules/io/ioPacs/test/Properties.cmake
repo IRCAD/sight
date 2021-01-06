@@ -6,6 +6,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwPacsIO
+    fwTest
 )
 set( REQUIREMENTS
     fwData

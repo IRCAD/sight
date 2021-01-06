@@ -1,6 +1,8 @@
 fwLoadProperties()
 
 find_package(DCMTK QUIET REQUIRED)
+target_include_directories(${FWPROJECT_NAME} PRIVATE ${DCMTK_INCLUDE_DIRS})
+target_link_libraries(${FWPROJECT_NAME} PUBLIC ${DCMTK_LIBRARIES})
 
 # original system dcmtk resources path
 set(STORESCP "/etc/dcmtk/storescp.cfg")
