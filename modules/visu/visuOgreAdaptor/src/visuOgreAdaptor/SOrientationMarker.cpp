@@ -34,6 +34,8 @@
 namespace visuOgreAdaptor
 {
 
+static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_UPDATED_SIG = "visibilityUpdated";
+
 static const std::string s_MATRIX_INOUT = "matrix";
 
 //-----------------------------------------------------------------------------
@@ -42,6 +44,8 @@ SOrientationMarker::SOrientationMarker() noexcept
 {
     m_mesh            = ::fwData::Mesh::New();
     m_cameraTransform = ::fwData::TransformationMatrix3D::New();
+
+    newSignal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,6 +92,9 @@ void SOrientationMarker::starting()
     meshAdaptor->configure();
     meshAdaptor->start();
     SLM_ASSERT("SMesh is not started", meshAdaptor->isStarted());
+
+    m_connections.connect(this->getSptr(), s_VISIBILITY_UPDATED_SIG,
+                          meshAdaptor, ::fwRenderOgre::IAdaptor::s_UPDATE_VISIBILITY_SLOT);
 
     // Initialize the internal matrix for the first time
     this->updateCameraMatrix();
@@ -163,6 +170,10 @@ void SOrientationMarker::stopping()
 
 void SOrientationMarker::setVisible(bool _visible)
 {
+    // Forward the visibility update to child services, if auto-connected
+    auto sig = this->signal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
+    sig->asyncEmit(_visible);
+
     this->updating();
 }
 

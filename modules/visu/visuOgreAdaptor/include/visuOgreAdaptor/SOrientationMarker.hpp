@@ -90,6 +90,8 @@ protected:
     VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
+    /// Type of the 'visibilityUpdated' signal.
+    typedef ::fwCom::Signal<void (bool)> VisibilityUpdatedSignalType;
 
     /// Update the internal camera matrix from the input transform
     void updateCameraMatrix();
@@ -100,8 +102,8 @@ private:
     /// Internal matrix updating the mesh position
     std::shared_ptr< ::fwData::TransformationMatrix3D > m_cameraTransform;
 
+    // Connections with child services
     ::fwCom::helper::SigSlotConnection m_connections;
-
 };
 
 } // namespace visuOgreAdaptor.
