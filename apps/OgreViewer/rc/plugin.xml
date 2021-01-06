@@ -32,7 +32,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig" >
-        <id>OgreViewer_vtkGdcmd_SrvCfg</id>
+        <id>OgreViewer_gdcm_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
@@ -282,12 +282,11 @@
             <service uid="openSeriesDBAct" type="::uiIO::editor::SIOSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
-                <addSelection service="::ioVtkGdcm::SSeriesDBLazyReader" />
                 <addSelection service="::ioGdcm::SSeriesDBReader" />
                 <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
                 <config id="OgreViewer_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
                 <config id="OgreViewer_vtk_SrvCfg" service="::ioVTK::SSeriesDBReader" />
-                <config id="OgreViewer_vtkGdcmd_SrvCfg" service="::ioVtkGdcm::SSeriesDBReader" />
+                <config id="OgreViewer_gdcm_SrvCfg" service="::ioGdcm::SSeriesDBReader" />
             </service>
 
             <!-- Show the negato/volume view -->

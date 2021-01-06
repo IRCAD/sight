@@ -29,8 +29,8 @@
 
 #include <itk_zlib.h>
 #include <itkByteSwapper.h>
-#include <itkExceptionObject.h>
 #include <itkIOCommon.h>
+#include <itkMacro.h>
 
 #include <algorithm>
 #include <cstdio>

@@ -47,6 +47,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
+#include <vtkUnsignedCharArray.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSlicesCursor)
 

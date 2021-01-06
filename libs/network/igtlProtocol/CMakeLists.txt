@@ -1,17 +1,16 @@
 
 fwLoadProperties()
 
-find_package(LibArchive QUIET REQUIRED)
-find_package(OpenIGTLink QUIET REQUIRED)
+find_package(LibArchive REQUIRED)
+target_include_directories(${FWPROJECT_NAME} PRIVATE ${LibArchive_INCLUDE_DIRS})
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${LibArchive_LIBRARIES})
 
-fwForwardInclude(
-    ${OpenIGTLink_INCLUDE_DIRS}
-    ${LibArchive_INCLUDE_DIRS}
-)
-fwLink(
-    ${LibArchive_LIBRARIES}
-)
-fwForwardLink(
-    ${OpenIGTLink_LIBRARIES}
-)
+if(VCPKG_TARGET_TRIPLET)
+    find_package(igtl-3.0 CONFIG REQUIRED)
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE OpenIGTLink)
+else()
+    find_package(OpenIGTLink QUIET REQUIRED)
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${OpenIGTLink_LIBRARIES})
+    target_include_directories(${FWPROJECT_NAME} PRIVATE ${OpenIGTLink_INCLUDE_DIRS})
+endif()
 

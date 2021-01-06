@@ -25,7 +25,6 @@ set( REQUIREMENTS
     # Reader
     videoOpenCV
     videoQt
-    videoVLC
 
     # Services
     videoTools

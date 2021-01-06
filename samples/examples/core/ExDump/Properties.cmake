@@ -23,7 +23,7 @@ set( REQUIREMENTS
     ioAtoms
     ioITK
     ioVTK
-    ioVtkGdcm
+    ioGdcm
     ioData
 
     # Services
