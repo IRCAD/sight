@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,11 +28,12 @@
 
 #include <fwVTKQml/FrameBufferItem.hpp>
 
-#include <QGuiApplication>
-#include <QQmlEngine>
-#include <QSurfaceFormat>
-#include <QVTKOpenGLNativeWidget.h>
-#include <vtkGenericOpenGLRenderWindow.h>
+#if VTK_MAJOR_VERSION > 7
+    #include <QQmlEngine>
+    #include <QSurfaceFormat>
+    #include <QVTKOpenGLNativeWidget.h>
+    #include <vtkGenericOpenGLRenderWindow.h>
+#endif
 
 namespace visuVTKQml
 {
@@ -45,6 +46,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 Plugin::Plugin() noexcept
 {
+#if VTK_MAJOR_VERSION > 7
     // Since we share the opengl context with Qt, we must set the default QSurfaceFormat before QApplication
     // to allow QVTKOpenGLWidget to work properly
     SLM_ASSERT( "GuiApplication is already created! The default surface format cannot be changed afterward.\n"
@@ -55,6 +57,7 @@ Plugin::Plugin() noexcept
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
+#endif
 }
 
 //-----------------------------------------------------------------------------

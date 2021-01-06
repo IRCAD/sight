@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -214,7 +214,7 @@ bool Masker::isModelLearned(void)
         }
         case HSv:
         {
-            ::cv::cvtColor(src, output, CV_BGR2HSV);
+            ::cv::cvtColor(src, output, ::cv::COLOR_BGR2HSV);
             ::cv::Mat s[3]; //destination array
             ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;
@@ -227,7 +227,7 @@ bool Masker::isModelLearned(void)
         }
         case lAB:
         {
-            ::cv::cvtColor(src, output, CV_BGR2Lab);
+            ::cv::cvtColor(src, output, ::cv::COLOR_BGR2Lab);
             ::cv::Mat s[3]; //destination array
             ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;
@@ -239,7 +239,7 @@ bool Masker::isModelLearned(void)
         }
         case yCrCb:
         {
-            ::cv::cvtColor(src, output, CV_BGR2YCrCb);
+            ::cv::cvtColor(src, output, ::cv::COLOR_BGR2YCrCb);
             ::cv::Mat s[3]; //destination array
             ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;

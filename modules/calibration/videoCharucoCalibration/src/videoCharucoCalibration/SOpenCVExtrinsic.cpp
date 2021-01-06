@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -426,7 +426,7 @@ void SOpenCVExtrinsic::updating()
                                                          identity, nullVec,
                                                          imgsize, rotationMatrix, translationVector, essentialMatrix,
                                                          fundamentalMatrix,
-                                                         CV_CALIB_FIX_INTRINSIC,
+                                                         ::cv::CALIB_FIX_INTRINSIC,
                                                          ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER +
                                                                             ::cv::TermCriteria::EPS,
                                                                             100, 1e-5));

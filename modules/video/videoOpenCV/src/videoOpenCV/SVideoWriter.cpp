@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -235,8 +235,9 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
                 m_writer =
                     std::make_unique< ::cv::VideoWriter >(path.string(),
-                                                          CV_FOURCC(codec[0], codec[1], codec[2], codec[3]),
-                                                          fps, cvSize(width, height), true);
+                                                          ::cv::VideoWriter::fourcc(codec[0], codec[1], codec[2],
+                                                                                    codec[3]),
+                                                          fps, ::cv::Size(width, height), true);
 
                 if (!m_writer->isOpened())
                 {

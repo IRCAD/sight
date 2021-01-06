@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -312,8 +312,8 @@ void SColourImageMasking::setForeground()
 
     // Convert RGB to HSV
     ::cv::Mat videoBGR, videoHSV;
-    ::cv::cvtColor(videoCV, videoBGR, CV_RGBA2BGR);
-    ::cv::cvtColor(videoBGR, videoHSV, CV_BGR2HSV);
+    ::cv::cvtColor(videoCV, videoBGR, ::cv::COLOR_RGBA2BGR);
+    ::cv::cvtColor(videoBGR, videoHSV, ::cv::COLOR_BGR2HSV);
 
     // Get the mask to learn the foreground model
     ::cv::Mat foregroundMask;

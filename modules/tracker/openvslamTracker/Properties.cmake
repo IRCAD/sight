@@ -17,3 +17,4 @@ set( DEPENDENCIES
         openvslamIO
 )
 set( REQUIREMENTS )
+set( DISABLE_PCH TRUE)

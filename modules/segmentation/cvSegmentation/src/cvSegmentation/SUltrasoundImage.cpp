@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -292,7 +292,7 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
 
     ::cv::cvtColor( input, gray, ::cv::COLOR_RGB2GRAY  );
 
-    ::cv::threshold( gray, thresh, m_thresholdMin, 255, CV_THRESH_BINARY);
+    ::cv::threshold( gray, thresh, m_thresholdMin, 255, ::cv::THRESH_BINARY);
 
     ::cv::connectedComponentsWithStats(thresh, labels, stats, centroids);
 
@@ -327,7 +327,7 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
     std::vector< ::cv::Vec2d> foundLines;
 
     // Compute a new threshold to do dilatation and erosion on it
-    ::cv::threshold( gray, lowThresh, 2, 255, CV_THRESH_BINARY);
+    ::cv::threshold( gray, lowThresh, 2, 255, ::cv::THRESH_BINARY);
     // Construct element type
     int elementType = ::cv::MORPH_CROSS;
     // Choose element size
@@ -801,11 +801,11 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     ::cv::circle(input, ::cv::Point2d(center[0], center[1]), static_cast<int>(innerRadius), ::cv::Scalar(0, 255, 0,
                                                                                                          255), 1,
-                 CV_AA);
+                 ::cv::LINE_AA);
 
     ::cv::ellipse(input, ::cv::Point2d(center[0], center[1]), ::cv::Size2d(outerRadius,
                                                                            outerRadius), 0.0, startAngle, endAngle,
-                  ::cv::Scalar(255, 255, 0, 255), 1, CV_AA);
+                  ::cv::Scalar(255, 255, 0, 255), 1, ::cv::LINE_AA);
 
     if(m_debug)
     {

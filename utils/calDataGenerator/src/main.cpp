@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,9 @@
 
 #include <boost/program_options.hpp>
 
-#include <filesystem>
-
 #include <opencv2/opencv.hpp>
 
+#include <filesystem>
 #include <iostream>
 #include <random>
 
@@ -308,7 +307,7 @@ void generatePhoto(const cv::Mat& K, const cv::Mat& T0, const std::vector<cv::Ma
 {
     const ::cv::Mat inImgt = ::cv::imread(boardFile);
     ::cv::Mat inImg;
-    ::cv::cvtColor(inImgt, inImg, CV_RGB2GRAY);
+    ::cv::cvtColor(inImgt, inImg, ::cv::COLOR_RGB2GRAY);
     ::cv::GaussianBlur(inImg, inImg, ::cv::Size(5, 5), 1);
 
     ::cv::Mat R0(T0.colRange(0, 3).rowRange(0, 3)), c0(T0.col(3).rowRange(0, 3)), cameraCenter;
