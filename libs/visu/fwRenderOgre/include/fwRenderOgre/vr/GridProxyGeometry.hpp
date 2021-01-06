@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -162,6 +162,15 @@ public:
     {
         return FACTORY_TYPE_NAME;
     }
+
+#if OGRE_VERSION_PATCH < 9
+    //------------------------------------------------------------------------------
+
+    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override
+    {
+        delete obj;
+    }
+#endif
 
 protected:
 

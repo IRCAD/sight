@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,6 +51,9 @@ public:
 
     /// Get the produced object's type. Always returns 'Text'.
     FWRENDEROGRE_API virtual const ::Ogre::String& getType(void) const override;
+#if OGRE_VERSION_PATCH < 9
+    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
+#endif
 
 protected:
 

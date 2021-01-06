@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,6 +47,14 @@ const ::Ogre::String& Text::getType(void) const
     return new ::fwRenderOgre::Text(name);
 }
 
+//-----------------------------------------------------------------------------
+
+#if OGRE_VERSION_PATCH < 9
+void Text::destroyInstance( ::Ogre::MovableObject* obj)
+{
+    delete obj;
+}
+#endif
 } // namespace factory
 
 } // namespace fwRenderOgre

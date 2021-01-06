@@ -1,4 +1,23 @@
 fwLoadProperties()
 
 find_package(VTK QUIET COMPONENTS vtkFiltersSources REQUIRED)
-target_link_libraries(${FWPROJECT_NAME} PRIVATE VTK::FiltersSources)
+
+if(WIN32)
+    # VTK9
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE VTK::FiltersSources)
+else()
+    # VTK7
+    fwInclude(
+        ${VTK_INCLUDE_DIRS}
+    )
+    fwLink(
+        vtkFiltersSources
+    )
+
+    if(UNIX)
+        find_package(GLEW)
+        fwLink(
+            ${GLEW_LIBRARIES}
+        )
+    endif()
+endif()

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_FACTORY_R2VBRENDERABLE_HPP__
-#define __FWRENDEROGRE_FACTORY_R2VBRENDERABLE_HPP__
-
 //-----------------------------------------------------------------------------
+
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -51,6 +50,9 @@ public:
     FWRENDEROGRE_API static ::Ogre::String FACTORY_TYPE_NAME;
 
     FWRENDEROGRE_API virtual const ::Ogre::String& getType(void) const override;
+#if OGRE_VERSION_PATCH < 9
+    FWRENDEROGRE_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
+#endif
 
 protected:
     FWRENDEROGRE_API ::Ogre::MovableObject* createInstanceImpl(const ::Ogre::String& name,
@@ -60,5 +62,3 @@ protected:
 } // namespace factory
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_FACTORY_R2VBRENDERABLE_HPP__

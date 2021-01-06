@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,6 +47,15 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
 {
     return new ::fwRenderOgre::R2VBRenderable(name);
 }
+
+#if OGRE_VERSION_PATCH < 9
+//------------------------------------------------------------------------------
+
+void R2VBRenderable::destroyInstance( ::Ogre::MovableObject* obj)
+{
+    delete obj;
+}
+#endif
 
 } // namespace factory
 
