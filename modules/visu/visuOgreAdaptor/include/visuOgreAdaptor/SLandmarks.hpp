@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,7 +86,7 @@ namespace visuOgreAdaptor
  * - \b priority (optional, int, default=2): priority of the interactor.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
  *      snapped.
- * - \b landmarksQueryFlags (optional, uint32, default=0x40000000): mask apply to landmarks.
+ * - \b landmarksQueryFlags (optional, uint32, default=0x40000000): mask applied to landmarks.
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks final :
     public ::fwRenderOgre::IAdaptor,
@@ -107,7 +107,8 @@ public:
 
     /**
      * @brief Retrieves the picked landmark and stores the result in m_pickedData.
-     * @param _button mouse modifier.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
@@ -115,13 +116,24 @@ public:
 
     /**
      * @brief Moves a landmark stored in m_pickedData.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     * @param _dx width displacement of the mouse since the last event.
+     * @param _dx height displacement of the mouse since the last event.
+     */
+    VISUOGREADAPTOR_API void mouseMoveEvent(MouseButton _button, Modifier _mod,
+                                            int _x, int _y, int _dx, int _dy) override;
+
+    /**
+     * @brief Resets m_pickedData.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    VISUOGREADAPTOR_API void mouseMoveEvent(MouseButton, Modifier _mod, int _x, int _y, int, int) override;
-
-    /// Resets m_pickedData.
-    VISUOGREADAPTOR_API void buttonReleaseEvent(MouseButton, Modifier _mod, int, int) override;
+    VISUOGREADAPTOR_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
 
 protected:
 
@@ -203,9 +215,10 @@ private:
 
     /**
      * @brief Gets the normalized camera direction vector.
+     * @param _cam camera from which to extract the direction vector.
      * @return A vector representing the camera direction
      */
-    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
+    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
 
     /**
      * @brief SLOT: removes an entire group.
@@ -343,7 +356,7 @@ private:
     /// Defines the priority of the interactor.
     int m_priority { 2 };
 
-    /// Defines the current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
+    /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
     std::shared_ptr< Landmark > m_pickedData { nullptr };
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.

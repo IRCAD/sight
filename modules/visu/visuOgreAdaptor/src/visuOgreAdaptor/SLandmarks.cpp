@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -134,7 +134,7 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
-            "Hexadecimal values should start with '0x'"
+            "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
             hexaMask.substr(0, 2) == "0x");
@@ -145,7 +145,7 @@ void SLandmarks::configuring()
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
-            "Hexadecimal values should start with '0x'"
+            "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
             hexaMask.substr(0, 2) == "0x");
@@ -325,7 +325,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
         // Get landmarks.
         const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
-        // Retreive group.
+        // Retrieve group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
         groupSize = group.m_points.size();
@@ -375,7 +375,7 @@ void SLandmarks::addPoint(std::string _groupName)
         // Get landmarks.
         const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
-        // Retreive group.
+        // Retrieve group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
         SLM_ASSERT("They must have at least one point in the group `" << _groupName << "`", group.m_points.size() > 0);
 
@@ -445,7 +445,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
         // Get landmarks.
         const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
-        // Retreive group.
+        // Retrieve group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
         // Create the point name.
@@ -530,7 +530,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
             if(it == m_selectedLandmarks.end())
             {
-                // This methode must be synchronized with deselectPoint(std::string, size_t).
+                // This method must be synchronized with deselectPoint(std::string, size_t).
                 std::lock_guard<std::mutex> guard(m_selectedMutex);
 
                 // Create thread data.
@@ -554,7 +554,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
 void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
 {
-    // This methode must be synchronized with selectPoint(std::string, size_t).
+    // This method must be synchronized with selectPoint(std::string, size_t).
     std::lock_guard<std::mutex> guard(m_selectedMutex);
 
     // Find the thread and stop it.
@@ -686,7 +686,7 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     // Get landmarks.
     const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
-    // Retreive group.
+    // Retrieve group.
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
 
     // Hide landmarks only if there is an image.
@@ -815,27 +815,26 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
         if(found)
         {
             this->getLayer()->cancelFurtherInteraction();
-            if(_button == LEFT)
+
+            // Check if something is picked to update the position of the distance.
+            std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
             {
-                // Check if something is picked to update the position of the distance.
-                std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
-                if(pickedPos.has_value())
-                {
-                    // Update the data, the autoconnection will call modifyPoint.
-                    const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-                    ::fwData::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName,
-                                                                                m_pickedData->m_index);
-                    const ::Ogre::Vector3 newPos = pickedPos.value();
-                    point[0] = newPos[0];
-                    point[1] = newPos[1];
-                    point[2] = newPos[2];
+                // Update the data, the autoconnection will call modifyPoint.
+                const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+                ::fwData::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName,
+                                                                            m_pickedData->m_index);
+                const ::Ogre::Vector3 newPos = pickedPos.value();
+                point[0] = newPos[0];
+                point[1] = newPos[1];
+                point[2] = newPos[2];
 
-                    const auto& sig = landmarks->signal< ::fwData::Landmarks::PointModifiedSigType >(
-                        ::fwData::Landmarks::s_POINT_MODIFIED_SIG);
+                const auto& sig = landmarks->signal< ::fwData::Landmarks::PointModifiedSigType >(
+                    ::fwData::Landmarks::s_POINT_MODIFIED_SIG);
 
-                    sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
-                }
+                sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
             }
+
             this->requestRender();
         }
     }
