@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,8 @@ namespace visuOgreAdaptor
 
 static const std::string s_EXTRUDED_MESHES_INOUT = "extrudedMeshes";
 
-static const ::fwCom::Slots::SlotKeyType s_ENABLE_TOOL_SLOT = "enableTool";
+static const ::fwCom::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
+static const ::fwCom::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
 
 static const ::fwCom::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
@@ -150,6 +151,7 @@ bool SShapeExtruder::Edge::intersect(Edge _edge) const
 SShapeExtruder::SShapeExtruder() noexcept
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
+    newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
     m_toolDisabledSig = this->newSignal< ::fwCom::Signal< void()> >(s_TOOL_DISABLED_SIG);
 }
 
@@ -279,6 +281,38 @@ void SShapeExtruder::enableTool(bool _enable)
 
     // Send a render request.
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SShapeExtruder::deleteLastMesh()
+{
+    // Get the reconstruction list.
+    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+
+    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+
+    if (reconstructions.size() > 0)
+    {
+        reconstructions.pop_back();
+        extrudedMeshes->setReconstructionDB(reconstructions);
+
+        // Send notification
+        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        notif->asyncEmit("Last extrusion deleted.");
+
+        // Send the signal.
+        auto sig = extrudedMeshes->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
+            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+        sig->asyncEmit(::fwMedData::ModelSeries::ReconstructionVectorType{reconstructions});
+    }
+    else
+    {
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        notif->asyncEmit("No extrusion to delete.");
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,6 +54,7 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b enableTool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
+ * - \b deleteLastMesh(): delete the last extruded mesh.
  *
  * @section Signal Signals
  * - \b toolDisabled(): sent when interactions are finished.
@@ -204,6 +205,9 @@ private:
 
     /// Sets if the tool is enabled or not.
     void enableTool(bool _enable);
+
+    /// Deletes the last extruded mesh.
+    void deleteLastMesh();
 
     /**
      * @brief Gets the near and far position of the intersection between the ray starting from the camera
