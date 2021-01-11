@@ -58,42 +58,39 @@ public:
     /// Constructor
     VISUOGREADAPTOR_API SOrientationMarker() noexcept;
 
-    /// Desctructor
+    /// Destructor
     VISUOGREADAPTOR_API ~SOrientationMarker() noexcept override;
 
 protected:
 
-    /// Configure the service parameters
+    /// Configures the service's parameters
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Initialize and start child services
+    /// Initializes and starts child services
     VISUOGREADAPTOR_API void starting() override;
 
     /**
-     * @brief Proposals to connect service slots to associated object signals.
+     * @brief Proposal to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
      * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Update the camera from the input transform
+    /// Updates the camera from the input transform
     VISUOGREADAPTOR_API void updating() override;
 
-    /// Unregister child services
+    /// Unregisters child services
     VISUOGREADAPTOR_API void stopping() override;
 
-    /**
-     * @brief TODO
-     * @param TODO
-     */
+    /// Sets the visibility of the adaptor
     VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
     /// Type of the 'visibilityUpdated' signal.
     typedef ::fwCom::Signal<void (bool)> VisibilityUpdatedSignalType;
 
-    /// Update the internal camera matrix from the input transform
+    /// Updates the internal camera matrix from the input transform
     void updateCameraMatrix();
 
     /// Human model
