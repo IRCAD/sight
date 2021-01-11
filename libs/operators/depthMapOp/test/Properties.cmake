@@ -5,5 +5,6 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwCore
     depthMapOp
+    fwTest
 )
 set( REQUIREMENTS  )
