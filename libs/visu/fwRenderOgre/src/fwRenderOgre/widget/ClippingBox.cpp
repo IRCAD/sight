@@ -24,6 +24,7 @@
 
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
+#include <fwRenderOgre/ogre.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -60,8 +61,8 @@ ClippingBox::ClippingBox(const std::string& id,
     m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
     m_clippingUpdateCallback(clippingUpdateCallback)
 {
-    m_boxMtl    = ::Ogre::MaterialManager::getSingleton().getByName(boxMtlName);
-    m_handleMtl = ::Ogre::MaterialManager::getSingleton().getByName(handleMtlName);
+    m_boxMtl    = ::Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP);
+    m_handleMtl = ::Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP);
     SLM_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
     SLM_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
 
@@ -222,7 +223,7 @@ void ClippingBox::initWidgets()
 
     const auto clippingBoxPositions = this->getClippingBoxPositions();
 
-    m_boundingBox->begin(m_boxMtl->getName(), Ogre::RenderOperation::OT_LINE_LIST);
+    m_boundingBox->begin(m_boxMtl->getName(), Ogre::RenderOperation::OT_LINE_LIST, RESOURCE_GROUP);
     {
         for(unsigned i = 0; i < 12; ++i)
         {
@@ -246,7 +247,7 @@ void ClippingBox::initWidgets()
 
     m_widgetSceneNode->attachObject(m_boundingBox);
 
-    m_selectedFace->begin(m_boxFaceMtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+    m_selectedFace->begin(m_boxFaceMtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP, RESOURCE_GROUP);
     {
         for(unsigned i = 0; i < 4; ++i)
         {

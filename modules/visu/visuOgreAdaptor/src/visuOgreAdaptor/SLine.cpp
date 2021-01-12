@@ -29,6 +29,7 @@
 #include <fwDataTools/Color.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -177,7 +178,7 @@ void SLine::drawLine(bool _existingLine)
 {
     if(_existingLine == false)
     {
-        m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
+        m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
     }
     else
     {

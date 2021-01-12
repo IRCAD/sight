@@ -226,7 +226,7 @@ void SMaterial::stopping()
     m_textureConnection.disconnect();
     this->unregisterServices();
 
-    ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
+    ::Ogre::MaterialManager::getSingleton().remove(m_materialName, ::fwRenderOgre::RESOURCE_GROUP);
 
     const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 

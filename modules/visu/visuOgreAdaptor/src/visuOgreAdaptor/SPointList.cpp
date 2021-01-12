@@ -33,6 +33,7 @@
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
+#include "fwRenderOgre/ogre.hpp"
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
@@ -493,9 +494,9 @@ void SPointList::updateMaterialAdaptor()
 
             if(!m_textureName.empty())
             {
-                const auto texture = ::Ogre::TextureManager::getSingleton().load(m_textureName, "Materials");
+                const auto texture = ::Ogre::TextureManager::getSingleton().load(m_textureName, ::fwRenderOgre::RESOURCE_GROUP);
                 ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
-                    m_materialAdaptor->getMaterialName());
+                    m_materialAdaptor->getMaterialName(), ::fwRenderOgre::RESOURCE_GROUP);
 
                 ::Ogre::TextureUnitState* texUnitState = material->getTechnique(0)->getPass(0)->getTextureUnitState(
                     "sprite");

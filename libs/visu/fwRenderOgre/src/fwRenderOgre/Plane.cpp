@@ -23,6 +23,7 @@
 #include "fwRenderOgre/Plane.hpp"
 
 #include <fwRenderOgre/helper/Shading.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreEntity.h>
@@ -111,7 +112,7 @@ Plane::~Plane()
 void Plane::initializeMaterial()
 {
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
+    ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato", RESOURCE_GROUP);
     SLM_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
     // If the texture material exists, delete it.
@@ -173,7 +174,7 @@ void Plane::initializeMaterial()
             m_borderMaterial.reset();
         }
 
-        m_borderMaterial = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
+        m_borderMaterial = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", RESOURCE_GROUP);
         m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
         if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
         {
@@ -207,7 +208,7 @@ void Plane::initializePlane()
     ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
 
     // First delete mesh if it already exists.
-    if(meshManager.resourceExists(m_slicePlaneName))
+    if(meshManager.resourceExists(m_slicePlaneName, RESOURCE_GROUP))
     {
         meshManager.remove(m_slicePlaneName);
         m_slicePlane.reset();
@@ -228,7 +229,7 @@ void Plane::initializePlane()
     {
         m_slicePlane = meshManager.createPlane(
             m_slicePlaneName,
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            ::fwRenderOgre::RESOURCE_GROUP,
             plane,
             m_width, m_height,
             1, 1,
@@ -240,7 +241,7 @@ void Plane::initializePlane()
     {
         m_slicePlane = meshManager.createPlane(
             m_slicePlaneName,
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            ::fwRenderOgre::RESOURCE_GROUP,
             plane,
             m_width, m_height);
     }

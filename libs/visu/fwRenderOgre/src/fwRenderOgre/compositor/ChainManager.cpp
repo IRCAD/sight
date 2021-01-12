@@ -25,6 +25,7 @@
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/compositor/SaoListener.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
+#include <fwRenderOgre/ogre.hpp>
 #include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/SRender.hpp"
@@ -72,7 +73,7 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
-    if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR))
+    if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
     {
         compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
         compositorManager.removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
@@ -145,7 +146,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
     // Remove the final chain compositor if present
-    if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR))
+    if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
     {
         compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
         compositorManager.removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
@@ -153,7 +154,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
 
     for(const CompositorIdType& compositorName : _compositors)
     {
-        if(compositorManager.resourceExists(compositorName))
+        if(compositorManager.resourceExists(compositorName, RESOURCE_GROUP))
         {
             m_compositorChain.push_back(CompositorType(compositorName, true));
             compositorManager.addCompositor(m_ogreViewport, compositorName);

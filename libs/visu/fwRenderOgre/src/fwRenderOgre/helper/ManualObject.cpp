@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/helper/ManualObject.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <OgreMath.h>
 
@@ -50,7 +51,7 @@ void ManualObject::createCylinder(::Ogre::ManualObject* _object,
     ::Ogre::Vector3 p3 = rot * p1;
 
     // Create cylinder
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
     // Initial points of the basis
     _object->position(::Ogre::Vector3::ZERO);
@@ -130,7 +131,7 @@ void ManualObject::createCone(::Ogre::ManualObject* _object,
     normal = ::Ogre::Quaternion(angle, ::Ogre::Vector3::UNIT_Z) * normal;
 
     // Create cone
-    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
     // Initial point of the basis
     _object->position(::Ogre::Vector3::ZERO);
@@ -180,7 +181,7 @@ void ManualObject::createCube(::Ogre::ManualObject* _object,
 {
     float length = _length/2.0f;
 
-    _object->begin(_material);
+    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
 
     _object->position(-length, -length, length);
@@ -271,7 +272,7 @@ void ManualObject::createSphere(::Ogre::ManualObject* _object,
                                 float _radius,
                                 unsigned int _sample)
 {
-    _object->begin(_material);
+    _object->begin(_material, ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
 
     const float deltaRing = (static_cast< float >(::Ogre::Math::PI) / static_cast< float >(_sample));

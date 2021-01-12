@@ -26,6 +26,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
@@ -219,7 +220,7 @@ void SVideo::updating()
         {
             auto texture = ::Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
                 this->getID() + "_VideoTexture",
-                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true).first;
+                ::fwRenderOgre::RESOURCE_GROUP, true).first;
 
             m_texture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( texture );
         }
@@ -233,22 +234,22 @@ void SVideo::updating()
         {
             if(type == ::fwTools::Type::s_FLOAT || type == ::fwTools::Type::s_DOUBLE)
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME, ::fwRenderOgre::RESOURCE_GROUP);
             }
             else
             {
-                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_INT_MATERIAL_NAME);
+                defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_INT_MATERIAL_NAME, ::fwRenderOgre::RESOURCE_GROUP);
             }
         }
         else
         {
-            defaultMat = mtlMgr.getByName(s_VIDEO_MATERIAL_NAME);
+            defaultMat = mtlMgr.getByName(s_VIDEO_MATERIAL_NAME, ::fwRenderOgre::RESOURCE_GROUP);
         }
 
         // Duplicate the template material to create our own material
         auto material = ::Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
             this->getID() + "_VideoMaterial",
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            ::fwRenderOgre::RESOURCE_GROUP,
             true).first;
         m_material = ::Ogre::dynamic_pointer_cast< ::Ogre::Material>( material );
 
@@ -289,7 +290,7 @@ void SVideo::updating()
         ::Ogre::SceneManager* sceneManager = this->getSceneManager();
         ::Ogre::MeshManager& meshManager   = ::Ogre::MeshManager::getSingleton();
 
-        m_mesh = meshManager.createPlane(videoMeshName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        m_mesh = meshManager.createPlane(videoMeshName, ::fwRenderOgre::RESOURCE_GROUP,
                                          plane, static_cast< ::Ogre::Real >(size[0]),
                                          static_cast< ::Ogre::Real >(size[1]));
 
@@ -413,7 +414,7 @@ void SVideo::clearEntity()
     if (m_mesh)
     {
         ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
-        meshManager.remove(m_mesh->getName());
+        meshManager.remove(m_mesh->getName(), ::fwRenderOgre::RESOURCE_GROUP);
         m_mesh.reset();
     }
 }

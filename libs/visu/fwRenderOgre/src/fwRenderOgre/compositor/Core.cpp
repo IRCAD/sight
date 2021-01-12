@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreCompositionPass.h>
@@ -199,7 +200,7 @@ void Core::setupTransparency()
         bool needFinalCompositorSwap(false);
 
         // If the compositor chain already contains the final compositor, we have to remove it
-        if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR))
+        if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR, RESOURCE_GROUP))
         {
             compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
             compositorManager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);

@@ -31,6 +31,8 @@
 #include <fwDataTools/Color.hpp>
 #include <fwDataTools/Mesh.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
+
 #include <OgreCamera.h>
 
 namespace visuOgreAdaptor
@@ -465,7 +467,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 
         SLM_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
 
-        m_lastLassoLine->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP);
+        m_lastLassoLine->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP, ::fwRenderOgre::RESOURCE_GROUP);
 
         m_lastLassoLine->colour(m_lineColor);
         m_lastLassoLine->position(m_lassoToolPositions.back());
@@ -597,7 +599,7 @@ void SShapeExtruder::drawLasso()
     m_lasso->clear();
 
     // Draw the lasso line.
-    m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP);
+    m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP, ::fwRenderOgre::RESOURCE_GROUP);
     m_lasso->colour(m_lineColor);
     for(const ::Ogre::Vector3 pos : m_lassoToolPositions)
     {
@@ -613,7 +615,7 @@ void SShapeExtruder::drawLasso()
     for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
     {
         // Begin a new section.
-        m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_TRIANGLE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
         m_lasso->colour(m_edgeColor);
 
         ::Ogre::uint32 index = 0;

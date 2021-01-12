@@ -31,6 +31,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
@@ -181,7 +182,7 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
 void SMaterialSelector::onReloadMaterial()
 {
     auto materialName = m_materialBox->currentText().toStdString();
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName);
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName, ::fwRenderOgre::RESOURCE_GROUP);
 
     if(!material)
     {

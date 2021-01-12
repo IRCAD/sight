@@ -25,6 +25,7 @@
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/factory/Text.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/ILight.hpp"
 #include "fwRenderOgre/Text.hpp"
@@ -249,9 +250,9 @@ void Layer::createScene()
     {
         // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
-        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("Background");
+        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("Background", RESOURCE_GROUP);
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
-            this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+            this->getName() + "backgroundMat", RESOURCE_GROUP);
         defaultMaterial.get()->copyDetailsTo(material);
 
         std::uint8_t color[4];
@@ -362,7 +363,7 @@ void Layer::destroyScene()
 {
     // Remove the background material
     ::Ogre::MaterialManager::getSingleton().remove(
-        this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        this->getName() + "backgroundMat", ::fwRenderOgre::RESOURCE_GROUP);
 
     if(m_lightAdaptor)
     {

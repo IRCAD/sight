@@ -26,6 +26,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
+
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
@@ -68,7 +70,7 @@ void SShaderParameter::starting()
     this->initialize();
 
     // Retrieves the associated material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName, ::fwRenderOgre::RESOURCE_GROUP);
     this->setMaterial(material);
 }
 

@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
@@ -572,7 +573,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 {
     auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
-    auto resource = mgr.getResourceByName(_name, "Materials");
+    auto resource = mgr.getResourceByName(_name, RESOURCE_GROUP);
     if(resource)
     {
         return ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(resource);
@@ -580,11 +581,11 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
     // Create shader object
     ::Ogre::HighLevelGpuProgramPtr newProgram;
-    newProgram = mgr.createProgram(_name, "Materials", "glsl", _shaderType);
+    newProgram = mgr.createProgram(_name, RESOURCE_GROUP, "glsl", _shaderType);
 
     newProgram->setSourceFile(_sourceFileName);
 
-    auto srcResource = mgr.getResourceByName(_baseName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    auto srcResource = mgr.getResourceByName(_baseName, RESOURCE_GROUP);
     auto srcProgram  = ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(srcResource);
     ::Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
 

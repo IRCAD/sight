@@ -23,6 +23,7 @@
 #include "fwRenderOgre/compositor/listener/RayExitDepth.hpp"
 
 #include "fwRenderOgre/helper/Technique.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -62,7 +63,7 @@ RayExitDepthListener::~RayExitDepthListener()
 
     if(_schemeName == "VolumeEntries_FrontFacesMin" && !::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
     {
-        auto entryPointsMtl   = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints");
+        auto entryPointsMtl   = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
         auto frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
 
         newTechnique = ::fwRenderOgre::helper::Technique::copyToMaterial(frontFaceMinTech, _schemeName,

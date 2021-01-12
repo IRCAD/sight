@@ -1,10 +1,7 @@
-# Resources required by the sample browser and most samples.
-[Essential]
+[Sight]
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/fonts/
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/
 
-# Groups must be loaded in the following order.
-[Glsl]
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/common
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/core
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/stereo
@@ -13,7 +10,6 @@ FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/vr
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/billboard
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/glsl/postFX
 
-[Materials]
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/common
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/core
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/stereo
@@ -26,7 +22,6 @@ FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/overlays/
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/textures/
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/textures/postFX
 
-[compositors]
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/core
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/stereo
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/transparency

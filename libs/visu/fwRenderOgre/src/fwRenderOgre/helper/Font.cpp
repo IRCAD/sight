@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/helper/Font.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -53,11 +54,11 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
     const std::string fontName = _trueTypeFileName.substr(0, extPos) + std::to_string(_size) +
                                  "_dpi" + std::to_string(_trueTypeResolution);
 
-    ::Ogre::FontPtr font = fontManager.getByName(fontName);
+    ::Ogre::FontPtr font = fontManager.getByName(fontName, RESOURCE_GROUP);
 
     if(!font)
     {
-        font = fontManager.create(fontName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        font = fontManager.create(fontName, ::fwRenderOgre::RESOURCE_GROUP);
         font->setType(::Ogre::FontType::FT_TRUETYPE);
         font->setTrueTypeSize(static_cast< ::Ogre::Real >(_size));
         font->setTrueTypeResolution(_trueTypeResolution);
@@ -73,7 +74,7 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
 
 Ogre::TexturePtr Font::getFontMap(const std::string& _fontName)
 {
-    ::Ogre::TexturePtr fontMap = ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture");
+    ::Ogre::TexturePtr fontMap = ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
 
     SLM_ASSERT("Could not find a font map for " + _fontName + ". Please make sure that the font is loaded.", fontMap);
 
@@ -86,11 +87,11 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
 {
     const std::string mtlName = _fontName + "TextMtl";
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr fontMtl = mm.getByName(mtlName);
+    ::Ogre::MaterialPtr fontMtl = mm.getByName(mtlName, RESOURCE_GROUP);
 
     if(!fontMtl)
     {
-        const auto& baseTextMtl = mm.getByName("Text");
+        const auto& baseTextMtl = mm.getByName("Text", RESOURCE_GROUP);
         SLM_ASSERT("'Text' material not found, please make that the resource exists and has been loaded.", baseTextMtl);
 
         fontMtl = baseTextMtl->clone(mtlName);

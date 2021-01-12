@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include <fwRenderOgre/ogre.hpp>
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
@@ -80,7 +81,7 @@ fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::strin
 
     // Input material name
 
-    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP);
     instance->setMaterial(mat);
     return instance;
 }

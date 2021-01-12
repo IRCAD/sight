@@ -25,6 +25,7 @@
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/helper/Technique.hpp>
 
 #include <fwServices/macros.hpp>
@@ -272,7 +273,7 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
     m_compositor = cmpMngr.create(m_compositorName,
-                                  ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+                                  ::fwRenderOgre::RESOURCE_GROUP);
 
     ::Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 

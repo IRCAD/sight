@@ -25,6 +25,7 @@
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/helper/Technique.hpp"
+#include <fwRenderOgre/ogre.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreGpuProgramManager.h>
@@ -56,7 +57,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     // Cleaning the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& techMatPair : m_createdTechniques)
     {
-        ::Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second);
+        ::Ogre::MaterialPtr mtl = mtlManager.getByName(techMatPair.second, RESOURCE_GROUP);
 
         if(mtl == nullptr)
         {
@@ -110,7 +111,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             const size_t techNameSize  = _schemeName.size() - 1 - techNamePos;
             const std::string techName = _schemeName.substr(techNamePos, techNameSize);
 
-            auto entryPointsMtl = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints");
+            auto entryPointsMtl = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
 
             matchingTech = entryPointsMtl->getTechnique(techName);
         }

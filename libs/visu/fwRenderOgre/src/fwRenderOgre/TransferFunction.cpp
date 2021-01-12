@@ -22,6 +22,7 @@
 
 #include "fwRenderOgre/TransferFunction.hpp"
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #if defined (__APPLE__)
@@ -72,12 +73,12 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
-    m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture");
+    m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture", RESOURCE_GROUP);
     if(!m_texture)
     {
         m_texture = ::Ogre::TextureManager::getSingleton().createManual(
             _parentId + "_tfTexture",                                   // name
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  // resource groupe
+            ::fwRenderOgre::RESOURCE_GROUP,  // resource groupe
             ::Ogre::TEX_TYPE_1D,                                        // type
             TEXTURE_SIZE, 1,                                            // width, height
             0,                                                          // number of mipmaps (depth)

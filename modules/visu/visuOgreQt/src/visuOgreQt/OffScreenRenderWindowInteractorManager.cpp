@@ -24,9 +24,11 @@
 
 #include "visuOgreQt/OpenGLWorker.hpp"
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
+
 
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
@@ -111,7 +113,7 @@ void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container
 
     auto& texMgr = ::Ogre::TextureManager::getSingleton();
     m_ogreTexture = texMgr.createManual("OffscreenRT" + std::to_string(m_id),
-                                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                        ::fwRenderOgre::RESOURCE_GROUP,
                                         ::Ogre::TEX_TYPE_2D,
                                         m_width, m_height, 0,
                                         ::Ogre::PF_BYTE_RGBA,

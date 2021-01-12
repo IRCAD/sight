@@ -23,6 +23,7 @@
 #include "fwRenderOgre/Text.hpp"
 
 #include "fwRenderOgre/helper/Font.hpp"
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -325,7 +326,7 @@ void Text::setFont(::Ogre::FontPtr _font)
 
     const auto ttfRes       = m_font->getTrueTypeResolution();
     const auto& textMtlName = this->getName() + "_TextMaterial_dpi" + std::to_string(ttfRes);
-    ::Ogre::MaterialPtr textMtl = ::Ogre::MaterialManager::getSingleton().getByName(textMtlName);
+    ::Ogre::MaterialPtr textMtl = ::Ogre::MaterialManager::getSingleton().getByName(textMtlName, RESOURCE_GROUP);
     if(!textMtl)
     {
         textMtl = fontMtl->clone(textMtlName);

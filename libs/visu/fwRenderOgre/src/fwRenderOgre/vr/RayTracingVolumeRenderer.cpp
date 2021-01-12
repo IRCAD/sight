@@ -26,6 +26,7 @@
 #include "fwRenderOgre/compositor/listener/RayExitDepth.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
@@ -92,7 +93,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                             closestLights[0]->getDerivedDirection(), true);
 
                         const ::Ogre::Pass* const satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
-                            m_currentMtlName)->getTechnique(0)->getPass(0);
+                            m_currentMtlName, RESOURCE_GROUP)->getTechnique(0)->getPass(0);
                         ::Ogre::GpuProgramParametersSharedPtr satIllumParams =
                             satIllumPass->getFragmentProgramParameters();
 
@@ -234,9 +235,10 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
 
-    ::Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName());
+    // FIXME_DW
+    //::Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName(), ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    ::Ogre::MaterialManager::getSingleton().remove(m_currentMtlName);
+    ::Ogre::MaterialManager::getSingleton().remove(m_currentMtlName, RESOURCE_GROUP);
 }
 
 //-----------------------------------------------------------------------------
@@ -264,7 +266,7 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         m_proxyGeometry->computeGrid();
     }
 
-    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName, RESOURCE_GROUP);
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
@@ -301,7 +303,7 @@ void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
         m_3DOgreTexture = _texture;
 
         ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
-        ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName);
+        ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName, RESOURCE_GROUP);
         SLM_ASSERT("Missing material '" + m_currentMtlName + "'.", mat);
         const ::Ogre::Technique* const tech = mat->getTechnique(0);
         SLM_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
@@ -320,7 +322,7 @@ void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
 
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
-    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+    const auto material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName, RESOURCE_GROUP);
 
     if(!m_preIntegratedRendering)
     {
@@ -555,8 +557,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
     // The material needs to be destroyed only if it already exists
     {
-        const ::Ogre::ResourcePtr matResource =
-            mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+        const ::Ogre::ResourcePtr matResource = mm.getResourceByName(matName, RESOURCE_GROUP);
         if(matResource)
         {
             mm.remove(matResource);
@@ -573,9 +574,9 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     // Compile the commun vertex shader
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
     const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
-    if(!gpm.resourceExists(vpName))
+    if(!gpm.resourceExists(vpName, RESOURCE_GROUP))
     {
-        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
+        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, RESOURCE_GROUP, "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
         vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
         if(vpPPDefines.size() > 0)
@@ -586,10 +587,10 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
     // Compile fragment shader
     ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
-    if(!gpm.resourceExists(fpName))
+    if(!gpm.resourceExists(fpName, RESOURCE_GROUP))
     {
         ::Ogre::HighLevelGpuProgramPtr fsp =
-            gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+            gpm.createProgram(fpName, RESOURCE_GROUP, "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
         fsp->setSourceFile(_sourceFile);
 
         for(const std::string& attachement: m_fragmentShaderAttachements)
@@ -626,7 +627,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     }
 
     // Create the material
-    ::Ogre::MaterialPtr mat = mm.create(m_currentMtlName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialPtr mat = mm.create(m_currentMtlName, ::fwRenderOgre::RESOURCE_GROUP);
 
     // Create the technique
     {
@@ -674,9 +675,9 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
     // Compile the depth fragment shader
     const ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
-    if(!gpm.resourceExists(fpDepthName))
+    if(!gpm.resourceExists(fpDepthName, RESOURCE_GROUP))
     {
-        ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, "Materials", "glsl",
+        ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, RESOURCE_GROUP, "glsl",
                                                                ::Ogre::GPT_FRAGMENT_PROGRAM);
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
         fsp->setParameter("attach", "TransferFunction_FP");
@@ -756,7 +757,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
     // Use the default material before the raytracing material is created otherwise we get an error.
-    m_entryPointGeometry->begin("Default", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    m_entryPointGeometry->begin("Default", ::Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     {
         for(const auto& face : s_cubeFaces)
         {

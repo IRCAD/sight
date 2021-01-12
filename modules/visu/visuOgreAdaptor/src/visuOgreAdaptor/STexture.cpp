@@ -28,6 +28,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
@@ -96,8 +97,7 @@ void STexture::starting()
     m_texture =
         ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                                                             m_textureName,
-                                                            ::Ogre::
-                                                            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                            ::fwRenderOgre::RESOURCE_GROUP,
                                                             true).first);
 
     this->updating();
@@ -137,7 +137,7 @@ void STexture::stopping()
     this->getRenderService()->makeCurrent();
 
     // This is necessary, otherwise we have "ghost" textures later when we reload a new texture
-    ::Ogre::TextureManager::getSingleton().remove(m_textureName);
+    ::Ogre::TextureManager::getSingleton().remove(m_textureName, ::fwRenderOgre::RESOURCE_GROUP);
     m_texture->freeInternalResources();
     m_texture.reset();
 }

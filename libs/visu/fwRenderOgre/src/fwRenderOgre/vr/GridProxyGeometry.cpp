@@ -23,6 +23,7 @@
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -63,10 +64,10 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;
 
-    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_name + "_" + _mtlName);
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_name + "_" + _mtlName, RESOURCE_GROUP);
     if(!mat)
     {
-        mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName)->clone(_name + "_" + _mtlName);
+        mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP)->clone(_name + "_" + _mtlName);
     }
     instance->setMaterial(mat);
 
@@ -150,7 +151,7 @@ void GridProxyGeometry::initializeR2VBSource()
 {
     ::Ogre::MeshPtr gridMesh = ::Ogre::MeshManager::getSingleton().createManual(
         this->mName + "_gridMesh",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME
+        ::fwRenderOgre::RESOURCE_GROUP
         );
 
     ::Ogre::SubMesh* subMesh = gridMesh->createSubMesh();
@@ -190,18 +191,18 @@ void GridProxyGeometry::initializeGridMaterials()
 {
     ::Ogre::MaterialManager& mtlMng = ::Ogre::MaterialManager::getSingleton();
 
-    ::Ogre::MaterialPtr gridMtl = mtlMng.getByName(this->getName() + "_VolumeBricksGrid");
+    ::Ogre::MaterialPtr gridMtl = mtlMng.getByName(this->getName() + "_VolumeBricksGrid", RESOURCE_GROUP);
     if(!gridMtl)
     {
-        gridMtl = mtlMng.getByName("VolumeBricksGrid")->clone(this->getName() + "_VolumeBricksGrid");
+        gridMtl = mtlMng.getByName("VolumeBricksGrid", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricksGrid");
     }
     gridMtl->load();
     m_gridComputingPass = gridMtl->getTechnique(0)->getPass(0);
 
-    ::Ogre::MaterialPtr geomGeneratorMtl = mtlMng.getByName(this->getName() + "_VolumeBricks");
+    ::Ogre::MaterialPtr geomGeneratorMtl = mtlMng.getByName(this->getName() + "_VolumeBricks", RESOURCE_GROUP);
     if(!geomGeneratorMtl)
     {
-        geomGeneratorMtl = mtlMng.getByName("VolumeBricks")->clone(this->getName() + "_VolumeBricks");
+        geomGeneratorMtl = mtlMng.getByName("VolumeBricks", RESOURCE_GROUP)->clone(this->getName() + "_VolumeBricks");
     }
     geomGeneratorMtl->load();
     m_geomGeneratorPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
@@ -221,7 +222,7 @@ void GridProxyGeometry::setupGrid()
     {
         m_gridTexture = ::Ogre::TextureManager::getSingleton().createManual(
             this->mName + "_gridTexture",
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            ::fwRenderOgre::RESOURCE_GROUP,
             ::Ogre::TEX_TYPE_3D,
             static_cast<unsigned int>(m_gridSize[0]),
             static_cast<unsigned int>(m_gridSize[1]),
@@ -241,7 +242,7 @@ void GridProxyGeometry::setupGrid()
 
     // Update R2VB source geometry.
     {
-        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(this->mName + "_gridMesh");
+        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(this->mName + "_gridMesh", RESOURCE_GROUP);
 
         ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 

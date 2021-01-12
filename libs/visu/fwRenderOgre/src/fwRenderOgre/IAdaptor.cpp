@@ -147,6 +147,7 @@ Layer::sptr IAdaptor::getLayer() const
 
 void IAdaptor::requestRender()
 {
+    /*
     auto renderService = this->getRenderService();
     if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
           renderService->getStatus() == ::fwServices::IService::SWAPPING) &&
@@ -154,6 +155,7 @@ void IAdaptor::requestRender()
     {
         this->getRenderService()->requestRender();
     }
+    */
 }
 
 //-----------------------------------------------------------------------------

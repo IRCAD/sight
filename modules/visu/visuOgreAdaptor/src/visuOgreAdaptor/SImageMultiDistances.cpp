@@ -34,6 +34,7 @@
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -209,7 +210,7 @@ void SImageMultiDistances::starting()
 
     // Retrive the ogre material to change the depth check.
     const ::Ogre::MaterialPtr ogreSphereMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
-        m_sphereMaterialName);
+        m_sphereMaterialName, ::fwRenderOgre::RESOURCE_GROUP);
     SLM_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
     const ::Ogre::Technique* const sphereTech = ogreSphereMaterial->getTechnique(0);
     SLM_ASSERT("No techique found", sphereTech);
@@ -218,7 +219,7 @@ void SImageMultiDistances::starting()
     spherePass->setDepthCheckEnabled(false);
 
     const ::Ogre::MaterialPtr ogreDashedLineMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
-        m_dashedLineMaterialName);
+        m_dashedLineMaterialName, ::fwRenderOgre::RESOURCE_GROUP);
     SLM_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
     const ::Ogre::Technique* const dashedTech = ogreDashedLineMaterial->getTechnique(0);
     SLM_ASSERT("No techique found", dashedTech);
@@ -651,7 +652,7 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     // Line.
     ::Ogre::ManualObject* const line = sceneMgr->createManualObject(this->getID() + "_line_" + id);
     SLM_ASSERT("Can't create the line", line);
-    line->begin(m_lineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    line->begin(m_lineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
     line->colour(colour);
     line->position(begin);
     line->position(end);
@@ -662,7 +663,7 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     // Dashed line.
     ::Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->getID() + "_dashedLine_" + id);
     SLM_ASSERT("Can't create the dashed line", dashedLine);
-    dashedLine->begin(m_dashedLineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    dashedLine->begin(m_dashedLineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
     dashedLine->colour(colour);
     SImageMultiDistances::generateDashedLine(dashedLine, begin, end,
                                              m_distanceSphereRadius);

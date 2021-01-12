@@ -30,6 +30,7 @@
 #include "fwTools/Type.hpp"
 
 #include <fwRenderOgre/helper/Shading.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
@@ -52,7 +53,7 @@ void ShadingTest::setUp()
     m_ogreRoot = Utils::getOgreRoot();
 
     auto& mgr = ::Ogre::MaterialManager::getSingleton();
-    m_material = mgr.create("TestMaterial", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    m_material = mgr.create("TestMaterial", ::fwRenderOgre::RESOURCE_GROUP);
     m_material->createTechnique();
 }
 

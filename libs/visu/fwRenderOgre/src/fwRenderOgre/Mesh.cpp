@@ -24,6 +24,7 @@
 
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include <fwRenderOgre/helper/Mesh.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #define FW_PROFILING_DISABLED
@@ -109,13 +110,13 @@ Mesh::Mesh(const std::string& _name)
 
     // Create Mesh Data Structure
     const auto meshName = _name + "_Mesh";
-    m_ogreMesh = meshMgr.createManual(meshName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    m_ogreMesh = meshMgr.createManual(meshName, ::fwRenderOgre::RESOURCE_GROUP);
 
     // Create Mesh Data Structure for r2vb input
     // We could create it only when necessary, but for now it is simpler to create it every time
     const auto r2vbMeshName = _name + "_R2VBMesh";
     m_r2vbMesh = meshMgr.createManual(r2vbMeshName,
-                                      ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+                                      ::fwRenderOgre::RESOURCE_GROUP);
 
     // TODO: remove ?
     m_perPrimitiveColorTexture.reset();
@@ -924,7 +925,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
             static std::uint64_t i = 0;
             m_perPrimitiveColorTextureName = "PerCellColorTexture_" + std::to_string(i++);
             m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
-                m_perPrimitiveColorTextureName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+                m_perPrimitiveColorTextureName, ::fwRenderOgre::RESOURCE_GROUP, true);
         }
 
         const size_t width  = std::min(s_maxTextureSize, numIndicesTotal);

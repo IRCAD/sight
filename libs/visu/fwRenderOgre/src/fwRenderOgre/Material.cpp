@@ -24,6 +24,7 @@
 
 #include "fwRenderOgre/helper/Shading.hpp"
 #include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/ogre.hpp>
 
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
@@ -45,9 +46,9 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     m_templateName(_templateName)
 {
     m_material = ::Ogre::MaterialManager::getSingleton().create(
-        _name, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        _name, ::fwRenderOgre::RESOURCE_GROUP);
 
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName, RESOURCE_GROUP);
 
     SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 
@@ -268,7 +269,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                 {
                     const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                         m_perPrimitiveColorTextureName,
-                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+                        ::fwRenderOgre::RESOURCE_GROUP, true);
 
                     SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
 
@@ -412,7 +413,7 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
 
 void Material::setTemplate(const std::string& _templateName)
 {
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName, RESOURCE_GROUP);
 
     SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 

@@ -22,6 +22,7 @@
 
 #include "fwRenderOgre/vr/PreIntegrationTable.hpp"
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwCore/Profiling.hpp>
@@ -66,7 +67,7 @@ void PreIntegrationTable::createTexture(const std::string& _parentId)
 {
     m_tableTexture = ::Ogre::TextureManager::getSingleton().create(
         _parentId + "_PreIntTableTexture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         true);
 }
 

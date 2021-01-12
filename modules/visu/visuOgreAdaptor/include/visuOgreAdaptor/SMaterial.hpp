@@ -32,6 +32,7 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Mesh.hpp>
@@ -233,7 +234,7 @@ private:
 
 inline ::Ogre::MaterialPtr SMaterial::getMaterial()
 {
-    return ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
+    return ::Ogre::MaterialManager::getSingleton().getByName(m_materialName, ::fwRenderOgre::RESOURCE_GROUP);
 }
 
 //------------------------------------------------------------------------------

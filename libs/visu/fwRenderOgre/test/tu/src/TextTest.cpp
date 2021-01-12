@@ -23,6 +23,7 @@
 #include "TextTest.hpp"
 
 #include <fwRenderOgre/helper/Font.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Text.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
@@ -92,7 +93,7 @@ void TextTest::factoryTest()
     ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Load the material manually because the Font will need it
-    ::Ogre::MaterialManager::getSingleton().load("Text", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialManager::getSingleton().load("Text", ::fwRenderOgre::RESOURCE_GROUP);
 
     ::Ogre::SceneManager* sceneManager = m_ogreRoot->createSceneManager("DefaultSceneManager", "test");
     const auto& factoryName = ::fwRenderOgre::factory::Text::FACTORY_TYPE_NAME;

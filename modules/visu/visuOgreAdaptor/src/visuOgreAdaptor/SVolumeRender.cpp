@@ -36,6 +36,7 @@
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -180,14 +181,14 @@ void SVolumeRender::starting()
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         true);
 
     if(m_dynamic)
     {
         m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
             this->getID() + "_Texture2",
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            ::fwRenderOgre::RESOURCE_GROUP,
             true);
     }
 

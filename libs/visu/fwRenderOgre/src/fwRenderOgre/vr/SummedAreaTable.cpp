@@ -22,6 +22,7 @@
 
 #include "fwRenderOgre/vr/SummedAreaTable.hpp"
 
+#include <fwRenderOgre/ogre.hpp>
 #include "fwRenderOgre/Utils.hpp"
 
 #include <OGRE/OgreCompositor.h>
@@ -140,7 +141,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
         this->updateSatFromTexture(_imgTexture);
     }
 
-    ::Ogre::MaterialPtr initPassMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit");
+    ::Ogre::MaterialPtr initPassMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit", RESOURCE_GROUP);
     ::Ogre::Pass* satInitPass       = initPassMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = satInitPass->getTextureUnitState("image");
@@ -181,7 +182,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
         compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
     }
 
-    ::Ogre::MaterialPtr satMtl            = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTable");
+    ::Ogre::MaterialPtr satMtl            = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTable", RESOURCE_GROUP);
     ::Ogre::Pass* satPass                 = satMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState* srcImgState = satPass->getTextureUnitState("source");
 
@@ -273,7 +274,7 @@ void SummedAreaTable::initializeSAT()
 
     m_sourceBuffer = textureManager.createManual(
         m_parentId + SOURCE_BUFFER_NAME,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         ::Ogre::TEX_TYPE_3D,
         width,
         height,
@@ -284,7 +285,7 @@ void SummedAreaTable::initializeSAT()
 
     m_targetBuffer = textureManager.createManual(
         m_parentId + TARGET_BUFFER_NAME,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         ::Ogre::TEX_TYPE_3D,
         width,
         height,

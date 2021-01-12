@@ -22,6 +22,8 @@
 
 #include "fwRenderOgre/vr/IllumAmbientOcclusionSAT.hpp"
 
+#include <fwRenderOgre/ogre.hpp>
+
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
@@ -158,7 +160,7 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
     currentMaterialName += m_ao ? "_AO" : "";
     currentMaterialName += m_shadows ? "_Shadows" : "";
 
-    ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName(currentMaterialName);
+    ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName(currentMaterialName, RESOURCE_GROUP);
     ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
 
@@ -211,7 +213,7 @@ void IllumAmbientOcclusionSAT::updateTexture()
 
     m_illuminationVolume = textureManager.createManual(
         m_parentId + BUFFER_NAME,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         ::Ogre::TEX_TYPE_3D,
         satTexture->getWidth(),
         satTexture->getHeight(),

@@ -36,6 +36,7 @@
 
 #include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
@@ -165,7 +166,7 @@ void SNegato3D::starting()
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Negato3DTexture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::fwRenderOgre::RESOURCE_GROUP,
         true);
 
     // Scene node's instantiation
@@ -197,7 +198,7 @@ void SNegato3D::starting()
         this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
-        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
+        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", ::fwRenderOgre::RESOURCE_GROUP);
         auto crossMat              = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
         crossMat->setAmbient(::Ogre::ColourValue::Red);
         crossMat->setDiffuse(::Ogre::ColourValue::Red);

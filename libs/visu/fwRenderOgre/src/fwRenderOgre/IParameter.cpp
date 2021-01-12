@@ -35,6 +35,7 @@
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/ogre.hpp>
 #include <fwServices/macros.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
@@ -368,7 +369,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         {
             m_texture = ::Ogre::TextureManager::getSingleton().create(
                 this->getID() + "_TextureParam",
-                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                ::fwRenderOgre::RESOURCE_GROUP,
                 true);
         }
 

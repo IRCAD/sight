@@ -23,6 +23,7 @@
 #include "fwRenderOgre/vr/RayEntryCompositor.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/ogre.hpp"
 
 #include <OgreCompositionPass.h>
 #include <OgreCompositionTargetPass.h>
@@ -48,11 +49,11 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
     auto& cm = ::Ogre::CompositorManager::getSingleton();
     std::lock_guard<std::mutex> guard(s_compositorManagerLock);
 
-    m_compositor = cm.getByName(m_compositorName);
+    m_compositor = cm.getByName(m_compositorName, RESOURCE_GROUP);
 
     if(!m_compositor)
     {
-        m_compositor = cm.create(m_compositorName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        m_compositor = cm.create(m_compositorName, ::fwRenderOgre::RESOURCE_GROUP);
 
         auto* compTech = m_compositor->createTechnique();
 
