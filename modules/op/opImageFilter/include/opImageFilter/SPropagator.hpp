@@ -24,8 +24,6 @@
 
 #include "opImageFilter/config.hpp"
 
-#include <dataOp/LineDrawer.hpp>
-
 #include <fwCommand/ICommand.hpp>
 
 #include <fwCore/base.hpp>
@@ -35,6 +33,7 @@
 
 #include <fwServices/IOperator.hpp>
 
+#include <imageFilterOp/LineDrawer.hpp>
 #include <imageFilterOp/MinMaxPropagation.hpp>
 
 namespace opImageFilter
@@ -154,7 +153,7 @@ private:
     ::imageFilterOp::MinMaxPropagation::SeedsType convertDiffToSeeds() const;
 
     /// Line drawer.
-    UPTR(::dataOp::LineDrawer) m_lineDrawer;
+    UPTR(::imageFilterOp::LineDrawer) m_lineDrawer;
 
     /// Propagator.
     UPTR(::imageFilterOp::MinMaxPropagation) m_propagator;

@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwDataTools
     fwItkIO
     fwTools
-    dataOp
 )
 set( REQUIREMENTS)
 

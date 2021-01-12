@@ -23,8 +23,7 @@
 #pragma once
 
 #include "imageFilterOp/config.hpp"
-
-#include <dataOp/BresenhamLine.hpp>
+#include <imageFilterOp//BresenhamLine.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -50,7 +49,7 @@ public:
         MINMAX
     };
 
-    typedef ::dataOp::BresenhamLine::CoordinatesType CoordinatesType;
+    typedef ::imageFilterOp::BresenhamLine::CoordinatesType CoordinatesType;
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationType;
 

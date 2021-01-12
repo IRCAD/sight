@@ -142,7 +142,7 @@ void SPropagator::starting()
     {
         m_propagator =
             UPTR(::imageFilterOp::MinMaxPropagation)(new ::imageFilterOp::MinMaxPropagation(imgIn, imgOut, nullptr));
-        m_lineDrawer = UPTR(::dataOp::LineDrawer)(new ::dataOp::LineDrawer(imgOut, nullptr));
+        m_lineDrawer = UPTR(::imageFilterOp::LineDrawer)(new ::imageFilterOp::LineDrawer(imgOut, nullptr));
     }
 }
 
