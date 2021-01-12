@@ -154,6 +154,14 @@
             </registry>
         </service>
 
+        <service uid="notifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview"/>
+            <message>Default message</message>
+            <maxNotifications>3</maxNotifications>
+            <position>BOTTOM_LEFT</position>
+            <duration>3000</duration>
+        </service>
+
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
@@ -613,6 +621,16 @@
             <slot>pickedVoxelTextAdp/setText</slot>
         </connect>
 
+        <connect>
+            <signal>shapeExtruderAdp/infoNotified</signal>
+            <slot>notifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>shapeExtruderAdp/failureNotified</signal>
+            <slot>notifierSrv/popFailure</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -620,6 +638,7 @@
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
         <start uid="imageExtruderSrv" />
+        <start uid="notifierSrv" />
 
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
