@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,10 @@ static inline ::fwRenderOgre::interactor::IInteractor::Modifier convertModifiers
 {
     using SightOgreModType = ::fwRenderOgre::interactor::IInteractor::Modifier;
     SightOgreModType mods = SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ShiftModifier )   ? SightOgreModType::SHIFT   : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::ControlModifier ) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::AltModifier )     ? SightOgreModType::ALT     : SightOgreModType::NONE;
-    mods |= (_qmods& ::Qt::MetaModifier )    ? SightOgreModType::META    : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::ShiftModifier) ? SightOgreModType::SHIFT : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::ControlModifier) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::AltModifier) ? SightOgreModType::ALT : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::MetaModifier) ? SightOgreModType::META : SightOgreModType::NONE;
 
     return mods;
 }
@@ -56,7 +56,7 @@ static inline std::optional<QPoint> getCursorPosition(const QWindow* const _w)
     const auto widgetCursorPosition = _w->mapFromGlobal(globalCursorPosition);
 
     std::optional<QPoint> res;
-    if(_w->geometry().contains(widgetCursorPosition))
+    if (_w->geometry().contains(widgetCursorPosition))
     {
         res = widgetCursorPosition;
     }
@@ -74,7 +74,7 @@ Window::Window(QWindow* _parent) :
     QWindow(_parent),
     m_id(Window::m_counter++)
 {
-    connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
+    connect(this, &Window::screenChanged, this, &Window::onScreenChanged);
 }
 
 // ----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ void Window::setAnimating(bool _animating)
 {
     m_animating = _animating;
 
-    if(_animating)
+    if (_animating)
     {
         renderLater();
     }
@@ -116,7 +116,7 @@ void Window::initialize()
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
     parameters["currentGLContext"]  = "true";
-    parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
+    parameters["externalGLControl"] = "true";     // Let us handle buffer swapping and vsync.
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
@@ -183,14 +183,14 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_glContext)
+    if (m_glContext)
     {
         m_glContext->makeCurrent(this);
-        if(m_ogreRenderWindow)
+        if (m_ogreRenderWindow)
         {
             ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
 
-            if(renderSystem)
+            if (renderSystem)
             {
                 // This allows to set the current OpengGL context in Ogre internal state
                 renderSystem->_setRenderTarget(m_ogreRenderWindow);
@@ -217,7 +217,7 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    if(m_ogreRenderWindow)
+    if (m_ogreRenderWindow)
     {
         m_ogreRenderWindow->removeListener(this);
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
@@ -230,7 +230,7 @@ void Window::destroyWindow()
 
 void Window::render()
 {
-    if(m_ogreRenderWindow == nullptr)
+    if (m_ogreRenderWindow == nullptr)
     {
         return;
     }
@@ -252,12 +252,19 @@ void Window::render()
     FW_PROFILE_AVG("Ogre", 3);
     this->makeCurrent();
 
-    m_ogreRoot->_fireFrameStarted();
-    m_ogreRenderWindow->update();
-    m_ogreRoot->_fireFrameRenderingQueued();
-    m_ogreRoot->_fireFrameEnded();
+    try
+    {
+        m_ogreRoot->_fireFrameStarted();
+        m_ogreRenderWindow->update();
+        m_ogreRoot->_fireFrameRenderingQueued();
+        m_ogreRoot->_fireFrameEnded();
 
-    m_glContext->swapBuffers(this);
+        m_glContext->swapBuffers(this);
+    }
+    catch (const std::exception& e)
+    {
+        SLM_ERROR("Exception occured during Ogre rendering" << e.what());
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -315,7 +322,7 @@ bool Window::event(QEvent* _event)
         {
             bool result = QWindow::event(_event);
 
-            if(m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
+            if (m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
             {
                 this->ogreResize(this->size());
             }
@@ -341,7 +348,7 @@ void Window::exposeEvent(QExposeEvent*)
 
 void Window::moveEvent(QMoveEvent*)
 {
-    if(m_ogreRenderWindow != nullptr)
+    if (m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->reposition(x(), y());
     }
@@ -352,12 +359,12 @@ void Window::moveEvent(QMoveEvent*)
 void Window::renderNow()
 {
     // Small optimization to not render when not visible
-    if(!this->isExposed())
+    if (!this->isExposed())
     {
         return;
     }
 
-    if(m_ogreSize != this->size())
+    if (m_ogreSize != this->size())
     {
         this->ogreResize(this->size());
         return;
@@ -415,10 +422,11 @@ Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
     switch (button)
     {
         case Qt::NoButton:
-            info.button = (activeButtons& Qt::LeftButton)   ? ::fwRenderOgre::interactor::IInteractor::LEFT   :
-                          (activeButtons& Qt::MiddleButton) ? ::fwRenderOgre::interactor::IInteractor::MIDDLE :
-                          (activeButtons& Qt::RightButton)  ? ::fwRenderOgre::interactor::IInteractor::RIGHT  :
-                          ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+            info.button =
+                (activeButtons& Qt::LeftButton) ? ::fwRenderOgre::interactor::IInteractor::LEFT : (activeButtons& Qt::
+                                                                                                   MiddleButton) ? ::
+                fwRenderOgre::interactor::IInteractor::MIDDLE : (activeButtons& Qt::RightButton) ? ::
+                fwRenderOgre::interactor::IInteractor::RIGHT : ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
             break;
         case Qt::LeftButton:
             info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
@@ -512,7 +520,7 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
 
 void Window::ogreResize(const QSize& _newSize)
 {
-    if(!_newSize.isValid())
+    if (!_newSize.isValid())
     {
         return;
     }
@@ -525,7 +533,7 @@ void Window::ogreResize(const QSize& _newSize)
     this->makeCurrent();
 
 #if defined(linux) || defined(__linux) || defined(__APPLE__)
-    m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
+    m_ogreRenderWindow->resize(static_cast<unsigned int>(newWidth), static_cast<unsigned int>(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();
 
@@ -547,9 +555,9 @@ void Window::ogreResize(const QSize& _newSize)
         ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
             viewport);
 
-        for(auto instance : chain->getCompositorInstances())
+        for (auto instance : chain->getCompositorInstances())
         {
-            if( instance->getEnabled() )
+            if (instance->getEnabled())
             {
                 instance->setEnabled(false);
                 instance->setEnabled(true);
@@ -572,7 +580,7 @@ void Window::ogreResize(const QSize& _newSize)
 
 void Window::onScreenChanged(QScreen*)
 {
-    if(m_ogreRenderWindow != nullptr)
+    if (m_ogreRenderWindow != nullptr)
     {
         this->ogreResize(this->size());
     }
