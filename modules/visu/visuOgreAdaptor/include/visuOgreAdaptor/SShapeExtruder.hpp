@@ -102,7 +102,7 @@ protected:
     /// Does nothing.
     VISUOGREADAPTOR_API void updating() override;
 
-    /// Destroyes all Ogre resources.
+    /// Destroys all Ogre resources.
     VISUOGREADAPTOR_API void stopping() override;
 
 private:

@@ -387,7 +387,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
             m_interactionEnableState = true;
 
             // Compute the plane where the tool will work.
-            // This plane allows to generate all points of the lasso on the same plane to simplify futhers algorithm.
+            // This plane allows to generate all points of the lasso on the same plane to simplify further algorithms.
             const ::Ogre::Camera* const camera = layer->getDefaultCamera();
             const ::Ogre::Vector3 direction    = this->getCamDirection(camera);
 
@@ -830,7 +830,7 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     }
 
     // Some input segment are missing from the triangulation, we insert them.
-    // Add missing segments while new constraintes are added to the previous iteration.
+    // Add missing segments while new constraints are added to the previous iteration.
     std::vector< ::Ogre::Vector2 > oldPoints = points;
     std::vector< ::Ogre::Vector2 > newPoints = points;
     const int maxIteration                   = 3;
