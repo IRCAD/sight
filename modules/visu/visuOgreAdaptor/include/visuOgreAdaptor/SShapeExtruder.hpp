@@ -139,7 +139,7 @@ private:
         /// Defines the radius of the circumscribed circle.
         float radius;
 
-        /// Defines the berycenter.
+        /// Defines the barycenter.
         ::Ogre::Vector2 barycentre;
 
         /// Defines the unique ID of the triangle.
@@ -175,7 +175,7 @@ private:
 
     };
 
-    /// Representes an edge (a segment).
+    /// Represents an edge (a segment).
     struct Edge
     {
 
@@ -223,7 +223,7 @@ private:
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    virtual void wheelEvent(Modifier, int, int, int) override;
+    void wheelEvent(Modifier, int, int, int) override;
 
     /**
      * @brief Adds a new point to the lasso.
@@ -232,7 +232,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /**
      * @brief Closes the lasso shape.
@@ -241,7 +241,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    virtual void buttonDoublePressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonDoublePressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /**
      * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
@@ -250,13 +250,13 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int) override;
+    void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int) override;
 
     /**
      * @brief Ends the drag interaction.
      * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
      */
-    virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
+    void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void drawLasso();
@@ -279,14 +279,14 @@ private:
     void addDelaunayPoint(std::vector< Triangle2D >& _triangulation, const ::Ogre::Vector2& _sommet) const;
 
     /**
-     * @brief Add a contrained edge to the triangulation. IT inserts a new point corresponding to the midpoint of the
+     * @brief Add a constrained edge to the triangulation. IT inserts a new point corresponding to the midpoint of the
      * segment
      * that does not appear in the triangulation, and use Lawson's incremental insertion algorithm to
      * maintain the Delaunay property.
      * @param _triangulation vector where generated triangles will be added.
      * @param _edge the constrained edge to add.
      * @param _depth used only by this method because it is recursive, it avoids stack overflow.
-     * @return a list of new constrained generated oints.
+     * @return a list of new constrained generated points.
      */
     std::list< ::Ogre::Vector2 > addConstraints(std::vector< Triangle2D >& _triangulation,
                                                 const Edge& _edge,
