@@ -210,7 +210,7 @@ void Plane::initializePlane()
     // First delete mesh if it already exists.
     if(meshManager.resourceExists(m_slicePlaneName, RESOURCE_GROUP))
     {
-        meshManager.remove(m_slicePlaneName);
+        meshManager.remove(m_slicePlaneName, RESOURCE_GROUP);
         m_slicePlane.reset();
     }
 

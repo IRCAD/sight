@@ -209,7 +209,7 @@ void IllumAmbientOcclusionSAT::updateTexture()
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
     // Removes the ping pong buffers if they have to be resized
-    textureManager.remove(m_parentId + BUFFER_NAME);
+    textureManager.remove(m_parentId + BUFFER_NAME, ::fwRenderOgre::RESOURCE_GROUP);
 
     m_illuminationVolume = textureManager.createManual(
         m_parentId + BUFFER_NAME,

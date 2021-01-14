@@ -127,8 +127,8 @@ SummedAreaTable::~SummedAreaTable()
 {
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
-    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME);
-    textureManager.remove(m_parentId + TARGET_BUFFER_NAME);
+    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, ::fwRenderOgre::RESOURCE_GROUP);
+    textureManager.remove(m_parentId + TARGET_BUFFER_NAME, ::fwRenderOgre::RESOURCE_GROUP);
 }
 
 //-----------------------------------------------------------------------------
@@ -269,8 +269,8 @@ void SummedAreaTable::initializeSAT()
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
     // Removes the ping pong buffers if they have to be resized
-    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME);
-    textureManager.remove(m_parentId + TARGET_BUFFER_NAME);
+    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME, ::fwRenderOgre::RESOURCE_GROUP);
+    textureManager.remove(m_parentId + TARGET_BUFFER_NAME, ::fwRenderOgre::RESOURCE_GROUP);
 
     m_sourceBuffer = textureManager.createManual(
         m_parentId + SOURCE_BUFFER_NAME,
