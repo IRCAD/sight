@@ -247,6 +247,7 @@
                         <menuItem name="Show/hide cropping box" icon="flatIcon-0.1/icons/CroppingBox.svg" style="check" />
                         <menuItem name="Reset cropping box" icon="flatIcon-0.1/icons/ResetCroppingBox.svg" />
                         <menuItem name="Shape extruder" icon="flatIcon-0.1/icons/Extrude.svg" style="check" />
+                        <menuItem name="Revert shape extruder" icon="flatIcon-0.1/icons/ExtrudeRevert.svg" />
                         <separator/>
                         <menuItem name="Add distance" icon="flatIcon-0.1/icons/AddDistance.svg" />
                         <menuItem name="Remove distance" icon="flatIcon-0.1/icons/RemoveDistance.svg" />
@@ -267,6 +268,7 @@
                     <menuItem sid="boxWidgetVisibilityAct" start="yes" />
                     <menuItem sid="boxWidgetResetAct" start="yes" />
                     <menuItem sid="shapeExtruderAct" start="yes" />
+                    <menuItem sid="shapeExtruderRevertAct" start="yes" />
                     <menuItem sid="addDistanceAct" start="yes" />
                     <menuItem sid="removeDistanceAct" start="yes" />
                     <menuItem sid="hideDistanceAct" start="yes" />
@@ -412,6 +414,10 @@
                 <state executable="true" />
             </service>
 
+            <service uid="shapeExtruderRevertAct" type="::gui::action::SSignal" >
+                <state executable="true" />
+            </service>
+
             <service uid="axisVisibilityAct" type="::gui::action::SSignal" />
 
             <!-- Manage distance -->
@@ -447,6 +453,7 @@
                 <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="BOX_WIDGET_RESET_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
+                <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" />
@@ -561,6 +568,10 @@
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
                 <slot>shapeExtruderAct/deactivate</slot>
+            </connect>
+
+            <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
+                <signal>shapeExtruderRevertAct/triggered</signal>
             </connect>
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >

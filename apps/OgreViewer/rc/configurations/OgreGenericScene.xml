@@ -14,6 +14,7 @@
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="modelSeries" />
@@ -151,6 +152,14 @@
                 <view sid="sagittalNegatoSlicerSrv" start="yes" />
                 <view sid="frontalNegatoSlicerSrv" start="yes" />
             </registry>
+        </service>
+
+        <service uid="notifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview"/>
+            <message>Default message</message>
+            <maxNotifications>3</maxNotifications>
+            <position>BOTTOM_LEFT</position>
+            <duration>3000</duration>
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -567,6 +576,10 @@
             <signal>shapeExtruderAdp/toolDisabled</signal>
         </connect>
 
+        <connect channel="${SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL}" >
+            <slot>shapeExtruderAdp/deleteLastMesh</slot>
+        </connect>
+
         <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" >
             <slot>axisAdp/updateVisibility</slot>
         </connect>
@@ -608,6 +621,16 @@
             <slot>pickedVoxelTextAdp/setText</slot>
         </connect>
 
+        <connect>
+            <signal>shapeExtruderAdp/infoNotified</signal>
+            <slot>notifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>shapeExtruderAdp/failureNotified</signal>
+            <slot>notifierSrv/popFailure</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -615,6 +638,7 @@
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
         <start uid="imageExtruderSrv" />
+        <start uid="notifierSrv" />
 
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
