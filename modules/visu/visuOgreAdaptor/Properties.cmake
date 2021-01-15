@@ -15,7 +15,6 @@ set( DEPENDENCIES
     fwThread
     fwTools
     fwDataTools
-    arData
 )
-set( REQUIREMENTS ioVTK )
+set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )

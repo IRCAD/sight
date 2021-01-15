@@ -23,10 +23,12 @@
 #pragma once
 
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/ITransformable.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -46,8 +48,12 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
+ * - \b transform (optional, string): base transform to use for the marker.
+ * - \b resource (optional, string): name of the resource to use for the marker.
  */
-class VISUOGREADAPTOR_CLASS_API SOrientationMarker final : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SOrientationMarker final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 
 public:
@@ -69,14 +75,6 @@ protected:
     /// Initializes and starts child services
     VISUOGREADAPTOR_API void starting() override;
 
-    /**
-     * @brief Proposal to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to s_UPDATE_SLOT
-     */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
     /// Updates the camera from the input transform
     VISUOGREADAPTOR_API void updating() override;
 
@@ -90,6 +88,9 @@ private:
     /// Type of the 'visibilityUpdated' signal.
     typedef ::fwCom::Signal<void (bool)> VisibilityUpdatedSignalType;
 
+    /// Contains the material data.
+    ::fwData::Material::sptr m_material { nullptr };
+
     /// Updates the internal camera matrix from the input transform
     void updateCameraMatrix();
 
@@ -101,6 +102,19 @@ private:
 
     // Connections with child services
     ::fwCom::helper::SigSlotConnection m_connections;
+
+    /// Contains the scene node where all of manual objects are attached.
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
+
+    /// Stores the entity associated to the marker mesh
+    ::Ogre::Entity* m_patientMesh { nullptr };
+
+    /// Resource used for the marker
+    std::string m_patientMeshRes { "human.mesh" };
+
+    /// Camera listener class used to compute the entry points textures before rendering.
+    struct CameraListener;
+    CameraListener* m_cameraListener;
 };
 
 } // namespace visuOgreAdaptor.

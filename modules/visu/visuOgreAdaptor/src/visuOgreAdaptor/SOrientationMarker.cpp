@@ -26,10 +26,18 @@
 
 #include "fwIO/IReader.hpp"
 
+#include "fwRenderOgre/Layer.hpp"
+
 #include "fwServices/IService.hpp"
+
+#include "visuOgreAdaptor/STransform.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <OGRE/OgreCamera.h>
+
+#include <OgreEntity.h>
 
 namespace visuOgreAdaptor
 {
@@ -38,14 +46,28 @@ static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_UPDATED_SIG = "visibil
 
 static const std::string s_MATRIX_INOUT = "matrix";
 
+struct SOrientationMarker::CameraListener : public ::Ogre::Camera::Listener
+{
+    ::Ogre::SceneNode* m_transformNode;
+
+    CameraListener(::Ogre::SceneNode* transformNode)
+    {
+        m_transformNode = transformNode;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void cameraPreRenderScene(::Ogre::Camera* _cam) final
+    {
+        m_transformNode->setPosition(0.0, 0.0, -24.0);
+    }
+};
+
 //-----------------------------------------------------------------------------
 
 SOrientationMarker::SOrientationMarker() noexcept
 {
-    m_mesh            = ::fwData::Mesh::New();
-    m_cameraTransform = ::fwData::TransformationMatrix3D::New();
-
-    newSignal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
+    // newSignal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,6 +83,17 @@ SOrientationMarker::~SOrientationMarker() noexcept
 void SOrientationMarker::configuring()
 {
     this->configureParams();
+
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
+
+    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG,
+                                                            this->getID() + "_transform");
+
+    this->setTransformId(transformId);
+
+    // Set the resource this use, if it has been set via xml
+    m_patientMeshRes = config.get<std::string>("resource", "human.mesh");
 }
 
 //-----------------------------------------------------------------------------
@@ -69,66 +102,49 @@ void SOrientationMarker::starting()
 {
     this->initialize();
 
-    auto meshReader = this->registerService< ::fwIO::IReader >("::ioVTK::SMeshReader");
-    meshReader->registerInOut(m_mesh, "data", false);
+    this->getRenderService()->makeCurrent();
 
-    ::fwServices::IService::ConfigType config;
-    config.add("resource", "visuOgreAdaptor-" VISUOGREADAPTOR_VER "/human.vtk");
+    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    // m_sceneNode                            = rootSceneNode->createChildSceneNode(this->getID() + "_mainNode");
+    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    m_sceneNode                            = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
-    meshReader->setConfiguration(config);
-    meshReader->configure();
-    meshReader->start();
-    SLM_ASSERT("SMeshReader is not started.", meshReader->isStarted());
-    meshReader->update();
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
-    auto meshAdaptor = this->registerService< ::fwRenderOgre::IAdaptor >("::visuOgreAdaptor::SMesh");
-    meshAdaptor->setRenderService(this->getRenderService());
-    meshAdaptor->registerInOut(m_mesh, "mesh", true);
+    // Sets the material
+    m_material = ::fwData::Material::New();
 
-    ::fwServices::IService::ConfigType configAdp;
-    configAdp.add("config.<xmlattr>.layer", this->getLayerID());
+    // Creates the material for the marker
+    const ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+        "::visuOgreAdaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
+    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setLayerID(m_layerID);
+    materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->start();
+    materialAdaptor->update();
 
-    meshAdaptor->setConfiguration(configAdp);
-    meshAdaptor->configure();
-    meshAdaptor->start();
-    SLM_ASSERT("SMesh is not started", meshAdaptor->isStarted());
+    // Loads and attaches the marker
+    m_patientMesh = sceneMgr->createEntity("human.mesh");
+    m_patientMesh->setMaterialName(materialAdaptor->getMaterialName());
+    m_sceneNode->attachObject(m_patientMesh);
 
-    m_connections.connect(this->getSptr(), s_VISIBILITY_UPDATED_SIG,
-                          meshAdaptor, ::fwRenderOgre::IAdaptor::s_UPDATE_VISIBILITY_SLOT);
-
-    // Initialize the internal matrix for the first time
-    this->updateCameraMatrix();
-
-    ::fwServices::IService::ConfigType cameraConfigAdp;
-    cameraConfigAdp.add("config.<xmlattr>.layer", this->getLayerID());
-
-    auto cameraAdaptor = this->registerService< ::fwRenderOgre::IAdaptor >("::visuOgreAdaptor::SCamera");
-    cameraAdaptor->setRenderService(this->getRenderService());
-    cameraAdaptor->registerInOut(m_cameraTransform, "transform", true);
-    cameraAdaptor->setConfiguration(cameraConfigAdp);
-    cameraAdaptor->configure();
-    cameraAdaptor->start();
-    SLM_ASSERT("SCamera is not started", cameraAdaptor->isStarted());
+    // Sets up the camera listener to update the input matrix
+    ::Ogre::Camera* m_camera = this->getLayer()->getDefaultCamera();
+    m_cameraListener         = new CameraListener(transformNode);
+    m_camera->addListener(m_cameraListener);
 
     this->updateVisibility(m_isVisible);
 
     this->requestRender();
 }
 
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
-}
-
 //-----------------------------------------------------------------------------
 
 void SOrientationMarker::updating()
 {
-    this->updateCameraMatrix();
     this->requestRender();
 }
 
@@ -163,16 +179,16 @@ void SOrientationMarker::updateCameraMatrix()
 
 void SOrientationMarker::stopping()
 {
-    this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
 
 void SOrientationMarker::setVisible(bool _visible)
 {
-    // Forward the visibility update to child services, if auto-connected
-    auto sig = this->signal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
-    sig->asyncEmit(_visible);
+    if(m_sceneNode)
+    {
+        m_sceneNode->setVisible(_visible);
+    }
 
     this->updating();
 }

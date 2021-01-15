@@ -231,6 +231,7 @@
                 <layer id="orientationMarkerLayer" order="8" >
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
                 </layer>
+                <adaptor uid="matrix1Adp" />
                 <adaptor uid="orientationMarkerAdp" />
 
             </scene>
@@ -306,9 +307,14 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker" autoConnect="yes" >
+        <service uid="matrix1Adp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
+            <inout key="transform" uid="globalCamera" />
+            <config layer="orientationMarkerLayer" transform="globalCameraMat" />
+        </service>
+
+        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker" >
             <inout key="matrix" uid="globalCamera" />
-            <config layer="orientationMarkerLayer" />
+            <config layer="orientationMarkerLayer" transform="globalCameraMat" />
         </service>
 
         <!-- Axial -->
@@ -649,6 +655,7 @@
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
+        <start uid="matrix1Adp" />
         <start uid="orientationMarkerAdp" />
 
         <start uid="axialBackgroundAdp" />
