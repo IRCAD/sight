@@ -32,7 +32,12 @@ namespace igtlProtocol
 
 RawMessage::RawMessage(std::string const& bodyType)
 {
+#if defined(OpenIGTLink_HEADER_VERSION)
+    m_SendMessageType = bodyType;
+    m_ReceiveMessageType = bodyType;
+#else
     m_DefaultBodyType = bodyType;
+#endif
 }
 
 //-----------------------------------------------------------------------------

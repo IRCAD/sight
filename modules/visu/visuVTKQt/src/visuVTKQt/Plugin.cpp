@@ -32,6 +32,8 @@
 #include <vtkGenericOpenGLRenderWindow.h>
 #endif
 
+#include <QCoreApplication>
+
 namespace visuVTKQt
 {
 

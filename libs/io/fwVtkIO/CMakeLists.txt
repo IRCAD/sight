@@ -13,7 +13,7 @@ find_package(VTK QUIET REQUIRED COMPONENTS
     vtkRenderingOpenGL2  # Needed notably for the VtkObjExporter
 )
 
-if(WIN32)
+if(VCPKG_TARGET_TRIPLET)
     # VTK9
     target_link_libraries(${FWPROJECT_NAME} PUBLIC 
         VTK::FiltersGeometry

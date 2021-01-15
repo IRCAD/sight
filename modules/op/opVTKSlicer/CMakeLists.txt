@@ -1,17 +1,19 @@
 fwLoadProperties()
 
 find_package(VTK QUIET COMPONENTS
-    vtkCommonCore
     vtkImagingCore
     REQUIRED
-    NO_MODULE)
-
-include(${VTK_USE_FILE})
-
-fwForwardInclude(
-    ${VTK_INCLUDE_DIRS}
 )
 
-fwForwardLink(
-    ${VTK_LIBRARIES}
-)
+if(VCPKG_TARGET_TRIPLET)
+    # VTK9
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+        VTK::ImagingCore
+    )
+
+else()
+    include(${VTK_USE_FILE})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC
+        vtkImagingCore
+    )
+endif()

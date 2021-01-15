@@ -1,13 +1,17 @@
 fwLoadProperties()
 
-find_package(VTK QUIET COMPONENTS vtkInteractionWidgets NO_MODULE)
+find_package(VTK QUIET COMPONENTS vtkInteractionWidgets REQUIRED)
 
-include(${VTK_USE_FILE})
+if(VCPKG_TARGET_TRIPLET)
+    # VTK9
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE 
+        VTK::InteractionWidgets
+    )
 
-fwForwardInclude(
-    ${VTK_INCLUDE_DIRS}
-)
-fwLink(
-    ${VTK_LIBRARIES}
-)
+else()
+    include(${VTK_USE_FILE})
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE
+        vtkInteractionWidgets
+    )
+endif()
 

@@ -7,7 +7,7 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE ${LibArchive_LIBRARIES})
 
 if(VCPKG_TARGET_TRIPLET)
     find_package(OpenIGTLink CONFIG REQUIRED)
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE OpenIGTLink)
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC OpenIGTLink)
 else()
     find_package(OpenIGTLink QUIET REQUIRED)
     target_link_libraries(${FWPROJECT_NAME} PUBLIC ${OpenIGTLink_LIBRARIES})

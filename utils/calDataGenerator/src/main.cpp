@@ -25,6 +25,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <random>
 

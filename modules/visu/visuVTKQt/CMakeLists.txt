@@ -1,25 +1,29 @@
 fwLoadProperties()
 
+find_package(VTK QUIET COMPONENTS
+    vtkImagingCore
+    REQUIRED
+)
+
+if(VCPKG_TARGET_TRIPLET)
+    # This is required by VTK ???
+    find_package(glew QUIET REQUIRED)
+
+    # VTK9
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE 
+        VTK::GUISupportQt
+    )
+
+
+else()
+    include(${VTK_USE_FILE})
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE
+        vtkGUISupportQt
+    )
+endif()
+
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
-find_package(VTK QUIET COMPONENTS vtkGUISupportQt REQUIRED)
-
-fwForwardInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Gui_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
-)
-
-fwInclude(
-    ${VTK_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
-    vtkGUISupportQt
-)
-
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
 message(DEPRECATION "The VTK renderer is deprecated and will be removed in sight 22.0.
