@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,6 +66,7 @@ namespace editor
  * @code{.xml}
         <service uid="..." type="::uiMeasurementQt::editor::SLandmarks" >
            <inout key="landmarks" uid="..." />
+           <in key="matrix" uid="..." />
            <text>Use 'Ctrl+Left Click' to add new landmarks</text>
            <size>10.0</size>
            <opacity>0.5</opacity>
@@ -73,7 +74,11 @@ namespace editor
         </service>
        @endcode
  *
- * @subsection In-Out In-Out
+ * @subsection In In
+ * - \b matrix [::fwData::TransformationMatrix3D] (optional): Matrix used to compute transformation from the picked
+ * point to the landmarks
+ *
+ *  @subsection In-Out In-Out
  * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
@@ -97,13 +102,13 @@ public:
     UIMEASUREMENTQT_API SLandmarks() noexcept;
 
     /// Destroys the service.
-    UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
+    UIMEASUREMENTQT_API ~SLandmarks() noexcept override;
 
     /// Configures the service.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Installs the layout.
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -130,13 +135,13 @@ public:
      * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_RENAME_GROUP_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Resets the interface content and create connections between widgets and this service.
-    virtual void updating() override;
+    void updating() override;
 
     /// Destroys the layout.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Called when a color button is clicked.
     void onColorButton();
@@ -190,26 +195,26 @@ public:
     void onRemoveSelection();
 
     /**
-     * @brief SLOT: adds or removes a landmark from picking informations.
+     * @brief SLOT: adds or removes a landmark from picking information.
      *
      * Interactions will take place while holding down the button. The following actions are available:
-     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
      * @deprecated Uses pick(::fwDataTools::PickingInfo _info) instead.
      *
-     * @param _pickingInfo Picking informations.
+     * @param _pickingInfo Picking information.
      */
     void addPickedPoint(::fwDataTools::PickingInfo _pickingInfo);
 
     /**
-     * @brief SLOT: adds or removes a landmark from picking informations.
+     * @brief SLOT: adds or removes a landmark from picking information.
      *
      * Interactions will take place while holding down the button. The following actions are available:
-     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
-     * @param _info contains picking informations.
+     * @param _info contains picking information.
      */
     void pick(::fwDataTools::PickingInfo _info);
 
@@ -338,7 +343,7 @@ public:
     /// @see onRemoveSelection()
     QPointer<QPushButton> m_removeButton;
 
-    /// Enables/disbqles the advanced mode.
+    /// Enables/disables the advanced mode.
     bool m_advancedMode { false };
 
     /// Sets the default landmark size.
