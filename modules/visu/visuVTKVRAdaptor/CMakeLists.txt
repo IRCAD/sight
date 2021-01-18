@@ -18,7 +18,7 @@ else()
         ${VTK_INCLUDE_DIRS}
     )
     fwForwardLink(
-        vtkRenderingVolume2
+        vtkRenderingVolume
         vtkRenderingVolumeOpenGL2
     )
 endif()
