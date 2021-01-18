@@ -371,7 +371,7 @@ void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screen
         this->selectFace(widgetFace);
 
         m_selectedWidget = dynamic_cast< ::Ogre::Entity*>(_pickedWidget);
-        m_selectedWidget->setMaterialName(m_id + "_SphereHighlight");
+        m_selectedWidget->setMaterialName(m_id + "_SphereHighlight", RESOURCE_GROUP);
         m_selectedWidget->setRenderQueueGroupAndPriority(compositor::Core::s_SURFACE_RQ_GROUP_ID, 65535);
 
         m_clippingUpdateCallback();
@@ -391,7 +391,7 @@ void ClippingBox::widgetReleased()
 
     if(m_selectionMode == BOX)
     {
-        m_boundingBox->setMaterialName(0, m_boxMtl->getName());
+        m_boundingBox->setMaterialName(0, m_boxMtl->getName(), RESOURCE_GROUP);
     }
 
     m_selectionMode = NONE;
@@ -432,7 +432,7 @@ bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
             m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
             m_selectionMode  = BOX;
 
-            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName());
+            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName(), RESOURCE_GROUP);
         }
         else
         {
@@ -502,7 +502,7 @@ bool ClippingBox::scaleClippingBox(int x, int y, int dy)
             // Get picked point in box space.
             m_selectionMode = BOX;
 
-            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName());
+            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName(), RESOURCE_GROUP);
         }
         else
         {

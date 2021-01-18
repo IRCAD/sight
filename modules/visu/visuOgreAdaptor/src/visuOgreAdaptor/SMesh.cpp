@@ -408,7 +408,7 @@ void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
             m_materialAdaptor->update();
 
-            m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+            m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), ::fwRenderOgre::RESOURCE_GROUP);
         }
     }
     else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
@@ -418,7 +418,7 @@ void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
     }
     else
     {
-        m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+        m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), ::fwRenderOgre::RESOURCE_GROUP);
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }

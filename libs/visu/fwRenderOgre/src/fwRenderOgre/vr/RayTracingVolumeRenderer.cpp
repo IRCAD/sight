@@ -747,7 +747,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedConstant("u_s2EntryPoints", 2);
     }
 
-    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName, RESOURCE_GROUP);
 }
 
 //-----------------------------------------------------------------------------

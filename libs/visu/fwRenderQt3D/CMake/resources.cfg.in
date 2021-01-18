@@ -1,4 +1,4 @@
 # Resources required by the sample browser and most samples.
 
-[Glsl]
+[Sight]
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl
