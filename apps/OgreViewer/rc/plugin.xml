@@ -511,7 +511,7 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="::uiMeasurementQt::editor::SLandmarks" >
+            <service uid="landmarksParameterSrv" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes"  >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>
