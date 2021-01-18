@@ -140,7 +140,6 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    std::cout<<" SLandmark starting"<<std::endl;
     this->::fwGui::IGuiContainerSrv::create();
 
     const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -677,7 +676,6 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
 {
     if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
     {
-        std::cout<<" hello "<<std::endl;
         // Adds a new landmark.
         if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
@@ -696,7 +694,6 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                     newPoint[i] = modifiedPoint[i];
                 }
             }
-            std::cout<<" fin if  "<<std::endl;
 
             const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
             SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
@@ -820,7 +817,6 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
         }
 
     }
-    std::cout<<" fin pick  "<<std::endl;
 }
 
 //------------------------------------------------------------------------------
