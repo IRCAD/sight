@@ -235,8 +235,8 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
     m_RTVSharedParameters->removeAllConstantDefinitions();
 
-    // FIXME_DW
-    //::Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName(), ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    // FIXME_DW: Doesn't seem to be a resource any longer
+    //::Ogre::GpuProgramManager::getSingleton().remove(m_RTVSharedParameters->getName(), RESOURCE_GROUP);
 
     ::Ogre::MaterialManager::getSingleton().remove(m_currentMtlName, RESOURCE_GROUP);
 }

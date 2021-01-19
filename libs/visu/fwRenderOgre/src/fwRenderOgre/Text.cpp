@@ -315,12 +315,6 @@ void Text::setFont(::Ogre::FontPtr _font)
     m_font = _font;
     m_overlayText->setFontName(_font->getName());
 
-    auto oldMtl = m_overlayText->getMaterial();
-    if(oldMtl)
-    {
-        ::Ogre::MaterialManager::getSingleton().remove(oldMtl);
-    }
-
     // Clone the font material, thereby allowing each text object to have its own color.
     const ::Ogre::MaterialPtr& fontMtl = ::fwRenderOgre::helper::Font::getFontMtl(_font->getName());
 

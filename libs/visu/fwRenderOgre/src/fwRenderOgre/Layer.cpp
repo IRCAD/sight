@@ -361,10 +361,12 @@ void Layer::createScene()
 
 void Layer::destroyScene()
 {
-    // Remove the background material
-    ::Ogre::MaterialManager::getSingleton().remove(
-        this->getName() + "backgroundMat", ::fwRenderOgre::RESOURCE_GROUP);
-
+    if (m_order == 0)
+    {
+        // Remove the background material for the first layer
+        ::Ogre::MaterialManager::getSingleton().remove(
+            this->getName() + "backgroundMat", ::fwRenderOgre::RESOURCE_GROUP);
+    }
     if(m_lightAdaptor)
     {
         ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
