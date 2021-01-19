@@ -282,7 +282,6 @@
             <service uid="openSeriesDBAct" type="::uiIO::editor::SIOSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
-                <addSelection service="::ioGdcm::SSeriesDBReader" />
                 <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
                 <config id="OgreViewer_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
                 <config id="OgreViewer_vtk_SrvCfg" service="::ioVTK::SSeriesDBReader" />
