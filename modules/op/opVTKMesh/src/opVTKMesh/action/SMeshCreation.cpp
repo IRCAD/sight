@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -171,5 +171,5 @@ void SMeshCreation::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace action
-} // namespace opVTKMesh
+} // namespace action.
+} // namespace opVTKMesh.

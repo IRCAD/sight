@@ -1,6 +1,7 @@
 fwLoadProperties()
 
-find_package(ITK QUIET REQUIRED)
+find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform REQUIRED)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform)
 
 find_package(OpenMP QUIET)
 if (OPENMP_FOUND)

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,7 @@
 
 namespace cvSegmentation
 {
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::cvSegmentation::Plugin");
 
 Plugin::~Plugin() noexcept
 {

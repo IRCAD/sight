@@ -11,6 +11,7 @@ set( DEPENDENCIES
     colourImageMasking
     cvIO
     fwCore
+    fwRuntime
 )
 set( REQUIREMENTS  )
 

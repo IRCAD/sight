@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace opImageFilter
 {
 
 /**
- * @brief   Apply a threshold on an image.
+ * @brief Apply a threshold on an image.
  *
  * This Service needs two image: the source and the target image.
  *
@@ -48,10 +48,12 @@ namespace opImageFilter
  *
  * @subsection Input Input:
  * - \b source [::fwData::Object]: Source image, can be a ::fwMedData::ImageSeries or a ::fwData::Image.
+ *
  * @subsection Output Output:
  * - \b target [::fwData::Object]: Target image (ie the filtered image),
  * if the type of the source is a ::fwMedData::ImageSeries then target will be a ::fwMedData::ImageSeries,
  * otherwise it will be an simple ::fwData::Image.
+ *
  * @subsection Configuration Configuration
  * - \b threshold : Specify the desired threshold used in filter
  * (Pixels with value lower than this value will be set to 0,
@@ -62,7 +64,7 @@ class OPIMAGEFILTER_CLASS_API SThreshold : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceMacro(SThreshold, ::fwServices::IOperator);
+    fwCoreServiceMacro(SThreshold, ::fwServices::IOperator)
 
     OPIMAGEFILTER_API SThreshold() noexcept;
 
@@ -86,4 +88,4 @@ private:
     double m_threshold;
 };
 
-} // namespace opImageFilter
+} // namespace opImageFilter.

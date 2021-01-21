@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,22 +28,22 @@ namespace opVTKMesh
 {
 
 /**
- * @brief   Implements a plugin for the opVTKMesh module.
+ * @brief Implements a plugin for the opVTKMesh module.
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin final : public ::fwRuntime::Plugin
 {
 
     /**
-     * @brief   destructor
+     * @brief  Destroys the Plugin.
      */
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
-    // Overrides
-    void start();
+    // Does nothing.
+    void start() override;
 
-    // Overrides
-    void stop() noexcept;
+    // Does nothing.
+    void stop() noexcept override;
 
 };
 
-} // namespace opVTKMesh
+} // namespace opVTKMesh.
