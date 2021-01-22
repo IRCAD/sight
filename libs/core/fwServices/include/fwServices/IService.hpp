@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -246,10 +246,10 @@ public:
     typedef ::fwCom::Slot<SharedFutureType(const KeyType&, ::fwData::Object::sptr)> SwapKeySlotType;
 
     /// Initializes m_associatedWorker and associates this worker to all service slots
-    FWSERVICES_API void setWorker( SPTR(::fwThread::Worker) worker );
+    FWSERVICES_API void setWorker( SPTR(core::thread::Worker) worker );
 
     /// Returns associate worker
-    FWSERVICES_API SPTR(::fwThread::Worker) getWorker() const;
+    FWSERVICES_API SPTR(core::thread::Worker) getWorker() const;
 
     //@}
 
@@ -935,7 +935,7 @@ protected:
     SwapKeySlotType::sptr m_slotSwapKey;
 
     /// Associated worker
-    SPTR(::fwThread::Worker) m_associatedWorker;
+    SPTR(core::thread::Worker) m_associatedWorker;
 
 //@}
 

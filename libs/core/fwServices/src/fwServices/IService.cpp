@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
@@ -33,8 +35,6 @@
 
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -434,7 +434,7 @@ void IService::reconfiguring()
 
 IService::SharedFutureType IService::start()
 {
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         return this->internalStart(false);
     }
@@ -448,7 +448,7 @@ IService::SharedFutureType IService::start()
 
 IService::SharedFutureType IService::stop()
 {
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         return this->internalStop(false);
     }
@@ -462,7 +462,7 @@ IService::SharedFutureType IService::stop()
 
 IService::SharedFutureType IService::update()
 {
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         return this->internalUpdate(false);
     }
@@ -476,7 +476,7 @@ IService::SharedFutureType IService::update()
 
 IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwData::Object::sptr _obj)
 {
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         return this->internalSwapKey(_key, _obj, false);
     }
@@ -523,7 +523,7 @@ IService::UpdatingStatus IService::getUpdatingStatus() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void IService::setWorker( ::fwThread::Worker::sptr worker )
+void IService::setWorker( core::thread::Worker::sptr worker )
 {
     m_associatedWorker = worker;
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
@@ -531,7 +531,7 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr IService::getWorker() const
+core::thread::Worker::sptr IService::getWorker() const
 {
     return m_associatedWorker;
 }

@@ -26,9 +26,8 @@
 
 #include <arServices/IGrabber.hpp>
 
+#include <core/include/core/thread/Timer.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwThread/Timer.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -140,10 +139,10 @@ private:
     /// counter used by the image reader
     size_t m_imageCount;
 
-    ::fwThread::Timer::sptr m_timer;
+    core::thread::Timer::sptr m_timer;
 
     /// Worker for the grabVideo or grabFrame timer
-    ::fwThread::Worker::sptr m_worker;
+    core::thread::Worker::sptr m_worker;
 
     /// list of image paths to read
     ImageFilesType m_imageToRead;

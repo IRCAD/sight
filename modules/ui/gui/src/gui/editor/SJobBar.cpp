@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "gui/editor/SJobBar.hpp"
 
+#include <core/include/core/thread/Worker.hxx>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -29,8 +31,6 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Worker.hxx>
 
 namespace gui
 {

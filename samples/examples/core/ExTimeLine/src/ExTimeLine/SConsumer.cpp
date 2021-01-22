@@ -22,11 +22,11 @@
 
 #include "ExTimeLine/SConsumer.hpp"
 
+#include <core/include/core/thread/Timer.hpp>
+
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Timer.hpp>
 
 #include <exTimeLineData/MessageTL.hpp>
 

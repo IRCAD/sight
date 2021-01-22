@@ -28,14 +28,14 @@
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
 
-#include "fwThread/config.hpp"
+#include "core/config.hpp"
 
-namespace fwThread
+namespace sight::core::thread
 {
 typedef std::thread::id ThreadIdType;
 
 /// Returns the current thread id
-FWTHREAD_API ThreadIdType getCurrentThreadId();
+CORE_API ThreadIdType getCurrentThreadId();
 
 class Timer;
 
@@ -43,7 +43,7 @@ class Timer;
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  */
-class FWTHREAD_CLASS_API Worker : public core::BaseObject
+class CORE_CLASS_API Worker : public core::BaseObject
 {
 public:
     typedef core::HiResClock::HiResClockType PeriodType;
@@ -59,7 +59,7 @@ public:
     }
 
     /// Waits for the last task to be processed and stops the loop
-    FWTHREAD_API virtual void stop() = 0;
+    CORE_API virtual void stop() = 0;
 
     /// Requests invocation of the given task handler and returns immediately.
     virtual void post(TaskType handler) = 0;
@@ -79,10 +79,10 @@ public:
     std::shared_future< R > postTask(CALLABLE f);
 
     /// Returns the worker's thread id
-    FWTHREAD_API virtual ThreadIdType getThreadId() const = 0;
+    CORE_API virtual ThreadIdType getThreadId() const = 0;
 
-    /// Creates and returns a ::fwThread::Timer running in this Worker
-    FWTHREAD_API virtual SPTR(::fwThread::Timer) createTimer() = 0;
+    /// Creates and returns a core::thread::Timer running in this Worker
+    CORE_API virtual SPTR(core::thread::Timer) createTimer() = 0;
 
     /**
      * @brief Returns a std::shared_future associated with the execution of Worker's loop
@@ -103,7 +103,7 @@ public:
      * @warning Qt implementation processes all Qt and Worker pending events, be careful.
      * @warning WxWidgets version is not yet implemented.
      */
-    FWTHREAD_API virtual void processTasks(PeriodType maxtime) = 0;
+    CORE_API virtual void processTasks(PeriodType maxtime) = 0;
 
     /**
      * @brief Processes all worker pending tasks for the calling thread
@@ -111,13 +111,13 @@ public:
      * You can call this function occasionally when your program is busy performing a long operation.
      * @warning WxWidgets version is not yet implemented.
      */
-    FWTHREAD_API virtual void processTasks() = 0;
+    CORE_API virtual void processTasks() = 0;
 
 protected:
 
     /// Creates and returns a new instance of Worker default implementation
     /// (boost::Asio).
-    FWTHREAD_API static SPTR(Worker) defaultFactory();
+    CORE_API static SPTR(Worker) defaultFactory();
 
     /// Copy constructor forbidden
     Worker( const Worker& );
@@ -129,6 +129,6 @@ protected:
     FutureType m_future;
 };
 
-} //namespace fwThread
+} //namespace sight::core::thread
 
-#include "fwThread/Worker.hxx"
+#include "core/thread/Worker.hxx"

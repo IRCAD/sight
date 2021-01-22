@@ -124,7 +124,7 @@ void SMatricesReader::configuring()
 
 void SMatricesReader::starting()
 {
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
 }
 
 //------------------------------------------------------------------------------
@@ -339,7 +339,7 @@ void SMatricesReader::startReading()
         {
             m_timer = m_worker->createTimer();
 
-            ::fwThread::Timer::TimeDurationType duration;
+            core::thread::Timer::TimeDurationType duration;
             if(m_useTimelapse)
             {
                 m_timer->setOneShot(true);
@@ -475,7 +475,7 @@ void SMatricesReader::readMatrices()
             {
                 nextDuration = m_tsMatrices[m_tsMatricesCount + m_step].timestamp -
                                currentTime;
-                ::fwThread::Timer::TimeDurationType duration =
+                core::thread::Timer::TimeDurationType duration =
                     std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
                 m_timer->stop();
                 m_timer->setDuration(duration);

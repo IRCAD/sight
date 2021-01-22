@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <string>
 
@@ -484,7 +484,7 @@ void SignalTest::asyncArgumentLossTest()
     ::fwCom::Slot< float(float, double, std::string) >::sptr slot3
         = ::fwCom::newSlot(&SignalTestClass::method3, &testObject);
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     slot0->setWorker(worker);
     slot1->setWorker(worker);
     slot3->setWorker(worker);
@@ -585,7 +585,7 @@ void SignalTest::blockTest()
 void SignalTest::asyncEmitTest()
 {
     ::fwCom::Connection connection;
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     {
         typedef void Signature ();

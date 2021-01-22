@@ -22,16 +22,15 @@
 
 #include "TaskHandlerTest.hpp"
 
-#include <fwThread/TaskHandler.hpp>
-#include <fwThread/Worker.hpp>
-
+#include <core/include/core/thread/TaskHandler.hpp>
+#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
 
 #include <exception>
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwThread::ut::TaskHandlerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::TaskHandlerTest );
 
 namespace fwThread
 {
@@ -70,7 +69,7 @@ void throwException()
 
 void TaskHandlerTest::basicTest()
 {
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     std::packaged_task<int()> task( std::bind( &copy, 5) );
     std::future< int > future = task.get_future();
@@ -125,7 +124,7 @@ void TaskHandlerTest::basicTest()
 
 void TaskHandlerTest::exceptionTest()
 {
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     std::packaged_task<void()> task( std::bind( &throwException ) );
     std::future< void > future = task.get_future();

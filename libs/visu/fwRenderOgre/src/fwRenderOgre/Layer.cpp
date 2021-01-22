@@ -30,14 +30,14 @@
 #include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/Text.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -546,7 +546,7 @@ void Layer::setOrder(int _order)
 
 // ----------------------------------------------------------------------------
 
-void Layer::setWorker( const ::fwThread::Worker::sptr& _worker)
+void Layer::setWorker( const core::thread::Worker::sptr& _worker)
 {
     ::fwCom::HasSlots::m_slots.setWorker(_worker);
 }

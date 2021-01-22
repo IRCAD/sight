@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <fwRuntime/Plugin.hpp>
 
 namespace ExTimeLine
 {
@@ -48,7 +48,7 @@ public:
 
 private:
 
-    ::fwThread::Worker::sptr m_worker { nullptr };
+    core::thread::Worker::sptr m_worker { nullptr };
 
 };
 

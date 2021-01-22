@@ -25,6 +25,7 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
+#include <core/include/core/thread/Timer.hpp>
 #include <core/macros.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
@@ -32,8 +33,6 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Text.hpp>
-
-#include <fwThread/Timer.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -162,13 +161,13 @@ private:
     /// Stores data used to hightlight the selected landmark.
     struct SelectedLandmark
     {
-        SelectedLandmark(::fwThread::Timer::sptr _timer, std::shared_ptr< Landmark > _landmark) :
+        SelectedLandmark(core::thread::Timer::sptr _timer, std::shared_ptr< Landmark > _landmark) :
             m_timer(_timer),
             m_landmark(_landmark)
         {
         }
 
-        ::fwThread::Timer::sptr m_timer;
+        core::thread::Timer::sptr m_timer;
         std::shared_ptr< Landmark > m_landmark;
         bool m_show { false };
     };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include <fwQt/WorkerQt.hpp>
 
+#include <core/include/core/thread/Timer.hpp>
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
+
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/config.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwThread/Timer.hpp>
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
 
 #include <cppunit/Exception.h>
 
@@ -73,20 +73,20 @@ struct TestHandler
 
     void nextStepNoSleep()
     {
-        m_threadCheckOk &= (m_workerThreadId == ::fwThread::getCurrentThreadId());
+        m_threadCheckOk &= (m_workerThreadId == core::thread::getCurrentThreadId());
         ++m_step;
     }
 
     //------------------------------------------------------------------------------
 
-    void setWorkerId(::fwThread::ThreadIdType id)
+    void setWorkerId(core::thread::ThreadIdType id)
     {
         m_workerThreadId = id;
     }
 
     int m_step;
     bool m_threadCheckOk;
-    ::fwThread::ThreadIdType m_workerThreadId;
+    core::thread::ThreadIdType m_workerThreadId;
 };
 
 //-----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void WorkerQtTest::twiceInitTest()
 
 //-----------------------------------------------------------------------------
 
-void runBasicTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
+void runBasicTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     handler.setWorkerId(worker->getThreadId());
     worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
@@ -195,7 +195,7 @@ void doNothing()
 
 //-----------------------------------------------------------------------------
 
-void runFromOutsideTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
+void runFromOutsideTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
     worker->postTask<void>( std::bind( doNothing ) ).wait();
@@ -237,8 +237,8 @@ static CppUnit::Exception exception;
 //-----------------------------------------------------------------------------
 
 void runBasicTimerTest( TestHandler& handler,
-                        const ::fwThread::Timer::sptr& timer,
-                        ::fwThread::Timer::TimeDurationType duration )
+                        const core::thread::Timer::sptr& timer,
+                        core::thread::Timer::TimeDurationType duration )
 {
     timer->start();
 
@@ -255,9 +255,9 @@ void runBasicTimerTest( TestHandler& handler,
 
 void oneShotBasicTimerTest(int& i,
                            TestHandler& handler,
-                           const ::fwThread::Timer::sptr& timer,
-                           ::fwThread::Timer::TimeDurationType duration,
-                           const ::fwThread::Worker::sptr& worker )
+                           const core::thread::Timer::sptr& timer,
+                           core::thread::Timer::TimeDurationType duration,
+                           const core::thread::Worker::sptr& worker )
 {
     handler.nextStepNoSleep();
 
@@ -291,9 +291,9 @@ void WorkerQtTest::basicTimerTest()
     TestHandler handler;
     handler.setWorkerId(m_worker->getThreadId());
 
-    ::fwThread::Timer::sptr timer = m_worker->createTimer();
+    core::thread::Timer::sptr timer = m_worker->createTimer();
 
-    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
+    core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
 
     int i = 1;
     timer->setFunction(
@@ -309,7 +309,7 @@ void WorkerQtTest::basicTimerTest()
 
     m_worker->post( std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration) );
 
-    ::fwThread::Worker::FutureType future = m_worker->getFuture();
+    core::thread::Worker::FutureType future = m_worker->getFuture();
     future.wait();
 
     CPPUNIT_ASSERT_EQUAL( 0, std::any_cast<int>( future.get() ) );

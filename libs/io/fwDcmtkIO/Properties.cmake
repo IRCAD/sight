@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomTools
     fwTools
-    fwThread
     fwLog
     fwMedData
     fwMedDataTools

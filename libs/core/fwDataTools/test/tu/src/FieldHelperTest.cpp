@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void FieldHelperTest::testHelper()
     ::fwData::Object::sptr fieldObj2 = ::fwData::String::New();
     ::fwData::Object::sptr fieldObj3 = ::fwData::String::New();
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     // Setup to test notifications
     unsigned int numAddedNotif = 0;

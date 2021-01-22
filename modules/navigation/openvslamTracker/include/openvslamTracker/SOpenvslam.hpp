@@ -31,6 +31,7 @@
 #include <arServices/ITracker.hpp>
 
 #include <core/HiResTimer.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
@@ -40,8 +41,6 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/PointList.hpp>
-
-#include <fwThread/Timer.hpp>
 
 #include <openvslamIO/OpenvslamConfig.hpp>
 
@@ -332,13 +331,13 @@ private:
     bool m_localMap{false};
 
     ///Calls asynchronously updatePointCloud each 1sec.
-    ::fwThread::Timer::sptr m_timer;
+    core::thread::Timer::sptr m_timer;
 
     /// Matrix and points scale
     std::atomic< float > m_scale{1.0f};
 
     /// Worker for pointcloud update
-    ::fwThread::Worker::sptr m_pointcloudWorker;
+    core::thread::Worker::sptr m_pointcloudWorker;
 
     /// Pause state.
     bool m_isPaused {false};

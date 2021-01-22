@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ struct FWCOM_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker)& worker, A ... args ) const;
+    virtual SharedFutureType asyncCall( const SPTR(core::thread::Worker)& worker, A ... args ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -95,7 +95,7 @@ struct FWCOM_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
     protected:
 
         template< typename WEAKCALL >
-        static std::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker)& worker, WEAKCALL f );
+        static std::shared_future< R > postWeakCall( const SPTR(core::thread::Worker)& worker, WEAKCALL f );
 
         /**
          * @brief Binds the given parameters to the call method within a R() function.

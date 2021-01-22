@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ void SSeriesPuller::configuring()
 void SSeriesPuller::starting()
 {
     // Create the worker.
-    m_requestWorker = ::fwThread::Worker::New();
+    m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
     m_seriesDB = ::fwMedData::SeriesDB::New();
@@ -222,7 +222,7 @@ void SSeriesPuller::pullSeries()
             return;
         }
 
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
 
         try
         {

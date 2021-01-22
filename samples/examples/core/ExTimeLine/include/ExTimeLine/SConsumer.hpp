@@ -87,7 +87,7 @@ protected:
 private:
 
     /// Timer used to read messages periodically
-    SPTR( fwThread::Timer ) m_timer;
+    SPTR( core::thread::Timer ) m_timer;
 
     /// Id of the receiver
     unsigned int m_receiverId;

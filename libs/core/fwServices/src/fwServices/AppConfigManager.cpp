@@ -639,11 +639,11 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
     if (!srvConfig.m_worker.empty())
     {
         ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
-        ::fwThread::Worker::sptr worker;
+        core::thread::Worker::sptr worker;
         worker = activeWorkers->getWorker(srvConfig.m_worker);
         if (!worker)
         {
-            worker = ::fwThread::Worker::New();
+            worker = core::thread::Worker::New();
             activeWorkers->addWorker(srvConfig.m_worker, worker);
         }
         srv->setWorker(worker);

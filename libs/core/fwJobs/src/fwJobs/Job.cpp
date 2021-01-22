@@ -26,8 +26,8 @@
 
 #include "fwJobs/exception/Waiting.hpp"
 
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
 
 #include <boost/scope_exit.hpp>
 
@@ -38,14 +38,14 @@ namespace fwJobs
 
 //------------------------------------------------------------------------------
 
-Job::sptr Job::New(const std::string& name, Job::Task task, const ::fwThread::Worker::sptr& worker)
+Job::sptr Job::New(const std::string& name, Job::Task task, const core::thread::Worker::sptr& worker)
 {
     return std::make_shared<Job>( name, task, worker );
 }
 
 //------------------------------------------------------------------------------
 
-Job::Job(const std::string& name, Job::Task task, const ::fwThread::Worker::sptr& worker) :
+Job::Job(const std::string& name, Job::Task task, const core::thread::Worker::sptr& worker) :
     IJob(name),
     m_task(task),
     m_worker(worker)
@@ -117,7 +117,7 @@ Job::ProgressCallback Job::progressCallback()
 
 //------------------------------------------------------------------------------
 
-::fwThread::Worker::sptr Job::getWorker()
+core::thread::Worker::sptr Job::getWorker()
 {
     // No need to lock : m_worker only writable in contructor
     return m_worker;

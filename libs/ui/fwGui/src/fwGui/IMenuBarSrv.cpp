@@ -23,12 +23,11 @@
 #include "fwGui/IMenuBarSrv.hpp"
 
 #include <core/base.hpp>
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
 
 #include <fwTools/fwID.hpp>
 

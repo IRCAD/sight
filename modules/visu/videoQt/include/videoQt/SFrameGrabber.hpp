@@ -26,7 +26,7 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <fwVideoQt/Player.hpp>
 
@@ -157,7 +157,7 @@ private:
     ::fwCom::Slot<void(const QVideoFrame& frame)>::sptr m_slotPresentFrame;
 
     /// Worker for the m_slotPresentFrame
-    ::fwThread::Worker::sptr m_workerPresentFrame;
+    core::thread::Worker::sptr m_workerPresentFrame;
 
     /// Mutex to protect concurrent access for m_videoFrame
     mutable core::mt::ReadWriteMutex m_videoFrameMutex;

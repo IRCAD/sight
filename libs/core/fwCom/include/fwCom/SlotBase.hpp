@@ -95,7 +95,7 @@ struct FWCOM_CLASS_API SlotBase : virtual core::BaseObject
     }
 
     /// Sets Slot's Worker.
-    void setWorker(const SPTR(::fwThread::Worker)& worker)
+    void setWorker(const SPTR(core::thread::Worker)& worker)
     {
         core::mt::WriteLock lock(m_workerMutex);
 
@@ -103,7 +103,7 @@ struct FWCOM_CLASS_API SlotBase : virtual core::BaseObject
     }
 
     /// Returns Slot's Worker.
-    SPTR(::fwThread::Worker) getWorker() const
+    SPTR(core::thread::Worker) getWorker() const
     {
         core::mt::ReadLock lock(m_workerMutex);
         return m_worker;
@@ -237,7 +237,7 @@ struct FWCOM_CLASS_API SlotBase : virtual core::BaseObject
         const unsigned int m_arity;
 
         /// Slot's Worker.
-        SPTR(::fwThread::Worker) m_worker;
+        SPTR(core::thread::Worker) m_worker;
 
         /// Container of current connections.
         ConnectionSetType m_connections;

@@ -22,13 +22,12 @@
 
 #include "PoolTest.hpp"
 
-#include <fwThread/Pool.hpp>
-#include <fwThread/Worker.hpp>
-
+#include <core/include/core/thread/Pool.hpp>
+#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwThread::ut::PoolTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::PoolTest );
 
 namespace fwThread
 {
@@ -56,7 +55,7 @@ struct PoolTestHandler
         m_step(0),
         m_threadCheckOk(true)
     {
-        m_constructorThreadId = ::fwThread::getCurrentThreadId();
+        m_constructorThreadId = core::thread::getCurrentThreadId();
     }
 
     //------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ struct PoolTestHandler
 
     void nextStepNoSleep()
     {
-        m_threadCheckOk &= (m_constructorThreadId != ::fwThread::getCurrentThreadId());
+        m_threadCheckOk &= (m_constructorThreadId != core::thread::getCurrentThreadId());
 
         std::unique_lock<std::mutex> lock(m_mutex);
         ++m_step;
@@ -80,7 +79,7 @@ struct PoolTestHandler
     int m_step;
     bool m_threadCheckOk;
     std::mutex m_mutex;
-    ::fwThread::ThreadIdType m_constructorThreadId;
+    core::thread::ThreadIdType m_constructorThreadId;
 };
 
 //-----------------------------------------------------------------------------
@@ -91,7 +90,7 @@ void PoolTest::basicTest()
         // Single thread test
         PoolTestHandler handler;
 
-        ::fwThread::Pool pool(1);
+        core::thread::Pool pool(1);
 
         std::vector< ::std::shared_future<void> > futures;
         futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
@@ -108,7 +107,7 @@ void PoolTest::basicTest()
         // Multiple threads test
         PoolTestHandler handler;
 
-        ::fwThread::Pool pool(10);
+        core::thread::Pool pool(10);
 
         std::vector< ::std::shared_future<void> > futures;
         for(int i = 0; i < 50; ++i)
@@ -125,7 +124,7 @@ void PoolTest::basicTest()
         // Check that the destructor of the pool waits for the end of all tasks
         PoolTestHandler handler;
         {
-            ::fwThread::Pool pool(10);
+            core::thread::Pool pool(10);
 
             for(int i = 0; i < 50; ++i)
             {
@@ -144,7 +143,7 @@ void PoolTest::defaultPoolTest()
 {
     // Use the pool
     PoolTestHandler handler;
-    ::fwThread::Pool& pool = ::fwThread::getDefaultPool();
+    core::thread::Pool& pool = core::thread::getDefaultPool();
 
     std::vector< ::std::shared_future<void> > futures;
     futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));

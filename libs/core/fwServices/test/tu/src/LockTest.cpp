@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Mesh.hpp>
@@ -35,8 +37,6 @@
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Mesh.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <atomic>
 #include <chrono>

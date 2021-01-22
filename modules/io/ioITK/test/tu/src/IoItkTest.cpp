@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "IoItkTest.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwIO/ioTypes.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
@@ -36,8 +38,6 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
@@ -59,7 +59,7 @@ static const double EPSILON = 0.00001;
 void IoItkTest::setUp()
 {
     // Set up context before running a test.
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 

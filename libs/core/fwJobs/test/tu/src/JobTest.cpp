@@ -28,9 +28,8 @@
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <exception>
 #include <functional>
@@ -127,7 +126,7 @@ void JobTest::APIAndStateTest()
     }
 
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
         ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                     {
                            std::this_thread::sleep_for( std::chrono::milliseconds(30) );
@@ -241,7 +240,7 @@ void JobTest::GenericCallbackTest()
         }
 
         {
-            ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+            core::thread::Worker::sptr worker = core::thread::Worker::New();
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
@@ -400,7 +399,7 @@ void JobTest::AggregationTest()
     }
 
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
 
         ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
@@ -447,7 +446,7 @@ void JobTest::AggregationTest()
     }
 
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
 
         int index = -1;
 
@@ -689,7 +688,7 @@ void JobTest::ObserverTest()
         }
 
         {
-            ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+            core::thread::Worker::sptr worker = core::thread::Worker::New();
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
@@ -717,7 +716,7 @@ void JobTest::ObserverTest()
         }
 
         {
-            ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+            core::thread::Worker::sptr worker = core::thread::Worker::New();
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",

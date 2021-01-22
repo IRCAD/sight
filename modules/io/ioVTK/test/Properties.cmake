@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwMedData
     fwServices
     fwRuntime
-    fwThread
     fwGui
 )
 set( REQUIREMENTS ioVTK )

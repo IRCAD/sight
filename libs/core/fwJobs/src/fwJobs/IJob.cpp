@@ -24,12 +24,12 @@
 
 #include "fwJobs/exception/Waiting.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
 
 #include <algorithm>
 

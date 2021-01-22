@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwCom
     core
-    fwThread
     fwTools
     fwData
     fwDataTools

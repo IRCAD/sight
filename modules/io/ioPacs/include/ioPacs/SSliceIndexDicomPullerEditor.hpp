@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "ioPacs/config.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwCom/Slot.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
@@ -32,8 +34,6 @@
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -192,10 +192,10 @@ private:
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
     /// Contains the worker that pulls series from the PACS.
-    ::fwThread::Worker::sptr m_pullSeriesWorker;
+    core::thread::Worker::sptr m_pullSeriesWorker;
 
     /// Contains the timer used to generate the new slice selection delay.
-    SPTR(::fwThread::Timer) m_delayTimer2;
+    SPTR(core::thread::Timer) m_delayTimer2;
 
     /// Defines the delay to wait between each slice move.
     unsigned int m_delay { 500 };

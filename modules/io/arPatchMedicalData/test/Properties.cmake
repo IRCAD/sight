@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwServices
     fwRuntime
     fwMedData
-    fwThread
     arMDSemanticPatch
 )
 set( REQUIREMENTS fwData servicesReg ioAtoms patchMedicalData arPatchMedicalData)

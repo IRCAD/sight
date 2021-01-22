@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#include "fwThread/Pool.hpp"
+#include "core/thread/Pool.hpp"
 
 #include <core/spyLog.hpp>
 #include <core/util/LazyInstantiator.hpp>
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 //-----------------------------------------------------------------------------
@@ -97,4 +97,4 @@ Pool& getDefaultPool()
 
 //-----------------------------------------------------------------------------
 
-} //namespace fwThread
+} //namespace sight::core::thread

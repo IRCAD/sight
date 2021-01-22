@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
-#include <fwThread/Timer.hpp>
+#include <fwServices/IService.hpp>
 
 namespace ExTimeLine
 {
@@ -77,7 +77,7 @@ protected:
 private:
 
     /// Timer used to send messages periodically
-    SPTR( fwThread::Timer ) m_timer;
+    SPTR( core::thread::Timer ) m_timer;
 
     /// Message to be sent
     std::string m_message;

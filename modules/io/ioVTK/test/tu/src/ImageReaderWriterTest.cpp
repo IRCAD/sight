@@ -22,6 +22,8 @@
 
 #include "ImageReaderWriterTest.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
@@ -37,8 +39,6 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -89,7 +89,7 @@ void runImageSrv(
 void ImageReaderWriterTest::setUp()
 {
     // Set up context before running a test.
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 

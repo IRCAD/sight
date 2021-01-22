@@ -28,13 +28,12 @@
 
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <fwThread/Timer.hpp>
 
 namespace arData
 {
@@ -235,7 +234,7 @@ private:
     int m_delay { 0 };
 
     /// Timer used for the update
-    ::fwThread::Timer::sptr m_timer;
+    core::thread::Timer::sptr m_timer;
 
     /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;

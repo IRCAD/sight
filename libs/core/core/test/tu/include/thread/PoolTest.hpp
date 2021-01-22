@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,39 +20,31 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_TASKHANDLER_HXX__
-#define __FWTHREAD_TASKHANDLER_HXX__
+#pragma once
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwThread
 {
-template <typename R>
-TaskHandler<R>::TaskHandler(std::packaged_task<R>& task) :
-    m_task(std::move(task))
+namespace ut
 {
-}
 
-template <typename R>
-TaskHandler<R>::TaskHandler(const TaskHandler& that) :
-    m_task(std::move(that.m_task))
+class PoolTest : public CPPUNIT_NS::TestFixture
 {
-}
+CPPUNIT_TEST_SUITE( PoolTest );
+CPPUNIT_TEST( basicTest );
+CPPUNIT_TEST( defaultPoolTest );
+CPPUNIT_TEST_SUITE_END();
 
-//------------------------------------------------------------------------------
+public:
+    // interface
+    void setUp();
+    void tearDown();
 
-template <typename R>
-void TaskHandler<R>::operator ()() const
-{
-    this->m_task();
-}
+    void basicTest();
+    void defaultPoolTest();
 
-//------------------------------------------------------------------------------
+};
 
-template <typename R>
-inline std::function< void() > moveTaskIntoFunction(std::packaged_task<R>& task)
-{
-    return TaskHandler<R>(task);
-}
-
+} //namespace ut
 } //namespace fwThread
-
-#endif //__FWTHREAD_TASKHANDLER_HXX__

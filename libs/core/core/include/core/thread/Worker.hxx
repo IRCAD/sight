@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,35 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_NAMESPACE_HPP__
-#define __FWTHREAD_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @brief       This namespace fwThread provides few tools to execute asynchronous tasks on different threads.
- * @namespace   fwThread
- *
- * @date        2012
- *
- */
-namespace fwThread
+#include <core/thread/TaskHandler.hpp>
+
+#include <future>
+
+namespace sight::core::thread
 {
+
+//------------------------------------------------------------------------------
+
+template< typename R, typename TASK >
+std::shared_future< R > Worker::postTask(TASK f)
+{
+    std::packaged_task< R() > task( f );
+    std::future< R > ufuture = task.get_future();
+
+    std::function< void() > ftask = core::thread::moveTaskIntoFunction(task);
+
+    if( core::thread::getCurrentThreadId() == this->getThreadId())
+    {
+        ftask();
+    }
+    else
+    {
+        this->post(ftask);
+    }
+
+    return ufuture;
 }
-#endif /* __FWTHREAD_NAMESPACE_HPP__ */
+
+} //namespace sight::core::thread

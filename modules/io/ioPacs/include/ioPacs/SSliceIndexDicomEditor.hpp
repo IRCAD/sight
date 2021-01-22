@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,9 @@
 
 #include "ioPacs/config.hpp"
 
+#include <core/include/core/thread/Timer.hpp>
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwIO/IReader.hpp>
@@ -32,9 +35,6 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IHasServices.hpp>
-
-#include <fwThread/Timer.hpp>
-#include <fwThread/Worker.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -139,7 +139,7 @@ private:
                    std::size_t _selectedSliceIndex) const;
 
     /// Contains the worker of the series enquire thread.
-    ::fwThread::Worker::sptr m_requestWorker;
+    core::thread::Worker::sptr m_requestWorker;
 
     /// Contains the slider.
     QPointer< QSlider > m_slider { nullptr };
@@ -148,7 +148,7 @@ private:
     QPointer< QLineEdit > m_lineEdit { nullptr };
 
     /// Contains the timer used to trigger the new slice retrieving.
-    ::fwThread::Timer::sptr m_sliceTriggerer { nullptr };
+    core::thread::Timer::sptr m_sliceTriggerer { nullptr };
 
     /// Defines the delay to wait to trigger a slice retrieving.
     unsigned int m_delay { 500 };

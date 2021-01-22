@@ -24,6 +24,8 @@
 
 #include <arData/timeline/Buffer.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -32,8 +34,6 @@
 #include <fwData/Object.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Worker.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite )
 

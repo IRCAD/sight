@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 
-#include <fwThread/Timer.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
 namespace fwRenderOgre::interactor
 {
@@ -132,7 +132,7 @@ private:
     bool m_mouseMove { false };
 
     /// Timer used to animate the camera.
-    ::fwThread::Timer::sptr m_timer;
+    core::thread::Timer::sptr m_timer;
 
 };
 

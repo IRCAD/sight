@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include <fwPacsIO/helper/Series.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwDcmtkIO/helper/DicomSearch.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/Exception.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -155,7 +155,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     // Create the retriever
     m_seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer
@@ -211,7 +211,7 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
     // Create the receiver
     m_seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
 
 #include <fwTools/fwID.hpp>
 

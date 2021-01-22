@@ -24,11 +24,11 @@
 
 #include "exTimeLineData/MessageTL.hpp"
 
+#include <core/include/core/thread/Timer.hpp>
+
 #include <fwCom/Signal.hxx>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Timer.hpp>
 
 #include <functional>
 

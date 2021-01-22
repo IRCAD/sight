@@ -1,6 +1,6 @@
 set( NAME fwCom )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
-set( DEPENDENCIES core fwThread fwTools)
+set( DEPENDENCIES core fwTools)
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON )

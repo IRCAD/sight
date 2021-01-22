@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWJOBS_JOB_HPP__
-#define __FWJOBS_JOB_HPP__
+#pragma once
 
 #include "fwJobs/config.hpp"
 #include "fwJobs/IJob.hpp"
@@ -64,20 +63,20 @@ public:
      *
      * @param name name of the new job
      * @param task The task managed by the job
-     * @param ::fwThread::Worker An optional worker to run the task on
+     * @param core::thread::Worker An optional worker to run the task on
      *
      * @return
      */
-    FWJOBS_API static sptr New(const std::string &name, Task task, const SPTR(::fwThread::Worker) &worker = nullptr );
+    FWJOBS_API static sptr New(const std::string& name, Task task, const SPTR(core::thread::Worker)& worker = nullptr );
 
     /**
      * @brief Construct a new job
      *
      * @param name name of the new job
      * @param task The task managed by the job
-     * @param ::fwThread::Worker An optional worker to run the task on
+     * @param core::thread::Worker An optional worker to run the task on
      */
-    FWJOBS_API Job(const std::string &name, Task task, const SPTR(::fwThread::Worker) &worker = nullptr );
+    FWJOBS_API Job(const std::string& name, Task task, const SPTR(core::thread::Worker)& worker = nullptr );
 
     /**
      * @brief Return a job callback with the done work number as parameter
@@ -95,7 +94,7 @@ public:
     /**  @} */
 
     ///Getter on the current job worker or nullptr if no worker has been set.
-    FWJOBS_API SPTR(::fwThread::Worker) getWorker();
+    FWJOBS_API SPTR(core::thread::Worker) getWorker();
 
     /// Reimplements IJob's cancel
     FWJOBS_API virtual SharedFuture cancel();
@@ -115,10 +114,8 @@ private:
     Task m_task;
 
     /// The worker on wich the task is meant to be run
-    SPTR(::fwThread::Worker) m_worker;
+    SPTR(core::thread::Worker) m_worker;
 
 };
 
 } //namespace fwJobs
-
-#endif //__FWJOBS_JOB_HPP__

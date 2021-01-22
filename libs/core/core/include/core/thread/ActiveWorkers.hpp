@@ -22,17 +22,16 @@
 
 #pragma once
 
-#include "fwThread/config.hpp"
-#include <fwThread/Worker.hpp>
-
+#include "core/config.hpp"
 #include <core/mt/types.hpp>
+#include <core/thread/Worker.hpp>
 
-namespace fwThread
+namespace sight::core::thread
 {
 /**
  * @brief This class to register active worker in the system, creates a default worker
  */
-class FWTHREAD_CLASS_API ActiveWorkers : public core::BaseObject
+class CORE_CLASS_API ActiveWorkers : public core::BaseObject
 {
 
 public:
@@ -41,52 +40,52 @@ public:
 
     typedef std::string WorkerKeyType;
 
-    typedef std::map< WorkerKeyType, ::fwThread::Worker::sptr > WorkerMapType;
+    typedef std::map< WorkerKeyType, core::thread::Worker::sptr > WorkerMapType;
 
     /// Key of default worker in registry, created and registered by initRegistry method
-    FWTHREAD_API static const std::string s_DEFAULT_WORKER;
+    CORE_API static const std::string s_DEFAULT_WORKER;
 
     /// Constructor, does nothing
-    FWTHREAD_API ActiveWorkers();
+    CORE_API ActiveWorkers();
 
     /// Destructor, does nothing
-    FWTHREAD_API virtual ~ActiveWorkers();
+    CORE_API virtual ~ActiveWorkers();
 
     /**
      * @brief Get a worker registered with key, if the key does not exist a null sptr is returned
      * @note This method is thread safe.
      */
-    FWTHREAD_API ::fwThread::Worker::sptr getWorker( const WorkerKeyType& key ) const;
+    CORE_API core::thread::Worker::sptr getWorker( const WorkerKeyType& key ) const;
 
     /// Register the default active worker.
-    FWTHREAD_API static void setDefaultWorker( ::fwThread::Worker::sptr worker );
+    CORE_API static void setDefaultWorker( core::thread::Worker::sptr worker );
 
     /**
      * @brief Get the default registered worker
      * @note This method is thread safe.
      */
-    static FWTHREAD_API ::fwThread::Worker::sptr getDefaultWorker();
+    static CORE_API core::thread::Worker::sptr getDefaultWorker();
 
     /**
      * @brief Registers a worker
      * @note This method is thread safe.
      */
-    FWTHREAD_API void addWorker( const WorkerKeyType& key, ::fwThread::Worker::sptr worker );
+    CORE_API void addWorker( const WorkerKeyType& key, core::thread::Worker::sptr worker );
 
     /**
      * @brief Initializes registry, creates and registers the default worker
      * @note This method is thread safe.
      */
-    FWTHREAD_API void initRegistry();
+    CORE_API void initRegistry();
 
     /**
      * @brief Unregisters all registered workers, s_DEFAULT_WORKER also
      * @note This method is thread safe.
      */
-    FWTHREAD_API void clearRegistry();
+    CORE_API void clearRegistry();
 
     /// Returns an instance of ActiveWorkers.
-    FWTHREAD_API static ActiveWorkers::sptr getDefault();
+    CORE_API static ActiveWorkers::sptr getDefault();
 
 protected:
 

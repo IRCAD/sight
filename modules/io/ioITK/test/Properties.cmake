@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwMedData
     fwServices
     fwGui
-    fwThread
     fwIO
 )
 set( REQUIREMENTS

@@ -13,7 +13,6 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
-    fwThread
 )
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON )

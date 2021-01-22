@@ -25,6 +25,7 @@
 #include <arData/CameraSeries.hpp>
 
 #include <core/base.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -34,8 +35,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/Object.hpp>
 

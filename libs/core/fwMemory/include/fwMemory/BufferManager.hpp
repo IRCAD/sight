@@ -341,7 +341,7 @@ protected:
 
     LoadingModeType m_loadingMode;
 
-    SPTR(fwThread::Worker) m_worker;
+    SPTR(core::thread::Worker) m_worker;
 
     /// Mutex to protect concurrent access in BufferManager
     mutable core::mt::ReadWriteMutex m_mutex;

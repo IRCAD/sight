@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
+#include "fwCom/Slots.hpp"
+
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 
-#include "fwCom/Slots.hpp"
-
-#include <fwThread/Worker.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 namespace fwCom
 {
@@ -48,7 +48,7 @@ Slots::~Slots()
 
 //-----------------------------------------------------------------------------
 
-void Slots::setWorker( const ::fwThread::Worker::sptr &worker )
+void Slots::setWorker( const core::thread::Worker::sptr& worker )
 {
     for( SlotMapType::value_type elem :  m_slots )
     {
@@ -58,7 +58,7 @@ void Slots::setWorker( const ::fwThread::Worker::sptr &worker )
 
 //-----------------------------------------------------------------------------
 
-Slots& Slots::operator()( const SlotKeyType &key, const SlotBase::sptr &slot )
+Slots& Slots::operator()( const SlotKeyType& key, const SlotBase::sptr& slot )
 {
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
@@ -66,7 +66,7 @@ Slots& Slots::operator()( const SlotKeyType &key, const SlotBase::sptr &slot )
 
 //-----------------------------------------------------------------------------
 
-SlotBase::sptr Slots::operator[]( const SlotKeyType &key ) const
+SlotBase::sptr Slots::operator[]( const SlotKeyType& key ) const
 {
     SlotMapType::const_iterator it = m_slots.find(key);
 
@@ -105,7 +105,4 @@ Slots& Slots::operator=( const Slots& )
 
 //-----------------------------------------------------------------------------
 
-
-
 } // namespace fwCom
-

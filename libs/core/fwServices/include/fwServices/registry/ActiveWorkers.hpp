@@ -24,9 +24,8 @@
 
 #include "fwServices/config.hpp"
 
+#include <core/include/core/thread/ActiveWorkers.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwThread/ActiveWorkers.hpp>
 
 namespace fwServices
 {
@@ -35,9 +34,9 @@ namespace registry
 
 /**
  * @brief This class to register active worker in the system, creates a default worker
- * @deprecated  Please now use ::fwThread::ActiveWorkers instead
+ * @deprecated  Please now use core::thread::ActiveWorkers instead
  */
-[[deprecated]] typedef ::fwThread::ActiveWorkers ActiveWorkers;
+[[deprecated]] typedef core::thread::ActiveWorkers ActiveWorkers;
 
 } // namespace registry
 } // namespace fwServices

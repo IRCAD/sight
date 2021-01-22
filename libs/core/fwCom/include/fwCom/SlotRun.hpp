@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ struct FWCOM_CLASS_API SlotRun< void (A ...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker)& worker, A ... args ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(core::thread::Worker)& worker, A ... args ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -92,7 +92,7 @@ struct FWCOM_CLASS_API SlotRun< void (A ...) > : SlotBase
     protected:
 
         template< typename R, typename WEAKCALL >
-        static std::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker)& worker, WEAKCALL f );
+        static std::shared_future< R > postWeakCall( const SPTR(core::thread::Worker)& worker, WEAKCALL f );
 
         /**
          * @brief Binds the given parameters to the run method within a void() function.

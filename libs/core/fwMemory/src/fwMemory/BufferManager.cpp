@@ -26,11 +26,10 @@
 #include "fwMemory/stream/in/Buffer.hpp"
 #include "fwMemory/stream/in/Raw.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/util/LazyInstantiator.hpp>
 
 #include <fwCom/Signal.hxx>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/System.hpp>
 
@@ -63,7 +62,7 @@ BufferManager::BufferManager() :
     m_updatedSig(UpdatedSignalType::New()),
     m_dumpPolicy(::fwMemory::policy::NeverDump::New()),
     m_loadingMode(BufferManager::DIRECT),
-    m_worker( ::fwThread::Worker::New() )
+    m_worker( core::thread::Worker::New() )
 {
 }
 

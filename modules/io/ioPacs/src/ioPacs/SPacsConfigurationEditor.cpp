@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ void SPacsConfigurationEditor::configuring()
 void SPacsConfigurationEditor::starting()
 {
     // Create the worker.
-    m_requestWorker = ::fwThread::Worker::New();
+    m_requestWorker = core::thread::Worker::New();
 
     const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
 

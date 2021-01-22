@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwThread/ActiveWorkers.hpp"
+#include "core/thread/ActiveWorkers.hpp"
 
 #include "core/util/LazyInstantiator.hpp"
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 //-----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ ActiveWorkers::sptr ActiveWorkers::getDefault()
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType& key ) const
+core::thread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType& key ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
 
@@ -63,26 +63,26 @@ ActiveWorkers::sptr ActiveWorkers::getDefault()
         return it->second;
     }
 
-    return ::fwThread::Worker::sptr();
+    return core::thread::Worker::sptr();
 }
 
 //-----------------------------------------------------------------------------
 
-void ActiveWorkers::setDefaultWorker(fwThread::Worker::sptr worker)
+void ActiveWorkers::setDefaultWorker(core::thread::Worker::sptr worker)
 {
     getDefault()->addWorker(s_DEFAULT_WORKER, worker);
 }
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr ActiveWorkers::getDefaultWorker()
+core::thread::Worker::sptr ActiveWorkers::getDefaultWorker()
 {
     return ActiveWorkers::getDefault()->getWorker( s_DEFAULT_WORKER );
 }
 
 //-----------------------------------------------------------------------------
 
-void ActiveWorkers::addWorker( const WorkerKeyType& key, ::fwThread::Worker::sptr worker )
+void ActiveWorkers::addWorker( const WorkerKeyType& key, core::thread::Worker::sptr worker )
 {
     core::mt::WriteLock lock(m_registryMutex);
     m_workers.insert( WorkerMapType::value_type(key, worker) );
@@ -92,7 +92,7 @@ void ActiveWorkers::addWorker( const WorkerKeyType& key, ::fwThread::Worker::spt
 
 void ActiveWorkers::initRegistry()
 {
-    this->addWorker( s_DEFAULT_WORKER, ::fwThread::Worker::New() );
+    this->addWorker( s_DEFAULT_WORKER, core::thread::Worker::New() );
 }
 
 //-----------------------------------------------------------------------------
@@ -110,4 +110,4 @@ void ActiveWorkers::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwThread
+} // namespace sight::core::thread

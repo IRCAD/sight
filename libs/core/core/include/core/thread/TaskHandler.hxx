@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,33 +20,36 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_UT_TASKHANDLERTEST_HPP__
-#define __FWTHREAD_UT_TASKHANDLERTEST_HPP__
+#pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
-
-namespace fwThread
+namespace sight::core::thread
 {
-namespace ut
+template <typename R>
+TaskHandler<R>::TaskHandler(std::packaged_task<R>& task) :
+    m_task(std::move(task))
 {
+}
 
-class TaskHandlerTest : public CPPUNIT_NS::TestFixture
+template <typename R>
+TaskHandler<R>::TaskHandler(const TaskHandler& that) :
+    m_task(std::move(that.m_task))
 {
-CPPUNIT_TEST_SUITE( TaskHandlerTest );
-CPPUNIT_TEST( basicTest );
-CPPUNIT_TEST( exceptionTest );
-CPPUNIT_TEST_SUITE_END();
+}
 
-public:
-    // interface
-    void setUp();
-    void tearDown();
+//------------------------------------------------------------------------------
 
-    void basicTest();
-    void exceptionTest();
+template <typename R>
+void TaskHandler<R>::operator ()() const
+{
+    this->m_task();
+}
 
-};
+//------------------------------------------------------------------------------
 
-} //namespace ut
-} //namespace fwThread
-#endif //__FWTHREAD_UT_TASKHANDLERTEST_HPP__
+template <typename R>
+inline std::function< void() > moveTaskIntoFunction(std::packaged_task<R>& task)
+{
+    return TaskHandler<R>(task);
+}
+
+} //namespace sight::core::thread

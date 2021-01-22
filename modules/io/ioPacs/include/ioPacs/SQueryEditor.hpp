@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "ioPacs/config.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -112,7 +112,7 @@ private:
     void updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series);
 
     /// Contains the worker of the series enquire thread.
-    ::fwThread::Worker::sptr m_requestWorker { nullptr };
+    core::thread::Worker::sptr m_requestWorker { nullptr };
 
     /// Defines if the service is executing query.
     std::atomic< bool > m_isQuerying { false };

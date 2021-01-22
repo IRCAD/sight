@@ -24,10 +24,9 @@
 #include "igtlMessageHeader.h"
 #include "igtlOSUtil.h"
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
 #include <core/util/FactoryRegistry.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <igtlNetwork/Server.hpp>
 
@@ -69,7 +68,7 @@ struct configuration
     std::string deviceOut;
     std::string deviceType;
     std::uint16_t port;
-    ::fwThread::Worker::sptr worker;
+    core::thread::Worker::sptr worker;
 
 };
 
@@ -132,9 +131,9 @@ std::map< std::string, configuration > initialize(std::string configFile)
     {
         //check if port num for this config isn't used
         std::map< std::string, configuration >::iterator it;
-        igtlNetwork::Server::sptr server = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-        bool serverAlreadyStarted = false;
+        igtlNetwork::Server::sptr server  = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
+        bool serverAlreadyStarted         = false;
 
         for(it = association.begin(); it != association.end(); ++it)
         {
@@ -195,7 +194,7 @@ int main (int argc, char** argv)
     std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
 
     ::igtlNetwork::Server::sptr receiveServer = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
-    ::fwThread::Worker::sptr worker           = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     try
     {
         receiveServer->start(port);

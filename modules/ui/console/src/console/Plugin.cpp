@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_worker);
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));

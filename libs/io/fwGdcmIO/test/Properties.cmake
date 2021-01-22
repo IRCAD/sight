@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwTest
     fwDataTools
     fwMemory
-    fwThread
     fwZip
     fwLog
     fwDataIO

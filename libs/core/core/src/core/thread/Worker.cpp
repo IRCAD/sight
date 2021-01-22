@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwThread/Worker.hpp"
+#include "core/thread/Worker.hpp"
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 //------------------------------------------------------------------------------
@@ -34,4 +34,4 @@ ThreadIdType getCurrentThreadId()
 
 //SPTR(Worker) Worker::defaultFactory() => WorkerAsio.cpp
 
-} //namespace fwThread
+} //namespace sight::core::thread

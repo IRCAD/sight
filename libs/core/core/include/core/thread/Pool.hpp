@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "fwThread/config.hpp"
-
+#include "core/config.hpp"
 #include <core/base.hpp>
 
 #include <condition_variable>
@@ -36,7 +35,7 @@
 #include <thread>
 #include <vector>
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 /**
@@ -45,17 +44,17 @@ namespace fwThread
  * The purpose of this class is to provide a set of threads that can be used to process tasks asynchronously.
  *
  */
-class FWTHREAD_CLASS_API Pool
+class CORE_CLASS_API Pool
 {
 public:
     typedef std::shared_ptr<Pool> sptr;
 
     /// this constructor launches as much as possible workers
-    FWTHREAD_API Pool();
+    CORE_API Pool();
     /// this constructor launches some amount of workers
-    FWTHREAD_API Pool(size_t);
+    CORE_API Pool(size_t);
     /// the destructor joins all threads
-    FWTHREAD_API ~Pool();
+    CORE_API ~Pool();
 
     /// add new work item to the pool
     template<class F, class ... Args>
@@ -107,8 +106,8 @@ auto Pool::post(F&& f, Args&& ... args)
 }
 
 /// Get the default pool
-FWTHREAD_API Pool& getDefaultPool();
+CORE_API Pool& getDefaultPool();
 
 //-----------------------------------------------------------------------------
 
-} //namespace fwThread
+} //namespace sight::core::thread

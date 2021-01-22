@@ -22,14 +22,13 @@
 
 #pragma once
 
-#include "fwThread/config.hpp"
-#include "fwThread/Worker.hpp"
-
+#include "core/config.hpp"
+#include "core/thread/Worker.hpp"
 #include <core/mt/types.hpp>
 
 #include <functional>
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 /**
@@ -39,7 +38,7 @@ namespace fwThread
  *
  * Timer's function must be set before starting the timer.
  */
-class FWTHREAD_CLASS_API Timer : public core::BaseObject
+class CORE_CLASS_API Timer : public core::BaseObject
 {
 public:
     /**
@@ -50,18 +49,18 @@ public:
     typedef std::chrono::duration<double>   TimeDurationType;
     /**  @} */
 
-    FWTHREAD_API ~Timer();
+    CORE_API ~Timer();
 
     /// Starts or restarts the timer.
-    FWTHREAD_API virtual void start() = 0;
+    CORE_API virtual void start() = 0;
 
     /// Stops the timer and cancel all pending operations.
-    FWTHREAD_API virtual void stop()
+    CORE_API virtual void stop()
     {
     }
 
     /// Sets time duration.
-    FWTHREAD_API virtual void setDuration(TimeDurationType duration) = 0;
+    CORE_API virtual void setDuration(TimeDurationType duration) = 0;
 
     /// Sets the function to be triggered when time duration expires.
     template< typename F >
@@ -87,7 +86,7 @@ protected:
      * @brief Constructs a Timer.
      * By default, a the Timer mode is repetitive.
      */
-    FWTHREAD_API Timer();
+    CORE_API Timer();
 
     /// Copy constructor forbidden.
     Timer( const Timer& );
@@ -96,7 +95,7 @@ protected:
     Timer& operator=( const Timer& );
 
     /// This method is triggered when Timer's function is changed.
-    FWTHREAD_API virtual void updatedFunction()
+    CORE_API virtual void updatedFunction()
     {
     }
 
@@ -106,4 +105,4 @@ protected:
     mutable core::mt::Mutex m_mutex;
 };
 
-} //namespace fwThread
+} //namespace sight::core::thread

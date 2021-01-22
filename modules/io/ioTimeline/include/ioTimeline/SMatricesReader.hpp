@@ -26,9 +26,9 @@
 
 #include <arData/MatrixTL.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
-#include <fwThread/Timer.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <array>
 
@@ -162,9 +162,9 @@ private:
 
     std::vector< TimeStampedMatrices > m_tsMatrices;///< vector of TimeStampedMatrices read from csv file.
 
-    ::fwThread::Timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
+    core::thread::Timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
 
-    ::fwThread::Worker::sptr m_worker; ///< Worker for the readMatrices timer
+    core::thread::Worker::sptr m_worker; ///< Worker for the readMatrices timer
 
     size_t m_tsMatricesCount; ///< counter used by matrices reader
 

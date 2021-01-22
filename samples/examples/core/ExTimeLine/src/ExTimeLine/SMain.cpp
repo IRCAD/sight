@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwData/Composite.hpp"
 
-#include <fwServices/macros.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
-#include <fwThread/Timer.hpp>
+#include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SMain, ::fwData::Composite )
 

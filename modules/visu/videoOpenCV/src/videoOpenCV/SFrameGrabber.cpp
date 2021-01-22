@@ -84,7 +84,7 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
 }
 
 // -----------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
         const auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
-        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / fps);
+        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -342,7 +342,7 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
         m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
         m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
-        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -383,7 +383,8 @@ void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
         m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
         m_videoCapture.set(::cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
 
-        const ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
+        const core::thread::Timer::TimeDurationType duration =
+            std::chrono::milliseconds(1000 / static_cast<size_t>(fps));
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -517,7 +518,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         {
             m_timer = m_worker->createTimer();
 
-            ::fwThread::Timer::TimeDurationType duration;
+            core::thread::Timer::TimeDurationType duration;
             if (!m_useTimelapse)
             {
                 duration = std::chrono::milliseconds(1000/m_fps);
@@ -741,15 +742,15 @@ void SFrameGrabber::grabImage()
                     m_timer->stop();
                     if (m_loopVideo)
                     {
-                        m_imageCount                                 = 0;
-                        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
+                        m_imageCount = 0;
+                        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
                         m_timer->setDuration(duration);
                         m_timer->start();
                     }
                 }
                 else
                 {
-                    ::fwThread::Timer::TimeDurationType duration =
+                    core::thread::Timer::TimeDurationType duration =
                         std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
                     m_timer->stop();
                     m_timer->setDuration(duration);

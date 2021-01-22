@@ -25,13 +25,12 @@
 #include <arData/Camera.hpp>
 
 #include <core/base.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/Object.hpp>
 

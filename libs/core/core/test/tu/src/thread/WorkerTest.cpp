@@ -22,9 +22,8 @@
 
 #include "WorkerTest.hpp"
 
-#include <fwThread/Timer.hpp>
-#include <fwThread/Worker.hpp>
-
+#include <core/include/core/thread/Timer.hpp>
+#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
 
 #include <fwTest/Exception.hpp>
@@ -34,7 +33,7 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwThread::ut::WorkerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::WorkerTest );
 
 namespace fwThread
 {
@@ -62,7 +61,7 @@ struct TestHandler
 {
     TestHandler()
     {
-        m_constructorThreadId = ::fwThread::getCurrentThreadId();
+        m_constructorThreadId = core::thread::getCurrentThreadId();
     }
 
     //------------------------------------------------------------------------------
@@ -78,23 +77,23 @@ struct TestHandler
     void nextStepNoSleep()
     {
         m_threadCheckOk = m_threadCheckOk.load()
-                          && (m_constructorThreadId != ::fwThread::getCurrentThreadId())
-                          && (m_workerThreadId == ::fwThread::getCurrentThreadId());
+                          && (m_constructorThreadId != core::thread::getCurrentThreadId())
+                          && (m_workerThreadId == core::thread::getCurrentThreadId());
 
         ++m_step;
     }
 
     //------------------------------------------------------------------------------
 
-    void setWorkerId(::fwThread::ThreadIdType id)
+    void setWorkerId(core::thread::ThreadIdType id)
     {
         m_workerThreadId = id;
     }
 
     std::atomic_int m_step {0};
     std::atomic_bool m_threadCheckOk {true};
-    ::fwThread::ThreadIdType m_constructorThreadId;
-    ::fwThread::ThreadIdType m_workerThreadId;
+    core::thread::ThreadIdType m_constructorThreadId;
+    core::thread::ThreadIdType m_workerThreadId;
 };
 
 //-----------------------------------------------------------------------------
@@ -102,7 +101,7 @@ struct TestHandler
 void WorkerTest::basicTest()
 {
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
 
         TestHandler handler;
         handler.setWorkerId(worker->getThreadId());
@@ -116,7 +115,7 @@ void WorkerTest::basicTest()
     }
 
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+        core::thread::Worker::sptr worker = core::thread::Worker::New();
 
         TestHandler handler;
         handler.setWorkerId(worker->getThreadId());
@@ -134,12 +133,12 @@ void WorkerTest::basicTest()
 
 void WorkerTest::timerTest()
 {
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     TestHandler handler;
     handler.setWorkerId(worker->getThreadId());
 
-    ::fwThread::Timer::sptr timer = worker->createTimer();
+    core::thread::Timer::sptr timer = worker->createTimer();
 
     std::chrono::milliseconds duration = std::chrono::milliseconds(100);
 
@@ -288,8 +287,8 @@ void WorkerTest::timerTest()
     // - Assert that m_checkMemory==12345 in TimerAsio::call() at the end of the if
     // - You may need to uncomment the tests above
     {
-        ::fwThread::Timer::sptr timer = worker->createTimer();
-        duration                      = std::chrono::milliseconds(10);
+        core::thread::Timer::sptr timer = worker->createTimer();
+        duration = std::chrono::milliseconds(10);
         timer->setFunction( [duration]()
                 {
                     std::this_thread::sleep_for( duration*90 );

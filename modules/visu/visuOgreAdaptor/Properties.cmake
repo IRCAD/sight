@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwRenderOgre
     fwRuntime
     fwServices
-    fwThread
     fwTools
     fwDataTools
     arData

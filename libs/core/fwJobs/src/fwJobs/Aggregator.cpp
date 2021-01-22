@@ -25,10 +25,9 @@
 #include "fwJobs/exception/Waiting.hpp"
 #include "fwJobs/Job.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+#include <core/include/core/thread/Worker.hxx>
 #include <core/spyLog.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
 
 #include <memory>
 

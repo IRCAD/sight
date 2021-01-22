@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ namespace util
  * @section Slots Slots
  *
  * Slots are wrappers for functions and class methods that can be attached to a
- * fwThread::Worker. The purpose of this class is to provide synchronous and
+ * core::thread::Worker. The purpose of this class is to provide synchronous and
  * asynchronous mecanisms for method and function calling.
  *
  * Slots have a common base class : SlotBase. This allows to store them in the
@@ -109,13 +109,13 @@ namespace util
  *
  * @subsection SlotAsyncCalls Asynchronous calls
  *
- * Slots are able to work with fwThread::Worker. If a Slot has a Worker, each
+ * Slots are able to work with core::thread::Worker. If a Slot has a Worker, each
  * asynchronous execution request will be done in it's worker, otherwise
  * asynchronous requests can not be satisfied without specifying a worker.
  *
  * Setting worker example :
  *
- *     ::fwThread::Worker::sptr w = ::fwThread::Worker::New();
+ *     core::thread::Worker::sptr w = core::thread::Worker::New();
  *     slotSum->setWorker(w);
  *     slotStart->setWorker(w);
  *

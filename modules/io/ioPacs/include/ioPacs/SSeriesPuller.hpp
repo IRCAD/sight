@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ private:
     void removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries);
 
     /// Defines the worker of the series enquire thread.
-    ::fwThread::Worker::sptr m_requestWorker;
+    core::thread::Worker::sptr m_requestWorker;
 
     /// Defines the DICOM reader implementation.
     std::string m_dicomReaderImplementation { "" };

@@ -81,7 +81,7 @@ public:
     FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType& key ) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    FWCOM_API void setWorker( const SPTR(::fwThread::Worker)& worker );
+    FWCOM_API void setWorker( const SPTR(core::thread::Worker)& worker );
 
     /// Returns all SlotKeyType registered in m_slots
     FWCOM_API SlotKeyContainerType getSlotKeys() const;

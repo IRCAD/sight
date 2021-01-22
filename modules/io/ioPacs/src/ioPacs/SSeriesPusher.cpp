@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -97,7 +97,7 @@ void SSeriesPusher::starting()
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
     // Worker
-    m_pushSeriesWorker = ::fwThread::Worker::New();
+    m_pushSeriesWorker = core::thread::Worker::New();
 
     // Get pacs configuration
     m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");

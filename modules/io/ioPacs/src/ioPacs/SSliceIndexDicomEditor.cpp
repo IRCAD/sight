@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ void SSliceIndexDicomEditor::configuring()
 void SSliceIndexDicomEditor::starting()
 {
     // Create the worker.
-    m_requestWorker = ::fwThread::Worker::New();
+    m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
     m_seriesDB = ::fwMedData::SeriesDB::New();

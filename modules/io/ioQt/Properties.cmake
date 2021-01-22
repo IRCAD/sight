@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwGuiQt
     fwRuntime
     fwServices
-    fwThread
     fwTools
     fwIO
 )

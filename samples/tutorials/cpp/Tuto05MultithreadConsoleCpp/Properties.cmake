@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwData
     fwRuntime
     fwServices
-    fwThread
 )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher

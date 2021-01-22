@@ -23,8 +23,7 @@
 #pragma once
 
 #include <core/base.hpp>
-
-#include <fwThread/Worker.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -65,7 +64,7 @@ public:
 
 protected:
 
-    SPTR(::fwThread::Worker) m_worker;
+    SPTR(core::thread::Worker) m_worker;
 };
 
 } //namespace ut

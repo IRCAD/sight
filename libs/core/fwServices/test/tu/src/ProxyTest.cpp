@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void ProxyTest::basicTest()
     ::fwCom::Slot< int (int, int) >::sptr slot = ::fwCom::newSlot( &ProxyTestClass::sum, &testObject );
     ::fwCom::Slot< int (int) >::sptr slot2     = ::fwCom::newSlot( &ProxyTestClass::square, &testObject );
     ::fwCom::Slot< void() >::sptr slot3        = ::fwCom::newSlot( &ProxyTestClass::doNothing, &testObject );
-    ::fwThread::Worker::sptr worker            = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     slot->setWorker(worker);
     slot2->setWorker(worker);
     slot3->setWorker(worker);

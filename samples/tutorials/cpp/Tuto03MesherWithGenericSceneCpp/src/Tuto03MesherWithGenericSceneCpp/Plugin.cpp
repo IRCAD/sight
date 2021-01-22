@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -433,7 +433,7 @@ void Plugin::initialize()
     *              connect the services
     ****************************************************************************************/
 
-    auto worker         = ::fwThread::Worker::New();
+    auto worker         = core::thread::Worker::New();
     auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
     workerRegistry->addWorker("Tuto09", worker);
 

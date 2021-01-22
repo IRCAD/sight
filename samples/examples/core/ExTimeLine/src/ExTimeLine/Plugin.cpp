@@ -50,7 +50,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
 
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::getDefault()
     ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
 

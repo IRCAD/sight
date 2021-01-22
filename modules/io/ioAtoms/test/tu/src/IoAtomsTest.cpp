@@ -59,7 +59,7 @@ static ::fwTest::Exception fwTestException(""); // force link with fwTest
 void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 

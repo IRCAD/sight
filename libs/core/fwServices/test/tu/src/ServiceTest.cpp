@@ -28,6 +28,7 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
 
 #include <fwCom/helper/SigSlotConnection.hpp>
@@ -42,8 +43,6 @@
 #include <fwRuntime/helper.hpp>
 
 #include <fwTest/helper/wait.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <thread>
 
@@ -311,7 +310,7 @@ void ServiceTest::testStartStopUpdateExceptions()
     // Test on a different worker
     {
         auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
-        auto worker  = ::fwThread::Worker::New();
+        auto worker  = core::thread::Worker::New();
         service->setWorker(worker);
         ServiceTest::startStopUpdateExceptions(service);
         worker->stop();
@@ -334,7 +333,7 @@ struct TestServiceSignals : public ::fwCom::HasSlots
         newSlot("update", &TestServiceSignals::update, this);
         newSlot("stop", &TestServiceSignals::stop, this);
 
-        m_worker = ::fwThread::Worker::New();
+        m_worker = core::thread::Worker::New();
         m_slots.setWorker(m_worker);
     }
 
@@ -359,7 +358,7 @@ struct TestServiceSignals : public ::fwCom::HasSlots
         m_stopped = true;
     }
 
-    ::fwThread::Worker::sptr m_worker;
+    core::thread::Worker::sptr m_worker;
     bool m_started;
     bool m_updated;
     bool m_stopped;

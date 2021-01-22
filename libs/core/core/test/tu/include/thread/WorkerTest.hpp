@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,32 @@
  *
  ***********************************************************************/
 
-#include "fwThread/Timer.hpp"
+#pragma once
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwThread
 {
-
-Timer::Timer()
+namespace ut
 {
-}
 
-Timer::~Timer()
+class WorkerTest : public CPPUNIT_NS::TestFixture
 {
-    this->stop();
-}
+CPPUNIT_TEST_SUITE( WorkerTest );
+CPPUNIT_TEST( basicTest );
+// Disable timerTest because it fails randomly on a busy computer (see #253)
+//CPPUNIT_TEST( timerTest );
+CPPUNIT_TEST_SUITE_END();
 
+public:
+    // interface
+    void setUp();
+    void tearDown();
+
+    void basicTest();
+    void timerTest();
+
+};
+
+} //namespace ut
 } //namespace fwThread
-

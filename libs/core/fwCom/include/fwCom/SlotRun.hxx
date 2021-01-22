@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,10 @@
 #include "fwCom/SlotBase.hxx"
 #include "fwCom/util/WeakCall.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/include/core/thread/TaskHandler.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
-#include <fwThread/TaskHandler.hpp>
-#include <fwThread/Worker.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include <future>
 
@@ -52,7 +52,7 @@ inline std::function< void() > SlotRun< void (A ...) >::bindRun( A ... args  ) c
 
 template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
-    const ::fwThread::Worker::sptr& worker, A ... args ) const
+    const core::thread::Worker::sptr& worker, A ... args ) const
 {
     if(!worker)
     {
@@ -92,16 +92,16 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
 
 //-----------------------------------------------------------------------------
 
-// Copied from fwThread::Worker because of issues with gcc 4.2 and template
+// Copied from core::thread::Worker because of issues with gcc 4.2 and template
 // keyword
 template< typename ... A >
 template< typename R, typename WEAKCALL >
-std::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr& worker, WEAKCALL f )
+std::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const core::thread::Worker::sptr& worker, WEAKCALL f )
 {
     std::packaged_task< R() > task( f );
     std::future< R > ufuture = task.get_future();
 
-    std::function< void() > ftask = ::fwThread::moveTaskIntoFunction(task);
+    std::function< void() > ftask = core::thread::moveTaskIntoFunction(task);
 
     worker->post(ftask);
 

@@ -57,7 +57,7 @@ struct WeakCall
     }
 
     WeakCall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
-              const std::shared_ptr< ::fwThread::Worker >& m) :
+              const std::shared_ptr< core::thread::Worker >& m) :
         m_weakPtr(ptr),
         m_func(f),
         m_worker( m )
@@ -84,7 +84,7 @@ struct WeakCall
 
         core::mt::ReadLock lock(ptr->m_workerMutex);
 
-        std::shared_ptr< ::fwThread::Worker > worker = m_worker.lock();
+        std::shared_ptr< core::thread::Worker > worker = m_worker.lock();
 
         if (worker && ptr->m_worker != worker)
         {
@@ -100,7 +100,7 @@ struct WeakCall
     protected:
         mutable std::weak_ptr< T const > m_weakPtr;
         std::function< R() > m_func;
-        mutable std::weak_ptr< ::fwThread::Worker > m_worker;
+        mutable std::weak_ptr< core::thread::Worker > m_worker;
 };
 
 /// Returns weak call from given object and function.
@@ -113,7 +113,7 @@ WeakCall<T, R> weakcall( const std::shared_ptr< T const >& ptr, std::function< R
 /// Returns weak call from given object, function and mutex.
 template <typename T, typename R >
 WeakCall<T, R> weakcall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
-                         const std::shared_ptr< ::fwThread::Worker >& m)
+                         const std::shared_ptr< core::thread::Worker >& m)
 {
     return WeakCall<T, R>(ptr, f, m);
 }

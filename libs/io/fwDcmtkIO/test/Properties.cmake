@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwTools
     core
     fwTest
-    fwThread
     fwData
     fwMedData
     fwMemory

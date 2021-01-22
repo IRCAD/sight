@@ -9,6 +9,5 @@ set( DEPENDENCIES
         fwGui
         arServices
         fwServices
-        fwThread
 )
 set( REQUIREMENTS )

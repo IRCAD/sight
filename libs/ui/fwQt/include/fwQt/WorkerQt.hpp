@@ -40,9 +40,9 @@ namespace fwQt
 {
 //-----------------------------------------------------------------------------
 
-FWQT_API SPTR(::fwThread::Worker) getQtWorker(int& argc, char** argv,
-                                              std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
-                                              const std::string& name, const std::string& version);
+FWQT_API SPTR(core::thread::Worker) getQtWorker(int& argc, char** argv,
+                                                std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
+                                                const std::string& name, const std::string& version);
 
 //-----------------------------------------------------------------------------
 

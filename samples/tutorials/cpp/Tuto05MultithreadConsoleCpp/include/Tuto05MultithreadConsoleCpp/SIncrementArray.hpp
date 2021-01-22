@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ private:
     void startTimer();
 
     /// Contains the timer.
-    SPTR(fwThread::Timer) m_timer;
+    SPTR(core::thread::Timer) m_timer;
 
     /// Defines the periode of the timer.
     unsigned int m_periodInMillisec;

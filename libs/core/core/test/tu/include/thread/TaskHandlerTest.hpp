@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2016 IRCAD France
- * Copyright (C) 2015-2016 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_UT_POOLTEST_HPP__
-#define __FWTHREAD_UT_POOLTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -30,11 +29,11 @@ namespace fwThread
 namespace ut
 {
 
-class PoolTest : public CPPUNIT_NS::TestFixture
+class TaskHandlerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PoolTest );
+CPPUNIT_TEST_SUITE( TaskHandlerTest );
 CPPUNIT_TEST( basicTest );
-CPPUNIT_TEST( defaultPoolTest );
+CPPUNIT_TEST( exceptionTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,10 +42,9 @@ public:
     void tearDown();
 
     void basicTest();
-    void defaultPoolTest();
+    void exceptionTest();
 
 };
 
 } //namespace ut
 } //namespace fwThread
-#endif //__FWTHREAD_UT_POOLTEST_HPP__

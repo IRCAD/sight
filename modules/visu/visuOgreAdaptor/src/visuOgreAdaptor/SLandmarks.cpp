@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -444,7 +444,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
             m_selectedLandmarks.push_back(selectedLandmark);
 
             // Run a thread that change the selected point.
-            ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
+            core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
             selectedLandmark->m_timer->setFunction(std::bind(&SLandmarks::hightlight, this, selectedLandmark));
             selectedLandmark->m_timer->setDuration(duration);
             selectedLandmark->m_timer->start();

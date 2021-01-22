@@ -24,12 +24,12 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
+#include <core/include/core/thread/Timer.hpp>
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwThread/Timer.hpp>
-#include <fwThread/Worker.hpp>
 
 #include <fwTools/Os.hpp>
 
@@ -47,7 +47,7 @@ namespace fwQt
 class WorkerQtTask : public QEvent
 {
 public:
-    WorkerQtTask( const ::fwThread::Worker::TaskType& handler ) :
+    WorkerQtTask( const core::thread::Worker::TaskType& handler ) :
         QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
@@ -63,15 +63,15 @@ public:
 
 protected:
 
-    ::fwThread::Worker::TaskType m_handler;
+    core::thread::Worker::TaskType m_handler;
 };
 
 const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
 
 /**
- * @brief Private implementation of fwThread::Worker using boost::asio.
+ * @brief Private implementation of core::thread::Worker using boost::asio.
  */
-class WorkerQt : public ::fwThread::Worker
+class WorkerQt : public core::thread::Worker
 {
 public:
     WorkerQt();
@@ -86,9 +86,9 @@ public:
 
     void setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version);
 
-    ::fwThread::Worker::FutureType getFuture();
+    core::thread::Worker::FutureType getFuture();
 
-    virtual ::fwThread::ThreadIdType getThreadId() const;
+    virtual core::thread::ThreadIdType getThreadId() const;
 
     virtual void processTasks();
 
@@ -101,7 +101,7 @@ protected:
 
     QSharedPointer< QCoreApplication > m_app;
 
-    SPTR(::fwThread::Timer) createTimer();
+    SPTR(core::thread::Timer) createTimer();
 
     /// Copy constructor forbidden
     WorkerQt( const WorkerQt& );
@@ -109,14 +109,14 @@ protected:
     /// Copy operator forbidden
     WorkerQt& operator=( const WorkerQt& );
 
-    ::fwThread::ThreadIdType m_threadId;
+    core::thread::ThreadIdType m_threadId;
 };
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr getQtWorker(int& argc, char** argv,
-                                     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
-                                     const std::string& name, const std::string& version)
+core::thread::Worker::sptr getQtWorker(int& argc, char** argv,
+                                       std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
+                                       const std::string& name, const std::string& version)
 {
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
     workerQt->init(argc, argv);
@@ -129,7 +129,7 @@ protected:
 /**
  * @brief Private Timer implementation using Qt.
  */
-class TimerQt : public ::fwThread::Timer
+class TimerQt : public core::thread::Timer
 {
 public:
     /**
@@ -195,7 +195,7 @@ protected:
 WorkerQt::WorkerQt() :
     m_argc(0),
     m_app(nullptr),
-    m_threadId( ::fwThread::getCurrentThreadId() )
+    m_threadId( core::thread::getCurrentThreadId() )
 {
 }
 
@@ -248,12 +248,12 @@ WorkerQt::~WorkerQt()
 
 //------------------------------------------------------------------------------
 
-::fwThread::Worker::FutureType WorkerQt::getFuture()
+core::thread::Worker::FutureType WorkerQt::getFuture()
 {
     if (!m_future.valid() )
     {
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
-                   !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
+                   !m_future.valid() && core::thread::getCurrentThreadId() == this->getThreadId() );
 
         std::packaged_task< ExitReturnType() > task( std::bind(&QCoreApplication::exec) );
 
@@ -269,7 +269,7 @@ WorkerQt::~WorkerQt()
 
 //------------------------------------------------------------------------------
 
-::fwThread::ThreadIdType WorkerQt::getThreadId() const
+core::thread::ThreadIdType WorkerQt::getThreadId() const
 {
     return m_threadId;
 }
@@ -282,7 +282,7 @@ void WorkerQt::stop()
 }
 //------------------------------------------------------------------------------
 
-SPTR(::fwThread::Timer) WorkerQt::createTimer()
+SPTR(core::thread::Timer) WorkerQt::createTimer()
 {
     return std::make_shared< TimerQt >();
 }

@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     core
-    fwThread
     fwCom
     fwGui
     fwGuiQt

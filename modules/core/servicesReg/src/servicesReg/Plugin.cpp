@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "servicesReg/Plugin.hpp"
 
+#include <core/include/core/thread/Pool.hpp>
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -29,8 +31,6 @@
 #include <fwServices/registry/AppConfigParameters.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-
-#include <fwThread/Pool.hpp>
 
 namespace servicesReg
 {

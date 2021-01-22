@@ -30,12 +30,11 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/Profiling.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <unordered_set>
 
@@ -205,7 +204,7 @@ void ObjectServiceTest::registerConnectionTest()
 
     auto service1 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
 
-    auto worker         = ::fwThread::Worker::New();
+    auto worker         = core::thread::Worker::New();
     auto slotRegister   = ::fwCom::newSlot( &ObjectServiceTest::registerService, this);
     auto slotUnregister = ::fwCom::newSlot( &ObjectServiceTest::unregisterService, this);
     slotRegister->setWorker(worker);

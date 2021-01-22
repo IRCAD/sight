@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,12 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
 
+#include <core/include/core/thread/ActiveWorkers.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-
-#include <fwThread/ActiveWorkers.hpp>
 
 namespace fwDataTools
 {
@@ -44,7 +44,7 @@ namespace helper
 TransferFunction::TransferFunction(const std::function<void()>& _function) :
     m_updateTFPoints(_function)
 {
-    auto defaultWorker = ::fwThread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
     m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
@@ -57,7 +57,7 @@ TransferFunction::TransferFunction(
     m_updateTFPoints(_functionPoints),
     m_updateTFWindowing(_functionWindow)
 {
-    auto defaultWorker = ::fwThread::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
     m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);

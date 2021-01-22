@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include "ActiveWorkersTest.hpp"
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ActiveWorkersTest );
@@ -60,8 +60,8 @@ void ActiveWorkersTest::basicTest()
 
     CPPUNIT_ASSERT( !activeWorkers->getWorker( "Wrong_id" ) );
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    activeWorkers->addWorker("another_worker",worker);
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
+    activeWorkers->addWorker("another_worker", worker);
     CPPUNIT_ASSERT( activeWorkers->getWorker( "another_worker" ) );
 
     activeWorkers->clearRegistry();

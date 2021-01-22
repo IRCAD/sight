@@ -57,7 +57,7 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_fps(30),
     m_imageCount(0)
 {
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
 }
 
 //------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         m_timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
+        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);

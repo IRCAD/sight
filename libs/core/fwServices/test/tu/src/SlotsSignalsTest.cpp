@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void SlotsSignalsTest::basicTest()
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
     activeWorkers->addWorker("test", worker);
 
     SBasicTest::sptr basicTestSrv = ::fwServices::factory::New<SBasicTest>();
@@ -107,9 +107,9 @@ void SlotsSignalsTest::comObjectServiceTest()
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
-    ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
-    ::fwThread::Worker::sptr worker2 = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker2 = core::thread::Worker::New();
     activeWorkers->addWorker("worker2", worker2);
 
     {
@@ -191,7 +191,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
-    ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
 
     SReader2Test::sptr readerTestSrv = ::fwServices::factory::New<SReader2Test>();
@@ -233,7 +233,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
-    ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
 
     SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();

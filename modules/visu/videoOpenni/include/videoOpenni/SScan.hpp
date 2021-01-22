@@ -28,7 +28,7 @@
 
 #include <arServices/IRGBDGrabber.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <OpenNI.h>
 
@@ -167,7 +167,7 @@ private:
     typedef ::fwCom::Slot<void ()> PresentFrameSlotType;
     PresentFrameSlotType::sptr m_slotPresentFrame; ///< Slot for the present frame method.
 
-    ::fwThread::Worker::sptr m_worker;  ///< Worker for the m_slotPresentFrame.
+    core::thread::Worker::sptr m_worker;  ///< Worker for the m_slotPresentFrame.
 
     mutable core::mt::ReadWriteMutex m_videoFrameMutex; ///< Mutex to protect concurrent access of m_videoFrame.
 

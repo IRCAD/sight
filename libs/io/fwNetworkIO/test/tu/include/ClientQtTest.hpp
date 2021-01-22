@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,14 @@
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <filesystem>
 #include <QCoreApplication>
 #include <QTcpServer>
+
+#include <filesystem>
 
 namespace fwNetworkIO
 {
@@ -60,7 +61,7 @@ public:
 
 private:
     // Application thread
-    ::fwThread::Worker::sptr m_worker;
+    core::thread::Worker::sptr m_worker;
     // HTTP client
     ::fwNetworkIO::http::ClientQt m_client;
     // Local server that will communicate with the client

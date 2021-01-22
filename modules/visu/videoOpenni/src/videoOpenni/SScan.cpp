@@ -57,7 +57,7 @@ SScan::SScan() noexcept :
     m_slotPresentFrame = ::fwCom::newSlot( &SScan::presentFrame, this );
 
     // Create a worker to fill the timelines
-    m_worker = ::fwThread::Worker::New();
+    m_worker = core::thread::Worker::New();
     m_slotPresentFrame->setWorker(m_worker);
 }
 

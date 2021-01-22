@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_TASKHANDLER_HPP__
-#define __FWTHREAD_TASKHANDLER_HPP__
+#pragma once
 
 #include <future>
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 /**
@@ -59,8 +58,6 @@ struct TaskHandler
 template <typename R>
 inline std::function< void() > moveTaskIntoFunction(std::packaged_task<R>& task);
 
-} //namespace fwThread
+} //namespace sight::core::thread
 
-#include <fwThread/TaskHandler.hxx>
-
-#endif //__FWTHREAD_TASKHANDLER_HPP__
+#include <core/thread/TaskHandler.hxx>

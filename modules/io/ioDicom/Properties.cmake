@@ -19,7 +19,6 @@ set( DEPENDENCIES
     fwDataTools
     fwMedData
     fwMedDataTools
-    fwThread
     )
 set( REQUIREMENTS
     fwData

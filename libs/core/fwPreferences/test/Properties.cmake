@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwData
     fwServices
     fwCom
-    fwThread
     fwPreferences
 )
 set( REQUIREMENTS

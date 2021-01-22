@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "ioQt/SPdfWriter.hpp"
 
+#include <core/include/core/thread/Pool.hpp>
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -35,9 +38,6 @@
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Pool.hpp>
-#include <fwThread/Worker.hpp>
 
 #include <QPainter>
 #include <QPixmap>
@@ -140,8 +140,8 @@ void SPdfWriter::updating()
         pdfWriter.setPageSize( QPagedPaintDevice::A4 );
 
         // Scale value to fit the images to a PDF page
-        const int scale = static_cast<const int>(pdfWriter.logicalDpiX() * 8);
-        ::fwThread::Pool& pool = ::fwThread::getDefaultPool();
+        const int scale          = static_cast<const int>(pdfWriter.logicalDpiX() * 8);
+        core::thread::Pool& pool = core::thread::getDefaultPool();
 
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;

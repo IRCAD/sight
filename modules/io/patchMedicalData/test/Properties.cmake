@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwServices
     fwRuntime
     fwMedData
-    fwThread
     fwMDSemanticPatch
 )
 set( REQUIREMENTS fwData servicesReg ioAtoms gui guiQt patchMedicalData )

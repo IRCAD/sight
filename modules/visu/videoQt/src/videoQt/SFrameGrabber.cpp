@@ -67,7 +67,7 @@ void SFrameGrabber::starting()
 
     // Create a worker for the frame copy, we don't want this on the main thread
     // since it takes around 4/9ms (release/debug) to copy a full HD frame
-    m_workerPresentFrame = ::fwThread::Worker::New();
+    m_workerPresentFrame = core::thread::Worker::New();
     m_slotPresentFrame->setWorker(m_workerPresentFrame);
 }
 

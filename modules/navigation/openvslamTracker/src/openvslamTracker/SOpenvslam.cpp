@@ -132,7 +132,7 @@ SOpenvslam::SOpenvslam() noexcept
 
     newSlot(s_PAUSE_TRACKER_SLOT, &SOpenvslam::pause, this);
 
-    m_pointcloudWorker = ::fwThread::Worker::New();
+    m_pointcloudWorker = core::thread::Worker::New();
 
     m_timer = m_pointcloudWorker->createTimer();
     m_timer->setFunction(std::bind(&SOpenvslam::updatePointCloud, this));

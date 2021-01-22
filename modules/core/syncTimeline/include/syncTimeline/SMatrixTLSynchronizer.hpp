@@ -28,12 +28,11 @@
 
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
+#include <core/include/core/thread/Timer.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <fwThread/Timer.hpp>
 
 namespace arData
 {

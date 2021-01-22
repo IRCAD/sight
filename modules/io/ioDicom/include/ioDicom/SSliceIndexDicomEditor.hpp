@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,12 +30,13 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <filesystem>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
+
+#include <filesystem>
 
 namespace fwData
 {
@@ -96,7 +97,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  ::fwGui::editor::IEditor );
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  ::fwGui::editor::IEditor )
 
     IODICOM_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
@@ -184,7 +185,7 @@ private:
     SPTR(::fwData::Integer) m_sagittalIndex;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(::fwThread::Timer) m_delayTimer2;
+    SPTR(core::thread::Timer) m_delayTimer2;
 
     /// Delay
     std::size_t m_delay;

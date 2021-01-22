@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,7 +141,7 @@ namespace fwServices
  *     - \b impl: service implementation
  *     - \b type (optional): service type (ex: ::fwGui::IFrameSrv)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working object
- *     - \b worker (optional): allows to run the service in another worker (see ::fwThread::Worker)
+ *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
  * - \b matrix (optional): it works only for ::fwData::TransformationMatrix3D objects. It defines the value of the
  *   matrix.
@@ -389,7 +389,7 @@ namespace fwServices
  *       generated.
  *     - \b type: service type (ex: ::ioVTK::SImageReader)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working objects
- *     - \b worker (optional): allows to run the service in another worker (see ::fwThread::Worker)
+ *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
  * @code{.xml}
     <service uid="mesher" type="::opMesh::SMesher">

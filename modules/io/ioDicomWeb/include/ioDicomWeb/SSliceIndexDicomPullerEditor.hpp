@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,9 +30,10 @@
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <filesystem>
 #include <QLineEdit>
 #include <QSlider>
+
+#include <filesystem>
 
 namespace fwData
 {
@@ -101,7 +102,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor );
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor )
 
     /**
      * @brief Constructor
@@ -184,7 +185,7 @@ private:
     ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(::fwThread::Timer) m_delayTimer;
+    SPTR(core::thread::Timer) m_delayTimer;
 
     /// Delay
     unsigned int m_delay;

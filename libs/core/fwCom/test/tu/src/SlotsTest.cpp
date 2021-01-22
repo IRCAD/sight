@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwTest/Exception.hpp>
+#include <core/include/core/thread/Worker.hpp>
 
-#include <fwThread/Worker.hpp>
+#include <fwTest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SlotsTest );
@@ -105,7 +105,7 @@ void SlotsTest::buildTest()
 
     CPPUNIT_ASSERT_EQUAL(14, slots["struct_sum"]->call<int>(5, 9));
 
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    core::thread::Worker::sptr worker = core::thread::Worker::New();
 
     slots.setWorker(worker);
 

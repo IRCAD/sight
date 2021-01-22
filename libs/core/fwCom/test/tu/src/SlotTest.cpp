@@ -30,9 +30,8 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
+#include <core/include/core/thread/Worker.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <functional>
 #include <future>
@@ -197,7 +196,7 @@ void SlotTest::asyncTest ()
     ::fwCom::Slot< void() >::sptr slot2         = ::fwCom::newSlot( &A::method0, &a );
     ::fwCom::Slot< float (float) >::sptr slot3  = ::fwCom::newSlot( &A::method1, &a );
 
-    fwThread::Worker::sptr w = fwThread::Worker::New();
+    core::thread::Worker::sptr w = core::thread::Worker::New();
 
     slot1->setWorker(w);
     slot2->setWorker(w);
@@ -271,7 +270,7 @@ void SlotTest::slotBaseTest ()
     a.m_method0   = false;
     a.m_method1   = false;
 
-    fwThread::Worker::sptr w = fwThread::Worker::New();
+    core::thread::Worker::sptr w = core::thread::Worker::New();
 
     slot1->setWorker(w);
     slot2->setWorker(w);
@@ -372,8 +371,8 @@ void SlotTest::workerSwapTest()
 
         B b;
 
-        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
-        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+        core::thread::Worker::sptr w1 = core::thread::Worker::New();
+        core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 
@@ -405,8 +404,8 @@ void SlotTest::workerSwapTest()
 
         B b;
 
-        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
-        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+        core::thread::Worker::sptr w1 = core::thread::Worker::New();
+        core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 
@@ -440,8 +439,8 @@ void SlotTest::workerSwapTest()
 
         B b;
 
-        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
-        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+        core::thread::Worker::sptr w1 = core::thread::Worker::New();
+        core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 

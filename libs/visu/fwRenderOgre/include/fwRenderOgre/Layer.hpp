@@ -30,11 +30,11 @@
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
+#include <core/include/core/thread/Worker.hpp>
+
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
@@ -198,7 +198,7 @@ public:
     FWRENDEROGRE_API void setOrder(int _order);
 
     /// Sets the worker used by slots.
-    FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
+    FWRENDEROGRE_API void setWorker( const core::thread::Worker::sptr& _worker);
 
     /// @returns the render service.
     FWRENDEROGRE_API SPTR(::fwRenderOgre::SRender) getRenderService() const;

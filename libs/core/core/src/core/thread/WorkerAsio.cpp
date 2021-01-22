@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#include "fwThread/Timer.hpp"
-#include "fwThread/Worker.hpp"
-
+#include "core/thread/Timer.hpp"
+#include "core/thread/Worker.hpp"
 #include <core/TimeStamp.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
 
-namespace fwThread
+namespace sight::core::thread
 {
 
 //------------------------------------------------------------------------------
@@ -40,9 +39,9 @@ std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
 }
 
 /**
- * @brief Private implementation of fwThread::Worker using boost::asio.
+ * @brief Private implementation of core::thread::Worker using boost::asio.
  */
-class WorkerAsio : public ::fwThread::Worker
+class WorkerAsio : public core::thread::Worker
 {
 public:
     typedef ::boost::asio::io_service IOServiceType;
@@ -60,7 +59,7 @@ public:
 
     ThreadIdType getThreadId() const;
 
-    SPTR(::fwThread::Timer) createTimer();
+    SPTR(core::thread::Timer) createTimer();
 
     virtual void processTasks();
 
@@ -92,7 +91,7 @@ protected:
 /**
  * @brief Private Timer implementation using boost::asio.
  */
-class TimerAsio : public ::fwThread::Timer
+class TimerAsio : public core::thread::Timer
 {
 public:
     /**
@@ -166,8 +165,8 @@ WorkerAsio::WorkerAsio() :
     m_ioService( std::make_shared<IOServiceType>() ),
     m_work( std::make_shared< WorkType >(*m_ioService) )
 {
-    std::packaged_task< ::fwThread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, m_ioService) );
-    std::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
+    std::packaged_task< core::thread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, m_ioService) );
+    std::future< core::thread::Worker::ExitReturnType > ufuture = task.get_future();
 
     m_thread = std::make_shared< ThreadType >( std::move( task ) );
 
@@ -193,7 +192,7 @@ void WorkerAsio::stop()
 
     SLM_ASSERT("Thread is not joinable", m_thread->joinable());
     SLM_ASSERT("Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
-               m_thread->get_id() != ::fwThread::getCurrentThreadId());
+               m_thread->get_id() != core::thread::getCurrentThreadId());
 
     m_work.reset();
     m_thread->join();
@@ -201,7 +200,7 @@ void WorkerAsio::stop()
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwThread::Timer) WorkerAsio::createTimer()
+SPTR(core::thread::Timer) WorkerAsio::createTimer()
 {
     return std::make_shared< TimerAsio >(*m_ioService);
 }
@@ -340,4 +339,4 @@ void TimerAsio::cancelNoLock()
     m_timer.cancel();
 }
 
-} //namespace fwThread
+} //namespace sight::core::thread
