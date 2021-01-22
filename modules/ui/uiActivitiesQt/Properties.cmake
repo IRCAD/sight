@@ -3,7 +3,7 @@ set( NAME uiActivitiesQt )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCore
+    core
     fwActivities
     fwCom
     fwData

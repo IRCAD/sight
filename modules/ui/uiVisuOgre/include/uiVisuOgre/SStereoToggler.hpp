@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SStereoToggler, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SStereoToggler, ::fwGui::IActionSrv)
 
     /// Constructor.
     UIVISUOGRE_API SStereoToggler();
@@ -81,14 +81,14 @@ protected:
 
 private:
 
-    using StereoModeType      = ::fwRenderOgre::compositor::Core::StereoModeType;
+    using StereoModeType      = ::fwRenderOgre::compositorcore::StereoModeType;
     using StereoActiveSigType = ::fwCom::Signal< void(bool) >;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    ::fwRenderOgre::compositor::Core::StereoModeType m_stereoMode { StereoModeType::NONE };
+    ::fwRenderOgre::compositorcore::StereoModeType m_stereoMode { StereoModeType::NONE };
 
     /// Sent at each update, notifies if stereo is enabled.
     StereoActiveSigType::sptr m_stereoActiveSig;

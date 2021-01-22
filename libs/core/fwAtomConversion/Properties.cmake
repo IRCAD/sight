@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwAtoms
     fwCamp
-    fwCore
+    core
     fwData
     fwMedData    
     fwMemory

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,7 +112,7 @@ void SPointListRegistration::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType)
+void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
 {
     ::fwData::PointList::sptr registeredPL        = this->getInOut< ::fwData::PointList >("registeredPL");
     ::fwData::PointList::sptr referencePL         = this->getInOut< ::fwData::PointList >("referencePL");
@@ -256,7 +256,7 @@ void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResCloc
 
 void SPointListRegistration::updating()
 {
-    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     this->computeRegistration(timestamp);
 }
 

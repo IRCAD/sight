@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwTools/config.hpp"
 
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/base.hpp>
+#include <core/mt/types.hpp>
 
 #include <cstdint>
 #include <string>
@@ -42,7 +42,7 @@ class FWTOOLS_CLASS_API fwID
 {
 public:
 
-    fwCoreClassMacro(fwID);
+    fwCoreClassMacro(fwID)
 
     typedef std::string IDType;
 
@@ -144,13 +144,13 @@ private:
     static CategorizedCounter m_CategorizedCounter;
 
     /// Mutex used to lock dictionary access
-    static ::fwCore::mt::ReadWriteMutex s_dictionaryMutex;
+    static core::mt::ReadWriteMutex s_dictionaryMutex;
 
     /// Mutex used by generate() to lock m_CategorizedCounter changes.
-    static ::fwCore::mt::Mutex s_mutexCounter;
+    static core::mt::Mutex s_mutexCounter;
 
     /// Mutex used to lock m_id access
-    mutable ::fwCore::mt::ReadWriteMutex m_idMutex;
+    mutable core::mt::ReadWriteMutex m_idMutex;
 };
 
 }

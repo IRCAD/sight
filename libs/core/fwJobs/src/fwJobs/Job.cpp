@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ IJob::SharedFuture Job::runImpl()
                            BOOST_SCOPE_EXIT_ALL( = )
                            {
                                fCallback();
-                               ::fwCore::mt::WriteLock lock(m_mutex);
+                               core::mt::WriteLock lock(m_mutex);
                                m_task = nullptr;
                            };
 
@@ -97,7 +97,7 @@ IJob::SharedFuture Job::runImpl()
 IJob::SharedFuture Job::cancel()
 {
     auto future = this->IJob::cancel();
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     if (m_task)
     {
         m_task = nullptr;

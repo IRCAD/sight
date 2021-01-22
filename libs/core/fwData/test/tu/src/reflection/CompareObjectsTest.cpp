@@ -29,7 +29,7 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
@@ -176,7 +176,7 @@ void CompareObjectsTest::exceptionTest()
     ::fwData::Composite::sptr comp = ::fwData::Composite::New();
 
     visitor::CompareObjects visitor;
-    CPPUNIT_ASSERT_THROW(visitor.compare(img, comp), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(visitor.compare(img, comp), core::Exception);
 
     CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (size_t)0);
     CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (size_t)0);

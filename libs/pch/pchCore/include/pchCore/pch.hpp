@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <fwCore/base.hpp>
-#include <fwCore/Demangler.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
+#include <core/base.hpp>
+#include <core/Demangler.hpp>
+#include <core/util/FactoryRegistry.hpp>
 
 #include <boost/graph/named_graph.hpp>
 #include <boost/lexical_cast.hpp>
@@ -41,10 +41,9 @@
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits.hpp>
 
-#include <filesystem>
-
 #include <cstdint>
 #include <exception>
+#include <filesystem>
 #include <functional>
 #include <future>
 #include <map>

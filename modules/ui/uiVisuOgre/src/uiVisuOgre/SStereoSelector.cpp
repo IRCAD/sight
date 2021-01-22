@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,9 +123,9 @@ void SStereoSelector::onSelectedLayerItem(int index)
 
 void SStereoSelector::onSelectedModeItem(int index)
 {
-    m_currentLayer.lock()->setStereoMode(index == 1 ? ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5 :
-                                         index == 2 ? ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8 :
-                                         ::fwRenderOgre::compositor::Core::StereoModeType::NONE);
+    m_currentLayer.lock()->setStereoMode(index == 1 ? ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_5 :
+                                         index == 2 ? ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_8 :
+                                         ::fwRenderOgre::compositorcore::StereoModeType::NONE);
 }
 
 //------------------------------------------------------------------------------

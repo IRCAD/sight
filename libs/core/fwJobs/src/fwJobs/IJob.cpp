@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ IJob::~IJob()
 
 const bool& IJob::cancelRequested() const
 {
-    // ::fwCore::mt::ReadLock lock(m_mutex);
+    // core::mt::ReadLock lock(m_mutex);
     return m_cancelRequested;
 }
 
@@ -77,7 +77,7 @@ IJob::CancelRequestCallback IJob::cancelRequestedCallback() const
 {
     return [this]() -> bool
            {
-               ::fwCore::mt::ReadLock lock(m_mutex);
+               core::mt::ReadLock lock(m_mutex);
                return m_cancelRequested;
            };
 }
@@ -86,7 +86,7 @@ IJob::CancelRequestCallback IJob::cancelRequestedCallback() const
 
 std::uint64_t IJob::getDoneWorkUnits() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_doneWorkUnits;
 }
 
@@ -94,7 +94,7 @@ std::uint64_t IJob::getDoneWorkUnits() const
 
 std::uint64_t IJob::getTotalWorkUnits() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_totalWorkUnits;
 }
 
@@ -102,13 +102,13 @@ std::uint64_t IJob::getTotalWorkUnits() const
 
 IJob::SharedFuture IJob::cancel()
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+    core::mt::ReadToWriteLock lock(m_mutex);
     if( m_cancelable && (m_state == WAITING || m_state == RUNNING) )
     {
         State nextState = (m_state == WAITING) ? CANCELED : CANCELING;
 
         {
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             m_cancelRequested = true;
             this->setStateNoLock(CANCELING);
         }
@@ -123,7 +123,7 @@ IJob::SharedFuture IJob::cancel()
         }
         lock.lock();
 
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
 
         SLM_ASSERT("State shall be only CANCELING or CANCELED, not " << m_state,
                    m_state == CANCELED || m_state == CANCELING);
@@ -149,7 +149,7 @@ IJob::SharedFuture IJob::cancel()
 
 void IJob::addCancelHook(JobCancelHook callback)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->addCancelHookNoLock(callback);
 }
 
@@ -167,7 +167,7 @@ void IJob::addSimpleCancelHook(CancelHook callback)
 
 void IJob::addDoneWorkHook(DoneWorkHook callback)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->addDoneWorkHookNoLock(callback);
 }
 
@@ -175,7 +175,7 @@ void IJob::addDoneWorkHook(DoneWorkHook callback)
 
 void IJob::addTotalWorkUnitsHook(TotalWorkUnitsHook callback)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->addTotalWorkUnitsHookNoLock(callback);
 }
 
@@ -183,7 +183,7 @@ void IJob::addTotalWorkUnitsHook(TotalWorkUnitsHook callback)
 
 void IJob::addLogHook(LogHook callback)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->addLogHookNoLock(callback);
 }
 
@@ -191,7 +191,7 @@ void IJob::addLogHook(LogHook callback)
 
 void IJob::addStateHook(StateHook callback)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->addStateHookNoLock(callback);
 }
 
@@ -199,7 +199,7 @@ void IJob::addStateHook(StateHook callback)
 
 IJob::State IJob::getState() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_state;
 }
 
@@ -214,12 +214,12 @@ const std::string& IJob::getName() const
 
 IJob::SharedFuture IJob::run()
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+    core::mt::ReadToWriteLock lock(m_mutex);
 
     if( m_state == WAITING )
     {
         {
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             this->setStateNoLock(RUNNING);
         }
 
@@ -227,7 +227,7 @@ IJob::SharedFuture IJob::run()
         auto future = this->runImpl();
         lock.lock();
 
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         m_runFuture = future;
     }
 
@@ -238,7 +238,7 @@ IJob::SharedFuture IJob::run()
 
 void IJob::setState(IJob::State state)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->setStateNoLock(state);
 }
 
@@ -278,7 +278,7 @@ void IJob::setStateNoLock(IJob::State state)
 
 void IJob::finish()
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->finishNoLock();
 }
 
@@ -303,7 +303,7 @@ void IJob::wait()
     decltype(m_runFuture)runFuture;
 
     {
-        ::fwCore::mt::ReadLock lock(m_mutex);
+        core::mt::ReadLock lock(m_mutex);
         runFuture = m_runFuture;
     }
 
@@ -328,7 +328,7 @@ void IJob::wait()
 
 void IJob::log(const std::string& message)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     this->logNoLock(message);
 }
 
@@ -402,13 +402,13 @@ void IJob::addStateHookNoLock(StateHook callback)
 
 void IJob::doneWork( std::uint64_t units )
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+    core::mt::ReadToWriteLock lock(m_mutex);
     this->doneWork( units, lock );
 }
 
 //------------------------------------------------------------------------------
 
-void IJob::doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
+void IJob::doneWork( std::uint64_t units, core::mt::ReadToWriteLock& lock )
 {
     auto oldDoneWork = m_doneWorkUnits;
     decltype(m_doneWorkHooks)doneWorkHooks;
@@ -421,7 +421,7 @@ void IJob::doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
     doneWorkHooks = m_doneWorkHooks;
 
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         m_doneWorkUnits = units;
     }
 
@@ -440,13 +440,13 @@ void IJob::doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
 
 void IJob::setTotalWorkUnits(std::uint64_t units)
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+    core::mt::ReadToWriteLock lock(m_mutex);
     this->setTotalWorkUnitsUpgradeLock( units, lock );
 }
 
 //------------------------------------------------------------------------------
 
-void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
+void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, core::mt::ReadToWriteLock& lock )
 {
     auto oldTotalWorkUnits = m_totalWorkUnits;
     decltype(m_totalWorkUnitsHooks)totalWorkUnitsHook;
@@ -459,7 +459,7 @@ void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::Read
     }
 
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         m_totalWorkUnits = units;
     }
 
@@ -475,7 +475,7 @@ void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::Read
 
 IJob::Logs IJob::getLogs() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_logs;
 }
 
@@ -483,7 +483,7 @@ IJob::Logs IJob::getLogs() const
 
 void IJob::setCancelable(bool cancel)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     m_cancelable = cancel;
 }
 
@@ -491,7 +491,7 @@ void IJob::setCancelable(bool cancel)
 
 bool IJob::isCancelable() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_cancelable;
 }
 

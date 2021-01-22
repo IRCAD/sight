@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ class TRACKINGCALIBRATION_CLASS_API SToolCalibration : public ::fwServices::IReg
 {
 
 public:
-    fwCoreServiceMacro(SToolCalibration, ::fwServices::IRegisterer);
+    fwCoreServiceMacro(SToolCalibration, ::fwServices::IRegisterer)
 
     /**
      * @brief Constructor.
@@ -80,7 +80,7 @@ protected:
     TRACKINGCALIBRATION_API void stopping() override;
 
     /// Registers matrix slot
-    TRACKINGCALIBRATION_API virtual void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
+    TRACKINGCALIBRATION_API virtual void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
 private:
 

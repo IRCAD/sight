@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ void ISemanticPatch::addContext(const std::string& context,
                                 const std::string& originVersion,
                                 const std::string& targetVersion)
 {
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     m_contexts.push_back(Context(context, originVersion, targetVersion));
 }
 
@@ -67,7 +67,7 @@ bool ISemanticPatch::isApplicable(const std::string& context,
                                   const std::string& targetVersion) const
 {
     Context c(context, originVersion, targetVersion);
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     ContextVectorType::const_iterator it = std::find(m_contexts.begin(), m_contexts.end(), c);
     return it != m_contexts.end();
 }

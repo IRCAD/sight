@@ -3,7 +3,7 @@ set( NAME depthMapOpTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     depthMapOp
     fwTest
 )

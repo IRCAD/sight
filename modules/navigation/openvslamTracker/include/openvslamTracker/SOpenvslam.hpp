@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,11 @@
 
 #include <arServices/ITracker.hpp>
 
+#include <core/HiResTimer.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/HiResTimer.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -228,7 +228,7 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void virtual tracking(::fwCore::HiResClock::HiResClockType&) override final;
+    void virtual tracking(core::HiResClock::HiResClockType&) override final;
     /** @} */
 
     /**

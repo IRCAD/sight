@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
 #include "fwAtoms/registry/detail.hpp"
 
+#include <core/util/LazyInstantiator.hpp>
 
 namespace fwAtoms
 {
@@ -35,12 +34,10 @@ struct FwAtomsRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef ::fwCore::util::LazyInstantiator< Type, FwAtomsRegistryInstantiatorTag > InstantiatorType;
+    typedef core::util::LazyInstantiator< Type, FwAtomsRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
 
 } // namespace fwAtoms
-
-

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "ioData/TransformationMatrix3DReaderService.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>

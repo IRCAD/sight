@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "memory/SDumpPolicy.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/IPolicy.hpp>
@@ -98,7 +98,7 @@ void SDumpPolicy::starting()
                               !success);
                 SLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
             }
-            ::fwCore::mt::WriteLock lock( manager->getMutex() );
+            core::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
             SLM_INFO("Set dump policy to : " << m_policy);
         }

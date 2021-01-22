@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@ ObjectWriteLock::ObjectWriteLock(::fwData::Object::sptr obj, bool adopt_lock)
 {
     if (adopt_lock)
     {
-        m_lock = ::fwCore::mt::WriteLock(obj->getMutex());
+        m_lock = core::mt::WriteLock(obj->getMutex());
     }
     else
     {
-        m_lock = ::fwCore::mt::WriteLock(obj->getMutex(), ::boost::defer_lock_t());
+        m_lock = core::mt::WriteLock(obj->getMutex(), ::boost::defer_lock_t());
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "LineFunctionsTest.hpp"
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwMath/LineFunctions.hpp>
 #include <fwMath/VectorFunctions.hpp>
@@ -39,6 +39,8 @@ namespace fwMath
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void LineFunctionsTest::setUp()
 {

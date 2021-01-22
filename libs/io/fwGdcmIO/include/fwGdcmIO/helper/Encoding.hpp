@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwCore/Exception.hpp>
-#include <fwCore/macros.hpp>
+#include <core/Exception.hpp>
+#include <core/macros.hpp>
 
 #include <boost/locale/encoding_errors.hpp>
 
@@ -55,7 +55,7 @@ public:
      * @param[in] source Source buffer
      * @param[in] definedCharsetTerm DICOM source charset
      * @param[in] logger Logger used for conversion errors
-     * @throw ::fwCore::Exception
+     * @throw core::Exception
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
@@ -80,7 +80,7 @@ private:
      * @param[in] sequence Sequence buffer
      * @param[in] definedTermList DICOM charset list
      * @param[in] logger Logger used for conversion errors
-     * @throw ::fwCore::Exception
+     * @throw core::Exception
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */

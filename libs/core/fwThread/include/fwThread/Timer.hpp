@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTHREAD_TIMER_HPP__
-#define __FWTHREAD_TIMER_HPP__
+#pragma once
 
 #include "fwThread/config.hpp"
 #include "fwThread/Worker.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <functional>
 
@@ -40,7 +39,7 @@ namespace fwThread
  *
  * Timer's function must be set before starting the timer.
  */
-class FWTHREAD_CLASS_API Timer : public ::fwCore::BaseObject
+class FWTHREAD_CLASS_API Timer : public core::BaseObject
 {
 public:
     /**
@@ -68,7 +67,7 @@ public:
     template< typename F >
     void setFunction(F f)
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         m_function = f;
         updatedFunction();
     }
@@ -104,10 +103,7 @@ protected:
     /// Function object to execute each time the timer expires.
     FunctionType m_function;
 
-    mutable ::fwCore::mt::Mutex m_mutex;
+    mutable core::mt::Mutex m_mutex;
 };
 
 } //namespace fwThread
-
-#endif //__FWTHREAD_TIMER_HPP__
-

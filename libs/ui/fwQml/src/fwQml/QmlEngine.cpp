@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwQml/QmlEngine.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <fwRuntime/Runtime.hpp>
 
@@ -68,7 +68,7 @@ QmlEngine::~QmlEngine()
 
 SPTR(QmlEngine) QmlEngine::getDefault()
 {
-    auto engineInstance = ::fwCore::util::LazyInstantiator< QmlEngine >::getInstance();
+    auto engineInstance = core::util::LazyInstantiator< QmlEngine >::getInstance();
     return engineInstance;
 }
 

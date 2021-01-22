@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
-    ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock readLock(other->m_tlMutex);
 
     for(TimelineType::value_type elt :  other->m_timeline)
     {
@@ -75,7 +75,7 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
 //------------------------------------------------------------------------------
 
-CSPTR(::arData::timeline::RawBuffer) RawBufferTL::getClosestBuffer( ::fwCore::HiResClock::HiResClockType timestamp,
+CSPTR(::arData::timeline::RawBuffer) RawBufferTL::getClosestBuffer( core::HiResClock::HiResClockType timestamp,
                                                                     DirectionType direction) const
 {
     CSPTR(::arData::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
@@ -84,7 +84,7 @@ CSPTR(::arData::timeline::RawBuffer) RawBufferTL::getClosestBuffer( ::fwCore::Hi
 
 //------------------------------------------------------------------------------
 
-CSPTR(::arData::timeline::RawBuffer) RawBufferTL::getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const
+CSPTR(::arData::timeline::RawBuffer) RawBufferTL::getBuffer(core::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(::arData::timeline::Object) buffer = this->getObject(timestamp);
     return std::dynamic_pointer_cast< const ::arData::timeline::RawBuffer >(buffer);
@@ -99,14 +99,14 @@ void RawBufferTL::initPoolSize(std::size_t size)
 
 //------------------------------------------------------------------------------
 
-SPTR(::arData::timeline::Object) RawBufferTL::createObject(::fwCore::HiResClock::HiResClockType timestamp)
+SPTR(::arData::timeline::Object) RawBufferTL::createObject(core::HiResClock::HiResClockType timestamp)
 {
     return this->createBuffer(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(::arData::timeline::RawBuffer) RawBufferTL::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
+SPTR(::arData::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiResClockType timestamp)
 {
     return std::make_shared< ::arData::timeline::RawBuffer >(
         timestamp,

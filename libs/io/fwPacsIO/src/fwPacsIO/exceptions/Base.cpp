@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,8 @@ namespace fwPacsIO
 namespace exceptions
 {
 
-Base::Base(const std::string& message) : ::fwCore::Exception(message)
+Base::Base(const std::string& message) :
+    core::Exception(message)
 {
 }
 

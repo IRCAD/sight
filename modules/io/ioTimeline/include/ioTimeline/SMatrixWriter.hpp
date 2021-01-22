@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,8 @@ namespace ioTimeline
  * @section Slots Slots
  * - \b startRecord() : start recording
  * - \b stopRecord() : stop recording
- * - \b write(::fwCore::HiResClock::HiResClockType) : write matrix in a csv file
- * - \b saveMatrix(::fwCore::HiResClock::HiResClockType) : save current matrices
+ * - \b write(core::HiResClock::HiResClockType) : write matrix in a csv file
+ * - \b saveMatrix(core::HiResClock::HiResClockType) : save current matrices
  *
  * @section XML XML Configuration
  *
@@ -106,10 +106,10 @@ protected:
 private:
 
     /// SLOT: Save current matrices.
-    void saveMatrix(::fwCore::HiResClock::HiResClockType timestamp);
+    void saveMatrix(core::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Write matrices in csv file
-    void write(::fwCore::HiResClock::HiResClockType timestamp);
+    void write(core::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Start recording
     void startRecord();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "uiTools/editor/SShowVectorSize.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -37,9 +37,10 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QHBoxLayout>
 #include <QString>
+
+#include <filesystem>
 
 namespace uiTools
 {
@@ -50,7 +51,7 @@ namespace editor
 const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
 const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector )
 
 //-----------------------------------------------------------------------------
 

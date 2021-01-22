@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "fwThread/Timer.hpp"
 #include "fwThread/Worker.hpp"
 
-#include <fwCore/TimeStamp.hpp>
+#include <core/TimeStamp.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
@@ -114,21 +114,21 @@ public:
     /// Returns if the timer mode is 'one shot'.
     bool isOneShot() const
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         return m_oneShot;
     }
 
     /// Sets timer mode.
     void setOneShot(bool oneShot)
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         m_oneShot = oneShot;
     }
 
     /// Returns true if the timer is currently running.
     bool isRunning() const
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         return m_running;
     }
 
@@ -231,7 +231,7 @@ void WorkerAsio::processTasks()
 
 void WorkerAsio::processTasks(PeriodType maxtime)
 {
-    ::fwCore::TimeStamp timeStamp;
+    core::TimeStamp timeStamp;
     timeStamp.setLifePeriod(maxtime);
     timeStamp.modified();
     while(timeStamp.periodExpired())
@@ -264,7 +264,7 @@ TimerAsio::~TimerAsio()
 
 void TimerAsio::setDuration(TimeDurationType duration)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_duration = duration;
 }
 
@@ -272,7 +272,7 @@ void TimerAsio::setDuration(TimeDurationType duration)
 
 void TimerAsio::start()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     this->rearmNoLock(m_duration);
     m_running = true;
 }
@@ -281,7 +281,7 @@ void TimerAsio::start()
 
 void TimerAsio::stop()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     if (m_running )
     {
         m_running = false;
@@ -313,7 +313,7 @@ void TimerAsio::call(const std::error_code& error)
         TimeDurationType duration;
         bool oneShot;
         {
-            ::fwCore::mt::ScopedLock lock(m_mutex);
+            core::mt::ScopedLock lock(m_mutex);
             oneShot  = m_oneShot;
             duration = m_duration;
         }
@@ -326,7 +326,7 @@ void TimerAsio::call(const std::error_code& error)
         else
         {
             m_function();
-            ::fwCore::mt::ScopedLock lock(m_mutex);
+            core::mt::ScopedLock lock(m_mutex);
             m_running = false;
         }
     }

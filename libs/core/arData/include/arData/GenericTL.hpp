@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ class GenericTL : public BufferTL
 {
 
 public:
-    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, ::fwData::Object);
+    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, ::fwData::Object)
 
     typedef ::arData::timeline::GenericObject< BUFFER_TYPE > BufferType;
     /**
@@ -57,11 +57,11 @@ public:
      * @param timestamp timestamp used to find the closest buffer
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
-    CSPTR(BufferType) getClosestBuffer( ::fwCore::HiResClock::HiResClockType timestamp,
+    CSPTR(BufferType) getClosestBuffer( core::HiResClock::HiResClockType timestamp,
                                         DirectionType direction = BOTH) const;
 
     /// Returns the buffer matching the specified timestamp, returns NULL if object is not found
-    CSPTR(BufferType) getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const;
+    CSPTR(BufferType) getBuffer(core::HiResClock::HiResClockType timestamp) const;
 
     /// Initializes the size of the pool buffer.
     virtual void initPoolSize(unsigned int maxElementNum);
@@ -71,14 +71,14 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(::arData::timeline::Object) createObject(::fwCore::HiResClock::HiResClockType timestamp) override;
+    SPTR(::arData::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp) override;
 
     /**
      * @brief Returns a new BufferType with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(BufferType) createBuffer(::fwCore::HiResClock::HiResClockType timestamp);
+    SPTR(BufferType) createBuffer(core::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
     virtual bool isObjectValid(const CSPTR(::arData::timeline::Object)& obj) const override;

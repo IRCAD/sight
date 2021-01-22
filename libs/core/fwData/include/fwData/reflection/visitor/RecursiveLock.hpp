@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwData/config.hpp"
 
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+#include <core/macros.hpp>
+#include <core/mt/types.hpp>
 
-#include <fwCore/macros.hpp>
-#include <fwCore/mt/types.hpp>
+#include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include <vector>
 
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Container definition dedicated to object locks storage.
      */
-    typedef std::vector< SPTR(::fwCore::mt::ReadLock) > LockVectType;
+    typedef std::vector< SPTR(core::mt::ReadLock) > LockVectType;
 
     /**
      * @brief Constructor.

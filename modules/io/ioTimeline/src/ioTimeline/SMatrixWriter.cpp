@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,13 +137,13 @@ void SMatrixWriter::stopping()
 void SMatrixWriter::updating()
 {
 
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     this->saveMatrix(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType _timestamp)
+void SMatrixWriter::saveMatrix(core::HiResClock::HiResClockType _timestamp)
 {
     this->startRecord();
     this->write(_timestamp);
@@ -152,7 +152,7 @@ void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType _timestamp)
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
+void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {

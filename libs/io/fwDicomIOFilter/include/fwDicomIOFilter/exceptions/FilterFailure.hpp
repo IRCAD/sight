@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_EXCEPTIONS_FILTERFAILURE_HPP__
-#define __FWDICOMIOFILTER_EXCEPTIONS_FILTERFAILURE_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -35,7 +34,7 @@ namespace exceptions
 /**
  * @brief FilterFailure Exceptions
  */
-class FWDICOMIOFILTER_CLASS_API FilterFailure : public fwCore::Exception
+class FWDICOMIOFILTER_CLASS_API FilterFailure : public core::Exception
 {
 public:
     /**
@@ -51,6 +50,3 @@ public:
 
 } // namespace exceptions
 } // namespace fwDicomIOFilter
-
-
-#endif /* __FWDICOMIOFILTER_EXCEPTIONS_FILTERFAILURE_HPP__ */

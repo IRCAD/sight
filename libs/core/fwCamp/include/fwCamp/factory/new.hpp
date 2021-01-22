@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,25 +20,23 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_FACTORY_NEW_HPP__
-#define __FWCAMP_FACTORY_NEW_HPP__
-
-#include <string>
-
-
-#include <fwCore/macros.hpp>
+#pragma once
 
 #include "fwCamp/config.hpp"
 #include "fwCamp/registry/detail.hpp"
+
+#include <core/macros.hpp>
+
+#include <string>
 
 namespace fwCamp
 {
 namespace factory
 {
 
-FWCAMP_API SPTR( ::camp::UserObject ) New( const ::fwCamp::registry::KeyType & classname, ::fwTools::Object *object);
+FWCAMP_API SPTR( ::camp::UserObject ) New( const ::fwCamp::registry::KeyType& classname, ::fwTools::Object* object);
 
-template<class CLASSNAME > SPTR( ::camp::UserObject )  New(::fwTools::Object *object)
+template<class CLASSNAME > SPTR( ::camp::UserObject )  New(::fwTools::Object* object)
 {
     SPTR(::camp::UserObject) obj = std::make_shared< ::camp::UserObject >(*(dynamic_cast<CLASSNAME*>( object )));
     return obj;
@@ -46,7 +44,3 @@ template<class CLASSNAME > SPTR( ::camp::UserObject )  New(::fwTools::Object *ob
 
 } // namespace factory
 } // namespace fwCamp
-
-#endif /* __FWCAMP_FACTORY_NEW_HPP__ */
-
-

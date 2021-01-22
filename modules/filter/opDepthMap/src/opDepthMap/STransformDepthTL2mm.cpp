@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void STransformDepthTL2mm::configuring()
 
 //------------------------------------------------------------------------------
 
-void STransformDepthTL2mm::compute(::fwCore::HiResClock::HiResClockType timestamp)
+void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 {
     if (timestamp > m_lastTimestamp)
     {

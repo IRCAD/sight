@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ public:
     typedef std::function< void (void*) > DeleterType;
 
     /// Constructor
-    ARDATA_API Buffer(::fwCore::HiResClock::HiResClockType timestamp = 0,
+    ARDATA_API Buffer(core::HiResClock::HiResClockType timestamp = 0,
                       BufferDataType buffer = 0, size_t size = 0, DeleterType d = 0);
 
     /// Destructor

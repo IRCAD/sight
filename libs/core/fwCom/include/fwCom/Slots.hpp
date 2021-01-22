@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #define __FWCOM_SLOTS_HPP__
 
-#include "fwCom/config.hpp"
+#include "core/macros.hpp"
 
-#include "fwCore/macros.hpp"
+#include "fwCom/config.hpp"
 
 #include <map>
 #include <string>

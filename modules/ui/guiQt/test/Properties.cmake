@@ -4,7 +4,7 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     fwTest
-    fwCore
+    core
     fwData
     fwRuntime
     fwServices

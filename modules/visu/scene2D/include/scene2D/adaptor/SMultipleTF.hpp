@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "scene2D/config.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwTools/Object.hpp>
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::MacrosTest );
@@ -39,7 +39,7 @@ class ClassTest
 
 public:
 
-    fwCoreClassMacro(ClassTest);
+    fwCoreClassMacro(ClassTest)
 
     //------------------------------------------------------------------------------
 

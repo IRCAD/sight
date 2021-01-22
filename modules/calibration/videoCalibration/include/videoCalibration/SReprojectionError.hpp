@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SReprojectionError : public ::fwServices::IController
 {
 public:
-    fwCoreServiceMacro(SReprojectionError, fwServices::IController);
+    fwCoreServiceMacro(SReprojectionError, fwServices::IController)
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
@@ -127,7 +127,7 @@ protected:
 
 private:
 
-    void compute(::fwCore::HiResClock::HiResClockType timestamp);
+    void compute(core::HiResClock::HiResClockType timestamp);
 
     ///Slot called when a color value is changed
     void setColorParameter(std::array< std::uint8_t, 4 > _val, std::string _key);
@@ -135,7 +135,7 @@ private:
     void setBoolParameter(bool _val, std::string _key);
 
     /// Last timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// Marker pattern width.
     double m_patternWidth;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
 
     /// Construstor. Creates the ogre compositor.
     FWRENDEROGRE_API RayEntryCompositor(const std::string& _compositorName, std::uint8_t _rqGroup,
-                                        compositor::Core::StereoModeType _stereoMode,
+                                        compositorcore::StereoModeType _stereoMode,
                                         bool _enableMixedRendering = false);
 
     /// Destructor. Deletes the created compositor.

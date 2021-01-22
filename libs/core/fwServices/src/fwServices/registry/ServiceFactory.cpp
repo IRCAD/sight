@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <fwData/Exception.hpp>
 
@@ -46,7 +46,7 @@ namespace registry
 
 ServiceFactory::sptr ServiceFactory::getDefault()
 {
-    return ::fwCore::util::LazyInstantiator< ServiceFactory >::getInstance();
+    return core::util::LazyInstantiator< ServiceFactory >::getInstance();
 }
 //-----------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ void ServiceFactory::parseBundleInformation()
 
     this->printInfoMap( moduleInfoMap );
 
-    ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     // Merge data info
     for(SrvRegContainer::value_type module : moduleInfoMap)
     {
@@ -141,7 +141,7 @@ void ServiceFactory::parseBundleInformation()
         }
         else
         {
-            ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+            core::mt::UpgradeToWriteLock upgrade(lock);
             m_srvImplTosrvInfo.emplace(std::make_pair(module.first, module.second));
         }
 
@@ -157,7 +157,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
 {
     IService::sptr service;
 
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
     SLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
@@ -210,7 +210,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
 {
 #ifdef _DEBUG
     {
-        ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+        core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
 
         SLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory.",
                    m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
@@ -236,7 +236,7 @@ void ServiceFactory::addServiceFactory( FactoryType _factory,
 {
     SLM_DEBUG("New service registering : simpl =" + simpl + " stype=" + stype);
 
-    ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( simpl );
 
     if ( iter != m_srvImplTosrvInfo.end() )
@@ -250,13 +250,13 @@ void ServiceFactory::addServiceFactory( FactoryType _factory,
                    << stype << " != " << info.serviceType <<" )",
                    stype == info.serviceType );
 
-        ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+        core::mt::UpgradeToWriteLock upgrade(lock);
         info.factory = _factory;
     }
     else
     {
         SLM_DEBUG("Add new service factory in registry ( " + simpl + " )." );
-        ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+        core::mt::UpgradeToWriteLock upgrade(lock);
         ServiceInfo info;
         info.serviceType = stype;
         info.factory     = _factory;
@@ -271,7 +271,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
     SLM_DEBUG("New object oimpl=" + oimpl + "registering to service: simpl =" + simpl);
     SLM_ASSERT("Empty oimpl", !oimpl.empty());
 
-    ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( simpl );
 
     SLM_ASSERT("Try to associate an object to a service factory, but this srv is not yet registered.",
@@ -293,7 +293,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
         }
         else
         {
-            ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+            core::mt::UpgradeToWriteLock upgrade(lock);
             info.objectImpl.push_back(oimpl);
         }
     }
@@ -347,7 +347,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
 
 void ServiceFactory::clearFactory()
 {
-    ::fwCore::mt::WriteLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::WriteLock lock(m_srvImplTosrvInfoMutex);
     m_srvImplTosrvInfo.clear();
 }
 
@@ -358,7 +358,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
 {
     std::vector< std::string > serviceImpl;
 
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
     {
         const ServiceInfo& srvInfo = srv.second;
@@ -388,7 +388,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 #endif
     bool specificImplIsFound = false;
 
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     for( SrvRegContainer::value_type srv :  m_srvImplTosrvInfo )
     {
         const ServiceInfo& srvInfo = srv.second;
@@ -435,7 +435,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 const std::vector<std::string>& ServiceFactory::getServiceObjects(const std::string& srvImpl) const
 {
     std::string objImpl;
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
     return iter->second.objectImpl;
@@ -445,7 +445,7 @@ const std::vector<std::string>& ServiceFactory::getServiceObjects(const std::str
 
 std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) const
 {
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
     return iter->second.desc;
@@ -455,7 +455,7 @@ std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) co
 
 std::string ServiceFactory::getServiceTags(const std::string& srvImpl) const
 {
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
     return iter->second.tags;
@@ -466,7 +466,7 @@ std::string ServiceFactory::getServiceTags(const std::string& srvImpl) const
 bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, const std::string& srvImpl) const
 {
     bool isValid = true;
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     isValid &= ( iter != m_srvImplTosrvInfo.end() );
     if (isValid)
@@ -491,7 +491,7 @@ bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, co
 bool ServiceFactory::support(const std::string& object, const std::string& srvType, const std::string& srvImpl) const
 {
     bool isSupported = true;
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     isSupported &= ( iter != m_srvImplTosrvInfo.end());
     if (isSupported)
@@ -520,7 +520,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
 {
     bool isSupported = false;
     SupportMapType::key_type key(object, srvType);
-    ::fwCore::mt::ReadToWriteLock supportMapLock(m_supportMapMutex);
+    core::mt::ReadToWriteLock supportMapLock(m_supportMapMutex);
     SupportMapType::const_iterator iter = m_supportMap.find( key );
     if (iter != m_supportMap.end())
     {
@@ -528,7 +528,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
     }
     else
     {
-        ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+        core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
         for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
         {
             const ServiceInfo& srvInfo = srv.second;
@@ -545,7 +545,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
                 }
             }
         }
-        ::fwCore::mt::UpgradeToWriteLock upgrade(supportMapLock);
+        core::mt::UpgradeToWriteLock upgrade(supportMapLock);
         m_supportMap.insert( SupportMapType::value_type(key, isSupported) );
     }
     return isSupported;
@@ -555,7 +555,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
 
 ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
 {
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     KeyVectorType vectKeys;
     std::transform( m_srvImplTosrvInfo.begin(), m_srvImplTosrvInfo.end(),
                     std::back_inserter(vectKeys),

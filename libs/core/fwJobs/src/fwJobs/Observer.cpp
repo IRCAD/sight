@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ Observer::Observer(const std::string& name, std::uint64_t workUnits) :
 {
     m_finishTask = PackagedTask([this]()
         {
-            ::fwCore::mt::WriteLock lock(m_mutex);
+            core::mt::WriteLock lock(m_mutex);
             this->finishNoLock();
         });
     m_totalWorkUnits = workUnits;
@@ -65,7 +65,7 @@ Observer::ProgressCallback Observer::progressCallback()
 
 void Observer::finish()
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     if( m_state == RUNNING || m_state == CANCELING )
     {
         lock.unlock();
@@ -77,7 +77,7 @@ void Observer::finish()
 
 IJob::SharedFuture Observer::runImpl()
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_finishTask.get_future();
 }
 

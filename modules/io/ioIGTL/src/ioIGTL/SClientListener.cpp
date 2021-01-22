@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void SClientListener::runClient()
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
@@ -161,7 +161,7 @@ void SClientListener::runClient()
             }
         }
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
@@ -200,7 +200,7 @@ void SClientListener::stopping()
         m_tlInitialized = false;
         m_sigDisconnected->asyncEmit();
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
         SLM_ERROR(ex.what());
@@ -211,9 +211,9 @@ void SClientListener::stopping()
 
 void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 {
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
-    ::arData::FrameTL::sptr frameTL                = this->getInOut< ::arData::FrameTL>(s_OBJECTS_GROUP, index);
+    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
+    ::arData::MatrixTL::sptr matTL  = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
+    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL>(s_OBJECTS_GROUP, index);
 
     //MatrixTL
     if(matTL)

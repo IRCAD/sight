@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSFILTER_FUNCTIONS_HPP__
-#define __FWATOMSFILTER_FUNCTIONS_HPP__
-
-#include <fwCore/macros.hpp>
+#pragma once
 
 #include "fwAtomsFilter/config.hpp"
+
+#include <core/macros.hpp>
 
 namespace fwAtoms
 {
@@ -40,6 +39,3 @@ namespace fwAtomsFilter
 FWATOMSFILTER_API bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series);
 
 } // namespace fwAtomsFilter
-
-#endif // __FWATOMSFILTER_FUNCTIONS_HPP__
-

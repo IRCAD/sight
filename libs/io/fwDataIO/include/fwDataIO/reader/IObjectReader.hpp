@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwDataIO/reader/factory/new.hpp"
 #include "fwDataIO/reader/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwData/location/ILocation.hpp>
 
@@ -53,7 +53,7 @@ namespace reader
  * the method read. Reading modify the object given in parameter with the
  * method setOject.
  */
-class FWDATAIO_CLASS_API IObjectReader : public ::fwCore::BaseObject
+class FWDATAIO_CLASS_API IObjectReader : public core::BaseObject
 {
 
 public:

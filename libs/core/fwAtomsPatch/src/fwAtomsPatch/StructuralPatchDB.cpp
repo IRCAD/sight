@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,6 @@
  *
  ***********************************************************************/
 
-
 #include "fwAtomsPatch/StructuralPatchDB.hpp"
 
 namespace fwAtomsPatch
@@ -28,12 +27,14 @@ namespace fwAtomsPatch
 
 StructuralPatchDB::sptr StructuralPatchDB::s_default = std::make_shared<StructuralPatchDB>();
 
+//------------------------------------------------------------------------------
+
 void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr patch)
 {
     VersionIDType source = std::make_pair(patch->getOriginClassname(), patch->getOriginVersion());
     VersionIDType target = std::make_pair(patch->getTargetClassname(), patch->getTargetVersion());
     PatchKeyType key     = std::make_pair(source, target);
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     m_patches[key] = patch;
 }
 
@@ -48,7 +49,7 @@ void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr pat
     const VersionIDType target = std::make_pair(targetClassname, targetVersion);
     const PatchKeyType key     = std::make_pair(source, target);
 
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     PatchesType::const_iterator it = m_patches.find(key);
     if(it != m_patches.end())
     {
@@ -64,7 +65,7 @@ void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr pat
 
 size_t StructuralPatchDB::size() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_patches.size();
 }
 

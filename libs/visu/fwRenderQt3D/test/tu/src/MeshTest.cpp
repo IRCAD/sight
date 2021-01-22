@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void MeshTest::tearDown()
 void MeshTest::setCubeMesh()
 {
     // Arranges a cube ::fwData::Mesh and a generic scene.
-    auto scene = new ::fwRenderQt3D::core::GenericScene(false);
+    auto scene = new ::fwRenderQt3Dcore::GenericScene(false);
     scene->setCamera(scene->getCamera());
 
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
@@ -158,7 +158,7 @@ void MeshTest::setCubeMesh()
 void MeshTest::centerCameraOnCube()
 {
     // Arranges a cube ::fwData::Mesh and a generic scene.
-    const auto scene = new ::fwRenderQt3D::core::GenericScene(false);
+    const auto scene = new ::fwRenderQt3Dcore::GenericScene(false);
     const auto camera = scene->getCamera();
 
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();

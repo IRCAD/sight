@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace registry
 {
 
 AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
-::fwCore::mt::Mutex AppConfig::s_idMutex;
+core::mt::Mutex AppConfig::s_idMutex;
 
 std::string AppConfig::s_mandatoryParameterIdentifier = "@mandatory@";
 
@@ -129,7 +129,7 @@ void AppConfig::addAppInfo( const std::string& configId,
                             const std::string& moduleId,
                             const std::string& moduleVersion)
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
 
     SLM_DEBUG( "New app config registering : configId = " + configId );
     SLM_ASSERT("The app config with the id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
@@ -154,7 +154,7 @@ AppConfig::AppConfig()
 
 void AppConfig::clearRegistry()
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -165,7 +165,7 @@ void AppConfig::clearRegistry()
     const FieldAdaptorType fieldAdaptors,
     bool autoPrefixId) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     // Get config template
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
@@ -236,7 +236,7 @@ std::shared_ptr< ::fwRuntime::Module > AppConfig::getModule(const std::string& _
 
 std::vector< std::string > AppConfig::getAllConfigs() const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
     for( const Registry::value_type& elem :  m_reg )
     {
@@ -249,7 +249,7 @@ std::vector< std::string > AppConfig::getAllConfigs() const
 
 std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string& group) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
     for( const Registry::value_type& elem :  m_reg )
     {
@@ -279,7 +279,7 @@ FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr 
 
 std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 {
-    ::fwCore::mt::ScopedLock lock(s_idMutex);
+    core::mt::ScopedLock lock(s_idMutex);
     static unsigned int srvCpt = 1;
     std::stringstream sstr;
 

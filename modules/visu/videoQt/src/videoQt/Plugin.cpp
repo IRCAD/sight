@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "videoQt/Plugin.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 

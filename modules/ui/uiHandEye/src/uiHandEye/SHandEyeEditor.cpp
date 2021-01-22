@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ void SHandEyeEditor::add()
         ::arData::MatrixTL::csptr matrixTL1 = this->getInput< ::arData::MatrixTL>(s_MATRIXTL1_INPUT);
         ::arData::MatrixTL::csptr matrixTL2 = this->getInput< ::arData::MatrixTL>(s_MATRIXTL2_INPUT);
 
-        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
         if (timestamp > m_lastTimestamp)
         {

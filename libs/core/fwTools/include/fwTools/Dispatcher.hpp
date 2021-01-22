@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,30 +20,25 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_DISPATCHER_HPP__
-#define __FWTOOLS_DISPATCHER_HPP__
+#pragma once
 
-#include <stdexcept>
-#include <boost/mpl/if.hpp>
+#include "fwTools/Stringizer.hpp"
+#include "fwTools/TypeMapping.hpp"
+
+#include <core/macros.hpp>
+
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/front.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/pop_front.hpp>
 
-#include <fwCore/macros.hpp>
-
-#include "fwTools/TypeMapping.hpp"
-#include "fwTools/Stringizer.hpp"
-
+#include <stdexcept>
 
 namespace fwTools
 {
 
-
 /**
  * @brief   Limit cases for empty typelist
- * @class   EndTypeListAction
- *
- * @date    2007-2009.
  * @see ::fwTools::Dispatcher
  */
 struct EndTypeListAction
@@ -56,7 +51,7 @@ struct EndTypeListAction
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class KeyType>
-    static void  invoke(const KeyType &keytype)
+    static void  invoke(const KeyType& keytype)
     {
         std::string msg = ::fwTools::getString(keytype) +
                           " : KeyType value incorrect : no corresponding Type in typelist";
@@ -64,8 +59,8 @@ struct EndTypeListAction
     }
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
-    template< class KeyType,class Parameter>
-    static void  invoke( const KeyType &keytype,const Parameter &param )
+    template< class KeyType, class Parameter>
+    static void  invoke( const KeyType& keytype, const Parameter& param )
     {
         FwCoreNotUsedMacro(param);
         std::string msg = ::fwTools::getString(keytype) +
@@ -75,7 +70,7 @@ struct EndTypeListAction
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class BaseClass, class KeyType>
-    static BaseClass  *instanciate(const KeyType &keytype)
+    static BaseClass* instanciate(const KeyType& keytype)
     {
         std::string msg = ::fwTools::getString(keytype) +
                           " : KeyType value incorrect : no corresponding Type in typelist";
@@ -85,14 +80,8 @@ struct EndTypeListAction
 
 };
 
-
-
-
 /**
  * @brief   Create an automatic template instancier exple Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
- * @class   Dispatcher
- *
- * @date    2007-2009.
  *
  * Will instanciante class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method
  * according to parameter of invoke static method. ie FUNCTOR().operator<int>();
@@ -106,8 +95,6 @@ struct Dispatcher
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::front<TSEQ>::type Head;
 
     public:
-
-
 
         /**
          * @brief Instanciate and invoke all functors
@@ -124,23 +111,20 @@ struct Dispatcher
             f.template operator()<Head>();
 #endif
 
-
             // recursively call other element in the list
             typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                     mpl::empty<Tail>,
                     EndTypeListAction,
-                    Dispatcher<Tail,FUNCTOR >
+                    Dispatcher<Tail, FUNCTOR >
                     >::type typex;
             typex::invoke();
         }
-
-
 
         /**
          * @brief Invoke only the specified Type only
          */
         template< class KeyType >
-        static void invoke( const KeyType &keytype )
+        static void invoke( const KeyType& keytype )
         {
             namespace mpl = boost::mpl;
 
@@ -160,7 +144,7 @@ struct Dispatcher
                 typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                         mpl::empty<Tail>,
                         EndTypeListAction,
-                        Dispatcher< Tail,FUNCTOR >
+                        Dispatcher< Tail, FUNCTOR >
                         >::type typex;
                 typex::invoke(keytype);
 
@@ -169,13 +153,12 @@ struct Dispatcher
         // NOTE gcc seems unable to explicit call of static template fonction member :/
         // all arguments needs to be present specicied template seems ignored
 
-
         /**
          * @brief Invoke only the specified Type only with a fixed parameter
          * @note That parameter is *NOT* const so functor can update value
          */
-        template< class KeyType,class Parameter >
-        static void invoke( const KeyType &keytype,  Parameter &param )
+        template< class KeyType, class Parameter >
+        static void invoke( const KeyType& keytype,  Parameter& param )
         {
             namespace mpl = boost::mpl;
 
@@ -196,17 +179,13 @@ struct Dispatcher
                 typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                         mpl::empty<Tail>,
                         EndTypeListAction,
-                        Dispatcher<Tail,FUNCTOR >
+                        Dispatcher<Tail, FUNCTOR >
                         >::type typex;
-                typex::invoke(keytype,param);
+                typex::invoke(keytype, param);
 
             }
         }
 
-
 };
 
-
 } //end namespace fwTools
-
-#endif /*__FWTOOLS_DISPATCHER_HPP__*/

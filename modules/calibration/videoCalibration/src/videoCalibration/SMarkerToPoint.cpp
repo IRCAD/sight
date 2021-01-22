@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,8 +100,8 @@ void SMarkerToPoint::addPoint()
 
     ::fwData::TransformationMatrix3D::sptr matrix3D = ::fwData::TransformationMatrix3D::New();
 
-    ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
+    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
     SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
     const float* values = buffer->getElement(0);

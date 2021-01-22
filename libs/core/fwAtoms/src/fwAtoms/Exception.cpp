@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,17 +25,13 @@
 namespace fwAtoms
 {
 
-Exception::Exception(const std::string &message) noexcept
-    : ::fwCore::Exception(message)
+Exception::Exception(const std::string& message) noexcept :
+    core::Exception(message)
 {
 }
-
 
 Exception::~Exception() noexcept
 {
 }
 
-
-
 } // namespace fwAtoms
-

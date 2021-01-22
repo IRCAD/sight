@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <fwRenderOgre/Utils.hpp>
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_HELPER_COMPARE_HPP__
-#define __FWTEST_HELPER_COMPARE_HPP__
+#pragma once
 
 #include "fwTest/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <set>
 #include <string>
@@ -52,10 +51,8 @@ typedef std::set<std::string> ExcludeSetType;
  */
 FWTEST_API bool compare(SPTR(::fwData::Object) objRef,
                         SPTR(::fwData::Object) objComp,
-                        ExcludeSetType exclude = ExcludeSetType(),
+                        ExcludeSetType exclude         = ExcludeSetType(),
                         ExcludeSetType excludeByPrefix = ExcludeSetType());
 
 } // namespace helper
 } // namespace fwTest
-
-#endif // __FWTEST_HELPER_COMPARE_HPP__

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWJOBS_IJOB_HPP__
-#define __FWJOBS_IJOB_HPP__
+#pragma once
 
 #include "fwJobs/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/mt/types.hpp>
 
-#include <fwCore/mt/types.hpp>
+#include <fwCom/Signal.hpp>
 
 #include <cstdint>
 #include <functional>
@@ -295,7 +294,7 @@ protected:
      * @param units new done work units
      * @param lock mutex to upgrade to write lock
      */
-    FWJOBS_API void doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock );
+    FWJOBS_API void doneWork( std::uint64_t units, core::mt::ReadToWriteLock& lock );
 
     /// Set done work units to total work units
     FWJOBS_API void done();
@@ -314,7 +313,7 @@ protected:
      * @param units new total work units
      * @param lock mutex to upgrade to write lock
      */
-    FWJOBS_API void setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock );
+    FWJOBS_API void setTotalWorkUnitsUpgradeLock( std::uint64_t units, core::mt::ReadToWriteLock& lock );
 
     /**
      * @brief Add job cancel callback to sequence without mutex lock for cancel hook
@@ -377,7 +376,7 @@ protected:
     SPTR(LogSignal) m_sigLogged;
 
     /// Mutex to protect object access.
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 
     /// Job's name
     std::string m_name;
@@ -420,5 +419,3 @@ protected:
 };
 
 } //namespace fwJobs
-
-#endif //__FWJOBS_IJOB_HPP__

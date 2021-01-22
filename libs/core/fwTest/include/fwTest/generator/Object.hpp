@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_GENERATOR_OBJECT_HPP__
-#define __FWTEST_GENERATOR_OBJECT_HPP__
+#pragma once
 
 #include "fwTest/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Color.hpp>
@@ -44,14 +43,12 @@
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/TransferFunction.hpp>
 
-
 namespace fwTest
 {
 namespace generator
 {
 /**
  * @brief   This class contains helper to generate data objects.
- * @class   Object
  */
 class Object
 {
@@ -74,10 +71,12 @@ public:
     /// Creates a StructureTraits representing the liver
     FWTEST_API static ::fwData::StructureTraits::sptr createStructureTraits();
 
-    /// Return a composite containing the ROITraits and a reference on its StructureTraits and mask node (because of weak ptr)
+    /// Return a composite containing the ROITraits and a reference on its StructureTraits and mask node (because of
+    // weak ptr)
     FWTEST_API static ::fwData::Composite::sptr createROITraits();
 
-    /// Return a composite containing the ReconstructionTraits and a reference on its StructureTraits and mask/mesh node (because of weak ptr)
+    /// Return a composite containing the ReconstructionTraits and a reference on its StructureTraits and mask/mesh node
+    // (because of weak ptr)
     FWTEST_API static ::fwData::Composite::sptr createReconstructionTraits();
 
     /// Creates a Node with random ports
@@ -107,6 +106,3 @@ public:
 
 } // namespace generator
 } // namespace fwTest
-
-
-#endif // __FWTEST_GENERATOR_OBJECT_HPP__

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/helper/Technique.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,13 @@
 #ifndef __FWDATA_PCH_HPP__
 #define __FWDATA_PCH_HPP__
 
+#include <core/base.hpp>
+#include <core/macros.hpp>
+#include <core/mt/types.hpp>
+#include <core/util/FactoryRegistry.hpp>
+
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/macros.hpp>
-#include <fwCore/mt/types.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
 
 #include <fwTools/Object.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ BufferTL::~BufferTL ()
 void BufferTL::allocPoolSize(std::size_t size)
 {
     this->clearTimeline();
-    ::fwCore::mt::WriteLock lock(m_tlMutex);
+    core::mt::WriteLock lock(m_tlMutex);
 
     SLM_ASSERT( "Allocation size must be greater than 0", size > 0 );
     m_pool = std::make_shared< PoolType >(size);
@@ -66,7 +66,7 @@ void BufferTL::pushObject(const SPTR(::arData::timeline::Object)& obj)
     // This check is important for inherited classes
     SLM_ASSERT("Trying to push not compatible Object in the BufferTL.", isObjectValid(obj));
 
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
     if(m_timeline.size() >= m_maximumSize)
     {
         TimelineType::iterator begin = m_timeline.begin();
@@ -88,7 +88,7 @@ SPTR(::arData::timeline::Object) BufferTL::popObject(TimestampType timestamp)
 
     SPTR(::arData::timeline::Object) object = itFind->second;
 
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
 
     m_timeline.erase(itFind);
 
@@ -107,7 +107,7 @@ void BufferTL::modifyTime(TimestampType timestamp, TimestampType newTimestamp)
     // Check if newTimestamp is not already used
     SLM_ASSERT("New timestamp already used by an other object", m_timeline.find(newTimestamp) == m_timeline.end());
 
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
 
     m_timeline.insert(TimelineType::value_type(newTimestamp, itFind->second));
     m_timeline.erase(itFind);
@@ -120,7 +120,7 @@ void BufferTL::setObject(TimestampType timestamp, const SPTR(::arData::timeline:
     // Check if timestamp exists
     SLM_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.find(timestamp) != m_timeline.end());
 
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
 
     SPTR(::arData::timeline::Buffer) srcObj = std::dynamic_pointer_cast< ::arData::timeline::Buffer >(obj);
     m_timeline[timestamp]                   = srcObj;
@@ -128,10 +128,10 @@ void BufferTL::setObject(TimestampType timestamp, const SPTR(::arData::timeline:
 
 //------------------------------------------------------------------------------
 
-CSPTR(::arData::timeline::Object) BufferTL::getClosestObject(::fwCore::HiResClock::HiResClockType timestamp,
+CSPTR(::arData::timeline::Object) BufferTL::getClosestObject(core::HiResClock::HiResClockType timestamp,
                                                              DirectionType direction) const
 {
-    ::fwCore::mt::ReadLock readLock(m_tlMutex);
+    core::mt::ReadLock readLock(m_tlMutex);
     SPTR(::arData::timeline::Buffer) result;
     if(m_timeline.empty())
     {
@@ -152,8 +152,8 @@ CSPTR(::arData::timeline::Object) BufferTL::getClosestObject(::fwCore::HiResCloc
         }
         else
         {
-            ::fwCore::HiResClock::HiResClockType nextTS = iter->first;
-            SPTR(::arData::timeline::Buffer) nextObj    = iter->second;
+            core::HiResClock::HiResClockType nextTS = iter->first;
+            SPTR(::arData::timeline::Buffer) nextObj = iter->second;
 
             switch ( direction )
             {
@@ -162,9 +162,9 @@ CSPTR(::arData::timeline::Object) BufferTL::getClosestObject(::fwCore::HiResCloc
                     break;
                 case BOTH:
                 {
-                    ::fwCore::HiResClock::HiResClockType previousTS = (--iter)->first;
-                    SPTR(::arData::timeline::Buffer) previousObj    = iter->second;
-                    result                                          =
+                    core::HiResClock::HiResClockType previousTS = (--iter)->first;
+                    SPTR(::arData::timeline::Buffer) previousObj = iter->second;
+                    result                                       =
                         ((nextTS - timestamp) > (timestamp - previousTS)) ? previousObj : nextObj;
                 }
                 break;
@@ -188,9 +188,9 @@ CSPTR(::arData::timeline::Object) BufferTL::getClosestObject(::fwCore::HiResCloc
 
 //------------------------------------------------------------------------------
 
-CSPTR(::arData::timeline::Object) BufferTL::getObject(::fwCore::HiResClock::HiResClockType timestamp) const
+CSPTR(::arData::timeline::Object) BufferTL::getObject(core::HiResClock::HiResClockType timestamp) const
 {
-    ::fwCore::mt::ReadLock readLock(m_tlMutex);
+    core::mt::ReadLock readLock(m_tlMutex);
     SPTR(::arData::timeline::Buffer) result;
     TimelineType::const_iterator iter = m_timeline.find(timestamp);
 
@@ -211,7 +211,7 @@ CSPTR(::arData::timeline::Object) BufferTL::getNewerObject() const
 {
     SPTR(::arData::timeline::Object) result;
 
-    ::fwCore::mt::ReadLock readLock(m_tlMutex);
+    core::mt::ReadLock readLock(m_tlMutex);
     if (!m_timeline.empty())
     {
         result = m_timeline.rbegin()->second;
@@ -221,11 +221,11 @@ CSPTR(::arData::timeline::Object) BufferTL::getNewerObject() const
 
 //------------------------------------------------------------------------------
 
-::fwCore::HiResClock::HiResClockType BufferTL::getNewerTimestamp() const
+core::HiResClock::HiResClockType BufferTL::getNewerTimestamp() const
 {
-    ::fwCore::HiResClock::HiResClockType result = 0;
+    core::HiResClock::HiResClockType result = 0;
 
-    ::fwCore::mt::ReadLock readLock(m_tlMutex);
+    core::mt::ReadLock readLock(m_tlMutex);
     if (!m_timeline.empty())
     {
         result = m_timeline.rbegin()->first;
@@ -237,7 +237,7 @@ CSPTR(::arData::timeline::Object) BufferTL::getNewerObject() const
 
 void BufferTL::clearTimeline()
 {
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
     m_timeline.clear();
 
     auto sig = this->signal<ObjectClearedSignalType>(s_CLEARED_SIG);

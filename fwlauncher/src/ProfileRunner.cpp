@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
     std::string logFile;
     const std::string defaultLogFile = "SLM.log";
 
-    typedef ::fwCore::log::SpyLogger SpyLogger;
+    typedef core::log::SpyLogger SpyLogger;
     int logLevel = SpyLogger::SL_WARN;
 
     po::options_description logOptions("Log options");
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
     }
 
     // Log file
-    SpyLogger& logger = fwCore::log::SpyLogger::getSpyLogger();
+    SpyLogger& logger = core::log::SpyLogger::getSpyLogger();
 
     if(consoleLog)
     {

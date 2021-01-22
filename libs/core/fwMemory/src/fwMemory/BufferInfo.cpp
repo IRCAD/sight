@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@ BufferInfo::BufferInfo() :
     this->lastAccess.modified();
 }
 
-
 //-----------------------------------------------------------------------------
 
 void BufferInfo::clear()
@@ -45,10 +44,9 @@ void BufferInfo::clear()
     fsFile.clear();
     fileFormat = ::fwMemory::OTHER;
     lockCounter.reset();
-    lastAccess = ::fwCore::LogicStamp();
+    lastAccess = core::LogicStamp();
     bufferPolicy.reset();
     istreamFactory.reset();
 }
 
 } // namespace fwMemory
-

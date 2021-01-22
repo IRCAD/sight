@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -257,7 +257,7 @@ void ClippingBox::initWidgets()
     m_selectedFace->end();
 
     // Render highlighted faces after other surfaces but before volumes.
-    m_selectedFace->setRenderQueueGroup(compositor::Core::s_SURFACE_RQ_GROUP_ID + 1);
+    m_selectedFace->setRenderQueueGroup(compositorcore::s_SURFACE_RQ_GROUP_ID + 1);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0; i < 6; ++i)
@@ -372,7 +372,7 @@ void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screen
 
         m_selectedWidget = dynamic_cast< ::Ogre::Entity*>(_pickedWidget);
         m_selectedWidget->setMaterialName(m_id + "_SphereHighlight", RESOURCE_GROUP);
-        m_selectedWidget->setRenderQueueGroupAndPriority(compositor::Core::s_SURFACE_RQ_GROUP_ID, 65535);
+        m_selectedWidget->setRenderQueueGroupAndPriority(compositorcore::s_SURFACE_RQ_GROUP_ID, 65535);
 
         m_clippingUpdateCallback();
     }

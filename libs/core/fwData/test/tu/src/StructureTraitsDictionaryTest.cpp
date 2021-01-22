@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     structCat[0] = ::fwData::StructureTraits::ABDOMEN;
     badClassStructure->setCategories(structCat);
     badClassStructure->setAttachmentType("Liver");
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(badClassStructure), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(structDico->addStructure(badClassStructure), core::Exception);
 
     ::fwData::StructureTraits::sptr badAttachmentStructure = ::fwData::StructureTraits::New();
     badAttachmentStructure->setType("my_structure");
@@ -125,7 +125,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     badAttachmentStructure->setColor(::fwData::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
     badAttachmentStructure->setCategories(structCat);
     badAttachmentStructure->setAttachmentType("Unknown");
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), core::Exception);
 
     // check exception is raised if structure already exist
     ::fwData::StructureTraits::sptr liver2 = ::fwData::StructureTraits::New();
@@ -135,7 +135,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     ::fwData::StructureTraits::CategoryContainer liver2Cat(1);
     liver2Cat[0] = ::fwData::StructureTraits::ABDOMEN;
     liver2->setCategories(liver2Cat);
-    CPPUNIT_ASSERT_THROW(structDico->addStructure(liver2), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(structDico->addStructure(liver2), core::Exception);
 }
 
 } //namespace ut

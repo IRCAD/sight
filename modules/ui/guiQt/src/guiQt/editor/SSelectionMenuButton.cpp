@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "guiQt/editor/SSelectionMenuButton.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -29,8 +31,6 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -43,7 +43,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <filesystem>
 #include <QAction>
 #include <QMenu>
 #include <QPushButton>
@@ -51,12 +50,14 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <filesystem>
+
 namespace guiQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSelectionMenuButton );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSelectionMenuButton )
 
 static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 

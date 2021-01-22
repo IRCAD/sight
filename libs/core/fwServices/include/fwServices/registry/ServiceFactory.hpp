@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "fwServices/config.hpp"
 
-#include <boost/unordered_map.hpp>
-
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwRuntime/Module.hpp>
 
 #include <fwTools/Object.hpp>
+
+#include <boost/unordered_map.hpp>
 
 #include <unordered_map>
 
@@ -46,7 +46,7 @@ namespace registry
  * The ServiceFactory is a registrar of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
-class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ServiceFactory : public core::BaseObject
 {
 
 public:
@@ -59,7 +59,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassMacro(ServiceFactory, ::fwCore::BaseObject, new ServiceFactory)
+    fwCoreClassMacro(ServiceFactory, core::BaseObject, new ServiceFactory)
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
@@ -150,8 +150,8 @@ private:
     SrvRegContainer m_srvImplTosrvInfo;
     SupportMapType m_supportMap;
 
-    mutable ::fwCore::mt::ReadWriteMutex m_srvImplTosrvInfoMutex;
-    mutable ::fwCore::mt::ReadWriteMutex m_supportMapMutex;
+    mutable core::mt::ReadWriteMutex m_srvImplTosrvInfoMutex;
+    mutable core::mt::ReadWriteMutex m_supportMapMutex;
 };
 
 } // namespace registry

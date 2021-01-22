@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMATH_PLANEFUNCTIONS_HPP__
-#define __FWMATH_PLANEFUNCTIONS_HPP__
+#pragma once
 
-
-#include "fwMath/IntrasecTypes.hpp"
-#include "fwMath/VectorFunctions.hpp"
-#include "fwMath/LineFunctions.hpp"
 #include "fwMath/config.hpp"
+#include "fwMath/IntrasecTypes.hpp"
+#include "fwMath/LineFunctions.hpp"
 #include "fwMath/MatrixFunctions.hpp"
+#include "fwMath/VectorFunctions.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwMath
 {
@@ -40,14 +38,14 @@ static const double EPSILON = 0.001;
 /**
  * @brief
  */
-FWMATH_API fwPlane getPlane(const fwVec3d & _point1, const fwVec3d & _point2, const fwVec3d & _point3);
+FWMATH_API fwPlane getPlane(const fwVec3d& _point1, const fwVec3d& _point2, const fwVec3d& _point3);
 /**
  * @brief compute a plane from a normal and a point which must be in the plane.
  * @param [in] _point a point of the plan/
  * @param [in] _normal the normal of the new plane.
  * @return the new plane.
  */
-FWMATH_API fwPlane getPlane(const fwVec3d&  _normal,const fwVec3d& _point);
+FWMATH_API fwPlane getPlane(const fwVec3d&  _normal, const fwVec3d& _point);
 
 /**
  * @brief Initialize a plane _plane with three points (_point1, _point2, _point3).
@@ -57,7 +55,7 @@ FWMATH_API fwPlane getPlane(const fwVec3d&  _normal,const fwVec3d& _point);
  * @param [in] _point2 a point of the plan.
  * @param [in] _point3 a point of the plan.
  */
-FWMATH_API void setValues(fwPlane& _plane, const fwVec3d & _point1, const fwVec3d & _point2, const fwVec3d & _point3);
+FWMATH_API void setValues(fwPlane& _plane, const fwVec3d& _point1, const fwVec3d& _point2, const fwVec3d& _point3);
 
 /**
  * @brief Return the normal of the given plane _plane.
@@ -91,7 +89,7 @@ FWMATH_API void  setDistance(fwPlane& _plane, const double _distance);
  *  @param [out] _point intersection point.
  *  @return true if an intersection is found.
  */
-FWMATH_API bool intersect( const fwPlane& _fwPlane, const fwLine & _line, fwVec3d& _point);
+FWMATH_API bool intersect( const fwPlane& _fwPlane, const fwLine& _line, fwVec3d& _point);
 
 /**
  *  @brief Compute if a point is in a half plane.
@@ -126,5 +124,3 @@ FWMATH_API void offset(fwPlane& _plane, double _offset);
  *  @return true if the planes are equal and false if they are not.
  */
 FWMATH_API bool operator==(fwPlane& plane1, fwPlane& plane2);
-
-#endif /* __FWMATH_PLANEFUNCTIONS_HPP__ */

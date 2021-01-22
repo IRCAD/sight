@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlProtocol/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace igtlProtocol
 {
@@ -33,10 +33,10 @@ namespace exception
 
 /// Throw this exception when a conversion between data and igtl message is not possible (error message explains the
 /// reasons)
-struct IGTLPROTOCOL_CLASS_API Conversion : ::fwCore::Exception
+struct IGTLPROTOCOL_CLASS_API Conversion : core::Exception
 {
     IGTLPROTOCOL_API Conversion( const std::string& err ) :
-        ::fwCore::Exception(err)
+        core::Exception(err)
     {
     }
 };

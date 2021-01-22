@@ -3,7 +3,7 @@ set( NAME ioVTK )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCore
+    core
     fwData
     fwDataIO
     fwGui

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ void SServerSender::starting()
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
         m_sigConnected->asyncEmit();
     }
-    catch (::fwCore::Exception& e)
+    catch (core::Exception& e)
     {
         ::fwGui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
                                              std::string(e.what()),
@@ -112,7 +112,7 @@ void SServerSender::stopping()
         m_serverFuture.wait();
         m_sigDisconnected->asyncEmit();
     }
-    catch (::fwCore::Exception& e)
+    catch (core::Exception& e)
     {
         ::fwGui::dialog::MessageDialog::show("Error", e.what());
     }

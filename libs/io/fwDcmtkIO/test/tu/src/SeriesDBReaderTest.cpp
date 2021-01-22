@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -582,7 +582,7 @@ void SeriesDBReaderTest::readUnsupportedSeries()
     reader->setDicomFilterType("::fwDicomIOFilter::custom::DefaultDicomFilter");
 
     // Read DICOM
-    CPPUNIT_ASSERT_THROW(reader->read(), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(reader->read(), core::Exception);
 }
 
 //------------------------------------------------------------------------------

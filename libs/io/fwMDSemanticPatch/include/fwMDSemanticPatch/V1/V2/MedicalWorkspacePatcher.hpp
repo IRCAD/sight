@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
 
 #include "fwMDSemanticPatch/config.hpp"
 
+#include <core/base.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -33,8 +35,6 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <string>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ void SMatrixSynchronizer::stopping()
 
 // ----------------------------------------------------------------------------
 
-void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType timestamp)
+void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
     ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
     ::arData::MatrixTL::csptr matrixTL              = this->getInput< ::arData::MatrixTL >("TL");
@@ -91,8 +91,8 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
     if (timestamp > m_lastTimestamp)
     {
 
-        ::fwCore::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
-        CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
+        core::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
+        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
         SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <fwCamp/macros.hpp>
 
 #include <filesystem>
-
 #include <istream>
 #include <type_traits>
 
@@ -64,7 +63,7 @@ class IFactory;
  * NOT GARANTEE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
-class FWMEMORY_CLASS_API BufferObject : public ::fwCore::BaseObject
+class FWMEMORY_CLASS_API BufferObject : public core::BaseObject
 {
 
 public:
@@ -74,7 +73,7 @@ public:
 
     typedef size_t SizeType;
 
-    fwCoreClassMacro(BufferObject, ::fwCore::BaseObject, new BufferObject);
+    fwCoreClassMacro(BufferObject, core::BaseObject, new BufferObject)
     fwCoreAllowSharedFromThis();
 
     /// return the sub class classname : an alias of this->getClassname
@@ -126,7 +125,7 @@ public:
         {
             SLM_ASSERT("Can't lock NULL object", bo);
 
-            ::fwCore::mt::ScopedLock lock(bo->m_lockDumpMutex);
+            core::mt::ScopedLock lock(bo->m_lockDumpMutex);
             m_count = bo->m_count.lock();
             if ( !m_count )
             {
@@ -289,7 +288,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    ::fwCore::mt::ReadWriteMutex& getMutex()
+    core::mt::ReadWriteMutex& getMutex()
     {
         return m_mutex;
     }
@@ -323,8 +322,8 @@ protected:
     SizeType m_size;
 
     mutable WeakCounterType m_count;
-    mutable ::fwCore::mt::Mutex m_lockDumpMutex;
-    ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::Mutex m_lockDumpMutex;
+    core::mt::ReadWriteMutex m_mutex;
 
     ::fwMemory::BufferManager::sptr m_bufferManager;
 

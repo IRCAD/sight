@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,10 +107,10 @@ protected:
 private:
 
     /// SLOT: add the current frame in the video
-    void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
+    void saveFrame(core::HiResClock::HiResClockType timestamp);
 
     /// write frame on the disk
-    void write(::fwCore::HiResClock::HiResClockType timestamp);
+    void write(core::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Start recording
     void startRecord();

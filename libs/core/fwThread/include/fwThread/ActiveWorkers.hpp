@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,19 +25,19 @@
 #include "fwThread/config.hpp"
 #include <fwThread/Worker.hpp>
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 namespace fwThread
 {
 /**
  * @brief This class to register active worker in the system, creates a default worker
  */
-class FWTHREAD_CLASS_API ActiveWorkers : public ::fwCore::BaseObject
+class FWTHREAD_CLASS_API ActiveWorkers : public core::BaseObject
 {
 
 public:
 
-    fwCoreClassMacro(ActiveWorkers, ::fwCore::BaseObject, std::make_shared< ActiveWorkers >)
+    fwCoreClassMacro(ActiveWorkers, core::BaseObject, std::make_shared< ActiveWorkers >)
 
     typedef std::string WorkerKeyType;
 
@@ -94,7 +94,7 @@ protected:
     WorkerMapType m_workers;
 
     /// Used to protect the registry access.
-    mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
+    mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// The global instance of the active referenced workers.
     static ActiveWorkers::sptr s_currentActiveWorkers;

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     fwCom
     fwDcmtkIO
     fwGui
-    fwCore
+    core
     fwData
     fwRuntime
     fwTools

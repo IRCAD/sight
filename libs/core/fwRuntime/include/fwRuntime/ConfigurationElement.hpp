@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwRuntime/ConfigurationElementContainer.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <map>
 #include <memory>
@@ -68,7 +68,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief   Defines the a class for attributes exceptions.
      */
-    struct NoSuchAttribute : public ::fwCore::Exception
+    struct NoSuchAttribute : public core::Exception
     {
         NoSuchAttribute(const std::string& attr);
     };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -42,7 +42,7 @@ namespace fwActivities
 /**
  * @brief Base class for all fwActivities builder's classes
  */
-class FWACTIVITIES_CLASS_API IBuilder : public ::fwCore::BaseObject
+class FWACTIVITIES_CLASS_API IBuilder : public core::BaseObject
 {
 
 public:
@@ -67,7 +67,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IBuilder, ::fwCore::BaseObject);
+    fwCoreClassMacro(IBuilder, core::BaseObject)
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.

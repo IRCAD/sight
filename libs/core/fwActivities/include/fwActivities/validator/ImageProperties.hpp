@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/IObjectValidator.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwActivities
 {
@@ -39,7 +39,7 @@ class FWACTIVITIES_CLASS_API ImageProperties : public ::fwActivities::IObjectVal
 {
 public:
     fwCoreClassMacro(ImageProperties, ::fwActivities::IObjectValidator,
-                     ::fwActivities::validator::factory::New< ImageProperties >);
+                     ::fwActivities::validator::factory::New< ImageProperties >)
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API ImageProperties(::fwActivities::IValidator::Key key);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ void SProgressBarController::stopping()
 
 void SProgressBarController::startProgress(std::string _id)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_progressDialogs[_id] = ::fwGui::dialog::ProgressDialog::New();
 }
 
@@ -87,7 +87,7 @@ void SProgressBarController::startProgress(std::string _id)
 
 void SProgressBarController::updateProgress(std::string _id, float _percentage, std::string _message)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     if(m_progressDialogs.find(_id) != m_progressDialogs.end())
     {
         (*m_progressDialogs[_id])(_percentage, _message);
@@ -103,7 +103,7 @@ void SProgressBarController::updateProgress(std::string _id, float _percentage, 
 
 void SProgressBarController::stopProgress(std::string _id)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_progressDialogs.erase(_id);
 }
 

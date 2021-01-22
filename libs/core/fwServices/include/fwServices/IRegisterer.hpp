@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,13 @@ namespace fwServices
  *          Must be implemented for services that register objects together.
  *
  * @section Slots Slots
- * - \b computeRegistration(::fwCore::HiResClock::HiResClockType) : Compute the registration matrix.
+ * - \b computeRegistration(core::HiResClock::HiResClockType) : Compute the registration matrix.
  */
 class FWSERVICES_CLASS_API IRegisterer : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceMacro(IRegisterer, ::fwServices::IService);
+    fwCoreServiceMacro(IRegisterer, ::fwServices::IService)
 
     /**
      * @name Slots API
@@ -60,7 +60,7 @@ public:
 protected:
 
     /// Register matrix slot
-    FWSERVICES_API virtual void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) = 0;
+    FWSERVICES_API virtual void computeRegistration(core::HiResClock::HiResClockType timestamp) = 0;
 };
 
 } // namespace fwServices

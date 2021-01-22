@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwCom/config.hpp"
 #include "fwCom/Connection.hpp"
 
-#include <fwCore/BaseObject.hpp>
+#include <core/BaseObject.hpp>
 
 namespace fwCom
 {
@@ -35,7 +35,7 @@ struct SlotBase;
 /**
  * @brief Signal base class.
  */
-struct FWCOM_CLASS_API SignalBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SignalBase : virtual core::BaseObject
 {
     /**
      * @name Typedefs

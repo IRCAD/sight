@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwCom/exception/WorkerChanged.hpp"
 
-#include <fwCore/exceptionmacros.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/exceptionmacros.hpp>
+#include <core/mt/types.hpp>
 
 #include <functional>
 
@@ -82,7 +82,7 @@ struct WeakCall
             FwCoreNotUsedMacro(errorPtr);
         }
 
-        ::fwCore::mt::ReadLock lock(ptr->m_workerMutex);
+        core::mt::ReadLock lock(ptr->m_workerMutex);
 
         std::shared_ptr< ::fwThread::Worker > worker = m_worker.lock();
 

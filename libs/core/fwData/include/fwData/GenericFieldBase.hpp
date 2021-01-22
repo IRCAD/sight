@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <ostream>
 #include <string>
@@ -40,7 +40,7 @@ class FWDATA_CLASS_API GenericFieldBase : public Object
 {
 public:
 
-    fwCoreClassMacro(GenericFieldBase);
+    fwCoreClassMacro(GenericFieldBase)
 
     FWDATA_API virtual bool operator== (const GenericFieldBase& lf ) = 0;
     FWDATA_API virtual bool operator!= (const GenericFieldBase& lf ) = 0;

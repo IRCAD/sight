@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_EXCEPTION_CLASSNAMEMISMATCH_HPP__
-#define __FWATOMCONVERSION_EXCEPTION_CLASSNAMEMISMATCH_HPP__
-
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwAtomConversion/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwAtomConversion
 {
@@ -33,15 +32,13 @@ namespace exception
 {
 
 /// Throw this exception when a new data is created with a specific uuid, but this data already exists in system
-struct FWATOMCONVERSION_CLASS_API ClassnameMismatch : ::fwCore::Exception
+struct FWATOMCONVERSION_CLASS_API ClassnameMismatch : core::Exception
 {
-    FWATOMCONVERSION_API ClassnameMismatch( const std::string &err ) : ::fwCore::Exception(err)
+    FWATOMCONVERSION_API ClassnameMismatch( const std::string& err ) :
+        core::Exception(err)
     {
     }
 };
 
 } // namespace exception
 } // namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_EXCEPTION_CLASSNAMEMISMATCH_HPP__
-

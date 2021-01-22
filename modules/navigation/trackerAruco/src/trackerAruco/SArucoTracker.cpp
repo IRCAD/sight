@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -185,13 +185,13 @@ void SArucoTracker::updating()
     // When working with a frame (newest design), we do not rely on the timestamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::HiResClock::getTimeInMilliSec();
     this->tracking(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
+void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 {
     if(!m_isInitialized)
     {

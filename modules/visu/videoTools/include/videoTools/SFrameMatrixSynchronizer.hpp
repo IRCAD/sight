@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,11 @@
 
 #include <arServices/ISynchronizer.hpp>
 
+#include <core/base.hpp>
+#include <core/HiResClock.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -58,10 +58,10 @@ namespace videoTools
  * replaying a recorded video several times.
  *
  * @section Signals Signals
- * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
- * - \b synchronizationSkipped(::fwCore::HiResClock::HiResClockType) : Emitted when a sync loop is skipped if nothing
+ * - \b synchronizationDone(core::HiResClock::HiResClockType) : Emitted when the sync is done.
+ * - \b synchronizationSkipped(core::HiResClock::HiResClockType) : Emitted when a sync loop is skipped if nothing
  * has changed or if the synchronizer decided to go back into the past.
- * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
+ * - \b allMatricesFound(core::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
  * - \b matrixSynchronized(int): Emitted when the matrix is synchronized, contains the index of the matrix with
  *  `sendStatus` set to "on", in the declaration order.
@@ -132,7 +132,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
+    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
 
     typedef ::fwCom::Signal< void (void) > synchronizationSkippedSignalType;
@@ -209,7 +209,7 @@ private:
     std::uint8_t m_updateMask { SYNC_REQUESTED };
 
     /// Tolerance to take into account matrix
-    ::fwCore::HiResClock::HiResClockType m_tolerance;
+    core::HiResClock::HiResClockType m_tolerance;
 
     /// Check if output images are initialized
     bool m_imagesInitialized;
@@ -256,7 +256,7 @@ private:
     MatrixUnsynchronizedSignalType::sptr m_sigMatrixUnsynchronized;
 
     /// Remember last time stamp to skip synchronization if nothing has changed
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 };
 
 } // namespace videoTools

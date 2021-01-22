@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -346,7 +346,7 @@ void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
     auto layer = this->getLayer();
 
     // Calibrate only the first camera when stereo is not enabled.
-    if(layer->getStereoMode() == ::fwRenderOgre::compositor::Core::StereoModeType::NONE && nbCams > 0)
+    if(layer->getStereoMode() == ::fwRenderOgre::compositorcore::StereoModeType::NONE && nbCams > 0)
     {
         this->calibrateMonoCamera(_cs->getCamera(0));
     }

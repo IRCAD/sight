@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "arData/Camera.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>

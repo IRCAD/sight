@@ -11,6 +11,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwVtkIO
-    fwCore
+    core
 )
 set( REQUIREMENTS )

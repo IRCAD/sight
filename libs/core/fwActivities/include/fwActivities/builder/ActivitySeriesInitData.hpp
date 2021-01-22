@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwActivities/builder/ActivitySeries.hpp"
 #include "fwActivities/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -41,7 +41,7 @@ class FWACTIVITIES_CLASS_API ActivitySeriesInitData : public ::fwActivities::bui
 {
 public:
     fwCoreClassMacro(ActivitySeriesInitData, ::fwActivities::IBuilder,
-                     ::fwActivities::builder::factory::New< ActivitySeriesInitData >);
+                     ::fwActivities::builder::factory::New< ActivitySeriesInitData >)
 
     typedef std::string RegistryKeyType;
 

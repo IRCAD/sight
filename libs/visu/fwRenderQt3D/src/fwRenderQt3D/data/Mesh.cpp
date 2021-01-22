@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
     ::fwRenderQt3D::data::Material* defaultMaterial = new ::fwRenderQt3D::data::Material();
 
     m_material = defaultMaterial;
-    m_scene    = qobject_cast< ::fwRenderQt3D::core::GenericScene* >(_parent);
+    m_scene    = qobject_cast< ::fwRenderQt3Dcore::GenericScene* >(_parent);
 
     m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
     m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
@@ -80,7 +80,7 @@ Mesh::~Mesh()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::core::GenericScene* const Mesh::getScene() const
+::fwRenderQt3Dcore::GenericScene* const Mesh::getScene() const
 {
     return m_scene;
 }
@@ -97,7 +97,7 @@ void Mesh::setMaterial(::fwRenderQt3D::data::Material* _material)
 
 //------------------------------------------------------------------------------
 
-void Mesh::setScene(::fwRenderQt3D::core::GenericScene* _scene)
+void Mesh::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 {
     SLM_ASSERT("Scene can't be set to null value.", _scene);
     m_scene = _scene;

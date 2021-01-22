@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ class ARDATA_CLASS_API BufferTL : public TimeLine
 public:
     fwCoreClassMacro(BufferTL, ::fwData::Object)
 
-    typedef ::fwCore::HiResClock::HiResClockType TimestampType;
+    typedef core::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(::arData::timeline::Buffer) > TimelineType;
     typedef std::pair< TimestampType, SPTR(::arData::timeline::Buffer) > BufferPairType;
     typedef ::boost::pool<> PoolType;
@@ -66,10 +66,10 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     ARDATA_API virtual CSPTR(::arData::timeline::Object) getClosestObject(
-        ::fwCore::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const override;
+        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    ARDATA_API virtual CSPTR(::arData::timeline::Object) getObject(::fwCore::HiResClock::HiResClockType timestamp)
+    ARDATA_API virtual CSPTR(::arData::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
     const override;
 
     /// Clear the timeline
@@ -91,7 +91,7 @@ public:
     ARDATA_API CSPTR(::arData::timeline::Object) getNewerObject() const;
 
     /// Return the last timestamp in the timeline
-    ARDATA_API ::fwCore::HiResClock::HiResClockType getNewerTimestamp() const;
+    ARDATA_API core::HiResClock::HiResClockType getNewerTimestamp() const;
 
     /// Change the maximum size of the timeline
     void setMaximumSize(size_t maximumSize)
@@ -114,7 +114,7 @@ protected:
     ARDATA_API void allocPoolSize(std::size_t size);
 
     /// Mutex to protect m_timeline and m_pool access
-    mutable ::fwCore::mt::ReadWriteMutex m_tlMutex;
+    mutable core::mt::ReadWriteMutex m_tlMutex;
 
     ///Timeline
     TimelineType m_timeline;

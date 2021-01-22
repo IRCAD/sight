@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,16 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_VERSIONDESCRIPTOR_HPP__
-#define __FWATOMSPATCH_VERSIONDESCRIPTOR_HPP__
-
-#include <map>
-#include <string>
-
-#include <fwCore/BaseObject.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
 
+#include <core/BaseObject.hpp>
+
+#include <map>
+#include <string>
 
 namespace fwAtomsPatch
 {
@@ -46,6 +44,8 @@ public:
      * @brief Struct used to compare two VersionDescriptor
      */
     struct Compare {
+        //------------------------------------------------------------------------------
+
         bool operator() (VersionDescriptor a, VersionDescriptor b) const
         {
             return a.getVersionName() < b.getVersionName();
@@ -103,5 +103,3 @@ private:
 };
 
 } // fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_VERSIONDESCRIPTOR_HPP__ */

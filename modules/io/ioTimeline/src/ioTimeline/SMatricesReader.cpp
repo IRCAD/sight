@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -422,16 +422,16 @@ void SMatricesReader::readMatrices()
 {
     if(m_tsMatricesCount < m_tsMatrices.size())
     {
-        const auto tStart = ::fwCore::HiResClock::getTimeInMilliSec();
+        const auto tStart = core::HiResClock::getTimeInMilliSec();
         ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL);
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
 
-        ::fwCore::HiResClock::HiResClockType timestamp;
+        core::HiResClock::HiResClockType timestamp;
 
         if(m_createNewTS)
         {
-            timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+            timestamp = core::HiResClock::getTimeInMilliSec();
         }
         else
         {
@@ -453,7 +453,7 @@ void SMatricesReader::readMatrices()
 
         if(m_useTimelapse && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
         {
-            const auto elapsedTime          = ::fwCore::HiResClock::getTimeInMilliSec() - tStart;
+            const auto elapsedTime          = core::HiResClock::getTimeInMilliSec() - tStart;
             const std::size_t currentMatrix = m_tsMatricesCount;
             const double currentTime        = m_tsMatrices[currentMatrix].timestamp + elapsedTime;
             double nextDuration             = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - currentTime;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMS_EXCEPTION_HPP__
-#define __FWATOMS_EXCEPTION_HPP__
+#pragma once
+
+#include "fwAtoms/config.hpp"
+
+#include <core/Exception.hpp>
 
 #include <exception>
 #include <string>
-
-#include <fwCore/Exception.hpp>
-#include "fwAtoms/config.hpp"
 
 namespace fwAtoms
 {
@@ -35,7 +35,7 @@ namespace fwAtoms
 /**
  * @brief   Implements atoms exception
  */
-struct FWATOMS_CLASS_API Exception : public ::fwCore::Exception
+struct FWATOMS_CLASS_API Exception : public core::Exception
 {
 
     /**
@@ -43,17 +43,13 @@ struct FWATOMS_CLASS_API Exception : public ::fwCore::Exception
      *
      * @param[in]   message a string containing the failure message
      */
-    FWATOMS_API Exception(const std::string &message) noexcept;
+    FWATOMS_API Exception(const std::string& message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
     FWATOMS_API ~Exception() noexcept;
 
-
 };
 
 } // namespace fwAtoms
-
-#endif // __FWATOMS_EXCEPTION_HPP__
-

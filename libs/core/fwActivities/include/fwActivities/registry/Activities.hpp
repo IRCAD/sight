@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwActivities/config.hpp"
 
-#include <fwCore/BaseObject.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/BaseObject.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -229,13 +229,13 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
  *
  * @see ::fwActivities::registry::ActivityInfo
  */
-class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
+class FWACTIVITIES_CLASS_API Activities : public core::BaseObject
 {
 
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassMacro(Activities, ::fwCore::BaseObject, new Activities)
+    fwCoreClassMacro(Activities, core::BaseObject, new Activities)
 
     /// Return the default global instance of Activities
     FWACTIVITIES_API static Activities::sptr getDefault();
@@ -304,7 +304,7 @@ protected:
     FWACTIVITIES_API Activities();
 
     /// Used to protect the registry access.
-    mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
+    mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// The global instance of the app config parameters.
     static Activities::sptr s_activities;

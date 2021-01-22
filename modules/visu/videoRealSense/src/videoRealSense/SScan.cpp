@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,11 @@
 #include <arData/CameraSeries.hpp>
 #include <arData/FrameTL.hpp>
 
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -52,7 +52,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace fwClock = ::fwCore::HiResClock;
+namespace fwClock = core::HiResClock;
 
 namespace videoRealSense
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ void SOpticalFlow::updating()
 
     const auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAME_TIMELINE_INPUT);
     SLM_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
-    ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
+    core::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
 
     if(timestamp > m_lastTimestamp + m_latency )
     {

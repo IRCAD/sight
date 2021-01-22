@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_HELPER_CONFIG_HPP__
-#define __FWSERVICES_HELPER_CONFIG_HPP__
+#pragma once
 
-#include "fwServices/IService.hpp"
 #include "fwServices/config.hpp"
 #include "fwServices/helper/ProxyConnections.hpp"
+#include "fwServices/IService.hpp"
+
+#include <core/base.hpp>
 
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwTools/Object.hpp>
 
@@ -73,7 +72,6 @@ public:
     typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
     typedef std::map< ObjectIdType, ProxyConnectionsVectType > ProxyConnectionsMapType;
 
-
     struct ConnectionInfo
     {
         SignalInfoType m_signal;
@@ -100,7 +98,7 @@ public:
     FWSERVICES_API static ProxyConnections parseConnections2(
         const CSPTR(::fwRuntime::ConfigurationElement)& connectionCfg,
         const std::string& errMsgHead,
-        std::function<std::string ()> generateChannelNameFn);
+        std::function<std::string()> generateChannelNameFn);
 
     /**
      * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
@@ -113,7 +111,6 @@ public:
         const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
         ::fwCom::helper::SigSlotConnection& helper,
         const CSPTR(::fwTools::Object)& obj = CSPTR(::fwTools::Object)());
-
 
     /**
      * @brief Parses "<proxy>" tags from given configuration to connect signals and slots using proxies.
@@ -129,7 +126,6 @@ public:
         ProxyConnectionsMapType& proxyMap,
         const CSPTR(::fwData::Object)& obj = CSPTR(::fwData::Object)());
 
-
     /// Disconnects all proxies associated to objectKey
     FWSERVICES_API static void disconnectProxies(const std::string& objectKey,
                                                  Config::ProxyConnectionsMapType& proxyMap);
@@ -143,5 +139,3 @@ public:
 } // namespace helper
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_HELPER_CONFIG_HPP__

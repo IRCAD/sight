@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ SSolvePnP::SSolvePnP() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
+void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 {
     const auto camera = this->getLockedInput< ::arData::Camera > (s_CALIBRATION_INPUT);
 

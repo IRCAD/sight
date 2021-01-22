@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGuiQml/model/RoleListModel.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <QDebug>
 

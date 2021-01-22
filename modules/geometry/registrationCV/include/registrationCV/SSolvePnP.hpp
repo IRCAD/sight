@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace registrationCV
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b computeRegistration(::fwCore::HiResClock::HiResClockType): compute the registration using ::cv::solvePnP.
+ * - \b computeRegistration(core::HiResClock::HiResClockType): compute the registration using ::cv::solvePnP.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -80,7 +80,7 @@ public:
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    REGISTRATIONCV_API virtual void computeRegistration(::fwCore::HiResClock::HiResClockType _timestamp) override;
+    REGISTRATIONCV_API virtual void computeRegistration(core::HiResClock::HiResClockType _timestamp) override;
 
 protected:
     /// configures the service

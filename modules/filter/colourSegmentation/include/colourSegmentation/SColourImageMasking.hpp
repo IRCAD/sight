@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -152,7 +152,7 @@ private:
     std::unique_ptr< ::colourImageMasking::Masker > m_masker;
 
     /// Current timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastVideoTimestamp;
+    core::HiResClock::HiResClockType m_lastVideoTimestamp;
 
     /// Reduction factor
     float m_scaleFactor;

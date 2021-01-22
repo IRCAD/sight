@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwLog
     fwTools
-    fwCore
+    core
     fwTest
     )
 set( REQUIREMENTS )

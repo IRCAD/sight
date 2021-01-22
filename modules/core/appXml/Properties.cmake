@@ -4,7 +4,7 @@ set( VERSION 0.2 )
 set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
-    fwCore
+    core
     fwRuntime
     fwServices
 )

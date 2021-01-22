@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -223,7 +223,7 @@ public:
      * It also connect the service's signals and slots defined by connectSignal() and connectSlot().
      * If service is register with autoUpdate=true, it will be updated.
      *
-     * @throw raise a ::fwCore::Exception if all the required objects are not present
+     * @throw raise a core::Exception if all the required objects are not present
      */
     FWSERVICES_API void startService(const ::fwServices::IService::sptr& srv);
 
@@ -414,7 +414,7 @@ SPTR(SERVICE) AppManager::addService( const std::string& type, const std::string
 
     auto castedSrv = std::dynamic_pointer_cast< SERVICE >(srv);
     FW_RAISE_IF("Failed to cast service from factory type '" + type + "' into '" +
-                ::fwCore::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
+                core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
 
     return castedSrv;
 }

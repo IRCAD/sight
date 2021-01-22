@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
+#pragma once
 
-#ifndef __FWATOMSPATCH_EXCEPTIONS_BASE_HPP__
-#define __FWATOMSPATCH_EXCEPTIONS_BASE_HPP__
-
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwAtomsPatch
 {
@@ -35,7 +33,7 @@ namespace exceptions
 /**
  * @brief Base class of fwAtomsPatch exceptions
  */
-class Base : public fwCore::Exception
+class Base : public core::Exception
 {
 public:
     Base(const std::string& message);
@@ -44,9 +42,5 @@ public:
     }
 };
 
-
 } // namespace exceptions
 } // namespace fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_EXCEPTIONS_BASE_HPP__ */
-

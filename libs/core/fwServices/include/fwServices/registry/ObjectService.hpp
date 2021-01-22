@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 
 #include <fwCom/HasSignals.hpp>
 
-#include <fwCore/LogicStamp.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/LogicStamp.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
@@ -59,12 +59,12 @@ namespace registry
  * The API of ObjectService should not be directly invoked,
  * fwServices/op methods (i.e. add, get,...) should be used instead
  */
-class FWSERVICES_CLASS_API ObjectService : public ::fwCore::BaseObject,
+class FWSERVICES_CLASS_API ObjectService : public core::BaseObject,
                                            public ::fwCom::HasSignals
 {
 public:
 
-    fwCoreClassMacro(ObjectService, ::fwCore::BaseObject)
+    fwCoreClassMacro(ObjectService, core::BaseObject)
     fwCoreAllowSharedFromThis();
 
     /**
@@ -233,7 +233,7 @@ protected:
     /// Registered services
     ServiceVectorType m_services;
 
-    mutable ::fwCore::mt::ReadWriteMutex m_containerMutex;
+    mutable core::mt::ReadWriteMutex m_containerMutex;
 
 private:
 

@@ -2,7 +2,7 @@
 set( NAME uiVisuOgreTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES fwCore fwTest fwTools fwRenderOgre)
+set( DEPENDENCIES core fwTest fwTools fwRenderOgre)
 set( REQUIREMENTS
     fwData
     servicesReg

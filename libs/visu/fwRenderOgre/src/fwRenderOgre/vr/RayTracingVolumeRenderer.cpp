@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -576,7 +576,8 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
     if(!gpm.resourceExists(vpName, RESOURCE_GROUP))
     {
-        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, RESOURCE_GROUP, "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
+        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, RESOURCE_GROUP, "glsl",
+                                                               ::Ogre::GPT_VERTEX_PROGRAM);
         vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
         if(vpPPDefines.size() > 0)
@@ -774,7 +775,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     m_entryPointGeometry->end();
 
     // Render volumes after surfaces.
-    m_entryPointGeometry->setRenderQueueGroup(compositor::Core::s_VOLUME_RQ_GROUP_ID);
+    m_entryPointGeometry->setRenderQueueGroup(compositorcore::s_VOLUME_RQ_GROUP_ID);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 

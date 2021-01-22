@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -44,12 +44,12 @@ namespace registry
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::fwServices::registry::AppConfigParameters".
  */
-class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API AppConfigParameters : public core::BaseObject
 {
 
 public:
 
-    fwCoreClassMacro(AppConfigParameters, ::fwCore::BaseObject, new AppConfigParameters)
+    fwCoreClassMacro(AppConfigParameters, core::BaseObject, new AppConfigParameters)
 
     /// Return the default global instance of AppConfigParameters
     FWSERVICES_API static AppConfigParameters::sptr getDefault();
@@ -87,7 +87,7 @@ protected:
     FWSERVICES_API AppConfigParameters();
 
     /// Used to protect the registry access.
-    mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
+    mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// The global instance of the app config parameters.
     static AppConfigParameters::sptr s_appConfigParameters;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwMemory/stream/in/Buffer.hpp"
 
-#include <fwCore/macros.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/macros.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>

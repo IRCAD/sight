@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ void SFrameUpdater::updating()
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp )
+void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
 {
     if (timestamp > m_lastTimestamp)
     {
@@ -179,7 +179,7 @@ void SFrameUpdater::updateImage()
     ::fwData::mt::ObjectWriteLock destLock(m_image);
     const auto dumpLock = m_image->lock();
 
-    const ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
+    const core::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
     CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 
     SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );

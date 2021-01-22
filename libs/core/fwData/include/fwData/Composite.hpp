@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -309,7 +309,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     for( ::fwData::Composite::value_type elem : *this )
     {
         castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        SLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
+        SLM_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
 

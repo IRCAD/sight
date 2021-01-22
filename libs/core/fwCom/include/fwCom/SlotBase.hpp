@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include "fwCom/config.hpp"
 #include "fwCom/util/convert_function_type.hpp"
 
-#include <fwCore/BaseObject.hpp>
-#include <fwCore/mt/types.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/BaseObject.hpp>
+#include <core/mt/types.hpp>
+#include <core/spyLog.hpp>
 
 #include <future>
 #include <queue>
@@ -60,7 +60,7 @@ struct SlotConnectionBase;
 /**
  * @brief Base class for Slot implementations.
  */
-struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SlotBase : virtual core::BaseObject
 {
 
     /**
@@ -97,7 +97,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Sets Slot's Worker.
     void setWorker(const SPTR(::fwThread::Worker)& worker)
     {
-        ::fwCore::mt::WriteLock lock(m_workerMutex);
+        core::mt::WriteLock lock(m_workerMutex);
 
         m_worker = worker;
     }
@@ -105,7 +105,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Returns Slot's Worker.
     SPTR(::fwThread::Worker) getWorker() const
     {
-        ::fwCore::mt::ReadLock lock(m_workerMutex);
+        core::mt::ReadLock lock(m_workerMutex);
         return m_worker;
     }
 
@@ -192,7 +192,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Returns number of connections.
     size_t getNumberOfConnections() const
     {
-        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        core::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();
     }
     protected:
@@ -242,8 +242,8 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
         /// Container of current connections.
         ConnectionSetType m_connections;
 
-        mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
-        mutable ::fwCore::mt::ReadWriteMutex m_workerMutex;
+        mutable core::mt::ReadWriteMutex m_connectionsMutex;
+        mutable core::mt::ReadWriteMutex m_workerMutex;
 };
 
 } // namespace fwCom

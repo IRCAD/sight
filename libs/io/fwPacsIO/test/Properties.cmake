@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwPacsIO
     fwTools
-    fwCore
+    core
     fwTest
     fwThread
     fwData

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ static std::mutex s_compositorManagerLock;
 //------------------------------------------------------------------------------
 
 RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::uint8_t _rqGroup,
-                                       compositor::Core::StereoModeType _stereoMode, bool _enableMixedRendering) :
+                                       compositorcore::StereoModeType _stereoMode, bool _enableMixedRendering) :
     m_compositorName(_compositorName)
 {
     auto& cm = ::Ogre::CompositorManager::getSingleton();
@@ -63,17 +63,17 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
 
         switch(_stereoMode)
         {
-            case compositor::Core::StereoModeType::NONE: break;
-            case compositor::Core::StereoModeType::STEREO:
+            case compositorcore::StereoModeType::NONE: break;
+            case compositorcore::StereoModeType::STEREO:
                 nbViewpoints = 2;
                 heightFactor = 0.5f;
                 break;
-            case compositor::Core::StereoModeType::AUTOSTEREO_5:
+            case compositorcore::StereoModeType::AUTOSTEREO_5:
                 nbViewpoints = 5;
                 heightFactor = 0.5f;
                 widthFactor  = 0.6f;
                 break;
-            case compositor::Core::StereoModeType::AUTOSTEREO_8:
+            case compositorcore::StereoModeType::AUTOSTEREO_8:
                 nbViewpoints = 8;
                 heightFactor = 0.5f;
                 widthFactor  = 0.375f;
@@ -137,7 +137,7 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
                 auto* frontFacesMinPass = frontFacesMinTargetPass->createPass();
                 frontFacesMinPass->setMaterialScheme(schemePrefix + "_FrontFacesMin" + schemeSuffix);
                 frontFacesMinPass->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
-                frontFacesMinPass->setLastRenderQueue(compositor::Core::s_SURFACE_RQ_GROUP_ID);
+                frontFacesMinPass->setLastRenderQueue(compositorcore::s_SURFACE_RQ_GROUP_ID);
             }
         }
 

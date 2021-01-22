@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2016 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_PICKINGINFO_HPP__
-#define __FWDATATOOLS_PICKINGINFO_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
-#include <fwCore/HiResClock.hpp>
+#include <core/HiResClock.hpp>
 
 #include <cstdint>
 
@@ -69,13 +68,10 @@ struct  PickingInfo
     /// Key event
     char m_keyPressed = 0;
 
-    ::fwCore::HiResClock::HiResClockType m_timestamp;
+    core::HiResClock::HiResClockType m_timestamp;
 
     FWDATATOOLS_API PickingInfo();
 
 };
 
 }
-
-#endif // __FWDATATOOLS_PICKINGINFO_HPP__
-

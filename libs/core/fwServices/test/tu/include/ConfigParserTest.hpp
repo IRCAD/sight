@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_UT_CONFIGPARSERTEST_HPP__
-#define __FWSERVICES_UT_CONFIGPARSERTEST_HPP__
+#pragma once
 
 #include <fwServices/macros.hpp>
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
 
 namespace fwServices
 {
@@ -63,5 +61,3 @@ private:
 
 } //namespace ut
 } //namespace fwServices
-
-#endif // __FWSERVICES_UT_CONFIGPARSERTEST_HPP__

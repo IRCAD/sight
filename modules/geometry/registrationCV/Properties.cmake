@@ -6,7 +6,7 @@ set( DEPENDENCIES
     arData
     calibration3d
     fwCom
-    fwCore
+    core
     fwData
     fwMath
     fwRuntime

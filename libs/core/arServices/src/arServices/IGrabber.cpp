@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,7 +121,7 @@ void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
     if(_tl->isAllocated())
     {
         // Clear the timeline: send a black frame
-        const ::fwCore::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
+        const core::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
 
         SPTR(::arData::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
         auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );

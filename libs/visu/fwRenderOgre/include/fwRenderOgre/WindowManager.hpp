@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwCore/base.hpp>
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/base.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 
@@ -38,7 +38,7 @@ namespace fwRenderOgre
  * The problem is that the OpenGLRenderSystem we use, somehow, needs the first window created to be deleted last.
  * This class allows to differ the deletion of the first created window.
  */
-class FWRENDEROGRE_CLASS_API WindowManager : public ::fwCore::BaseObject
+class FWRENDEROGRE_CLASS_API WindowManager : public core::BaseObject
 {
 
 public:

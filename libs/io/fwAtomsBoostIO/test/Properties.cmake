@@ -2,5 +2,5 @@
 set( NAME fwAtomsBoostIOTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES fwCore fwTools fwAtomsBoostIO fwMemory fwAtoms fwZip fwTest )
+set( DEPENDENCIES core fwTools fwAtomsBoostIO fwMemory fwAtoms fwZip fwTest )
 set( REQUIREMENTS )

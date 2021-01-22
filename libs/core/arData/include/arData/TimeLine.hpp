@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ class ARDATA_CLASS_API TimeLine : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(TimeLine, ::fwData::Object);
+    fwCoreClassMacro(TimeLine, ::fwData::Object)
 
     typedef enum
     {
@@ -47,8 +47,8 @@ public:
         FUTURE = 1
     } DirectionType;
 
-    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
-    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
+    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
+    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
     typedef ::fwCom::Signal< void () > ObjectClearedSignalType;
 
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
@@ -68,14 +68,14 @@ public:
     ARDATA_API virtual void pushObject(const SPTR(::arData::timeline::Object)& obj) = 0;
 
     /// Removes an object from the timeline
-    ARDATA_API virtual SPTR(::arData::timeline::Object) popObject(::fwCore::HiResClock::HiResClockType timestamp) = 0;
+    ARDATA_API virtual SPTR(::arData::timeline::Object) popObject(core::HiResClock::HiResClockType timestamp) = 0;
 
     /// modify an object timestamp
-    ARDATA_API virtual void modifyTime(::fwCore::HiResClock::HiResClockType timestamp,
-                                       ::fwCore::HiResClock::HiResClockType newTimestamp) = 0;
+    ARDATA_API virtual void modifyTime(core::HiResClock::HiResClockType timestamp,
+                                       core::HiResClock::HiResClockType newTimestamp) = 0;
 
     /// Change an object to the specified timestamp
-    ARDATA_API virtual void setObject(::fwCore::HiResClock::HiResClockType timestamp,
+    ARDATA_API virtual void setObject(core::HiResClock::HiResClockType timestamp,
                                       const SPTR(::arData::timeline::Object)& obj) = 0;
 
     /**
@@ -83,7 +83,7 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    ARDATA_API virtual SPTR(::arData::timeline::Object) createObject(::fwCore::HiResClock::HiResClockType timestamp)
+    ARDATA_API virtual SPTR(::arData::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp)
         = 0;
 
     /**
@@ -92,10 +92,10 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     ARDATA_API virtual CSPTR(::arData::timeline::Object) getClosestObject(
-        ::fwCore::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH)  const = 0;
+        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH)  const = 0;
 
     /// Return the object with the specified timestamp
-    ARDATA_API virtual CSPTR(::arData::timeline::Object) getObject(::fwCore::HiResClock::HiResClockType timestamp)
+    ARDATA_API virtual CSPTR(::arData::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
     const = 0;
 
 protected:

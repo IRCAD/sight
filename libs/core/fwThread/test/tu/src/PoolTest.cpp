@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <fwThread/Pool.hpp>
 #include <fwThread/Worker.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwThread::ut::PoolTest );

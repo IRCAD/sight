@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwThread/Pool.hpp"
 
-#include <fwCore/spyLog.hpp>
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/spyLog.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 namespace fwThread
 {
@@ -91,7 +91,7 @@ Pool::~Pool()
 
 Pool& getDefaultPool()
 {
-    auto poolInstance = ::fwCore::util::LazyInstantiator< Pool >::getInstance();
+    auto poolInstance = core::util::LazyInstantiator< Pool >::getInstance();
     return *poolInstance;
 }
 

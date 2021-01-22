@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ namespace fwAtomConversion
         {
             obj = ::fwData::factory::New(classname);
         }
-        catch(const ::fwCore::Exception& e)
+        catch(const core::Exception& e)
         {
             SLM_ERROR(e.what());
         }
@@ -80,7 +80,7 @@ namespace fwAtomConversion
         obj = ::fwData::factory::New(classname);
         // uuid is set only if the given uuid is available
     }
-    catch(const ::fwCore::Exception& e)
+    catch(const core::Exception& e)
     {
         SLM_ERROR(e.what());
     }
@@ -104,7 +104,7 @@ namespace fwAtomConversion
     {
         obj = ::fwData::factory::New(classname);
     }
-    catch(const ::fwCore::Exception& e)
+    catch(const core::Exception& e)
     {
         SLM_ERROR(e.what());
     }

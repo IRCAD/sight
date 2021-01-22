@@ -6,7 +6,7 @@ set( DEPENDENCIES
     fwData
     fwRuntime
     fwServices
-    fwCore
+    core
     fwThread
     fwCom
     exTimeLineData

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlNetwork/Exception.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <igtlProtocol/MessageFactory.hpp>
 
@@ -57,7 +57,7 @@ Server::~Server()
 
 bool Server::isStarted() const
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     return m_isStarted;
 }
@@ -80,7 +80,7 @@ void Server::runServer()
         newClient = this->waitForConnection();
         if (newClient != nullptr)
         {
-            ::fwCore::mt::ScopedLock lock(m_mutex);
+            core::mt::ScopedLock lock(m_mutex);
             m_clients.push_back(newClient);
         }
     }
@@ -96,7 +96,7 @@ void Server::broadcast(const ::fwData::Object::csptr& obj)
     {
         if (!(*it)->sendObject(obj))
         {
-            ::fwCore::mt::ScopedLock lock(m_mutex);
+            core::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -117,7 +117,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
     {
         if (!(*it)->sendMsg(msg))
         {
-            ::fwCore::mt::ScopedLock lock(m_mutex);
+            core::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -132,7 +132,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 void Server::start (std::uint16_t port)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_isStarted)
     {
@@ -169,7 +169,7 @@ Client::sptr Server::waitForConnection (int msec)
 
 void Server::stop()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     if (!m_isStarted)
     {
         throw ::igtlNetwork::Exception("Server is already stopped");
@@ -186,7 +186,7 @@ size_t Server::getNumberOfClients() const
 {
     if(this->isStarted())
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
 
         return m_clients.size();
     }
@@ -199,7 +199,7 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
 {
     std::vector< ::igtl::MessageHeader::Pointer > headerMsgs;
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     for(const auto& client : m_clients)
     {
@@ -264,7 +264,7 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
     msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     const int result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 

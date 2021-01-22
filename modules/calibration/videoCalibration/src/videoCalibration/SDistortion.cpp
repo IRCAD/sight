@@ -31,7 +31,7 @@
 #include <fwCom/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwZip/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwZip
 {
@@ -33,7 +33,7 @@ namespace exception
 {
 
 /// Read exception.
-struct Read : ::fwCore::Exception
+struct Read : core::Exception
 {
     FWZIP_API Read ( const std::string& err );
 };

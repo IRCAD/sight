@@ -4,7 +4,7 @@ set( NAME filterUnknownSeries )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCore
+    core
     fwAtoms
     fwAtomsFilter
     fwAtomsPatch

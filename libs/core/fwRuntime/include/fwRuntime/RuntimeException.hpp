@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRuntime/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <exception>
 #include <string>
@@ -36,7 +36,7 @@ namespace fwRuntime
  * @brief   Defines the runtime exception class.
  *
  */
-struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
+struct FWRUNTIME_CLASS_API RuntimeException : public core::Exception
 {
 
     /**

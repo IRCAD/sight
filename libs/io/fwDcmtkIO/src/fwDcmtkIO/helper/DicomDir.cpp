@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwDcmtkIO/helper/DicomDir.hpp"
 
-#include <fwCore/exceptionmacros.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/exceptionmacros.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>

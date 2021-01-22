@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwNetworkIO/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <map>
 
@@ -37,12 +37,12 @@ namespace http
 /**
  * @brief HTTP request.
  */
-class FWNETWORKIO_CLASS_API Request : public ::fwCore::BaseObject
+class FWNETWORKIO_CLASS_API Request : public core::BaseObject
 {
 
 public:
     fwCoreAllowSharedFromThis();
-    fwCoreClassMacro(Request, ::fwCore::BaseObject, new Request);
+    fwCoreClassMacro(Request, core::BaseObject, new Request)
 
     /// Maps header name to its value.
     typedef std::map<std::string, std::string> HeadersType;

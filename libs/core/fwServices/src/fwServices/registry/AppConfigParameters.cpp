@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ void AppConfigParameters::parseBundleInformation()
             std::string val  = paramConfig->getExistingAttributeValue("value");
             parameters[name] = val;
         }
-        ::fwCore::mt::WriteLock lock(m_registryMutex);
+        core::mt::WriteLock lock(m_registryMutex);
 #ifdef _DEBUG
         Registry::const_iterator iter = m_reg.find( extensionId );
 #endif
@@ -94,7 +94,7 @@ AppConfigParameters::AppConfigParameters()
 
 void AppConfigParameters::clearRegistry()
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -102,7 +102,7 @@ void AppConfigParameters::clearRegistry()
 
 const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& extensionId ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
     SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
                iter != m_reg.end());

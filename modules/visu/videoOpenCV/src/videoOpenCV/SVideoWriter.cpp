@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -177,7 +177,7 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(::arData::FrameTL::B
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
+void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {

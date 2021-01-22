@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ void STDataListener::runClient()
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
@@ -160,7 +160,7 @@ void STDataListener::runClient()
             }
         }
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,

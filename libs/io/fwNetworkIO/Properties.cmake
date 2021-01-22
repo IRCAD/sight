@@ -3,7 +3,7 @@ set( NAME fwNetworkIO )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTools
     fwThread
     fwData

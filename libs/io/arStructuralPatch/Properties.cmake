@@ -6,6 +6,6 @@ set( DEPENDENCIES
     fwAtoms
     fwAtomsPatch
     fwTools
-    fwCore
+    core
 )
 set( REQUIREMENTS  )

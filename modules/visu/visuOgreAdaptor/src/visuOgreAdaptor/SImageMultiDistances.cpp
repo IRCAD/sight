@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,8 @@
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
-#include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/ogre.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -59,7 +59,7 @@ static const std::string s_PRIORITY_CONFIG    = "priority";
 static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
 static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
-static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
+static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositorcore::s_SURFACE_RQ_GROUP_ID;
 
 //------------------------------------------------------------------------------
 

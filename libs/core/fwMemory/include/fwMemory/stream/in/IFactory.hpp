@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_STREAM_IN_IFACTORY_HPP__
-#define __FWMEMORY_STREAM_IN_IFACTORY_HPP__
+#pragma once
 
 #include "fwMemory/config.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <istream>
 
@@ -57,7 +56,3 @@ protected:
 } // namespace in
 } // namespace stream
 } // namespace fwMemory
-
-#endif // __FWMEMORY_STREAM_IN_IFACTORY_HPP__
-
-

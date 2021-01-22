@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "inr2itk/itkInrImageIO.hpp"
 
-#include <fwCore/Exception.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/Exception.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -465,7 +465,7 @@ void InrImageIO::Read(void* buffer)
             bytesRead += gzread( file, ((char*)buffer)+bytesRead,  min(size, GetImageSizeInBytes() - bytesRead)  );
         }
     }
-    catch(::fwCore::Exception& e) // catch progress bar cancel exception
+    catch(core::Exception& e) // catch progress bar cancel exception
     {
         gzclose(file);
         throw;
@@ -780,7 +780,7 @@ void InrImageIO::Write(const void* buffer)
 
             }
         }
-        catch(::fwCore::Exception& e) // catch progress bar cancel exception
+        catch(core::Exception& e) // catch progress bar cancel exception
         {
             gzclose(outputFile);
             throw;
@@ -818,7 +818,7 @@ void InrImageIO::Write(const void* buffer)
                     fwrite( ((char*)buffer)+written, 1,  min(size, GetImageSizeInBytes() - written), outputFile);
             }
         }
-        catch(::fwCore::Exception& e) // catch progress bar cancel exception
+        catch(core::Exception& e) // catch progress bar cancel exception
         {
             fclose(outputFile);
             throw;

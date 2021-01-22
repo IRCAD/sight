@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,21 +20,21 @@
  *
  ***********************************************************************/
 
+#include "uiVisu/action/SSnapshot.hpp"
+
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwCore/base.hpp>
-
 #include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwGui/dialog/LocationDialog.hpp>
-
-#include "uiVisu/action/SSnapshot.hpp"
 
 namespace uiVisu
 {
@@ -43,8 +43,7 @@ namespace action
 
 const ::fwCom::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::fwData::Object );
-
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::fwData::Object )
 
 SSnapshot::SSnapshot() noexcept
 {
@@ -99,7 +98,7 @@ void SSnapshot::swapping()
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::info( std::ostream &_sstream )
+void SSnapshot::info( std::ostream& _sstream )
 {
 }
 
@@ -111,12 +110,12 @@ std::string SSnapshot::requestFileName()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
-    dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
-    dialogFile.addFilter("jpeg","*.jpg *.jpeg");
-    dialogFile.addFilter("bmp","*.bmp");
-    dialogFile.addFilter("png","*.png");
-    dialogFile.addFilter("tiff","*.tiff");
-    dialogFile.addFilter("all","*.*");
+    dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
+    dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
+    dialogFile.addFilter("bmp", "*.bmp");
+    dialogFile.addFilter("png", "*.png");
+    dialogFile.addFilter("tiff", "*.tiff");
+    dialogFile.addFilter("all", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -133,4 +132,3 @@ std::string SSnapshot::requestFileName()
 
 } // action
 } // uiVisu
-

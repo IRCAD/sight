@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <core/HiResClock.hpp>
+
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/HiResClock.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -96,7 +96,7 @@ void STimestampSlotCaller::starting()
 
 void STimestampSlotCaller::updating()
 {
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
     for(SlotInfoType info : m_slotInfos)
     {

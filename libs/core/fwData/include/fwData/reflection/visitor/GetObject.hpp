@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwData/config.hpp"
 
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+#include <core/macros.hpp>
 
-#include <fwCore/macros.hpp>
+#include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>

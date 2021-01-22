@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <dcmtk/dcmdata/dctag.h>
 

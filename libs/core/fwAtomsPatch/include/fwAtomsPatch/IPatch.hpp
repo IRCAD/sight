@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwAtomsPatch/config.hpp"
 #include <fwAtomsPatch/helper/Object.hpp>
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwAtoms/Object.hpp>
 
 #include <map>
 #include <string>
@@ -38,11 +38,11 @@ namespace fwAtomsPatch
 /**
  * @brief Base class of all patches
  */
-class FWATOMSPATCH_CLASS_API IPatch : public ::fwCore::BaseObject
+class FWATOMSPATCH_CLASS_API IPatch : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(IPatch);
+    fwCoreClassMacro(IPatch)
     fwCoreAllowSharedFromThis();
 
     /**

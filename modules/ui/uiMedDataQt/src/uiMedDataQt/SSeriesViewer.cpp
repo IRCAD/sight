@@ -22,7 +22,7 @@
 
 #include "uiMedDataQt/SSeriesViewer.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>

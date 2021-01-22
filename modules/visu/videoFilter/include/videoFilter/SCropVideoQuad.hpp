@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace videoFilter
  * timelines.
  *
  * @section Slots Slots
- * - \b cropFrame(::fwCore::HiResClock::HiResClockType) : splits the current frame.
+ * - \b cropFrame(core::HiResClock::HiResClockType) : splits the current frame.
  *
  * @section XML XML Configuration
  *
@@ -89,12 +89,12 @@ protected:
 private:
 
     /// Slot to crop the current frame
-    void cropFrame(::fwCore::HiResClock::HiResClockType timestamp);
+    void cropFrame(core::HiResClock::HiResClockType timestamp);
 
     void pushFrameInTimeline(::cv::Mat& imgIn,
                              const ::cv::Rect& roi,
                              ::arData::FrameTL::sptr& frameTL,
-                             ::fwCore::HiResClock::HiResClockType timestamp);
+                             core::HiResClock::HiResClockType timestamp);
 
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 };

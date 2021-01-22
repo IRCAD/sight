@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,20 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_STRUCTURALPATCHDB_HPP__
-#define __FWATOMSPATCH_STRUCTURALPATCHDB_HPP__
-
-#include <string>
-#include <vector>
-#include <map>
-#include <utility>
-
-#include <fwCore/macros.hpp>
-#include <fwCore/mt/types.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
-
 #include "fwAtomsPatch/IStructuralPatch.hpp"
+
+#include <core/macros.hpp>
+#include <core/mt/types.hpp>
+
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace fwAtomsPatch
 {
@@ -99,14 +97,13 @@ public:
 
 private:
 
-
     /// Copy constructor
-    StructuralPatchDB( const StructuralPatchDB &cpy )
+    StructuralPatchDB( const StructuralPatchDB& cpy )
     {
     }
 
     /// Mutex to protect concurrent access for m_patches
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 
     /// Patches
     PatchesType m_patches;
@@ -116,5 +113,3 @@ private:
 };
 
 } // fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_STRUCTURALPATCHDB_HPP__ */

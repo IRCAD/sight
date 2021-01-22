@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,10 +56,10 @@ static const std::string s_ADAPTOR_CONFIG          = "adaptor";
 SRender::SRender()
 {
     // Allow using GenericScene and FrameGraph as QML types when using SRender service in QML applications.
-    qmlRegisterType< ::fwRenderQt3D::core::GenericScene >("fwRenderQt3D", 1, 0, "GenericScene");
-    qmlRegisterType< ::fwRenderQt3D::core::FrameGraph >("fwRenderQt3D", 1, 0, "FrameGraph");
-    qRegisterMetaType< ::fwRenderQt3D::core::GenericScene* >("::fwRenderQt3D::core::GenericScene*");
-    qRegisterMetaType< ::fwRenderQt3D::core::FrameGraph* >("::fwRenderQt3D::core::FrameGraph*");
+    qmlRegisterType< ::fwRenderQt3Dcore::GenericScene >("fwRenderQt3D", 1, 0, "GenericScene");
+    qmlRegisterType< ::fwRenderQt3Dcore::FrameGraph >("fwRenderQt3D", 1, 0, "FrameGraph");
+    qRegisterMetaType< ::fwRenderQt3Dcore::GenericScene* >("::fwRenderQt3Dcore::GenericScene*");
+    qRegisterMetaType< ::fwRenderQt3Dcore::FrameGraph* >("::fwRenderQt3Dcore::FrameGraph*");
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void SRender::starting()
     m_3dView = new Qt3DExtras::Qt3DWindow();
 
     // Creates a Qt3D generic scene.
-    m_scene = new ::fwRenderQt3D::core::GenericScene(false);
+    m_scene = new ::fwRenderQt3Dcore::GenericScene(false);
 
     // Configures m_3dView camera and sets it as the scene's camera.
     QPointer< Qt3DRender::QCamera > const camera = m_3dView->camera();
@@ -151,7 +151,7 @@ void SRender::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::core::GenericScene* SRender::getScene()
+::fwRenderQt3Dcore::GenericScene* SRender::getScene()
 {
     return m_scene;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwRenderQt3D/factory/new.hpp"
 #include "fwRenderQt3D/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 
@@ -44,7 +44,7 @@ namespace fwRenderQt3D
  * @brief Defines an abstract class to manage Qt3D RenderWindow in a qt container.
  *
  */
-class FWRENDERQT3D_CLASS_API IRenderWindowInteractorManager : public ::fwCore::BaseObject
+class FWRENDERQT3D_CLASS_API IRenderWindowInteractorManager : public core::BaseObject
 {
 
 public:
@@ -67,7 +67,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject)
+    fwCoreClassMacro(IRenderWindowInteractorManager, core::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

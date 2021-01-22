@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMATH_VECTORFUNCTIONS_HPP__
-#define __FWMATH_VECTORFUNCTIONS_HPP__
+#pragma once
 
-#include <fwCore/base.hpp>
-
-#include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
+#include "fwMath/IntrasecTypes.hpp"
+
+#include <core/base.hpp>
 
 namespace fwMath
 {
@@ -34,14 +33,14 @@ namespace fwMath
 /**
  *  @brief Normalize a vector
  */
-FWMATH_API double normalize(fwVec3d & vec);
+FWMATH_API double normalize(fwVec3d& vec);
 
 /**
  *  @brief Return a normalized vector
  *  @param [in] vec vector to normalize
  *  @return normalized vector
  */
-FWMATH_API fwVec3d normalized(const fwVec3d & vec);
+FWMATH_API fwVec3d normalized(const fwVec3d& vec);
 
 /**
  *  @brief Compute the Dot product between two vectors.
@@ -63,14 +62,14 @@ FWMATH_API fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2);
  *  @param [in] _vec
  *  @return the vector's length
  */
-FWMATH_API double vecLength(const fwVec3d &_vec);
+FWMATH_API double vecLength(const fwVec3d& _vec);
 
 /**
  *  @brief Compute the negate of the vector.
  *  @param [in] _vec
  *  @param [out] _vec
  */
-FWMATH_API void negate(fwVec3d &_vec);
+FWMATH_API void negate(fwVec3d& _vec);
 
 } //namespace fwMath
 
@@ -161,6 +160,3 @@ FWMATH_API int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
  *  @return 1 if different.
  */
 FWMATH_API int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2);
-
-
-#endif /* __FWMATH_VECTORFUNCTIONS_HPP__ */

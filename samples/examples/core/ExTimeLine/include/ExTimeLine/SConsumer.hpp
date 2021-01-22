@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ protected:
     virtual void updating() final override;
 
     /// Called by a signal to consume a message
-    void consume(::fwCore::HiResClock::HiResClockType timestamp);
+    void consume(core::HiResClock::HiResClockType timestamp);
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,10 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/helper/Font.hpp"
+
 #include "fwRenderOgre/ogre.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -74,7 +75,8 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
 
 Ogre::TexturePtr Font::getFontMap(const std::string& _fontName)
 {
-    ::Ogre::TexturePtr fontMap = ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
+    ::Ogre::TexturePtr fontMap =
+        ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
 
     SLM_ASSERT("Could not find a font map for " + _fontName + ". Please make sure that the font is loaded.", fontMap);
 

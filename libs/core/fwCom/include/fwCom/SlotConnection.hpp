@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,7 +131,7 @@ struct FWCOM_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
         /// Connection blocker.
         SlotConnectionBase::BlockerWptrType m_weakBlocker;
 
-        mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+        mutable core::mt::ReadWriteMutex m_mutex;
 };
 
 } // namespace fwCom

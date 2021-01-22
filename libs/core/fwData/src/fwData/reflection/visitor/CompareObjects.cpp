@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "fwData/reflection/mapper.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -290,7 +290,7 @@ void CompareObjects::compare(SPTR(::fwData::Object)objRef, SPTR(::fwData::Object
         std::stringstream ss;
         ss << "Classnames mismatch : '" << objRef->getClassname() << "' (reference object) vs. '"
            << objComp->getClassname() << "' (compared object)";
-        throw ::fwCore::Exception(ss.str());
+        throw core::Exception(ss.str());
     }
 
     m_objRef  = objRef;

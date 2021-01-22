@@ -3,7 +3,7 @@ set( NAME arStructuralPatchTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTest 
     arStructuralPatch
     fwAtomsPatch

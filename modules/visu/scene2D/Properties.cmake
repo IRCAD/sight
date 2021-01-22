@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( PRIORITY 2)
 set( DEPENDENCIES
-    fwCore
+    core
     fwTools
     fwData
     fwDataTools

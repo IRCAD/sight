@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_EXCEPTION_BADCAST_HPP__
-#define __FWMEMORY_EXCEPTION_BADCAST_HPP__
-
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwMemory/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwMemory
 {
@@ -34,17 +33,14 @@ namespace exception
 
 /**
  * @brief   Implements an exception class for bad cast
- * @class   BadCast
  */
-struct FWMEMORY_CLASS_API BadCast : ::fwCore::Exception
+struct FWMEMORY_CLASS_API BadCast : core::Exception
 {
-    BadCast( const std::string &err ) : ::fwCore::Exception(err)
+    BadCast( const std::string& err ) :
+        core::Exception(err)
     {
     }
 };
 
 } // namespace exception
 } // namespace fwMemory
-
-#endif // __FWMEMORY_EXCEPTION_BADCAST_HPP__
-

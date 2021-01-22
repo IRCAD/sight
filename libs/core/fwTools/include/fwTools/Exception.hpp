@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,25 +20,22 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_EXCEPTION_HPP__
-#define __FWTOOLS_EXCEPTION_HPP__
+#pragma once
+
+#include "core/Exception.hpp"
+
+#include "fwTools/config.hpp"
 
 #include <exception>
 #include <string>
-
-#include "fwCore/Exception.hpp"
-#include "fwTools/config.hpp"
 
 namespace fwTools
 {
 
 /**
  * @brief   Implements fwTools exception class
- * @class   Exception
- *
- * @date    2007-2009.
  */
-struct FWTOOLS_CLASS_API Exception : public ::fwCore::Exception
+struct FWTOOLS_CLASS_API Exception : public core::Exception
 {
 
     /**
@@ -46,17 +43,13 @@ struct FWTOOLS_CLASS_API Exception : public ::fwCore::Exception
      *
      * @param[in]   message a string containing the failure message
      */
-    FWTOOLS_API Exception(const std::string &message) noexcept;
+    FWTOOLS_API Exception(const std::string& message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
     FWTOOLS_API ~Exception() noexcept;
 
-
 };
 
 } // namespace fwTools
-
-#endif // __FWTOOLS_EXCEPTION_HPP__
-

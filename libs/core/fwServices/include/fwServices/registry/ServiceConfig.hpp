@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,11 +38,11 @@ namespace registry
 
 /**
  */
-class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ServiceConfigInfo : public core::BaseObject
 {
 public:
 
-    fwCoreClassMacro(ServiceConfigInfo, ::fwCore::BaseObject, new ServiceConfigInfo)
+    fwCoreClassMacro(ServiceConfigInfo, core::BaseObject, new ServiceConfigInfo)
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
@@ -78,12 +78,12 @@ public:
     </extension>
    @endcode
  */
-class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ServiceConfig : public core::BaseObject
 {
 
 public:
 
-    fwCoreClassMacro(ServiceConfig, ::fwCore::BaseObject, new ServiceConfig)
+    fwCoreClassMacro(ServiceConfig, core::BaseObject, new ServiceConfig)
 
     /// Return the default global instance of ServiceConfig
     FWSERVICES_API static ServiceConfig::sptr getDefault();
@@ -152,7 +152,7 @@ protected:
     const static std::string CONFIG_EXT_POINT;
 
     /// Used to protect the registry access.
-    mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
+    mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// The global instance of the service config.
     static ServiceConfig::sptr s_currentServiceConfig;

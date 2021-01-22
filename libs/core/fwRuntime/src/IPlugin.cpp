@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,27 +20,27 @@
  *
  ***********************************************************************/
 
-#include <fwCore/base.hpp>
 #include "fwRuntime/IPlugin.hpp"
 
+#include <core/base.hpp>
 
 namespace fwRuntime
 {
-
-
 
 IPlugin::~IPlugin()
 {
 }
 
+//------------------------------------------------------------------------------
 
 void IPlugin::initialize()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void IPlugin::uninitialize()
 {
 }
-
 
 } // namespace fwRuntime

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,12 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <core/base.hpp>
+#include <core/HiResClock.hpp>
+
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -55,7 +55,7 @@ namespace videoQt
  * @warning In order to start/stop recording, this service must not be auto-connected.
  *
  * @section Slots Slots
- * - \b saveFrame(::fwCore::HiResClock::HiResClockType timestamp) : save the frame with the given timestamp
+ * - \b saveFrame(core::HiResClock::HiResClockType timestamp) : save the frame with the given timestamp
  * - \b startRecord() : start listening the timeline
  * - \b stopRecord() : stop listening the timeline
  * - \b pauseRecord() : toggle (start or stop) listening the the timeline
@@ -90,7 +90,7 @@ public:
      * @{
      */
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> SaveFrameSlotType;
+    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> SaveFrameSlotType;
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_START_RECORD_SLOT;
     typedef ::fwCom::Slot<void ()> StartRecordSlotType;
@@ -120,7 +120,7 @@ protected:
 private:
 
     /// SLOT: saves frame on disk
-    void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
+    void saveFrame(core::HiResClock::HiResClockType timestamp);
 
     /// SLOT: start record
     void startRecord();

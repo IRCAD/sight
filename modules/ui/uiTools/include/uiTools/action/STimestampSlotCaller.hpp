@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiTools/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -40,7 +40,7 @@ namespace action
  * @brief Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
  *
  * @code{.xml}
-     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
      slot->asyncRun(timestamp);
    @endcode
  */
@@ -48,7 +48,7 @@ class UITOOLS_CLASS_API STimestampSlotCaller : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(STimestampSlotCaller, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(STimestampSlotCaller, ::fwGui::IActionSrv)
 
     /// Constructor
     UITOOLS_API STimestampSlotCaller();

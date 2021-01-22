@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwMemory/exception/Memory.hpp>
-
 #include "arData/timeline/Buffer.hpp"
+
+#include <fwMemory/exception/Memory.hpp>
 
 namespace arData
 {
@@ -32,7 +32,7 @@ namespace timeline
 
 //-----------------------------------------------------------------------------
 
-Buffer::Buffer( ::fwCore::HiResClock::HiResClockType timestamp,
+Buffer::Buffer( core::HiResClock::HiResClockType timestamp,
                 BufferDataType buffer, size_t size, DeleterType d) :
     Object(timestamp),
     m_size(size),

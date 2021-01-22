@@ -23,7 +23,7 @@
 #include "visuOgreQt/Window.hpp"
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>

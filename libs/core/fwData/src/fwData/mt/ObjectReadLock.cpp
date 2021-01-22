@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@ ObjectReadLock::ObjectReadLock(::fwData::Object::csptr obj, bool lock)
 {
     if (lock)
     {
-        m_lock = ::fwCore::mt::ReadLock(obj->getMutex());
+        m_lock = core::mt::ReadLock(obj->getMutex());
     }
     else
     {
-        m_lock = ::fwCore::mt::ReadLock(obj->getMutex(), ::boost::defer_lock_t());
+        m_lock = core::mt::ReadLock(obj->getMutex(), ::boost::defer_lock_t());
     }
 }
 

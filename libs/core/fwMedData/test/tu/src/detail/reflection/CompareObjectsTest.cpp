@@ -27,7 +27,7 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <fwCore/macros.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/macros.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/noncopyable.hpp>
 

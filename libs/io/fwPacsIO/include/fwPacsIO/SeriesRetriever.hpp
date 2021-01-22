@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,12 +40,12 @@ namespace fwPacsIO
 /**
  * @brief Reads DICOM series from pacs.
  */
-class FWPACSIO_CLASS_API SeriesRetriever : public ::fwCore::BaseObject,
+class FWPACSIO_CLASS_API SeriesRetriever : public core::BaseObject,
                                            public DcmSCP
 {
 
 public:
-    fwCoreClassMacro(SeriesRetriever, ::fwPacsIO::SeriesRetriever, new SeriesRetriever);
+    fwCoreClassMacro(SeriesRetriever, ::fwPacsIO::SeriesRetriever, new SeriesRetriever)
     fwCoreAllowSharedFromThis();
 
     FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;

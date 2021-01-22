@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "igtlNetwork/config.hpp"
 #include "igtlNetwork/INetwork.hpp"
 
-#include <fwCore/Exception.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/Exception.hpp>
+#include <core/mt/types.hpp>
 
 #include <igtlServerSocket.h>
 
@@ -144,7 +144,7 @@ private:
     ::igtl::ServerSocket::Pointer m_serverSocket;
 
     ///mutex
-    mutable ::fwCore::mt::Mutex m_mutex;
+    mutable core::mt::Mutex m_mutex;
 
     /// state of server
     bool m_isStarted;

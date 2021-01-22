@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2015 IRCAD France
+ * Copyright (C) 2004-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_EXCEPTION_CONVERSIONNOTMANAGED_HPP__
-#define __FWATOMCONVERSION_EXCEPTION_CONVERSIONNOTMANAGED_HPP__
-
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwAtomConversion/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwAtomConversion
 {
@@ -33,15 +32,13 @@ namespace exception
 {
 
 /// Throw this exception when a conversion between data and atom is not managed (error message explains the reasons)
-struct FWATOMCONVERSION_CLASS_API ConversionNotManaged : ::fwCore::Exception
+struct FWATOMCONVERSION_CLASS_API ConversionNotManaged : core::Exception
 {
-    FWATOMCONVERSION_API ConversionNotManaged( const std::string &err ) : ::fwCore::Exception(err)
+    FWATOMCONVERSION_API ConversionNotManaged( const std::string& err ) :
+        core::Exception(err)
     {
     }
 };
 
 } // namespace exception
 } // namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_EXCEPTION_CONVERSIONNOTMANAGED_HPP__
-

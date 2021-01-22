@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,10 +61,10 @@ public:
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     ARDATA_API virtual CSPTR(::arData::timeline::RawBuffer) getClosestBuffer(
-        ::fwCore::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const;
+        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
-    ARDATA_API virtual CSPTR(::arData::timeline::RawBuffer) getBuffer(::fwCore::HiResClock::HiResClockType timestamp)
+    ARDATA_API virtual CSPTR(::arData::timeline::RawBuffer) getBuffer(core::HiResClock::HiResClockType timestamp)
     const;
 
     /// Initialize the size of the pool buffer.
@@ -75,14 +75,14 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    ARDATA_API SPTR(::arData::timeline::Object) createObject(::fwCore::HiResClock::HiResClockType timestamp) override;
+    ARDATA_API SPTR(::arData::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp) override;
 
     /**
      * @brief Return a new BufferType with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    ARDATA_API SPTR(::arData::timeline::RawBuffer) createBuffer(::fwCore::HiResClock::HiResClockType timestamp);
+    ARDATA_API SPTR(::arData::timeline::RawBuffer) createBuffer(core::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
     ARDATA_API virtual bool isObjectValid(const CSPTR(::arData::timeline::Object)& obj) const override;

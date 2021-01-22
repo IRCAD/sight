@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ genFrameTL(size_t _w, size_t _h, std::uint8_t _numChannels)
 
     ::arData::FrameTL::sptr frameTL = ::arData::FrameTL::New();
     frameTL->initPoolSize(_w, _h, type, _numChannels);
-    auto buffer = frameTL->createBuffer(::fwCore::HiResClock::getTimeInMilliSec());
+    auto buffer = frameTL->createBuffer(core::HiResClock::getTimeInMilliSec());
 
     return std::make_pair(frameTL, buffer);
 }

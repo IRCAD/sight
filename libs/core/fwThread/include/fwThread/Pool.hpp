@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwThread/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <condition_variable>
 #include <functional>

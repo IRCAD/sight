@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwAtomsPatch/helper/Object.hpp"
 #include "fwAtomsPatch/IPatch.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <string>
 
@@ -45,7 +45,7 @@ class FWATOMSPATCH_CLASS_API IStructuralPatch : public IPatch
 {
 
 public:
-    fwCoreClassMacro(IStructuralPatch);
+    fwCoreClassMacro(IStructuralPatch)
     fwCoreAllowSharedFromThis();
 
     ///Constructor

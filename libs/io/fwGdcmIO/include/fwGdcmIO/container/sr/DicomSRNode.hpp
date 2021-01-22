@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
-#define __FWGDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <gdcmDataSet.h>
 
@@ -156,5 +155,3 @@ protected:
 } //namespace sr
 } //namespace container
 } //namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__ */

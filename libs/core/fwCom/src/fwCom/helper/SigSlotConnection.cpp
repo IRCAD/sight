@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <fwCom/exception/BadSlot.hpp>
 #include <fwCom/SignalBase.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwTools/Object.hpp>
 

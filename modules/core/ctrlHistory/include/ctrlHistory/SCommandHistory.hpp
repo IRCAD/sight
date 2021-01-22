@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "ctrlHistory/config.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCommand/ICommand.hpp>
 #include <fwCommand/UndoRedoManager.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

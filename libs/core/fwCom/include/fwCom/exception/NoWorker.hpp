@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,12 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_EXCEPTION_NOWORKER_HPP__
-#define __FWCOM_EXCEPTION_NOWORKER_HPP__
 
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwCom/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwCom
 {
@@ -32,17 +32,11 @@ namespace exception
 {
 
 /// No worker exception.
-struct NoWorker : ::fwCore::Exception
+struct NoWorker : core::Exception
 {
-    FWCOM_API NoWorker ( const std::string &err );
+    FWCOM_API NoWorker ( const std::string& err );
 };
 
 } // namespace exception
 
-
 } // namespace fwCom
-
-#endif /* __FWCOM_EXCEPTION_NOWORKER_HPP__ */
-
-
-

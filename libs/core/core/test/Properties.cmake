@@ -1,0 +1,6 @@
+set( NAME coreTest )
+set( VERSION  )
+set( TYPE TEST )
+set( DEPENDENCIES core fwTest )
+set( REQUIREMENTS  )
+set( WARNINGS_AS_ERRORS ON)

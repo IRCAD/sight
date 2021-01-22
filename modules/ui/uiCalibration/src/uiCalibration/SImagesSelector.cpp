@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,7 +176,7 @@ void SImagesSelector::reset()
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
+void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 {
     CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 

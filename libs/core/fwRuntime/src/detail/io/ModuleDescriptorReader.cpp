@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModu
             {
                 SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
-            catch(const ::fwCore::Exception& exception)
+            catch(const core::Exception& exception)
             {
                 SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << exception.what() );
             }
@@ -115,7 +115,7 @@ std::shared_ptr< Module> ModuleDescriptorReader::createModule(const std::filesys
     std::filesystem::path descriptorLocation(location / "plugin.xml");
     if(std::filesystem::exists(descriptorLocation) == false)
     {
-        throw ::fwCore::Exception(std::string("'plugin.xml': file not found in ") + location.string());
+        throw core::Exception(std::string("'plugin.xml': file not found in ") + location.string());
     }
 
     // Validation

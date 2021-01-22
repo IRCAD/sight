@@ -128,12 +128,12 @@ void SCharucoBoardDetector::stopping()
 
 // ----------------------------------------------------------------------------
 
-void SCharucoBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType timestamp)
+void SCharucoBoardDetector::checkPoints( core::HiResClock::HiResClockType timestamp)
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::fwCore::HiResClock::HiResClockType lastTimestamp;
-        lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+        core::HiResClock::HiResClockType lastTimestamp;
+        lastTimestamp = std::numeric_limits< core::HiResClock::HiResClockType >::max();
 
         const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
         const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
@@ -275,7 +275,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 // ----------------------------------------------------------------------------
 
 ::fwData::Image::sptr SCharucoBoardDetector::createImage( ::arData::FrameTL::csptr tl,
-                                                          ::fwCore::HiResClock::HiResClockType timestamp)
+                                                          core::HiResClock::HiResClockType timestamp)
 {
     ::fwData::Image::sptr image;
 
@@ -326,7 +326,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 // ----------------------------------------------------------------------------
 
 ::fwData::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const ::arData::FrameTL::csptr tl,
-                                                                    const ::fwCore::HiResClock::HiResClockType timestamp,
+                                                                    const core::HiResClock::HiResClockType timestamp,
                                                                     ::arData::FrameTL::sptr tlDetection)
 {
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 
 ::fwRenderOgre::WindowManager::sptr WindowManager::get()
 {
-    return ::fwCore::util::LazyInstantiator< ::fwRenderOgre::WindowManager >::getInstance();
+    return core::util::LazyInstantiator< ::fwRenderOgre::WindowManager >::getInstance();
 }
 
 // ----------------------------------------------------------------------------

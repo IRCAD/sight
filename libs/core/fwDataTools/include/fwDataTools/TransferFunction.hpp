@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,22 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_TRANSFERFUNCTION_HPP__
-#define __FWDATATOOLS_TRANSFERFUNCTION_HPP__
-
-#include <fwCore/base.hpp>
-
-#include <fwData/TransferFunction.hpp>
+#pragma once
 
 #include "fwDataTools/config.hpp"
+
+#include <core/base.hpp>
+
+#include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
 {
 
-
 /**
  * @brief   This class contains helper to generate and compare TransferFunction.
- * @class   TransferFunction
  */
 class TransferFunction
 {
@@ -55,7 +52,4 @@ protected:
 
 };
 
-
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_TRANSFERFUNCTION_HPP__

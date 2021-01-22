@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-# include <fwCore/log/SpyLogger.hpp>
-
-#include <filesystem>
+# include <core/log/SpyLogger.hpp>
 
 #include <cstdio>
+#include <filesystem>
 #include <ostream>
 
 namespace fwTest
@@ -34,7 +33,7 @@ struct LogInitialization
 {
     LogInitialization ()
     {
-        fwCore::log::SpyLogger& logger = fwCore::log::SpyLogger::getSpyLogger();
+        core::log::SpyLogger& logger = core::log::SpyLogger::getSpyLogger();
 
         std::string logFile = "fwTest.log";
 

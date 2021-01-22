@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ void SClientSender::starting()
             m_client.connect(hostname, port);
             m_sigConnected->asyncEmit();
         }
-        catch (::fwCore::Exception& ex)
+        catch (core::Exception& ex)
         {
             ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
@@ -120,7 +120,7 @@ void SClientSender::stopping()
         }
         m_sigDisconnected->asyncEmit();
     }
-    catch (::fwCore::Exception& e)
+    catch (core::Exception& e)
     {
         ::fwGui::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());

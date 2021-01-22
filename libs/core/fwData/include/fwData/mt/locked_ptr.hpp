@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "weak_ptr.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 #include <fwMemory/IBuffered.hpp>
@@ -55,8 +55,8 @@ public:
     {
         if(m_data)
         {
-            m_locker = std::conditional_t< std::is_const< DATATYPE >::value, ::fwCore::mt::ReadLock,
-                                           ::fwCore::mt::WriteLock >(data->getMutex());
+            m_locker = std::conditional_t< std::is_const< DATATYPE >::value, core::mt::ReadLock,
+                                           core::mt::WriteLock >(data->getMutex());
         }
     }
 
@@ -84,8 +84,8 @@ public:
             m_data = data;
             if(m_data)
             {
-                m_locker = std::conditional_t< std::is_const< DATATYPE >::value, ::fwCore::mt::ReadLock,
-                                               ::fwCore::mt::WriteLock >(data->getMutex());
+                m_locker = std::conditional_t< std::is_const< DATATYPE >::value, core::mt::ReadLock,
+                                               core::mt::WriteLock >(data->getMutex());
             }
             m_buffer_locks = BufferLocks(data);
         }
@@ -149,8 +149,8 @@ private:
     std::shared_ptr< DATATYPE > m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    typename std::conditional_t< std::is_const< DATATYPE >::value, ::fwCore::mt::ReadLock,
-                                 ::fwCore::mt::WriteLock > m_locker;
+    typename std::conditional_t< std::is_const< DATATYPE >::value, core::mt::ReadLock,
+                                 core::mt::WriteLock > m_locker;
 
     template< class C, class = void >
     class buffer_locks final

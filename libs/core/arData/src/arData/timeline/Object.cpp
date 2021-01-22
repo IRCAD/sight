@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,8 @@ namespace timeline
 
 //-----------------------------------------------------------------------------
 
-Object::Object(::fwCore::HiResClock::HiResClockType timestamp) : m_timestamp(timestamp)
+Object::Object(core::HiResClock::HiResClockType timestamp) :
+    m_timestamp(timestamp)
 {
 }
 

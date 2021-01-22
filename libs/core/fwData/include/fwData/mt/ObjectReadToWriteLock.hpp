@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 namespace fwData
 {
@@ -69,8 +69,8 @@ public:
 private:
 
     /// lock on object mutex
-    ::fwCore::mt::ReadToWriteLock m_lock;
-    SPTR(::fwCore::mt::UpgradeToWriteLock) m_upgradedLock;
+    core::mt::ReadToWriteLock m_lock;
+    SPTR(core::mt::UpgradeToWriteLock) m_upgradedLock;
 };
 
 } // mt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwRenderOgre/registry/detail.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 namespace fwRenderOgre
 {
@@ -34,7 +34,7 @@ struct FwRenderOgreRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef ::fwCore::util::LazyInstantiator< Type, FwRenderOgreRegistryInstantiatorTag > InstantiatorType;
+    typedef core::util::LazyInstantiator< Type, FwRenderOgreRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
@@ -42,8 +42,8 @@ struct FwRenderOgreOffscreenMgrRegistryInstantiatorTag {};
 
 SPTR(OffscreenMgrType) getOffscreenMgr()
 {
-    using InstantiatorType = ::fwCore::util::LazyInstantiator<OffscreenMgrType,
-                                                              FwRenderOgreOffscreenMgrRegistryInstantiatorTag>;
+    using InstantiatorType = core::util::LazyInstantiator<OffscreenMgrType,
+                                                          FwRenderOgreOffscreenMgrRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -51,7 +51,7 @@ struct InteractorRegistryInstantiatorTag {};
 
 SPTR(InteractorFactoryType) getInteractorRegistry()
 {
-    typedef ::fwCore::util::LazyInstantiator< InteractorFactoryType, InteractorRegistryInstantiatorTag >
+    typedef core::util::LazyInstantiator< InteractorFactoryType, InteractorRegistryInstantiatorTag >
         InstantiatorType;
     return InstantiatorType::getInstance();
 }
@@ -60,7 +60,7 @@ struct CameraRegistryInstantiatorTag {};
 
 SPTR(CameraFactoryType) getCameraRegistry()
 {
-    typedef ::fwCore::util::LazyInstantiator< CameraFactoryType, CameraRegistryInstantiatorTag >
+    typedef core::util::LazyInstantiator< CameraFactoryType, CameraRegistryInstantiatorTag >
         InstantiatorType;
     return InstantiatorType::getInstance();
 }
@@ -69,7 +69,7 @@ struct LightRegistryInstantiatorTag {};
 
 SPTR(LightFactoryType) getLightRegistry()
 {
-    typedef ::fwCore::util::LazyInstantiator< LightFactoryType, LightRegistryInstantiatorTag >
+    typedef core::util::LazyInstantiator< LightFactoryType, LightRegistryInstantiatorTag >
         InstantiatorType;
     return InstantiatorType::getInstance();
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ public:
     FWRENDERQT3D_API ~SRender() override;
 
     /// @returns the scene instantiated by this service.
-    FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
+    FWRENDERQT3D_API ::fwRenderQt3Dcore::GenericScene* getScene();
 
 protected:
 
@@ -106,7 +106,7 @@ private:
     QPointer< Qt3DExtras::Qt3DWindow > m_3dView;
 
     /// Contains the generic scene associated to this service.
-    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene;
+    QPointer< ::fwRenderQt3Dcore::GenericScene > m_scene;
 
     /// Specifies the background color.
     QColor m_backgroundColor;

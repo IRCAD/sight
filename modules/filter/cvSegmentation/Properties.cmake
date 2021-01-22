@@ -10,7 +10,7 @@ set( DEPENDENCIES
     arData
     colourImageMasking
     cvIO
-    fwCore
+    core
 )
 set( REQUIREMENTS  )
 

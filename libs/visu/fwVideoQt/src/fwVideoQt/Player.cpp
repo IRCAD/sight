@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwVideoQt/helper/formats.hpp"
 #include "fwVideoQt/Surface.hpp"
 
-#include <fwCore/exceptionmacros.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/exceptionmacros.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

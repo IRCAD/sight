@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 #include "fwAtomsPatch/config.hpp"
 #include "fwAtomsPatch/VersionsGraph.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <filesystem>
-
 #include <map>
 #include <string>
 #include <vector>
@@ -115,13 +114,13 @@ private:
     FWATOMSPATCH_API void generateVersionsGraph();
 
     /// Mutex to protect m_versionTable access;
-    ::fwCore::mt::ReadWriteMutex m_versionMutex;
+    core::mt::ReadWriteMutex m_versionMutex;
 
     /// Mutex to protect m_linkTable access;
-    ::fwCore::mt::ReadWriteMutex m_linkMutex;
+    core::mt::ReadWriteMutex m_linkMutex;
 
     /// Mutex to protect m_versionsGraphMap access;
-    ::fwCore::mt::ReadWriteMutex m_graphMutex;
+    core::mt::ReadWriteMutex m_graphMutex;
 
     /// Version table
     ListPathType m_versionTable;

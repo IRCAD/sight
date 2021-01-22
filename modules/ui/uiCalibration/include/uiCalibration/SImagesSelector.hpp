@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <core/HiResClock.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/HiResClock.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -45,7 +45,7 @@ namespace uiCalibration
  * @brief   This editor allows to add images into a ::fwData::Vector from an ::arData::FrameTL.
  *
  * @section Slots Slots
- * - \b add(::fwCore::HiResClock::HiResClockType): .
+ * - \b add(core::HiResClock::HiResClockType): .
  * - \b remove(): .
  * - \b reset(): .
 
@@ -69,7 +69,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SImagesSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SImagesSelector, ::fwGui::editor::IEditor)
 
     /// Constructor.
     UICALIBRATION_API SImagesSelector() noexcept;
@@ -82,7 +82,7 @@ public:
      * @{
      */
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> AddSlotType;
+    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> AddSlotType;
 
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
     typedef ::fwCom::Slot<void ()> RemoveSlotType;
@@ -114,7 +114,7 @@ protected:
     UICALIBRATION_API void reset();
 
     /// Slot: to add an image in the vector.
-    UICALIBRATION_API void add(::fwCore::HiResClock::HiResClockType timestamp);
+    UICALIBRATION_API void add(core::HiResClock::HiResClockType timestamp);
 
 private:
 

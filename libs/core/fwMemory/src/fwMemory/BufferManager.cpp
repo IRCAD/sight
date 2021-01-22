@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "fwMemory/stream/in/Buffer.hpp"
 #include "fwMemory/stream/in/Raw.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/util/LazyInstantiator.hpp>
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwThread/Worker.hpp>
 
@@ -54,7 +54,7 @@ SPTR(void) getLock( const BufferManager::sptr& manager, BufferManager::ConstBuff
 
 BufferManager::sptr BufferManager::getDefault()
 {
-    return ::fwCore::util::LazyInstantiator< BufferManager >::getInstance();
+    return core::util::LazyInstantiator< BufferManager >::getInstance();
 }
 
 //-----------------------------------------------------------------------------

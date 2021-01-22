@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#include <string>
+#include "fwRender/IRender.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
-
-#include "fwRender/IRender.hpp"
+#include <string>
 
 namespace fwRender
 {

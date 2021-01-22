@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,8 +88,8 @@ void SMatrixTLSynchronizer::updating()
 
 void SMatrixTLSynchronizer::synchronize()
 {
-    ::fwCore::HiResClock::HiResClockType currentTimestamp =
-        std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+    core::HiResClock::HiResClockType currentTimestamp =
+        std::numeric_limits< core::HiResClock::HiResClockType >::max();
 
     ::arData::MatrixTL::csptr matrixTL           = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
     CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);

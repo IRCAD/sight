@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
-#include <fwCore/Exception.hpp>
+#include "fwCom/exception/BadRun.hpp"
 
 #include "fwCom/config.hpp"
-#include "fwCom/exception/BadRun.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwCom
 {
@@ -31,12 +32,11 @@ namespace fwCom
 namespace exception
 {
 
-BadRun::BadRun ( const std::string &err ) : ::fwCore::Exception(err)
+BadRun::BadRun ( const std::string& err ) :
+    core::Exception(err)
 {
 }
 
 } // namespace exception
 
 } // namespace fwCom
-
-

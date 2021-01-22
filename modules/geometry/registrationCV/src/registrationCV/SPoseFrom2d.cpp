@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,13 +156,13 @@ void SPoseFrom2d::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::HiResClock::getTimeInMilliSec();
     this->computeRegistration(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
+void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp)
 {
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
@@ -177,12 +177,13 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
         {
             if (timestamp > m_lastTimestamp)
             {
-                ::fwCore::HiResClock::HiResClockType newerTimestamp =
-                    std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+                core::HiResClock::HiResClockType newerTimestamp =
+                    std::numeric_limits< core::HiResClock::HiResClockType >::max();
                 for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
                 {
-                    auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
-                    ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
+                    auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT,
+                                                                         i);
+                    core::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
                     if(timestamp <= 0.)
                     {
                         SLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");

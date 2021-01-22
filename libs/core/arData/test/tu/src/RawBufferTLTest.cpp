@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,8 +58,8 @@ void RawBufferTLTest::pushTest()
     ::arData::RawBufferTL::sptr timeline = ::arData::RawBufferTL::New();
     timeline->initPoolSize(3* sizeof(float));
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
 
     float values1[3] = {1.0f, 5.2f, 7.5f};
     float values2[3] = {8.0f, 9.0f, 66.f};
@@ -90,7 +90,7 @@ void RawBufferTLTest::pushTest()
     CSPTR(::arData::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
-    ::fwCore::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
+    core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
 
     timeline->clearTimeline();
@@ -308,8 +308,8 @@ void RawBufferTLTest::copyTest()
     ::arData::RawBufferTL::sptr timeline = ::arData::RawBufferTL::New();
     timeline->initPoolSize(3* sizeof(float));
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
 
     float values1[3] = {1.0f, 5.2f, 7.5f};
     float values2[3] = {8.0f, 9.0f, 66.f};

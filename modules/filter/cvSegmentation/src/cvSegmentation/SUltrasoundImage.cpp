@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 

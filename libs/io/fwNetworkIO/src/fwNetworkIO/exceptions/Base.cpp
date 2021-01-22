@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace exceptions
 {
 
 Base::Base(const std::string& message) :
-    ::fwCore::Exception(message)
+    core::Exception(message)
 {
 }
 

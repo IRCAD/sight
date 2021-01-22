@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWACTIVITIES_UT_REGISTRY_ACTIVITYREGISTRYTEST_HPP__
-#define __FWACTIVITIES_UT_REGISTRY_ACTIVITYREGISTRYTEST_HPP__
+#pragma once
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -57,6 +56,3 @@ protected:
 
 } //namespace ut
 } //namespace fwActivities
-
-#endif //__FWACTIVITIES_UT_REGISTRY_ACTIVITYREGISTRYTEST_HPP__
-

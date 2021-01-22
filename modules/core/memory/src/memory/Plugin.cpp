@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "memory/Plugin.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/policy/AlwaysDump.hpp>
@@ -55,7 +55,7 @@ void Plugin::start()
 
     if ( this->getModule()->hasParameter(modeKey) )
     {
-        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        core::mt::WriteLock lock( manager->getMutex() );
         std::string mode = this->getModule()->getParameterValue(modeKey);
         if (mode == "lazy")
         {

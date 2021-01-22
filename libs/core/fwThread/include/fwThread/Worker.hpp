@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include <future>
 #include <any>
 
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
+#include <core/base.hpp>
+#include <core/HiResClock.hpp>
 
 #include "fwThread/config.hpp"
 
@@ -43,16 +43,16 @@ class Timer;
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  */
-class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
+class FWTHREAD_CLASS_API Worker : public core::BaseObject
 {
 public:
-    typedef ::fwCore::HiResClock::HiResClockType PeriodType;
+    typedef core::HiResClock::HiResClockType PeriodType;
     typedef std::function< void () > TaskType;
     typedef std::any ExitReturnType;
 
     typedef std::shared_future< ExitReturnType > FutureType;
 
-    fwCoreClassMacro(Worker, ::fwCore::BaseObject, defaultFactory);
+    fwCoreClassMacro(Worker, core::BaseObject, defaultFactory)
 
     Worker()
     {

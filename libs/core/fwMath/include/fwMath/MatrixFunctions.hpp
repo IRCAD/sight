@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMATH_MATRIXFUNCTIONS_HPP__
-#define __FWMATH_MATRIXFUNCTIONS_HPP__
+#pragma once
 
-#include <fwCore/base.hpp>
-
-#include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
+#include "fwMath/IntrasecTypes.hpp"
+
+#include <core/base.hpp>
 
 namespace fwMath
 {
@@ -38,7 +37,7 @@ namespace fwMath
  *  @param [out] _dest
  *
  */
-FWMATH_API void multVecMatrix(const fwMatrix4x4 & _matrix, const fwVec3d& _source,fwVec3d& _dest);
+FWMATH_API void multVecMatrix(const fwMatrix4x4& _matrix, const fwVec3d& _source, fwVec3d& _dest);
 
 /**
  * @brief Compute a matrix rotation
@@ -47,7 +46,7 @@ FWMATH_API void multVecMatrix(const fwMatrix4x4 & _matrix, const fwVec3d& _sourc
  *  @return rotation matrix
  *
  */
-FWMATH_API fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm );
+FWMATH_API fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm );
 
 /**
  * @brief Computes the inverse of a matrix
@@ -55,7 +54,7 @@ FWMATH_API fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm );
  *  @return inverted matrix
  *
  */
-FWMATH_API fwMatrix4x4  getInverse( const fwMatrix4x4 & matrix );
+FWMATH_API fwMatrix4x4  getInverse( const fwMatrix4x4& matrix );
 
 } // namespace fwMath
 
@@ -66,6 +65,4 @@ FWMATH_API fwMatrix4x4  getInverse( const fwMatrix4x4 & matrix );
  *  @return matrix
  *
  */
-FWMATH_API fwMatrix4x4 operator*( const fwMatrix4x4 & matrix1, const fwMatrix4x4 & matrix2 );
-
-#endif /* __FWMATH_MATRIXFUNCTIONS_HPP__ */
+FWMATH_API fwMatrix4x4 operator*( const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2 );

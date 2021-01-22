@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     arData
     fwCom
-    fwCore
+    core
     fwData
     fwDataTools
     fwRuntime

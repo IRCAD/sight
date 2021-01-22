@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <filesystem>
 #include <set>

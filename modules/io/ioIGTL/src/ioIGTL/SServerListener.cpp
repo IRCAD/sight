@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ void SServerListener::starting()
         m_sigConnected->asyncEmit();
         m_receiveFuture = std::async(std::launch::async, std::bind(&SServerListener::receiveObject, this) );
     }
-    catch (::fwCore::Exception& e)
+    catch (core::Exception& e)
     {
         ::fwGui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
                                              std::string(e.what()),
@@ -114,7 +114,7 @@ void SServerListener::stopping()
         m_receiveFuture.wait();
         m_sigDisconnected->asyncEmit();
     }
-    catch (::fwCore::Exception& e)
+    catch (core::Exception& e)
     {
         ::fwGui::dialog::MessageDialog::show("Error", e.what());
     }
@@ -160,7 +160,7 @@ void SServerListener::receiveObject()
             }
         }
     }
-    catch (::fwCore::Exception& ex)
+    catch (core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,

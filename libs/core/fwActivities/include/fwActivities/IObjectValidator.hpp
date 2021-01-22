@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/IValidator.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -48,7 +48,7 @@ class FWACTIVITIES_CLASS_API IObjectValidator : public ::fwActivities::IValidato
 
 public:
 
-    fwCoreClassMacro(IObjectValidator, ::fwActivities::IValidator);
+    fwCoreClassMacro(IObjectValidator, ::fwActivities::IValidator)
 
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(

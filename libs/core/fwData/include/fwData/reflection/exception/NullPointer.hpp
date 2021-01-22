@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwData/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwData
 {
@@ -34,7 +34,7 @@ namespace exception
 {
 
 /// Null pointer exception.
-struct NullPointer : ::fwCore::Exception
+struct NullPointer : core::Exception
 {
     FWDATA_API NullPointer ( const std::string& err );
 };

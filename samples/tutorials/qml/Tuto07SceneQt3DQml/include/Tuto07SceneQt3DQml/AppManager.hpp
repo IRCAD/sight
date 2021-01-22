@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(::fwRenderQt3D::data::Mesh* mesh READ getMesh WRITE setMesh NOTIFY meshChanged)
-Q_PROPERTY(::fwRenderQt3D::core::GenericScene* scene READ getScene WRITE setScene NOTIFY sceneChanged)
+Q_PROPERTY(::fwRenderQt3Dcore::GenericScene* scene READ getScene WRITE setScene NOTIFY sceneChanged)
 
 public:
 
@@ -60,13 +60,13 @@ public:
     TUTO07SCENEQT3DQML_API ::fwRenderQt3D::data::Mesh* getMesh();
 
     /// @returns the scene created by SRender service. Needed for QML property.
-    TUTO07SCENEQT3DQML_API ::fwRenderQt3D::core::GenericScene* getScene();
+    TUTO07SCENEQT3DQML_API ::fwRenderQt3Dcore::GenericScene* getScene();
 
     /// Updates the mesh associated to the app manager. Needed for QML property.
     TUTO07SCENEQT3DQML_API void setMesh(::fwRenderQt3D::data::Mesh* _mesh);
 
     /// Updates the scene associated to the app manager. Needed for QML property.
-    TUTO07SCENEQT3DQML_API void setScene(::fwRenderQt3D::core::GenericScene* _mesh);
+    TUTO07SCENEQT3DQML_API void setScene(::fwRenderQt3Dcore::GenericScene* _mesh);
 
 Q_SIGNALS:
 
@@ -93,7 +93,7 @@ private:
     QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
 
     /// Contains the scene associated to the app manager.
-    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene;
+    QPointer< ::fwRenderQt3Dcore::GenericScene > m_scene;
 
 };
 

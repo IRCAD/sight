@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ void DictionaryReaderTest::test_2()
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::Exception);
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ void DictionaryReaderTest::test_3()
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::Exception);
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ void DictionaryReaderTest::test_4()
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::Exception);
 }
 
 //------------------------------------------------------------------------------
@@ -175,7 +175,7 @@ void DictionaryReaderTest::test_5()
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::Exception);
 }
 //------------------------------------------------------------------------------
 void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictionaryFile)

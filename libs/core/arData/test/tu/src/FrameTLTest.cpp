@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -229,8 +229,8 @@ void FrameTLTest::pushTest()
     CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(arData::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
 
     SPTR(::arData::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     ::fwTools::Type::UInt8Type* bufferData1   = data1->addElement(0);
@@ -261,7 +261,7 @@ void FrameTLTest::pushTest()
     CSPTR(::arData::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
-    ::fwCore::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
+    core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
 
     timeline->clearTimeline();
@@ -282,8 +282,8 @@ void FrameTLTest::copyTest()
     CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(arData::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 125;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 125;
 
     SPTR(::arData::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     ::fwTools::Type::UInt8Type* bufferData1   = data1->addElement(0);
@@ -318,7 +318,7 @@ void FrameTLTest::copyTest()
         CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
     }
 
-    const ::fwCore::HiResClock::HiResClockType copiedTime2 = copiedTimeline->getNewerTimestamp();
+    const core::HiResClock::HiResClockType copiedTime2 = copiedTimeline->getNewerTimestamp();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, copiedTime2, 0.00001);
 
     timeline->clearTimeline();

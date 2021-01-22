@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwTools/Failed.hpp"
 #include "fwTools/Object.hpp"
 
-#include <fwCore/Demangler.hpp>
+#include <core/Demangler.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -34,8 +34,8 @@ namespace fwTools
 
 fwID::CategorizedCounter fwID::m_CategorizedCounter;
 fwID::Dictionary fwID::m_dictionary;
-::fwCore::mt::ReadWriteMutex fwID::s_dictionaryMutex;
-::fwCore::mt::Mutex fwID::s_mutexCounter;
+core::mt::ReadWriteMutex fwID::s_dictionaryMutex;
+core::mt::Mutex fwID::s_mutexCounter;
 
 //-----------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ fwID::~fwID()
 
 bool fwID::exist( IDType _id)
 {
-    ::fwCore::mt::ReadLock lock(s_dictionaryMutex);
+    core::mt::ReadLock lock(s_dictionaryMutex);
     return fwID::isIdFound(_id);
 }
 
@@ -63,7 +63,7 @@ bool fwID::isIdFound( IDType _id)
 
 bool fwID::hasID( ) const
 {
-    ::fwCore::mt::ReadLock lock(m_idMutex);
+    core::mt::ReadLock lock(m_idMutex);
     return !m_id.empty();
 }
 
@@ -71,7 +71,7 @@ bool fwID::hasID( ) const
 
 void fwID::setID( IDType newID )
 {
-    ::fwCore::mt::WriteLock lock(m_idMutex);
+    core::mt::WriteLock lock(m_idMutex);
     this->addIDInDictionary(newID);
 }
 
@@ -81,7 +81,7 @@ void fwID::addIDInDictionary( IDType newID )
 {
     SLM_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
 
-    ::fwCore::mt::WriteLock lock(s_dictionaryMutex);
+    core::mt::WriteLock lock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
@@ -93,13 +93,13 @@ void fwID::addIDInDictionary( IDType newID )
 
 fwID::IDType fwID::getID( Policy policy) const
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_idMutex);
+    core::mt::ReadToWriteLock lock(m_idMutex);
     if ( m_id.empty() ) // no id set
     {
         if ( policy == GENERATE )
         {
             IDType newID = generate();
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             const_cast<fwID*>(this)->addIDInDictionary(newID);
         }
         else if  ( policy == EMPTY )
@@ -121,7 +121,7 @@ fwID::IDType fwID::generate() const
     std::string prefix = this->getClassname();
     do
     {
-        ::fwCore::mt::ScopedLock lock(s_mutexCounter);
+        core::mt::ScopedLock lock(s_mutexCounter);
         newID = prefix  + "-" + boost::lexical_cast<std::string>( m_CategorizedCounter[prefix]++ );
     }
     while ( exist(newID ) );
@@ -132,7 +132,7 @@ fwID::IDType fwID::generate() const
 
 ::fwTools::Object::sptr fwID::getObject( fwID::IDType requestID )
 {
-    ::fwCore::mt::ReadLock lock(s_dictionaryMutex);
+    core::mt::ReadLock lock(s_dictionaryMutex);
     Dictionary::iterator it = m_dictionary.find(requestID);
     if ( it != m_dictionary.end() )
     {
@@ -149,8 +149,8 @@ fwID::IDType fwID::generate() const
 
 void fwID::resetID()
 {
-    ::fwCore::mt::WriteLock lock(m_idMutex);
-    ::fwCore::mt::WriteLock dicoLock(s_dictionaryMutex);
+    core::mt::WriteLock lock(m_idMutex);
+    core::mt::WriteLock dicoLock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
     m_id.clear();
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -675,7 +675,7 @@ void SVolumeRender::toggleWidgets(bool _visible)
 void SVolumeRender::setFocalDistance(int _focalDistance)
 {
     if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
-       ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
+       ::fwRenderOgre::compositorcore::StereoModeType::NONE)
     {
         m_volumeRenderer->setFocalLength(static_cast<float>(_focalDistance) / 100);
     }

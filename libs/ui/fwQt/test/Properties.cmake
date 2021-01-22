@@ -2,7 +2,7 @@ set( NAME fwQtTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTest
     fwThread
     fwGuiQt

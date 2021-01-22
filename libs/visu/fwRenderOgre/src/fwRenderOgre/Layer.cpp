@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/factory/Text.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
-#include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/Text.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -104,7 +104,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
-        if(m_layer->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != ::fwRenderOgre::compositorcore::StereoModeType::NONE)
         {
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
@@ -250,8 +250,9 @@ void Layer::createScene()
     {
         // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
-        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("Background", RESOURCE_GROUP);
-        ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
+        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("Background",
+                                                                                                RESOURCE_GROUP);
+        ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().create(
             this->getName() + "backgroundMat", RESOURCE_GROUP);
         defaultMaterial.get()->copyDetailsTo(material);
 
@@ -341,7 +342,7 @@ void Layer::createScene()
         {
             compositorChain.push_back(it);
         }
-        if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+        if(m_stereoMode != compositorcore::StereoModeType::NONE)
         {
             m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
@@ -943,10 +944,10 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::setStereoMode(compositor::Core::StereoModeType mode)
+void Layer::setStereoMode(compositorcore::StereoModeType mode)
 {
     // Disable the old compositor
-    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+    if(m_stereoMode != compositorcore::StereoModeType::NONE)
     {
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
@@ -960,7 +961,7 @@ void Layer::setStereoMode(compositor::Core::StereoModeType mode)
     m_coreCompositor->setStereoMode(mode);
     m_coreCompositor->update();
 
-    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+    if(m_stereoMode != compositorcore::StereoModeType::NONE)
     {
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
@@ -988,7 +989,7 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 //-------------------------------------------------------------------------------------
 
 void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels,
-                                     compositor::Core::StereoModeType stereoMode)
+                                     compositorcore::StereoModeType stereoMode)
 {
     m_hasCoreCompositor = enabled;
     m_stereoMode        = stereoMode;
@@ -1061,7 +1062,7 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-compositor::Core::StereoModeType Layer::getStereoMode() const
+compositorcore::StereoModeType Layer::getStereoMode() const
 {
     return m_stereoMode;
 }
@@ -1175,21 +1176,21 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
     ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
 
-    if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_5)
     {
         const float eyeAngle = 0.02321f;
         const float angle    = eyeAngle * (-2.f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_8)
     {
         const float eyeAngle = 0.01625f;
         const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO)
+    else if(m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::STEREO)
     {
         if(m_stereoCameraCalibration.size() < 2 && cameraIdx == 1)
         {
@@ -1215,9 +1216,9 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
 uint8_t Layer::getNumberOfCameras() const
 {
-    return m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_8 ? 8 :
-           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::AUTOSTEREO_5 ? 5 :
-           m_stereoMode == ::fwRenderOgre::compositor::Core::StereoModeType::STEREO       ? 2 : 1;
+    return m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_8 ? 8 :
+           m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_5 ? 5 :
+           m_stereoMode == ::fwRenderOgre::compositorcore::StereoModeType::STEREO       ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

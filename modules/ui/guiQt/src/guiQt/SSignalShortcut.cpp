@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "guiQt/SSignalShortcut.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/GuiRegistry.hpp>

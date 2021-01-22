@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlProtocol/converter/AtomConverter.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
@@ -39,7 +39,7 @@ namespace igtlProtocol
 
 DataConverter::sptr DataConverter::getInstance()
 {
-    return ::fwCore::util::LazyInstantiator< DataConverter >::getInstance();
+    return core::util::LazyInstantiator< DataConverter >::getInstance();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ DataConverter::~DataConverter()
     {
         if (converter->getFwDataObjectType() == classname)
         {
-            ::fwCore::mt::ReadLock lock(src->getMutex());
+            core::mt::ReadLock lock(src->getMutex());
             return converter->fromFwDataObject(src);
         }
     }

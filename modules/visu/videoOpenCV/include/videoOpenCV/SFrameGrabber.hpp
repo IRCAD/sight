@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 
 #include <arServices/IGrabber.hpp>
 
+#include <core/mt/types.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/mt/types.hpp>
 
 #include <fwThread/Timer.hpp>
 
@@ -206,7 +206,7 @@ private:
     ImageTimestampsType m_imageTimestamps;
 
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead.
-    mutable ::fwCore::mt::Mutex m_mutex;
+    mutable core::mt::Mutex m_mutex;
 
     /// Frame -by-frame mode (true if enabled, false otherwise).
     bool m_oneShot;

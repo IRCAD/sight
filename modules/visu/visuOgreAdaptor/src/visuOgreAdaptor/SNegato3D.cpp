@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,8 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/ogre.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
@@ -73,7 +73,7 @@ static const std::string s_BORDER_CONFIG           = "border";
 static const std::string s_TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string s_VISIBILITY_FIELD   = "VISIBILITY";
 
-static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
+static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositorcore::s_SURFACE_RQ_GROUP_ID - 1;
 
 //------------------------------------------------------------------------------
 
@@ -198,8 +198,9 @@ void SNegato3D::starting()
         this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
-        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", ::fwRenderOgre::RESOURCE_GROUP);
-        auto crossMat              = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
+        const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient",
+                                                                                       ::fwRenderOgre::RESOURCE_GROUP);
+        auto crossMat = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
         crossMat->setAmbient(::Ogre::ColourValue::Red);
         crossMat->setDiffuse(::Ogre::ColourValue::Red);
         crossMat->setDepthCheckEnabled(false);
@@ -559,7 +560,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedPlane)
     {
-        m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
+        m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositorcore::s_SURFACE_RQ_GROUP_ID, 0);
         m_pickedPlane.reset();
     }
     m_pickingCross->setVisible(false);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -160,7 +160,7 @@ private:
     ::fwThread::Worker::sptr m_workerPresentFrame;
 
     /// Mutex to protect concurrent access for m_videoFrame
-    mutable ::fwCore::mt::ReadWriteMutex m_videoFrameMutex;
+    mutable core::mt::ReadWriteMutex m_videoFrameMutex;
 
     /// Mirror frame in horizontal direction
     bool m_horizontallyFlip;

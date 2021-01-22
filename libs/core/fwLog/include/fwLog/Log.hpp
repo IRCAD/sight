@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWLOG_LOG_HPP__
-#define __FWLOG_LOG_HPP__
+#pragma once
 
 #include "fwLog/config.hpp"
 
-#include <fwCore/BaseObject.hpp>
+#include <core/BaseObject.hpp>
 
 #include <string>
 
@@ -36,7 +35,7 @@ namespace fwLog
  * @brief Log
  * @brief Log class used to retrieve information to the user
  */
-class FWLOG_CLASS_API Log : public ::fwCore::BaseObject
+class FWLOG_CLASS_API Log : public core::BaseObject
 {
 public:
 
@@ -85,9 +84,6 @@ protected:
     /// Log message
     std::string m_message;
 
-
 }; // class Logger
 
 } // namespace fwLog
-
-#endif // __FWLOG_LOG_HPP__

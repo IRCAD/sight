@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ void ITracker::configuring()
 
 //-----------------------------------------------------------------------------
 
-void ITracker::track(::fwCore::HiResClock::HiResClockType timestamp)
+void ITracker::track(core::HiResClock::HiResClockType timestamp)
 {
     SLM_DEBUG_IF("["+this->getClassname()+"] Tracking is not started: does nothing", !m_isTracking);
     SLM_DEBUG_IF("["+this->getClassname()+"] Dropping object at " + std::to_string(timestamp),

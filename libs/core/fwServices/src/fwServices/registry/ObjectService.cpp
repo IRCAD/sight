@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
 
-#include <fwCore/LogicStamp.hpp>
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/LogicStamp.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -49,7 +49,7 @@ namespace OSR
 
 ::fwServices::registry::ObjectService::sptr get()
 {
-    return ::fwCore::util::LazyInstantiator< ::fwServices::registry::ObjectService >::getInstance();
+    return core::util::LazyInstantiator< ::fwServices::registry::ObjectService >::getInstance();
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
     ::fwData::Object::csptr previousObj;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
+    core::mt::ReadLock lock(m_containerMutex);
 
     for (const auto& service : m_services )
     {
@@ -200,7 +200,7 @@ std::string ObjectService::getRegistryInformation() const
 
 void ObjectService::registerService( ::fwServices::IService::sptr service )
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
     m_services.insert(service);
 }
 
@@ -209,7 +209,7 @@ void ObjectService::registerService( ::fwServices::IService::sptr service )
 void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                      ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service)
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, access);
 }
 
@@ -219,7 +219,7 @@ void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
                                           const ::fwServices::IService::KeyType& objKey,
                                           const ::fwServices::IService::sptr& service)
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterServiceInput(object, service, objKey);
 }
 
@@ -229,7 +229,7 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
                                           ::fwServices::IService::sptr service)
 {
 
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, ::fwServices::IService::AccessType::OUTPUT);
 
     const bool hasID = service->hasObjectId(objKey);
@@ -246,7 +246,7 @@ void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const :
 
 void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
 
     SLM_ASSERT( "The service ( " + service->getID() + " ) must be stopped before being unregistered.",
                 service->isStopped() );
@@ -286,7 +286,7 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
                                       ::fwServices::IService::AccessType access,
                                       ::fwServices::IService::sptr service )
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
@@ -307,7 +307,7 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
 void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                              ::fwServices::IService::sptr service )
 {
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    core::mt::WriteLock writeLock(m_containerMutex);
 
     ::fwData::Object::wptr obj = service->m_outputsMap[objKey].get_shared();
 
@@ -325,7 +325,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
                                  ::fwServices::IService::AccessType access, IService::sptr service) const
 {
-    ::fwCore::mt::ReadLock readLock(m_containerMutex);
+    core::mt::ReadLock readLock(m_containerMutex);
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
@@ -347,7 +347,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
                                                      ::fwServices::IService::AccessType access,
                                                      IService::sptr service) const
 {
-    ::fwCore::mt::ReadLock readLock(m_containerMutex);
+    core::mt::ReadLock readLock(m_containerMutex);
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
@@ -432,7 +432,7 @@ void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 ObjectService::ServiceVectorType ObjectService::getServices( const std::string& serviceType ) const
 {
     ServiceVectorType services;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
+    core::mt::ReadLock lock(m_containerMutex);
 
     for (const auto& srv : m_services)
     {

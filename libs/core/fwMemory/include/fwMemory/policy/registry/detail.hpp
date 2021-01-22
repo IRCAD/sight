@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_POLICY_REGISTRY_DETAIL_HPP__
-#define __FWMEMORY_POLICY_REGISTRY_DETAIL_HPP__
-
-#include <string>
-
-#include <fwCore/macros.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
+#pragma once
 
 #include "fwMemory/config.hpp"
+
+#include <core/macros.hpp>
+#include <core/util/FactoryRegistry.hpp>
+
+#include <string>
 
 namespace fwMemory
 {
@@ -42,14 +41,10 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwMemory::IPolicy) (), KeyType > Type;
+typedef core::util::FactoryRegistry< SPTR(::fwMemory::IPolicy) (), KeyType > Type;
 
 FWMEMORY_API SPTR(Type) get();
 
 } // namespace registry
 } // namespace policy
 } // namespace fwMemory
-
-#endif /* __FWMEMORY_POLICY_REGISTRY_DETAIL_HPP__ */
-
-

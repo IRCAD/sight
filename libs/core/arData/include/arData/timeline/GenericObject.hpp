@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_TIMELINE_GENERICOBJECT_HPP__
-#define __ARDATA_TIMELINE_GENERICOBJECT_HPP__
+#pragma once
 
 #include "arData/config.hpp"
 #include "arData/timeline/Buffer.hpp"
@@ -67,7 +66,7 @@ public:
 protected:
 
     /// Constructor
-    ARDATA_API GenericObjectBase( unsigned int maxElementNum, ::fwCore::HiResClock::HiResClockType timestamp = 0,
+    ARDATA_API GenericObjectBase( unsigned int maxElementNum, core::HiResClock::HiResClockType timestamp = 0,
                                   BufferDataType buffer = 0, size_t size = 0, DeleterType d = 0);
 
     /// Number of elements that are actually set
@@ -122,11 +121,10 @@ public:
         friend class GenericObject<ElementType>;
     };
 
-
     friend class iterator;
 
     /// Constructor
-    GenericObject( unsigned int m_maxElementNum, ::fwCore::HiResClock::HiResClockType timestamp = 0,
+    GenericObject( unsigned int m_maxElementNum, core::HiResClock::HiResClockType timestamp = 0,
                    BufferDataType buffer = 0, size_t size = 0, DeleterType d = 0);
 
     /// Destructor
@@ -148,5 +146,3 @@ public:
 } // namespace timeline
 
 } // namespace arData
-
-#endif /* __ARDATA_TIMELINE_GENERICOBJECT_HPP__ */

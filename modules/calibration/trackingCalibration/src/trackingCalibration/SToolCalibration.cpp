@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ void SToolCalibration::updating()
 
 // -----------------------------------------------------------------------------
 
-void SToolCalibration::computeRegistration(::fwCore::HiResClock::HiResClockType)
+void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 {
     ::fwData::Vector::csptr matricesVector = this->getInput< ::fwData::Vector >(s_MATRICES_VECTOR_INPUT);
 

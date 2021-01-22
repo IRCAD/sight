@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@ ObjectReadToWriteLock::ObjectReadToWriteLock(::fwData::Object::sptr obj, bool lo
 {
     if (lock)
     {
-        m_lock = ::fwCore::mt::ReadToWriteLock(obj->getMutex());
+        m_lock = core::mt::ReadToWriteLock(obj->getMutex());
     }
     else
     {
-        m_lock = ::fwCore::mt::ReadToWriteLock(obj->getMutex(), ::boost::defer_lock_t());
+        m_lock = core::mt::ReadToWriteLock(obj->getMutex(), ::boost::defer_lock_t());
     }
 }
 
@@ -67,7 +67,7 @@ void ObjectReadToWriteLock::unlock()
 
 void ObjectReadToWriteLock::upgrade()
 {
-    m_upgradedLock = std::make_shared< ::fwCore::mt::UpgradeToWriteLock >(std::ref(m_lock));
+    m_upgradedLock = std::make_shared< core::mt::UpgradeToWriteLock >(std::ref(m_lock));
 }
 
 //-----------------------------------------------------------------------------

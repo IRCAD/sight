@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuOgreQt/OpenGLContext.hpp"
 
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <QRunnable>
 #include <QThreadPool>

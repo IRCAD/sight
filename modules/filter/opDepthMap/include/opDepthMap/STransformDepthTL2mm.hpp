@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,10 +90,10 @@ protected:
 
 private:
     /// Apply the scale on the depth map
-    void compute(::fwCore::HiResClock::HiResClockType timestamp);
+    void compute(core::HiResClock::HiResClockType timestamp);
 
     /// timestamp of the last process
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 };
 
 } // namespace opDepthMap

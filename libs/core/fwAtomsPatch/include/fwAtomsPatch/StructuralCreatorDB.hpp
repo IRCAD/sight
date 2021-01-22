@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_STRUCTURALCREATORDB_HPP__
-#define __FWATOMSPATCH_STRUCTURALCREATORDB_HPP__
-
-#include <string>
-#include <map>
-#include <utility>
-
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
+
+#include <core/base.hpp>
+#include <core/mt/types.hpp>
+
+#include <map>
+#include <string>
+#include <utility>
 
 namespace fwAtoms
 {
@@ -102,12 +101,12 @@ public:
 private:
 
     /// Copy constructor
-    StructuralCreatorDB( const StructuralCreatorDB &cpy )
+    StructuralCreatorDB( const StructuralCreatorDB& cpy )
     {
     }
 
     /// Mutex to protect concurrent access for m_creators
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 
     /// Structural creators
     CreatorsType m_creators;
@@ -116,9 +115,4 @@ private:
 
 };
 
-
 } // fwAtomsPatch
-
-
-
-#endif /* __FWATOMSPATCH_STRUCTURALCREATORDB_HPP__ */

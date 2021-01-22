@@ -3,7 +3,7 @@ set( NAME calibrationActivity )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCore
+    core
     fwData
     fwActivities
     fwRuntime

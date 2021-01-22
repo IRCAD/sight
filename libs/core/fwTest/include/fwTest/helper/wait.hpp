@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwCore/TimeStamp.hpp>
+#include <core/TimeStamp.hpp>
 
 #include <boost/preprocessor.hpp>
 
@@ -31,7 +31,7 @@
 
 // Wait at worst 1s for a given condition
 #define fwTestWaitMacro(cond, ...) \
-    ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
+    core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
     BOOST_PP_CAT(timeStamp, \
                  __LINE__).setLifePeriod( BOOST_PP_IF( BOOST_PP_IS_EMPTY( __VA_ARGS__), 10000, \
                                                        BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) ) ); \

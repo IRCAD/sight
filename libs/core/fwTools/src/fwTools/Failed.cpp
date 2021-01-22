@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,16 +25,13 @@
 namespace fwTools
 {
 
-Failed::Failed(const std::string &message) noexcept
-    : ::fwCore::Exception(message)
+Failed::Failed(const std::string& message) noexcept :
+    core::Exception(message)
 {
 }
-
 
 Failed::~Failed() noexcept
 {
 }
-
-
 
 } // namespace fwTools

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwDicomIOFilter/registry/detail.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -34,12 +34,10 @@ struct FwDicomIOFilterRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef ::fwCore::util::LazyInstantiator< Type, FwDicomIOFilterRegistryInstantiatorTag > InstantiatorType;
+    typedef core::util::LazyInstantiator< Type, FwDicomIOFilterRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
 
 } // namespace fwDicomIOFilter
-
-

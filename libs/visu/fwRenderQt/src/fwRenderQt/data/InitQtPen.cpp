@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwRenderQt/data/InitQtPen.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwRenderQt
 {

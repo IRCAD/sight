@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "fwActivities/validator/factory/new.hpp"
 #include "fwActivities/validator/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -42,7 +42,7 @@ namespace fwActivities
 /**
  * @brief Base class for all fwActivities validator's classes
  */
-class FWACTIVITIES_CLASS_API IValidator : public ::fwCore::BaseObject
+class FWACTIVITIES_CLASS_API IValidator : public core::BaseObject
 {
 
 public:
@@ -73,7 +73,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IValidator, ::fwCore::BaseObject);
+    fwCoreClassMacro(IValidator, core::BaseObject)
 
     /**
      * @brief Performs validation of given data as inputs for the considered activity.

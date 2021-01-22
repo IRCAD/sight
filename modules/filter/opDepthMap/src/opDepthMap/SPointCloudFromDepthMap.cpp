@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include <arData/CameraSeries.hpp>
 
+#include <core/Profiling.hpp>
+
 #include <depthMapOp/Projection.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/Profiling.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>

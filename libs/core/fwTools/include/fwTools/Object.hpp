@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwTools/config.hpp"
 #include "fwTools/fwID.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <boost/core/noncopyable.hpp>
 
@@ -37,12 +37,12 @@ class UUID;
 /**
  * @brief   Define Base class for Sight objects and services
  */
-class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject,
+class FWTOOLS_CLASS_API Object  : public core::BaseObject,
                                   public ::boost::noncopyable,
                                   protected ::fwTools::fwID
 {
 public:
-    fwCoreClassMacro(Object, ::fwCore::BaseObject);
+    fwCoreClassMacro(Object, core::BaseObject)
     fwCoreAllowSharedFromThis();
 
     friend class ::fwTools::UUID;

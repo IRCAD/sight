@@ -6,7 +6,7 @@ set( DEPENDENCIES
     fwItkIO
     fwData
     fwCom
-    fwCore
+    core
     fwDataTools
 )
 set( REQUIREMENTS )

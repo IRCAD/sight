@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwTest/helper/compare.hpp>
 
@@ -119,21 +119,21 @@ void CameraSeriesTest::cameraTest()
 
     CPPUNIT_ASSERT_NO_THROW(series->addCamera(camera1));
     CPPUNIT_ASSERT_NO_THROW(series->addCamera(camera2));
-    CPPUNIT_ASSERT_THROW(series->addCamera(camera2), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(series->addCamera(camera2), core::Exception);
 
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(0));
     CPPUNIT_ASSERT(::fwTest::helper::compare(identity, series->getExtrinsicMatrix(0)));
     CPPUNIT_ASSERT(!series->getExtrinsicMatrix(1));
     CPPUNIT_ASSERT_NO_THROW(series->setExtrinsicMatrix(1, mat));
-    CPPUNIT_ASSERT_THROW(series->setExtrinsicMatrix(2, mat), ::fwCore::Exception);
-    CPPUNIT_ASSERT_THROW(series->getExtrinsicMatrix(2), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(series->setExtrinsicMatrix(2, mat), core::Exception);
+    CPPUNIT_ASSERT_THROW(series->getExtrinsicMatrix(2), core::Exception);
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(1) == mat);
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
 
     CPPUNIT_ASSERT(series->getCamera(0) == camera1);
     CPPUNIT_ASSERT(series->getCamera(1) == camera2);
-    CPPUNIT_ASSERT_THROW(series->getCamera(2), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(series->getCamera(2), core::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(series->addCamera(camera3));
     CPPUNIT_ASSERT(series->getCamera(2) == camera3);
@@ -141,7 +141,7 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera1));
     CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera2);
-    CPPUNIT_ASSERT_THROW(series->removeCamera(camera1), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(series->removeCamera(camera1), core::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera2));
     CPPUNIT_ASSERT_EQUAL(size_t(1), series->getNumberOfCameras());

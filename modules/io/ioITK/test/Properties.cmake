@@ -3,7 +3,7 @@ set( NAME ioITKTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTest
     fwTools
     fwRuntime

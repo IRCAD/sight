@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,28 +20,24 @@
  *
  ***********************************************************************/
 
-#include <fwCore/base.hpp>
-
 #include "fwRuntime/RuntimeException.hpp"
 
+#include <core/base.hpp>
 
 namespace fwRuntime
 {
 
-
-RuntimeException::RuntimeException(const RuntimeException& exception) noexcept
-    : ::fwCore::Exception(std::string(exception.what()))
+RuntimeException::RuntimeException(const RuntimeException& exception) noexcept :
+    core::Exception(std::string(exception.what()))
 {
     SLM_WARN( this->what() );
 }
 
-
-RuntimeException::RuntimeException(const std::string& message) noexcept
-    : ::fwCore::Exception(message)
+RuntimeException::RuntimeException(const std::string& message) noexcept :
+    core::Exception(message)
 {
     SLM_WARN( this->what() );
 }
-
 
 RuntimeException::~RuntimeException() noexcept
 {

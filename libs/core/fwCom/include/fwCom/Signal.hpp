@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "fwCom/SignalBase.hpp"
 #include <fwCom/SlotConnection.hpp>
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <list>
 #include <map>
@@ -109,7 +109,7 @@ struct FWCOM_CLASS_API Signal< R(A ...) > : SignalBase
     /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
-        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        core::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
 
@@ -141,7 +141,7 @@ struct FWCOM_CLASS_API Signal< R(A ...) > : SignalBase
         /// Container of current connections.
         ConnectionMapType m_connections;
 
-        mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
+        mutable core::mt::ReadWriteMutex m_connectionsMutex;
 
     private:
         BOOST_STATIC_ASSERT( (std::is_same<void, R>::value) );

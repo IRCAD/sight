@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <fwCore/HiResClock.hpp>
+#include <core/HiResClock.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -43,7 +43,7 @@ namespace videoTools
  * - \b renderRequested(): Emitted when the frame has been updated.
  *
  * @section Slots Slots
- * - \b updateFrame(::fwCore::HiResClock::HiResClockType): Called to extract the frame at the given timestamp.
+ * - \b updateFrame(core::HiResClock::HiResClockType): Called to extract the frame at the given timestamp.
 
  * @section XML XML Configuration
  *
@@ -93,7 +93,7 @@ protected:
     VIDEOTOOLS_API virtual void updating() override;
 
     /// Update frame slots
-    VIDEOTOOLS_API virtual void updateFrame( ::fwCore::HiResClock::HiResClockType timestamp );
+    VIDEOTOOLS_API virtual void updateFrame( core::HiResClock::HiResClockType timestamp );
 
     /// Update the image according to the frame timeline.
     VIDEOTOOLS_API virtual void updateImage();
@@ -122,10 +122,10 @@ private:
     ::fwData::Image::sptr m_image;
 
     /// Last timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// Hight resolution timer to log information about computing function time
-    ::fwCore::HiResTimer m_hiRestimer;
+    core::HiResTimer m_hiRestimer;
 
     bool m_imageInitialized;
 };

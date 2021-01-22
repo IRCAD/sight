@@ -33,7 +33,7 @@
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/utils/GenericExecutableFactory.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <algorithm>
 #include <cassert>

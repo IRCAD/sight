@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ const std::string& AppManager::getID() const
 {
     if (m_uid.empty())
     {
-        const std::string classname = ::fwCore::Demangler(*this).getLeafClassname();
+        const std::string classname = core::Demangler(*this).getLeafClassname();
         m_uid = "AppManager-" + classname + "-" + std::to_string(++s_counter);
     }
     return m_uid;

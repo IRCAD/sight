@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_IHASSERVICES_HPP__
-#define __FWSERVICES_IHASSERVICES_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include <fwServices/op/Add.hpp>
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <vector>
 
@@ -124,5 +123,3 @@ SPTR(T) IHasServices::registerService(const std::string& _implType, const std::s
 //------------------------------------------------------------------------------
 
 } //namespace fwServices
-
-#endif /*__FWSERVICES_IHASSERVICES_HPP__*/

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ namespace fwRenderOgre
  * @brief Allows to render multiple scenes in the same render window with viewports.
  */
 class FWRENDEROGRE_CLASS_API Layer :
-    public ::fwCore::BaseObject,
+    public core::BaseObject,
     public ::fwCom::HasSignals,
     public ::fwCom::HasSlots
 
@@ -210,7 +210,7 @@ public:
     FWRENDEROGRE_API void requestRender();
 
     /// Sets stereoscopic rendering.
-    FWRENDEROGRE_API void setStereoMode(compositor::Core::StereoModeType mode);
+    FWRENDEROGRE_API void setStereoMode(compositorcore::StereoModeType mode);
 
     /// Sets background color : specific to background Layer.
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -220,9 +220,9 @@ public:
 
     /// Sets if this layer need a layer's 3D scene.
     FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
-                                                   std::string numPeels                        = "",
-                                                   compositor::Core::StereoModeType stereoMode =
-                                                       compositor::Core::StereoModeType::NONE);
+                                                   std::string numPeels                      = "",
+                                                   compositorcore::StereoModeType stereoMode =
+                                                       compositorcore::StereoModeType::NONE);
 
     /// Sets if this layer has a configured compositor chain.
     FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
@@ -240,7 +240,7 @@ public:
     FWRENDEROGRE_API bool is3D() const;
 
     /// @returns the stereoscopic mode.
-    FWRENDEROGRE_API compositor::Core::StereoModeType getStereoMode() const;
+    FWRENDEROGRE_API compositorcore::StereoModeType getStereoMode() const;
 
     /// @returns the compositor chain.
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
@@ -332,7 +332,7 @@ private:
     ::Ogre::OverlayContainer* m_overlayTextPanel { nullptr };
 
     /// Defines stereoscopic rendering mode.
-    compositor::Core::StereoModeType m_stereoMode { compositor::Core::StereoModeType::NONE };
+    compositorcore::StereoModeType m_stereoMode { compositorcore::StereoModeType::NONE };
 
     /// Stores configured compositor chain raw string if there is a one.
     std::string m_rawCompositorChain { "" };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_PROGRESSADVISER_HPP__
-#define __FWTOOLS_PROGRESSADVISER_HPP__
+#pragma once
 
 #include <fwTools/config.hpp>
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <boost/signals2.hpp>
 
@@ -78,5 +77,3 @@ protected:
 };
 
 }
-
-#endif /* __FWTOOLS_PROGRESSADVISER_HPP__ */

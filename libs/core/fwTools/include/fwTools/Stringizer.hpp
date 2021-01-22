@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_STRINGIZER_HPP__
-#define __FWTOOLS_STRINGIZER_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 #include "fwTools/TypeInfo.hpp"
 
-#include <fwCore/Demangler.hpp>
+#include <core/Demangler.hpp>
 
 #include  <boost/lexical_cast.hpp>
 #include  <boost/mpl/if.hpp>
@@ -61,7 +60,7 @@ struct Default
     template<class T>
     static std::string eval(const T& t)
     {
-        return "No getString for " + ::fwCore::Demangler(typeid(t)).getClassname();
+        return "No getString for " + core::Demangler(typeid(t)).getClassname();
     }
 };
 }
@@ -158,6 +157,3 @@ FWTOOLS_API std::string getString(const std::string& aString);
 ///@}
 
 }
-
-#endif // __FWTOOLS_STRINGIZER_HPP__
-

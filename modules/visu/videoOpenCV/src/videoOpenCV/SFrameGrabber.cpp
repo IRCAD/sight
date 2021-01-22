@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,11 @@
 
 #include <arPreferences/preferences.hpp>
 
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -194,7 +194,7 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_timer)
     {
@@ -239,7 +239,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     m_videoCapture.open(file.string());
 
@@ -290,7 +290,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 
 void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     const std::string device = _camera->getCameraID();
     const int index          = _camera->getIndex();
@@ -367,7 +367,7 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
 
 void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     m_videoCapture.open(_camera->getStreamUrl());
 
@@ -407,7 +407,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
     std::filesystem::directory_iterator endEntry;
@@ -548,7 +548,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
 void SFrameGrabber::grabVideo()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_videoCapture.isOpened())
     {
@@ -653,9 +653,9 @@ void SFrameGrabber::grabVideo()
 
 void SFrameGrabber::grabImage()
 {
-    const double t0 = ::fwCore::HiResClock::getTimeInMilliSec();
+    const double t0 = core::HiResClock::getTimeInMilliSec();
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     // When using time lapse, the timer is set to "one shot": it is stopped when this method is called and re-started
     // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
@@ -666,12 +666,12 @@ void SFrameGrabber::grabImage()
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
-        ::fwCore::HiResClock::HiResClockType timestamp;
+        core::HiResClock::HiResClockType timestamp;
 
         //create a new timestamp
         if(m_createNewTS)
         {
-            timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+            timestamp = core::HiResClock::getTimeInMilliSec();
         }
         //use the image timestamp
         else
@@ -718,7 +718,7 @@ void SFrameGrabber::grabImage()
                 frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
-            const double t1          = ::fwCore::HiResClock::getTimeInMilliSec();
+            const double t1          = core::HiResClock::getTimeInMilliSec();
             const double elapsedTime = t1 - t0;
 
             if (m_useTimelapse)
@@ -783,7 +783,7 @@ void SFrameGrabber::toggleLoopMode()
 
 void SFrameGrabber::setPosition(int64_t position)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_videoCapture.isOpened())
     {

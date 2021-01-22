@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -39,7 +39,7 @@ namespace ut
 class TestConfigService : public ::fwServices::IService
 {
 public:
-    fwCoreServiceMacro(TestConfigService, ::fwServices::IService);
+    fwCoreServiceMacro(TestConfigService, ::fwServices::IService)
     TestConfigService() noexcept :
         m_isUpdated(false)
     {
@@ -93,7 +93,7 @@ class TestServiceImplementationImage : public TestConfigService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementationImage, ::fwServices::ut::TestConfigService);
+    fwCoreServiceMacro(TestServiceImplementationImage, ::fwServices::ut::TestConfigService)
     TestServiceImplementationImage() noexcept
     {
     }

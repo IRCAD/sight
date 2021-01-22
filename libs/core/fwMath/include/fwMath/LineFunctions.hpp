@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMATH_LINEFUNCTIONS_HPP__
-#define __FWMATH_LINEFUNCTIONS_HPP__
+#pragma once
 
-#include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
+#include "fwMath/IntrasecTypes.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwMath
 {
@@ -102,5 +101,3 @@ FWMATH_API bool intersect( const fwLine& _line, const fwVec3d& _v1,  const fwVec
                            fwVec3d& _point, fwVec3d& _barycentric, bool& _front);
 
 }
-
-#endif /* __FWMATH_LINEFUNCTIONS_HPP__ */

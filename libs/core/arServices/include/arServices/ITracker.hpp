@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "arServices/config.hpp"
 
-#include <fwCore/HiResClock.hpp>
+#include <core/HiResClock.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -40,7 +40,7 @@ namespace arServices
  * received timestamp is greater than the last processed timestamp.
  *
  * @section Slots Slots
- * - \b track(::fwCore::HiResClock::HiResClockType  timestamp) : performs the tracking, does nothing if the tracking is
+ * - \b track(core::HiResClock::HiResClockType  timestamp) : performs the tracking, does nothing if the tracking is
  *   not started.
  * - \b startTracking() : start the tracking
  * - \b stopTracking() : stop the tracking
@@ -56,7 +56,7 @@ class ARSERVICES_CLASS_API ITracker : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceMacro(ITracker, ::fwServices::IService);
+    fwCoreServiceMacro(ITracker, ::fwServices::IService)
 
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_TRACK_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_TRACKING_SLOT;
@@ -102,7 +102,7 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    ARSERVICES_API virtual void track(::fwCore::HiResClock::HiResClockType timestamp);
+    ARSERVICES_API virtual void track(core::HiResClock::HiResClockType timestamp);
 
     /// start the tracking
     ARSERVICES_API virtual void startTracking();
@@ -114,10 +114,10 @@ protected:
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    ARSERVICES_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) = 0;
+    ARSERVICES_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) = 0;
 
     /// timestamp of the last tracking
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// If true, only last object is retrived
     bool m_dropObj;

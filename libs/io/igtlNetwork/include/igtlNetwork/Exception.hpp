@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,16 @@
 
 #include "igtlNetwork/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace igtlNetwork
 {
 
 /// Exception for igtlNetwork
-struct Exception : ::fwCore::Exception
+struct Exception : core::Exception
 {
     Exception( const std::string& err ) :
-        ::fwCore::Exception(err)
+        core::Exception(err)
     {
     }
 };

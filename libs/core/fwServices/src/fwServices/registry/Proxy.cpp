@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,14 +58,14 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
     SPTR(SigSlots) sigslots;
 
     {
-        ::fwCore::mt::ReadToWriteLock lock(m_channelMutex);
+        core::mt::ReadToWriteLock lock(m_channelMutex);
         ChannelMapType::iterator iter = m_channels.find(channel);
 
         if (iter == m_channels.end())
         {
             sigslots = SPTR(SigSlots)(new SigSlots);
 
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             m_channels[channel] = sigslots;
         }
         else
@@ -74,7 +74,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
         }
     }
 
-    ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
+    core::mt::WriteLock lock(sigslots->m_mutex);
     auto ret = sigslots->m_signals.insert(signal);
 
     if(ret.second)
@@ -94,14 +94,14 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
     SPTR(SigSlots) sigslots;
 
     {
-        ::fwCore::mt::ReadToWriteLock lock(m_channelMutex);
+        core::mt::ReadToWriteLock lock(m_channelMutex);
         ChannelMapType::iterator iter = m_channels.find(channel);
 
         if (iter == m_channels.end())
         {
             sigslots = SPTR(SigSlots)(new SigSlots);
 
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             m_channels[channel] = sigslots;
         }
         else
@@ -110,7 +110,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
         }
     }
 
-    ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
+    core::mt::WriteLock lock(sigslots->m_mutex);
     auto ret = sigslots->m_slots.insert(slot);
 
     if(ret.second)
@@ -127,13 +127,13 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
 void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_channelMutex);
+    core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
 
     SLM_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
     SPTR(SigSlots) sigslots = iter->second;
 
-    ::fwCore::mt::WriteLock sigSlotLock(sigslots->m_mutex);
+    core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
     for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
     {
@@ -147,7 +147,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
     if (sigslots->m_signals.empty() && sigslots->m_slots.empty())
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         m_channels.erase(channel);
     }
 }
@@ -156,13 +156,13 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
 void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 {
-    ::fwCore::mt::ReadToWriteLock lock(m_channelMutex);
+    core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
 
     SLM_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
     SPTR(SigSlots) sigslots = iter->second;
 
-    ::fwCore::mt::WriteLock sigSlotLock(sigslots->m_mutex);
+    core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
     for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
     {
@@ -176,7 +176,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
     if (sigslots->m_signals.empty() && sigslots->m_slots.empty())
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         m_channels.erase(channel);
     }
 }
@@ -185,4 +185,3 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
 } // namespace registry
 } // namespace fwServices
-

@@ -28,6 +28,8 @@
 #include <fwAtomConversion/exception/DataFactoryNotFound.hpp>
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 
+#include <core/log/SpyLogger.hpp>
+
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -35,8 +37,6 @@
 #include <fwCamp/macros.hpp>
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwCamp/UserObject.hpp>
-
-#include <fwCore/log/SpyLogger.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "VectorFunctionsTest.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwMath/VectorFunctions.hpp>
 
@@ -36,6 +36,8 @@ namespace fwMath
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void VectorFunctionsTest::setUp()
 {
@@ -178,7 +180,7 @@ void VectorFunctionsTest::checkVecLength()
 
     double expected = 3.741657387;
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected,length, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, length, 0.00001);
 }
 
 //------------------------------------------------------------------------------
@@ -241,7 +243,6 @@ void VectorFunctionsTest::checkOperators()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-2.0), res2[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-4.0), res2[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-6.0), res2[2], 0.00001);
-
 
     fwVec3d vec7 = {1.0, 2.0, 3.0};
     fwVec3d res3 = vec7 / 2.0;

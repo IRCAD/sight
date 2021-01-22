@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,7 +114,7 @@ private:
     /// Stores last behavior (true if motion, false otherwise).
     bool m_motion;
     /// Stores last processed frame timestamp.
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 };
 
 } //namespace videoTools

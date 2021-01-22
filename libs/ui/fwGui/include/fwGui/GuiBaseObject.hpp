@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwGui/factory/new.hpp"
 #include "fwGui/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwGui
 {
@@ -34,7 +34,7 @@ namespace fwGui
 /**
  * @brief Base class for all fwGui's classes
  */
-class FWGUI_CLASS_API GuiBaseObject : public ::fwCore::BaseObject
+class FWGUI_CLASS_API GuiBaseObject : public core::BaseObject
 {
 
 public:
@@ -57,7 +57,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(GuiBaseObject, ::fwCore::BaseObject)
+    fwCoreClassMacro(GuiBaseObject, core::BaseObject)
 
 protected:
     /**

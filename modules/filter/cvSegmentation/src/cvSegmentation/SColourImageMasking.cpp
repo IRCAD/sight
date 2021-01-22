@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -187,7 +187,7 @@ void SColourImageMasking::updating()
         ::fwCom::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
 
         // Get the timestamp from the latest video frame
-        ::fwCore::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
+        core::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
 
         // Get image from the video timeline
         CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
@@ -200,7 +200,7 @@ void SColourImageMasking::updating()
 
         const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
-        ::fwCore::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
+        core::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
             SLM_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
@@ -248,8 +248,8 @@ void SColourImageMasking::setBackground()
     const auto mask    = this->getLockedInput< ::fwData::Image >(s_MASK_KEY);
     const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
-    ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
+    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
         SLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
@@ -298,8 +298,8 @@ void SColourImageMasking::setForeground()
 {
     const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
-    ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
+    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
         SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);

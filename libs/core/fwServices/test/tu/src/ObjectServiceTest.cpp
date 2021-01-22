@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
@@ -93,7 +93,7 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(std::string("uid1"), service1->getObjectId("key1"));
     CPPUNIT_ASSERT_EQUAL(std::string("uid2"), service1->getObjectId("key2"));
     CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
-    CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), core::Exception);
 
     osr.registerService(obj1, "key1", ::fwServices::IService::AccessType::INOUT, service1);
     osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);

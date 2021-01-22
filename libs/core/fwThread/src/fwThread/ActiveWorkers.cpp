@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwThread/ActiveWorkers.hpp"
 
-#include "fwCore/util/LazyInstantiator.hpp"
+#include "core/util/LazyInstantiator.hpp"
 
 namespace fwThread
 {
@@ -47,14 +47,14 @@ ActiveWorkers::~ActiveWorkers()
 
 ActiveWorkers::sptr ActiveWorkers::getDefault()
 {
-    return ::fwCore::util::LazyInstantiator< ActiveWorkers >::getInstance();
+    return core::util::LazyInstantiator< ActiveWorkers >::getInstance();
 }
 
 //-----------------------------------------------------------------------------
 
 ::fwThread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType& key ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
 
     WorkerMapType::const_iterator it = m_workers.find(key);
 
@@ -84,7 +84,7 @@ void ActiveWorkers::setDefaultWorker(fwThread::Worker::sptr worker)
 
 void ActiveWorkers::addWorker( const WorkerKeyType& key, ::fwThread::Worker::sptr worker )
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
     m_workers.insert( WorkerMapType::value_type(key, worker) );
 }
 
@@ -99,7 +99,7 @@ void ActiveWorkers::initRegistry()
 
 void ActiveWorkers::clearRegistry()
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
 
     for (const auto& elt: m_workers)
     {

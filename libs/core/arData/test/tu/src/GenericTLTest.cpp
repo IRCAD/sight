@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,9 +114,9 @@ void GenericTLTest::pushPopTest()
     ::arData::Float4TL::sptr timeline = ::arData::Float4TL::New();
     timeline->initPoolSize(3);
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
-    ::fwCore::HiResClock::HiResClockType time3 = time1 + 81;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time3 = time1 + 81;
 
     float4 values1 = {1.0f, 5.2f, 7.5f, 1.f};
     float4 values2 = {4.0f, 5.5f, 1.5f, 2.f};
@@ -212,7 +212,7 @@ void GenericTLTest::pushPopTest()
         CSPTR(::arData::timeline::Object) dataPushed3Bis = timeline->getNewerObject();
         CPPUNIT_ASSERT(data3 == dataPushed3Bis);
 
-        ::fwCore::HiResClock::HiResClockType time3Pushed = timeline->getNewerTimestamp();
+        core::HiResClock::HiResClockType time3Pushed = timeline->getNewerTimestamp();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(time3, time3Pushed, 0.00001);
 
         CSPTR(::arData::Float4TL::BufferType) obj =
@@ -291,8 +291,8 @@ void GenericTLTest::pushClassTest()
     ::arData::TestClassTL::sptr timeline = ::arData::TestClassTL::New();
     timeline->initPoolSize(3);
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
 
     TestContained testData1;
     testData1.m_int       = 87;
@@ -404,12 +404,12 @@ void GenericTLTest::copyTest()
     ::arData::Float3TL::sptr timeline = ::arData::Float3TL::New();
     timeline->initPoolSize(3);
 
-    ::fwCore::HiResClock::HiResClockType time1  = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2  = time1 + 42;
-    ::fwCore::HiResClock::HiResClockType time2b = time2 + 12;
-    ::fwCore::HiResClock::HiResClockType time3  = time2 + 52;
-    ::fwCore::HiResClock::HiResClockType time4  = time3 + 52;
-    ::fwCore::HiResClock::HiResClockType time4b = time4 + 12;
+    core::HiResClock::HiResClockType time1  = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2  = time1 + 42;
+    core::HiResClock::HiResClockType time2b = time2 + 12;
+    core::HiResClock::HiResClockType time3  = time2 + 52;
+    core::HiResClock::HiResClockType time4  = time3 + 52;
+    core::HiResClock::HiResClockType time4b = time4 + 12;
 
     float values1[3] = {1.0f, 5.2f, 7.5f};
     float values2[3] = {4.0f, 5.5f, 1.5f};
@@ -584,10 +584,10 @@ void GenericTLTest::iteratorTest()
     ::arData::Float3TL::sptr timeline = ::arData::Float3TL::New();
     timeline->initPoolSize(5);
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
-    ::fwCore::HiResClock::HiResClockType time3 = time2 + 52;
-    ::fwCore::HiResClock::HiResClockType time4 = time3 + 52;
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time2 = time1 + 42;
+    core::HiResClock::HiResClockType time3 = time2 + 52;
+    core::HiResClock::HiResClockType time4 = time3 + 52;
 
     float values1[3] = {1.0f, 5.2f, 7.5f};
     float values2[3] = {4.0f, 5.5f, 1.5f};
@@ -693,7 +693,7 @@ void GenericTLTest::objectValid()
     ::arData::Float4TL::sptr timeline2 = ::arData::Float4TL::New();
     timeline2->initPoolSize(3);
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     SPTR(::arData::Float3TL::BufferType) data1 = timeline1->createBuffer(time1);
     SPTR(::arData::Float4TL::BufferType) data2 = timeline2->createBuffer(time1);
 

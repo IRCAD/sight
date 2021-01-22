@@ -22,6 +22,8 @@
 
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -29,8 +31,6 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>

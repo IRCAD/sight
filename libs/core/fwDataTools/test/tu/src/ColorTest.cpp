@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "ColorTest.hpp"
 
-#include <fwCore/Exception.hpp>
 #include <fwDataTools/Color.hpp>
+
+#include <core/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::ColorTest );
@@ -33,15 +34,21 @@ namespace fwDataTools
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ColorTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void ColorTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void ColorTest::hexaStringToRGBA()
 {
@@ -65,13 +72,13 @@ void ColorTest::hexaStringToRGBA()
 
     const std::string strColor3 = "45a5bc28";
     std::uint8_t color3[4];
-    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor3, color3), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor3, color3), core::Exception);
 
     const std::string strColor4 = "45a58";
-    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor4, color3), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor4, color3), core::Exception);
 
     const std::string strColor5 = "#45a564928";
-    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor5, color3), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(::fwDataTools::Color::hexaStringToRGBA(strColor5, color3), core::Exception);
 }
 
 } //namespace ut

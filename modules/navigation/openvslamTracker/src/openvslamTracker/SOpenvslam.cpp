@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "openvslamTracker/SOpenvslam.hpp"
 
+#include <core/Profiling.hpp>
+
 #include <cvIO/FrameTL.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/Profiling.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -668,7 +668,7 @@ void SOpenvslam::resetPointCloud()
 
 //------------------------------------------------------------------------------
 
-void SOpenvslam::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
+void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 {
 
     const std::unique_lock<std::mutex> lock(m_slamLock);

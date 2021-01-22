@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,8 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/base.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwTools/Object.hpp>
 
@@ -229,7 +229,7 @@ public:
     //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
-    ::fwCore::mt::ReadWriteMutex& getMutex() const
+    core::mt::ReadWriteMutex& getMutex() const
     {
         return m_mutex;
     }
@@ -257,7 +257,7 @@ protected:
     FieldMapType m_fields;
 
     /// Mutex to protect object access.
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 };
 
 template <typename DATA_TYPE>

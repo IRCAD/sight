@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "videoTools/config.hpp"
 
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
+#include <core/base.hpp>
+#include <core/HiResClock.hpp>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>

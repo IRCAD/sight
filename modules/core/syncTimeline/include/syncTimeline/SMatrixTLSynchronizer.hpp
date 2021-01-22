@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 
 #include <arServices/ISynchronizer.hpp>
 
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
+#include <core/base.hpp>
+#include <core/HiResClock.hpp>
 
 #include <fwData/Composite.hpp>
 

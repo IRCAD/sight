@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwCom/config.hpp"
 
-#include <fwCore/BaseObject.hpp>
+#include <core/BaseObject.hpp>
 
 namespace fwCom
 {
@@ -33,7 +33,7 @@ namespace fwCom
  * @brief Base class for Slot connection implementation.
  * This class is for internal use purpose.
  */
-struct FWCOM_CLASS_API SlotConnectionBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SlotConnectionBase : virtual core::BaseObject
 {
     /**
      * @name Typedefs

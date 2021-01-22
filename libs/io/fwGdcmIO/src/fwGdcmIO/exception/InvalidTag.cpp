@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace exception
 //----------------------------------------------------------------------------
 
 InvalidTag::InvalidTag(const std::string& message) :
-    ::fwCore::Exception(message)
+    core::Exception(message)
 {
 }
 
@@ -44,4 +44,3 @@ InvalidTag::~InvalidTag() noexcept
 
 } // namespace exception
 } // namespace fwGdcmIO
-

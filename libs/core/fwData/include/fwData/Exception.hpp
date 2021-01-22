@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_EXCEPTION_HPP__
-#define __FWDATA_EXCEPTION_HPP__
+#pragma once
 
-#include "fwCore/Exception.hpp"
+#include "core/Exception.hpp"
+
 #include "fwData/config.hpp"
 
 #include <exception>
@@ -35,7 +35,7 @@ namespace fwData
 /**
  * @brief   Implements data exception class.
  */
-class FWDATA_CLASS_API Exception : public ::fwCore::Exception
+class FWDATA_CLASS_API Exception : public core::Exception
 {
 public:
 
@@ -44,7 +44,7 @@ public:
      *
      * @param[in]   message a string containing the failure message
      */
-    FWDATA_API Exception(const std::string &message) noexcept;
+    FWDATA_API Exception(const std::string& message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
@@ -53,6 +53,3 @@ public:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_EXCEPTION_HPP__
-

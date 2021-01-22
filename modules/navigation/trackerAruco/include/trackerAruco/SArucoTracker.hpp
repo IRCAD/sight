@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 
 #include <arServices/ITracker.hpp>
 
+#include <core/HiResClock.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -44,7 +44,7 @@ namespace trackerAruco
  * @see ::arServices::ITracker
  *
  * @section Signals Signals
- * - \b detectionDone(::fwCore::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
+ * - \b detectionDone(core::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
  *
  * @section Slots Slots
  * @subsection Inherited Inherited slots (from ITracker)
@@ -116,7 +116,7 @@ public:
 
     fwCoreServiceMacro(SArucoTracker, arServices::ITracker)
 
-    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
+    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
     typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;
 
     /**
@@ -177,7 +177,7 @@ protected:
     TRACKERARUCO_API void stopping() override;
 
     /// Detect marker
-    TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
+    TRACKERARUCO_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) override;
 
 private:
 

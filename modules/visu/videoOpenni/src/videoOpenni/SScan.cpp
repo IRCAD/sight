@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -423,7 +423,7 @@ void SScan::presentFrame()
 
         const ::openni::VideoStream* const changedVideoStream = m_streamMap[static_cast<size_t>(changedIndex)];
 
-        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
         if (changedVideoStream == &m_depthStream)
         {

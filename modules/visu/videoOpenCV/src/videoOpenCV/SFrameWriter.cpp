@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,13 +145,13 @@ void SFrameWriter::stopping()
 void SFrameWriter::updating()
 {
 
-    ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     this->saveFrame(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::saveFrame(::fwCore::HiResClock::HiResClockType _timestamp)
+void SFrameWriter::saveFrame(core::HiResClock::HiResClockType _timestamp)
 {
     this->startRecord();
     this->write(_timestamp);
@@ -160,7 +160,7 @@ void SFrameWriter::saveFrame(::fwCore::HiResClock::HiResClockType _timestamp)
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
+void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {

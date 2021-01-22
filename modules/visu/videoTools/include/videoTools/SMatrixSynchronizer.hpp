@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,10 @@
 
 #include <arServices/ISynchronizer.hpp>
 
+#include <core/base.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -61,7 +61,7 @@ public:
 
     /// Slot definition
     VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MATRIX_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> UpdateMatrixSlotType;
+    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> UpdateMatrixSlotType;
 
 protected:
     /**
@@ -97,10 +97,10 @@ private:
     /// slot to update the TransformationMatrix3D with the timeline buffer
     UpdateMatrixSlotType::sptr m_slotUpdateMatrix;
     /// Last timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// This function fills the TransformationMatrix3D with the current buffer content of the MatrixTL
-    void updateMatrix(::fwCore::HiResClock::HiResClockType timestamp);
+    void updateMatrix(core::HiResClock::HiResClockType timestamp);
 
 };
 

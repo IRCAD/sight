@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_FACTORY_NEW_HPP__
-#define __FWSERVICES_FACTORY_NEW_HPP__
-
-#include <string>
+#pragma once
 
 #include "fwServices/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
+
+#include <string>
 
 namespace fwServices
 {
@@ -47,8 +46,3 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace factory
 
 } // namespace fwServices
-
-#endif /* __FWSERVICES_FACTORY_NEW_HPP__ */
-
-
-

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,11 @@
 
 #include "uiImageQt/WindowLevel.hpp"
 
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <core/base.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -46,6 +44,8 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <QApplication>
 #include <QComboBox>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ namespace videoCharucoCalibration
  * - \b charucoBoardNotDetected(): Emitted when the charucoBoard is not detected on the current image.
  *
  * @section Slots Slots
- * - \b checkPoints(::fwCore::HiResClock::HiResClockType): Try to detect the charucoBoard in the image(s) from the
+ * - \b checkPoints(core::HiResClock::HiResClockType): Try to detect the charucoBoard in the image(s) from the
  * timeline(s) at the given timestamp.
  * - \b detectPoints(): Request to store the current image in the calibration data, if the charucoBoard is detected.
  * - \b updateChessboardSize(): update the parameters of the charucoBoard from preferences.
@@ -94,7 +94,7 @@ namespace videoCharucoCalibration
 class VIDEOCHARUCOCALIBRATION_CLASS_API SCharucoBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceMacro(SCharucoBoardDetector, ::fwServices::IController);
+    fwCoreServiceMacro(SCharucoBoardDetector, ::fwServices::IController)
 
     /**
      * @name Signals API
@@ -129,7 +129,7 @@ public:
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
     ::fwData::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
-                                                 const ::fwCore::HiResClock::HiResClockType timestamp,
+                                                 const core::HiResClock::HiResClockType timestamp,
                                                  ::arData::FrameTL::sptr tlDetection = nullptr);
 
 protected:
@@ -152,7 +152,7 @@ private:
      * @brief SLOT : Check if charucoBoard is visible and send corresponding signal
      * @param timestamp timestamp used to gets image frame
      */
-    VIDEOCHARUCOCALIBRATION_API void checkPoints(::fwCore::HiResClock::HiResClockType timestamp);
+    VIDEOCHARUCOCALIBRATION_API void checkPoints(core::HiResClock::HiResClockType timestamp);
 
     /**
      * @brief SLOT: Check on each timeline if points are visible in each frame. Then add the detected points and the
@@ -168,7 +168,7 @@ private:
     /**
      * @brief Create an image from frame timeline
      */
-    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
+    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when charucoBoard is detected
     CharucoBoardDetectedSignalType::sptr m_sigCharucoBoardDetected;
@@ -210,7 +210,7 @@ private:
     std::vector< ::fwData::PointList::sptr> m_cornerAndIdLists;
 
     /// Timestamp of the last managed image
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// Size in pixels of marker
     int m_markerSizeInBits;

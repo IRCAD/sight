@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppInfo.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -48,7 +48,7 @@ namespace registry
  * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
  */
-class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API AppConfig : public core::BaseObject
 {
 
 public:
@@ -56,7 +56,7 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassMacro(AppConfig, ::fwCore::BaseObject, new AppConfig)
+    fwCoreClassMacro(AppConfig, core::BaseObject, new AppConfig)
 
     /// Destructor
     FWSERVICES_API virtual ~AppConfig();
@@ -178,10 +178,10 @@ private:
     static std::string adaptField(const std::string& _str, const FieldAdaptorType& _variablesMap );
 
     /// Used to protect the registry access.
-    mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
+    mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// Used to protect the unique identifier creation.
-    static ::fwCore::mt::Mutex s_idMutex;
+    static core::mt::Mutex s_idMutex;
 
     /// The global instance of the app config.
     static AppConfig::sptr s_currentAppConfig;

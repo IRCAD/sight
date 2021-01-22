@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ void SConsumer::updating()
 {
     const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
 
-    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     const CSPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
@@ -106,7 +106,7 @@ void SConsumer::updating()
 
 //------------------------------------------------------------------------------
 
-void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
+void SConsumer::consume(core::HiResClock::HiResClockType timestamp)
 {
     const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
 

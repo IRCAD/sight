@@ -137,7 +137,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     {
-        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        core::mt::WriteLock lock( manager->getMutex() );
         manager->setLoadingMode(::fwMemory::BufferManager::LAZY);
     }
 
@@ -188,7 +188,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
     }
 
     {
-        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        core::mt::WriteLock lock( manager->getMutex() );
         manager->setLoadingMode(::fwMemory::BufferManager::DIRECT);
     }
 }

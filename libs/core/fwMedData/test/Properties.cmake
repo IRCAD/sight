@@ -3,7 +3,7 @@ set( NAME fwMedDataTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTest
     fwData
     fwMedData

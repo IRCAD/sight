@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_EXCEPTION_FAILED_HPP__
-#define __FWGDCMIO_EXCEPTION_FAILED_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwGdcmIO
 {
@@ -35,15 +34,13 @@ namespace exception
 /**
  * @brief   Implements a failed exception class for fwGdcmIO
  */
-struct FWGDCMIO_CLASS_API Failed : ::fwCore::Exception
+struct FWGDCMIO_CLASS_API Failed : core::Exception
 {
-    Failed( const std::string& err ) : ::fwCore::Exception(err)
+    Failed( const std::string& err ) :
+        core::Exception(err)
     {
     }
 };
 
 } // namespace exception
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_EXCEPTION_FAILED_HPP__
-

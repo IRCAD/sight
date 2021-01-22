@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ void ServiceConfig::addServiceConfigInfo
     const std::string& desc,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
 
     SLM_DEBUG( "New service config registering : "
                << " configId = " << configId
@@ -120,7 +120,7 @@ ServiceConfig::ServiceConfig()
 
 void ServiceConfig::clearRegistry()
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -132,7 +132,7 @@ void ServiceConfig::clearRegistry()
 #ifndef _DEBUG
     FwCoreNotUsedMacro(serviceImpl);
 #endif
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
                iter != m_reg.end());
@@ -145,7 +145,7 @@ void ServiceConfig::clearRegistry()
 
 const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
                iter != m_reg.end());
@@ -156,7 +156,7 @@ const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) c
 
 std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl, bool matchingOnly ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 
     for(Registry::value_type srvCfg :  m_reg)

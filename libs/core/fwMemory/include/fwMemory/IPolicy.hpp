@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_IPOLICY_HPP__
-#define __FWMEMORY_IPOLICY_HPP__
+#pragma once
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/BufferManager.hpp"
 #include "fwMemory/config.hpp"
 #include "fwMemory/policy/factory/new.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwMemory
 {
@@ -36,7 +35,7 @@ namespace fwMemory
 /**
  * @brief Defines the memory dump policy interface
  */
-class FWMEMORY_CLASS_API IPolicy : public fwCore::BaseObject
+class FWMEMORY_CLASS_API IPolicy : public core::BaseObject
 {
 public:
 
@@ -56,17 +55,17 @@ public:
 
     virtual void destroyRequest(BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
-    virtual void lockRequest(BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )   = 0;
+    virtual void lockRequest(BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
     virtual void unlockRequest(BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
-    virtual void dumpSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )    = 0;
+    virtual void dumpSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
     virtual void restoreSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
     virtual void refresh() = 0;
 
-    virtual bool setParam(const std::string& name, const std::string& value)      = 0;
+    virtual bool setParam(const std::string& name, const std::string& value) = 0;
     virtual std::string getParam(const std::string& name, bool* ok = NULL ) const = 0;
-    virtual const ParamNamesType& getParamNames() const                           = 0;
+    virtual const ParamNamesType& getParamNames() const = 0;
 
     template <typename T>
     class Registrar
@@ -81,6 +80,3 @@ public:
 };
 
 } // namespace fwMemory
-
-#endif // __FWMEMORY_IPOLICY_HPP__
-

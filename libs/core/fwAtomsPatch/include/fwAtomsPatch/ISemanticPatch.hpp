@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "fwAtomsPatch/helper/Object.hpp"
 #include "fwAtomsPatch/IPatch.hpp"
 
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/base.hpp>
+#include <core/mt/types.hpp>
 
 #include <string>
 
@@ -46,7 +46,7 @@ class FWATOMSPATCH_CLASS_API ISemanticPatch : public IPatch
 {
 
 public:
-    fwCoreClassMacro(ISemanticPatch);
+    fwCoreClassMacro(ISemanticPatch)
     fwCoreAllowSharedFromThis();
 
     /// Constructor
@@ -121,7 +121,7 @@ protected:
     /**  @} */
 
     /// Mutex to protect concurrent access for m_contexts
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 
     ///Vector used to store the contexts where the patch can be applied
     ContextVectorType m_contexts;

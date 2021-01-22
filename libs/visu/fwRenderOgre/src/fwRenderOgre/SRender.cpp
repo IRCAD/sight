@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <fwCom/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -336,11 +336,11 @@ void SRender::configureLayer(const ConfigType& _cfg )
     SLM_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    compositor::Core::StereoModeType layerStereoMode =
-        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5 :
-        stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8 :
-        stereoMode == "Stereo"      ? compositor::Core::StereoModeType::STEREO :
-        compositor::Core::StereoModeType::NONE;
+    compositorcore::StereoModeType layerStereoMode =
+        stereoMode == "AutoStereo5" ? compositorcore::StereoModeType::AUTOSTEREO_5 :
+        stereoMode == "AutoStereo8" ? compositorcore::StereoModeType::AUTOSTEREO_8 :
+        stereoMode == "Stereo"      ? compositorcore::StereoModeType::STEREO :
+        compositorcore::StereoModeType::NONE;
 
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);

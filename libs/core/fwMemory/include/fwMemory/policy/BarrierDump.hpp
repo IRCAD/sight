@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwMemory/IPolicy.hpp"
 #include "fwMemory/policy/factory/new.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 namespace fwMemory
 {
@@ -45,7 +45,7 @@ namespace policy
 class FWMEMORY_CLASS_API BarrierDump : public ::fwMemory::IPolicy
 {
 public:
-    fwCoreClassMacro(BarrierDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< BarrierDump >);
+    fwCoreClassMacro(BarrierDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< BarrierDump >)
 
     FWMEMORY_API BarrierDump();
 

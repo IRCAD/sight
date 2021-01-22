@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ StructuralCreatorDB::sptr StructuralCreatorDB::s_default = std::make_shared<Stru
 void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sptr creator)
 {
     VersionIDType key = std::make_pair(creator->getObjectClassname(), creator->getObjectVersion());
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     m_creators[key] = creator;
 }
 
@@ -46,7 +46,7 @@ void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sp
 {
     VersionIDType key = std::make_pair(classname, version);
 
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     CreatorsType::const_iterator it = m_creators.find(key);
     if(it != m_creators.end())
     {
@@ -73,7 +73,7 @@ void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sp
 
 size_t StructuralCreatorDB::size() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_creators.size();
 }
 

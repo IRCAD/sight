@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwAtomsPatch/exceptions/UnknownVersion.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
@@ -70,7 +70,7 @@ VersionsGraph::~VersionsGraph()
 
 void VersionsGraph::addNode(NodeType node)
 {
-    ::fwCore::mt::WriteLock lock(m_nodesMutex);
+    core::mt::WriteLock lock(m_nodesMutex);
     NodeIDType newNode = this->createOrUpdateNode(node);
     m_nodes[node] = newNode;
 }
@@ -79,7 +79,7 @@ void VersionsGraph::addNode(NodeType node)
 
 void VersionsGraph::addEdge(EdgeType edge)
 {
-    ::fwCore::mt::WriteLock lock(m_edgesMutex);
+    core::mt::WriteLock lock(m_edgesMutex);
     EdgeIDType newEdge = this->createEdge(edge);
     m_edges[edge] = newEdge;
 }
@@ -100,8 +100,8 @@ VersionsGraph::VersionSeriesType VersionsGraph::shortestPath(const NodeType& ori
 {
     VersionSeriesType serie;
 
-    ::fwCore::mt::ReadLock nodesLock(m_nodesMutex);
-    ::fwCore::mt::ReadLock graphLock(m_graphMutex);
+    core::mt::ReadLock nodesLock(m_nodesMutex);
+    core::mt::ReadLock graphLock(m_graphMutex);
 
     std::vector< NodeIDType > predecessor( ::boost::num_vertices(m_graph) );
     std::vector< int > distances( ::boost::num_vertices(m_graph) );
@@ -131,7 +131,7 @@ VersionsGraph::VersionSeriesType VersionsGraph::shortestPath(const NodeType& ori
 
 VersionsGraph::NodeType VersionsGraph::getNode(const NodeIDType& nodeID)
 {
-    ::fwCore::mt::ReadLock lock(m_graphMutex);
+    core::mt::ReadLock lock(m_graphMutex);
     return m_graph[nodeID];
 }
 
@@ -139,7 +139,7 @@ VersionsGraph::NodeType VersionsGraph::getNode(const NodeIDType& nodeID)
 
 VersionsGraph::NodeIDType VersionsGraph::getNode(const std::string& name) const
 {
-    ::fwCore::mt::ReadLock lock(m_nodesMutex);
+    core::mt::ReadLock lock(m_nodesMutex);
     ExistingNodesType::const_iterator it;
     for(it = m_nodes.begin(); it != m_nodes.end(); ++it)
     {
@@ -161,7 +161,7 @@ VersionsGraph::NodeIDType VersionsGraph::getNode(const std::string& name) const
 
 VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const NodeIDType& target)
 {
-    ::fwCore::mt::ReadLock lock(m_graphMutex);
+    core::mt::ReadLock lock(m_graphMutex);
     auto [edgeID, success] = ::boost::edge(origin, target, m_graph);
     SLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
                                             << m_graph[target].getVersionName() << "'.", success);
@@ -220,7 +220,7 @@ VersionsGraph::NodeIDType VersionsGraph::createOrUpdateNode(const NodeType& node
     }
     else
     {
-        ::fwCore::mt::WriteLock lock(m_graphMutex);
+        core::mt::WriteLock lock(m_graphMutex);
         NodeIDType v = ::boost::add_vertex(m_graph);
         m_graph[v] = node;
         return v;
@@ -234,7 +234,7 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     NodeIDType origin = this->getNode(edge.getOriginVersion());
     NodeIDType target = this->getNode(edge.getTargetVersion());
 
-    ::fwCore::mt::ReadLock lock(m_graphMutex);
+    core::mt::ReadLock lock(m_graphMutex);
     auto [newEdge, success] = ::boost::add_edge(origin, target, edge, m_graph);
 
     SLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
@@ -251,7 +251,7 @@ std::vector< std::string > VersionsGraph::getConnectedVersions(const std::string
     VertexVisitor vis(&vector);
     try
     {
-        ::fwCore::mt::ReadLock lock(m_graphMutex);
+        core::mt::ReadLock lock(m_graphMutex);
         VersionsGraph::NodeIDType nodeId = this->getNode(currentVersion);
         ::boost::breadth_first_search( m_graph, nodeId, ::boost::visitor(vis) );
         vector.erase(vector.begin());

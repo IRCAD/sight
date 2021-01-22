@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "ioPacs/config.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <core/mt/types.hpp>
 
-#include <fwCore/mt/types.hpp>
+#include <fwCom/Slot.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 
@@ -92,7 +92,7 @@ private:
     std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > m_progressDialogs;
 
     /// Synchronizes progress bars access.
-    ::fwCore::mt::Mutex m_mutex;
+    core::mt::Mutex m_mutex;
 
 };
 

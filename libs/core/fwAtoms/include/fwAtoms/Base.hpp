@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwAtoms/factory/new.hpp"
 #include "fwAtoms/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <string>
 
@@ -36,7 +36,7 @@ namespace fwAtoms
 /**
  * @brief Base class for all Atom classes.
  */
-class FWATOMS_CLASS_API Base : public ::fwCore::BaseObject
+class FWATOMS_CLASS_API Base : public core::BaseObject
 {
 public:
     typedef ::fwAtoms::factory::Key Key;
@@ -71,7 +71,7 @@ public:
         BLOB
     } AtomType;
 
-    fwCoreClassMacro(Base, ::fwCore::BaseObject);
+    fwCoreClassMacro(Base, core::BaseObject)
     fwCoreAllowSharedFromThis();
 
     virtual ~Base()

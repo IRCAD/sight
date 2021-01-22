@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "maths/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 

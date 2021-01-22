@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ void AppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::core::GenericScene* AppManager::getScene()
+::fwRenderQt3Dcore::GenericScene* AppManager::getScene()
 {
     return m_scene;
 }
@@ -82,7 +82,7 @@ void AppManager::setMesh(::fwRenderQt3D::data::Mesh* _mesh)
 
 //------------------------------------------------------------------------------
 
-void AppManager::setScene(::fwRenderQt3D::core::GenericScene* _scene)
+void AppManager::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 {
     m_scene = _scene;
 }

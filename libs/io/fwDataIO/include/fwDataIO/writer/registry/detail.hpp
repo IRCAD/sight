@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwDataIO/config.hpp"
 
-#include <fwCore/macros.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
+#include <core/macros.hpp>
+#include <core/util/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwDataIO::writer::IObjectWriter) (), KeyType > Type;
+typedef core::util::FactoryRegistry< SPTR(::fwDataIO::writer::IObjectWriter) (), KeyType > Type;
 
 FWDATAIO_API SPTR(Type) get();
 

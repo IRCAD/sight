@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwJobs/exception/Waiting.hpp"
 #include "fwJobs/Job.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
@@ -62,7 +62,7 @@ IJob::SharedFuture Aggregator::runImpl()
     decltype(m_jobs)jobs;
 
     {
-        ::fwCore::mt::ReadLock lock(m_mutex);
+        core::mt::ReadLock lock(m_mutex);
         jobs = m_jobs;
     }
 
@@ -103,7 +103,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
         return;
     }
 
-    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+    core::mt::ReadToWriteLock lock(m_mutex);
 
     SLM_ASSERT("Jobs can't be added when Aggregator is running", m_state == WAITING || m_state == RUNNING);
 
@@ -121,7 +121,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
         // call
         jobInfo.lastValue = std::uint64_t(jobInfo.progress() * normValue);
         {
-            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            core::mt::UpgradeToWriteLock writeLock(lock);
             m_jobs.push_back(iJob);
         }
         // take care : doneWork unlocks 'lock'
@@ -131,7 +131,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
         iJob->addDoneWorkHook(
             [ =, &jobInfo](IJob& subJob, std::uint64_t oldDoneWork)
             {
-                ::fwCore::mt::ReadToWriteLock sublock(m_mutex);
+                core::mt::ReadToWriteLock sublock(m_mutex);
 
                 auto oldInfo = jobInfo;
                 jobInfo = Aggregator::JobInfo( subJob );
@@ -149,9 +149,9 @@ void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
         iJob->addTotalWorkUnitsHook(
             [ = ](IJob& subJob, std::uint64_t oldTotalWorkUnits)
             {
-                ::fwCore::mt::ReadToWriteLock sublock(m_mutex);
+                core::mt::ReadToWriteLock sublock(m_mutex);
 
-                auto workUnits = m_totalWorkUnits;
+                auto workUnits         = m_totalWorkUnits;
                 auto newTotalWorkUnits = subJob.getTotalWorkUnits();
 
                 if( oldTotalWorkUnits != newTotalWorkUnits)
@@ -197,7 +197,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
 
 Aggregator::IJobSeq Aggregator::getSubJobs()
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_jobs;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,12 @@
 
 #include "ModelSeriesTest.hpp"
 
+#include <fwMedDataTools/ModelSeries.hpp>
+
 #include <fwData/Color.hpp>
 #include <fwData/Material.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedDataTools/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataTools::ut::ModelSeriesTest );
@@ -75,10 +76,10 @@ void ModelSeriesTest::addReconstruction()
     CPPUNIT_ASSERT_EQUAL(rec2, recDB[1]);
     CPPUNIT_ASSERT_EQUAL(rec3, recDB[2]);
 
-    CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec1), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec1), core::Exception);
 
     ::fwData::Reconstruction::sptr nullRec;
-    CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, nullRec), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, nullRec), core::Exception);
 
 }
 
@@ -187,7 +188,6 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 1.5f);
     }
 }
-
 
 //------------------------------------------------------------------------------
 

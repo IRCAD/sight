@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "fwAtomsFilter/factory/new.hpp"
 #include "fwAtomsFilter/registry/detail.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwAtoms/Object.hpp>
 
 #include <map>
 #include <string>
@@ -44,7 +44,7 @@ namespace fwAtomsFilter
 /**
  * @brief Removes atom attributes which are not managed by a context.
  */
-class FWATOMSFILTER_CLASS_API IFilter : public ::fwCore::BaseObject
+class FWATOMSFILTER_CLASS_API IFilter : public core::BaseObject
 {
 
 public:
@@ -67,7 +67,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IFilter);
+    fwCoreClassMacro(IFilter)
     fwCoreAllowSharedFromThis();
 
     /// Constructor.

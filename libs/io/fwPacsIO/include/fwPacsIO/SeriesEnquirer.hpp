@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwPacsIO/config.hpp"
 
+#include <core/BaseObject.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <fwCore/BaseObject.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -65,7 +65,7 @@ namespace fwPacsIO
    @endcode
  */
 class FWPACSIO_CLASS_API SeriesEnquirer :
-    public ::fwCore::BaseObject,
+    public core::BaseObject,
     protected DcmSCU
 {
 

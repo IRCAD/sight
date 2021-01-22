@@ -3,7 +3,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     fwCom
-    fwCore
+    core
     fwData
     fwDataTools
     fwRuntime

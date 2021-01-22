@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,12 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_EXCEPTION_BADRUN_HPP__
-#define __FWCOM_EXCEPTION_BADRUN_HPP__
 
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwCom/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwCom
 {
@@ -33,15 +33,11 @@ namespace exception
 {
 
 /// Bad run exception.
-struct BadRun : ::fwCore::Exception
+struct BadRun : core::Exception
 {
-    FWCOM_API BadRun ( const std::string &err );
+    FWCOM_API BadRun ( const std::string& err );
 };
 
 } // namespace exception
 
 } // namespace fwCom
-
-#endif /* __FWCOM_EXCEPTION_BADRUN_HPP__ */
-
-

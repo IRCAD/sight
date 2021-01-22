@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_BUFFERALLOCATIONPOLICY_HPP__
-#define __FWMEMORY_BUFFERALLOCATIONPOLICY_HPP__
+#pragma once
 
-#include <fwCore/base.hpp>
-
-#include "fwMemory/exception/Memory.hpp"
 #include "fwMemory/config.hpp"
+#include "fwMemory/exception/Memory.hpp"
+
+#include <core/base.hpp>
 
 namespace fwMemory
 {
@@ -38,37 +37,35 @@ public:
     typedef size_t SizeType;
     typedef void* BufferType;
 
-    FWMEMORY_API virtual void allocate(BufferType &buffer, SizeType size)   = 0;
-    FWMEMORY_API virtual void reallocate(BufferType &buffer, SizeType size) = 0;
-    FWMEMORY_API virtual void destroy(BufferType &buffer)                                                          = 0;
+    FWMEMORY_API virtual void allocate(BufferType& buffer, SizeType size) = 0;
+    FWMEMORY_API virtual void reallocate(BufferType& buffer, SizeType size) = 0;
+    FWMEMORY_API virtual void destroy(BufferType& buffer) = 0;
 
     FWMEMORY_API virtual ~BufferAllocationPolicy()
     {
     }
 };
 
-
 class FWMEMORY_CLASS_API BufferMallocPolicy : public BufferAllocationPolicy
 {
 public:
-    FWMEMORY_API void allocate(BufferType &buffer,
+    FWMEMORY_API void allocate(BufferType& buffer,
                                BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void reallocate(BufferType &buffer,
+    FWMEMORY_API void reallocate(BufferType& buffer,
                                  BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void destroy(BufferType &buffer);
+    FWMEMORY_API void destroy(BufferType& buffer);
 
     FWMEMORY_API static BufferAllocationPolicy::sptr New();
 };
 
-
 class FWMEMORY_CLASS_API BufferNewPolicy : public BufferAllocationPolicy
 {
 public:
-    FWMEMORY_API void allocate(BufferType &buffer,
+    FWMEMORY_API void allocate(BufferType& buffer,
                                BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void reallocate(BufferType &buffer,
+    FWMEMORY_API void reallocate(BufferType& buffer,
                                  BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void destroy(BufferType &buffer);
+    FWMEMORY_API void destroy(BufferType& buffer);
 
     FWMEMORY_API static BufferAllocationPolicy::sptr New();
 };
@@ -76,16 +73,13 @@ public:
 class FWMEMORY_CLASS_API BufferNoAllocPolicy : public BufferAllocationPolicy
 {
 public:
-    FWMEMORY_API void allocate(BufferType &buffer,
+    FWMEMORY_API void allocate(BufferType& buffer,
                                BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void reallocate(BufferType &buffer,
+    FWMEMORY_API void reallocate(BufferType& buffer,
                                  BufferAllocationPolicy::SizeType size);
-    FWMEMORY_API void destroy(BufferType &buffer);
+    FWMEMORY_API void destroy(BufferType& buffer);
 
     FWMEMORY_API static BufferAllocationPolicy::sptr New();
 };
 
-
 }
-
-#endif /* __FWMEMORY_BUFFERALLOCATIONPOLICY_HPP__ */

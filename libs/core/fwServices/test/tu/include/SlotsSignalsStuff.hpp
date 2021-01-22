@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
 class Buffer : public ::fwData::Object
 {
 public:
-    fwCoreClassMacro(Buffer, ::fwData::Object, ::fwData::factory::New< Buffer >);
+    fwCoreClassMacro(Buffer, ::fwData::Object, ::fwData::factory::New< Buffer >)
 
     Buffer( ::fwData::Object::Key )
     {
@@ -80,7 +80,7 @@ public:
 class IBasicTest : public ::fwServices::IService
 {
 public:
-    fwCoreServiceMacro(IBasicTest, ::fwServices::IService);
+    fwCoreServiceMacro(IBasicTest, ::fwServices::IService)
 
     static const KeyType s_BUFFER_INOUT;
 };
@@ -90,7 +90,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SBasicTest, IBasicTest);
+    fwCoreServiceMacro(SBasicTest, IBasicTest)
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -116,7 +116,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    fwCoreServiceMacro(SReaderTest, IBasicTest);
+    fwCoreServiceMacro(SReaderTest, IBasicTest)
 
     SReaderTest()
     {
@@ -155,7 +155,7 @@ public:
 
     typedef ::fwCom::Signal< void () > ChangedSignalType;
 
-    fwCoreServiceMacro(SReader2Test, IBasicTest);
+    fwCoreServiceMacro(SReader2Test, IBasicTest)
 
     SReader2Test();
 
@@ -195,7 +195,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SShowTest, IBasicTest);
+    fwCoreServiceMacro(SShowTest, IBasicTest)
 
     SShowTest();
 
@@ -235,7 +235,7 @@ protected:
 
     ChangeSlotType::sptr m_slotChange;
 
-    ::fwCore::mt::Mutex m_mutex;
+    core::mt::Mutex m_mutex;
 };
 
 //------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SShow2Test, IBasicTest);
+    fwCoreServiceMacro(SShow2Test, IBasicTest)
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "monitorQt/DumpEditor.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/IMessageDialog.hpp>
@@ -183,7 +183,7 @@ int PolicyTableModel::rowCount(const QModelIndex& parent) const
     size_t nbParam = 0;
     if(m_buffManager)
     {
-        ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
+        core::mt::ReadLock lock( m_buffManager->getMutex() );
         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
         nbParam                                 = currentPolicy->getParamNames().size();
     }
@@ -207,7 +207,7 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
     {
         return QVariant();
     }
-    ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
+    core::mt::ReadLock lock( m_buffManager->getMutex() );
     ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
 
     if (index.row() > (s_EXTRA_INFO_NB + currentPolicy->getParamNames().size()) || index.row() < 0)
@@ -248,7 +248,7 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
 
     if (m_buffManager && orientation == Qt::Vertical)
     {
-        ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
+        core::mt::ReadLock lock( m_buffManager->getMutex() );
         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
         const ::fwMemory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
         if (section <= 0)
@@ -274,7 +274,7 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
         int col                    = index.column();
         const std::string strvalue = value.toString().toStdString();
 
-        ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
+        core::mt::ReadLock lock( m_buffManager->getMutex() );
         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
         const ::fwMemory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
 
@@ -289,7 +289,7 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
                         dumpPolicy = ::fwMemory::policy::registry::get()->create(strvalue);
                         if(dumpPolicy)
                         {
-                            ::fwCore::mt::ReadToWriteLock lock( m_buffManager->getMutex() );
+                            core::mt::ReadToWriteLock lock( m_buffManager->getMutex() );
                             m_buffManager->setDumpPolicy(dumpPolicy);
                         }
                         this->beginResetModel();

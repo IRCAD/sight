@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_SOPCLASS_HPP__
-#define __FWGDCMIO_HELPER_SOPCLASS_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <map>
 #include <string>
@@ -76,6 +75,3 @@ private:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_SOPCLASS_HPP__
-

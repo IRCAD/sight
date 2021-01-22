@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_EXCEPTION_DATAFACTORYNOTFOUND_HPP__
-#define __FWATOMCONVERSION_EXCEPTION_DATAFACTORYNOTFOUND_HPP__
-
-#include <fwCore/Exception.hpp>
+#pragma once
 
 #include "fwAtomConversion/config.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwAtomConversion
 {
@@ -33,15 +32,13 @@ namespace exception
 {
 
 /// Throw this exception when an object classname is not found exception in ::fwData::factory.
-struct FWATOMCONVERSION_CLASS_API DataFactoryNotFound : ::fwCore::Exception
+struct FWATOMCONVERSION_CLASS_API DataFactoryNotFound : core::Exception
 {
-    FWATOMCONVERSION_API DataFactoryNotFound( const std::string &err ) : ::fwCore::Exception(err)
+    FWATOMCONVERSION_API DataFactoryNotFound( const std::string& err ) :
+        core::Exception(err)
     {
     }
 };
 
 } // namespace exception
 } // namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_EXCEPTION_DATAFACTORYNOTFOUND_HPP__
-

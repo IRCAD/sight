@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "minizip/minishared.h"
 #include "minizip/zip.h"
 
-#include <fwCore/exceptionmacros.hpp>
+#include <core/exceptionmacros.hpp>
 
 #include <boost/date_time/posix_time/conversion.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>

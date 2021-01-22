@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/IValidator.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -40,7 +40,7 @@ namespace validator
 class FWACTIVITIES_CLASS_API RelatedStudy : public ::fwActivities::IValidator
 {
 public:
-    fwCoreClassMacro(RelatedStudy, ::fwActivities::IValidator, ::fwActivities::validator::factory::New< RelatedStudy >);
+    fwCoreClassMacro(RelatedStudy, ::fwActivities::IValidator, ::fwActivities::validator::factory::New< RelatedStudy >)
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API RelatedStudy(::fwActivities::IValidator::Key key);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -261,7 +261,7 @@ void Activities::parseBundleInformation()
         SLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);
 
-        ::fwCore::mt::WriteLock lock(m_registryMutex);
+        core::mt::WriteLock lock(m_registryMutex);
         SLM_ASSERT("The id " <<  info.id << "(" << info.title << ")"
                              << " already exists in the Activities registry", m_reg.find( info.id ) == m_reg.end());
         m_reg.insert( Registry::value_type(info.id, info) );
@@ -278,7 +278,7 @@ Activities::Activities()
 
 void Activities::clearRegistry()
 {
-    ::fwCore::mt::WriteLock lock(m_registryMutex);
+    core::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -286,7 +286,7 @@ void Activities::clearRegistry()
 
 bool Activities::hasInfo( const std::string& extensionId ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
     return iter != m_reg.end();
 }
@@ -297,7 +297,7 @@ std::vector< ActivityInfo > Activities::getInfos() const
 {
     std::vector< ActivityInfo > infos;
 
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
 
     for( Registry::value_type val :  m_reg )
     {
@@ -328,7 +328,7 @@ std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::csptr&
     ActivityInfo::DataCountType dataCount = this->getDataCount(data);
     std::vector< ActivityInfo > infos;
 
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
 
     for( const Registry::value_type& regValue :  m_reg )
     {
@@ -348,7 +348,7 @@ std::vector< std::string > Activities::getKeys() const
 {
     std::vector< std::string > keys;
 
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
 
     for( Registry::value_type val :  m_reg )
     {
@@ -362,7 +362,7 @@ std::vector< std::string > Activities::getKeys() const
 
 const ActivityInfo Activities::getInfo( const std::string& extensionId ) const
 {
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
     SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
                iter != m_reg.end());

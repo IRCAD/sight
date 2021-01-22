@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 
 #include <arData/MarkerMap.hpp>
 
-#include <fwCore/HiResClock.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/HiResClock.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwServices/IRegisterer.hpp>
 #include <fwServices/macros.hpp>
@@ -40,7 +40,7 @@ namespace registrationCV
  * @brief   SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) : computes the registration.
+ * - \b computeRegistration(core::HiResClock::HiResClockType timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *
@@ -136,7 +136,7 @@ protected:
     REGISTRATIONCV_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
+    void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
 private:
 
@@ -185,7 +185,7 @@ private:
     const ::cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp;
 
     /// Marker pattern width.
     double m_patternWidth;

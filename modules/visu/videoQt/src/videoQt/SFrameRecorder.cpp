@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void SFrameRecorder::updating()
 
 //-----------------------------------------------------------------------------
 
-void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
+void SFrameRecorder::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording && !m_isPaused)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ void SReprojectionError::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
+void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 {
     if(!this->isStarted())
     {
@@ -168,8 +168,8 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
         auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT);
         if(markerTL)
         {
-            auto matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
-            ::fwCore::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
+            auto matrixTL                       = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+            core::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
             if(ts <= 0)
             {
                 SLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
@@ -367,7 +367,7 @@ void SReprojectionError::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::HiResClock::getTimeInMilliSec();
     this->compute(timestamp);
 }
 

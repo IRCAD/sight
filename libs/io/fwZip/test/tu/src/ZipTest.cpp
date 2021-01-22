@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <fwZip/ReadZipArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -154,7 +154,7 @@ void ZipTest::badPasswordCryptTest()
     CPPUNIT_ASSERT_EQUAL(writerComment, readerComment);
 
     // We should have an exception here
-    CPPUNIT_ASSERT_THROW( reader->getFile(archiveFile), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW( reader->getFile(archiveFile), core::Exception);
 }
 
 } // namespace ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_LINKDESCRIPTOR_HPP__
-#define __FWATOMSPATCH_LINKDESCRIPTOR_HPP__
+#pragma once
 
-#include <map>
+#include "core/BaseObject.hpp"
 
-#include "fwCore/BaseObject.hpp"
 #include "fwAtomsPatch/config.hpp"
 
+#include <map>
 
 namespace fwAtomsPatch
 {
@@ -42,6 +41,8 @@ public:
 
     /// Struct used to compare two LinkDescriptor
     struct Compare {
+        //------------------------------------------------------------------------------
+
         bool operator() (LinkDescriptor a, LinkDescriptor b) const
         {
             return (a.m_originVersion+a.m_targetVersion) < (b.m_originVersion+b.m_targetVersion);
@@ -123,8 +124,4 @@ private:
     LinksType m_links;
 };
 
-
-
 } // fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_LINKDESCRIPTOR_HPP__ */

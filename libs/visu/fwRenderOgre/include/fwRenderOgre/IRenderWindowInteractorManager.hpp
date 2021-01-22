@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 
@@ -47,7 +47,7 @@ namespace fwRenderOgre
  * @brief   Defines a class to manage ogreRenderWindowInteractor in a window.
  *
  */
-class FWRENDEROGRE_CLASS_API IRenderWindowInteractorManager : public ::fwCore::BaseObject
+class FWRENDEROGRE_CLASS_API IRenderWindowInteractorManager : public core::BaseObject
 {
 
 public:
@@ -124,7 +124,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject)
+    fwCoreClassMacro(IRenderWindowInteractorManager, core::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

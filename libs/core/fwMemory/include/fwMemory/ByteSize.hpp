@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_BYTESIZE_HPP__
-#define __FWMEMORY_BYTESIZE_HPP__
+#pragma once
 
 #include "fwMemory/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <cstdint>
 #include <string>
@@ -172,5 +171,3 @@ protected:
 };
 
 } //namespace fwMemory
-
-#endif /* __FWMEMORY_BYTESIZE_HPP__ */

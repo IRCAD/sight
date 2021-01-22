@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,12 +84,12 @@ void SCropVideoQuad::updating()
 
 //----------------------------------------------------------------------------
 
-void SCropVideoQuad::cropFrame(::fwCore::HiResClock::HiResClockType timestamp)
+void SCropVideoQuad::cropFrame(core::HiResClock::HiResClockType timestamp)
 {
     ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
 
-    ::fwCore::HiResClock::HiResClockType newerTimestamp = frameTL->getNewerTimestamp();
-    const CSPTR(::arData::FrameTL::BufferType) buffer   = frameTL->getClosestBuffer(newerTimestamp);
+    core::HiResClock::HiResClockType newerTimestamp = frameTL->getNewerTimestamp();
+    const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(newerTimestamp);
 
     ::arData::FrameTL::sptr frameTL1 = this->getInOut< ::arData::FrameTL >(s_FRAMETL1_INOUT);
     ::arData::FrameTL::sptr frameTL2 = this->getInOut< ::arData::FrameTL >(s_FRAMETL2_INOUT);
@@ -143,7 +143,7 @@ void SCropVideoQuad::cropFrame(::fwCore::HiResClock::HiResClockType timestamp)
 void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
                                          const ::cv::Rect& roi,
                                          ::arData::FrameTL::sptr& frameTL,
-                                         ::fwCore::HiResClock::HiResClockType timestamp)
+                                         core::HiResClock::HiResClockType timestamp)
 {
     const size_t width  = frameTL->getWidth();
     const size_t height = frameTL->getHeight();

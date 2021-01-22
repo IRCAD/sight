@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwDcmtkIO/helper/Codec.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
+#include <core/util/LazyInstantiator.hpp>
 
 #include <dcmtk/dcmdata/dcrledrg.h>
 
@@ -61,7 +61,7 @@ Codec::~Codec()
 //------------------------------------------------------------------------------
 
 SPTR(::fwDcmtkIO::helper::Codec) g_codecInstantiator =
-    ::fwCore::util::LazyInstantiator< ::fwDcmtkIO::helper::Codec >::getInstance();
+    core::util::LazyInstantiator< ::fwDcmtkIO::helper::Codec >::getInstance();
 
 //------------------------------------------------------------------------------
 

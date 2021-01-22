@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,14 +26,13 @@
 #include "fwMemory/config.hpp"
 #include "fwMemory/FileHolder.hpp"
 
+#include <core/base.hpp>
+#include <core/BaseObject.hpp>
+#include <core/mt/types.hpp>
+
 #include <fwCom/Signal.hpp>
 
-#include <fwCore/base.hpp>
-#include <fwCore/BaseObject.hpp>
-#include <fwCore/mt/types.hpp>
-
 #include <filesystem>
-
 #include <future>
 
 namespace fwThread
@@ -74,7 +73,7 @@ Key()
  * A dump policy is used to trigger memory freeing process. The restore process
  * is always triggers when a lock is requested on a dumped buffer.
  */
-class FWMEMORY_CLASS_API BufferManager : public ::fwCore::BaseObject
+class FWMEMORY_CLASS_API BufferManager : public core::BaseObject
 {
 public:
 
@@ -89,7 +88,7 @@ public:
 
     typedef std::map< ConstBufferPtrType, BufferInfo > BufferInfoMapType;
 
-    fwCoreClassMacro(BufferManager, ::fwCore::BaseObject);
+    fwCoreClassMacro(BufferManager, core::BaseObject)
     fwCoreAllowSharedFromThis();
 
     BufferManager();
@@ -288,7 +287,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    ::fwCore::mt::ReadWriteMutex& getMutex() const
+    core::mt::ReadWriteMutex& getMutex() const
     {
         return m_mutex;
     }
@@ -335,7 +334,7 @@ protected:
 
     SPTR(UpdatedSignalType) m_updatedSig;
 
-    ::fwCore::LogicStamp m_lastAccess;
+    core::LogicStamp m_lastAccess;
     BufferInfoMapType m_bufferInfos;
 
     SPTR(::fwMemory::IPolicy) m_dumpPolicy;
@@ -345,7 +344,7 @@ protected:
     SPTR(fwThread::Worker) m_worker;
 
     /// Mutex to protect concurrent access in BufferManager
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable core::mt::ReadWriteMutex m_mutex;
 };
 
 }

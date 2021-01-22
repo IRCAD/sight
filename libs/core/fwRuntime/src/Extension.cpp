@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #pragma GCC visibility pop
 #endif
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include "fwRuntime/Module.hpp"
 #include "fwRuntime/detail/ExtensionPoint.hpp"

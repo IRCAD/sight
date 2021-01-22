@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_PATCHER_REGISTRY_DETAIL_HPP__
-#define __FWATOMSPATCH_PATCHER_REGISTRY_DETAIL_HPP__
-
-#include <string>
-
-#include <fwCore/macros.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
+
+#include <core/macros.hpp>
+#include <core/util/FactoryRegistry.hpp>
+
+#include <string>
 
 namespace fwAtomsPatch
 {
@@ -43,7 +42,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwAtomsPatch::patcher::IPatcher) (), KeyType > Type;
+typedef core::util::FactoryRegistry< SPTR(::fwAtomsPatch::patcher::IPatcher) (), KeyType > Type;
 
 FWATOMSPATCH_API SPTR(Type) get();
 
@@ -52,7 +51,3 @@ FWATOMSPATCH_API SPTR(Type) get();
 } // namespace patcher
 
 } // namespace fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_PATCHER_REGISTRY_DETAIL_HPP__ */
-
-

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/ServiceFactoryRegistrar.hpp"
 
-#include <fwCore/concept_checks.hpp>
+#include <core/concept_checks.hpp>
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
@@ -42,12 +42,12 @@ namespace fwServices
     class BOOST_PP_CAT (  ServiceTypeConceptCheck, __LINE__ )                                      \
     {                                                                                              \
     public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceType >));               \
+        BOOST_CONCEPT_ASSERT((core::concepts::SharedPtrTypedef< ServiceType >));               \
     };                                                                                             \
     class BOOST_PP_CAT (  ServiceImplConceptCheck, __LINE__ )                                      \
     {                                                                                              \
     public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceImpl >));               \
+        BOOST_CONCEPT_ASSERT((core::concepts::SharedPtrTypedef< ServiceImpl >));               \
     };                                                                                             \
     static ::fwServices::ServiceFactoryRegistrar< ServiceImpl >                                    \
     BOOST_PP_CAT( serviceRegistrar, __LINE__) ( #ServiceImpl, #ServiceType );
@@ -56,7 +56,7 @@ namespace fwServices
     class BOOST_PP_CAT (  ServiceObjectConceptCheck, __LINE__ )                                    \
     {                                                                                              \
     public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceObject >));             \
+        BOOST_CONCEPT_ASSERT((core::concepts::SharedPtrTypedef< ServiceObject >));             \
     };                                                                                             \
     static ::fwServices::ServiceObjectFactoryRegistrar                                             \
     BOOST_PP_CAT( serviceObjectRegistrar, __LINE__) ( #ServiceImpl, #ServiceObject );

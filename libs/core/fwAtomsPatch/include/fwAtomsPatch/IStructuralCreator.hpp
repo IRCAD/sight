@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwAtomsPatch/config.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwAtoms/Object.hpp>
 
 #include <string>
 
@@ -37,11 +37,11 @@ namespace fwAtomsPatch
  * @brief Base class of all structural creators. Creates a new atom object with the default values corresponding
  * to a data object.
  */
-class FWATOMSPATCH_CLASS_API IStructuralCreator : public ::fwCore::BaseObject
+class FWATOMSPATCH_CLASS_API IStructuralCreator : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(IStructuralCreator);
+    fwCoreClassMacro(IStructuralCreator)
     fwCoreAllowSharedFromThis();
 
     /// Constructor

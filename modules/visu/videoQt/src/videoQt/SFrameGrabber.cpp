@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void SFrameGrabber::stopping()
 {
     this->stopCamera();
 
-    ::fwCore::mt::WriteLock lock(m_videoFrameMutex);
+    core::mt::WriteLock lock(m_videoFrameMutex);
     m_workerPresentFrame->stop();
     m_workerPresentFrame.reset();
 }
@@ -248,7 +248,7 @@ void SFrameGrabber::onPresentFrame(const QVideoFrame& frame)
 
 void SFrameGrabber::presentFrame(const QVideoFrame& frame)
 {
-    ::fwCore::mt::WriteLock lock(m_videoFrameMutex);
+    core::mt::WriteLock lock(m_videoFrameMutex);
 
     if( frame.pixelFormat() == QVideoFrame::Format_Invalid )
     {
@@ -298,7 +298,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     // Unmap when we don't need access to .bits() any longer
     mappedFrame.unmap();
 
-    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
     std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
 

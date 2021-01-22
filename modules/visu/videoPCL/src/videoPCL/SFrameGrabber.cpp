@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_timer)
     {
@@ -193,7 +193,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
     std::filesystem::directory_iterator endEntry;
@@ -256,7 +256,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
 void SFrameGrabber::grabImage()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (m_imageCount < m_imageToRead.size())
     {
@@ -281,7 +281,7 @@ void SFrameGrabber::grabImage()
             return;
         }
 
-        const ::fwCore::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
+        const core::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
 
         const size_t width  = static_cast<size_t>(inputCloud.width);
         const size_t height = static_cast<size_t>(inputCloud.height);
@@ -333,7 +333,7 @@ void SFrameGrabber::toggleLoopMode()
 
 void SFrameGrabber::setPosition(int64_t position)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
 
     if (!m_imageToRead.empty())
     {

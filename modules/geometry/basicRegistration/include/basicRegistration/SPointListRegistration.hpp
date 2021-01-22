@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace basicRegistration
  * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string): called when registration mode is changed.
- * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp): computes the registration.
+ * - \b computeRegistration(core::HiResClock::HiResClockType timestamp): computes the registration.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -88,7 +88,7 @@ public:
 protected:
 
     /// Register a point list slot
-    BASICREGISTRATION_API void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
+    BASICREGISTRATION_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
     /// Registration Mode (default: RIGID)
     typedef enum Mode

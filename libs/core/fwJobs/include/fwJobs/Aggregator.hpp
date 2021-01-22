@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,20 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __FWJOBS_AGGREGATOR_HPP__
-#define __FWJOBS_AGGREGATOR_HPP__
+#pragma once
 
 #include "fwJobs/config.hpp"
 #include "fwJobs/IJob.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
-#include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/random_access_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/random_access_index.hpp>
+#include <boost/multi_index_container.hpp>
 
 #include <cstdint>
 #include <functional>
@@ -93,7 +92,7 @@ public:
      * @param iJob the IJob to add to the Aggregator
      * @param weight added IJob's weight. Avoid values lower than 0.01
      */
-    FWJOBS_API void add(const ::fwJobs::IJob::sptr & iJob, double weight = 1.);
+    FWJOBS_API void add(const ::fwJobs::IJob::sptr& iJob, double weight = 1.);
 
     /**
      * @brief Retrieve sub job sequence of the Aggregator
@@ -101,7 +100,6 @@ public:
      * @return The job aggregator container
      */
     FWJOBS_API IJobSeq getSubJobs();
-
 
 protected:
 
@@ -124,7 +122,10 @@ private:
         std::uint64_t totalWork;
         std::uint64_t lastValue;
 
-        JobInfo() : doneWork(0), totalWork(0), lastValue(0)
+        JobInfo() :
+            doneWork(0),
+            totalWork(0),
+            lastValue(0)
         {
         }
 
@@ -135,12 +136,14 @@ private:
         {
         }
 
-        JobInfo( const IJob &iJob ) :
+        JobInfo( const IJob& iJob ) :
             doneWork(iJob.getDoneWorkUnits()),
             totalWork(iJob.getTotalWorkUnits()),
             lastValue(0)
         {
         }
+
+        //------------------------------------------------------------------------------
 
         double progress() const
         {
@@ -156,5 +159,3 @@ private:
 };
 
 } //namespace fwJobs
-
-#endif //__FWJOBS_AGGREGATOR_HPP__

@@ -24,7 +24,7 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
 
 #include <fwRuntime/Module.hpp>
 

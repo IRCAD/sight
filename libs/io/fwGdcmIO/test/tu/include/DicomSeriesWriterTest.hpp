@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 

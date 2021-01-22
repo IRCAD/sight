@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,12 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWJOBS_EXCEPTION_WAITING_HPP__
-#define __FWJOBS_EXCEPTION_WAITING_HPP__
+
+#pragma once
 
 #include "fwJobs/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwJobs
 {
@@ -32,17 +32,11 @@ namespace exception
 {
 
 /// No worker exception.
-struct Waiting : ::fwCore::Exception
+struct Waiting : core::Exception
 {
-    FWJOBS_API Waiting ( const std::string &err );
+    FWJOBS_API Waiting ( const std::string& err );
 };
 
 } // namespace exception
 
-
 } // namespace fwJobs
-
-#endif /* __FWJOBS_EXCEPTION_WAITING_HPP__ */
-
-
-

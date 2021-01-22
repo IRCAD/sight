@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ static std::stringstream spiritDebugStream;
 #include <boost/fusion/container/vector/vector.hpp>
 #include <boost/fusion/include/vector.hpp>
 
-#include <fwCore/exceptionmacros.hpp>
+#include <core/exceptionmacros.hpp>
 
 #include <fwData/Color.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>

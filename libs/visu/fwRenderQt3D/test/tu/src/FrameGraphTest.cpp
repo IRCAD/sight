@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void FrameGraphTest::tearDown()
 
 void FrameGraphTest::initializeFrameGraph()
 {
-    auto frameGraph = new fwRenderQt3D::core::FrameGraph();
+    auto frameGraph = new fwRenderQt3Dcore::FrameGraph();
 
     CPPUNIT_ASSERT(frameGraph != nullptr);
 

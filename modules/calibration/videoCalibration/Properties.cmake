@@ -7,7 +7,7 @@ set( DEPENDENCIES
     arServices
     calibration3d
     fwCom
-    fwCore
+    core
     fwData
     fwDataTools
     fwGui

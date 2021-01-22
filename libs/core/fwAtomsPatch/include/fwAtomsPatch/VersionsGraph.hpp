@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "fwAtomsPatch/LinkDescriptor.hpp"
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 
-#include <fwCore/BaseObject.hpp>
-#include <fwCore/mt/types.hpp>
+#include <core/BaseObject.hpp>
+#include <core/mt/types.hpp>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -38,11 +38,11 @@ namespace fwAtomsPatch
 /**
  * @brief Versions graph description.
  **/
-class FWATOMSPATCH_CLASS_API VersionsGraph : public ::fwCore::BaseObject
+class FWATOMSPATCH_CLASS_API VersionsGraph : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(VersionsGraph, ::fwAtomsPatch::VersionsGraph, new VersionsGraph);
+    fwCoreClassMacro(VersionsGraph, ::fwAtomsPatch::VersionsGraph, new VersionsGraph)
     fwCoreAllowSharedFromThis();
 
     /**
@@ -137,13 +137,13 @@ private:
     FWATOMSPATCH_API VersionSeriesType shortestPath(const NodeType& origin, const NodeType& target);
 
     /// Mutex to protect concurrent access for m_graph
-    mutable ::fwCore::mt::ReadWriteMutex m_graphMutex;
+    mutable core::mt::ReadWriteMutex m_graphMutex;
 
     /// Mutex to protect concurrent access for m_nodes
-    mutable ::fwCore::mt::ReadWriteMutex m_nodesMutex;
+    mutable core::mt::ReadWriteMutex m_nodesMutex;
 
     /// Mutex to protect concurrent access for m_edges
-    mutable ::fwCore::mt::ReadWriteMutex m_edgesMutex;
+    mutable core::mt::ReadWriteMutex m_edgesMutex;
 
     /// Versions graph
     GraphType m_graph;

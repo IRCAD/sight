@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_TIMELINE_OBJECT_HPP__
-#define __ARDATA_TIMELINE_OBJECT_HPP__
-
-#include <fwCore/mt/types.hpp>
-#include <fwCore/HiResClock.hpp>
-#include <fwData/Object.hpp>
+#pragma once
 
 #include "arData/config.hpp"
+
+#include <core/HiResClock.hpp>
+#include <core/mt/types.hpp>
+
+#include <fwData/Object.hpp>
 
 namespace arData
 {
@@ -43,7 +43,7 @@ class ARDATA_CLASS_API Object
 {
 public:
     /// Constructor
-    ARDATA_API Object(::fwCore::HiResClock::HiResClockType timestamp = 0);
+    ARDATA_API Object(core::HiResClock::HiResClockType timestamp = 0);
 
     /// Destructor
     ARDATA_API virtual ~Object();
@@ -52,7 +52,7 @@ public:
     ARDATA_API virtual void deepCopy( const Object& _source );
 
     /// Return timestamp
-    ::fwCore::HiResClock::HiResClockType getTimestamp() const
+    core::HiResClock::HiResClockType getTimestamp() const
     {
         return m_timestamp;
     }
@@ -60,11 +60,9 @@ public:
 protected:
 
     /// Timestamp
-    ::fwCore::HiResClock::HiResClockType m_timestamp;
+    core::HiResClock::HiResClockType m_timestamp;
 };
 
 } // namespace timeline
 
 } // namespace arData
-
-#endif /* __ARDATA_TIMELINE_OBJECT_HPP__ */

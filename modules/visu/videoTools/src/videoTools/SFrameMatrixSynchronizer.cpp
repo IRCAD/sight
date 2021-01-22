@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -224,7 +224,7 @@ void SFrameMatrixSynchronizer::synchronize()
     }
 
     // Timestamp reference for the synchronization
-    ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
+    core::HiResClock::HiResClockType frameTimestamp = 0;
 
     // Get timestamp for synchronization
     std::vector<size_t> availableFramesTL;
@@ -237,7 +237,7 @@ void SFrameMatrixSynchronizer::synchronize()
     {
         const auto tl = m_frameTLs[i].lock();
         SLM_ASSERT("Frame TL does not exist", tl);
-        ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
+        core::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
             // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)
@@ -273,7 +273,7 @@ void SFrameMatrixSynchronizer::synchronize()
     }
 
     // Now we compute the time stamp available in the matrix timelines starting from the frame timestamp
-    ::fwCore::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
+    core::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
     std::vector<size_t> availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
@@ -282,7 +282,7 @@ void SFrameMatrixSynchronizer::synchronize()
         const auto tl = m_matrixTLs[i].lock();
         SLM_ASSERT("Matrix TL does not exist", tl);
 
-        ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
+        core::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if( (tlTimestamp > 0) && (std::abs(frameTimestamp - tlTimestamp) < m_tolerance) )
         {
             matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,10 +21,10 @@
  ***********************************************************************/
 #include "fwIO/IWriter.hpp"
 
+#include <core/base.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -137,7 +137,7 @@ void IWriter::setFileFolder(std::filesystem::path folder)
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setTimestampPrefix(::fwCore::HiResClock::HiResClockType timestamp)
+void IWriter::setTimestampPrefix(core::HiResClock::HiResClockType timestamp)
 {
     // At the first signal sent, mark that we want files to be tagged with the prefix
     m_useTimestampPrefix = true;

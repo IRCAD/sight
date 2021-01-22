@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,13 +77,13 @@ public:
     FWRENDERQT3D_QT_API ::fwRenderQt3D::data::Material* const getMaterial() const;
 
     /// @returns the scene associated with the mesh.
-    FWRENDERQT3D_QT_API ::fwRenderQt3D::core::GenericScene* const getScene() const;
+    FWRENDERQT3D_QT_API ::fwRenderQt3Dcore::GenericScene* const getScene() const;
 
     /// Updates mesh material.
     FWRENDERQT3D_QT_API void setMaterial(::fwRenderQt3D::data::Material* _material);
 
     /// Updates the scene associated with the mesh.
-    FWRENDERQT3D_QT_API void setScene(::fwRenderQt3D::core::GenericScene* _scene);
+    FWRENDERQT3D_QT_API void setScene(::fwRenderQt3Dcore::GenericScene* _scene);
 
     /// Constructs postion and normal buffers according to _mesh.
     FWRENDERQT3D_QT_API void buildBuffers(::fwData::Mesh::sptr _mesh);
@@ -102,7 +102,7 @@ Q_SIGNALS:
 private:
 
     /// Contains the scene rendering this mesh.
-    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene;
+    QPointer< ::fwRenderQt3Dcore::GenericScene > m_scene;
 
     /// Contains QGeometryRenderer object holding informations needed to render a QGeometry object.
     QPointer< Qt3DRender::QGeometryRenderer > m_geomRenderer;

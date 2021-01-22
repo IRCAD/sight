@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwVideoQt/Surface.hpp"
 
-#include <fwCore/exceptionmacros.hpp>
-#include <fwCore/spyLog.hpp>
+#include <core/exceptionmacros.hpp>
+#include <core/spyLog.hpp>
 
 #include <QAbstractVideoSurface>
 #include <QVideoSurfaceFormat>

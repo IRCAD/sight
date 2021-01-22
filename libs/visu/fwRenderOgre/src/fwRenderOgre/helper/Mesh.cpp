@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwRenderOgre/helper/Mesh.hpp"
 
-#include "fwCore/spyLog.hpp"
+#include "core/spyLog.hpp"
 
 #include <cstdint>
 

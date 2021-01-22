@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ void GenericSceneTest::tearDown()
 
 void GenericSceneTest::initializeEmptyScene()
 {
-    auto scene    = new fwRenderQt3D::core::GenericScene(false);
-    auto sceneQml = new fwRenderQt3D::core::GenericScene(true);
+    auto scene    = new fwRenderQt3Dcore::GenericScene(false);
+    auto sceneQml = new fwRenderQt3Dcore::GenericScene(true);
 
     CPPUNIT_ASSERT(scene != nullptr);
     CPPUNIT_ASSERT(scene->getCamera() != nullptr);

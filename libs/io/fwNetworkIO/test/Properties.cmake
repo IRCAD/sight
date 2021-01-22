@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwNetworkIO
     fwTools
-    fwCore
+    core
     fwTest
     fwThread
     fwData

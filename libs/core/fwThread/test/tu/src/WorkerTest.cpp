@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <fwThread/Timer.hpp>
 #include <fwThread/Worker.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <fwTest/Exception.hpp>
 

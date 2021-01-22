@@ -2,7 +2,7 @@ set( NAME arDataTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwCore
+    core
     fwTest
     fwTools
     fwData

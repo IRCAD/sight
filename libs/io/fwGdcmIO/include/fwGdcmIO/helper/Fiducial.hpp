@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_FIDUCIAL_HPP__
-#define __FWGDCMIO_HELPER_FIDUCIAL_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwCore/macros.hpp>
+#include <core/macros.hpp>
+
 #include <gdcmDataSet.h>
 
 namespace fwMedData
@@ -67,5 +67,3 @@ public:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_HELPER_FIDUCIAL_HPP__ */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2015 IRCAD France
+ * Copyright (C) 2004-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
-#include <fwCore/Exception.hpp>
+#include "fwAtomConversion/exception/NullPointer.hpp"
 
 #include "fwAtomConversion/config.hpp"
-#include "fwAtomConversion/exception/NullPointer.hpp"
+
+#include <core/Exception.hpp>
 
 namespace fwAtomConversion
 {
@@ -31,11 +32,11 @@ namespace fwAtomConversion
 namespace exception
 {
 
-NullPointer::NullPointer ( const std::string &err ) : ::fwCore::Exception(err)
+NullPointer::NullPointer ( const std::string& err ) :
+    core::Exception(err)
 {
 }
 
 } // namespace exception
 
 } // namespace fwAtomConversion
-

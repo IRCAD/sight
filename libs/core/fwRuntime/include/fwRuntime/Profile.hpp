@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRuntime/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -36,7 +36,7 @@ namespace fwRuntime
 /**
  * @brief   Implements a module set profile.
  */
-class Profile : public ::fwCore::BaseObject
+class Profile : public core::BaseObject
 {
 public:
 

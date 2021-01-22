@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwAtomsPatch/exceptions/MissingInformation.hpp"
 #include "fwAtomsPatch/types.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -77,7 +77,7 @@ VersionsManager::~VersionsManager()
 
 void VersionsManager::buildVersionTable(const std::string& dirPath)
 {
-    ::fwCore::mt::WriteLock lock(m_versionMutex);
+    core::mt::WriteLock lock(m_versionMutex);
     for (std::filesystem::recursive_directory_iterator end, dir(dirPath); dir != end; ++dir)
     {
         if(  !std::filesystem::is_directory(*dir)
@@ -92,7 +92,7 @@ void VersionsManager::buildVersionTable(const std::string& dirPath)
 
 void VersionsManager::buildLinkTable(const std::string& dirPath)
 {
-    ::fwCore::mt::WriteLock lock(m_linkMutex);
+    core::mt::WriteLock lock(m_linkMutex);
     for ( std::filesystem::recursive_directory_iterator end, dir(dirPath);
           dir != end; ++dir )
     {
@@ -214,7 +214,7 @@ void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
 void VersionsManager::generateVersionsGraph()
 {
     {
-        ::fwCore::mt::ReadLock versionLock(m_versionMutex);
+        core::mt::ReadLock versionLock(m_versionMutex);
         //For every versions
         for(VersionsManager::ListPathType::value_type elt :  m_versionTable)
         {
@@ -230,7 +230,7 @@ void VersionsManager::generateVersionsGraph()
     }
 
     {
-        ::fwCore::mt::ReadLock linkLock(m_linkMutex);
+        core::mt::ReadLock linkLock(m_linkMutex);
         //For every links
         for(VersionsManager::ListPathType::value_type elt :  m_linkTable)
         {
@@ -250,10 +250,10 @@ VersionsGraph::sptr VersionsManager::getGraph(const std::string& context)
 {
     VersionsGraph::sptr vg;
 
-    ::fwCore::mt::ReadToWriteLock lock(m_graphMutex);
+    core::mt::ReadToWriteLock lock(m_graphMutex);
     if (m_versionsGraphMap.empty())
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+        core::mt::UpgradeToWriteLock writeLock(lock);
         VersionsManager::generateVersionsGraph();
     }
 

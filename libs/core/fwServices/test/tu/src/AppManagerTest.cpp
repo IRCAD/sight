@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -161,7 +161,7 @@ void AppManagerTest::managerWithObjectTest()
     service4->registerObject(booleanId, "data1", ::fwServices::IService::AccessType::INPUT, true);
     service4->registerObject(imageId, "data2", ::fwServices::IService::AccessType::INPUT, true);
 
-    CPPUNIT_ASSERT_THROW(m_appMgr->startService(service), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(m_appMgr->startService(service), core::Exception);
 
     m_appMgr->startServices();
 
@@ -260,7 +260,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
 
     m_appMgr->startServices();
 
-    CPPUNIT_ASSERT_THROW(m_appMgr->startService(service1), ::fwCore::Exception);
+    CPPUNIT_ASSERT_THROW(m_appMgr->startService(service1), core::Exception);
 
     CPPUNIT_ASSERT_EQUAL(false, service1->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service2->isStarted());

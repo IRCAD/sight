@@ -24,9 +24,9 @@
 
 #include "calibration3d/ReprojectionError.hpp"
 
-#include <eigenTools/helper.hpp>
+#include <core/spyLog.hpp>
 
-#include <fwCore/spyLog.hpp>
+#include <eigenTools/helper.hpp>
 
 #include <thread>
 

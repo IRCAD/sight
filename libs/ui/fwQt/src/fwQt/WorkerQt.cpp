@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,21 +151,21 @@ public:
     /// Returns if the timer mode is 'one shot'.
     bool isOneShot() const
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         return m_timerQt->isSingleShot();
     }
 
     /// Sets timer mode.
     void setOneShot(bool oneShot)
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         m_timerQt->setSingleShot(oneShot);
     }
 
     /// Returns true if the timer is currently running.
     bool isRunning() const
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        core::mt::ScopedLock lock(m_mutex);
         return m_timerQt->isActive();
     }
 
@@ -331,7 +331,7 @@ TimerQt::~TimerQt()
 
 void TimerQt::setDuration(TimeDurationType duration)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_timerQt->setInterval( static_cast<int>(
                                 std::chrono::duration_cast< std::chrono::milliseconds >(duration).count())
                             );
@@ -341,7 +341,7 @@ void TimerQt::setDuration(TimeDurationType duration)
 
 void TimerQt::start()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_timerQt->start();
 }
 
@@ -349,7 +349,7 @@ void TimerQt::start()
 
 void TimerQt::stop()
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
+    core::mt::ScopedLock lock(m_mutex);
     m_timerQt->stop();
 }
 

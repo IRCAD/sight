@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "fwServices/config.hpp"
 
+#include <core/base.hpp>
+#include <core/mt/types.hpp>
+
 #include <fwCom/SignalBase.hpp>
 #include <fwCom/SlotBase.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
 
 #include <vector>
 
@@ -42,12 +42,12 @@ namespace registry
  *
  * @note All the signals registered in a Proxy's channel are connected to all slots registered in the same channel.
  */
-class FWSERVICES_CLASS_API Proxy : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API Proxy : public core::BaseObject
 {
 
 public:
 
-    fwCoreClassMacro(Proxy, ::fwCore::BaseObject, std::make_shared< Proxy >);
+    fwCoreClassMacro(Proxy, core::BaseObject, std::make_shared< Proxy >)
 
     typedef std::string ChannelKeyType;
 
@@ -63,7 +63,7 @@ public:
         SlotContainerType m_slots;
         SlotContainerType::iterator m_lastConnectedSlot;
 
-        ::fwCore::mt::ReadWriteMutex m_mutex;
+        core::mt::ReadWriteMutex m_mutex;
     };
 
     typedef std::map< ChannelKeyType, SPTR(SigSlots) > ChannelMapType;
@@ -95,7 +95,7 @@ protected:
     ChannelMapType m_channels;
 
     /// Used to protect the m_channels access.
-    mutable ::fwCore::mt::ReadWriteMutex m_channelMutex;
+    mutable core::mt::ReadWriteMutex m_channelMutex;
 
     /// The global instance of the proxy.
     static Proxy::sptr s_currentProxy;

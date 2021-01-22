@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "minizip/unzip.h"
 
-#include <fwCore/exceptionmacros.hpp>
+#include <core/exceptionmacros.hpp>
 
 #include <boost/iostreams/categories.hpp>  // source_tag
 #include <boost/iostreams/stream.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ protected:
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    OPITKREGISTRATION_API virtual void computeRegistration (::fwCore::HiResClock::HiResClockType timestamp) override;
+    OPITKREGISTRATION_API virtual void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
 
 private:
 };

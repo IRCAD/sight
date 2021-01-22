@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,11 @@
 
 #include <fwData/Object.hpp>
 
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation);
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation)
 fwServicesRegisterObjectMacro(::fwServices::ut::TestServiceImplementation, ::fwData::Object);
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2 );
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvAutoconnect );
-fwServicesRegisterMacro( ::fwServices::IService, ::fwServices::ut::TestServiceWithData );
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2 )
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvAutoconnect )
+fwServicesRegisterMacro( ::fwServices::IService, ::fwServices::ut::TestServiceWithData )
 
 namespace fwServices
 {
@@ -62,7 +62,7 @@ void TestService::starting()
 {
     if(m_raiseException)
     {
-        throw ::fwCore::Exception("start error");
+        throw core::Exception("start error");
     }
     m_startOrder = s_START_COUNTER++;
 }
@@ -73,7 +73,7 @@ void TestService::stopping()
 {
     if(m_raiseException)
     {
-        throw ::fwCore::Exception("stop error");
+        throw core::Exception("stop error");
     }
 }
 
@@ -83,7 +83,7 @@ void TestService::updating()
 {
     if(m_raiseException)
     {
-        throw ::fwCore::Exception("update error");
+        throw core::Exception("update error");
     }
     m_updateOrder = s_UPDATE_COUNTER++;
 }

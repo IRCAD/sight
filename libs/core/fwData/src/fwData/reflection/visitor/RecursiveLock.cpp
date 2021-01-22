@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include "fwData/reflection/exception/ObjectNotFound.hpp"
 #include "fwData/reflection/mapper.hpp"
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -105,8 +105,8 @@ struct LockVisitor : public camp::ValueVisitor< void >
                 {
                     ::fwMemory::BufferObject* ptr     = value.get< ::fwMemory::BufferObject* >();
                     ::fwMemory::BufferObject::sptr bo = ptr->getSptr();
-                    SPTR(::fwCore::mt::ReadLock) lock
-                        = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(bo->getMutex()));
+                    SPTR(core::mt::ReadLock) lock
+                        = SPTR(core::mt::ReadLock)(new core::mt::ReadLock(bo->getMutex()));
                     m_locks->push_back(lock);
                 }
             }
@@ -120,8 +120,8 @@ RecursiveLock::RecursiveLock( ::fwData::Object::csptr object, SPTR(LockVectType)
     m_object(object),
     m_locks(locks)
 {
-    SPTR(::fwCore::mt::ReadLock) lock
-        = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(m_object->getMutex()));
+    SPTR(core::mt::ReadLock) lock
+        = SPTR(core::mt::ReadLock)(new core::mt::ReadLock(m_object->getMutex()));
     m_locks->push_back(lock);
     m_campObj = camp::UserObject( *object );
     this->lock();

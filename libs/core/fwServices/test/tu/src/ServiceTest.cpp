@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,10 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <core/TimeStamp.hpp>
+
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/TimeStamp.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -510,7 +510,7 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     {
         _service->start().get();
     }
-    catch(const ::fwCore::Exception& e)
+    catch(const core::Exception& e)
     {
         exceptionCaught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("start error"), std::string(e.what()));
@@ -536,7 +536,7 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     {
         _service->update().get();
     }
-    catch(::fwCore::Exception& e)
+    catch(core::Exception& e)
     {
         exceptionCaught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
@@ -560,7 +560,7 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     {
         _service->stop().get();
     }
-    catch(::fwCore::Exception& e)
+    catch(core::Exception& e)
     {
         exceptionCaught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_EXCEPTION_INVALIDTAG_HPP__
-#define __FWGDCMIO_EXCEPTION_INVALIDTAG_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwCore/Exception.hpp>
+#include <core/Exception.hpp>
 
 namespace fwGdcmIO
 {
@@ -35,7 +34,7 @@ namespace exception
 /**
  * @brief InvalidTag exception
  */
-class FWGDCMIO_CLASS_API InvalidTag : public ::fwCore::Exception
+class FWGDCMIO_CLASS_API InvalidTag : public core::Exception
 {
 public:
     /**
@@ -51,6 +50,3 @@ public:
 
 } // namespace exception
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_EXCEPTION_INVALIDTAG_HPP__
-

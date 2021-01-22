@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-
 #include "fwAtomsPatch/SemanticPatchDB.hpp"
+
 #include "fwAtomsPatch/ISemanticPatch.hpp"
 
 namespace fwAtomsPatch
 {
-
 
 SemanticPatchDB::sptr SemanticPatchDB::s_default = std::make_shared<SemanticPatchDB>();
 
@@ -44,7 +43,7 @@ SemanticPatchDB::~SemanticPatchDB()
 
 // ----------------------------------------------------------------------------
 
-SemanticPatchDB::SemanticPatchDB( const SemanticPatchDB &cpy )
+SemanticPatchDB::SemanticPatchDB( const SemanticPatchDB& cpy )
 {
 }
 
@@ -53,7 +52,7 @@ SemanticPatchDB::SemanticPatchDB( const SemanticPatchDB &cpy )
 void SemanticPatchDB::registerPatch(::fwAtomsPatch::ISemanticPatch::sptr patch)
 {
     VersionIDType origin = std::make_pair(patch->getOriginClassname(), patch->getOriginVersion());
-    ::fwCore::mt::WriteLock lock(m_mutex);
+    core::mt::WriteLock lock(m_mutex);
     m_patches[origin].push_back(patch);
 }
 
@@ -68,7 +67,7 @@ void SemanticPatchDB::registerPatch(::fwAtomsPatch::ISemanticPatch::sptr patch)
 {
     VersionIDType origin = std::make_pair(objOriginClassname, objOriginVersion);
 
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     PatchesType::const_iterator it = m_patches.find(origin);
     if(it != m_patches.end())
     {
@@ -89,7 +88,7 @@ void SemanticPatchDB::registerPatch(::fwAtomsPatch::ISemanticPatch::sptr patch)
 
 size_t SemanticPatchDB::size() const
 {
-    ::fwCore::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_patches.size();
 }
 
@@ -99,6 +98,5 @@ SemanticPatchDB::sptr SemanticPatchDB::getDefault()
 {
     return s_default;
 }
-
 
 } //fwAtomsPatch

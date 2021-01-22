@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGdcmIO/helper/CsvIO.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -74,4 +74,3 @@ CsvIO::TokenContainerType CsvIO::getLine(const std::string& separator)
 
 } // namespace helper
 } // namespace fwGdcmIO
-

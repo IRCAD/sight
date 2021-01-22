@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,7 +96,7 @@ protected:
 private:
 
     /// SLOT: add the current frame in the video
-    void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
+    void saveFrame(core::HiResClock::HiResClockType timestamp);
 
     /// save current buffer with OpenCV video writer (m_writer must be initialized)
     void writeBuffer(int width, int height, CSPTR(::arData::FrameTL::BufferType) buffer);
@@ -117,7 +117,7 @@ private:
     bool m_isRecording{false};
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
-    std::vector< ::fwCore::HiResClock::HiResClockType > m_timestamps;
+    std::vector< core::HiResClock::HiResClockType > m_timestamps;
 
     /// Extension selected in file dialog
     std::string m_selectedExtension;

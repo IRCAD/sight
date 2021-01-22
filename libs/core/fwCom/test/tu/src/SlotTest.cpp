@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
-#include <fwCore/mt/types.hpp>
+#include <core/mt/types.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -341,7 +341,7 @@ struct B
 
     std::thread::id waitSeconds(const unsigned int nbSeconds)
     {
-        ::fwCore::mt::WriteLock lock(m_mutex);
+        core::mt::WriteLock lock(m_mutex);
         std::thread::id oldId = m_threadId;
         m_threadId = std::this_thread::get_id();
         m_firstRun = false;
@@ -355,7 +355,7 @@ struct B
 
     bool m_firstRun;
 
-    ::fwCore::mt::ReadWriteMutex m_mutex;
+    core::mt::ReadWriteMutex m_mutex;
 };
 
 //------------------------------------------------------------------------------
@@ -384,7 +384,7 @@ void SlotTest::workerSwapTest()
         m0->setWorker(w2);
 
         {
-            ::fwCore::mt::ReadLock lock(b.m_mutex);
+            core::mt::ReadLock lock(b.m_mutex);
             if(b.m_threadId == std::thread::id())
             {
                 exceptionThrown = true;

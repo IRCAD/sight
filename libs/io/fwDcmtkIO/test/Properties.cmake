@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwDcmtkIO
     fwTools
-    fwCore
+    core
     fwTest
     fwThread
     fwData

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ void SProducer::updating()
 {
     ::exTimeLineData::MessageTL::sptr timeline = this->getInOut< ::exTimeLineData::MessageTL >("timeline");
 
-    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     SPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
     ::exTimeLineData::MsgData* data = buffer->addElement(0);

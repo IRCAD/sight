@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <fwCom/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
+#include <core/Profiling.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
@@ -289,7 +289,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
     SPTR(::fwRuntime::Extension) ext = ::fwRuntime::findExtension(type.first);
     if (ext)
     {
-        const std::string className = ::fwCore::getClassname< ::fwData::Object >();
+        const std::string className = core::getClassname< ::fwData::Object >();
         SLM_ASSERT("Extension and classname are different.",
                    ext->getPoint() == className);
 

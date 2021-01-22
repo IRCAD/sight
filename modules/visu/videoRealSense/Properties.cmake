@@ -3,7 +3,7 @@ set( NAME videoRealSense )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-        fwCore
+        core
         arData
         fwData
         fwCom

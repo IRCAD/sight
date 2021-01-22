@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __CVIO_UT_CVCOMMON_HPP__
-#define __CVIO_UT_CVCOMMON_HPP__
+#pragma once
 
-#include <fwCore/spyLog.hpp>
+#include <core/spyLog.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -126,5 +125,3 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 } // namespace ut
 
 }// namespace cvIO
-
-#endif //__CVIO_UT_CVCOMMON_HPP__
