@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,18 +24,17 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -221,15 +220,15 @@ private:
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    typedef core::com::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 
     /// Contains the signal emitted when we clean the list.
-    typedef ::fwCom::Signal< void () > EmptiedSelectionSignalType;
+    typedef core::com::Signal< void () > EmptiedSelectionSignalType;
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     /// Contains the slot to show (or hide) reconstructions.
-    typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
+    typedef core::com::Slot< void (bool) > ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
 
 };

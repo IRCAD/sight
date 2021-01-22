@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiTools/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -100,7 +100,7 @@ class UITOOLS_CLASS_API SStatus : public QObject,
 
 public:
 
-    fwCoreServiceMacro(SStatus, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SStatus, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SStatus() noexcept;
@@ -112,14 +112,14 @@ public:
      * @name Slots API
      *@{
      */
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_GREEN_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_RED_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_ORANGE_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_NTH_GREEN_RED_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_TO_GREEN_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_TO_RED_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_TO_ORANGE_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_NTH_TO_GREEN_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_NTH_TO_RED_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_CHANGE_NTH_TO_ORANGE_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_TOGGLE_NTH_GREEN_RED_SLOT;
     /** @} */
 
 protected:

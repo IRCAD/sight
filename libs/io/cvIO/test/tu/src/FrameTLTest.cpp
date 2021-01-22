@@ -40,7 +40,7 @@ template <typename T>
 static std::pair< ::arData::FrameTL::sptr, SPTR(::arData::FrameTL::BufferType) >
 genFrameTL(size_t _w, size_t _h, std::uint8_t _numChannels)
 {
-    const ::fwTools::Type type = ::fwTools::Type::create<T>();
+    const core::tools::Type type = core::tools::Type::create<T>();
 
     ::arData::FrameTL::sptr frameTL = ::arData::FrameTL::New();
     frameTL->initPoolSize(_w, _h, type, _numChannels);

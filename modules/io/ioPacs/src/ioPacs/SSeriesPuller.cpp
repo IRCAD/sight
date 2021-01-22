@@ -22,8 +22,9 @@
 
 #include "ioPacs/SSeriesPuller.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/System.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -35,19 +36,17 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include <fwTools/System.hpp>
-
 #include <filesystem>
 #include <sstream>
 
 namespace ioPacs
 {
 
-static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
-static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
-static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
+static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
+static const core::com::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
+static const core::com::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
 
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
@@ -344,7 +343,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             // Clear temporary series.
             readerSeriesHelper.clear();
 
-            std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
+            std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicom/";
             m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -59,10 +59,10 @@ class UICALIBRATION_CLASS_API SCameraInformationEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraInformationEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCameraInformationEditor, ::fwGui::editor::IEditor)
 
-    static const ::fwCom::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateInfosSlotType;
+    static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
+    typedef core::com::Slot<void ()> UpdateInfosSlotType;
 
     /**
      * @brief Constructor.

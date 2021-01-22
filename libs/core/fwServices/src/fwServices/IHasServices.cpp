@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ IHasServices::~IHasServices() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::csptr IHasServices::getRegisteredService(const fwTools::fwID::IDType& _id) const
+::fwServices::IService::csptr IHasServices::getRegisteredService(const core::tools::fwID::IDType& _id) const
 {
     ::fwServices::IService::sptr srv;
     for(const auto& wService : m_subServices)
@@ -62,7 +62,7 @@ IHasServices::~IHasServices() noexcept
 
 //------------------------------------------------------------------------------
 
-void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
+void IHasServices::unregisterService(const core::tools::fwID::IDType& _id)
 {
     for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
     {

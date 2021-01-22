@@ -22,10 +22,9 @@
 
 #include "Tuto05MultithreadConsoleCpp/SIncrementArray.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/Timer.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -39,7 +38,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCp
 namespace Tuto05MultithreadConsoleCpp
 {
 
-static const ::fwCom::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
+static const core::com::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
 
 static const std::string s_ARRAY_INOUT = "array";
 
@@ -94,8 +93,8 @@ void SIncrementArray::updating()
     // Notify that the array is modified.
     const auto sig = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
     {
-        ::fwCom::Connection::Blocker blockUpdate(sig->getConnection(m_slotUpdate));
-        ::fwCom::Connection::Blocker blockTimer(sig->getConnection(this->slot(s_START_TIMER_SLOT)));
+        core::com::Connection::Blocker blockUpdate(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker blockTimer(sig->getConnection(this->slot(s_START_TIMER_SLOT)));
         sig->asyncEmit();
     }
 

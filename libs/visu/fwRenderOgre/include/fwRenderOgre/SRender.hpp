@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,10 @@
 #include "fwRenderOgre/picker/IPicker.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -159,33 +159,33 @@ public:
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     /// Contains the signal sent when the compositor chain has been modified.
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
-    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
+    typedef core::com::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
     /// Contains the signal sent when fullscreen was enabled/disabled.
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
-    using FullscreenSetSignalType = ::fwCom::Signal< void(bool) >;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
+    using FullscreenSetSignalType = core::com::Signal< void(bool) >;
 
     /// Contains the slot name that computes the parameters to reset the camera.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
     /// Contains the slot name that resets all layers camera.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
 
     /// Contains the slot name that computes the parameters to reset the camera.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
 
     /// Contains the slot name that requests a rendering.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
 
     /// Contains the slot name that disables fullscreen rendering if it was enabled.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DISABLE_FULLSCREEN;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_DISABLE_FULLSCREEN;
 
     /// Contains the slot name that enables fullscreen rendering on a specific screen.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
 
     /// Defines the layer ID of the background.
     FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;

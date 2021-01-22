@@ -91,7 +91,7 @@ protected:
 
 private:
 
-    typedef ::fwCom::Signal<void (bool)> CanDoSignalType;
+    typedef core::com::Signal<void (bool)> CanDoSignalType;
 
     /// SLOT: add a command to the history.
     void enqueue(::fwCommand::ICommand::sptr command);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,31 +25,30 @@
 #include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
 
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_IS_ACTIVE_SLOT     = "setIsActive";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_ACTIVATE_SLOT          = "activate";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_DEACTIVATE_SLOT        = "deactivate";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_EXECUTABLE_SLOT    = "setExecutable";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_VISIBLE_SLOT       = "setVisible";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_SHOW_SLOT              = "show";
-const ::fwCom::Slots::SlotKeyType IActionSrv::s_HIDE_SLOT              = "hide";
+const core::com::Slots::SlotKeyType IActionSrv::s_SET_IS_ACTIVE_SLOT     = "setIsActive";
+const core::com::Slots::SlotKeyType IActionSrv::s_ACTIVATE_SLOT          = "activate";
+const core::com::Slots::SlotKeyType IActionSrv::s_DEACTIVATE_SLOT        = "deactivate";
+const core::com::Slots::SlotKeyType IActionSrv::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+const core::com::Slots::SlotKeyType IActionSrv::s_SET_EXECUTABLE_SLOT    = "setExecutable";
+const core::com::Slots::SlotKeyType IActionSrv::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
+const core::com::Slots::SlotKeyType IActionSrv::s_SET_VISIBLE_SLOT       = "setVisible";
+const core::com::Slots::SlotKeyType IActionSrv::s_SHOW_SLOT              = "show";
+const core::com::Slots::SlotKeyType IActionSrv::s_HIDE_SLOT              = "hide";
 
-const ::fwCom::Signals::SignalKeyType IActionSrv::s_ENABLED_SIG   = "enabled";
-const ::fwCom::Signals::SignalKeyType IActionSrv::s_DISABLED_SIG  = "disabled";
-const ::fwCom::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
-const ::fwCom::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
+const core::com::Signals::SignalKeyType IActionSrv::s_ENABLED_SIG   = "enabled";
+const core::com::Signals::SignalKeyType IActionSrv::s_DISABLED_SIG  = "disabled";
+const core::com::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
+const core::com::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
 
 IActionSrv::IActionSrv()
 {

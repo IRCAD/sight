@@ -3,7 +3,6 @@ set( NAME uiVisuQt )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCom
     core
     fwData
     fwDataTools
@@ -12,6 +11,5 @@ set( DEPENDENCIES
     fwMath
     fwRuntime
     fwServices
-    fwTools
 )
 set( REQUIREMENTS )

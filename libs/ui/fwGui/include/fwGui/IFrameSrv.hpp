@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,8 @@
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 #include "fwGui/registrar/ViewRegistrar.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -97,8 +97,8 @@ public:
      * @{
      */
     /// Signal emitted when frame is closed and onclose policy is notify
-    static const ::fwCom::Signals::SignalKeyType s_CLOSED_SIG;
-    typedef ::fwCom::Signal< void ()> ClosedSignalType;
+    static const core::com::Signals::SignalKeyType s_CLOSED_SIG;
+    typedef core::com::Signal< void ()> ClosedSignalType;
     /**
      * @}
      */
@@ -109,13 +109,13 @@ public:
      */
 
     /// Slot to show/hide the container
-    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
 
     /// Slot to show the container
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
 
     /// Slot to hide the container
-    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
     /**
      * @}
      */

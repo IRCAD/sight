@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SImageMultiDistances.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
@@ -47,9 +47,9 @@ namespace visuOgreAdaptor
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
-static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
-static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
-static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
+static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
+static const core::com::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
 
 static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
@@ -63,7 +63,7 @@ static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::composito
 
 //------------------------------------------------------------------------------
 
-::Ogre::ColourValue SImageMultiDistances::generateColor(::fwTools::fwID::IDType _id)
+::Ogre::ColourValue SImageMultiDistances::generateColor(core::tools::fwID::IDType _id)
 {
     switch(std::hash< std::string >()(_id) % 7)
     {
@@ -303,7 +303,7 @@ void SImageMultiDistances::addDistances()
             SLM_ASSERT("The distance should be a point list", pointList);
             SLM_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
 
-            const ::fwTools::fwID::IDType id = pointList->getID();
+            const core::tools::fwID::IDType id = pointList->getID();
             if(m_distances.find(id) == m_distances.end())
             {
                 this->createDistance(pointList);
@@ -337,7 +337,7 @@ void SImageMultiDistances::removeDistances()
     const ::fwData::Vector::csptr distanceField
         = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
-    std::vector< ::fwTools::fwID::IDType > foundId;
+    std::vector< core::tools::fwID::IDType > foundId;
     if(distanceField)
     {
         for(const ::fwData::Object::csptr& object : *distanceField)
@@ -346,13 +346,13 @@ void SImageMultiDistances::removeDistances()
         }
     }
 
-    std::vector< ::fwTools::fwID::IDType > currentdId;
+    std::vector< core::tools::fwID::IDType > currentdId;
     for(const auto& [id, _] : m_distances)
     {
         currentdId.push_back(id);
     }
 
-    for(const ::fwTools::fwID::IDType& id : currentdId)
+    for(const core::tools::fwID::IDType& id : currentdId)
     {
         if(std::find(foundId.begin(), foundId.end(), id) == foundId.end())
         {
@@ -608,7 +608,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
 
 void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
 {
-    const ::fwTools::fwID::IDType id = _pl->getID();
+    const core::tools::fwID::IDType id = _pl->getID();
     SLM_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
@@ -737,7 +737,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
     const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
 
-    ::fwCom::Connection::Blocker blocker(sigModified->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker blocker(sigModified->getConnection(m_slotUpdate));
     sigModified->asyncEmit();
 
     this->requestRender();
@@ -745,7 +745,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
+void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
 {
     const DistanceMap::const_iterator it = m_distances.find(_id);
     SLM_ASSERT("The distance is not found", it != m_distances.end());

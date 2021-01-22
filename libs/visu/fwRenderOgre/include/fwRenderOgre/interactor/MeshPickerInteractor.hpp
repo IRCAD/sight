@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 namespace fwRenderOgre::interactor
 {
@@ -42,7 +42,7 @@ class FWRENDEROGRE_CLASS_API MeshPickerInteractor final : public ::fwRenderOgre:
 public:
 
     /// Defines the type of signal sent when a picking query succeeded.
-    using PointClickedSigType = ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) >;
+    using PointClickedSigType = core::com::Signal< void ( ::fwDataTools::PickingInfo ) >;
 
     /// Initializes the picker.
     FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;

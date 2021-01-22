@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ inline size_t computeSize(
 Array::Array( ::fwData::Object::Key ) :
     m_strides(0),
     m_type(),
-    m_bufferObject(::fwMemory::BufferObject::New()),
+    m_bufferObject(core::memory::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
     m_isBufferOwner(true)
@@ -116,10 +116,10 @@ void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
     if( !other->m_bufferObject->isEmpty() )
     {
-        ::fwMemory::BufferObject::Lock lockerDest(m_bufferObject);
+        core::memory::BufferObject::Lock lockerDest(m_bufferObject);
         this->resizeTMP(other->m_type, other->m_size, other->m_nbOfComponents);
         char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
-        ::fwMemory::BufferObject::Lock lockerSource(other->m_bufferObject);
+        core::memory::BufferObject::Lock lockerSource(other->m_bufferObject);
         char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
         std::copy(buffSrc, buffSrc+other->getSizeInBytes(), buffDest );
     }
@@ -173,7 +173,7 @@ void Array::clear()
             this->m_bufferObject->destroy();
         }
         m_strides.clear();
-        m_type = ::fwTools::Type();
+        m_type = core::tools::Type();
         m_size.clear();
         m_nbOfComponents = 0;
     }
@@ -246,13 +246,13 @@ bool Array::getIsBufferOwner() const
 
 void Array::setType(const std::string& type)
 {
-    const ::fwTools::Type fwType = ::fwTools::Type::create(type);
+    const core::tools::Type fwType = core::tools::Type::create(type);
     this->setType(fwType);
 }
 
 //------------------------------------------------------------------------------
 
-void Array::setType(const ::fwTools::Type& type)
+void Array::setType(const core::tools::Type& type)
 {
     m_type = type;
     this->resize(
@@ -263,7 +263,7 @@ void Array::setType(const ::fwTools::Type& type)
 
 //------------------------------------------------------------------------------
 
-::fwTools::Type Array::getType() const
+core::tools::Type Array::getType() const
 {
     return m_type;
 }
@@ -293,7 +293,7 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id ) const
 
 size_t Array::resize(
     const SizeType& size,
-    const ::fwTools::Type& type,
+    const core::tools::Type& type,
     bool reallocate
     )
 {
@@ -346,7 +346,7 @@ const void* Array::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
+void Array::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocationPolicy::sptr policy)
 {
     if(m_bufferObject)
     {
@@ -357,7 +357,7 @@ void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
     }
     else
     {
-        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
+        core::memory::BufferObject::sptr newBufferObject = core::memory::BufferObject::New();
         m_bufferObject->swap(newBufferObject);
     }
     m_bufferObject->setBuffer(buf, (buf == nullptr) ? 0 : this->getSizeInBytes(), policy);
@@ -370,8 +370,8 @@ void Array::setBuffer(
     void* buf,
     bool takeOwnership,
     const ::fwData::Array::SizeType& size,
-    const ::fwTools::Type& type,
-    ::fwMemory::BufferAllocationPolicy::sptr policy)
+    const core::tools::Type& type,
+    core::memory::BufferAllocationPolicy::sptr policy)
 {
     this->resize( size, type, false);
     this->setBuffer(buf, takeOwnership, policy);
@@ -397,14 +397,14 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::Lock Array::lock() const
+core::memory::BufferObject::Lock Array::lock() const
 {
     return m_bufferObject->lock();
 }
 
 //------------------------------------------------------------------------------
 
-void Array::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+void Array::lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const
 {
     locks.push_back(this->lock());
 }
@@ -463,7 +463,7 @@ Array::ConstIterator<char> Array::end() const
 //------------------------------------------------------------------------------
 
 size_t Array::resize(
-    const ::fwTools::Type& type,
+    const core::tools::Type& type,
     const SizeType& size,
     size_t nbOfComponents,
     bool reallocate
@@ -485,7 +485,7 @@ size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocat
 
 //------------------------------------------------------------------------------
 
-size_t Array::resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents)
+size_t Array::resizeTMP(const core::tools::Type& type, const SizeType& size, size_t nbOfComponents)
 {
     // Array m_numberOfComponents attribute is deprecated, but to support the old Image API,
     // we need to use it temporary
@@ -510,7 +510,7 @@ size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfC
                      bool reallocate)
 {
     m_nbOfComponents = nbOfComponents;
-    m_type           = ::fwTools::Type::create(type);
+    m_type           = core::tools::Type::create(type);
     return this->resize( size, reallocate);
 }
 

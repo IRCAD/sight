@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,8 +91,8 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     // Retrieve the two first instances
     auto firstItem = series->getDicomContainer().begin();
 
-    const ::fwMemory::BufferObject::sptr& firstBufferObj  = firstItem->second;
-    const ::fwMemory::BufferObject::sptr& secondBufferObj = (++firstItem)->second;
+    const core::memory::BufferObject::sptr& firstBufferObj  = firstItem->second;
+    const core::memory::BufferObject::sptr& secondBufferObj = (++firstItem)->second;
 
     // Compute the slice thickness between the 2 first slices.
     const double firstIndex     = this->getInstanceZPosition(firstBufferObj);
@@ -116,13 +116,13 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
 
 //-----------------------------------------------------------------------------
 
-double SliceThicknessModifier::getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj) const
+double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj) const
 {
     DcmFileFormat fileFormat;
     DcmDataset* dataset;
 
     const size_t buffSize = bufferObj->getSize();
-    ::fwMemory::BufferObject::Lock lock(bufferObj);
+    core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast< char* >( lock.getBuffer() );
 
     DcmInputBufferStream is;
@@ -171,14 +171,14 @@ double SliceThicknessModifier::getInstanceZPosition(const ::fwMemory::BufferObje
 
 //-----------------------------------------------------------------------------
 
-double SliceThicknessModifier::getSliceThickness(const ::fwMemory::BufferObject::sptr& bufferObj) const
+double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObject::sptr& bufferObj) const
 {
     DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
 
     const size_t buffSize = bufferObj->getSize();
-    ::fwMemory::BufferObject::Lock lock(bufferObj);
+    core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast< char* >( lock.getBuffer() );
 
     DcmInputBufferStream is;

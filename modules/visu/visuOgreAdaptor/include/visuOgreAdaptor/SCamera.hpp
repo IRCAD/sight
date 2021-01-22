@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,9 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
@@ -146,7 +146,7 @@ private:
     ::Ogre::Real m_aspectRatio { 0.f };
 
     /// Handles connection with the layer.
-    ::fwCom::helper::SigSlotConnection m_layerConnection;
+    core::com::helper::SigSlotConnection m_layerConnection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct CameraNodeListener;

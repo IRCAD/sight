@@ -23,10 +23,10 @@
 #include "ioGdcm/SDicomSeriesWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/tools/ProgressToLogger.hpp>
 
 #include <fwData/location/Folder.hpp>
 
@@ -46,14 +46,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/ProgressToLogger.hpp>
-
 namespace ioGdcm
 {
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 

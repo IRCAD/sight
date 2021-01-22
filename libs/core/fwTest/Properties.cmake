@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     fwData    
     fwMedData
-    fwTools
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )

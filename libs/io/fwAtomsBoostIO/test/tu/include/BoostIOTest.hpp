@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,12 +103,12 @@ protected:
             ::fwAtoms::Blob::sptr blob  = ::fwAtoms::Blob::New();
             m_seq = ::fwAtoms::Sequence::New();
 
-            ::fwMemory::BufferObject::sptr bo                  = ::fwMemory::BufferObject::New();
-            const ::fwMemory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
+            core::memory::BufferObject::sptr bo                  = core::memory::BufferObject::New();
+            const core::memory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
             bo->allocate(BUFF_SIZE);
             blob->setBufferObject(bo);
 
-            ::fwMemory::BufferObject::Lock lock(bo->lock());
+            core::memory::BufferObject::Lock lock(bo->lock());
             void* v            = lock.getBuffer();
             std::uint8_t* buff = static_cast<std::uint8_t*>(v);
             for (size_t i = 0; i < BUFF_SIZE; ++i)
@@ -209,15 +209,15 @@ protected:
             CPPUNIT_ASSERT( readNum2  );
             CPPUNIT_ASSERT( readBoolT );
 
-            ::fwMemory::BufferObject::sptr bo     = blob->getBufferObject();
-            ::fwMemory::BufferObject::sptr readBo = readBlob->getBufferObject();
+            core::memory::BufferObject::sptr bo     = blob->getBufferObject();
+            core::memory::BufferObject::sptr readBo = readBlob->getBufferObject();
 
             CPPUNIT_ASSERT( readBo );
 
             CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
 
-            ::fwMemory::BufferObject::Lock lock(bo->lock());
-            ::fwMemory::BufferObject::Lock readLock(readBo->lock());
+            core::memory::BufferObject::Lock lock(bo->lock());
+            core::memory::BufferObject::Lock readLock(readBo->lock());
 
             void* v        = lock.getBuffer();
             void* readV    = readLock.getBuffer();

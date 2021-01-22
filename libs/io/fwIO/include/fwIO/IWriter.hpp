@@ -58,8 +58,8 @@ public:
      * @name Slots API
      * @{
      */
-    FWIO_API static const ::fwCom::Slots::SlotKeyType s_SET_FILE_FOLDER;
-    FWIO_API static const ::fwCom::Slots::SlotKeyType s_SET_TIMESTAMP_PREFIX;
+    FWIO_API static const core::com::Slots::SlotKeyType s_SET_FILE_FOLDER;
+    FWIO_API static const core::com::Slots::SlotKeyType s_SET_TIMESTAMP_PREFIX;
     /// @}
 
     /**

@@ -22,7 +22,7 @@
 
 #include "videoQt/SFrameRecorder.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -45,10 +45,10 @@ fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, :
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_SAVE_FRAME_SLOT = "saveFrame";
-const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "startRecord";
-const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
-const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
+const core::com::Slots::SlotKeyType SFrameRecorder::s_SAVE_FRAME_SLOT = "saveFrame";
+const core::com::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "startRecord";
+const core::com::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
+const core::com::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
 
 static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
 
@@ -59,17 +59,17 @@ SFrameRecorder::SFrameRecorder() noexcept :
     m_isRecording(false),
     m_isPaused(false)
 {
-    m_slotSaveFrame   = ::fwCom::newSlot( &SFrameRecorder::saveFrame, this);
-    m_slotStartRecord = ::fwCom::newSlot( &SFrameRecorder::startRecord, this);
-    m_slotStopRecord  = ::fwCom::newSlot( &SFrameRecorder::stopRecord, this);
-    m_slotPauseRecord = ::fwCom::newSlot( &SFrameRecorder::pauseRecord, this);
+    m_slotSaveFrame   = core::com::newSlot( &SFrameRecorder::saveFrame, this);
+    m_slotStartRecord = core::com::newSlot( &SFrameRecorder::startRecord, this);
+    m_slotStopRecord  = core::com::newSlot( &SFrameRecorder::stopRecord, this);
+    m_slotPauseRecord = core::com::newSlot( &SFrameRecorder::pauseRecord, this);
 
-    ::fwCom::HasSlots::m_slots(s_SAVE_FRAME_SLOT, m_slotSaveFrame)
+    core::com::HasSlots::m_slots(s_SAVE_FRAME_SLOT, m_slotSaveFrame)
         (s_START_RECORD_SLOT, m_slotStartRecord)
         (s_STOP_RECORD_SLOT, m_slotStopRecord)
         (s_PAUSE_RECORD_SLOT, m_slotPauseRecord);
 
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
+    core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void SFrameRecorder::startRecord()
 {
     ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
 
-    if (frameTL->getType() != ::fwTools::Type::s_UINT8 || frameTL->getNumberOfComponents() != 4)
+    if (frameTL->getType() != core::tools::Type::s_UINT8 || frameTL->getNumberOfComponents() != 4)
     {
         SLM_ERROR("Frame type not managed. Only image with type 'uint8' with 4 components are managed.");
         return;

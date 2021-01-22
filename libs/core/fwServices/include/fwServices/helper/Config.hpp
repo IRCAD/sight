@@ -27,11 +27,9 @@
 #include "fwServices/IService.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
-
-#include <fwTools/Object.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/Object.hpp>
 
 namespace fwTools
 {
@@ -64,8 +62,8 @@ class Config
 
 public:
 
-    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
-    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::pair< std::string, core::com::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, core::com::Slots::SlotKeyType > SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     typedef std::string ObjectIdType;
@@ -86,8 +84,8 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     FWSERVICES_API static ConnectionInfo parseConnections(const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
-                                                          const CSPTR(::fwTools::Object)& obj =
-                                                              CSPTR(::fwTools::Object)());
+                                                          const CSPTR(core::tools::Object)& obj =
+                                                              CSPTR(core::tools::Object)());
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -109,8 +107,8 @@ public:
      */
     FWSERVICES_API static void createConnections(
         const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
-        ::fwCom::helper::SigSlotConnection& helper,
-        const CSPTR(::fwTools::Object)& obj = CSPTR(::fwTools::Object)());
+        core::com::helper::SigSlotConnection& helper,
+        const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)());
 
     /**
      * @brief Parses "<proxy>" tags from given configuration to connect signals and slots using proxies.

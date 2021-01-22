@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,10 @@
 
 #include "fwCommand/ImageDiffCommand.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <fwTools/Type.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/tools/Type.hpp>
 
 namespace fwCommand
 {

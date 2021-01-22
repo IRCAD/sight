@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,15 @@
 
 #include "guiQt/editor/SParameters.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/Object.hpp>
 
 #include <fwDataTools/Color.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
@@ -51,31 +50,31 @@ namespace editor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Signals::SignalKeyType BOOLEAN_CHANGED_SIG    = "boolChanged";
-static const ::fwCom::Signals::SignalKeyType COLOR_CHANGED_SIG      = "colorChanged";
-static const ::fwCom::Signals::SignalKeyType DOUBLE_CHANGED_SIG     = "doubleChanged";
-static const ::fwCom::Signals::SignalKeyType DOUBLE2_CHANGED_SIG    = "double2Changed";
-static const ::fwCom::Signals::SignalKeyType DOUBLE3_CHANGED_SIG    = "double3Changed";
-static const ::fwCom::Signals::SignalKeyType INTEGER_CHANGED_SIG    = "intChanged";
-static const ::fwCom::Signals::SignalKeyType INTEGER2_CHANGED_SIG   = "int2Changed";
-static const ::fwCom::Signals::SignalKeyType INTEGER3_CHANGED_SIG   = "int3Changed";
-static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG       = "enumChanged";
-static const ::fwCom::Signals::SignalKeyType ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
+static const core::com::Signals::SignalKeyType BOOLEAN_CHANGED_SIG    = "boolChanged";
+static const core::com::Signals::SignalKeyType COLOR_CHANGED_SIG      = "colorChanged";
+static const core::com::Signals::SignalKeyType DOUBLE_CHANGED_SIG     = "doubleChanged";
+static const core::com::Signals::SignalKeyType DOUBLE2_CHANGED_SIG    = "double2Changed";
+static const core::com::Signals::SignalKeyType DOUBLE3_CHANGED_SIG    = "double3Changed";
+static const core::com::Signals::SignalKeyType INTEGER_CHANGED_SIG    = "intChanged";
+static const core::com::Signals::SignalKeyType INTEGER2_CHANGED_SIG   = "int2Changed";
+static const core::com::Signals::SignalKeyType INTEGER3_CHANGED_SIG   = "int3Changed";
+static const core::com::Signals::SignalKeyType ENUM_CHANGED_SIG       = "enumChanged";
+static const core::com::Signals::SignalKeyType ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT      = "setColorParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT    = "setDouble2Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT    = "setDouble3Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT       = "setInt2Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT       = "setInt3Parameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_INDEX_PARAMETER_SLOT = "setEnumIndexParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setIntMinParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT      = "setColorParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT    = "setDouble2Parameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT    = "setDouble3Parameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT       = "setInt2Parameter";
+static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT       = "setInt3Parameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_INDEX_PARAMETER_SLOT = "setEnumIndexParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setIntMinParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SParameters )
 

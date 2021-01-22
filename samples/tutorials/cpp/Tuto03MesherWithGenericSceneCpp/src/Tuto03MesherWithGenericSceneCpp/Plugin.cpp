@@ -22,7 +22,7 @@
 
 #include "Tuto03MesherWithGenericSceneCpp/Plugin.hpp"
 
-#include <fwCom/Slot.hxx>
+#include <core/com/Slot.hxx>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -444,7 +444,7 @@ void Plugin::initialize()
         {
             m_appManager->addObject(rec, s_RECONSTRUCTION_ID);
         };
-    m_slotRecSelected = ::fwCom::newSlot(recSelectedFct);
+    m_slotRecSelected = core::com::newSlot(recSelectedFct);
     m_slotRecSelected->setWorker(worker);
     proxy->connect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
 
@@ -453,7 +453,7 @@ void Plugin::initialize()
         {
             m_appManager->removeObject(nullptr, s_RECONSTRUCTION_ID);
         };
-    m_slotEmptySelection = ::fwCom::newSlot(emptySelectionFct);
+    m_slotEmptySelection = core::com::newSlot(emptySelectionFct);
     m_slotEmptySelection->setWorker(worker);
     proxy->connect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -223,44 +223,44 @@ public:
      * @{
      */
     /// Type of signal when a group is added
-    typedef ::fwCom::Signal< void (std::string name) > GroupAddedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_GROUP_ADDED_SIG;
+    typedef core::com::Signal< void (std::string name) > GroupAddedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_GROUP_ADDED_SIG;
 
     /// Type of signal when a group is removed
-    typedef ::fwCom::Signal< void (std::string name) > GroupRemovedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_GROUP_REMOVED_SIG;
+    typedef core::com::Signal< void (std::string name) > GroupRemovedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_GROUP_REMOVED_SIG;
 
     /// Type of signal when a point is added
-    typedef ::fwCom::Signal< void (std::string name) > PointAddedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_ADDED_SIG;
+    typedef core::com::Signal< void (std::string name) > PointAddedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_ADDED_SIG;
 
     /// Type of signal when a point is removed
-    typedef ::fwCom::Signal< void (std::string name, size_t index) > PointRemovedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_REMOVED_SIG;
+    typedef core::com::Signal< void (std::string name, size_t index) > PointRemovedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_REMOVED_SIG;
 
     /// Type of signal when a point is inserted
-    typedef ::fwCom::Signal< void (std::string name, size_t index) > PointInsertedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_INSERTED_SIG;
+    typedef core::com::Signal< void (std::string name, size_t index) > PointInsertedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_INSERTED_SIG;
 
     /// Type of signal when a point is modified
-    typedef ::fwCom::Signal< void (std::string name, size_t index) > PointModifiedSigType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_MODIFIED_SIG;
+    typedef core::com::Signal< void (std::string name, size_t index) > PointModifiedSigType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_MODIFIED_SIG;
 
     /// Type of signal when group properties changed
-    typedef ::fwCom::Signal< void (std::string name) > GroupModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_GROUP_MODIFIED_SIG;
+    typedef core::com::Signal< void (std::string name) > GroupModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_GROUP_MODIFIED_SIG;
 
     /// Type of signal when a group is renamed
-    typedef ::fwCom::Signal< void (std::string oldName, std::string newName) > GroupRenamedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_GROUP_RENAMED_SIG;
+    typedef core::com::Signal< void (std::string oldName, std::string newName) > GroupRenamedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_GROUP_RENAMED_SIG;
 
     /// Type of signal when point is selected
-    typedef ::fwCom::Signal< void (std::string name, size_t index) > PointSelectedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_SELECTED_SIG;
+    typedef core::com::Signal< void (std::string name, size_t index) > PointSelectedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_SELECTED_SIG;
 
     /// Type of signal when point is deselected
-    typedef ::fwCom::Signal< void (std::string name, size_t index) > PointDeselectedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_DESELECTED_SIG;
+    typedef core::com::Signal< void (std::string name, size_t index) > PointDeselectedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_DESELECTED_SIG;
 
     /**
      * @}

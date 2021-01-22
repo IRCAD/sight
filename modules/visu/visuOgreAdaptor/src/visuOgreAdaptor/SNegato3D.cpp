@@ -22,9 +22,9 @@
 
 #include "visuOgreAdaptor/SNegato3D.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
@@ -51,12 +51,12 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
-static const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT      = "sliceType";
-static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT     = "sliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacity";
+static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
+static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT      = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT     = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacity";
 
-static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
+static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
@@ -478,7 +478,7 @@ void SNegato3D::setVisible(bool _visible)
     const auto image  = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
     auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
     {
-        const ::fwCom::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        const core::com::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
         visUpdateSig->asyncEmit(_visible);
     }
 }

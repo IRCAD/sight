@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwGuiQml
     fwRuntime
     fwServices
-    fwTools
 )
 set( REQUIREMENTS
     gui

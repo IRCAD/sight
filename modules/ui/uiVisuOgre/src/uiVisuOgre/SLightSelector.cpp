@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiVisuOgre/helper/Utils.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
@@ -54,8 +54,8 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector,
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType s_LIGHT_SELECTED_SIG = "lightSelected";
-const ::fwCom::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT = "initLightList";
+const core::com::Signals::SignalKeyType s_LIGHT_SELECTED_SIG = "lightSelected";
+const core::com::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT = "initLightList";
 
 //------------------------------------------------------------------------------
 

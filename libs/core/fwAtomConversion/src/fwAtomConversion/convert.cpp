@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,19 +20,22 @@
  *
  ***********************************************************************/
 
+#include "fwAtomConversion/convert.hpp"
+
+#include "fwAtomConversion/AtomVisitor.hpp"
+#include "fwAtomConversion/DataVisitor.hpp"
+#include "fwAtomConversion/mapper/Base.hpp"
+
 #include <fwAtoms/Object.hpp>
 
 #include <fwData/Object.hpp>
 
-#include "fwAtomConversion/convert.hpp"
-#include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/AtomVisitor.hpp"
-#include "fwAtomConversion/mapper/Base.hpp"
-
 namespace fwAtomConversion
 {
 
-::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr &data )
+//------------------------------------------------------------------------------
+
+::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr& data )
 {
     DataVisitor::AtomCacheType cache;
     return convert( data, cache );
@@ -40,11 +43,11 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr &dataObj, DataVisitor::AtomCacheType & cache )
+::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr& dataObj, DataVisitor::AtomCacheType& cache )
 {
     ::fwAtoms::Object::sptr atom;
 
-    DataVisitor::AtomCacheType::iterator elem = cache.find( ::fwTools::UUID::get( dataObj ) );
+    DataVisitor::AtomCacheType::iterator elem = cache.find( core::tools::UUID::get( dataObj ) );
 
     if ( elem == cache.end() )
     {
@@ -56,7 +59,7 @@ namespace fwAtomConversion
         else
         {
             const camp::Class& metaclass = ::camp::classByName( dataObj->getClassname() );
-            ::fwAtomConversion::DataVisitor visitor ( dataObj, cache );
+            ::fwAtomConversion::DataVisitor visitor( dataObj, cache );
             metaclass.visit(visitor);
             atom = visitor.getAtomObject();
         }
@@ -71,8 +74,8 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr &atom,
-                                const AtomVisitor::IReadPolicy &uuidPolicy
+::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr& atom,
+                                const AtomVisitor::IReadPolicy& uuidPolicy
                                 )
 {
     AtomVisitor::DataCacheType cache;
@@ -81,8 +84,8 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr &atomObj, AtomVisitor::DataCacheType & cache,
-                                const AtomVisitor::IReadPolicy &uuidPolicy
+::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr& atomObj, AtomVisitor::DataCacheType& cache,
+                                const AtomVisitor::IReadPolicy& uuidPolicy
                                 )
 {
     ::fwData::Object::sptr data;
@@ -98,7 +101,7 @@ namespace fwAtomConversion
         }
         else
         {
-            ::fwAtomConversion::AtomVisitor visitor ( atomObj, cache, uuidPolicy );
+            ::fwAtomConversion::AtomVisitor visitor( atomObj, cache, uuidPolicy );
             visitor.visit();
             data = visitor.getDataObject();
         }

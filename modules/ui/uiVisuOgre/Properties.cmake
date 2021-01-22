@@ -5,10 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES
         core
         fwData
-        fwCom
         fwRuntime
         fwServices
-        fwTools
         fwGui
         fwGuiQt
         fwRenderOgre

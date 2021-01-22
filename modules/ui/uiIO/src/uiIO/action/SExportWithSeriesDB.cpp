@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "uiIO/action/SExportWithSeriesDB.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/Cursor.hpp>
 
@@ -44,10 +44,10 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, ::fwData::Object )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 static const ::fwServices::IService::KeyType s_SERIES_INOUT = "series";
 

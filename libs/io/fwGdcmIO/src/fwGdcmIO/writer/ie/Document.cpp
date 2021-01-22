@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,14 +26,14 @@
 #include "fwGdcmIO/helper/StructuredReport.hpp"   // For graphviz dump
 #include "fwGdcmIO/writer/tid/MeasurementReport.hpp"
 
+#include <core/tools/dateAndTime.hpp>
+
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -81,11 +81,11 @@ void Document::writeSRDocumentGeneralModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0013 >(0, dataset);
 
     // Content Date - Type 1 - FIXME: Keep series date ?
-    const std::string date = ::fwTools::getDate(ptime);
+    const std::string date = core::tools::getDate(ptime);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0023 >(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    const std::string time = ::fwTools::getTime(ptime);
+    const std::string time = core::tools::getTime(ptime);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0033 >(time, dataset);
 
     // Performed Procedure Code Sequence (0040,A372) // Type 2 (FIXME: CID 7000 ?)

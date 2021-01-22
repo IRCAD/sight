@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuBasic/SMesh.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -33,10 +33,10 @@
 namespace visuBasic
 {
 
-const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
+const core::com::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
+static const core::com::Slots::SlotKeyType s_UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
 
-const ::fwCom::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG = "camUpdated";
+const core::com::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG = "camUpdated";
 
 static const std::string s_MESH_INPUT = "mesh";
 
@@ -202,7 +202,7 @@ void SMesh::updateCamPosition(::fwData::TransformationMatrix3D::sptr _transform)
 void SMesh::updateCamTransform()
 {
     {
-        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_TRANSFORM_SLOT)));
+        core::com::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_TRANSFORM_SLOT)));
         m_sigCamUpdated->asyncEmit(m_cameraTransform);
     }
 }

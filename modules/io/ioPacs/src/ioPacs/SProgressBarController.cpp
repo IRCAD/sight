@@ -22,7 +22,7 @@
 
 #include "ioPacs/SProgressBarController.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/dialog/ProgressDialog.hpp>
 
@@ -31,9 +31,9 @@
 namespace ioPacs
 {
 
-static const ::fwCom::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
-static const ::fwCom::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
+static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
+static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
+static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
 fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SProgressBarController)
 

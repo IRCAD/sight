@@ -23,11 +23,10 @@
 #include "uiVisuQt/PointEditor.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -53,7 +52,7 @@ namespace uiVisuQt
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite )
 
-static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 PointEditor::PointEditor() noexcept
 {

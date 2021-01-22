@@ -24,6 +24,9 @@
 
 #include <fwVtkIO/SeriesDBReader.hpp>
 
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/BufferObject.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -32,9 +35,6 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/BufferObject.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -119,14 +119,14 @@ void SeriesDBTest::testImportSeriesDB()
 
 //------------------------------------------------------------------------------
 
-bool isLoaded(::fwMemory::BufferObject::sptr bo)
+bool isLoaded(core::memory::BufferObject::sptr bo)
 {
-    ::fwMemory::BufferManager::csptr manager = ::fwMemory::BufferManager::getDefault();
-    const ::fwMemory::BufferManager::BufferInfoMapType mapInfos = manager->getBufferInfos().get();
+    core::memory::BufferManager::csptr manager                    = core::memory::BufferManager::getDefault();
+    const core::memory::BufferManager::BufferInfoMapType mapInfos = manager->getBufferInfos().get();
 
-    ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter = mapInfos.find(bo->getBufferPointer());
+    core::memory::BufferManager::BufferInfoMapType::const_iterator iter = mapInfos.find(bo->getBufferPointer());
     CPPUNIT_ASSERT_MESSAGE("BufferInfo not found.", iter != mapInfos.end());
-    const ::fwMemory::BufferInfo& info = iter->second;
+    const core::memory::BufferInfo& info = iter->second;
 
     return info.loaded;
 }
@@ -135,10 +135,10 @@ bool isLoaded(::fwMemory::BufferObject::sptr bo)
 
 void SeriesDBTest::testLazyImportSeriesDB()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     {
         core::mt::WriteLock lock( manager->getMutex() );
-        manager->setLoadingMode(::fwMemory::BufferManager::LAZY);
+        manager->setLoadingMode(core::memory::BufferManager::LAZY);
     }
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
@@ -166,10 +166,10 @@ void SeriesDBTest::testLazyImportSeriesDB()
         ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->at(0));
         CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
 
-        ::fwMemory::BufferObject::sptr bo = imgSeries->getImage()->getBufferObject();
+        core::memory::BufferObject::sptr bo = imgSeries->getImage()->getBufferObject();
         CPPUNIT_ASSERT_MESSAGE("ImageSeries is not lazy-loaded", !isLoaded(bo));
 
-        ::fwMemory::BufferObject::Lock lock = bo->lock();
+        core::memory::BufferObject::Lock lock = bo->lock();
 
         CPPUNIT_ASSERT_MESSAGE("ImageSeries is still lazy-loaded", isLoaded(bo));
     }
@@ -189,7 +189,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     {
         core::mt::WriteLock lock( manager->getMutex() );
-        manager->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+        manager->setLoadingMode(core::memory::BufferManager::DIRECT);
     }
 }
 

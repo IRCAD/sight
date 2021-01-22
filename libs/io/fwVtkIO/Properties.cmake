@@ -8,8 +8,6 @@ set( DEPENDENCIES
     fwDataIO
     fwMath
     fwMedData
-    fwMemory
-    fwTools
     fwJobs
 )
 set( REQUIREMENTS  )

@@ -22,9 +22,9 @@
 
 #include "ctrlCamp/SCopy.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -200,7 +200,7 @@ void SCopy::copy()
                     auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(
                         ::fwData::Object::s_MODIFIED_SIG);
                     {
-                        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                         sig->asyncEmit();
                     }
                 }

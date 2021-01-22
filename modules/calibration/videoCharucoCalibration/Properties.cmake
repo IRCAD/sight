@@ -6,14 +6,12 @@ set( DEPENDENCIES
     arData
     arServices
     calibration3d
-    fwCom
     core
     fwData
     fwDataTools
     fwGui
     fwRuntime
     fwServices
-    fwTools
     fwPreferences
     cvIO
 )

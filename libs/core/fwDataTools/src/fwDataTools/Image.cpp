@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "fwDataTools/Image.hpp"
 
-#include <fwTools/Combinatory.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
+#include <core/tools/Combinatory.hpp>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 namespace fwDataTools
 {
@@ -81,7 +81,7 @@ struct RoiApplyerCaller
     template<typename IMAGE_TYPE>
     void operator()( RoiApplyerParam& p )
     {
-        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RoiApplyer<IMAGE_TYPE> >::invoke(
+        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiApplyer<IMAGE_TYPE> >::invoke(
             p.roi->getType(), p );
     }
 };
@@ -100,7 +100,8 @@ void Image::applyRoi( ::fwData::Image::sptr image, ::fwData::Image::sptr roi )
     param.roi = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RoiApplyerCaller >::invoke( image->getType(), param );
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiApplyerCaller >::invoke( image->getType(),
+                                                                                                param );
 }
 
 //------------------------------------------------------------------------------
@@ -158,8 +159,9 @@ struct RoiTesterCaller
     template<typename IMAGE_TYPE>
     void operator()( RoiTesterParam& p )
     {
-        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RoiTester<IMAGE_TYPE> >::invoke( p.roi->getType(),
-                                                                                                     p );
+        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiTester<IMAGE_TYPE> >::invoke(
+            p.roi->getType(),
+            p );
     }
 };
 
@@ -177,7 +179,8 @@ bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi
     param.roi           = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RoiTesterCaller >::invoke( image->getType(), param );
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiTesterCaller >::invoke( image->getType(),
+                                                                                               param );
 
     return param.result;
 }

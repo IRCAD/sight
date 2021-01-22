@@ -3,7 +3,6 @@ set( NAME fwRenderQt )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwCom
     core
     fwData
     fwDataTools
@@ -12,6 +11,5 @@ set( DEPENDENCIES
     fwRender
     fwRuntime
     fwServices
-    fwTools
 )
 set( REQUIREMENTS  )

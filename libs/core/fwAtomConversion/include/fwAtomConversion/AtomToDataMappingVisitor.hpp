@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef  __FWATOMCONVERSION_ATOMTODATAMAPPINGVISITOR_HPP__
-#define  __FWATOMCONVERSION_ATOMTODATAMAPPINGVISITOR_HPP__
+#pragma once
 
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
-
-#include "fwAtomConversion/config.hpp"
 #include "fwAtomConversion/AtomVisitor.hpp"
+#include "fwAtomConversion/config.hpp"
+
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
 
 namespace fwAtoms
 {
@@ -43,8 +42,6 @@ namespace fwAtomConversion
 /**
  * @brief This visitor visits data object to fill it with associated atom object attributes.
  * This class is used by AtomVisitor to convert an fwData::Object.
- * @class AtomToDataMappingVisitor
- * @date 2013
  */
 class FWATOMCONVERSION_CLASS_API AtomToDataMappingVisitor : public ::camp::ExtendedClassVisitor
 {
@@ -55,8 +52,8 @@ public:
     FWATOMCONVERSION_API AtomToDataMappingVisitor(
         SPTR(::fwData::Object)dataObj,
         SPTR(::fwAtoms::Object)atomObj,
-        AtomVisitor::DataCacheType & cache,
-        const AtomVisitor::IReadPolicy &uuidPolicy
+        AtomVisitor::DataCacheType& cache,
+        const AtomVisitor::IReadPolicy& uuidPolicy
         );
 
     /// Destructor. Does nothing.
@@ -104,12 +101,10 @@ private:
     SPTR(::fwAtoms::Object) m_atomObj;
 
     /// Cache to register the atoms already converted, used when an atom is referenced multiple times.
-    AtomVisitor::DataCacheType & m_cache;
+    AtomVisitor::DataCacheType& m_cache;
 
     /// Atom visitor uuids policy
-    const AtomVisitor::IReadPolicy & m_uuidPolicy;
+    const AtomVisitor::IReadPolicy& m_uuidPolicy;
 };
 
 } // end namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_ATOMTODATAMAPPINGVISITOR_HPP__

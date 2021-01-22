@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,13 +129,13 @@ public:
     // @}
 
     /// Returns a copy of current lock on image
-    FWDATATOOLS_API ::fwMemory::BufferObject::Lock getLock() const;
+    FWDATATOOLS_API core::memory::BufferObject::Lock getLock() const;
 
 private:
 
     ::fwData::Image::sptr m_image;
 
-    ::fwMemory::BufferObject::Lock m_lock;
+    core::memory::BufferObject::Lock m_lock;
 
     /// modification flags
     bool m_sliceModified;

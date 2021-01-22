@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiTools/STargeting.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/PointList.hpp>
@@ -44,12 +44,12 @@ namespace uiTools
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INPUT  = "landmark";
-const ::fwServices::IService::KeyType s_MATRIX_INPUT    = "matrix";
-const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
-const ::fwCom::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
-const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
-const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
+const ::fwServices::IService::KeyType s_LANDMARK_INPUT    = "landmark";
+const ::fwServices::IService::KeyType s_MATRIX_INPUT      = "matrix";
+const ::fwServices::IService::KeyType s_POINTLIST_INOUT   = "pointList";
+const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
+const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
+const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 

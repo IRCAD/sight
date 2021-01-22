@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public ::fwGui::editor::
 
 public:
 
-    fwCoreServiceMacro(SCompositorParameterEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCompositorParameterEditor, ::fwGui::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SCompositorParameterEditor() noexcept;
@@ -65,7 +65,7 @@ public:
      * @{
      */
     /// Slot: update the interface.
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
+    UIVISUOGRE_API static const core::com::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
     /** @} */
 
 protected:
@@ -97,7 +97,7 @@ private:
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
         ::fwServices::IService::wptr service;
-        ::fwCom::helper::SigSlotConnection connections;
+        core::com::helper::SigSlotConnection connections;
     };
 
     ShaderEditorInfo m_editorInfo;

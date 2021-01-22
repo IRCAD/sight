@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/Float.hpp>
 
@@ -284,7 +284,7 @@ private:
     bool m_border { true };
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
+    using PickedVoxelSigType = core::com::Signal< void (std::string) >;
     PickedVoxelSigType::sptr m_pickedVoxelSignal { nullptr };
 
 };

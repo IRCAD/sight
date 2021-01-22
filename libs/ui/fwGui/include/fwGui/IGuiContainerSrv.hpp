@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwGui/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -160,22 +160,22 @@ protected:
      * @{
      */
     /// Slot to enable/disable the action
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
 
     /// Slot to enable the container
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_ENABLE_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;
 
     /// Slot to disable the container
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_DISABLE_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_DISABLE_SLOT;
 
     /// Slot to show/hide the container
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
 
     /// Slot to show the container
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
 
     /// Slot to hide the container
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// SLOT: enable/disable the container
     FWGUI_API void setEnabled(bool isEnabled);

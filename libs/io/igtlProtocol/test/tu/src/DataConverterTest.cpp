@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
 #include <igtlProtocol/DataConverter.hpp>
 #include <igtlProtocol/RawMessage.hpp>
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -40,8 +42,6 @@
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Mesh.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <igtlImageMessage.h>
 #include <igtlPointMessage.h>
@@ -163,7 +163,7 @@ void DataConverterTest::imageConverterTest()
     ::fwData::Image::sptr image  = ::fwData::Image::New();
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
 
-    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
+    core::tools::Type type = core::tools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(image);

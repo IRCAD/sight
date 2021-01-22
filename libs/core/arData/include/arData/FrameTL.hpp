@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include "arData/timeline/GenericObject.hpp"
 #include "arData/timeline/GenericObject.hxx"
 
-#include <fwData/factory/new.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwData/factory/new.hpp>
 
 fwCampAutoDeclareDataMacro((arData)(FrameTL));
 
@@ -70,16 +70,17 @@ public:
 
     /**
      * @brief Initializes the size of the pool buffer.
-     * @deprecated Use initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
+     * @deprecated Use initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat
+     * format,
      * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
      */
     [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
     ARDATA_API void initPoolSize(size_t width, size_t height,
-                                 const ::fwTools::Type& type, size_t numberOfComponents = 1,
+                                 const core::tools::Type& type, size_t numberOfComponents = 1,
                                  unsigned int maxElementNum = 1);
 
     /// Initializes the size of the pool buffer.
-    ARDATA_API void initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
+    ARDATA_API void initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat format,
                                  unsigned int maxElementNum = 1);
 
     /// Returns the width of an image in the timeline
@@ -101,7 +102,7 @@ public:
     }
 
     /// Returns the type of the frame pixel
-    ::fwTools::Type getType() const
+    core::tools::Type getType() const
     {
         return m_type;
     }
@@ -127,7 +128,7 @@ private:
     size_t m_numberOfComponents;
 
     /// type of frame pixel
-    ::fwTools::Type m_type;
+    core::tools::Type m_type;
 
     /// Frame format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};

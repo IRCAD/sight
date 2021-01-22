@@ -22,10 +22,10 @@
 
 #include "ioPacs/SSeriesPusher.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Vector.hpp>
 
@@ -48,11 +48,11 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::f
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SSeriesPusher::s_DISPLAY_SLOT = "displayMessage";
+const core::com::Slots::SlotKeyType SSeriesPusher::s_DISPLAY_SLOT = "displayMessage";
 
-const ::fwCom::Signals::SignalKeyType SSeriesPusher::s_PROGRESSED_SIG       = "progressed";
-const ::fwCom::Signals::SignalKeyType SSeriesPusher::s_STARTED_PROGRESS_SIG = "startedProgress";
-const ::fwCom::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
+const core::com::Signals::SignalKeyType SSeriesPusher::s_PROGRESSED_SIG       = "progressed";
+const core::com::Signals::SignalKeyType SSeriesPusher::s_STARTED_PROGRESS_SIG = "startedProgress";
+const core::com::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
 
 //------------------------------------------------------------------------------
 
@@ -271,9 +271,9 @@ void SSeriesPusher::pushSeries()
             for(const auto& item : dicomSeries->getDicomContainer())
             {
                 DcmFileFormat fileFormat;
-                ::fwMemory::BufferObject::sptr bufferObj = item.second;
-                const size_t buffSize = bufferObj->getSize();
-                ::fwMemory::BufferObject::Lock lock(bufferObj);
+                core::memory::BufferObject::sptr bufferObj = item.second;
+                const size_t buffSize                      = bufferObj->getSize();
+                core::memory::BufferObject::Lock lock(bufferObj);
                 char* buffer = static_cast< char* >( lock.getBuffer() );
 
                 DcmInputBufferStream is;

@@ -24,9 +24,9 @@
 
 #include <fwQt/WorkerQt.hpp>
 
-#include <core/include/core/thread/Timer.hpp>
-#include <core/include/core/thread/Worker.hpp>
-#include <core/include/core/thread/Worker.hxx>
+#include <core/thread/Timer.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/config.hpp>

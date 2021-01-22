@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppInfo.hpp"
 
-#include <fwData/Composite.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwData/Composite.hpp>
 
 namespace fwServices
 {
@@ -35,12 +35,12 @@ namespace fwServices
  * @brief This class provides an interface to manage configurations template.
  * @deprecated This class is no longer supported, use ::fwServices::AppConfigManager.
  */
-class FWSERVICES_CLASS_API IAppConfigManager : public ::fwTools::Object
+class FWSERVICES_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
     typedef registry::FieldAdaptorType FieldAdaptorType;
 
-    fwCoreClassMacro(IAppConfigManager, ::fwTools::Object)
+    fwCoreClassMacro(IAppConfigManager, core::tools::Object)
 
     /// Constructor. Do nothing.
 

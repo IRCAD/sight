@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ static const std::string s_VALUE_CONFIG = "value";
 
 //------------------------------------------------------------------------------
 
-void Color::createConfig(::fwTools::Object::sptr _obj)
+void Color::createConfig(core::tools::Object::sptr _obj)
 {
     const ::fwData::Color::sptr color = ::fwData::Color::dynamicCast(_obj);
     SLM_ASSERT("Color does not exist.", color);

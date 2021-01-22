@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiReconstructionQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>

@@ -29,10 +29,10 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <cvIO/Camera.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <cvIO/Camera.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>

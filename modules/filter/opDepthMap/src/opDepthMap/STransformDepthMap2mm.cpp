@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <arData/CameraSeries.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -93,7 +93,7 @@ void STransformDepthMap2mm::updating()
     ::fwData::mt::ObjectReadLock originLock(originFrame);
 
     const auto type = originFrame->getType();
-    if(type != ::fwTools::Type::s_UINT16)
+    if(type != core::tools::Type::s_UINT16)
     {
         SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;

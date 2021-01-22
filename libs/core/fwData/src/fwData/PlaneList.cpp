@@ -26,18 +26,17 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::PlaneList );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType PlaneList::s_PLANE_ADDED_SIG         = "planeAdded";
-const ::fwCom::Signals::SignalKeyType PlaneList::s_PLANE_REMOVED_SIG       = "planeRemoved";
-const ::fwCom::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
+const core::com::Signals::SignalKeyType PlaneList::s_PLANE_ADDED_SIG         = "planeAdded";
+const core::com::Signals::SignalKeyType PlaneList::s_PLANE_REMOVED_SIG       = "planeRemoved";
+const core::com::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
 
 //------------------------------------------------------------------------------
 

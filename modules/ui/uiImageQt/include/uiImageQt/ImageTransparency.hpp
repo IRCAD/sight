@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "uiImageQt/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwData/Point.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -62,7 +62,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageTransparency, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(ImageTransparency, ::fwGui::editor::IEditor)
 
     UIIMAGEQT_API ImageTransparency() noexcept;
 

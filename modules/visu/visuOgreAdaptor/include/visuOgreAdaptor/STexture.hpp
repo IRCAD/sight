@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -71,7 +71,7 @@ public:
     fwCoreServiceMacro(STexture, ::fwRenderOgre::IAdaptor)
 
     /// Defines the keys of the slot @ref textureSwapped().
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
+    VISUOGREADAPTOR_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
 
     /// Creates the adaptor and the signal.
     VISUOGREADAPTOR_API STexture() noexcept;
@@ -138,7 +138,7 @@ private:
     bool m_isDynamic { false };
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    typedef ::fwCom::Signal< void () > TextureSwappedSignalType;
+    typedef core::com::Signal< void () > TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
 
 };

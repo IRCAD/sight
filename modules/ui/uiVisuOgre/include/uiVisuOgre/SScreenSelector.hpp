@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -81,7 +81,7 @@ protected:
 private:
 
     /// Type of signal sent when a screen is selected.
-    using ScreenSelectedSignalType = ::fwCom::Signal<void (int)>;
+    using ScreenSelectedSignalType = core::com::Signal<void (int)>;
 
     /// Prompts a dialog letting the user select a screen if there are multiple monitors.
     int selectScreen() const;

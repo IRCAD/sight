@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SCamera.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -41,8 +41,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
+static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
 
 static const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
 static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
@@ -246,7 +246,7 @@ void SCamera::updateTF3D()
 
     auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker blocker(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker blocker(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

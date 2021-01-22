@@ -24,10 +24,10 @@
 
 #include <fwDataTools/helper/Vector.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
 
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
@@ -83,7 +83,7 @@ void VectorHelperTest::testHelper()
             condition.notify_one();
         };
 
-    auto slotAdded = ::fwCom::newSlot( fnAdd );
+    auto slotAdded = core::com::newSlot( fnAdd );
     slotAdded->setWorker(worker);
     auto sigAdded = vector->signal< ::fwData::Vector::AddedObjectsSignalType>(::fwData::Vector::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
@@ -101,7 +101,7 @@ void VectorHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotRemoved = ::fwCom::newSlot( fnRemove );
+    auto slotRemoved = core::com::newSlot( fnRemove );
     slotRemoved->setWorker(worker);
     auto sigRemoved = vector->signal< ::fwData::Vector::RemovedObjectsSignalType>(
         ::fwData::Vector::s_REMOVED_OBJECTS_SIG);

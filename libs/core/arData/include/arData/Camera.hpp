@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "arData/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
@@ -126,12 +126,12 @@ public:
      * @{
      */
     /// Signal when camera is calibrated
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_INTRINSIC_CALIBRATED_SIG;
-    typedef ::fwCom::Signal<void ()> IntrinsicCalibratedSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_INTRINSIC_CALIBRATED_SIG;
+    typedef core::com::Signal<void ()> IntrinsicCalibratedSignalType;
 
     /// Signal when camera id is modified
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_ID_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::string)> IdModifiedSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_ID_MODIFIED_SIG;
+    typedef core::com::Signal<void (std::string)> IdModifiedSignalType;
     /** @} */
 
     /// @return cx or u0 = x-coordinate of optical center

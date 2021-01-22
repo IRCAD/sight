@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioGdcm/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -62,9 +62,9 @@ class IOGDCM_CLASS_API SDicomSeriesConverter : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SDicomSeriesConverter,  ::fwGui::IActionSrv );
+    fwCoreServiceMacro(SDicomSeriesConverter,  ::fwGui::IActionSrv )
 
-    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
     /**
      * @brief Constructor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "maths/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -104,7 +104,7 @@ protected:
 
 private:
 
-    typedef ::fwCom::Signal< void (float) > DistanceChangedSignalType;
+    typedef core::com::Signal< void (float) > DistanceChangedSignalType;
 
     /// SLOT: updates selected point.
     void updateSelectedPoint ( std::string name, size_t index );

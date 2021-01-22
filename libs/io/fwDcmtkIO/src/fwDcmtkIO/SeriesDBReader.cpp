@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -189,7 +189,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
         // Get first instance
         const auto& bufferObj = series->getDicomContainer().begin()->second;
         const size_t buffSize = bufferObj->getSize();
-        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;

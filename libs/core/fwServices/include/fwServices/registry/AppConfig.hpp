@@ -26,14 +26,13 @@
 #include "fwServices/registry/AppInfo.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/Extension.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <map>
 #include <unordered_set>

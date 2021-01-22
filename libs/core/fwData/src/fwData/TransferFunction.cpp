@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,8 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hxx>
-
-#include <fwTools/Type.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/Type.hpp>
 
 fwDataRegisterMacro( ::fwData::TransferFunction )
 
@@ -38,8 +37,8 @@ namespace fwData
 
 const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
 
-const ::fwCom::Signals::SignalKeyType TransferFunction::s_POINTS_MODIFIED_SIG    = "pointsModified";
-const ::fwCom::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG = "windowingModified";
+const core::com::Signals::SignalKeyType TransferFunction::s_POINTS_MODIFIED_SIG    = "pointsModified";
+const core::com::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG = "windowingModified";
 
 //------------------------------------------------------------------------------
 
@@ -191,7 +190,7 @@ void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
 {
     SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-    const std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
+    const std::pair<double, double> minMax = core::tools::Type::s_DOUBLE.minMax<double>();
     double previousValue                   = minMax.first;
     double nextValue                       = minMax.second;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 #include "fwServices/helper/ConfigLauncher.hpp"
 #include "fwServices/IController.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace fwServices
 {
@@ -66,7 +66,7 @@ class FWSERVICES_CLASS_API SConfigController : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceMacro(SConfigController, ::fwServices::IController);
+    fwCoreServiceMacro(SConfigController, ::fwServices::IController)
 
     /// Constructor. Does nothing.
     FWSERVICES_API SConfigController() noexcept;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 
 public:
 
-    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

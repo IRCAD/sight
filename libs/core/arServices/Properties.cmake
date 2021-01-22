@@ -2,5 +2,5 @@
 set( NAME arServices )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
-set( DEPENDENCIES fwCom fwServices core fwTools arData)
+set( DEPENDENCIES fwServices core arData)
 set( REQUIREMENTS  )

@@ -26,11 +26,13 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <cvIO/Matrix.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/Matrix.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -44,9 +46,6 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
@@ -55,8 +54,8 @@ fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVE
 namespace videoCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
 static const ::fwServices::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
 static const ::fwServices::IService::KeyType s_MATRIX_OUTPUT      = "matrix";

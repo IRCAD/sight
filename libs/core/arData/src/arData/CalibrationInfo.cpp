@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "arData/CalibrationInfo.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/registry/macros.hpp>
 
@@ -36,10 +36,10 @@ namespace arData
 
 fwDataRegisterMacro( ::arData::CalibrationInfo );
 
-const ::fwCom::Signals::SignalKeyType CalibrationInfo::s_ADDED_RECORD_SIG   = "addedRecord";
-const ::fwCom::Signals::SignalKeyType CalibrationInfo::s_REMOVED_RECORD_SIG = "removedRecord";
-const ::fwCom::Signals::SignalKeyType CalibrationInfo::s_RESET_RECORD_SIG   = "resetRecord";
-const ::fwCom::Signals::SignalKeyType CalibrationInfo::s_GET_RECORD_SIG     = "getRecord";
+const core::com::Signals::SignalKeyType CalibrationInfo::s_ADDED_RECORD_SIG   = "addedRecord";
+const core::com::Signals::SignalKeyType CalibrationInfo::s_REMOVED_RECORD_SIG = "removedRecord";
+const core::com::Signals::SignalKeyType CalibrationInfo::s_RESET_RECORD_SIG   = "resetRecord";
+const core::com::Signals::SignalKeyType CalibrationInfo::s_GET_RECORD_SIG     = "getRecord";
 
 //------------------------------------------------------------------------------
 
@@ -50,10 +50,10 @@ CalibrationInfo::CalibrationInfo(::fwData::Object::Key)
     m_sigResetRecord   = ResetRecordSignalType::New();
     m_sigGetRecord     = GetRecordSignalType::New();
 
-    ::fwCom::HasSignals::m_signals(s_ADDED_RECORD_SIG, m_sigAddedRecord);
-    ::fwCom::HasSignals::m_signals(s_REMOVED_RECORD_SIG, m_sigRemovedRecord);
-    ::fwCom::HasSignals::m_signals(s_RESET_RECORD_SIG, m_sigResetRecord);
-    ::fwCom::HasSignals::m_signals(s_GET_RECORD_SIG, m_sigGetRecord);
+    core::com::HasSignals::m_signals(s_ADDED_RECORD_SIG, m_sigAddedRecord);
+    core::com::HasSignals::m_signals(s_REMOVED_RECORD_SIG, m_sigRemovedRecord);
+    core::com::HasSignals::m_signals(s_RESET_RECORD_SIG, m_sigResetRecord);
+    core::com::HasSignals::m_signals(s_GET_RECORD_SIG, m_sigGetRecord);
 }
 
 //------------------------------------------------------------------------------

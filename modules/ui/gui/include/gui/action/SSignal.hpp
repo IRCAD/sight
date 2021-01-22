@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
-    typedef ::fwCom::Signal< void (bool) > TriggeredSignalType;
+    typedef core::com::Signal< void (bool) > TriggeredSignalType;
 
     /**
      * @brief Constructor. Do nothing.

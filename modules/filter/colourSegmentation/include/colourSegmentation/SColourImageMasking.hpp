@@ -92,14 +92,14 @@ public:
      * @name Slots API
      * @{
      */
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT;
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT;
 
-    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
+    COLOURSEGMENTATION_API static const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
     ///@}
     [[deprecated("moved to ::cvSegmentation::SColourImageMasking.")]]
     ///Constructor

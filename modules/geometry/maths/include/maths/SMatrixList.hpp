@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,7 +124,7 @@ private:
     /// Vector containing selected vector.
     std::vector< ::fwData::TransformationMatrix3D::sptr > m_selectedVector;
 
-    typedef ::fwCom::Signal< void (int, std::string) > MatrixAddedSignalType;
-    typedef ::fwCom::Signal< void (int) > MatrixRemovedSignalType;
+    typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
+    typedef core::com::Signal< void (int) > MatrixRemovedSignalType;
 };
 } // namespace maths.

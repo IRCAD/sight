@@ -26,17 +26,16 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::PointList );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType PointList::s_POINT_ADDED_SIG   = "pointAdded";
-const ::fwCom::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointRemoved";
+const core::com::Signals::SignalKeyType PointList::s_POINT_ADDED_SIG   = "pointAdded";
+const core::com::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointRemoved";
 
 //------------------------------------------------------------------------------
 

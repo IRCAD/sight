@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "fwRender/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwGui/IGuiContainerSrv.hpp>
 
 #include <fwServices/IService.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace fwRender
 {
@@ -50,7 +50,7 @@ class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
 
 public:
 
-    fwCoreServiceMacro(IRender, ::fwGui::IGuiContainerSrv);
+    fwCoreServiceMacro(IRender, ::fwGui::IGuiContainerSrv)
 
 protected:
 

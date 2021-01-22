@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ std::pair<T, T> getRange(T _value)
 
 fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
                                                                const ::fwServices::IService::csptr& _paramSrv,
-                                                               ::fwCom::helper::SigSlotConnection& _connections)
+                                                               core::com::helper::SigSlotConnection& _connections)
 {
     ::fwServices::IService::ConfigType paramConfig;
 
@@ -157,8 +157,8 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         {
             std::string strSize = std::to_string(numComponents);
 
-            if( arrayObject->getType() == ::fwTools::Type::s_FLOAT ||
-                arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+            if( arrayObject->getType() == core::tools::Type::s_FLOAT ||
+                arrayObject->getType() == core::tools::Type::s_DOUBLE)
             {
                 _connections.connect(_paramSrv, "double" + strSize + "Changed",
                                      _adaptor, "setDouble" + strSize + "Parameter");
@@ -168,7 +168,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
                 const auto dumpLock = arrayObject->lock();
 
                 double defaultValue;
-                if(arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+                if(arrayObject->getType() == core::tools::Type::s_FLOAT)
                 {
                     defaultValue = static_cast<double>(arrayObject->at< float >(0));
                 }
@@ -187,7 +187,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
                 paramConfig.add("<xmlattr>.min", min);
                 paramConfig.add("<xmlattr>.max", max);
             }
-            else if( arrayObject->getType() == ::fwTools::Type::s_INT32)
+            else if( arrayObject->getType() == core::tools::Type::s_INT32)
             {
                 _connections.connect(_paramSrv, "int" + strSize + "Changed",
                                      _adaptor, "setInt" + strSize + "Parameter");

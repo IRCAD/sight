@@ -76,28 +76,28 @@ protected:
     /**
      * @brief Starts the service.
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPITKREGISTRATION_API virtual void starting() override;
 
     /**
      * @brief Stops the service.
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPITKREGISTRATION_API virtual void stopping() override;
 
     /**
      * @brief Configures the service.
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPITKREGISTRATION_API virtual void configuring() override;
 
     /**
      * @brief Compute the registration.
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPITKREGISTRATION_API virtual void updating() override;
 

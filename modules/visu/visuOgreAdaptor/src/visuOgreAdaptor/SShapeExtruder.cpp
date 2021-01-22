@@ -22,8 +22,8 @@
 
 #include "visuOgreAdaptor/SShapeExtruder.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -40,10 +40,10 @@ namespace visuOgreAdaptor
 
 static const std::string s_EXTRUDED_MESHES_INOUT = "extrudedMeshes";
 
-static const ::fwCom::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
-static const ::fwCom::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
+static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
+static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
 
-static const ::fwCom::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
+static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
 static const std::string s_PRIORITY_CONFIG   = "priority";
 static const std::string s_EXTRUDE_CONFIG    = "extrude";
@@ -154,7 +154,7 @@ SShapeExtruder::SShapeExtruder() noexcept
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
-    m_toolDisabledSig = this->newSignal< ::fwCom::Signal< void()> >(s_TOOL_DISABLED_SIG);
+    m_toolDisabledSig = this->newSignal< core::com::Signal< void()> >(s_TOOL_DISABLED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -467,7 +467,9 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 
         SLM_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
 
-        m_lastLassoLine->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP, ::fwRenderOgre::RESOURCE_GROUP);
+        m_lastLassoLine->begin(
+            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP,
+            ::fwRenderOgre::RESOURCE_GROUP);
 
         m_lastLassoLine->colour(m_lineColor);
         m_lastLassoLine->position(m_lassoToolPositions.back());
@@ -599,7 +601,9 @@ void SShapeExtruder::drawLasso()
     m_lasso->clear();
 
     // Draw the lasso line.
-    m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP, ::fwRenderOgre::RESOURCE_GROUP);
+    m_lasso->begin(
+        m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP,
+        ::fwRenderOgre::RESOURCE_GROUP);
     m_lasso->colour(m_lineColor);
     for(const ::Ogre::Vector3 pos : m_lassoToolPositions)
     {
@@ -615,7 +619,9 @@ void SShapeExtruder::drawLasso()
     for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
     {
         // Begin a new section.
-        m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_TRIANGLE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
+        m_lasso->begin(
+            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_TRIANGLE_LIST,
+            ::fwRenderOgre::RESOURCE_GROUP);
         m_lasso->colour(m_edgeColor);
 
         ::Ogre::uint32 index = 0;

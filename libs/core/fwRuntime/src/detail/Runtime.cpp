@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
-#include <fwTools/Os.hpp>
+#include <core/tools/Os.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -49,7 +49,7 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 Runtime::Runtime()
 {
-    const auto fwRuntimePath = ::fwTools::os::getSharedLibraryPath("fwCore");
+    const auto fwRuntimePath = core::tools::os::getSharedLibraryPath("fwCore");
 
 #if defined(WIN32)
     // The lib location is 'SIGHT_DIR/lib/libfwCore.dll'

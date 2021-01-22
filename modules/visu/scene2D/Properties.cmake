@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( PRIORITY 2)
 set( DEPENDENCIES
     core
-    fwTools
     fwData
     fwDataTools
     fwGuiQt
@@ -14,6 +13,5 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwGui
-    fwCom
 )
 set( REQUIREMENTS )

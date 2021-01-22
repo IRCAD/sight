@@ -79,7 +79,7 @@ void SeriesDB::write()
         writer->setFolder(seriesPath);
 
         // Forward event progress to its parents
-        ::fwTools::ProgressAdviser::ProgessHandler handler =
+        core::tools::ProgressAdviser::ProgessHandler handler =
             std::bind( &Series::notifyProgress, this, ::std::placeholders::_1, ::std::placeholders::_2);
         writer->addHandler(handler);
 

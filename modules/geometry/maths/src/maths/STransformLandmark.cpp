@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "maths/STransformLandmark.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Exception.hpp>
 #include <fwData/Landmarks.hpp>
@@ -39,13 +39,13 @@ namespace maths
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INOUT            = "landmark";
-const ::fwServices::IService::KeyType s_TRANSFORM_INPUT           = "matrix";
-static const ::fwCom::Signals::SignalKeyType LANDMARK_UPDATED_SIG = "landmarkUpdated";
+const ::fwServices::IService::KeyType s_LANDMARK_INOUT              = "landmark";
+const ::fwServices::IService::KeyType s_TRANSFORM_INPUT             = "matrix";
+static const core::com::Signals::SignalKeyType LANDMARK_UPDATED_SIG = "landmarkUpdated";
 
-const ::fwCom::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
-const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
-const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
+const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
+const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
+const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 

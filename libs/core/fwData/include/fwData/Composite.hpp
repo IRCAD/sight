@@ -26,8 +26,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <map>
 
@@ -153,16 +153,16 @@ public:
      * @{
      */
     /// Type of signal when objects are added
-    typedef ::fwCom::Signal< void (ContainerType) > AddedObjectsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
+    typedef core::com::Signal< void (ContainerType) > AddedObjectsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    typedef ::fwCom::Signal< void (ContainerType, ContainerType) > ChangedObjectsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CHANGED_OBJECTS_SIG;
+    typedef core::com::Signal< void (ContainerType, ContainerType) > ChangedObjectsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_CHANGED_OBJECTS_SIG;
 
     /// Type of signal when objects are removed
-    typedef ::fwCom::Signal< void (ContainerType) > RemovedObjectsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
+    typedef core::com::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
     /**
      * @}
      */

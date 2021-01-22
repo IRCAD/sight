@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 {
     DicomSeriesContainerType result;
 
-    typedef std::map< double, ::fwMemory::BufferObject::sptr > SortedDicomMapType;
+    typedef std::map< double, core::memory::BufferObject::sptr > SortedDicomMapType;
     SortedDicomMapType sortedDicom;
 
     OFCondition status;
@@ -89,9 +89,9 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 
     for(const auto& item :  series->getDicomContainer())
     {
-        const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                          = bufferObj->getSize();
-        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        const core::memory::BufferObject::sptr bufferObj = item.second;
+        const size_t buffSize                            = bufferObj->getSize();
+        core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;

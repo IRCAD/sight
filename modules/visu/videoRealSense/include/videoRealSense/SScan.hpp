@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -184,13 +184,13 @@ public:
     fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
-    typedef ::fwCom::Signal< void (double) > DistanceComputedSignalType;
+    typedef core::com::Signal< void (double) > DistanceComputedSignalType;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef ::fwCom::Signal< void (void) > DevicePlayedSignalType;
+    typedef core::com::Signal< void (void) > DevicePlayedSignalType;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef ::fwCom::Signal< void (void) > FilePlayedSignalType;
+    typedef core::com::Signal< void (void) > FilePlayedSignalType;
 
     /// Constructor. Initializes signals/slots.
     VIDEOREALSENSE_API SScan() noexcept;

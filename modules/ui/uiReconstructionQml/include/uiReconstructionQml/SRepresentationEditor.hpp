@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiReconstructionQml/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Material.hpp>
 
@@ -93,7 +93,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SRepresentationEditor, ::fwQml::IQmlEditor);
+    fwCoreServiceMacro(SRepresentationEditor, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQML_API SRepresentationEditor() noexcept;

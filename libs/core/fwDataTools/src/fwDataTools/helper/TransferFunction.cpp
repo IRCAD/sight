@@ -26,10 +26,9 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
 
-#include <core/include/core/thread/ActiveWorkers.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -45,9 +44,9 @@ TransferFunction::TransferFunction(const std::function<void()>& _function) :
     m_updateTFPoints(_function)
 {
     auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
-    m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
+    m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
-    m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
+    m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);
     m_slotUpdateTFWindowing->setWorker(defaultWorker);
 }
 
@@ -58,9 +57,9 @@ TransferFunction::TransferFunction(
     m_updateTFWindowing(_functionWindow)
 {
     auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
-    m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
+    m_slotUpdateTFPoints = core::com::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
-    m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
+    m_slotUpdateTFWindowing = core::com::newSlot(&TransferFunction::updateTFWindowing, this);
     m_slotUpdateTFWindowing->setWorker(defaultWorker);
 }
 
@@ -150,7 +149,7 @@ void TransferFunction::setTransferFunction(const ::fwData::TransferFunction::spt
 
 void TransferFunction::installTFConnections()
 {
-    ::fwCom::Connection connection;
+    core::com::Connection connection;
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -171,7 +170,7 @@ void TransferFunction::removeTFConnections()
 
 //------------------------------------------------------------------------------
 
-::fwCom::Connection TransferFunction::getTFUpdateConnection() const
+core::com::Connection TransferFunction::getTFUpdateConnection() const
 {
     const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const auto sig                            = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
@@ -182,7 +181,7 @@ void TransferFunction::removeTFConnections()
 
 //------------------------------------------------------------------------------
 
-::fwCom::Connection TransferFunction::getTFWindowingConnection() const
+core::com::Connection TransferFunction::getTFWindowingConnection() const
 {
     const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const auto sig                            = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(

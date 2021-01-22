@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "fwMDSemanticPatch/V1/V2/fwData/Patient.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
-
-#include <fwTools/UUID.hpp>
 
 namespace fwMDSemanticPatch
 {
@@ -75,7 +75,7 @@ void Patient::apply(
     ::fwAtoms::String::sptr uid = current->getAttribute< ::fwAtoms::String >("patient_id");
     if( uid->getValue().empty() )
     {
-        helper.replaceAttribute("patient_uid", ::fwAtoms::String::New(::fwTools::UUID::generateUUID()));
+        helper.replaceAttribute("patient_uid", ::fwAtoms::String::New(core::tools::UUID::generateUUID()));
     }
 }
 

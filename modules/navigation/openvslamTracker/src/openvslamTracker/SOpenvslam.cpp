@@ -22,12 +22,11 @@
 
 #include "openvslamTracker/SOpenvslam.hpp"
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
 #include <cvIO/FrameTL.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -59,33 +58,33 @@ namespace openvslamTracker
 
 fwServicesRegisterMacro( ::arServices::ITracker, ::openvslamTracker::SOpenvslam)
 
-static const ::fwCom::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
-static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
+static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
+static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
 
-static const ::fwCom::Slots::SlotKeyType s_RESET_POINTCLOUD_SLOT = "resetPointCloud";
+static const core::com::Slots::SlotKeyType s_RESET_POINTCLOUD_SLOT = "resetPointCloud";
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_MAP_SLOT = "saveMap";
-static const ::fwCom::Slots::SlotKeyType s_LOAD_MAP_SLOT = "loadMap";
+static const core::com::Slots::SlotKeyType s_SAVE_MAP_SLOT = "saveMap";
+static const core::com::Slots::SlotKeyType s_LOAD_MAP_SLOT = "loadMap";
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_TRAJECTORIES_SLOT = "saveTrajectories";
+static const core::com::Slots::SlotKeyType s_SAVE_TRAJECTORIES_SLOT = "saveTrajectories";
 
-static const ::fwCom::Slots::SlotKeyType s_PAUSE_TRACKER_SLOT = "pauseTracker";
+static const core::com::Slots::SlotKeyType s_PAUSE_TRACKER_SLOT = "pauseTracker";
 
-static const ::fwCom::Signals::SignalKeyType s_TRACKING_INITIALIZED_SIG     = "trackingInitialized";
-static const ::fwCom::Signals::SignalKeyType s_TRACKING_NOT_INITIALIZED_SIG = "trackingNotInitialized";
-static const ::fwCom::Signals::SignalKeyType s_TRACKED_SIG                  = "tracked";
-static const ::fwCom::Signals::SignalKeyType s_TRACKING_LOST_SIG            = "trackingLost";
+static const core::com::Signals::SignalKeyType s_TRACKING_INITIALIZED_SIG     = "trackingInitialized";
+static const core::com::Signals::SignalKeyType s_TRACKING_NOT_INITIALIZED_SIG = "trackingNotInitialized";
+static const core::com::Signals::SignalKeyType s_TRACKED_SIG                  = "tracked";
+static const core::com::Signals::SignalKeyType s_TRACKING_LOST_SIG            = "trackingLost";
 
-static const ::fwCom::Signals::SignalKeyType s_VOCFILE_UNLOADED_SIG        = "vocFileUnloaded";
-static const ::fwCom::Signals::SignalKeyType s_VOCFILE_LOADING_STARTED_SIG = "vocFileLoadingStarted";
-static const ::fwCom::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "vocFileLoaded";
+static const core::com::Signals::SignalKeyType s_VOCFILE_UNLOADED_SIG        = "vocFileUnloaded";
+static const core::com::Signals::SignalKeyType s_VOCFILE_LOADING_STARTED_SIG = "vocFileLoadingStarted";
+static const core::com::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "vocFileLoaded";
 
-static const ::fwCom::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
+static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
 static const ::fwServices::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
 static const ::fwServices::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";

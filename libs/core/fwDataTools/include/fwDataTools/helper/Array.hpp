@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Array.hpp>
+#include <core/memory/BufferObject.hpp>
 
-#include <fwMemory/BufferObject.hpp>
+#include <fwData/Array.hpp>
 
 namespace fwDataTools
 {
@@ -142,10 +142,10 @@ public:
     FWDATATOOLS_API void setBuffer(
         void* buf,
         bool takeOwnership,
-        const ::fwTools::Type& type,
+        const core::tools::Type& type,
         const ::fwData::Array::SizeType& size,
         size_t nbOfComponents,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
@@ -174,7 +174,7 @@ public:
     ///@}
 
     /// Returns a copy of current lock on array
-    FWDATATOOLS_API ::fwMemory::BufferObject::Lock getLock() const;
+    FWDATATOOLS_API core::memory::BufferObject::Lock getLock() const;
 
 protected:
 
@@ -188,12 +188,12 @@ protected:
      */
     FWDATATOOLS_API virtual void setBuffer(
         void* buf,
-        bool takeOwnership                              = false,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        bool takeOwnership                                = false,
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     ::fwData::Array::sptr m_array;
-    ::fwMemory::BufferObject::Lock m_lock;
+    core::memory::BufferObject::Lock m_lock;
 
 };
 

@@ -25,12 +25,10 @@
 #include "fwDcmtkIO/config.hpp"
 
 #include <core/base.hpp>
+#include <core/memory/stream/in/IFactory.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
-
-#include <fwMemory/stream/in/IFactory.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <boost/iostreams/stream.hpp>
 
@@ -72,7 +70,7 @@ public:
     unsigned short m_pixelValueBitsAllocated;
 
     /// Image type
-    ::fwTools::Type m_imageType;
+    core::tools::Type m_imageType;
 
 };
 
@@ -135,13 +133,13 @@ private:
 /**
  * @brief Class used to perform a lazy reading of dicom images with Sight system
  */
-class FWDCMTKIO_CLASS_API ImageRGBLookupLazyStream : public ::fwMemory::stream::in::IFactory
+class FWDCMTKIO_CLASS_API ImageRGBLookupLazyStream : public core::memory::stream::in::IFactory
 {
 
 public:
 
     /**
-     * @brief Constructor. Builds the ::fwMemory::stream::in::IFactory with few dicom information
+     * @brief Constructor. Builds the core::memory::stream::in::IFactory with few dicom information
      * @param[in] dcmInfo DICOM information
      */
     ImageRGBLookupLazyStream( ImageRGBLookupLazyInformation::sptr dcmInfo );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,8 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwCom/Slot.hpp>
-
-#include <fwMemory/BufferObject.hpp>
+#include <core/com/Slot.hpp>
+#include <core/memory/BufferObject.hpp>
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
@@ -63,12 +62,12 @@ class IODICOMWEB_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController );
+    fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController )
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
 
-    IODICOMWEB_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    IODICOMWEB_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
+    typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
 
     /**
      * @brief Constructor

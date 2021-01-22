@@ -109,10 +109,10 @@ private:
     IOPACS_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
-    typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-    typedef ::fwCom::Signal< void ( std::string ) > ProgressStartedSignalType;
-    typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
-    typedef ::fwCom::Signal< void ( std::string ) > ProgressStoppedSignalType;
+    typedef core::com::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
+    typedef core::com::Signal< void ( std::string ) > ProgressStartedSignalType;
+    typedef core::com::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
+    typedef core::com::Signal< void ( std::string ) > ProgressStoppedSignalType;
 
     /// Pulls series from the PACS.
     void pullSeries();

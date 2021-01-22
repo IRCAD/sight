@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,10 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -117,7 +116,7 @@ protected Q_SLOTS:
 private:
 
     /// Type of the 'configured' signal.
-    typedef ::fwCom::Signal<void ()> ConfiguredSignalType;
+    typedef core::com::Signal<void ()> ConfiguredSignalType;
 
     /// Configures the service.
     virtual void configuring() final;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,13 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
+#include <core/tools/ProgressAdviser.hpp>
+
 #include <fwData/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
 
 namespace fwGdcmIO
 {
@@ -46,7 +46,7 @@ namespace writer
  */
 class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
                                   public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-                                  public ::fwTools::ProgressAdviser
+                                  public core::tools::ProgressAdviser
 {
 
 public:

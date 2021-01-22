@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "visuOgreAdaptor/SVoxelPicker.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -34,9 +34,9 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
+const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
 
-static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG = "picked";
+static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
 static const std::string s_IMAGE_INPUT = "image";
 
@@ -51,7 +51,7 @@ SVoxelPicker::SVoxelPicker() noexcept
 {
     newSlot(s_SLICETYPE_SLOT, &SVoxelPicker::changeSliceType, this);
 
-    m_pickedSig = newSignal< ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > >(s_PICKED_SIG);
+    m_pickedSig = newSignal< core::com::Signal< void ( ::fwDataTools::PickingInfo ) > >(s_PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------

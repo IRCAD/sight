@@ -1,6 +1,0 @@
-set( NAME fwComTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core fwTest fwCom )
-set( REQUIREMENTS  )
-set( WARNINGS_AS_ERRORS ON )

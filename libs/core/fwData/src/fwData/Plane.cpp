@@ -26,16 +26,15 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::Plane );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
+const core::com::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
 

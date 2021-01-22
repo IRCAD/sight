@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,13 +30,13 @@
 #include <fwVtkIO/VtiImageWriter.hpp>
 #include <fwVtkIO/vtk.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -98,7 +98,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
     const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type(
                                                   imgtype), ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
@@ -133,11 +133,11 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 template<typename W, typename R>
 void writerTest(const std::string& imagetype, const std::string& filename)
 {
-    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile(core::tools::System::getTemporaryFolder() /
                                          std::filesystem::path(filename));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type(imagetype));
 
     typename W::sptr writer = W::New();
     writer->setObject(image);
@@ -207,7 +207,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         image->getNumberOfDimensions()
         );
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + imagename + "> Failed ", ::fwTools::Type(type), image->getType() );
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + imagename + "> Failed ", core::tools::Type(type), image->getType() );
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
     char* ptr    = static_cast<char*>(image->getBuffer());
@@ -236,7 +236,7 @@ void testVtkReader(std::string imagetype)
     vtkreader->Update();
     vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "sight/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
-                                  ::fwTools::Type(imagetype), image->getType());
+                                  core::tools::Type(imagetype), image->getType());
 
     compareImageAttributes(
         image->getSize2(),
@@ -316,7 +316,7 @@ void ImageTest::testFromVtk()
     CPPUNIT_ASSERT(vtkImage);
     vtkImage->SetDimensions(64, 64, 1);
     vtkImage->SetSpacing(1.0, 1.0, 0.0);
-    int dataType = ::fwVtkIO::TypeTranslator::translate(::fwTools::Type::create(type));
+    int dataType = ::fwVtkIO::TypeTranslator::translate(core::tools::Type::create(type));
     vtkImage->AllocateScalars(dataType, nbComponents);
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
@@ -336,7 +336,7 @@ void ImageTest::testFromVtk()
         image->getOrigin2(),
         image->getNumberOfDimensions()
         );
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + type + "> Failed ", ::fwTools::Type(type), image->getType() );
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + type + "> Failed ", core::tools::Type(type), image->getType() );
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
     char* ptr    = static_cast<char*>(image->getBuffer());
@@ -352,7 +352,7 @@ void fromToTest(::fwData::Image::PixelFormat format)
     const ::fwData::Image::Size size       = {10, 20, 0};
     const ::fwData::Image::Spacing spacing = {1., 1., 0};
     const ::fwData::Image::Origin origin   = {0., 0., 0.};
-    const ::fwTools::Type type             = ::fwTools::Type::create<TYPE>();
+    const core::tools::Type type           = core::tools::Type::create<TYPE>();
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, format);
@@ -458,8 +458,8 @@ void ImageTest::mhdWriterTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + zRawPath.string() + "' does not exist",
                            std::filesystem::exists(zRawPath));
 
-    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
-    const std::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
+    const std::filesystem::path testFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.mhd");
+    const std::filesystem::path testZRawFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
@@ -490,7 +490,7 @@ void ImageTest::mhdWriterTest()
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("int64", "imageTest.mhd");
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("uint64", "imageTest.mhd");
 
-    const std::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
+    const std::filesystem::path zFile(core::tools::System::getTemporaryFolder() / "imagetestfile.zraw");
     std::filesystem::remove(zFile);
 }
 

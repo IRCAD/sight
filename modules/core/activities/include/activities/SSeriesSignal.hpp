@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "activities/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -78,7 +78,7 @@ class ACTIVITIES_CLASS_API SSeriesSignal : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceMacro(SSeriesSignal, ::fwServices::IController);
+    fwCoreServiceMacro(SSeriesSignal, ::fwServices::IController)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SSeriesSignal() noexcept;
@@ -86,10 +86,10 @@ public:
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SSeriesSignal() noexcept;
 
-    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
+    ACTIVITIES_API static const core::com::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
 
-    typedef ::fwCom::Signal< void ( ::fwMedData::Series::sptr ) > SeriesAddedSignalType;
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_SERIES_ADDED_SIG;
+    typedef core::com::Signal< void ( ::fwMedData::Series::sptr ) > SeriesAddedSignalType;
+    ACTIVITIES_API static const core::com::Signals::SignalKeyType s_SERIES_ADDED_SIG;
 
 protected:
 

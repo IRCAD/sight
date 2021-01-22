@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,24 +25,24 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::Landmarks );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Landmarks::s_GROUP_ADDED_SIG      = "groupAdded";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupemoved";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_ADDED_SIG      = "pointAdded";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_REMOVED_SIG    = "pointRemoved";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_INSERTED_SIG   = "pointInserted";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_GROUP_MODIFIED_SIG   = "groupModified";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_MODIFIED_SIG   = "pointModified";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_GROUP_RENAMED_SIG    = "groupRenamed";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_SELECTED_SIG   = "pointSelected";
-const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_DESELECTED_SIG = "pointDeselected";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_ADDED_SIG      = "groupAdded";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_REMOVED_SIG    = "groupemoved";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_ADDED_SIG      = "pointAdded";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_REMOVED_SIG    = "pointRemoved";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_INSERTED_SIG   = "pointInserted";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_MODIFIED_SIG   = "groupModified";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_MODIFIED_SIG   = "pointModified";
+const core::com::Signals::SignalKeyType Landmarks::s_GROUP_RENAMED_SIG    = "groupRenamed";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_SELECTED_SIG   = "pointSelected";
+const core::com::Signals::SignalKeyType Landmarks::s_POINT_DESELECTED_SIG = "pointDeselected";
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwData/factory/new.hpp>
 
@@ -97,12 +97,12 @@ public:
      * @{
      */
     /// Defines the type of signal sent when a reconstruction is added.
-    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
-    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
+    typedef core::com::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
+    FWMEDDATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
 
     /// Defines the type of signal sent when a reconstruction is removed.
-    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
-    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
+    typedef core::com::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
+    FWMEDDATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
     /**
      * @}
      */

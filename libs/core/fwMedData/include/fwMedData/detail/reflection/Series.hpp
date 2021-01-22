@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/Study.hpp"
 
-#include <fwCamp/macros.hpp>
+#include <core/reflection/macros.hpp>
 
 fwCampDeclareAccessor((fwMedData)(Series), (fwMedData)(Patient));
 fwCampDeclareAccessor((fwMedData)(Series), (fwMedData)(Study));

@@ -6,12 +6,10 @@ set( DEPENDENCIES
         core
         arData
         fwData
-        fwCom
         fwGui
         fwRuntime
         arServices
         fwServices
-        fwTools
 
 )
 set( REQUIREMENTS )

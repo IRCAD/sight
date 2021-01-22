@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "fwAtomsBoostIO/Writer.hpp"
 
+#include <core/memory/BufferManager.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -30,10 +33,6 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <fwZip/IWriteArchive.hpp>
 
@@ -207,7 +206,7 @@ struct AtomVisitor
         std::string bufType = "raw";
         pt.put("blob.buffer_type", bufType);
 
-        ::fwMemory::BufferObject::sptr buffObj = atom->getBufferObject();
+        core::memory::BufferObject::sptr buffObj = atom->getBufferObject();
         if (!buffObj || buffObj->getSize() == 0)
         {
             pt.put("blob.buffer_size", 0);
@@ -217,13 +216,13 @@ struct AtomVisitor
             std::filesystem::path bufFile = m_dirPrefix;
             size_t buffSize               = buffObj->getSize();
 
-            const ::fwMemory::BufferManager::StreamInfo streamInfo = buffObj->getStreamInfo();
-            const std::filesystem::path dumpedFile                 = streamInfo.fsFile;
-            const ::fwMemory::FileFormatType& format               = streamInfo.format;
+            const core::memory::BufferManager::StreamInfo streamInfo = buffObj->getStreamInfo();
+            const std::filesystem::path dumpedFile                   = streamInfo.fsFile;
+            const core::memory::FileFormatType& format               = streamInfo.format;
 
-            bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
+            bufFile /= core::tools::UUID::generateUUID() + ".raw";
 
-            if ( !dumpedFile.empty() && (format & ::fwMemory::RAW) )
+            if ( !dumpedFile.empty() && (format & core::memory::RAW) )
             {
                 m_archive->putFile(dumpedFile, bufFile);
             }

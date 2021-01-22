@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
 
-#include <fwTest/Data.hpp>
+#include <core/tools/System.hpp>
 
-#include <fwTools/System.hpp>
+#include <fwTest/Data.hpp>
 
 #include <filesystem>
 
@@ -57,7 +57,7 @@ void DirTest::tearDown()
 
 void DirTest::writeReadFileTest()
 {
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwDirTest";
     std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
@@ -76,7 +76,7 @@ void DirTest::writeReadFileTest()
 
 void DirTest::writeDirTest()
 {
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwDirTest";
     std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
@@ -94,7 +94,7 @@ void DirTest::writeDirTest()
 
 void DirTest::putFileTest()
 {
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwDirTest";
     std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);

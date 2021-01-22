@@ -23,10 +23,9 @@
 #include "ioVTK/SMeshWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -52,7 +51,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, ::fwData::Mesh )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -194,8 +193,8 @@ void SMeshWriter::updating()
         }
         else
         {
-            FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ fileToWrite.extension().string() +
-                                                 "' is not managed by ::ioVTK::SMeshWriter."));
+            FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ fileToWrite.extension().string() +
+                                                   "' is not managed by ::ioVTK::SMeshWriter."));
         }
 
         m_sigJobCreated->emit(meshWriter->getJob());
@@ -206,7 +205,7 @@ void SMeshWriter::updating()
         {
             meshWriter->write();
         }
-        catch(::fwTools::Failed& e)
+        catch(core::tools::Failed& e)
         {
             m_writeFailed = true;
             std::stringstream ss;

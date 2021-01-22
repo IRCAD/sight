@@ -26,17 +26,16 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::Resection );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Resection::s_RECONSTRUCTION_ADDED_SIG = "reconstructionAdded";
-const ::fwCom::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = "pointTexCoordsModified";
+const core::com::Signals::SignalKeyType Resection::s_RECONSTRUCTION_ADDED_SIG = "reconstructionAdded";
+const core::com::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = "pointTexCoordsModified";
 
 //------------------------------------------------------------------------------
 

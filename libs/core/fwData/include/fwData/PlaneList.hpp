@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/Plane.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <vector>
 
@@ -78,16 +78,16 @@ public:
      * @{
      */
     /// Signal emitted when a plane is added
-    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneAddedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_ADDED_SIG;
+    typedef core::com::Signal< void (::fwData::Plane::sptr) > PlaneAddedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
-    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneRemovedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
+    typedef core::com::Signal< void (::fwData::Plane::sptr) > PlaneRemovedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
-    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
     /**
      * @}
      */

@@ -58,9 +58,9 @@ public:
 
     fwCoreServiceMacro(ITracker, ::fwServices::IService)
 
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_TRACK_SLOT;
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_TRACKING_SLOT;
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
+    ARSERVICES_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
+    ARSERVICES_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
+    ARSERVICES_API static const core::com::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
     ARSERVICES_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
     ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAME_INOUT;

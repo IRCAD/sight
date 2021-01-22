@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiMeasurement/action/SRemoveDistance.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -43,7 +43,7 @@ namespace uiMeasurement
 namespace action
 {
 
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
+static const core::com::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 

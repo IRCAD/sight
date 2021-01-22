@@ -23,14 +23,14 @@
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
@@ -48,8 +48,6 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <boost/format.hpp>
 
@@ -147,9 +145,9 @@ public:
 
 fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries)
 
-static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
+static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
@@ -412,7 +410,7 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidg
     SLM_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
-    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
+    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
 
     m_sigReconstructionSelected->asyncEmit(rec);
 }
@@ -429,7 +427,7 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, int _colu
 void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
 {
     std::string id = _item->data(0, Qt::UserRole).toString().toStdString();
-    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
+    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
     SLM_ASSERT("rec not instanced", rec);
 
     const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
@@ -472,7 +470,7 @@ void SModelSeriesList::refreshVisibility()
     {
         QTreeWidgetItem* item = m_tree->topLevelItem(i);
         std::string id        = item->data(0, Qt::UserRole).toString().toStdString();
-        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
+        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
     }
 }

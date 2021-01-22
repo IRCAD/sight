@@ -71,7 +71,7 @@ public:
     /// Destructor. Do nothing.
     VIDEOFILTER_API virtual ~SCropVideoQuad() noexcept;
 
-    VIDEOFILTER_API static const ::fwCom::Slots::SlotKeyType s_CROP_FRAME_SLOT;
+    VIDEOFILTER_API static const core::com::Slots::SlotKeyType s_CROP_FRAME_SLOT;
 
 protected:
 

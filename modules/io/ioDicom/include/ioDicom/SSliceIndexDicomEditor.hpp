@@ -24,7 +24,7 @@
 
 #include "ioDicom/config.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -99,11 +99,11 @@ public:
 
     fwCoreServiceMacro(SSliceIndexDicomEditor,  ::fwGui::editor::IEditor )
 
-    IODICOM_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
-    typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
+    IODICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
+    typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;
 
-    IODICOM_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
+    IODICOM_API static const core::com::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
+    typedef core::com::Slot<void (const std::string&)> DisplayMessageSlotType;
 
     /**
      * @brief Constructor

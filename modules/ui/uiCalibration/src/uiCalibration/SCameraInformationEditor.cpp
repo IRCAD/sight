@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -39,9 +39,9 @@ namespace uiCalibration
 {
 // -------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera)
 
-const ::fwCom::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+const core::com::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 
 // -------------------------------------------------------------------------
 

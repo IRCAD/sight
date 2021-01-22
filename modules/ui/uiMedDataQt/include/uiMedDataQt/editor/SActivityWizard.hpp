@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/ActivityDataView.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwData/Vector.hpp>
 
@@ -110,7 +110,7 @@ class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
 
 public:
 
-    fwCoreServiceMacro(SActivityWizard, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SActivityWizard, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SActivityWizard() noexcept;
@@ -122,23 +122,23 @@ public:
      * @name Slot API
      * @{
      */
-    UIMEDDATAQT_API static const ::fwCom::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
-    UIMEDDATAQT_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
-    UIMEDDATAQT_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_ACTIVITY_SERIES_SLOT;
+    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
+    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
+    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SERIES_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
-    typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
+    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
 
-    UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
-    typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
+    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
+    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
 
-    UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_CANCELED_SIG;
-    typedef ::fwCom::Signal< void () > CanceledSignalType;
+    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
+    typedef core::com::Signal< void () > CanceledSignalType;
     /// @}
 
 protected:

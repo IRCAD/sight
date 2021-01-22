@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "scene2D/adaptor/STransferFunction.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -704,7 +704,7 @@ void STransferFunction::mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -777,7 +777,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
         const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
             ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
         {
-            const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
 
@@ -862,7 +862,7 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -972,7 +972,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Eve
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1032,7 +1032,7 @@ void STransferFunction::mouseMoveOnTFEvent(const ::fwRenderQt::data::Event& _eve
         const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
             ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
-            const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(tf->getWindow(), tf->getLevel());
         }
     }
@@ -1150,7 +1150,7 @@ void STransferFunction::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _even
             const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
                 ::fwData::TransferFunction::s_MODIFIED_SIG);
             {
-                const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }
@@ -1180,7 +1180,7 @@ void STransferFunction::clampTF(bool _clamp)
     const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
         ::fwData::TransferFunction::s_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1208,7 +1208,7 @@ void STransferFunction::toggleLinearTF(bool _linear)
     const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
         ::fwData::TransferFunction::s_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 

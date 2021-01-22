@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "fwMDSemanticPatch/V10/V09ALA/fwData/Image.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -32,8 +34,6 @@
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string.hpp>
 

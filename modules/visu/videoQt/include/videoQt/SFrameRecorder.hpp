@@ -27,15 +27,13 @@
 #include <arData/FrameTL.hpp>
 
 #include <core/base.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
-
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/tools/fwID.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <filesystem>
 
@@ -89,17 +87,17 @@ public:
      * @name Slots API
      * @{
      */
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME_SLOT;
-    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> SaveFrameSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_SAVE_FRAME_SLOT;
+    typedef core::com::Slot<void (core::HiResClock::HiResClockType)> SaveFrameSlotType;
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_START_RECORD_SLOT;
-    typedef ::fwCom::Slot<void ()> StartRecordSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_START_RECORD_SLOT;
+    typedef core::com::Slot<void ()> StartRecordSlotType;
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD_SLOT;
-    typedef ::fwCom::Slot<void ()> StopRecordSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_STOP_RECORD_SLOT;
+    typedef core::com::Slot<void ()> StopRecordSlotType;
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_RECORD_SLOT;
-    typedef ::fwCom::Slot<void ()> PauseRecordSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_PAUSE_RECORD_SLOT;
+    typedef core::com::Slot<void ()> PauseRecordSlotType;
     /// @}
 
 protected:
@@ -156,7 +154,7 @@ private:
     bool m_isPaused;
 
     /// Helper to manage connections between the timeline and this service.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 };
 
 } //namespace videoQt

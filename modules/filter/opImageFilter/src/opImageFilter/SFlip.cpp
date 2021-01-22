@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "opImageFilter/SFlip.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -36,9 +36,9 @@ namespace opImageFilter
 static const ::fwServices::IService::KeyType s_IMAGE_IN  = "source";
 static const ::fwServices::IService::KeyType s_IMAGE_OUT = "target";
 
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
-const ::fwCom::Slots::SlotKeyType SFlip::s_FLIP_AXISZ_SLOT = "flipAxisZ";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
+const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISZ_SLOT = "flipAxisZ";
 
 //------------------------------------------------------------------------------
 

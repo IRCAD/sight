@@ -25,7 +25,7 @@
 
 #include <fwItkIO/itk.hpp>
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <core/spyLog.hpp>
 
@@ -97,7 +97,7 @@ void SImagesSubstract::stopping()
 
 void SImagesSubstract::updating()
 {
-    ::fwTools::Type REQUESTED_TYPE = ::fwTools::Type::create("int16");
+    core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
 
     ::fwData::Image::csptr image1     = this->getInput< ::fwData::Image>("image1");
     ::fwData::Image::csptr image2     = this->getInput< ::fwData::Image>("image2");

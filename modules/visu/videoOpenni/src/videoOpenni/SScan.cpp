@@ -25,8 +25,8 @@
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -40,7 +40,7 @@ namespace videoOpenni
 // Despite this grabber inherits from ::arServices::IRGBDGrabber, we register it as ::arServices::IGrabber since it
 // is compatible with this interface. Indeed it is capable to output only the color frame.
 
-const ::fwCom::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
+const core::com::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
 
 const ::fwServices::IService::KeyType SScan::s_IRTL_INOUT = "irTL";
 
@@ -54,7 +54,7 @@ SScan::SScan() noexcept :
     newSlot( s_TAKE_SNAPSHOT_FRAME, &SScan::takeSnapshot, this );
 
     // Do not register this slot in the service, we want to put it on its own worker
-    m_slotPresentFrame = ::fwCom::newSlot( &SScan::presentFrame, this );
+    m_slotPresentFrame = core::com::newSlot( &SScan::presentFrame, this );
 
     // Create a worker to fill the timelines
     m_worker = core::thread::Worker::New();
@@ -117,7 +117,7 @@ void SScan::starting()
             const size_t width  = static_cast<size_t>(m_depthStream.getVideoMode().getResolutionX());
             const size_t height = static_cast<size_t>(m_depthStream.getVideoMode().getResolutionY());
 
-            m_snapshotDepthTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+            m_snapshotDepthTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
             m_snapshotDepthTL->setMaximumSize(50);
         }
 
@@ -136,7 +136,7 @@ void SScan::starting()
             const size_t width  = static_cast<size_t>(m_colorStream.getVideoMode().getResolutionX());
             const size_t height = static_cast<size_t>(m_colorStream.getVideoMode().getResolutionY());
 
-            m_snapshotColorTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 4);
+            m_snapshotColorTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 4);
             m_snapshotColorTL->setMaximumSize(50);
         }
 
@@ -155,7 +155,7 @@ void SScan::starting()
             const size_t width  = static_cast<size_t>(m_irStream.getVideoMode().getResolutionX());
             const size_t height = static_cast<size_t>(m_irStream.getVideoMode().getResolutionY());
 
-            m_snapshotIRTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+            m_snapshotIRTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
             m_snapshotIRTL->setMaximumSize(50);
         }
 
@@ -239,7 +239,7 @@ void SScan::startCamera()
         const size_t width  = static_cast<size_t>(m_depthStream.getVideoMode().getResolutionX());
         const size_t height = static_cast<size_t>(m_depthStream.getVideoMode().getResolutionY());
 
-        m_depthTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+        m_depthTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
         m_depthTL->setMaximumSize(50);
     }
 
@@ -265,7 +265,7 @@ void SScan::startCamera()
         const size_t width  = static_cast<size_t>(m_colorStream.getVideoMode().getResolutionX());
         const size_t height = static_cast<size_t>(m_colorStream.getVideoMode().getResolutionY());
 
-        m_colorTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 4);
+        m_colorTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 4);
         m_colorTL->setMaximumSize(50);
     }
 
@@ -291,7 +291,7 @@ void SScan::startCamera()
         const size_t width  = static_cast<size_t>(m_irStream.getVideoMode().getResolutionX());
         const size_t height = static_cast<size_t>(m_irStream.getVideoMode().getResolutionY());
 
-        m_irTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+        m_irTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
         m_irTL->setMaximumSize(50);
     }
 

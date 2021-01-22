@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/TransformationMatrix3D.hpp"
 
-#include <fwMath/MeshFunctions.hpp>
+#include <core/tools/NumericRoundCast.hxx>
 
-#include <fwTools/NumericRoundCast.hxx>
+#include <fwMath/MeshFunctions.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -55,7 +55,7 @@ struct RandFloat
 
 void Mesh::initRand()
 {
-    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                     n += v;
                 }
 
-                n /= ::fwTools::numericRoundCast<float>(nbPoints);
+                n /= core::tools::numericRoundCast<float>(nbPoints);
                 n.normalize();
             }
         }
@@ -329,7 +329,7 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
 {
 
     if(array
-       && array->getType() == ::fwTools::Type::create<float>()
+       && array->getType() == core::tools::Type::create<float>()
        && !array->empty()
        && array->getNumberOfComponents() == 3
        && array->getNumberOfDimensions() == 1

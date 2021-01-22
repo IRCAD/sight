@@ -23,8 +23,7 @@
 #include "ioData/TransformationMatrix3DReaderService.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -147,7 +146,7 @@ void TransformationMatrix3DReaderService::updating()
         auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
             ::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     fwActivities
-    fwCom
     core
     fwData
     fwDataTools
@@ -15,7 +14,6 @@ set( DEPENDENCIES
     fwGuiQt
     fwRuntime
     fwServices
-    fwTools
 )
 set( REQUIREMENTS
     gui

@@ -25,7 +25,7 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Material.hpp>
 
@@ -352,7 +352,7 @@ private:
     ::Ogre::ManualObject* m_lastLassoLine { nullptr };
 
     /// Contains the signal sent when interactions are finished.
-    ::fwCom::Signal<void()>::sptr m_toolDisabledSig;
+    core::com::Signal<void()>::sptr m_toolDisabledSig;
 
 };
 

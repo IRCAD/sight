@@ -26,10 +26,9 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <core/include/core/thread/Timer.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwTools/Failed.hpp>
+#include <core/thread/Timer.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <filesystem>
 

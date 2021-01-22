@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,8 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
-    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
-    ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
+    core::mt::WriteLock writeLock(m_tlMutex);
+    core::mt::WriteLock readLock(other->m_tlMutex);
 
     for(TimelineType::value_type elt : other->m_timeline)
     {
@@ -75,7 +75,7 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
 
 template < class BUFFER_TYPE >
 CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
-GenericTL<BUFFER_TYPE>::getClosestBuffer( ::fwCore::HiResClock::HiResClockType timestamp,
+GenericTL<BUFFER_TYPE>::getClosestBuffer( core::HiResClock::HiResClockType timestamp,
                                           DirectionType direction) const
 {
     CSPTR(::arData::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
@@ -86,7 +86,7 @@ GenericTL<BUFFER_TYPE>::getClosestBuffer( ::fwCore::HiResClock::HiResClockType t
 
 template < class BUFFER_TYPE >
 CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
-GenericTL<BUFFER_TYPE>::getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const
+GenericTL<BUFFER_TYPE>::getBuffer(::core::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(::arData::timeline::Object) buffer = this->getObject(timestamp);
     return std::dynamic_pointer_cast< const BufferType >(buffer);
@@ -105,7 +105,7 @@ void GenericTL<BUFFER_TYPE>::initPoolSize(unsigned int maxElementNum)
 
 template < class BUFFER_TYPE >
 SPTR(::arData::timeline::Object)
-GenericTL<BUFFER_TYPE>::createObject(::fwCore::HiResClock::HiResClockType timestamp)
+GenericTL<BUFFER_TYPE>::createObject(::core::HiResClock::HiResClockType timestamp)
 {
     return this->createBuffer(timestamp);
 }
@@ -114,7 +114,7 @@ GenericTL<BUFFER_TYPE>::createObject(::fwCore::HiResClock::HiResClockType timest
 
 template < class BUFFER_TYPE >
 SPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
-GenericTL<BUFFER_TYPE>::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
+GenericTL<BUFFER_TYPE>::createBuffer(::core::HiResClock::HiResClockType timestamp)
 {
     SPTR(BufferType) obj = std::make_shared< BufferType >(
         m_maxElementNum, timestamp,

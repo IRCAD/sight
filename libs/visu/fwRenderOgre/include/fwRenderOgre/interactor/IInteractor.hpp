@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 

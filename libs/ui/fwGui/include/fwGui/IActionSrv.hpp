@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwGui/config.hpp"
 #include "fwGui/registrar/ActionRegistrar.hpp"
 
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -49,20 +49,20 @@ public:
      * @{
      */
     /// Signal emitted when action is enabled
-    typedef ::fwCom::Signal< void ()> EnabledSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_ENABLED_SIG;
+    typedef core::com::Signal< void ()> EnabledSignalType;
+    static const core::com::Signals::SignalKeyType s_ENABLED_SIG;
 
     /// Signal emitted when action is disabled
-    typedef ::fwCom::Signal< void ()> DisabledSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_DISABLED_SIG;
+    typedef core::com::Signal< void ()> DisabledSignalType;
+    static const core::com::Signals::SignalKeyType s_DISABLED_SIG;
 
     /// Signal emitted when action is checked
-    typedef ::fwCom::Signal< void ()> CheckedSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_CHECKED_SIG;
+    typedef core::com::Signal< void ()> CheckedSignalType;
+    static const core::com::Signals::SignalKeyType s_CHECKED_SIG;
 
     /// Signal emitted when action is unchecked
-    typedef ::fwCom::Signal< void ()> UncheckedSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_UNCHECKED_SIG;
+    typedef core::com::Signal< void ()> UncheckedSignalType;
+    static const core::com::Signals::SignalKeyType s_UNCHECKED_SIG;
     /**
      * @}
      */
@@ -72,31 +72,31 @@ public:
      * @{
      */
     /// Slot to show/hide the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
 
     /// Slot to disable the action
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
 
     /// Slot to disable the action
-    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Slot to activate/deactivate the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
 
     /// Slot to activate the action
-    static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_SLOT;
+    static const core::com::Slots::SlotKeyType s_ACTIVATE_SLOT;
 
     /// Slot to desactivate the action
-    static const ::fwCom::Slots::SlotKeyType s_DEACTIVATE_SLOT;
+    static const core::com::Slots::SlotKeyType s_DEACTIVATE_SLOT;
 
     /// Slot to enable/disable the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT;
 
     /// Slot to enable the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT;
 
     /// Slot to disable the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT;
     /**
      * @}
      */

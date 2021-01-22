@@ -26,8 +26,7 @@
 
 #include <core/macros.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
 
 #include <vector>
 

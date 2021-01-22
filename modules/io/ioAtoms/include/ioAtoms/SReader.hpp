@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioAtoms/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -107,7 +107,7 @@ class IOATOMS_CLASS_API SReader : public ::fwIO::IReader
 public:
 
     /// Signal type for job creation.
-    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
     fwCoreServiceMacro(SReader, ::fwIO::IReader)
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiVisuOgre/SScreenSelector.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -36,7 +36,7 @@
 namespace uiVisuOgre
 {
 
-static const ::fwCom::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSelected";
+static const core::com::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSelected";
 
 //------------------------------------------------------------------------------
 

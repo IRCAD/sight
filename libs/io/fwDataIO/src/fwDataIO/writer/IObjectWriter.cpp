@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,14 +44,14 @@ IObjectWriter::~IObjectWriter()
 
 //------------------------------------------------------------------------------
 
-void IObjectWriter::setObject( ::fwTools::Object::csptr object )
+void IObjectWriter::setObject( core::tools::Object::csptr object )
 {
     m_object = object;
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::csptr IObjectWriter::getObject() const
+core::tools::Object::csptr IObjectWriter::getObject() const
 {
     assert( !m_object.expired() );
     return m_object.lock();

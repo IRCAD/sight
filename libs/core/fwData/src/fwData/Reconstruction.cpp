@@ -29,10 +29,9 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 fwDataRegisterMacro( ::fwData::Reconstruction );
 namespace fwData
@@ -40,8 +39,8 @@ namespace fwData
 
 const double Reconstruction::s_NO_COMPUTED_MASK_VOLUME = -1.;
 
-const ::fwCom::Signals::SignalKeyType Reconstruction::s_MESH_CHANGED_SIG        = "meshModified";
-const ::fwCom::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
+const core::com::Signals::SignalKeyType Reconstruction::s_MESH_CHANGED_SIG        = "meshModified";
+const core::com::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
 
 //------------------------------------------------------------------------------
 

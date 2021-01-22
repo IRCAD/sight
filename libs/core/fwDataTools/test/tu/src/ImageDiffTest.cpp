@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,11 @@
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/ImageDiff.hpp>
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <algorithm>
 #include <array>
@@ -183,7 +183,7 @@ void ImageDiffTest::undoRedoTest()
     const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
     const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
     const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat FORMAT = ::fwData::Image::PixelFormat::GRAY_SCALE;
 
     ::fwData::Image::sptr image = ::fwData::Image::New();

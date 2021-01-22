@@ -23,10 +23,9 @@
 #include "uiIO/editor/SIOSelector.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 
@@ -59,11 +58,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const ::fwCom::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
-static const ::fwCom::Signals::SignalKeyType JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
+static const core::com::Signals::SignalKeyType JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
 
-static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
+static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 //------------------------------------------------------------------------------
 

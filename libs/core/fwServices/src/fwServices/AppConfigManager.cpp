@@ -30,8 +30,8 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -52,8 +52,8 @@ namespace fwServices
 
 // ------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 // ------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ AppConfigManager::AppConfigManager() :
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
 
     auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
-    ::fwCom::HasSlots::m_slots.setWorker( defaultWorker );
+    core::com::HasSlots::m_slots.setWorker( defaultWorker );
 }
 
 // ------------------------------------------------------------------------
@@ -303,7 +303,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
     if (uid.second)
     {
         SLM_ASSERT("Object already has an UID.", !obj->hasID());
-        SLM_ASSERT("UID " << uid.first << " already exists.", !::fwTools::fwID::exist(uid.first));
+        SLM_ASSERT("UID " << uid.first << " already exists.", !core::tools::fwID::exist(uid.first));
         obj->setID(uid.first);
     }
 
@@ -321,8 +321,8 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
 
 ::fwData::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
 {
-    SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", ::fwTools::fwID::exist(uid));
-    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+    SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", core::tools::fwID::exist(uid));
+    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
 
     SLM_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
@@ -346,7 +346,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
     SLM_ASSERT("Factory could not create service of type <" + implType + ">.", srv);
     SLM_ASSERT("Service already has an UID.", !srv->hasID());
 
-    SLM_ASSERT(this->msgHead() + "UID " + uid + " already exists.", !::fwTools::fwID::exist(uid));
+    SLM_ASSERT(this->msgHead() + "UID " + uid + " already exists.", !core::tools::fwID::exist(uid));
     if (!uid.empty())
     {
         srv->setID(uid);
@@ -402,7 +402,7 @@ void AppConfigManager::processStartItems()
             const std::string uid = elem->getAttributeValue("uid");
             SLM_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!::fwTools::fwID::exist(uid))
+            if(!core::tools::fwID::exist(uid))
             {
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
@@ -447,7 +447,7 @@ void AppConfigManager::processUpdateItems()
             const std::string uid = elem->getAttributeValue("uid");
             SLM_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!::fwTools::fwID::exist(uid))
+            if(!core::tools::fwID::exist(uid))
             {
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
@@ -613,7 +613,7 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
             {
                 // Check if a service hasn't been already created with this uid
                 SLM_ASSERT(this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
-                           !::fwTools::fwID::exist(srvConfig.m_uid));
+                           !core::tools::fwID::exist(srvConfig.m_uid));
 
                 const std::string msg = AppConfigManager::getUIDListAsString(uids);
                 SLM_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
@@ -780,15 +780,15 @@ void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConn
     {
         if(_key.empty() || signalElt.first == _key)
         {
-            ::fwTools::Object::csptr obj = _hintObj;
+            core::tools::Object::csptr obj = _hintObj;
             if(obj == nullptr)
             {
-                obj = ::fwTools::fwID::getObject(signalElt.first);
+                obj = core::tools::fwID::getObject(signalElt.first);
             }
-            ::fwCom::HasSignals::csptr hasSignals = std::dynamic_pointer_cast< const ::fwCom::HasSignals >(obj);
+            core::com::HasSignals::csptr hasSignals = std::dynamic_pointer_cast< const core::com::HasSignals >(obj);
             SLM_ASSERT(this->msgHead() + "Signal source not found '" + signalElt.first + "'", obj);
 
-            ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+            core::com::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
 
             try
             {
@@ -805,11 +805,11 @@ void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConn
     {
         if(_key.empty() || slotElt.first == _key)
         {
-            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
-            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            core::tools::Object::sptr obj      = core::tools::fwID::getObject(slotElt.first);
+            core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
             SLM_ASSERT(this->msgHead() + "Slot destination not found '" + slotElt.first + "'", hasSlots);
 
-            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+            core::com::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
 
             try
             {
@@ -919,7 +919,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr _obj, const std::string& 
                                   "object" + objCfg.m_uid + " is not available.");
                     }
                 }
-                else if(::fwTools::fwID::exist(uid))
+                else if(core::tools::fwID::exist(uid))
                 {
                     ::fwServices::IService::sptr srv = ::fwServices::get(uid);
                     SLM_ASSERT(this->msgHead() + "No service registered with UID \"" + uid + "\".", srv);
@@ -1026,7 +1026,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::strin
         // Are there services that were using this object ?
         for(const auto& srvCfg : itDeferredObj->second.m_servicesCfg)
         {
-            if( ::fwTools::fwID::exist(srvCfg.m_uid) )
+            if( core::tools::fwID::exist(srvCfg.m_uid) )
             {
                 // Check all objects, to know if this object is optional
                 bool optional = true;
@@ -1120,7 +1120,7 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
 
     for(const auto& signalCfg : _connectCfg.m_signals)
     {
-        ::fwTools::Object::sptr sigSource = ::fwTools::fwID::getObject(signalCfg.first);
+        core::tools::Object::sptr sigSource = core::tools::fwID::getObject(signalCfg.first);
         if(sigSource == nullptr)
         {
             // We didn't found the object or service globally, let's try with local deferred objects
@@ -1130,10 +1130,10 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
 
             sigSource = itDeferredObj->second.m_object;
         }
-        ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
+        core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(sigSource);
         SLM_ASSERT(this->msgHead() + "Signal source not found '" + signalCfg.first + "'", hasSignals);
 
-        ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalCfg.second);
+        core::com::SignalBase::sptr sig = hasSignals->signal(signalCfg.second);
         SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
 
         try
@@ -1149,11 +1149,11 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
 
     for(const auto& slotCfg : _connectCfg.m_slots)
     {
-        ::fwTools::Object::sptr slotDest = ::fwTools::fwID::getObject(slotCfg.first);
-        ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(slotDest);
+        core::tools::Object::sptr slotDest = core::tools::fwID::getObject(slotCfg.first);
+        core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(slotDest);
         SLM_ASSERT(this->msgHead() + "Slot destination not found '" + slotCfg.first + "'", hasSlots);
 
-        ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotCfg.second);
+        core::com::SlotBase::sptr slot = hasSlots->slot(slotCfg.second);
         SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
 
         try

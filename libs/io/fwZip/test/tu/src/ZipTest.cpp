@@ -26,10 +26,9 @@
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <core/Exception.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwTest/Data.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -61,7 +60,7 @@ void ZipTest::commentTest()
 {
     const std::string writerComment = "Example of comment";
 
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
     const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
@@ -87,7 +86,7 @@ void ZipTest::cryptTest()
 {
     const std::string writerComment = "Example of comment";
 
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
     const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
@@ -130,7 +129,7 @@ void ZipTest::badPasswordCryptTest()
 {
     const std::string writerComment = "Example of comment";
 
-    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
+    const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
     const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";

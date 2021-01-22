@@ -22,6 +22,8 @@
 
 #include "SeriesDBReaderTest.hpp"
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/location/ILocation.hpp>
 #include <fwData/Mesh.hpp>
@@ -40,8 +42,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 

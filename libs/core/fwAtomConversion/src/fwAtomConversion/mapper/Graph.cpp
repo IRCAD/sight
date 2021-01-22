@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,13 @@
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 #include "fwAtomConversion/mapper/registry/macros.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
 #include <fwData/Graph.hpp>
-
-#include <fwTools/UUID.hpp>
 
 namespace fwAtomConversion
 {
@@ -63,7 +63,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     {
         value = ::fwAtoms::Object::New();
 
-        value->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+        value->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
         value->setAttribute("edge", ::fwAtomConversion::convert(elem.first, cache));
         value->setAttribute("source", ::fwAtomConversion::convert(elem.second.first, cache));

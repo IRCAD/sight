@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "maths/SSwitchMatrices.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -37,8 +37,8 @@ fwServicesRegisterMacro(::fwServices::IController, ::maths::SSwitchMatrices, ::f
 namespace maths
 {
 
-const ::fwCom::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
-const ::fwCom::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchToMatrix";
+const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
+const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchToMatrix";
 
 const ::fwServices::IService::KeyType s_MATRIX_OUTPUT = "output";
 const ::fwServices::IService::KeyType s_MATRIX_INPUT  = "matrix";
@@ -92,7 +92,7 @@ void SSwitchMatrices::updating()
 
     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

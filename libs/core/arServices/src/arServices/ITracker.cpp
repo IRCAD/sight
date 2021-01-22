@@ -24,10 +24,10 @@
 
 #include <arData/BufferTL.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 //-----------------------------------------------------------------------------
 
@@ -36,9 +36,9 @@ namespace arServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType ITracker::s_TRACK_SLOT          = "track";
-const ::fwCom::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracking";
-const ::fwCom::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTracking";
+const core::com::Slots::SlotKeyType ITracker::s_TRACK_SLOT          = "track";
+const core::com::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracking";
+const core::com::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTracking";
 
 const ::fwServices::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
 const ::fwServices::IService::KeyType ITracker::s_FRAME_INOUT    = "frame";

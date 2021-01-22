@@ -7,11 +7,9 @@ set( DEPENDENCIES
         fwData
         fwRuntime
         fwServices
-        fwTools
         arData
         fwGui
         fwGuiQt
-        fwCom
         fwMedData
         fwDataTools
 )

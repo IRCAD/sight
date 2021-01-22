@@ -24,9 +24,8 @@
 
 #include "exTimeLineData/MessageTL.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/thread/Timer.hpp>
 
 #include <fwServices/macros.hpp>
 

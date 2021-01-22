@@ -23,10 +23,9 @@
 #include "uiVisuQt/SnapshotEditor.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -53,7 +52,7 @@ namespace uiVisuQt
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
+const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::SnapshotEditor )
 

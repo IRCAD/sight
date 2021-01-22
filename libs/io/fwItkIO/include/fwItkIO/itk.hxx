@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
     _dataImage->setSpacing2( vSpacing );
 
     typedef typename ITKIMAGE::PixelType PixelType;
-    _dataImage->setType( ::fwTools::Type::create<PixelType>() );
+    _dataImage->setType( core::tools::Type::create<PixelType>() );
     _dataImage->setPixelFormat(::fwData::Image::GRAY_SCALE);
 
     const auto dumpLock = _dataImage->lock();
@@ -64,7 +64,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
                    _itkImage->GetPixelContainer()->GetContainerManageMemory() );
         _dataImage->setBuffer(
             static_cast<void*>(_itkImage->GetBufferPointer()), true, _dataImage->getType(), vSize,
-            ::fwMemory::BufferNewPolicy::New());
+            core::memory::BufferNewPolicy::New());
         /// itk image release its management buffer. dataImage must now deal memory
         _itkImage->GetPixelContainer()->SetContainerManageMemory( false );
     }
@@ -75,7 +75,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
     }
 
     // Post Condition correct PixelType
-    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE );
+    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------

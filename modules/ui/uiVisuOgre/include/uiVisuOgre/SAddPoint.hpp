@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ class UIVISUOGRE_CLASS_API SAddPoint : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceMacro(SAddPoint, ::fwServices::IController);
+    fwCoreServiceMacro(SAddPoint, ::fwServices::IController)
 
     /**
      * @name Slots API
@@ -62,10 +62,10 @@ public:
      */
 
     /// SLOT: Use data from the picking info to add or remove a point.
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
+    UIVISUOGRE_API static const core::com::Slots::SlotKeyType s_PICK_SLOT;
 
     /// SLOT: Clear the point list.
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_POINTS_SLOT;
+    UIVISUOGRE_API static const core::com::Slots::SlotKeyType s_CLEAR_POINTS_SLOT;
     /** @} */
 
     /// Constructor. Creates slot.

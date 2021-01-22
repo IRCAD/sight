@@ -24,10 +24,9 @@
 
 #include "weak_ptr.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/memory/IBuffered.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-#include <fwMemory/IBuffered.hpp>
 
 #include <type_traits>
 
@@ -158,7 +157,7 @@ private:
     };
 
     template<class C>
-    class buffer_locks<C, typename std::enable_if_t< std::is_base_of_v< ::fwMemory::IBuffered, C > > > final
+    class buffer_locks<C, typename std::enable_if_t< std::is_base_of_v< core::memory::IBuffered, C > > > final
     {
     friend locked_ptr;
 
@@ -170,11 +169,11 @@ private:
         }
     }
 
-    std::vector< ::fwMemory::BufferObject::Lock > m_Locks;
+    std::vector< core::memory::BufferObject::Lock > m_Locks;
     };
 
     template<class C>
-    class buffer_locks<C, typename std::enable_if_t< !std::is_base_of_v< ::fwMemory::IBuffered, C > > >
+    class buffer_locks<C, typename std::enable_if_t< !std::is_base_of_v< core::memory::IBuffered, C > > >
     {
     friend locked_ptr;
 

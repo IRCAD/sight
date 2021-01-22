@@ -27,7 +27,7 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -243,7 +243,7 @@ void LockTest::testDumpLock()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_UINT8);
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_UINT8);
 
     // Add the service
     ::fwServices::IService::sptr lockedService = ::fwServices::add("::fwServices::ut::LockedService");

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
@@ -39,7 +39,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
+static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
 static const std::string s_LENGTH_CONFIG     = "length";
 static const std::string s_DASHED_CONFIG     = "dashed";
@@ -178,7 +178,9 @@ void SLine::drawLine(bool _existingLine)
 {
     if(_existingLine == false)
     {
-        m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST, ::fwRenderOgre::RESOURCE_GROUP);
+        m_line->begin(
+            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST,
+            ::fwRenderOgre::RESOURCE_GROUP);
     }
     else
     {

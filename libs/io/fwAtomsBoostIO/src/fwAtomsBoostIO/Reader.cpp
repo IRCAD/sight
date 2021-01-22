@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "fwAtomsBoostIO/Writer.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -33,15 +35,12 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include <fwZip/IReadArchive.hpp>
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <filesystem>
-
 #include <sstream>
 
 namespace fwAtomsBoostIO
@@ -227,7 +226,7 @@ struct PTreeVisitor
         // Managing object with no id
         if(atom->getMetaInfo("ID_METAINFO").empty())
         {
-            atom->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+            atom->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
         }
 
         return atom;
@@ -235,7 +234,7 @@ struct PTreeVisitor
 
 //-----------------------------------------------------------------------------
 
-    class AtomsBoostIOReadStream : public ::fwMemory::stream::in::IFactory
+    class AtomsBoostIOReadStream : public core::memory::stream::in::IFactory
     {
     public:
         AtomsBoostIOReadStream(const ::fwZip::IReadArchive::sptr& archive, const std::filesystem::path& path) :
@@ -259,8 +258,8 @@ struct PTreeVisitor
 
     ::fwAtoms::Blob::sptr getBlob(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
-        ::fwAtoms::Blob::sptr atom             = ::fwAtoms::Blob::New();
-        ::fwMemory::BufferObject::sptr buffObj = ::fwMemory::BufferObject::New();
+        ::fwAtoms::Blob::sptr atom               = ::fwAtoms::Blob::New();
+        core::memory::BufferObject::sptr buffObj = core::memory::BufferObject::New();
         atom->setBufferObject(buffObj);
 
         this->cache(ptpath, atom);
@@ -274,12 +273,12 @@ struct PTreeVisitor
             {
                 const std::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
                 std::filesystem::path sourceFile    = "";
-                ::fwMemory::FileFormatType format   = ::fwMemory::OTHER;
+                core::memory::FileFormatType format = core::memory::OTHER;
 
                 if( std::filesystem::is_directory(m_archive->getArchivePath()))
                 {
                     sourceFile = m_archive->getArchivePath() / bufFile;
-                    format     = ::fwMemory::RAW;
+                    format     = core::memory::RAW;
                 }
 
                 buffObj->setIStreamFactory( std::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),

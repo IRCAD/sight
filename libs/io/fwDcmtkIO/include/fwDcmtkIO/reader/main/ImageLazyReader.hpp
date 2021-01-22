@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/helper/Codec.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwMedData/DicomSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -60,11 +60,11 @@ public:
      * @param[in] imageType Type of the image used to create the buffer
      */
     FWDCMTKIO_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                    const ::fwMemory::BufferObject::sptr& instance,
+                                                    const core::memory::BufferObject::sptr& instance,
                                                     double rescaleSlope,
                                                     double rescaleIntercept,
                                                     unsigned short pixelRepresentation,
-                                                    ::fwTools::Type imageType)
+                                                    core::tools::Type imageType)
     {
         if (pixelRepresentation == 0)
         {
@@ -112,60 +112,60 @@ protected:
      */
     template< typename T >
     FWDCMTKIO_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                                    const ::fwMemory::BufferObject::sptr& instance,
+                                                    const core::memory::BufferObject::sptr& instance,
                                                     double rescaleSlope,
                                                     double rescaleIntercept,
-                                                    ::fwTools::Type imageType)
+                                                    core::tools::Type imageType)
     {
         void* tempoBuffer = 0;
 
         //Copy the temporary buffer to the final buffer
-        if (imageType == ::fwTools::Type::s_INT8)
+        if (imageType == core::tools::Type::s_INT8)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int8_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT16)
+        else if (imageType == core::tools::Type::s_INT16)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int16_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT32)
+        else if (imageType == core::tools::Type::s_INT32)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int32_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT64)
+        else if (imageType == core::tools::Type::s_INT64)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int64_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT8)
+        else if (imageType == core::tools::Type::s_UINT8)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint8_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT16)
+        else if (imageType == core::tools::Type::s_UINT16)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint16_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT32)
+        else if (imageType == core::tools::Type::s_UINT32)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint32_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT64)
+        else if (imageType == core::tools::Type::s_UINT64)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint64_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_FLOAT)
+        else if (imageType == core::tools::Type::s_FLOAT)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, float >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_DOUBLE)
+        else if (imageType == core::tools::Type::s_DOUBLE)
         {
             tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, double >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
@@ -188,7 +188,7 @@ protected:
     template< typename T, typename U >
     FWDCMTKIO_API static U* createInstanceBuffer(unsigned int rows,
                                                  unsigned int columns,
-                                                 const ::fwMemory::BufferObject::sptr& instance,
+                                                 const core::memory::BufferObject::sptr& instance,
                                                  double rescaleSlope,
                                                  double rescaleIntercept)
     {
@@ -202,7 +202,7 @@ protected:
         // Read instance
         const size_t buffSize       = instance->getSize();
         const std::string dicomPath = instance->getStreamInfo().fsFile.string();
-        ::fwMemory::BufferObject::Lock lock(instance);
+        core::memory::BufferObject::Lock lock(instance);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;

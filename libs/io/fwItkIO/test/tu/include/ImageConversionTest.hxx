@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__
-#define __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__
+#pragma once
+
+#include <fwItkIO/itk.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwItkIO/itk.hpp>
 
 namespace fwItkIO
 {
@@ -38,10 +37,10 @@ namespace ut
 template< class TYPE>
 void ImageConversionTest::stressTestForAType()
 {
-    for(unsigned char k = 0; k<5; k++)
+    for(unsigned char k = 0; k < 5; k++)
     {
         ::fwData::Image::sptr image = ::fwData::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create<TYPE>());
+        ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create<TYPE>());
 
         typedef itk::Image< TYPE, 3 > ImageType;
         typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
@@ -64,5 +63,3 @@ void ImageConversionTest::stressTestForAType()
 
 } //namespace ut
 } //namespace fwItkIO
-
-#endif // __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__

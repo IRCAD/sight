@@ -26,8 +26,8 @@
 
 #include "fwJobs/exception/Waiting.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-#include <core/include/core/thread/Worker.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
 #include <boost/scope_exit.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
@@ -42,8 +42,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
-static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
+static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
+static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";

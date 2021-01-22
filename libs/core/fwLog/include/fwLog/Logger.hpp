@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwLog/config.hpp"
 #include "fwLog/Log.hpp"
 
-#include <fwTools/Object.hpp>
+#include <core/tools/Object.hpp>
 
 #include <string>
 
@@ -35,12 +35,12 @@ namespace fwLog
 /**
  * @brief Logger class used to store logs
  */
-class FWLOG_CLASS_API Logger : public ::fwTools::Object
+class FWLOG_CLASS_API Logger : public core::tools::Object
 {
 
 public:
 
-    fwCoreClassMacro(Logger, ::fwTools::Object, new Logger);
+    fwCoreClassMacro(Logger, core::tools::Object, new Logger)
 
     typedef std::vector< ::fwLog::Log > LogContainerType;
     typedef LogContainerType::iterator IteratorType;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiMeasurement/action/SAddDistance.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>

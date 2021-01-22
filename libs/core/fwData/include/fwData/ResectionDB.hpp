@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Resection.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(ResectionDB));
 
@@ -95,16 +95,16 @@ public:
      */
 
     /// Type of signal when the safe part is added
-    typedef ::fwCom::Signal< void () > SafePartAddedSignalType;
+    typedef core::com::Signal< void () > SafePartAddedSignalType;
 
     /// Key in m_signals map of signal m_sigSafePartAdded
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SAFE_PART_ADDED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_SAFE_PART_ADDED_SIG;
 
     /// Type of signal when a resection is added
-    typedef ::fwCom::Signal< void () > ResectionAddedSignalType;
+    typedef core::com::Signal< void () > ResectionAddedSignalType;
 
     /// Key in m_signals map of signal m_sigResectionAdded
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_RESECTION_ADDED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_RESECTION_ADDED_SIG;
 
     /**
      * @}

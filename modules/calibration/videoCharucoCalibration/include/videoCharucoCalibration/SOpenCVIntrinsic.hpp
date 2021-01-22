@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,9 +63,9 @@ class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::arServices::
 public:
 
     /// Double changed signal type
-    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
 
-    fwCoreServiceMacro(SOpenCVIntrinsic, ::arServices::ICalibration);
+    fwCoreServiceMacro(SOpenCVIntrinsic, ::arServices::ICalibration)
 
     /// Constructor.
     VIDEOCHARUCOCALIBRATION_API SOpenCVIntrinsic() noexcept;

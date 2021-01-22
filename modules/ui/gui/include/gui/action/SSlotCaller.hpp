@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "gui/config.hpp"
 
-#include <fwCom/Slots.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -61,7 +61,7 @@ public:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
-    typedef std::pair< HasSlotIDType, ::fwCom::Slots::SlotKeyType> SlotInfoType;
+    typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Constructor. Does nothing.

@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwData
-    fwTools
     fwRuntime
     fwMedData
     fwDataIO
@@ -13,7 +12,6 @@ set( DEPENDENCIES
     fwGui
     fwLog
     fwJobs
-    fwCom
     fwServices
     fwIO
     )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "ImageSeriesTest.hpp"
 
-#include <fwTest/generator/Image.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwTest/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ImageSeriesTest );
@@ -57,7 +57,7 @@ void ImageSeriesTest::imageTest()
     CPPUNIT_ASSERT(m_series);
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type("float"));
+    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type("float"));
     CPPUNIT_ASSERT(img);
 
     m_series->setImage(img);

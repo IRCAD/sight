@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace uiCalibration
 static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 static const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::arData::Camera);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::arData::Camera)
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -194,7 +194,7 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -217,7 +217,7 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -240,7 +240,7 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 
     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,9 @@
 
 #include "fwData/detail/reflection/Array.hpp"
 
-#include <fwCamp/UserObject.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-#include <fwMemory/camp/mapper.hpp>
+#include <core/memory/BufferObject.hpp>
+#include <core/memory/camp/mapper.hpp>
+#include <core/reflection/UserObject.hpp>
 
 //------------------------------------------------------------------------------
 

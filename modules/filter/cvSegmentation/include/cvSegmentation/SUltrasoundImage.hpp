@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SUltrasoundImage, ::fwServices::IOperator)
 
-    typedef ::fwCom::Signal< void (int, std::string) > IntegerChangedSignalType;
+    typedef core::com::Signal< void (int, std::string) > IntegerChangedSignalType;
 
     /// Initialize members.
     CVSEGMENTATION_API SUltrasoundImage() noexcept;

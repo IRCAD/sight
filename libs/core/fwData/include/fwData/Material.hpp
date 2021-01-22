@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -190,12 +190,12 @@ public:
      * @{
      */
     /// Type of signal when a texture is added
-    typedef ::fwCom::Signal< void (::fwData::Image::sptr) > AddedTextureSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_TEXTURE_SIG;
+    typedef core::com::Signal< void (::fwData::Image::sptr) > AddedTextureSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_ADDED_TEXTURE_SIG;
 
     /// Type of signal when a texture is removed
-    typedef ::fwCom::Signal< void (::fwData::Image::sptr) > RemovedTextureSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_TEXTURE_SIG;
+    typedef core::com::Signal< void (::fwData::Image::sptr) > RemovedTextureSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_TEXTURE_SIG;
     /**
      * @}
      */

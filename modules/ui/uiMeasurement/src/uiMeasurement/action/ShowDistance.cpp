@@ -23,9 +23,8 @@
 #include "uiMeasurement/action/ShowDistance.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
@@ -45,7 +44,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image )
 
-static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
+static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -97,7 +96,7 @@ void ShowDistance::updating()
         auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
             ::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
+            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
             sig->asyncEmit(toShow);
         }
     }

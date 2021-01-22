@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "scene2D/adaptor/SGrid2D.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -38,9 +38,9 @@ namespace adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGrid2D);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGrid2D)
 
-const ::fwCom::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
+const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -252,4 +252,3 @@ void SGrid2D::stopping()
 
 } // namespace adaptor
 } // namespace scene2D
-

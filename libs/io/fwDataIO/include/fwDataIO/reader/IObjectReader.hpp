@@ -27,12 +27,11 @@
 #include "fwDataIO/reader/registry/detail.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwData/location/ILocation.hpp>
 
 #include <fwJobs/IJob.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -94,7 +93,7 @@ public:
      * @note m_object is save in class with a weakptr
      * @note This object can be get with the method getObject()
      */
-    FWDATAIO_API virtual void setObject( ::fwTools::Object::sptr _pObject );
+    FWDATAIO_API virtual void setObject( core::tools::Object::sptr _pObject );
 
     /**
      * @brief m_object getter.
@@ -102,7 +101,7 @@ public:
      * @return m_object
      * @note m_object is saved in reader with a weakptr
      */
-    FWDATAIO_API virtual ::fwTools::Object::sptr getObject();
+    FWDATAIO_API virtual core::tools::Object::sptr getObject();
 
     /**
      * @brief m_location setter.
@@ -143,7 +142,7 @@ protected:
      *
      * This object is given in parameter of setObject method but it is conserved with a weakptr.
      */
-    ::fwTools::Object::wptr m_object;
+    core::tools::Object::wptr m_object;
 
     /// Object location ( file path, directory path, url, etc )
     ::fwData::location::ILocation::sptr m_location;

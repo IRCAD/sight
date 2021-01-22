@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "fwServices/IXMLParser.hpp"
 
-
-
 namespace fwServices
 {
 
@@ -35,17 +33,25 @@ IXMLParser::~IXMLParser()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void IXMLParser::starting()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void IXMLParser::stopping()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void IXMLParser::configuring()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void IXMLParser::updating()
 {
@@ -57,7 +63,6 @@ void IXMLParser::updating()
     }
 }
 
-
 //-----------------------------------------------------------------------------
 
 void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem )
@@ -67,7 +72,7 @@ void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgE
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::createConfig( ::fwTools::Object::sptr _obj )
+void IXMLParser::createConfig( core::tools::Object::sptr _obj )
 {
 }
 
@@ -98,4 +103,3 @@ void IXMLParser::destroyConfig()
 //-----------------------------------------------------------------------------
 
 }
-

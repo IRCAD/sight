@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     arData
     calibration3d
-    fwCom
     core
     fwData
     fwMath

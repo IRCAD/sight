@@ -22,7 +22,7 @@
 
 #include "arData/BufferTL.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <boost/pool/pool.hpp>
 

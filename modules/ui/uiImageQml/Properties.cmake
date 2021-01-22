@@ -3,11 +3,9 @@ set( NAME uiImageQml )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCom
     core
     fwData
     fwRuntime
-    fwTools
     fwDataTools
     fwQml
 )

@@ -23,14 +23,13 @@
 #include "uiImageQt/SliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -67,8 +66,8 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
     &fwDataTools::fieldHelper::Image::m_axialSliceIndexId
 };
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -275,7 +274,7 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
         ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
-    ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
+    core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
     ::fwData::Integer::sptr indexes[3];
     m_helper.getSliceIndex(indexes);
     sig->asyncEmit(static_cast<int>(indexes[2]->value()), static_cast<int>(indexes[1]->value()),
@@ -302,7 +301,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(
         ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
+        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
         sig->asyncEmit(oldType, _type);
     }
     this->updateSliceIndexFromImg();

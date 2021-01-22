@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "activities/config.hpp"
 
-#include <fwActivities/IActivitySequencer.hpp>
+#include <core/com/Signal.hpp>
 
-#include <fwCom/Signal.hpp>
+#include <fwActivities/IActivitySequencer.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -90,7 +90,7 @@ class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceMacro(SActivitySequencer, ::fwServices::IController);
+    fwCoreServiceMacro(SActivitySequencer, ::fwServices::IController)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivitySequencer() noexcept;
@@ -105,10 +105,10 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
-    typedef ::fwCom::Signal<void (bool) > EnabledPreviousSignalType;
-    typedef ::fwCom::Signal<void (bool) > EnabledNextSignalType;
+    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
+    typedef core::com::Signal<void (bool) > EnabledPreviousSignalType;
+    typedef core::com::Signal<void (bool) > EnabledNextSignalType;
     /**
      * @}
      */

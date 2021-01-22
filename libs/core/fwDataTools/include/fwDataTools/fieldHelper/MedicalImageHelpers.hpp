@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "fwDataTools/config.hpp"
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/NumericRoundCast.hxx>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <numeric>
 #include <utility> // std::pair
@@ -197,7 +197,7 @@ public:
     {
         unsigned char imageTypeSize = sizeof(IMAGE);
 
-        IMAGE val = ::fwTools::numericRoundCast<IMAGE>(param.value);
+        IMAGE val = core::tools::numericRoundCast<IMAGE>(param.value);
 
         ::fwData::Image::BufferType* buf = reinterpret_cast< ::fwData::Image::BufferType* > (&val);
 
@@ -242,7 +242,7 @@ public:
         const int& sx                     = size[0];
         const int& sy                     = size[1];
         const int& offset                 = p[0] + sx*p[1] + p[2]*sx*sy;
-        *(buffer+offset) = ::fwTools::numericRoundCast<IMAGE>(param.value);
+        *(buffer+offset) = core::tools::numericRoundCast<IMAGE>(param.value);
     }
 
 };
@@ -264,9 +264,9 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX& point
     typename CastAndSetFunctor<T, INT_INDEX>::Param param(point, value);
     param.image = image;
 
-    ::fwTools::Type type = image->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, CastAndSetFunctor<T, INT_INDEX> >::invoke( type,
-                                                                                                           param );
+    core::tools::Type type = image->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, CastAndSetFunctor<T, INT_INDEX> >::invoke( type,
+                                                                                                               param );
 }
 
 // ------------------------------------------------------------------------------
@@ -277,8 +277,8 @@ SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSp
 {
     typename PixelCastAndSetFunctor<T>::Param param(value);
 
-    ::fwTools::Type type = image->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, PixelCastAndSetFunctor<T> >::invoke( type, param );
+    core::tools::Type type = image->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, PixelCastAndSetFunctor<T> >::invoke( type, param );
     return param.res;
 }
 
@@ -406,8 +406,8 @@ void MedicalImageHelpers::getMinMax(const ::fwData::Image::csptr _img, MINMAXTYP
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 
-    ::fwTools::Type type = _img->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
+    core::tools::Type type = _img->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
 }
 
 } // fieldHelper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwMedData/Series.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
@@ -35,8 +35,8 @@ fwDataRegisterMacro( ::fwMedData::SeriesDB )
 namespace fwMedData
 {
 
-const ::fwCom::Signals::SignalKeyType SeriesDB::s_ADDED_SERIES_SIG   = "addedSeries";
-const ::fwCom::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "removedSeries";
+const core::com::Signals::SignalKeyType SeriesDB::s_ADDED_SERIES_SIG   = "addedSeries";
+const core::com::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "removedSeries";
 
 //------------------------------------------------------------------------------
 

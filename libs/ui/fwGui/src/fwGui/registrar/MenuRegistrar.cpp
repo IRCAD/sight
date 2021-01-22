@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "fwGui/GuiRegistry.hpp"
 #include "fwGui/IActionSrv.hpp"
 
+#include <core/tools/fwID.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <utility>
 
@@ -153,7 +153,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
         {
             SLM_ASSERT("The action '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menu, "
                        "the service may be created later if it uses deferred objects, thus use start=\"no\" and start it at the end of the configuration ",
-                       ::fwTools::fwID::exist(sid.first ));
+                       core::tools::fwID::exist(sid.first ));
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
@@ -161,7 +161,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
         }
         else
         {
-            bool service_exists = ::fwTools::fwID::exist(sid.first );
+            bool service_exists = core::tools::fwID::exist(sid.first );
             if (!service_exists || ::fwServices::get( sid.first )->isStopped())
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
@@ -189,7 +189,7 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus
         if(sid.second.second) //service is auto started?
         {
             SLM_ASSERT("The menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menu.",
-                       ::fwTools::fwID::exist(sid.first ));
+                       core::tools::fwID::exist(sid.first ));
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
@@ -208,7 +208,7 @@ void MenuRegistrar::unmanage()
         {
             SLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }
@@ -220,7 +220,7 @@ void MenuRegistrar::unmanage()
         {
             SLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }

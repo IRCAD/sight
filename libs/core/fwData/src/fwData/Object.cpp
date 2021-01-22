@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,8 @@
  ***********************************************************************/
 
 //FIXME :This needs to be include first for GCC
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 //
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
@@ -34,10 +34,10 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Object::s_MODIFIED_SIG       = "modified";
-const ::fwCom::Signals::SignalKeyType Object::s_ADDED_FIELDS_SIG   = "addedFields";
-const ::fwCom::Signals::SignalKeyType Object::s_CHANGED_FIELDS_SIG = "changedFields";
-const ::fwCom::Signals::SignalKeyType Object::s_REMOVED_FIELDS_SIG = "removedFields";
+const core::com::Signals::SignalKeyType Object::s_MODIFIED_SIG       = "modified";
+const core::com::Signals::SignalKeyType Object::s_ADDED_FIELDS_SIG   = "addedFields";
+const core::com::Signals::SignalKeyType Object::s_CHANGED_FIELDS_SIG = "changedFields";
+const core::com::Signals::SignalKeyType Object::s_REMOVED_FIELDS_SIG = "removedFields";
 
 //------------------------------------------------------------------------------
 

@@ -24,7 +24,7 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwRuntime/Plugin.hpp>
 

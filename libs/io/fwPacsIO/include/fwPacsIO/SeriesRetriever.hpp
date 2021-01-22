@@ -24,10 +24,9 @@
 
 #include "fwPacsIO/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/ProgressAdviser.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
@@ -48,8 +47,8 @@ public:
     fwCoreClassMacro(SeriesRetriever, ::fwPacsIO::SeriesRetriever, new SeriesRetriever)
     fwCoreAllowSharedFromThis();
 
-    FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    FWPACSIO_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
+    typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
     /// Constructor
     FWPACSIO_API SeriesRetriever();

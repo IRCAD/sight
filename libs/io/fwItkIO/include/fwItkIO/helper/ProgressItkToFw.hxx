@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
 #include <itkCommand.h>
 #include <itkEventObject.h>
@@ -69,13 +69,13 @@ public:
     }
 
     std::string m_msg;
-    SPTR(::fwTools::ProgressAdviser) m_adviser;
+    SPTR(core::tools::ProgressAdviser) m_adviser;
 };
 
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE >
-ProgressItkToFw<OBSERVEE >::ProgressItkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser)observer,
+ProgressItkToFw<OBSERVEE >::ProgressItkToFw(OBSERVEE observee, SPTR(core::tools::ProgressAdviser)observer,
                                             std::string msg) :
     m_observee( observee),
     m_obsTag(std::numeric_limits<unsigned long>::max()),

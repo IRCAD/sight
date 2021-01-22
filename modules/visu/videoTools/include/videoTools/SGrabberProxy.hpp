@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwServices/IHasServices.hpp>
 
@@ -116,7 +116,7 @@ public:
      * @{
      */
     /// Slot: called to start the tracking.
-    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_RECONFIGURE_SLOT;
+    VIDEOTOOLS_API static const core::com::Slots::SlotKeyType s_RECONFIGURE_SLOT;
     /** @} */
 
 protected:
@@ -213,7 +213,7 @@ private:
     std::vector< ::arServices::IGrabber::sptr > m_services;
 
     /// Connections with service signals.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
     /// List of services to be included or excluded.
     std::set< std::string > m_selectedServices;

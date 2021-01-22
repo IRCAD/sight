@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiVisuQt/STransformEditor.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -269,7 +269,7 @@ void STransformEditor::onSliderChanged(int)
 
     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

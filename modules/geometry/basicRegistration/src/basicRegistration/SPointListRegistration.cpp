@@ -22,8 +22,8 @@
 
 #include "basicRegistration/SPointListRegistration.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Mesh.hpp>
@@ -47,8 +47,8 @@ fwServicesRegisterMacro( ::fwServices::IRegisterer, ::basicRegistration::SPointL
 namespace basicRegistration
 {
 
-const ::fwCom::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG       = "errorComputed";
+const core::com::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG       = "errorComputed";
 
 SPointListRegistration::SPointListRegistration() :
     m_registrationMode(RIGID)
@@ -230,7 +230,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         // Notify Matrix modified
         auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwRenderOgre/helper/Shading.hpp"
+
 #include "fwRenderOgre/ogre.hpp"
 
 #include <fwData/Boolean.hpp>
@@ -370,7 +371,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize( {2}, ::fwTools::Type::s_FLOAT);
+            arrayObject->resize( {2}, core::tools::Type::s_FLOAT);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -384,7 +385,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({3}, ::fwTools::Type::s_FLOAT);
+            arrayObject->resize({3}, core::tools::Type::s_FLOAT);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -416,7 +417,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({2}, ::fwTools::Type::s_INT32);
+            arrayObject->resize({2}, core::tools::Type::s_INT32);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -430,7 +431,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({3}, ::fwTools::Type::s_INT32);
+            arrayObject->resize({3}, core::tools::Type::s_INT32);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -445,7 +446,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({4}, ::fwTools::Type::s_INT32);
+            arrayObject->resize({4}, core::tools::Type::s_INT32);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -468,7 +469,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({2}, ::fwTools::Type::s_DOUBLE);
+            arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -482,7 +483,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({3}, ::fwTools::Type::s_DOUBLE);
+            arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
 
             const auto dumpLock = arrayObject->lock();
 
@@ -497,7 +498,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
 
-            arrayObject->resize({4}, ::fwTools::Type::s_DOUBLE);
+            arrayObject->resize({4}, core::tools::Type::s_DOUBLE);
 
             const auto dumpLock = arrayObject->lock();
 

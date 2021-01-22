@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,8 @@
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
+#include <core/tools/Stringizer.hpp>
+
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
@@ -40,8 +42,6 @@
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
-
-#include <fwTools/Stringizer.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 

@@ -29,11 +29,11 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -49,12 +49,12 @@ fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SReprojec
 namespace videoCalibration
 {
 
-const ::fwCom::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT = "compute";
+const core::com::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT = "compute";
 
-const ::fwCom::Slots::SlotKeyType SReprojectionError::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SLOT = "setColorParameter";
+const core::com::Slots::SlotKeyType SReprojectionError::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
+const core::com::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SLOT = "setColorParameter";
 
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
 const ::fwServices::IService::KeyType s_MARKERMAP_INPUT = "markerMap";

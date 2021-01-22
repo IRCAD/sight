@@ -22,7 +22,7 @@
 
 /**
  * @brief Namespace fwServices is dedicated to (mimic) the dynamic affectation of methods to (pure data) objects
- * (::fwTools::Object), and component orientation transparently. This is assimilable to the
+ * (core::tools::Object), and component orientation transparently. This is assimilable to the
  * notion of role (corresponding to the IService class).
  * \li IService : API to normalize manipulation, using a limited set of well defined methods
  * \li IService : contract for service implementation
@@ -128,7 +128,7 @@ namespace fwServices
  * - \b object: it defines an object of the AppConfig. We usually use a ::fwData::Composite in order to add
  *   sub-objects. An object can defines a list of services. Some object object can have a specific configuration :
  *   ::fwData::TransformationMatrix3D, ::fwData::Float, ::fwData::List, ...
- *    - \b uid (optional): unique identifier of the object (::fwTools::fwID). If it is not defined, it will be
+ *    - \b uid (optional): unique identifier of the object (core::tools::fwID). If it is not defined, it will be
  *      automatically generated.
  *    - \b type: object type (ex: ::fwData::Image, ::fwData::Composite)
  *    - \b src (optional, "new" by default): defines if the object should be created ("new") or if it already
@@ -322,7 +322,7 @@ namespace fwServices
  *
  * @subsection Object Object
  * - \b object: it defines an object of the AppConfig.
- *    - \b uid (optional): unique identifier of the object (::fwTools::fwID). If it is not defined, it will be
+ *    - \b uid (optional): unique identifier of the object (core::tools::fwID). If it is not defined, it will be
  *      automatically generated.
  *    - \b type: object type (ex: ::fwData::Image, ::fwData::Mesh)
  *    - \b src (optional, "new" by default, values: "new", "ref", "deferred"):

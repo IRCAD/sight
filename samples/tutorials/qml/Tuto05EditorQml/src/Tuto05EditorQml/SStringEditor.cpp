@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Tuto05EditorQml/SStringEditor.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/String.hpp>
 
@@ -86,7 +86,7 @@ void SStringEditor::updateString(const QString& str)
 
     auto sig = sstr->signal< ::fwData::String::ModifiedSignalType >(::fwData::String::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

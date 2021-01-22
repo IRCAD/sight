@@ -5,7 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwAtoms
     fwAtomsPatch
-    fwTools
     core
 )
 set( REQUIREMENTS  )

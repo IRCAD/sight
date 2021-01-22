@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "opImageFilter/SImageExtruder.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -39,7 +39,7 @@ static const std::string s_IMAGE_INPUT  = "image";
 
 static const std::string s_IMAGE_INOUT = "extrudedImage";
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
+static const core::com::Slots::SlotKeyType s_ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
 
 //------------------------------------------------------------------------------
 

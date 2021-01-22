@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-Plane::Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
+Plane::Plane(const core::tools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
              FilteringEnumType _filtering, float _entityOpacity, bool _displayBorder) :
     m_filtering(_filtering),

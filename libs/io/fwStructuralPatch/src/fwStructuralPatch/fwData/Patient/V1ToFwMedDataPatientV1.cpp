@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <core/tools/dateAndTime.hpp>
 
-#include <fwTools/dateAndTime.hpp>
+#include <fwAtoms/String.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -101,7 +101,7 @@ void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
     // Update Birthdate
     ::boost::posix_time::ptime bithdate =
         ::boost::posix_time::time_from_string(previous->getAttribute("birthdate")->getString());
-    helper.replaceAttribute("birth_date", ::fwAtoms::String::New(::fwTools::getDate(bithdate)));
+    helper.replaceAttribute("birth_date", ::fwAtoms::String::New(core::tools::getDate(bithdate)));
 
     // Update Sex
     helper.replaceAttribute("sex", ::fwAtoms::String::New(

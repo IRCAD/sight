@@ -5,14 +5,12 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwActivities
-    fwCom
     fwData
     fwGui
     fwGuiQt
     fwMedData
     fwRuntime
     fwServices
-    fwTools
     fwMedDataTools
 )
 set( REQUIREMENTS

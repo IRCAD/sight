@@ -3,7 +3,6 @@ set( NAME ioDicom )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCom
     core
     fwDicomIOFilter
     fwDicomIOFilterQt
@@ -13,7 +12,6 @@ set( DEPENDENCIES
     fwLog
     fwRuntime
     fwServices
-    fwTools
     fwIO
     fwData
     fwDataTools

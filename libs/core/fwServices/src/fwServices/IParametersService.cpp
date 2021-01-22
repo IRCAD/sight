@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,22 @@
 
 #include "fwServices/IParametersService.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 namespace fwServices
 {
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
-const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_ENUM_PARAMETER_SLOT    = "setEnumParameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
+const core::com::Slots::SlotKeyType IParametersService::s_SET_ENUM_PARAMETER_SLOT    = "setEnumParameter";
 
 //-----------------------------------------------------------------------------
 

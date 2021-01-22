@@ -23,10 +23,9 @@
 #include "ioVTK/SImageReader.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -67,7 +66,7 @@ namespace ioVTK
 // Register a new reader of ::fwData::Image
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::fwData::Image )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -181,7 +180,7 @@ void SImageReader::updating()
             {
                 auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
                 {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
@@ -190,7 +189,7 @@ void SImageReader::updating()
                 m_readFailed = true;
             }
         }
-        catch(::fwTools::Failed& e)
+        catch(core::tools::Failed& e)
         {
             m_readFailed = true;
             FW_RAISE_EXCEPTION(e);
@@ -259,7 +258,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
             {
                 bitmapExtensions = bitmapExtensions + availableExtensions.at(i) + ", ";
             }
-            FW_RAISE_EXCEPTION(::fwTools::Failed("Only " + bitmapExtensions + ".vtk, .vti and .mhd are supported."));
+            FW_RAISE_EXCEPTION(core::tools::Failed("Only " + bitmapExtensions + ".vtk, .vti and .mhd are supported."));
         }
     }
 
@@ -273,7 +272,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
     {
         imageReader->read();
     }
-    catch(::fwTools::Failed& e)
+    catch(core::tools::Failed& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();

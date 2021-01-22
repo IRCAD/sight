@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,10 @@
  ***********************************************************************/
 
 #include "fwAtomsPatch/helper/functions.hpp"
+
 #include "fwAtomsPatch/types.hpp"
 
-#include <fwTools/UUID.hpp>
+#include <core/tools/UUID.hpp>
 
 namespace fwAtomsPatch
 {
@@ -32,49 +33,49 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-std::string getClassname( const ::fwAtoms::Object::sptr & obj )
+std::string getClassname( const ::fwAtoms::Object::sptr& obj )
 {
     return obj->getMetaInfo( ::fwAtomsPatch::s_OBJ_CLASSNAME );
 }
 
 //-----------------------------------------------------------------------------
 
-void setClassname( const ::fwAtoms::Object::sptr & obj, const std::string & newClassname )
+void setClassname( const ::fwAtoms::Object::sptr& obj, const std::string& newClassname )
 {
     obj->setMetaInfo( ::fwAtomsPatch::s_OBJ_CLASSNAME, newClassname );
 }
 
 //-----------------------------------------------------------------------------
 
-std::string getVersion( const ::fwAtoms::Object::sptr & obj )
+std::string getVersion( const ::fwAtoms::Object::sptr& obj )
 {
     return obj->getMetaInfo( ::fwAtomsPatch::s_OBJ_VERSION );
 }
 
 //-----------------------------------------------------------------------------
 
-void setVersion( const ::fwAtoms::Object::sptr & obj, const std::string & newVersion )
+void setVersion( const ::fwAtoms::Object::sptr& obj, const std::string& newVersion )
 {
     obj->setMetaInfo( ::fwAtomsPatch::s_OBJ_VERSION, newVersion );
 }
 
 //-----------------------------------------------------------------------------
 
-void generateID( const ::fwAtoms::Object::sptr & obj )
+void generateID( const ::fwAtoms::Object::sptr& obj )
 {
-    obj->setMetaInfo( fwAtomsPatch::s_OBJ_ID, ::fwTools::UUID::generateUUID() );
+    obj->setMetaInfo( fwAtomsPatch::s_OBJ_ID, core::tools::UUID::generateUUID() );
 }
 
 //-----------------------------------------------------------------------------
 
-void cleanFields( const ::fwAtoms::Object::sptr & obj )
+void cleanFields( const ::fwAtoms::Object::sptr& obj )
 {
     obj->setAttribute("fields", ::fwAtoms::Map::New());
 }
 
 //-----------------------------------------------------------------------------
 
-void changeUID( const ::fwAtoms::Object::sptr & obj )
+void changeUID( const ::fwAtoms::Object::sptr& obj )
 {
     for( const ::fwAtoms::Object::AttributesType::value_type& elem :  obj->getAttributes() )
     {
@@ -108,7 +109,7 @@ void changeUID( const ::fwAtoms::Object::sptr & obj )
 
 //-----------------------------------------------------------------------------
 
-void changeMapUID( const ::fwAtoms::Map::sptr & map )
+void changeMapUID( const ::fwAtoms::Map::sptr& map )
 {
     for( ::fwAtoms::Map::ValueType elem :  map->getValue() )
     {
@@ -140,7 +141,7 @@ void changeMapUID( const ::fwAtoms::Map::sptr & map )
 
 //-----------------------------------------------------------------------------
 
-void changeSeqUID( const ::fwAtoms::Sequence::sptr & seq )
+void changeSeqUID( const ::fwAtoms::Sequence::sptr& seq )
 {
     for( ::fwAtoms::Base::sptr elem :  seq->getValue() )
     {
@@ -174,4 +175,3 @@ void changeSeqUID( const ::fwAtoms::Sequence::sptr & seq )
 
 } //helper
 } //fwAtomHelper
-

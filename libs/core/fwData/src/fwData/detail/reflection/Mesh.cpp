@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwData/detail/reflection/Mesh.hpp"
 
-#include <fwCamp/UserObject.hpp>
+#include <core/reflection/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Mesh))
 {

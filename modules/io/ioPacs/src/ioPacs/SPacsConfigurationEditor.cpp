@@ -22,10 +22,10 @@
 
 #include "ioPacs/SPacsConfigurationEditor.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -43,7 +43,7 @@
 namespace ioPacs
 {
 
-static const ::fwCom::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
+static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
 
 static const ::fwServices::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
@@ -276,7 +276,7 @@ void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguratio
 {
     auto sig = _pacsConfiguration->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

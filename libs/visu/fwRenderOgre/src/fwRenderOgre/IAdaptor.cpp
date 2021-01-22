@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <fwRenderOgre/registry/Adaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
@@ -34,10 +34,10 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Slots::SlotKeyType IAdaptor::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-const ::fwCom::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
-const ::fwCom::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
+const core::com::Slots::SlotKeyType IAdaptor::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const core::com::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const core::com::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
+const core::com::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
 
 static const std::string s_LAYER_CONFIG   = "layer";
 static const std::string s_VISIBLE_CONFIG = "visible";
@@ -148,14 +148,14 @@ Layer::sptr IAdaptor::getLayer() const
 void IAdaptor::requestRender()
 {
     /*
-    auto renderService = this->getRenderService();
-    if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
+       auto renderService = this->getRenderService();
+       if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
           renderService->getStatus() == ::fwServices::IService::SWAPPING) &&
          renderService->getRenderMode() == ::fwRenderOgre::SRender::RenderMode::AUTO )
-    {
+       {
         this->getRenderService()->requestRender();
-    }
-    */
+       }
+     */
 }
 
 //-----------------------------------------------------------------------------

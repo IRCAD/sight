@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwMath/Compare.hpp>
 
-#include <fwTools/random/Generator.hpp>
+#include <core/tools/random/Generator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::CompareTest );
@@ -69,15 +69,15 @@ void CompareTest::checkContainerEquality()
     std::vector< double > vect1(20);
     std::vector< double > vect2(20);
 
-    ::fwTools::random::fillContainer(0.0001, 10., vect1);
+    core::tools::random::fillContainer(0.0001, 10., vect1);
     vect2 = vect1;
 
     bool isEqual = ::fwMath::isContainerEqual(vect1, vect2);
     CPPUNIT_ASSERT_EQUAL(true, isEqual);
 
     std::uint32_t seedVal = std::time(NULL);
-    ::fwTools::random::fillContainer(0.000001, 0.000009, vect1, seedVal);
-    ::fwTools::random::fillContainer(0.000001, 0.000009, vect2, ++seedVal);
+    core::tools::random::fillContainer(0.000001, 0.000009, vect1, seedVal);
+    core::tools::random::fillContainer(0.000001, 0.000009, vect2, ++seedVal);
 
     isEqual = ::fwMath::isContainerEqual(vect1, vect2);
     CPPUNIT_ASSERT_EQUAL(true, isEqual);

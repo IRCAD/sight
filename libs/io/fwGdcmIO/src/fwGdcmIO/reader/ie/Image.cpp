@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,10 +77,10 @@ Image::~Image()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj)
+double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 {
     ::gdcm::ImageReader reader;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader.SetStream(*is);
 
@@ -273,7 +273,7 @@ void Image::readImagePixelModule()
     // Compute final image type
     ::fwDicomTools::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
+    core::tools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);
     ::gdcm::PixelFormat targetPixelFormat = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
 
@@ -405,9 +405,9 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
     {
         // Read a frame
         ::gdcm::ImageReader frameReader;
-        const ::fwMemory::BufferObject::sptr bufferObj         = item.second;
-        const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
-        const std::string dicomPath                            = bufferObj->getStreamInfo().fsFile.string();
+        const core::memory::BufferObject::sptr bufferObj         = item.second;
+        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const std::string dicomPath                              = bufferObj->getStreamInfo().fsFile.string();
         SPTR(std::istream) is = streamInfo.stream;
         frameReader.SetStream(*is);
 

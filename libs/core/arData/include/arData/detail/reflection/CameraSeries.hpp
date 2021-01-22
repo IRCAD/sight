@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "arData/CameraSeries.hpp"
 #include "arData/config.hpp"
 
-#include <fwCamp/macros.hpp>
+#include <core/reflection/macros.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 

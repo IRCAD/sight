@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwIO/IReader.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwRuntime/operations.hpp>
 
@@ -34,14 +34,14 @@ namespace fwIO
 {
 
 // Public slot
-const ::fwCom::Slots::SlotKeyType IReader::s_SET_FILE_FOLDER = "setFileFolder";
+const core::com::Slots::SlotKeyType IReader::s_SET_FILE_FOLDER = "setFileFolder";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT     = "readFolder";
-static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT       = "readFile";
-static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT      = "readFiles";
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
-static const ::fwCom::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
+static const core::com::Slots::SlotKeyType s_READ_FOLDER_SLOT     = "readFolder";
+static const core::com::Slots::SlotKeyType s_READ_FILE_SLOT       = "readFile";
+static const core::com::Slots::SlotKeyType s_READ_FILES_SLOT      = "readFiles";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
+static const core::com::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
 
 //-----------------------------------------------------------------------------
 

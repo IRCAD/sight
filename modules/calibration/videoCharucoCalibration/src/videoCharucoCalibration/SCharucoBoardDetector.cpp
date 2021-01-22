@@ -26,11 +26,11 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
@@ -53,12 +53,12 @@
 namespace videoCharucoCalibration
 {
 
-const ::fwCom::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
-const ::fwCom::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT            = "detectPoints";
-const ::fwCom::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_DETECT_POINTS_SLOT            = "detectPoints";
+const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
-const ::fwCom::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETECTED_SIG = "charucoBoardDetected";
-const ::fwCom::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETECTED_SIG = "charucoBoardDetected";
+const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG
     = "charucoBoardNotDetected";
 
 static const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
@@ -162,7 +162,7 @@ void SCharucoBoardDetector::checkPoints( core::HiResClock::HiResClockType timest
                 auto tlDetection = this->getInOut< ::arData::FrameTL >(s_DETECTION_INOUT, i);
                 if(!tlDetection->isAllocated())
                 {
-                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), ::fwTools::Type::s_UINT8, 4);
+                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), core::tools::Type::s_UINT8, 4);
                 }
                 charucoBoardPoints = this->detectCharucoBoard(tl, lastTimestamp, tlDetection);
             }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "opUltrasound/generator/SUltrasoundMesh.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/Mesh.hpp>
 
@@ -47,8 +47,8 @@ static const char* s_WIDTH       = "width";
 static const char* s_DELTA_DEPTH = "deltaDepth";
 static const char* s_SHAPE       = "shape";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT  = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT  = "setIntParameter";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
 static const std::string s_RESOLUTION_X_CONFIG = "resolutionX";
 static const std::string s_RESOLUTION_Y_CONFIG = "resolutionY";
@@ -248,7 +248,7 @@ void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
     ::fwDataTools::Mesh::generatePointNormals(_mesh);
 
     const auto sig = _mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
     sig->asyncEmit();
 }
 

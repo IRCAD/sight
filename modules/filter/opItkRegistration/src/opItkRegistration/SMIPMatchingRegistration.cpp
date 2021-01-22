@@ -22,6 +22,9 @@
 
 #include "opItkRegistration/SMIPMatchingRegistration.hpp"
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
@@ -31,9 +34,6 @@
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
@@ -96,8 +96,8 @@ void SMIPMatchingRegistration::updating()
         ::fwData::mt::ObjectReadLock movingLock(moving);
         ::fwData::mt::ObjectReadLock fixedLock(fixed);
         ::fwData::mt::ObjectWriteLock transformLock(transform);
-        ::fwTools::Type type = moving->getType();
-        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ::itkRegistrationOp::RegistrationDispatch >
+        core::tools::Type type = moving->getType();
+        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ::itkRegistrationOp::RegistrationDispatch >
         ::invoke( type, params );
     }
 

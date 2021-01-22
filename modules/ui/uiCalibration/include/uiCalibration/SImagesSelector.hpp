@@ -26,10 +26,9 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -81,14 +80,14 @@ public:
      * @name Slots API
      * @{
      */
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
-    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> AddSlotType;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_ADD_SLOT;
+    typedef core::com::Slot<void (core::HiResClock::HiResClockType)> AddSlotType;
 
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
-    typedef ::fwCom::Slot<void ()> RemoveSlotType;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
+    typedef core::com::Slot<void ()> RemoveSlotType;
 
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_RESET_SLOT;
-    typedef ::fwCom::Slot<void ()> ResetSlotType;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_RESET_SLOT;
+    typedef core::com::Slot<void ()> ResetSlotType;
     ///@}
 
 protected:

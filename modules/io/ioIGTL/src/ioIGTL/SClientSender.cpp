@@ -22,15 +22,14 @@
 
 #include "ioIGTL/SClientSender.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwPreferences/helper.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Failed.hpp>
 
 fwServicesRegisterMacro(::ioIGTL::INetworkSender, ::ioIGTL::SClientSender)
 
@@ -81,7 +80,7 @@ void SClientSender::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("Server element not found");
+        throw core::tools::Failed("Server element not found");
     }
 }
 

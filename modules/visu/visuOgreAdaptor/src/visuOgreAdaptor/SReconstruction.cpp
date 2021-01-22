@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SReconstruction.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -35,8 +35,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
-static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
+static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
+static const core::com::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
 
 static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 

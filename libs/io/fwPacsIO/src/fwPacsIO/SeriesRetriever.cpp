@@ -24,11 +24,10 @@
 
 #include "fwPacsIO/exceptions/RequestFailure.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwRuntime/operations.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -38,7 +37,7 @@
 namespace fwPacsIO
 {
 
-const ::fwCom::Slots::SlotKeyType SeriesRetriever::s_PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
+const core::com::Slots::SlotKeyType SeriesRetriever::s_PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
 
 // ----------------------------------------------------------------------------
 
@@ -64,7 +63,7 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
     m_progressCallback = progressCallback;
 
     //Creating folder
-    m_path = ::fwTools::System::getTemporaryFolder() / "dicom/";
+    m_path = core::tools::System::getTemporaryFolder() / "dicom/";
     if (!std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);

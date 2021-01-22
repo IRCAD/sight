@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwAtoms/registry/macros.hpp"
 
-#include <fwCamp/UserObject.hpp>
+#include <core/reflection/UserObject.hpp>
 
 fwAtomsRegisterMacro( ::fwAtoms::Object );
 
@@ -135,4 +135,3 @@ void Object::clearMetaInfo()
 }
 
 }  // namespace fwAtoms
-

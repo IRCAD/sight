@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ inline CSPTR(DATATYPE) IService::getInput(const KeyType& key) const
     if(iterator != m_inputsMap.end())
     {
         input = std::dynamic_pointer_cast<const DATATYPE>( iterator->second.getShared() );
-        SLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
+        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
     }
 
     return input;
@@ -54,7 +54,7 @@ inline SPTR(DATATYPE) IService::getInOut(const KeyType& key) const
     if(iterator != m_inOutsMap.end())
     {
         inout = std::dynamic_pointer_cast<DATATYPE>( iterator->second.getShared() );
-        SLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
+        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
     }
 
     return inout;
@@ -70,7 +70,7 @@ inline SPTR(DATATYPE) IService::getOutput(const KeyType& key) const
     if(iterator != m_outputsMap.end())
     {
         output = std::dynamic_pointer_cast<DATATYPE>( iterator->second.get_shared() );
-        SLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
+        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
     }
 
     return output;
@@ -130,7 +130,7 @@ inline ::fwData::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const Key
     {
         // The Key has been found, we can cast it to the right type
         input = iterator->second.dynamicPointerCast< CONST_DATATYPE >();
-        SLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler< DATATYPE >().getClassname() << " failed",
+        SLM_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
                    !input.expired());
     }
 
@@ -150,7 +150,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& 
     {
         // The Key has been found, we can cast it to the right type
         inout = iterator->second.dynamicPointerCast< DATATYPE >();
-        SLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler< DATATYPE >().getClassname() << " failed",
+        SLM_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
                    !inout.expired());
     }
 
@@ -171,7 +171,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType&
         // The Key has been found, we can cast it to the right type
         output = std::dynamic_pointer_cast< DATATYPE >(iterator->second.get_shared());
         SLM_ASSERT(
-            "DynamicCast " << ::fwCore::TypeDemangler< DATATYPE >().getClassname() << " failed", !output.expired());
+            "DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed", !output.expired());
     }
 
     return output;

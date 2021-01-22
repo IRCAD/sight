@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "Tuto04MeshGeneratorCpp/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {

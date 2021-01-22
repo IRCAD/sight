@@ -60,7 +60,7 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string HasSlotIDType;
-    typedef std::pair< HasSlotIDType, ::fwCom::Slots::SlotKeyType> SlotInfoType;
+    typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Does nothing

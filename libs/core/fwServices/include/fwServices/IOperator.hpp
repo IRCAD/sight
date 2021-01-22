@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwServices/config.hpp"
 #include "fwServices/IParametersService.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 namespace fwServices
 {
@@ -42,10 +42,10 @@ class FWSERVICES_CLASS_API IOperator : public ::fwServices::IParametersService
 
 public:
 
-    fwCoreServiceMacro(IOperator, ::fwServices::IParametersService);
+    fwCoreServiceMacro(IOperator, ::fwServices::IParametersService)
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_COMPUTED_SIG;
-    typedef ::fwCom::Signal<void ()> ComputedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_COMPUTED_SIG;
+    typedef core::com::Signal<void ()> ComputedSignalType;
 
 protected:
 

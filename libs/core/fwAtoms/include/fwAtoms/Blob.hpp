@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
 
-#include <fwMemory/BufferObject.hpp>
+#include <core/memory/BufferObject.hpp>
 
 namespace fwAtoms
 {
@@ -38,7 +38,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Blob : public Base
 {
 public:
-    fwCoreClassMacro(Blob, ::fwAtoms::Base, ::fwAtoms::factory::New< Blob >);
+    fwCoreClassMacro(Blob, ::fwAtoms::Base, ::fwAtoms::factory::New< Blob >)
 
     /**
      * @brief Constructor
@@ -59,7 +59,7 @@ public:
      * @brief create a new Blob shared ptr.
      * @param buffer the buffer object
      */
-    FWATOMS_API static Blob::sptr New(::fwMemory::BufferObject::sptr buffer);
+    FWATOMS_API static Blob::sptr New(core::memory::BufferObject::sptr buffer);
 
     /**
      * @brief create a new Blob shared ptr.
@@ -73,8 +73,8 @@ public:
      * @return the a pointer to the first buffer element.
      * @{
      */
-    FWATOMS_API ::fwMemory::BufferObject::sptr getBufferObject() const;
-    FWATOMS_API void setBufferObject(const ::fwMemory::BufferObject::sptr& bo);
+    FWATOMS_API core::memory::BufferObject::sptr getBufferObject() const;
+    FWATOMS_API void setBufferObject(const core::memory::BufferObject::sptr& bo);
     /// @}
 
     /**
@@ -92,7 +92,7 @@ public:
 
 protected:
 
-    ::fwMemory::BufferObject::sptr m_bufferObject;
+    core::memory::BufferObject::sptr m_bufferObject;
 };
 
 }

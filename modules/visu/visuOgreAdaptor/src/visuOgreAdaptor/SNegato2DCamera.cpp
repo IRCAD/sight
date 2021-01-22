@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SNegato2DCamera.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
@@ -35,9 +35,9 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
-static const ::fwCom::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
+static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
+static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
+static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";

@@ -24,8 +24,8 @@
 
 #include "ioPacs/config.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Timer.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 

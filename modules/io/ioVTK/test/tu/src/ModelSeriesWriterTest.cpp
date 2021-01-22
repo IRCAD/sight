@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -37,8 +39,6 @@
 
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <boost/functional/hash.hpp>
 
@@ -136,7 +136,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
     const std::vector< std::string > allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
-    const fs::path dir = ::fwTools::System::getTemporaryFolder() / "modelSeries";
+    const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeries";
 
     if( fs::exists(dir) )
     {
@@ -290,7 +290,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
 
-    const fs::path dir = ::fwTools::System::getTemporaryFolder() / "modelSeriesObj";
+    const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
 
     if( fs::exists(dir) )
     {

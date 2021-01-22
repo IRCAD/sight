@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void SQueryEditor::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("'server' element not found");
+        throw core::tools::Failed("'server' element not found");
     }
 
     ::fwGui::IGuiContainerSrv::initialize();

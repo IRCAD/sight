@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #pragma once
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwItkIO/itk.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkCastImageFilter.h>
 
@@ -70,9 +70,9 @@ typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const ::fwData::Image
     typename CasterType::Params p;
     p.i_img = _img;
 
-    const ::fwTools::Type inType = _img->getType();
+    const core::tools::Type inType = _img->getType();
 
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, CasterType >::invoke(inType, p);
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, CasterType >::invoke(inType, p);
 
     return p.o_img;
 }

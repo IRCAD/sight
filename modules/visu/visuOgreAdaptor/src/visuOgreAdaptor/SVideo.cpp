@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SVideo.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/TransferFunction.hpp>
 
@@ -47,8 +47,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_PL_SLOT = "updatePL";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT = "updatePL";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
@@ -232,7 +232,7 @@ void SVideo::updating()
         ::Ogre::MaterialPtr defaultMat;
         if(tf)
         {
-            if(type == ::fwTools::Type::s_FLOAT || type == ::fwTools::Type::s_DOUBLE)
+            if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
             {
                 defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME, ::fwRenderOgre::RESOURCE_GROUP);
             }

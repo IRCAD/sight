@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,21 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_OBJECTLOCK_HPP__
-#define __FWDATA_OBJECTLOCK_HPP__
+#pragma once
 
-
-#include "fwData/Image.hpp"
 #include "fwData/Array.hpp"
+#include "fwData/config.hpp"
+#include "fwData/Image.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
-#include "fwData/config.hpp"
 
 #include <vector>
 
 namespace fwData
 {
-
 
 /**
  * @brief A simple helper to lock specific object, manages : Image, Mesh and Array.
@@ -48,27 +45,24 @@ public:
     {
     }
 
-    FWDATA_API ObjectLock( const ObjectLock & );
+    FWDATA_API ObjectLock( const ObjectLock& );
     FWDATA_API ObjectLock( ::fwData::Object::sptr obj );
 
     FWDATA_API ~ObjectLock();
 
-    FWDATA_API ObjectLock & operator=(const ObjectLock & );
+    FWDATA_API ObjectLock& operator=(const ObjectLock& );
 private:
 
-
-    typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
+    typedef std::vector< core::memory::BufferObject::Lock > LocksType;
     typedef std::vector< ::fwData::Object::sptr > ObjectsType;
 
-    void lock( ::fwData::Array::sptr array, LocksType & locks );
-    void lock( ::fwData::Image::sptr image, LocksType & locks );
-    void lock( ::fwData::Mesh::sptr mesh, LocksType & locks );
-    void lock( ::fwData::Reconstruction::sptr rec, LocksType & locks );
+    void lock( ::fwData::Array::sptr array, LocksType& locks );
+    void lock( ::fwData::Image::sptr image, LocksType& locks );
+    void lock( ::fwData::Mesh::sptr mesh, LocksType& locks );
+    void lock( ::fwData::Reconstruction::sptr rec, LocksType& locks );
 
     LocksType m_locks;
     ObjectsType m_objects;
 };
 
 } // fwData
-
-#endif // __FWDATA_OBJECTLOCK_HPP__

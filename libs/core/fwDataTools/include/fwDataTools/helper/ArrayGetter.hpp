@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,10 @@
 
 #include "fwDataTools/config.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/tools/Type.hpp>
+
 #include <fwData/Array.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/Type.hpp>
 
 namespace fwDataTools
 {
@@ -127,12 +126,12 @@ public:
                                               size_t sizeOfType ) const;
 
     /// Returns a copy of current lock on array
-    FWDATATOOLS_API ::fwMemory::BufferObject::Lock getLock() const;
+    FWDATATOOLS_API core::memory::BufferObject::Lock getLock() const;
 
 protected:
 
     ::fwData::Array::csptr m_array;
-    ::fwMemory::BufferObject::Lock m_lock;
+    core::memory::BufferObject::Lock m_lock;
 
 };
 

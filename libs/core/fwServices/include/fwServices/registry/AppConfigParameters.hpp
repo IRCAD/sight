@@ -26,11 +26,10 @@
 #include "fwServices/registry/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <map>
 

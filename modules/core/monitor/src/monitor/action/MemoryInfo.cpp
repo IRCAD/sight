@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "monitor/action/MemoryInfo.hpp"
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/tools/MemoryMonitorTools.hpp>
 
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/tools/MemoryMonitorTools.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -56,19 +56,19 @@ void MemoryInfo::updating( )
 {
     // Memory information
     std::uint64_t mo                = 1024*1024;
-    std::uint64_t totalSystemMemory = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
-    std::uint64_t freeSystemMemory  = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
-    std::uint64_t usedProcessMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
-    std::uint64_t estimateFreeMem   = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem();
+    std::uint64_t totalSystemMemory = core::memory::tools::MemoryMonitorTools::getTotalSystemMemory();
+    std::uint64_t freeSystemMemory  = core::memory::tools::MemoryMonitorTools::getFreeSystemMemory();
+    std::uint64_t usedProcessMemory = core::memory::tools::MemoryMonitorTools::getUsedProcessMemory();
+    std::uint64_t estimateFreeMem   = core::memory::tools::MemoryMonitorTools::estimateFreeMem();
 
-    ::fwMemory::BufferManager::SizeType managedBufferSize = 0;
-    ::fwMemory::BufferManager::SizeType dumpedBufferSize  = 0;
-    ::fwMemory::BufferManager::sptr manager               = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::SizeType managedBufferSize = 0;
+    core::memory::BufferManager::SizeType dumpedBufferSize  = 0;
+    core::memory::BufferManager::sptr manager               = core::memory::BufferManager::getDefault();
     if( manager )
     {
-        ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
-        managedBufferSize                            = stats.totalManaged;
-        dumpedBufferSize                             = stats.totalDumped;
+        core::memory::BufferManager::BufferStats stats = manager->getBufferStats().get();
+        managedBufferSize = stats.totalManaged;
+        dumpedBufferSize  = stats.totalDumped;
     }
     std::stringstream stream;
     stream << "Total system memory = "  << totalSystemMemory/mo << " Mo" << std::endl;

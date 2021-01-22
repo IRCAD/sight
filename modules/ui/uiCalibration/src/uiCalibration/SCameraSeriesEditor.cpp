@@ -25,18 +25,16 @@
 #include <arData/CameraSeries.hpp>
 
 #include <core/base.hpp>
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -48,7 +46,7 @@ namespace uiCalibration
 {
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraSeriesEditor, ::arData::CameraSeries)
 
-const ::fwCom::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+const core::com::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
 SCameraSeriesEditor::SCameraSeriesEditor() noexcept :

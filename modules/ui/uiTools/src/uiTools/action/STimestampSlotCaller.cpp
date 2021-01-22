@@ -25,10 +25,9 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
-
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -100,16 +99,16 @@ void STimestampSlotCaller::updating()
 
     for(SlotInfoType info : m_slotInfos)
     {
-        HasSlotIDType HasSlotId = info.first;
-        ::fwCom::Slots::SlotKeyType slotKey = info.second;
+        HasSlotIDType HasSlotId               = info.first;
+        core::com::Slots::SlotKeyType slotKey = info.second;
 
-        if (::fwTools::fwID::exist(HasSlotId))
+        if (core::tools::fwID::exist(HasSlotId))
         {
-            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
-            ::fwCom::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
+            core::com::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast< core::com::HasSlots >(obj);
             SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
-            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
+            core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 
             slot->asyncRun(timestamp);
         }

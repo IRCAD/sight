@@ -87,7 +87,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, size_t numberOfComponents,
+void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type& type, size_t numberOfComponents,
                            unsigned int maxElementNum)
 {
     m_width              = width;
@@ -121,7 +121,7 @@ void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& t
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
+void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat format,
                            unsigned int maxElementNum)
 {
     m_width       = width;

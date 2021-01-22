@@ -22,9 +22,9 @@
 
 #include "fwAtomsPatch/infos/Logger.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
+#include <core/tools/Os.hpp>
 
-#include <fwTools/Os.hpp>
+#include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
@@ -75,7 +75,7 @@ Logger::Logger()
         appName = profile->getName();
     }
 
-    const bfile::path appPrefDir = ::fwTools::os::getUserDataDir("sight", appName, true);
+    const bfile::path appPrefDir = core::tools::os::getUserDataDir("sight", appName, true);
 
     FW_RAISE_IF("Unable to define User's data directory", appPrefDir.empty());
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -241,8 +241,8 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
     // Create Reader
     std::shared_ptr< ::gdcm::Reader > reader =
         std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 
@@ -301,8 +301,8 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
     // Create Reader
     std::shared_ptr< ::gdcm::Reader > reader =
         std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
-    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 

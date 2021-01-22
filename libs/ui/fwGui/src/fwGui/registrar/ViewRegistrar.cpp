@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -189,7 +189,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
             SLM_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' view, "
                        "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
                        "it at the end of the configuration",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
@@ -215,7 +215,7 @@ void ViewRegistrar::manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar )
     if(m_menuBarSid.second) //service is auto started?
     {
         SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                   ::fwTools::fwID::exist(m_menuBarSid.first ) );
+                   core::tools::fwID::exist(m_menuBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first );
         service->start();
     }
@@ -229,7 +229,7 @@ void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
     if(m_toolBarSid.second) //service is auto started?
     {
         SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                   ::fwTools::fwID::exist(m_toolBarSid.first ) );
+                   core::tools::fwID::exist(m_toolBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first );
         service->start();
     }
@@ -245,7 +245,7 @@ void ViewRegistrar::unmanage()
         {
             SLM_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                        "It may have been destroyed by the configuration if it uses deferred objects.",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }
@@ -267,7 +267,7 @@ void ViewRegistrar::unmanageToolBar()
         if(m_toolBarSid.second) //service is auto started?
         {
             SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                       ::fwTools::fwID::exist(m_toolBarSid.first ) );
+                       core::tools::fwID::exist(m_toolBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first );
             service->stop().wait();
         }
@@ -284,7 +284,7 @@ void ViewRegistrar::unmanageMenuBar()
         if(m_menuBarSid.second) //service is auto started?
         {
             SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                       ::fwTools::fwID::exist(m_menuBarSid.first ) );
+                       core::tools::fwID::exist(m_menuBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first );
             service->stop().wait();
         }

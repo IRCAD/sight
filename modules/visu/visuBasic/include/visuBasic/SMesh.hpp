@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,11 +58,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SMesh, ::fwGui::IGuiContainerSrv)
 
-    VISUBASIC_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    VISUBASIC_API static const core::com::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
 
-    VISUBASIC_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    VISUBASIC_API static const core::com::Signals::SignalKeyType s_CAM_UPDATED_SIG;
 
-    typedef ::fwCom::Signal< void (::fwData::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
+    typedef core::com::Signal< void (::fwData::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
 
     /// Creates slots and the signal.
     VISUBASIC_API SMesh() noexcept;
@@ -124,7 +124,7 @@ private:
     CamUpdatedSignalType::sptr m_sigCamUpdated;
 
     /// Stores connection with the camera transform.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
 };
 

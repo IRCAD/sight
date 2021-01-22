@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "uiVisuOgre/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -66,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMaterialSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SMaterialSelector, ::fwGui::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;
@@ -78,8 +78,8 @@ public:
      * @name Signals API
      * @{
      */
-    UIVISUOGRE_API static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG;
-    typedef ::fwCom::Signal<void (std::string)> SelectedSignalType;
+    UIVISUOGRE_API static const core::com::Signals::SignalKeyType s_SELECTED_SIG;
+    typedef core::com::Signal<void (std::string)> SelectedSignalType;
     /** @} */
 
 protected:

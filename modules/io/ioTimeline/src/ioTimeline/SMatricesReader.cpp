@@ -22,13 +22,13 @@
 
 #include "ioTimeline/SMatricesReader.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -50,13 +50,13 @@ fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arDat
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
-static const ::fwCom::Slots::SlotKeyType s_START_READING = "startReading";
-static const ::fwCom::Slots::SlotKeyType s_STOP_READING  = "stopReading";
-static const ::fwCom::Slots::SlotKeyType s_PAUSE         = "pause";
+static const core::com::Slots::SlotKeyType s_START_READING = "startReading";
+static const core::com::Slots::SlotKeyType s_STOP_READING  = "stopReading";
+static const core::com::Slots::SlotKeyType s_PAUSE         = "pause";
 
-static const ::fwCom::Slots::SlotKeyType s_READ_NEXT     = "readNext";
-static const ::fwCom::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
-static const ::fwCom::Slots::SlotKeyType s_SET_STEP      = "setStep";
+static const core::com::Slots::SlotKeyType s_READ_NEXT     = "readNext";
+static const core::com::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
+static const core::com::Slots::SlotKeyType s_SET_STEP      = "setStep";
 
 //------------------------------------------------------------------------------
 

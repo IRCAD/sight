@@ -28,12 +28,11 @@
 #include <fwMedData/Study.hpp>
 
 #include <core/Exception.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
-
-#include <fwTools/Type.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::CompareObjectsTest );
 

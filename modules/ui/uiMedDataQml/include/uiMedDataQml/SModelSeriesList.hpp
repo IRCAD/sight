@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ Q_OBJECT
 Q_PROPERTY(OrganListModel* listModel MEMBER m_listModel)
 public:
 
-    fwCoreServiceMacro(SModelSeriesList, ::fwQml::IQmlEditor);
+    fwCoreServiceMacro(SModelSeriesList, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIMEDDATAQML_API SModelSeriesList() noexcept;
@@ -105,11 +105,11 @@ protected:
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
-    static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
-    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
+    typedef core::com::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
 
-    static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
-    typedef ::fwCom::Signal< void () > EmptiedSelectionSignalType;
+    static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
+    typedef core::com::Signal< void () > EmptiedSelectionSignalType;
 
 protected Q_SLOTS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,9 @@
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -36,9 +39,6 @@
 #include <fwItkIO/itk.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -79,11 +79,11 @@ void MIPMatchingRegistrationTest::identityTest()
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed         = fixed;
-    params.moving        = moving;
-    params.transform     = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::Type type = moving->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed     = fixed;
+    params.moving    = moving;
+    params.transform = ::fwData::TransformationMatrix3D::New();
+    core::tools::Type type = moving->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
 
     for(size_t i = 0; i != 3; ++i)
     {
@@ -107,11 +107,11 @@ void MIPMatchingRegistrationTest::translateTransformTest()
 
     std::array<double, 3> expected {{ 4., 12., 7. }};
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed         = fixed;
-    params.moving        = moving;
-    params.transform     = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::Type type = moving->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed     = fixed;
+    params.moving    = moving;
+    params.transform = ::fwData::TransformationMatrix3D::New();
+    core::tools::Type type = moving->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
@@ -169,11 +169,11 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto resampledF4sFixed = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed         = resampledF4sFixed;
-    params.moving        = moving;
-    params.transform     = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::Type type = moving->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed     = resampledF4sFixed;
+    params.moving    = moving;
+    params.transform = ::fwData::TransformationMatrix3D::New();
+    core::tools::Type type = moving->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",

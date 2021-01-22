@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,11 @@
 
 #include "uiVisu/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <map>
 #include <string>
@@ -47,7 +46,7 @@ class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(CrossTypeAction, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(CrossTypeAction, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIVISU_API CrossTypeAction() noexcept;
@@ -89,7 +88,7 @@ private:
     static std::map< std::string, float > m_scaleConversion;
     std::string m_crossType;
 
-    typedef ::fwCom::Signal< void (double) > CrossTypeModifiedSignalType;
+    typedef core::com::Signal< void (double) > CrossTypeModifiedSignalType;
     CrossTypeModifiedSignalType::sptr m_sigCrossTypeModified; ///< Signal emitted when cross type is modified
 };
 

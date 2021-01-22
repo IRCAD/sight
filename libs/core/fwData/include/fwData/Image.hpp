@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,13 +27,11 @@
 #include "fwData/iterator/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
-#include <fwMemory/IBuffered.hpp>
-
-#include <fwTools/DynamicType.hpp>
-#include <fwTools/Type.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/memory/IBuffered.hpp>
+#include <core/tools/DynamicType.hpp>
+#include <core/tools/Type.hpp>
 
 #include <boost/shared_array.hpp>
 
@@ -53,7 +51,7 @@ class PointList;
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * The buffer type is defined by ::fwTools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
+ * The buffer type is defined by core::tools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
  * float and double).
  *
  * The image size is a 3D size_t array but the third dimension can be 0 for a 2D image.
@@ -73,9 +71,9 @@ class PointList;
  * allocate enough memory.
  *
  * To resize the image, you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
- * format of the buffer. You can use setSize2(const Size& size), setType(::fwTools::Type type) and
+ * format of the buffer. You can use setSize2(const Size& size), setType(core::tools::Type type) and
  * setPixelFormat(PixelFormat format) or directly call
- * resize(const Size& size, const ::fwTools::Type& type, PixelFormat format).
+ * resize(const Size& size, const core::tools::Type& type, PixelFormat format).
  *
  * @section Access Buffer access
  *
@@ -132,7 +130,7 @@ class PointList;
  * \b Example :
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    img->resize(1920, 1080, 1, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, core::tools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -178,7 +176,7 @@ class PointList;
  */
 /* *INDENT-ON* */
 class FWDATA_CLASS_API Image : public ::fwData::Object,
-                               public ::fwMemory::IBuffered
+                               public core::memory::IBuffered
 {
 public:
     fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >)
@@ -294,9 +292,9 @@ public:
      * @brief get/set image type
      * @warning This method does not resize the buffer with the new type. You must call resize for that.
      */
-    FWDATA_API void setType(::fwTools::Type type);
+    FWDATA_API void setType(core::tools::Type type);
     FWDATA_API void setType(const std::string& type);
-    FWDATA_API ::fwTools::Type getType() const;
+    FWDATA_API core::tools::Type getType() const;
     /// @}
 
     /**
@@ -312,8 +310,8 @@ public:
      */
     FWDATA_API size_t resize();
 
-    FWDATA_API size_t resize(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format);
-    FWDATA_API size_t resize(const Size& size, const ::fwTools::Type& type, PixelFormat format);
+    FWDATA_API size_t resize(IndexType x, IndexType y,  IndexType z, const core::tools::Type& type, PixelFormat format);
+    FWDATA_API size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -326,48 +324,48 @@ public:
      * @{
      */
     /// Type of signal when image's buffer is added
-    typedef ::fwCom::Signal< void () > BufferModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
+    typedef core::com::Signal< void () > BufferModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
-    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkAddedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
+    typedef core::com::Signal< void (SPTR(::fwData::Point)) > LandmarkAddedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
-    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkRemovedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
+    typedef core::com::Signal< void (SPTR(::fwData::Point)) > LandmarkRemovedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
-    typedef ::fwCom::Signal< void (bool) > LandmarkDisplayedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_DISPLAYED_SIG;
+    typedef core::com::Signal< void (bool) > LandmarkDisplayedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef ::fwCom::Signal< void (bool) > DistanceDisplayedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
+    typedef core::com::Signal< void (bool) > DistanceDisplayedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceAddedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
+    typedef core::com::Signal< void (SPTR(::fwData::PointList)) > DistanceAddedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef ::fwCom::Signal< void (CSPTR(::fwData::PointList)) > DistanceRemovedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
+    typedef core::com::Signal< void (CSPTR(::fwData::PointList)) > DistanceRemovedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
-    typedef ::fwCom::Signal< void (int, int, int) > SliceIndexModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_MODIFIED_SIG;
+    typedef core::com::Signal< void (int, int, int) > SliceIndexModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_SLICE_INDEX_MODIFIED_SIG;
 
     /// Type of signal when slice type is modified (from slice type, to slice type)
-    typedef ::fwCom::Signal< void (int, int) > SliceTypeModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
+    typedef core::com::Signal< void (int, int) > SliceTypeModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
 
     /// Type of signal when visibility is modified
-    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
 
     /// Type of signal when visibility is modified
-    typedef ::fwCom::Signal< void () > TransparencyModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
+    typedef core::com::Signal< void () > TransparencyModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
 
     /**
      * @}
@@ -404,7 +402,7 @@ public:
      * Example:
      * @code{.cpp}
         ::fwData::Image::sptr img = ::fwData::Image::New();
-        img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+        img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
         ::fwData::Image::Iterator< Color > iter    = img->begin< Color >();
         const ::fwData::Image::Iterator< Color > iterEnd = img->end< Color >();
 
@@ -462,9 +460,9 @@ public:
     FWDATA_API void setBuffer(
         void* buf,
         bool takeOwnership,
-        const ::fwTools::Type& type,
+        const core::tools::Type& type,
         const ::fwData::Image::Size& size,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     /** @{
@@ -540,35 +538,35 @@ public:
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
      *
      * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
-     * the buffer is restored from the disk if it was dumped and as long as the ::fwMemory::BufferObject::Lock is
+     * the buffer is restored from the disk if it was dumped and as long as the core::memory::BufferObject::Lock is
      * maintained, the buffer will not be dumped.
      *
      * An exception will be raised if you try to access while the array is not locked.
      */
-    [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+    [[nodiscard]] FWDATA_API core::memory::BufferObject::Lock lock() const;
 
     /// Return the buffer object
-    FWDATA_API ::fwMemory::BufferObject::sptr getBufferObject();
+    FWDATA_API core::memory::BufferObject::sptr getBufferObject();
 
     /// Return the buffer object
-    FWDATA_API ::fwMemory::BufferObject::csptr getBufferObject() const;
+    FWDATA_API core::memory::BufferObject::csptr getBufferObject() const;
     /**
      * @brief Set a stream factory for the image's buffer manager
      *
      * The factory will be used to load the image on demand.
      *
-     * @param factory ::fwMemory::stream::in::IFactory stream factory
+     * @param factory core::memory::stream::in::IFactory stream factory
      * @param size size of data provided by the stream
      * @param sourceFile Filesystem path of the source file, if applicable
      * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
      * @param policy Buffer allocation policy
      */
     FWDATA_API void setIStreamFactory(
-        const SPTR(::fwMemory::stream::in::IFactory)& factory,
+        const SPTR(core::memory::stream::in::IFactory)& factory,
         const size_t size,
-        const std::filesystem::path& sourceFile                = "",
-        const ::fwMemory::FileFormatType format                = ::fwMemory::OTHER,
-        const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New());
+        const std::filesystem::path& sourceFile                  = "",
+        const core::memory::FileFormatType format                = core::memory::OTHER,
+        const core::memory::BufferAllocationPolicy::sptr& policy = core::memory::BufferMallocPolicy::New());
 
     // ---------------------------------------
     // Deprecated API
@@ -636,9 +634,9 @@ public:
     FWDATA_API size_t allocate();
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                               const ::fwTools::Type& type, size_t numberOfComponents = 1);
+                               const core::tools::Type& type, size_t numberOfComponents = 1);
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
-    FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(const SizeType& size, const core::tools::Type& type, size_t numberOfComponents = 1);
     /// @}
 
     /**
@@ -646,7 +644,7 @@ public:
      * @deprecated Use getType()
      */
     [[deprecated("it will be removed in sight 22.0, use getType()")]]
-    FWDATA_API ::fwTools::DynamicType getPixelType() const;
+    FWDATA_API core::tools::DynamicType getPixelType() const;
 
     /**
      * @brief set data array
@@ -674,7 +672,7 @@ protected:
      * This is needed for IBuffered interface implementation
      * The buffer cannot be accessed if the image is not locked
      */
-    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
+    FWDATA_API void lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const override;
 
 private:
 
@@ -688,8 +686,8 @@ private:
      */
     void setBuffer(
         void* buf,
-        bool takeOwnership                              = false,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        bool takeOwnership                                = false,
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     //! Size of the image (in terms of points)
@@ -717,7 +715,7 @@ private:
     size_t m_numberOfComponents{1};
 
     //! type of image pixel
-    ::fwTools::Type m_type{::fwTools::Type::s_UNSPECIFIED_TYPE};
+    core::tools::Type m_type{core::tools::Type::s_UNSPECIFIED_TYPE};
 
     //! image format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};

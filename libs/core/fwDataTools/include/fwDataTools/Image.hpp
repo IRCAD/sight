@@ -25,12 +25,11 @@
 #include "fwDataTools/config.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwMath/Compare.hpp>
-
-#include <fwTools/Type.hpp>
 
 namespace fwDataTools
 {

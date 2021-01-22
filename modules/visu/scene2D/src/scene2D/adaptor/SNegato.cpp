@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "scene2D/adaptor/SNegato.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -56,10 +56,10 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
+static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
 typedef ::fwDataTools::helper::MedicalImage MedicalImage;
 
@@ -567,7 +567,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord&, ::fwRender
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( newImgWindow, newImgLevel);
     }
 }

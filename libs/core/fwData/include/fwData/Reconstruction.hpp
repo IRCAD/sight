@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Reconstruction));
 
@@ -129,16 +129,16 @@ public:
      */
 
     /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    typedef ::fwCom::Signal< void (SPTR( ::fwData::Mesh ) ) > MeshChangedSignalType;
+    typedef core::com::Signal< void (SPTR( ::fwData::Mesh ) ) > MeshChangedSignalType;
 
     /// Key in m_signals map of signal m_sigMeshModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_MESH_CHANGED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
-    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
+    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
     /**
      * @}
      */

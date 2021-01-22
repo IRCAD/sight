@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiIO/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -87,14 +87,14 @@ namespace action
 class UIIO_CLASS_API SExportWithSeriesDB : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SExportWithSeriesDB,  ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SExportWithSeriesDB,  ::fwGui::IActionSrv)
 
     /**
      * @name Signal/Slot typedefs
      * @{
      */
-    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
-    typedef ::fwCom::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
+    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
     /// @}
 
     UIIO_API SExportWithSeriesDB() noexcept;

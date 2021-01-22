@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "uiCalibration/config.hpp"
 #include "uiCalibration/SUpdateIntrinsicDialog.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -61,7 +61,7 @@ class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SIntrinsicEdition, ::fwServices::IService);
+    fwCoreServiceMacro(SIntrinsicEdition, ::fwServices::IService)
 
     /**
      * @brief Constructor.

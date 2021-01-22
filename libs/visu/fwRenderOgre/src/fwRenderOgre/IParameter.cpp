@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,9 @@
 
 #include "fwRenderOgre/IParameter.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <fwRenderOgre/ogre.hpp>
+
+#include <core/com/Slots.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -35,7 +37,6 @@
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwRenderOgre/ogre.hpp>
 #include <fwServices/macros.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
@@ -49,14 +50,14 @@ namespace fwRenderOgre
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
+const core::com::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
 const std::string IParameter::s_PARAMETER_INOUT = "parameter";
 
@@ -333,17 +334,17 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         {
             const auto dumpLock = arrayObject->lock();
 
-            if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+            if( arrayObject->getType() == core::tools::Type::s_FLOAT)
             {
                 const float* floatValue = static_cast<const float*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
             }
-            else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+            else if( arrayObject->getType() == core::tools::Type::s_DOUBLE)
             {
                 const double* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
             }
-            else if( arrayObject->getType() == ::fwTools::Type::s_INT32)
+            else if( arrayObject->getType() == core::tools::Type::s_INT32)
             {
                 const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, intValue, 1, numComponents);
@@ -459,7 +460,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 
         if(arrayObject->empty())
         {
-            arrayObject->resize({2}, ::fwTools::Type::s_INT32);
+            arrayObject->resize({2}, core::tools::Type::s_INT32);
         }
 
         const auto dumpLock = arrayObject->lock();
@@ -482,7 +483,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 
         if(arrayObject->empty())
         {
-            arrayObject->resize({3}, ::fwTools::Type::s_INT32);
+            arrayObject->resize({3}, core::tools::Type::s_INT32);
         }
 
         const auto dumpLock = arrayObject->lock();
@@ -520,18 +521,18 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
         ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
         if(arrayObject->empty())
         {
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize({2}, ::fwTools::Type::s_DOUBLE);
+            core::tools::Type type = core::tools::Type::create< core::tools::Type::DoubleType>();
+            arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
         }
 
         const auto dumpLock = arrayObject->lock();
 
-        if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+        if( arrayObject->getType() == core::tools::Type::s_FLOAT)
         {
             arrayObject->at< float >(0) = static_cast<float>(value1);
             arrayObject->at< float >(1) = static_cast<float>(value2);
         }
-        else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+        else if( arrayObject->getType() == core::tools::Type::s_DOUBLE)
         {
             arrayObject->at< double >(0) = value1;
             arrayObject->at< double >(1) = value2;
@@ -553,19 +554,19 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 
         if(arrayObject->empty())
         {
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize({3}, ::fwTools::Type::s_DOUBLE);
+            core::tools::Type type = core::tools::Type::create< core::tools::Type::DoubleType>();
+            arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
         }
 
         const auto dumpLock = arrayObject->lock();
 
-        if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+        if( arrayObject->getType() == core::tools::Type::s_FLOAT)
         {
             arrayObject->at< float >(0) = static_cast<float>(value1);
             arrayObject->at< float >(1) = static_cast<float>(value2);
             arrayObject->at< float >(2) = static_cast<float>(value3);
         }
-        else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+        else if( arrayObject->getType() == core::tools::Type::s_DOUBLE)
         {
             arrayObject->at< double >(0) = value1;
             arrayObject->at< double >(1) = value2;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,13 +77,13 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceMacro(SChessBoardDetector, ::fwServices::IController);
+    fwCoreServiceMacro(SChessBoardDetector, ::fwServices::IController)
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
-    typedef ::fwCom::Signal<void (bool)> ChessboardDetectedSignalType;
+    typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;
 
     /// Signal type sent after a successful detection.
-    typedef ::fwCom::Signal<void ()> ChessboardFoundSignalType;
+    typedef core::com::Signal<void ()> ChessboardFoundSignalType;
 
     /// Constructor
     VIDEOCALIBRATION_API SChessBoardDetector() noexcept;

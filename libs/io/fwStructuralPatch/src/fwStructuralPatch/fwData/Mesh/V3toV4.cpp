@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "fwStructuralPatch/fwData/Mesh/V3ToV4.hpp"
 
+#include <core/memory/BufferObject.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
@@ -33,8 +35,6 @@
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
 #include <fwData/Mesh.hpp>
-
-#include <fwMemory/BufferObject.hpp>
 
 namespace fwStructuralPatch
 {
@@ -114,8 +114,8 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
               const size_t size = bosize / cellDataElementSize;
 
               // Create a new buffer object with a size of size*32.
-              ::fwMemory::BufferObject::sptr bufferMemory = ::fwMemory::BufferObject::New();
-              const auto bufferMemoryLock = bufferMemory->lock();
+              core::memory::BufferObject::sptr bufferMemory = core::memory::BufferObject::New();
+              const auto bufferMemoryLock                   = bufferMemory->lock();
               bufferMemory->allocate(size * sizeof(std::uint32_t));
 
               std::uint64_t* buff64 = static_cast<std::uint64_t*>( buff );

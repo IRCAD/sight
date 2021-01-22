@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCompositorSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCompositorSelector, ::fwGui::editor::IEditor)
 
     /** @} */
 
@@ -60,10 +60,10 @@ public:
      * @name Slots API
      * @{
      */
-    typedef ::fwCom::Slot< void (::fwRenderOgre::Layer::sptr) > InitLayerSlotType;
+    typedef core::com::Slot< void (::fwRenderOgre::Layer::sptr) > InitLayerSlotType;
 
     /// Slot: Populate the list of available compositors for the selected layer
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_INIT_COMPOSITOR_LIST_SLOT;
+    UIVISUOGRE_API static const core::com::Slots::SlotKeyType s_INIT_COMPOSITOR_LIST_SLOT;
 
     /** @} */
 
@@ -137,7 +137,7 @@ private:
     ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 };
 
 } // uiVisuOgre

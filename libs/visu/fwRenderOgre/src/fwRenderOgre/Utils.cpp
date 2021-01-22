@@ -28,12 +28,11 @@
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include <core/spyLog.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRuntime/operations.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -81,7 +80,7 @@ void Utils::loadResources()
                 SLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
+            const auto tmpPath = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
             std::ofstream newResourceFile(tmpPath.string());
 
             if(!std::filesystem::exists(tmpPath))
@@ -157,7 +156,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
             SLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
-        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
+        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
 
         // Set the actual plugin path in the plugin config file.
         std::ifstream pluginCfg(confPath.string());
@@ -387,32 +386,32 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
 
 ::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
-    const ::fwTools::Type pixelType = imageFw->getType();
-    const size_t numberOfComponent  = imageFw->getNumberOfComponents();
+    const core::tools::Type pixelType = imageFw->getType();
+    const size_t numberOfComponent    = imageFw->getNumberOfComponents();
 
     if(numberOfComponent == 1)
     {
-        if(pixelType == ::fwTools::Type::s_UINT8)
+        if(pixelType == core::tools::Type::s_UINT8)
         {
             // uint8
             return ::Ogre::PF_L8;
         }
-        else if(pixelType == ::fwTools::Type::s_INT16)
+        else if(pixelType == core::tools::Type::s_INT16)
         {
             // int16
             return ::Ogre::PF_L16;
         }
-        else if(pixelType == ::fwTools::Type::s_UINT16)
+        else if(pixelType == core::tools::Type::s_UINT16)
         {
             // uint16
             return ::Ogre::PF_R16_UINT;
         }
-        else if (pixelType == ::fwTools::Type::s_FLOAT)
+        else if (pixelType == core::tools::Type::s_FLOAT)
         {
             // float
             return ::Ogre::PF_FLOAT32_R;
         }
-        else if (pixelType == ::fwTools::Type::s_INT32)
+        else if (pixelType == core::tools::Type::s_INT32)
         {
             // int32
             return ::Ogre::PF_R32_SINT;
@@ -422,17 +421,17 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
 
     if(numberOfComponent == 2)
     {
-        if(pixelType == ::fwTools::Type::s_UINT8)
+        if(pixelType == core::tools::Type::s_UINT8)
         {
             // uint8
             return ::Ogre::PF_RG8;
         }
-        else if(pixelType == ::fwTools::Type::s_INT8)
+        else if(pixelType == core::tools::Type::s_INT8)
         {
             // int16
             return ::Ogre::PF_R8G8_SNORM;
         }
-        else if(pixelType == ::fwTools::Type::s_FLOAT)
+        else if(pixelType == core::tools::Type::s_FLOAT)
         {
             // float
             return ::Ogre::PF_FLOAT32_GR;
@@ -441,41 +440,41 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
     }
 
     // PixelFormat in little endian
-    if(pixelType == ::fwTools::Type::s_UINT8)
+    if(pixelType == core::tools::Type::s_UINT8)
     {
         // uint8
         return numberOfComponent == 3 ? ::Ogre::PF_BYTE_RGB : ::Ogre::PF_BYTE_RGBA;
     }
-    else if (pixelType == ::fwTools::Type::s_UINT16)
+    else if (pixelType == core::tools::Type::s_UINT16)
     {
         // uint16
         return numberOfComponent == 3 ? ::Ogre::PF_R16G16B16_UINT : ::Ogre::PF_R16G16B16A16_UINT;
     }
-    else if (pixelType == ::fwTools::Type::s_UINT32)
+    else if (pixelType == core::tools::Type::s_UINT32)
     {
         // uint32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_UINT : ::Ogre::PF_R32G32B32A32_UINT;
     }
-    else if (pixelType == ::fwTools::Type::s_INT8 )
+    else if (pixelType == core::tools::Type::s_INT8 )
     {
         // int8
         return numberOfComponent == 3 ? ::Ogre::PF_R8G8B8_SINT : ::Ogre::PF_R8G8B8A8_SINT;
     }
-    else if (pixelType == ::fwTools::Type::s_INT16)
+    else if (pixelType == core::tools::Type::s_INT16)
     {
         // int16
         return numberOfComponent == 3 ? ::Ogre::PF_R16G16B16_SINT : ::Ogre::PF_R16G16B16A16_SINT;
     }
-    else if (pixelType == ::fwTools::Type::s_INT32)
+    else if (pixelType == core::tools::Type::s_INT32)
     {
         // int32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_SINT : ::Ogre::PF_R32G32B32A32_SINT;
     }
-    else if (pixelType == ::fwTools::Type::s_FLOAT)
+    else if (pixelType == core::tools::Type::s_FLOAT)
     {
         return numberOfComponent == 3 ? ::Ogre::PF_FLOAT32_RGB : ::Ogre::PF_FLOAT32_RGBA;
     }
-    else if (pixelType == ::fwTools::Type::s_DOUBLE)
+    else if (pixelType == core::tools::Type::s_DOUBLE)
     {
         SLM_FATAL("Pixel format not handled.");
     }
@@ -544,7 +543,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
 
     // Set the pixel type
 
-    ::fwTools::Type pixelType;
+    core::tools::Type pixelType;
     switch(_format)
     {
         case ::Ogre::PF_L8:
@@ -556,36 +555,36 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_X8R8G8B8:
         case ::Ogre::PF_X8B8G8R8:
         case ::Ogre::PF_BYTE_RGB:
-        case ::Ogre::PF_BYTE_RGBA: pixelType = ::fwTools::Type::s_UINT8; break;
+        case ::Ogre::PF_BYTE_RGBA: pixelType = core::tools::Type::s_UINT8; break;
 
         case ::Ogre::PF_R8G8_SNORM:
         case ::Ogre::PF_R8G8B8_SINT:
-        case ::Ogre::PF_R8G8B8A8_SINT: pixelType = ::fwTools::Type::s_INT8; break;
+        case ::Ogre::PF_R8G8B8A8_SINT: pixelType = core::tools::Type::s_INT8; break;
 
         case ::Ogre::PF_L16:
         case ::Ogre::PF_R16G16B16_UINT:
         case ::Ogre::PF_R16_UINT:
-        case ::Ogre::PF_R16G16B16A16_UINT: pixelType = ::fwTools::Type::s_UINT16; break;
+        case ::Ogre::PF_R16G16B16A16_UINT: pixelType = core::tools::Type::s_UINT16; break;
 
         case ::Ogre::PF_SHORT_RGB:
         case ::Ogre::PF_SHORT_RGBA:
         case ::Ogre::PF_R16G16B16_SINT:
-        case ::Ogre::PF_R16G16B16A16_SINT: pixelType = ::fwTools::Type::s_INT16; break;
+        case ::Ogre::PF_R16G16B16A16_SINT: pixelType = core::tools::Type::s_INT16; break;
 
         case ::Ogre::PF_R32G32B32_UINT:
-        case ::Ogre::PF_R32G32B32A32_UINT:  pixelType = ::fwTools::Type::s_UINT32; break;
+        case ::Ogre::PF_R32G32B32A32_UINT:  pixelType = core::tools::Type::s_UINT32; break;
 
         case ::Ogre::PF_R32G32B32_SINT:
         case ::Ogre::PF_R32_SINT:
-        case ::Ogre::PF_R32G32B32A32_SINT: pixelType = ::fwTools::Type::s_INT32; break;
+        case ::Ogre::PF_R32G32B32A32_SINT: pixelType = core::tools::Type::s_INT32; break;
 
         case ::Ogre::PF_FLOAT32_R:
         case ::Ogre::PF_FLOAT32_RGB:
-        case ::Ogre::PF_FLOAT32_RGBA: pixelType = ::fwTools::Type::s_FLOAT; break;
+        case ::Ogre::PF_FLOAT32_RGBA: pixelType = core::tools::Type::s_FLOAT; break;
 
         default:
             SLM_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
-            pixelType = ::fwTools::Type::s_UINT8;
+            pixelType = core::tools::Type::s_UINT8;
     }
     _image->setType(pixelType);
 }
@@ -681,15 +680,15 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
     // Fill the texture buffer.
     const auto srcType = _image->getType();
-    if(srcType == ::fwTools::Type::s_INT16)
+    if(srcType == core::tools::Type::s_INT16)
     {
         copyNegatoImage< std::int16_t, std::int16_t >(_texture, _image);
     }
-    else if(srcType == ::fwTools::Type::s_INT32)
+    else if(srcType == core::tools::Type::s_INT32)
     {
         copyNegatoImage< std::int32_t, std::int16_t >(_texture, _image);
     }
-    else if(srcType == ::fwTools::Type::s_UINT8)
+    else if(srcType == core::tools::Type::s_UINT8)
     {
         copyNegatoImage< std::uint8_t, std::int16_t >(_texture, _image);
     }

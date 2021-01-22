@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "maths/SPointToLandmarkVector.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -39,13 +39,13 @@ namespace maths
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INPUT              = "landmark";
-const ::fwServices::IService::KeyType s_TRANSFORM_INOUT             = "transform";
-const ::fwServices::IService::KeyType s_TRANSLATION_INOUT           = "translationMatrix";
-const ::fwServices::IService::KeyType s_COMPUTED_LANDMARK_INOUT     = "computedLandmark";
-static const ::fwCom::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
-static const ::fwCom::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
-static const ::fwCom::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";
+const ::fwServices::IService::KeyType s_LANDMARK_INPUT                = "landmark";
+const ::fwServices::IService::KeyType s_TRANSFORM_INOUT               = "transform";
+const ::fwServices::IService::KeyType s_TRANSLATION_INOUT             = "translationMatrix";
+const ::fwServices::IService::KeyType s_COMPUTED_LANDMARK_INOUT       = "computedLandmark";
+static const core::com::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
+static const core::com::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
+static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";
 
 // -----------------------------------------------------------------------------
 

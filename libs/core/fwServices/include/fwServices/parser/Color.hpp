@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwServices/config.hpp"
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwTools/Object.hpp>
+#include <core/tools/Object.hpp>
 
 namespace fwServices
 {
@@ -69,7 +69,7 @@ private:
      * @brief Parse a color XML configuration.
      * @param _obj color in which apply the configuration.
      */
-    void createConfig(::fwTools::Object::sptr _obj) override;
+    void createConfig(core::tools::Object::sptr _obj) override;
 
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "gui/action/SConfigLauncher.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/Proxy.hpp>
@@ -37,9 +37,9 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher )
 
-const ::fwCom::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
+const core::com::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
-static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
+static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "gui/action/SSlotCaller.hpp"
 #include "gui/config.hpp"
 
-#include <fwCom/Slots.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 

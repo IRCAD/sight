@@ -23,9 +23,8 @@
 #include "guiQt/editor/Code.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/String.hpp>
 
@@ -168,7 +167,7 @@ void Code::onModifyValue()
 
         auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

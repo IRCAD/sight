@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "scene2D/adaptor/SMultipleTF.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -1108,7 +1108,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -1192,7 +1192,7 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1264,7 +1264,7 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
         const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
             ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
         {
-            const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
 
@@ -1386,7 +1386,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
     const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1446,7 +1446,7 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const ::fwRenderQt::data::Event& _event)
         const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
             ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
-            const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(tf->getWindow(), tf->getLevel());
         }
     }
@@ -1633,7 +1633,7 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
                 const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
                     ::fwData::TransferFunction::s_MODIFIED_SIG);
                 {
-                    const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
@@ -1689,7 +1689,7 @@ void SMultipleTF::removeCurrenTF()
     auto sig = tfPool->signal< ::fwData::Composite::RemovedObjectsSignalType >(
         ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
     }
 
@@ -1731,7 +1731,7 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
     const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
         ::fwData::TransferFunction::s_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1780,7 +1780,7 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
     const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
         ::fwData::TransferFunction::s_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -1821,7 +1821,7 @@ void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
     auto sig = tfPool->signal< ::fwData::Composite::AddedObjectsSignalType >(
         ::fwData::Composite::s_ADDED_OBJECTS_SIG);
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
     }
 

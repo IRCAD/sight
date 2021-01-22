@@ -47,13 +47,13 @@ public:
         FUTURE = 1
     } DirectionType;
 
-    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
-    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
-    typedef ::fwCom::Signal< void () > ObjectClearedSignalType;
+    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
+    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
+    typedef core::com::Signal< void () > ObjectClearedSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_REMOVED_SIG;
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_CLEARED_SIG;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_OBJECT_REMOVED_SIG;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_CLEARED_SIG;
 
     /**
      * @brief Constructor

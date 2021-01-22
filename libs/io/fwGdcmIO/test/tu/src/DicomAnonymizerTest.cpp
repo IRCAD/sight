@@ -29,6 +29,8 @@
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 #include <fwGdcmIO/writer/Series.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
@@ -42,8 +44,6 @@
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/Slow.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
@@ -93,7 +93,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
     std::filesystem::create_directories( path );
 
     // Write ImageSeries
@@ -268,7 +268,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Write DicomSeries
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
     std::filesystem::create_directories(path);
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
     writer->setObject((*seriesDB)[0]);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiReconstructionQml/SRepresentationEditor.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>

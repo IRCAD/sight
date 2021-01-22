@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,11 @@
 
 #include "ioVTK/SImageReader.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/Failed.hpp>
+#include <core/tools/Os.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -48,11 +52,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/Failed.hpp>
-#include <fwTools/Os.hpp>
-#include <fwTools/UUID.hpp>
-
 #include <fwVtkIO/BitmapImageReader.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -64,7 +63,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::fwMedData::ImageSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -161,10 +160,10 @@ void SImageSeriesReader::info(std::ostream& _sstream )
 
 void initSeries(::fwMedData::Series::sptr series)
 {
-    const std::string instanceUID        = ::fwTools::UUID::generateUUID();
+    const std::string instanceUID        = core::tools::UUID::generateUUID();
     const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date               = ::fwTools::getDate(now);
-    const std::string time               = ::fwTools::getTime(now);
+    const std::string date               = core::tools::getDate(now);
+    const std::string time               = core::tools::getTime(now);
 
     series->setModality("OT");
     series->setDate(date);
@@ -173,7 +172,7 @@ void initSeries(::fwMedData::Series::sptr series)
     ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
     if(physicians.empty())
     {
-        const std::string username = ::fwTools::os::getEnv("USERNAME", ::fwTools::os::getEnv("LOGNAME", "Unknown"));
+        const std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
         physicians.push_back(username);
     }
     series->setPerformingPhysiciansName(physicians);
@@ -206,7 +205,7 @@ void SImageSeriesReader::updating()
                 this->notificationOfDBUpdate();
             }
         }
-        catch(::fwTools::Failed& e)
+        catch(core::tools::Failed& e)
         {
             FW_RAISE_EXCEPTION(e);
         }
@@ -223,7 +222,7 @@ void SImageSeriesReader::notificationOfDBUpdate()
 
     auto sig = imageSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

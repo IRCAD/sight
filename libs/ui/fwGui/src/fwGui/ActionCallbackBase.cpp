@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "fwGui/IActionSrv.hpp"
 
+#include <core/tools/fwID.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
@@ -60,7 +60,7 @@ void ActionCallbackBase::setSID(std::string sid)
 
 void ActionCallbackBase::execute()
 {
-    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
+    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid );
     SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
@@ -70,7 +70,7 @@ void ActionCallbackBase::execute()
 
 void ActionCallbackBase::check(bool checked)
 {
-    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", ::fwTools::fwID::exist(m_sid ));
+    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
     ::fwServices::IService::sptr service = ::fwServices::get( m_sid );
     SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
+#include <core/tools/dateAndTime.hpp>
+
 #include <fwData/Reconstruction.hpp>
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
@@ -37,8 +39,6 @@
 #include <fwMedData/types.hpp>
 
 #include <fwRuntime/operations.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 

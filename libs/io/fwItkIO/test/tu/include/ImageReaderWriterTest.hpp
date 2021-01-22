@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_UT_IMAGEREADERWRITERTEST_HPP__
-#define __FWITKIO_UT_IMAGEREADERWRITERTEST_HPP__
-
-#include <cppunit/extensions/HelperMacros.h>
-#include <fwServices/macros.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
+#pragma once
 
 #include <fwData/Image.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwItkIO
 {
@@ -51,12 +52,9 @@ public:
 
 private:
 
-
-    void stressTestInrWithType(::fwTools::Type type, int nbTest);
+    void stressTestInrWithType(core::tools::Type type, int nbTest);
     void checkSaveLoadInr( ::fwData::Image::sptr image );
 };
 
 } //namespace ut
 } //namespace fwItkIO
-
-#endif // __FWITKIO_UT_IMAGEREADERWRITERTEST_HPP__

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,13 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace fwServices
 {

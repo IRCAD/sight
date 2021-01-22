@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,13 @@
 
 #include "uiReconstructionQt/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/Material.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -64,7 +63,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(RepresentationEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(RepresentationEditor, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQT_API RepresentationEditor() noexcept;

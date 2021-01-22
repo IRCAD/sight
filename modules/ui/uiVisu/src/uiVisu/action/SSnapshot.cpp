@@ -23,9 +23,8 @@
 #include "uiVisu/action/SSnapshot.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/location/SingleFile.hpp>
 
@@ -41,7 +40,7 @@ namespace uiVisu
 namespace action
 {
 
-const ::fwCom::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
+const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::fwData::Object )
 

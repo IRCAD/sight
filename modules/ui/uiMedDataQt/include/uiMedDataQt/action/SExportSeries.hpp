@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwCom/Slots.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -63,7 +63,7 @@ namespace action
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SExportSeries, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SExportSeries, ::fwGui::IActionSrv)
 
     /// Constructor
     UIMEDDATAQT_API SExportSeries();
@@ -102,8 +102,8 @@ private:
      * @name Slots
      * @{
      */
-    static const ::fwCom::Slots::SlotKeyType s_CHECK_ADDED_SERIES_SLOT;
-    static const ::fwCom::Slots::SlotKeyType s_CHECK_REMOVED_SERIES_SLOT;
+    static const core::com::Slots::SlotKeyType s_CHECK_ADDED_SERIES_SLOT;
+    static const core::com::Slots::SlotKeyType s_CHECK_REMOVED_SERIES_SLOT;
 
     /// Slot: check if specified series is added and set action not executable
     void checkAddedSeries(::fwMedData::SeriesDB::ContainerType addedSeries);

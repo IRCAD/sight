@@ -6,7 +6,6 @@ set( DEPENDENCIES
         fwGui
         fwRuntime
         fwServices
-        fwCom
         fwPreferences
 )
 set( REQUIREMENTS )

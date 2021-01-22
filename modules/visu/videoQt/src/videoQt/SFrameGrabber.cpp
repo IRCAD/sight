@@ -27,8 +27,8 @@
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <QImage>
 #include <QSize>
@@ -50,7 +50,7 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_verticallyFlip(false)
 {
     // Do not register the slot in the service, we want to put it on its own worker
-    m_slotPresentFrame = ::fwCom::newSlot( &SFrameGrabber::presentFrame, this );
+    m_slotPresentFrame = core::com::newSlot( &SFrameGrabber::presentFrame, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +269,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     if(static_cast<unsigned int>(height) != timeline->getHeight() ||
        static_cast<unsigned int>(width) != timeline->getWidth())
     {
-        timeline->initPoolSize(static_cast<size_t>(width), static_cast<size_t>(height), ::fwTools::Type::s_UINT8, 4);
+        timeline->initPoolSize(static_cast<size_t>(width), static_cast<size_t>(height), core::tools::Type::s_UINT8, 4);
     }
 
     SLM_ASSERT("Pixel format must be RGB32", frame.pixelFormat() == QVideoFrame::Format_RGB32 ||

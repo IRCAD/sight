@@ -23,9 +23,8 @@
 #include "ioData/TransformationMatrix3DWriterService.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>

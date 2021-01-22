@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,15 @@
 
 #include "fwRenderQt3D/registry/Adaptor.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 namespace fwRenderQt3D
 {
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 //------------------------------------------------------------------------------
 

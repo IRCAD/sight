@@ -24,7 +24,7 @@
 
 #include "fwData/Composite.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwServices/macros.hpp>
 

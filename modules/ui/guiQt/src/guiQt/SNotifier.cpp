@@ -23,8 +23,7 @@
 #include "guiQt/SNotifier.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -35,11 +34,11 @@ fwServicesRegisterMacro( ::fwServices::IController, ::guiQt::SNotifier )
 namespace guiQt
 {
 
-static const ::fwCom::Slots::SlotKeyType s_POP_INFO_SLOT    = "popInfo";
-static const ::fwCom::Slots::SlotKeyType s_POP_SUCCESS_SLOT = "popSuccess";
-static const ::fwCom::Slots::SlotKeyType s_POP_FAILURE_SLOT = "popFailure";
+static const core::com::Slots::SlotKeyType s_POP_INFO_SLOT    = "popInfo";
+static const core::com::Slots::SlotKeyType s_POP_SUCCESS_SLOT = "popSuccess";
+static const core::com::Slots::SlotKeyType s_POP_FAILURE_SLOT = "popFailure";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 
 //-----------------------------------------------------------------------------
 

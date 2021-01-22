@@ -22,12 +22,12 @@
 
 #include "videoOpenCV/SFrameWriter.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
@@ -49,11 +49,11 @@ namespace videoOpenCV
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
-static const ::fwCom::Slots::SlotKeyType s_START_RECORD         = "startRecord";
-static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
-static const ::fwCom::Slots::SlotKeyType s_WRITE                = "write";
-static const ::fwCom::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatParameter";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
+static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
+static const core::com::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
+static const core::com::Slots::SlotKeyType s_WRITE                = "write";
+static const core::com::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatParameter";
 
 //------------------------------------------------------------------------------
 
@@ -170,7 +170,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
         // TODO: experiment with queuing frames and writing them from a worker thread.
         const auto sig = frameTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
             ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
-        ::fwCom::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
+        core::com::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
 
         // Get the buffer of the copied timeline
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
@@ -224,19 +224,19 @@ void SFrameWriter::startRecord()
     {
         ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
 
-        if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
+        if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
+        else if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 1)
+        else if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if (frameTL->getType() == ::fwTools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
+        else if (frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }

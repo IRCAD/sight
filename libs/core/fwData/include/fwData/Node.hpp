@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     typedef std::vector< ::fwData::Port::sptr > PortContainer;
 
     /// Type of 'updated' signal
-    typedef ::fwCom::Signal< void () > UpdatedSignalType;
+    typedef core::com::Signal< void () > UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -95,7 +95,7 @@ public:
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Updated signal key
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
 
 protected:
 

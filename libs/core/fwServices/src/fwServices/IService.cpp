@@ -26,17 +26,15 @@
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/tools/fwID.hpp>
 
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <functional>
 #include <regex>
@@ -46,18 +44,18 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType IService::s_STARTED_SIG          = "started";
-const ::fwCom::Signals::SignalKeyType IService::s_UPDATED_SIG          = "updated";
-const ::fwCom::Signals::SignalKeyType IService::s_STOPPED_SIG          = "stopped";
-const ::fwCom::Signals::SignalKeyType IService::s_INFO_NOTIFIED_SIG    = "infoNotified";
-const ::fwCom::Signals::SignalKeyType IService::s_SUCCESS_NOTIFIED_SIG = "successNotified";
-const ::fwCom::Signals::SignalKeyType IService::s_FAILURE_NOTIFIED_SIG = "failureNotified";
+const core::com::Signals::SignalKeyType IService::s_STARTED_SIG          = "started";
+const core::com::Signals::SignalKeyType IService::s_UPDATED_SIG          = "updated";
+const core::com::Signals::SignalKeyType IService::s_STOPPED_SIG          = "stopped";
+const core::com::Signals::SignalKeyType IService::s_INFO_NOTIFIED_SIG    = "infoNotified";
+const core::com::Signals::SignalKeyType IService::s_SUCCESS_NOTIFIED_SIG = "successNotified";
+const core::com::Signals::SignalKeyType IService::s_FAILURE_NOTIFIED_SIG = "failureNotified";
 
-const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
-const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
-const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
-const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
-const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
+const core::com::Slots::SlotKeyType IService::s_START_SLOT   = "start";
+const core::com::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
+const core::com::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
+const core::com::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
+const core::com::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
 //-----------------------------------------------------------------------------
 
@@ -526,7 +524,7 @@ IService::UpdatingStatus IService::getUpdatingStatus() const noexcept
 void IService::setWorker( core::thread::Worker::sptr worker )
 {
     m_associatedWorker = worker;
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 //-----------------------------------------------------------------------------
@@ -772,7 +770,7 @@ void IService::connectToConfig()
         {
             SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
 
-            ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
+            core::com::SignalBase::sptr sig = this->signal(signalCfg.second);
             SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
             try
             {
@@ -790,7 +788,7 @@ void IService::connectToConfig()
         {
             SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
 
-            ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
+            core::com::SlotBase::sptr slot = this->slot(slotCfg.second);
             SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
 
             try
@@ -911,7 +909,7 @@ void IService::disconnectFromConfig()
         {
             SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
 
-            ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
+            core::com::SignalBase::sptr sig = this->signal(signalCfg.second);
 
             try
             {
@@ -927,7 +925,7 @@ void IService::disconnectFromConfig()
         {
             SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
 
-            ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
+            core::com::SlotBase::sptr slot = this->slot(slotCfg.second);
             try
             {
                 proxy->disconnect(proxyCfg.second.m_channel, slot);

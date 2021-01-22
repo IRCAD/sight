@@ -87,17 +87,17 @@ public:
      * @{
      */
 
-    UIHANDEYE_API static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
-    typedef ::fwCom::Slot<void ()> AddSlotType;
+    UIHANDEYE_API static const core::com::Slots::SlotKeyType s_ADD_SLOT;
+    typedef core::com::Slot<void ()> AddSlotType;
 
-    UIHANDEYE_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
-    typedef ::fwCom::Slot<void ()> RemoveSlotType;
+    UIHANDEYE_API static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
+    typedef core::com::Slot<void ()> RemoveSlotType;
 
-    UIHANDEYE_API static const ::fwCom::Slots::SlotKeyType s_RESET_SLOT;
-    typedef ::fwCom::Slot<void ()> ResetSlotType;
+    UIHANDEYE_API static const core::com::Slots::SlotKeyType s_RESET_SLOT;
+    typedef core::com::Slot<void ()> ResetSlotType;
 
-    UIHANDEYE_API static const ::fwCom::Slots::SlotKeyType s_GET_SELECTION_SLOT;
-    typedef ::fwCom::Slot<void ()> GetSelectionSlotType;
+    UIHANDEYE_API static const core::com::Slots::SlotKeyType s_GET_SELECTION_SLOT;
+    typedef core::com::Slot<void ()> GetSelectionSlotType;
     ///@}
 
     /**

@@ -24,9 +24,8 @@
 
 #include "ioPacs/config.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Slot.hpp>
+#include <core/com/Slot.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -159,7 +158,7 @@ private:
     /// Displays a dialog box with the error message.
     void displayErrorMessage(const std::string& _message) const;
 
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
+    typedef core::com::Slot<void (const std::string&)> DisplayMessageSlotType;
 
     /// Contains the slot to call displayErrorMessage method;
     DisplayMessageSlotType::sptr m_slotDisplayMessage;

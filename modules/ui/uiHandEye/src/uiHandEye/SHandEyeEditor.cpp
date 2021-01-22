@@ -24,9 +24,9 @@
 
 #include <arData/BufferTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
@@ -44,10 +44,10 @@ namespace uiHandEye
 {
 fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiHandEye::SHandEyeEditor)
 
-const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_ADD_SLOT = "add";
-const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_REMOVE_SLOT        = "remove";
-const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_RESET_SLOT         = "reset";
-const ::fwCom::Slots::SlotKeyType SHandEyeEditor::s_GET_SELECTION_SLOT = "getSelection";
+const core::com::Slots::SlotKeyType SHandEyeEditor::s_ADD_SLOT = "add";
+const core::com::Slots::SlotKeyType SHandEyeEditor::s_REMOVE_SLOT        = "remove";
+const core::com::Slots::SlotKeyType SHandEyeEditor::s_RESET_SLOT         = "reset";
+const core::com::Slots::SlotKeyType SHandEyeEditor::s_GET_SELECTION_SLOT = "getSelection";
 
 static const ::fwServices::IService::KeyType s_MATRIXVECTOR1_INOUT = "matrixVector1";
 static const ::fwServices::IService::KeyType s_MATRIXVECTOR2_INOUT = "matrixVector2";
@@ -66,7 +66,7 @@ SHandEyeEditor::SHandEyeEditor() noexcept
     newSlot( s_RESET_SLOT,  &SHandEyeEditor::reset, this );
     newSlot( s_GET_SELECTION_SLOT, &SHandEyeEditor::getSelection, this );
 
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 // ----------------------------------------------------------------------------
@@ -191,14 +191,14 @@ void SHandEyeEditor::add()
                 {
                     auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >(
                         ::fwData::Vector::s_MODIFIED_SIG);
-                    ::fwCom::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
                     sig1->asyncEmit();
                 }
 
                 {
                     auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >(
                         ::fwData::Vector::s_MODIFIED_SIG);
-                    ::fwCom::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
                     sig2->asyncEmit();
                 }
             }
@@ -236,14 +236,14 @@ void SHandEyeEditor::remove()
             {
                 auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >(
                     ::fwData::Vector::s_MODIFIED_SIG);
-                ::fwCom::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
                 sig1->asyncEmit();
             }
 
             {
                 auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >(
                     ::fwData::Vector::s_MODIFIED_SIG);
-                ::fwCom::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
                 sig2->asyncEmit();
             }
         }
@@ -265,13 +265,13 @@ void SHandEyeEditor::reset()
     // send data modified signals
     {
         auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >( ::fwData::Vector::s_MODIFIED_SIG);
-        ::fwCom::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
         sig1->asyncEmit();
     }
 
     {
         auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >( ::fwData::Vector::s_MODIFIED_SIG);
-        ::fwCom::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
         sig2->asyncEmit();
     }
 

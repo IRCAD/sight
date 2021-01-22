@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ float IAdaptor::getZValue() const
     SLM_ASSERT("Adaptor "+ this->getID() +" not registered", iter != registry.end());
 
     ::fwRenderQt::SRender::sptr render =
-        ::fwRenderQt::SRender::dynamicCast(::fwTools::fwID::getObject(iter->second));
+        ::fwRenderQt::SRender::dynamicCast(core::tools::fwID::getObject(iter->second));
     SLM_ASSERT("Service SRender "+ iter->second +" not instanced", render);
     return render;
 }
@@ -269,4 +269,3 @@ void IAdaptor::processInteraction(::fwRenderQt::data::Event& _event )
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderQt
-

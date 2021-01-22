@@ -28,11 +28,10 @@
 #include <fwItkIO/ImageWriter.hpp>
 
 #include <core/base.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -65,7 +64,7 @@ void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
 
@@ -73,40 +72,40 @@ void ImageReaderWriterTest::testSaveLoadInr()
 
 void ImageReaderWriterTest::stressTestInr()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< std::int8_t >();
+    core::tools::Type type = core::tools::Type::create< std::int8_t >();
 //    this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< std::uint8_t >();
+    type = core::tools::Type::create< std::uint8_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< std::int16_t >();
+    type = core::tools::Type::create< std::int16_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< std::uint16_t >();
+    type = core::tools::Type::create< std::uint16_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< std::int32_t >();
+    type = core::tools::Type::create< std::int32_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< std::uint32_t >();
+    type = core::tools::Type::create< std::uint32_t >();
     this->stressTestInrWithType(type, 5);
 
-//    type = ::fwTools::Type::create< std::int64_t >();
+//    type = core::tools::Type::create< std::int64_t >();
 //    this->stressTestInrWithType(type, 5);
 
-//    type = ::fwTools::Type::create< std::uint64_t >();
+//    type = core::tools::Type::create< std::uint64_t >();
 //    this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< float >();
+    type = core::tools::Type::create< float >();
     this->stressTestInrWithType(type, 5);
 
-//    type = ::fwTools::Type::create< double >();
+//    type = core::tools::Type::create< double >();
 //    this->stressTestInrWithType(type, 5);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTest)
+void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nbTest)
 {
     for (int nb = 0; nb < nbTest; ++nb)
     {
@@ -125,7 +124,7 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     image->setOrigin2(origin);
 
     // save image in inr
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
     std::filesystem::create_directories( PATH.parent_path() );
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
     myWriter->setObject(image);

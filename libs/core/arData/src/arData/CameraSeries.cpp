@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "arData/CameraSeries.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/Image.hpp>
@@ -37,9 +37,9 @@ namespace arData
 
 fwDataRegisterMacro( ::arData::CameraSeries );
 
-const ::fwCom::Signals::SignalKeyType CameraSeries::s_ADDED_CAMERA_SIG         = "addedCamera";
-const ::fwCom::Signals::SignalKeyType CameraSeries::s_REMOVED_CAMERA_SIG       = "removedCamera";
-const ::fwCom::Signals::SignalKeyType CameraSeries::s_EXTRINSIC_CALIBRATED_SIG = "extrinsicCalibrated";
+const core::com::Signals::SignalKeyType CameraSeries::s_ADDED_CAMERA_SIG         = "addedCamera";
+const core::com::Signals::SignalKeyType CameraSeries::s_REMOVED_CAMERA_SIG       = "removedCamera";
+const core::com::Signals::SignalKeyType CameraSeries::s_EXTRINSIC_CALIBRATED_SIG = "extrinsicCalibrated";
 
 //------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ CameraSeries::CameraSeries(::fwData::Object::Key key) :
     m_sigRemovedCamera       = RemovedCameraSignalType::New();
     m_sigExtrinsicCalibrated = ExtrinsicCalibratedSignalType::New();
 
-    ::fwCom::HasSignals::m_signals(s_ADDED_CAMERA_SIG, m_sigAddedCamera)
+    core::com::HasSignals::m_signals(s_ADDED_CAMERA_SIG, m_sigAddedCamera)
         (s_REMOVED_CAMERA_SIG, m_sigRemovedCamera)
         (s_EXTRINSIC_CALIBRATED_SIG, m_sigExtrinsicCalibrated);
 

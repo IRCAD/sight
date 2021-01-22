@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,11 +95,11 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         OFString data;
 
         // Open first instance
-        const auto firstItem                           = dicomSeries->getDicomContainer().begin();
-        const ::fwMemory::BufferObject::sptr bufferObj = firstItem->second;
-        const size_t buffSize                          = bufferObj->getSize();
-        const std::string dicomPath                    = bufferObj->getStreamInfo().fsFile.string();
-        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        const auto firstItem                             = dicomSeries->getDicomContainer().begin();
+        const core::memory::BufferObject::sptr bufferObj = firstItem->second;
+        const size_t buffSize                            = bufferObj->getSize();
+        const std::string dicomPath                      = bufferObj->getStreamInfo().fsFile.string();
+        core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;

@@ -25,15 +25,15 @@
 #include <arData/CameraSeries.hpp>
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
 namespace opDepthMap
 {
 
-static const ::fwCom::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
+static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
 
 static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
 static const ::fwServices::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
@@ -101,7 +101,7 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
             if (scaledFrameTL->getWidth() == 0 || scaledFrameTL->getHeight() == 0)
             {
-                scaledFrameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+                scaledFrameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
             }
 
             const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));

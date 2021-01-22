@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "uiTools/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwData/Vector.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -66,7 +66,7 @@ class UITOOLS_CLASS_API SShowVectorSize : public QObject,
 
 public:
 
-    fwCoreServiceMacro(SShowVectorSize, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SShowVectorSize, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SShowVectorSize() noexcept;
@@ -78,8 +78,8 @@ public:
      * @name Slots API
      * @{
      */
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT;
+    UITOOLS_API static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT;
 
     /** @} */
 

@@ -28,7 +28,7 @@
 
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
-#include <core/include/core/thread/Timer.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -82,8 +82,8 @@ public:
 
     fwCoreServiceMacro(SMatrixTLSynchronizer, ::arServices::ISynchronizer)
 
-    typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
-    typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
+    typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;
 
     /**
      * @brief Constructor.

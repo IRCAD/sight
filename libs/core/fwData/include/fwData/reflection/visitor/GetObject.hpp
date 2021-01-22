@@ -25,8 +25,7 @@
 #include "fwData/config.hpp"
 
 #include <core/macros.hpp>
-
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>

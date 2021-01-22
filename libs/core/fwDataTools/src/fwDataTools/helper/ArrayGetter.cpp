@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ void ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const size_t com
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::Lock ArrayGetter::getLock() const
+core::memory::BufferObject::Lock ArrayGetter::getLock() const
 {
     return m_lock;
 }

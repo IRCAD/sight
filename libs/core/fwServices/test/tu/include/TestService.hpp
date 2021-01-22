@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include <fwServices/IService.hpp>
 
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/HasSlots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -49,7 +49,7 @@ public:
     static const std::string s_UNCONFIGURED;
     static const std::string s_NOT_DEFINED;
 
-    fwCoreServiceMacro(TestService, ::fwServices::IService);
+    fwCoreServiceMacro(TestService, ::fwServices::IService)
     TestService() noexcept
     {
     }
@@ -153,15 +153,15 @@ class TestServiceImplementation : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementation, ::fwServices::ut::TestService);
+    fwCoreServiceMacro(TestServiceImplementation, ::fwServices::ut::TestService)
 
     /// Keys to register Signal
-    static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
+    static const core::com::Signals::SignalKeyType s_MSG_SENT_SIG;
     /// Keys to register Slot
-    static const ::fwCom::Slots::SlotKeyType s_UPDATE2_SLOT;
+    static const core::com::Slots::SlotKeyType s_UPDATE2_SLOT;
 
     /// Type os signal
-    typedef ::fwCom::Signal< void (const std::string&)> MsgSentSignalType;
+    typedef core::com::Signal< void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
     TestServiceImplementation() noexcept;
@@ -243,7 +243,7 @@ class TestServiceImplementation2 : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementation2, ::fwServices::ut::TestService);
+    fwCoreServiceMacro(TestServiceImplementation2, ::fwServices::ut::TestService)
 
     //-------------------------------------------------------------------------
     TestServiceImplementation2() noexcept
@@ -262,15 +262,15 @@ class TestSrvAutoconnect : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestSrvAutoconnect, ::fwServices::ut::TestService);
+    fwCoreServiceMacro(TestSrvAutoconnect, ::fwServices::ut::TestService)
 
     /// Keys to register Signal
-    static const ::fwCom::Signals::SignalKeyType s_SIG_1;
+    static const core::com::Signals::SignalKeyType s_SIG_1;
     /// Keys to register Slot
-    static const ::fwCom::Slots::SlotKeyType s_SLOT_1;
+    static const core::com::Slots::SlotKeyType s_SLOT_1;
 
     /// Type os signal
-    typedef ::fwCom::Signal< void (int)> MsgSentSignalType;
+    typedef core::com::Signal< void (int)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
 
@@ -344,7 +344,7 @@ public:
     static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
-    fwCoreServiceMacro(TestServiceWithData, ::fwServices::IService);
+    fwCoreServiceMacro(TestServiceWithData, ::fwServices::IService)
     TestServiceWithData() noexcept
     {
         this->registerObject(s_INPUT, AccessType::INPUT, true, false);

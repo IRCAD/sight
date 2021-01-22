@@ -28,11 +28,13 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <cvIO/Matrix.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/Matrix.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -47,9 +49,6 @@
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -67,9 +66,9 @@ fwServicesRegisterMacro(::arServices::ICalibration, ::videoCharucoCalibration::S
 namespace videoCharucoCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
 
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 // ----------------------------------------------------------------------------
 

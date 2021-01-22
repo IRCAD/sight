@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,11 @@
 
 #include "videoQt/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -63,8 +62,8 @@ public:
      * @{
      */
 
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_CHANGED_SIG;
-    typedef ::fwCom::Signal<void (int64_t)> PositionChangedSignalType;
+    VIDEOQT_API static const core::com::Signals::SignalKeyType s_POSITION_CHANGED_SIG;
+    typedef core::com::Signal<void (int64_t)> PositionChangedSignalType;
 
     /** @} */
 
@@ -73,11 +72,11 @@ public:
      * @{
      */
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_SLIDER_SLOT;
-    typedef ::fwCom::Slot<void (int64_t)> ChangePositionSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_SET_POSITION_SLIDER_SLOT;
+    typedef core::com::Slot<void (int64_t)> ChangePositionSlotType;
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_DURATION_SLIDER_SLOT;
-    typedef ::fwCom::Slot<void (int64_t)> ChangeDurationSlotType;
+    VIDEOQT_API static const core::com::Slots::SlotKeyType s_SET_DURATION_SLIDER_SLOT;
+    typedef core::com::Slot<void (int64_t)> ChangeDurationSlotType;
 
     ///@}
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "uiImageQt/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwGuiQt/SliceSelector.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace uiImageQt
 {
@@ -61,7 +61,7 @@ class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::fwGui::editor::IEd
 
 public:
 
-    fwCoreServiceMacro(SliceIndexPositionEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SliceIndexPositionEditor, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API SliceIndexPositionEditor() noexcept;

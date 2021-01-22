@@ -25,7 +25,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
 
-#include <fwCom/SlotBase.hpp>
+#include <core/com/SlotBase.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -129,7 +129,7 @@ namespace fwServices
     }
    @endcode
  */
-class FWSERVICES_CLASS_API AppManager : public ::fwCom::HasSlots
+class FWSERVICES_CLASS_API AppManager : public core::com::HasSlots
 {
 public:
 
@@ -391,8 +391,8 @@ private:
     std::unordered_map< std::string, ServiceProxyType > m_proxies;
 
     /// Connections to the OSR
-    ::fwCom::Connection m_addObjectConnection;
-    ::fwCom::Connection m_removeObjectConnection;
+    core::com::Connection m_addObjectConnection;
+    core::com::Connection m_removeObjectConnection;
 
     mutable std::recursive_mutex m_objectMutex;
     std::mutex m_serviceMutex;

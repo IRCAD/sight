@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/compositor/SaoListener.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
-#include <fwRenderOgre/ogre.hpp>
 #include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/SRender.hpp"
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -230,8 +230,9 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    const ::fwTools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr + "-" +
-                                                       constantName;
+                    const core::tools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr +
+                                                         "-" +
+                                                         constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {

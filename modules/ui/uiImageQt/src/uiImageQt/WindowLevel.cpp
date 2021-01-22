@@ -23,10 +23,9 @@
 #include "uiImageQt/WindowLevel.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -332,7 +331,7 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        const ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        const core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( tf->getWindow(), tf->getLevel());
     }
 }
@@ -448,7 +447,7 @@ void WindowLevel::onToggleTF(bool squareTF)
     auto sig = currentTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(m_helperTF.getTFUpdateConnection());
+        core::com::Connection::Blocker block(m_helperTF.getTFUpdateConnection());
         sig->asyncEmit();
     }
 }

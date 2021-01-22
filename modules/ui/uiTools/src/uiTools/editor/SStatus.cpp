@@ -23,9 +23,8 @@
 #include "uiTools/editor/SStatus.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -52,14 +51,14 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SStatus )
 
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
-const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_GREEN_SLOT  = "changeNthToGreen";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_RED_SLOT    = "changeNthToRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_ORANGE_SLOT = "changeNthToOrange";
-const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_NTH_GREEN_RED_SLOT = "toggleNthGreenRed";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
+const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_GREEN_SLOT  = "changeNthToGreen";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_RED_SLOT    = "changeNthToRed";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_ORANGE_SLOT = "changeNthToOrange";
+const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_NTH_GREEN_RED_SLOT = "toggleNthGreenRed";
 
 //-----------------------------------------------------------------------------
 

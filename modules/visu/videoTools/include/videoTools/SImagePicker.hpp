@@ -26,6 +26,7 @@
 
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -33,8 +34,6 @@
 #include <fwDataTools/PickingInfo.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace videoTools
 {

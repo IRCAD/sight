@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiVisuOgre/SAddPoint.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -36,8 +36,8 @@
 namespace uiVisuOgre
 {
 
-const ::fwCom::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
-const ::fwCom::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
+const core::com::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
+const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
 
 const std::string s_POINTLIST_KEY = "pointList";
 
@@ -97,7 +97,7 @@ void SAddPoint::addPoint(const ::fwData::Point::sptr _point)
 
     auto sig = pointList->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(_point);
     }
 }
@@ -118,7 +118,7 @@ void SAddPoint::removePoint(const ::fwData::Point::csptr _point)
         const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
             ::fwData::PointList::s_POINT_REMOVED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(pointRes);
         }
     }
@@ -158,7 +158,7 @@ void SAddPoint::clearPoints()
     const auto& sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

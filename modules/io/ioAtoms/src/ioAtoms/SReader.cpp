@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "ioAtoms/SReader.hpp"
 
+#include <core/com/Signal.hxx>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
@@ -31,8 +33,6 @@
 #include <fwAtomsFilter/IFilter.hpp>
 
 #include <fwAtomsPatch/PatchingManager.hpp>
-
-#include <fwCom/Signal.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
@@ -66,7 +66,7 @@ namespace ioAtoms
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 const SReader::FileExtension2NameType SReader::s_EXTENSIONS = { {".xml", "XML"},
                                                                 { ".xmlz", "Zipped XML"},
@@ -444,7 +444,7 @@ void SReader::notificationOfUpdate()
 
     auto sig = object->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

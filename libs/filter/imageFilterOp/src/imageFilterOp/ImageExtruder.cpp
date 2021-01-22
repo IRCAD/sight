@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "imageFilterOp/ImageExtruder.hpp"
 
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <glm/gtx/intersect.hpp>
 #include <glm/vec2.hpp>
@@ -42,8 +42,8 @@ void ImageExtruder::extrude(const ::fwData::Image::sptr& _image, const ::fwData:
     param.m_mesh  = _mesh;
 
     // We use a dispatcher because we can't retrieve the image type without a DynamicType.
-    ::fwTools::Type type = _image->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ImageExtruder >::invoke(type, param);
+    core::tools::Type type = _image->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ImageExtruder >::invoke(type, param);
 }
 
 //------------------------------------------------------------------------------

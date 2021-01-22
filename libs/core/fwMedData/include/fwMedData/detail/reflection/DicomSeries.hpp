@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,7 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/DicomSeries.hpp"
 
-#include <fwCamp/macros.hpp>
-
-#include <fwMemory/BufferObject.hpp>
+#include <core/memory/BufferObject.hpp>
+#include <core/reflection/macros.hpp>
 
 fwCampDeclareAccessor((fwMedData)(DicomSeries), (fwMemory)(BufferObject));

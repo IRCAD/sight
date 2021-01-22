@@ -22,9 +22,9 @@
 
 #include "PoolTest.hpp"
 
-#include <core/include/core/thread/Pool.hpp>
-#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
+#include <core/thread/Pool.hpp>
+#include <core/thread/Worker.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::PoolTest );

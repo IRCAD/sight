@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
+#include <core/memory/BufferManager.hpp>
+
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -44,8 +46,6 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwMemory/BufferManager.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
@@ -251,7 +251,7 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readJMSSeries();
 }
 
@@ -263,7 +263,7 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readCTSeries();
 }
 
@@ -275,7 +275,7 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readMRSeries();
 }
 
@@ -287,7 +287,7 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readOTSeries();
 }
 
@@ -299,7 +299,7 @@ void SeriesDBReaderTest::readSEGSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readSEGSeries();
 }
 
@@ -311,7 +311,7 @@ void SeriesDBReaderTest::readSFSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readSFSeries();
 }
 
@@ -323,7 +323,7 @@ void SeriesDBReaderTest::readSRSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readSRSeries();
 }
 
@@ -335,7 +335,7 @@ void SeriesDBReaderTest::read3DSRSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->read3DSRSeries();
 }
 
@@ -347,7 +347,7 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readDisabledSeries();
 }
 
@@ -359,7 +359,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readMRSeriesWithDicomDir();
 }
 
@@ -371,7 +371,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readMultipleRescaleSeries();
 }
 
@@ -383,7 +383,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readCTWithSurviewSeries();
 }
 
@@ -395,7 +395,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readMRWithTemporalPositionSeries();
 }
 
@@ -407,7 +407,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
     {
         return;
     }
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readCTSeriesDBIssue01();
 }
 
@@ -498,7 +498,7 @@ void SeriesDBReaderTest::readCTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT16, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT16, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -564,7 +564,7 @@ void SeriesDBReaderTest::readMRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 2000 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -630,7 +630,7 @@ void SeriesDBReaderTest::readOTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT8, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_UT_IMAGETEST_HPP__
-#define __FWTEST_UT_IMAGETEST_HPP__
-
-#include <cppunit/extensions/HelperMacros.h>
+#pragma once
 
 #include <fwData/Image.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwTest
 {
@@ -49,19 +48,15 @@ public:
     void setUp();
     void tearDown();
 
-
     void generator3DTest();
     void generator2DTest();
     void deepCopyTest();
     void stressTest();
 
 private:
-    void stressTestWithType(::fwTools::Type type, int nbTest);
-
+    void stressTestWithType(core::tools::Type type, int nbTest);
 
 };
 
 } //namespace ut
 } //namespace fwTest
-
-#endif //__FWTEST_UT_IMAGETEST_HPP__

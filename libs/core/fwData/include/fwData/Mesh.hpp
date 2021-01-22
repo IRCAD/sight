@@ -29,8 +29,7 @@
 #include "fwData/iterator/MeshIterators.hpp"
 
 #include <core/macros.hpp>
-
-#include <fwMemory/IBuffered.hpp>
+#include <core/memory/IBuffered.hpp>
 
 #include <boost/multi_array.hpp>
 
@@ -279,7 +278,7 @@ namespace fwData
    @endcode
  */
 class FWDATA_CLASS_API Mesh : public ::fwData::Object,
-                              public ::fwMemory::IBuffered
+                              public core::memory::IBuffered
 {
 
 public:
@@ -335,7 +334,7 @@ public:
     typedef ::fwData::iterator::PointId PointId;
     typedef ::fwData::iterator::Size Size;
 
-    typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
+    typedef std::vector< core::memory::BufferObject::Lock > LocksType;
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -526,46 +525,46 @@ public:
      */
 
     /// Type of signal when vertex are modified
-    typedef ::fwCom::Signal< void () > VertexModifiedSignalType;
+    typedef core::com::Signal< void () > VertexModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVertexModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
 
     /// Type of signal when point colors are modified
-    typedef ::fwCom::Signal< void () > PointColorsModifiedSignalType;
+    typedef core::com::Signal< void () > PointColorsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigPointColorsModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
 
     /// Type of signal when cell colors are modified
-    typedef ::fwCom::Signal< void () > CellColorsModifiedSignalType;
+    typedef core::com::Signal< void () > CellColorsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigCellColorsModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
 
     /// Type of signal when point normals are modified
-    typedef ::fwCom::Signal< void () > PointNormalsModifiedSignalType;
+    typedef core::com::Signal< void () > PointNormalsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigPointNormalsModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
 
     /// Type of signal when cell normals are modified
-    typedef ::fwCom::Signal< void () > CellNormalsModifiedSignalType;
+    typedef core::com::Signal< void () > CellNormalsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigCellNormalsModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
 
     /// Type of signal when point tex coords are modified
-    typedef ::fwCom::Signal< void () > PointTexCoordsModifiedSignalType;
+    typedef core::com::Signal< void () > PointTexCoordsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigPointTexCoorddModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
 
     /// Type of signal when cell tex coords are modified
-    typedef ::fwCom::Signal< void () > CellTexCoordsModifiedSignalType;
+    typedef core::com::Signal< void () > CellTexCoordsModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigCellTexCoorddModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
     /// @}
 
     /**
@@ -973,7 +972,7 @@ protected:
      *
      * This is needed for IBuffered interface implementation
      */
-    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
+    FWDATA_API void lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const override;
 
     /// Number of points defined for the mesh
     Size m_nbPoints;

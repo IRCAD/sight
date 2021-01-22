@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,14 +25,14 @@
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/reader/IObjectReader.hpp"
 
+#include <core/tools/ProgressAdviser.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
 #include <fwServices/IService.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
 
 namespace fwMedData
 {
@@ -56,7 +56,7 @@ class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObj
                                            public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                                            public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::
                                                                                         IObjectReader >,
-                                           public ::fwTools::ProgressAdviser
+                                           public core::tools::ProgressAdviser
 {
 
 public:

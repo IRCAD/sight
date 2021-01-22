@@ -22,10 +22,11 @@
 
 #include "uiCalibration/SImagesSelector.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
@@ -36,8 +37,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -47,9 +46,9 @@ namespace uiCalibration
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector)
 
-const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
-const ::fwCom::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
-const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
+const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
+const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
+const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
 const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 

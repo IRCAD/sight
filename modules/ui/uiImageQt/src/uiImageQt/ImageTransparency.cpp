@@ -23,10 +23,9 @@
 #include "uiImageQt/ImageTransparency.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
@@ -196,7 +195,7 @@ void ImageTransparency::onModifyTransparency(int value)
     auto sig = img->signal< ::fwData::Image::TransparencyModifiedSignalType >(
         ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -229,7 +228,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 
     auto sig = img->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(isVisible);
     }
 }

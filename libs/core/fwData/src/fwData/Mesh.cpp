@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <cstdlib>
 #include <functional>
@@ -42,13 +42,13 @@ fwDataRegisterMacro( ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Mesh::s_VERTEX_MODIFIED_SIG           = "vertexModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_COLORS_MODIFIED_SIG     = "pointColorsModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_COLORS_MODIFIED_SIG      = "cellColorsModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_NORMALS_MODIFIED_SIG    = "pointNormalsModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_NORMALS_MODIFIED_SIG     = "cellNormalsModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG = "pointTexCoordsModified";
-const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_TEX_COORDS_MODIFIED_SIG  = "cellTexCoordsModified";
+const core::com::Signals::SignalKeyType Mesh::s_VERTEX_MODIFIED_SIG           = "vertexModified";
+const core::com::Signals::SignalKeyType Mesh::s_POINT_COLORS_MODIFIED_SIG     = "pointColorsModified";
+const core::com::Signals::SignalKeyType Mesh::s_CELL_COLORS_MODIFIED_SIG      = "cellColorsModified";
+const core::com::Signals::SignalKeyType Mesh::s_POINT_NORMALS_MODIFIED_SIG    = "pointNormalsModified";
+const core::com::Signals::SignalKeyType Mesh::s_CELL_NORMALS_MODIFIED_SIG     = "cellNormalsModified";
+const core::com::Signals::SignalKeyType Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG = "pointTexCoordsModified";
+const core::com::Signals::SignalKeyType Mesh::s_CELL_TEX_COORDS_MODIFIED_SIG  = "cellTexCoordsModified";
 
 //------------------------------------------------------------------------------
 
@@ -77,10 +77,10 @@ Mesh::Mesh(::fwData::Object::Key) :
     m_cellTexCoords   = ::fwData::Array::New();
 
     // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
-    m_points->setType(::fwTools::Type::create<PointValueType>());
-    m_cellTypes->setType(::fwTools::Type::create<CellTypes>());
-    m_cellData->setType(::fwTools::Type::create<CellId>());
-    m_cellDataOffsets->setType(::fwTools::Type::create<CellId>());
+    m_points->setType(core::tools::Type::create<PointValueType>());
+    m_cellTypes->setType(core::tools::Type::create<CellTypes>());
+    m_cellData->setType(core::tools::Type::create<CellId>());
+    m_cellDataOffsets->setType(core::tools::Type::create<CellId>());
 }
 
 //------------------------------------------------------------------------------
@@ -205,15 +205,15 @@ size_t Mesh::reserve(Size nbPts, Size nbCells, Size nbCellsData, Attributes arra
     // Test attributes mask, if present resize corresponding array, if not check if array needs to be cleared.
     if (static_cast<int>(arrayMask & Attributes::POINT_COLORS))
     {
-        m_pointColors->resizeTMP(::fwTools::Type::s_UINT8, {nbPts}, 4);
+        m_pointColors->resizeTMP(core::tools::Type::s_UINT8, {nbPts}, 4);
     }
     if (static_cast<int>(arrayMask & Attributes::POINT_NORMALS))
     {
-        m_pointNormals->resizeTMP(::fwTools::Type::s_FLOAT, {nbPts}, 3 );
+        m_pointNormals->resizeTMP(core::tools::Type::s_FLOAT, {nbPts}, 3 );
     }
     if (static_cast<int>(arrayMask & Attributes::POINT_TEX_COORDS))
     {
-        m_pointTexCoords->resizeTMP( ::fwTools::Type::s_FLOAT, {nbPts}, 2 );
+        m_pointTexCoords->resizeTMP( core::tools::Type::s_FLOAT, {nbPts}, 2 );
     }
 
     m_cellTypes->resize({nbCells});
@@ -222,17 +222,17 @@ size_t Mesh::reserve(Size nbPts, Size nbCells, Size nbCellsData, Attributes arra
 
     if (static_cast<int>(arrayMask & Attributes::CELL_COLORS))
     {
-        m_cellColors->resizeTMP( ::fwTools::Type::s_UINT8,  {nbCells}, 4 );
+        m_cellColors->resizeTMP( core::tools::Type::s_UINT8,  {nbCells}, 4 );
     }
 
     if (static_cast<int>(arrayMask & Attributes::CELL_NORMALS))
     {
-        m_cellNormals->resizeTMP( ::fwTools::Type::s_FLOAT, {nbCells}, 3 );
+        m_cellNormals->resizeTMP( core::tools::Type::s_FLOAT, {nbCells}, 3 );
     }
 
     if (static_cast<int>(arrayMask & Attributes::CELL_TEX_COORDS))
     {
-        m_cellTexCoords->resizeTMP( ::fwTools::Type::s_FLOAT, {nbCells}, 2 );
+        m_cellTexCoords->resizeTMP( core::tools::Type::s_FLOAT, {nbCells}, 2 );
     }
 
     return this->getAllocatedSizeInBytes();
@@ -365,10 +365,10 @@ void Mesh::clear()
     m_cellsDataSize = 0;
 
     // Reset type of points, cellTypes, cellData & cellDataOffsets.
-    m_points->setType(::fwTools::Type::create<PointValueType>());
-    m_cellTypes->setType(::fwTools::Type::create<CellTypes>());
-    m_cellData->setType(::fwTools::Type::create<CellId>());
-    m_cellDataOffsets->setType(::fwTools::Type::create<CellId>());
+    m_points->setType(core::tools::Type::create<PointValueType>());
+    m_cellTypes->setType(core::tools::Type::create<CellTypes>());
+    m_cellData->setType(core::tools::Type::create<CellId>());
+    m_cellDataOffsets->setType(core::tools::Type::create<CellId>());
 
     m_attributes = Attributes::NONE;
 }
@@ -930,7 +930,7 @@ const Mesh::ColorValueType* Mesh::getCellColorsBuffer() const
 }
 //------------------------------------------------------------------------------
 
-void Mesh::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+void Mesh::lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const
 {
     const LocksType& myLocks = this->lock();
     locks.insert(std::end(locks), std::begin(myLocks), std::end(myLocks));
@@ -962,7 +962,7 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData)
 size_t Mesh::allocatePointNormals()
 {
     m_attributes = m_attributes | Attributes::POINT_NORMALS;
-    return m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbPoints)}, 3, true);
+    return m_pointNormals->resize( core::tools::Type::create<NormalValueType>(), {size_t(m_nbPoints)}, 3, true);
 }
 
 //------------------------------------------------------------------------------
@@ -973,7 +973,7 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t)
 
     m_attributes = m_attributes | Attributes::POINT_COLORS;
 
-    return m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbPoints)}, t, true);
+    return m_pointColors->resize( core::tools::Type::create<ColorValueType>(), {size_t(m_nbPoints)}, t, true);
 }
 
 //------------------------------------------------------------------------------
@@ -982,8 +982,8 @@ size_t Mesh::allocatePointTexCoords()
 {
     m_attributes = m_attributes | Attributes::POINT_TEX_COORDS;
 
-    return m_pointTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(
-                                                                                        m_nbPoints)}, 2,
+    return m_pointTexCoords->resize( core::tools::Type::create<TexCoordValueType>(), {size_t(
+                                                                                          m_nbPoints)}, 2,
                                      true);
 }
 
@@ -992,7 +992,7 @@ size_t Mesh::allocatePointTexCoords()
 size_t Mesh::allocateCellNormals()
 {
     m_attributes = m_attributes | Attributes::CELL_NORMALS;
-    return m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbCells)}, 3, true);
+    return m_cellNormals->resize( core::tools::Type::create<NormalValueType>(), {size_t(m_nbCells)}, 3, true);
 }
 
 //------------------------------------------------------------------------------
@@ -1005,7 +1005,7 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t)
     {
         m_cellColors = ::fwData::Array::New();
     }
-    allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbCells)}, t, true);
+    allocatedSize += m_cellColors->resize( core::tools::Type::create<ColorValueType>(), {size_t(m_nbCells)}, t, true);
     return allocatedSize;
 }
 
@@ -1014,7 +1014,7 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t)
 size_t Mesh::allocateCellTexCoords()
 {
     m_attributes = m_attributes | Attributes::CELL_TEX_COORDS;
-    return m_cellTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(m_nbCells)}, 2, true);
+    return m_cellTexCoords->resize( core::tools::Type::create<TexCoordValueType>(), {size_t(m_nbCells)}, 2, true);
 }
 
 //------------------------------------------------------------------------------

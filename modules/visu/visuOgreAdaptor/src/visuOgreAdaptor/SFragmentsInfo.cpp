@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "visuOgreAdaptor/SFragmentsInfo.hpp"
 
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 
-#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/helper/Technique.hpp>
+#include <fwRenderOgre/ogre.hpp>
 
 #include <fwServices/macros.hpp>
 

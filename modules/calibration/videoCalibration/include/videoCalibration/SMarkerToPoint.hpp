@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -61,7 +61,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IController
 {
 public:
-    fwCoreServiceMacro(SMarkerToPoint, ::fwServices::IController);
+    fwCoreServiceMacro(SMarkerToPoint, ::fwServices::IController)
 
     /// Data xml keys
     static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT;
@@ -71,9 +71,9 @@ public:
      * @name Slots API
      * @{
      */
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT;
 
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_CLEAR_SLOT;
     ///@}
 
     /// Constructor

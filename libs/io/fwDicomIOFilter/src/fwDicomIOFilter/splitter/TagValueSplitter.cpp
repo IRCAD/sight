@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
     DicomSeriesContainerType result;
 
-    typedef std::vector< ::fwMemory::BufferObject::sptr > InstanceContainerType;
+    typedef std::vector< core::memory::BufferObject::sptr > InstanceContainerType;
     typedef std::map< std::string, InstanceContainerType > InstanceGroupContainer;
 
     // Create a container to store the groups of instances
@@ -104,9 +104,9 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
     for(const auto& item :  series->getDicomContainer())
     {
-        const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-        const size_t buffSize                          = bufferObj->getSize();
-        ::fwMemory::BufferObject::Lock lock(bufferObj);
+        const core::memory::BufferObject::sptr bufferObj = item.second;
+        const size_t buffSize                            = bufferObj->getSize();
+        core::memory::BufferObject::Lock lock(bufferObj);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;
@@ -143,7 +143,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
         size_t index = 0;
         // Add the paths to the series
-        for(const ::fwMemory::BufferObject::sptr& buffer : group.second)
+        for(const core::memory::BufferObject::sptr& buffer : group.second)
         {
             dicomSeries->addBinary(index++, buffer);
         }

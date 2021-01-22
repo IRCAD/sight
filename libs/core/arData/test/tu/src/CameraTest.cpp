@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwTest/helper/compare.hpp>
+#include <core/tools/NumericRoundCast.hxx>
 
-#include <fwTools/NumericRoundCast.hxx>
+#include <fwTest/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CameraTest );
@@ -41,7 +41,7 @@ namespace ut
 void CameraTest::setUp()
 {
     // Set up context before running a test.
-    std::srand(::fwTools::numericRoundCast< unsigned int >(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast< unsigned int >(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------

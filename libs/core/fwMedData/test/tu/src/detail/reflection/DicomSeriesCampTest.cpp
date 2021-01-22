@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,10 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <fwData/Array.hpp>
+#include <core/tools/System.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTools/Type.hpp>
+#include <fwData/Array.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -119,9 +119,9 @@ void DicomSeriesCampTest::propertiesTest()
                                                                   { "computed_tag_values" },
                                                                   { "first_instance_number" }};
 
-    ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
+    core::memory::BufferObject::sptr bufferObj = core::memory::BufferObject::New();
 
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "DicomSeriesCampTest";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "DicomSeriesCampTest";
     std::filesystem::create_directories(path);
     const std::filesystem::path dicomFile = path / filename;
     {

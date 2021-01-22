@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ namespace reader
 class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                                     public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                                     public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
-                                    public ::fwCom::HasSignals
+                                    public core::com::HasSignals
 {
 
 public:

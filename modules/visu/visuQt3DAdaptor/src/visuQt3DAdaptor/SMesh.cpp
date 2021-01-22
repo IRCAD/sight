@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "visuQt3DAdaptor/SMaterial.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/locked_ptr.hpp>
@@ -44,7 +44,7 @@ namespace visuQt3DAdaptor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT = "modifyVertices";
+static const core::com::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT = "modifyVertices";
 
 static const std::string s_MESH_INOUT = "mesh";
 

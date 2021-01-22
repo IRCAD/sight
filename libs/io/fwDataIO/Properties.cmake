@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     fwData
     fwDataTools
-    fwTools
     fwJobs
 )
 set( REQUIREMENTS  )

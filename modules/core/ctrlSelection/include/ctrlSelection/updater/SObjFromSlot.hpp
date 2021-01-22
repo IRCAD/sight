@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,8 +65,8 @@ public:
      * @name Slots
      * @{
      */
-    static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
-    static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
+    static const core::com::Slots::SlotKeyType s_ADD_SLOT;
+    static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
     /**
      * @}
      */

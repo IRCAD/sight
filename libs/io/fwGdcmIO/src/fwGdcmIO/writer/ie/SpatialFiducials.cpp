@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
+#include <core/tools/dateAndTime.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -32,8 +34,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <gdcmUIDGenerator.h>
 
@@ -73,11 +73,11 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     ::boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
 
     // Content Date - Type 1 - FIXME: Keep series date ?
-    std::string date = ::fwTools::getDate(ptime);
+    std::string date = core::tools::getDate(ptime);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0023 >(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    std::string time = ::fwTools::getTime(ptime);
+    std::string time = core::tools::getTime(ptime);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0033 >(time, dataset);
 
     // Instance Number - Type 1

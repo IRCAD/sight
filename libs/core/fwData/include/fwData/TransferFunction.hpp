@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -232,12 +232,12 @@ public:
      * @{
      */
     /// Defines the type of signal sent when points are modified.
-    typedef ::fwCom::Signal< void () > PointsModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
+    typedef core::com::Signal< void () > PointsModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
 
     /// Defines the type of signal sent when window-level is modified (window, level).
-    typedef ::fwCom::Signal< void (double, double) > WindowingModifiedSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
+    typedef core::com::Signal< void (double, double) > WindowingModifiedSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
     /**
      * @}
      */

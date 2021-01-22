@@ -22,13 +22,13 @@
 
 #include "ctrlHistory/SCommandHistory.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/reflection/exception/ObjectNotFound.hpp>
@@ -41,13 +41,13 @@ namespace ctrlHistory
 
 fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, ::fwData::Object)
 
-static const ::fwCom::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
-static const ::fwCom::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
+static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
+static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
 
-static const ::fwCom::Slots::SlotKeyType s_ENQUEUE_SLOT = "enqueue";
-static const ::fwCom::Slots::SlotKeyType s_UNDO_SLOT    = "undo";
-static const ::fwCom::Slots::SlotKeyType s_REDO_SLOT    = "redo";
-static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT   = "clear";
+static const core::com::Slots::SlotKeyType s_ENQUEUE_SLOT = "enqueue";
+static const core::com::Slots::SlotKeyType s_UNDO_SLOT    = "undo";
+static const core::com::Slots::SlotKeyType s_REDO_SLOT    = "redo";
+static const core::com::Slots::SlotKeyType s_CLEAR_SLOT   = "clear";
 
 //-----------------------------------------------------------------------------
 

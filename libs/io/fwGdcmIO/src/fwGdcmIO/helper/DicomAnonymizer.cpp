@@ -28,13 +28,12 @@
 #include "fwGdcmIO/helper/tags.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
 #include <fwRuntime/operations.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -243,7 +242,7 @@ const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeUTags()
 void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 {
     // Create temporary directory
-    std::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
+    std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("DicomAnonymizer");
     tmpPath /= "tmp";
 
     // Doesn't use std::filesystem::rename because of potential issues when moving folders across volumes

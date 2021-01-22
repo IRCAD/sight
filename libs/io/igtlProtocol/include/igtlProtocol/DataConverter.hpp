@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "igtlProtocol/config.hpp"
 #include "igtlProtocol/converter/IConverter.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <core/tools/Failed.hpp>
 
 namespace igtlProtocol
 {

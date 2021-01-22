@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "fwServices/IOperator.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 namespace fwServices
 {
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType IOperator::s_COMPUTED_SIG = "computed";
+const core::com::Signals::SignalKeyType IOperator::s_COMPUTED_SIG = "computed";
 
 //-----------------------------------------------------------------------------
 

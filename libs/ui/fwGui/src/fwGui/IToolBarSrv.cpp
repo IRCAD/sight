@@ -25,14 +25,13 @@
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-#include <core/include/core/thread/Worker.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {

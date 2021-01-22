@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,9 +109,9 @@ protected:
 
 private:
 
-    typedef ::fwCom::Signal< void (float) > LengthChangedSignalType;
-    typedef ::fwCom::Signal< void (std::string) > LengthStrChangedSignalType;
-    typedef ::fwCom::Signal< void (std::string) > SameSliceSignalType;
+    typedef core::com::Signal< void (float) > LengthChangedSignalType;
+    typedef core::com::Signal< void (std::string) > LengthStrChangedSignalType;
+    typedef core::com::Signal< void (std::string) > SameSliceSignalType;
 
     /// landmarks group's label for the origin of the vector.
     std::string m_originLabel{""};

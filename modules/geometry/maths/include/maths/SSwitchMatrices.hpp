@@ -25,9 +25,8 @@
 #include "maths/config.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -81,11 +80,11 @@ public:
     {
     }
 
-    MATHS_API static const ::fwCom::Slots::SlotKeyType s_SWITCH_SLOT;
-    typedef ::fwCom::Slot< void () > SwitchSlotType;
+    MATHS_API static const core::com::Slots::SlotKeyType s_SWITCH_SLOT;
+    typedef core::com::Slot< void () > SwitchSlotType;
 
-    MATHS_API static const ::fwCom::Slots::SlotKeyType s_SWITCH_TO_SLOT;
-    typedef ::fwCom::Slot<void (size_t)> SwitchToSlotType;
+    MATHS_API static const core::com::Slots::SlotKeyType s_SWITCH_TO_SLOT;
+    typedef core::com::Slot<void (size_t)> SwitchToSlotType;
 
 protected:
 

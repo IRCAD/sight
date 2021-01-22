@@ -100,20 +100,20 @@ public:
      * @name Signals API
      * @{
      */
-    VIDEOCHARUCOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_CHARUCOBOARD_DETECTED_SIG;
-    typedef ::fwCom::Signal<void ()> CharucoBoardDetectedSignalType;
+    VIDEOCHARUCOCALIBRATION_API static const core::com::Signals::SignalKeyType s_CHARUCOBOARD_DETECTED_SIG;
+    typedef core::com::Signal<void ()> CharucoBoardDetectedSignalType;
 
-    VIDEOCHARUCOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_CHARUCOBOARD_NOT_DETECTED_SIG;
-    typedef ::fwCom::Signal<void ()> CharucoBoardNotDetectedSignalType;
+    VIDEOCHARUCOCALIBRATION_API static const core::com::Signals::SignalKeyType s_CHARUCOBOARD_NOT_DETECTED_SIG;
+    typedef core::com::Signal<void ()> CharucoBoardNotDetectedSignalType;
     /// @}
 
     /**
      * @name Slots API
      * @{
      */
-    VIDEOCHARUCOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CHECK_POINTS_SLOT;
-    VIDEOCHARUCOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_DETECT_POINTS_SLOT;
-    VIDEOCHARUCOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT;
+    VIDEOCHARUCOCALIBRATION_API static const core::com::Slots::SlotKeyType s_CHECK_POINTS_SLOT;
+    VIDEOCHARUCOCALIBRATION_API static const core::com::Slots::SlotKeyType s_DETECT_POINTS_SLOT;
+    VIDEOCHARUCOCALIBRATION_API static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT;
     ///@}
 
     /// Constructor

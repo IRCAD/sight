@@ -22,10 +22,10 @@
 
 #include "ioDicom/SSliceIndexDicomEditor.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Timer.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
@@ -48,8 +48,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTools/System.hpp>
-
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -64,8 +62,8 @@ namespace ioDicom
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::fwMedData::DicomSeries )
 
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
+const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
+const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
 //------------------------------------------------------------------------------
 
@@ -279,8 +277,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     ::fwMedDataTools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
     sDBTempohelper.clear();
 
-    // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
-    std::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");
+    // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
+    std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
     std::filesystem::path tmpPath = path / "tmp";
 
     SLM_INFO("Create " + tmpPath.string());
@@ -290,8 +288,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     auto iter            = binaries.find(selectedSliceIndex);
     SLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
-    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
-    const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+    const core::memory::BufferObject::sptr bufferObj = iter->second;
+    const core::memory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ PointList::computeDistance(::fwData::PointList::sptr _pointList1,
     const size_t size                                     = points1.size();
 
     ::fwData::Array::sptr outputArray = ::fwData::Array::New();
-    outputArray->resize({size}, ::fwTools::Type::s_DOUBLE);
+    outputArray->resize({size}, core::tools::Type::s_DOUBLE);
     const auto dumpLock   = outputArray->lock();
     auto distanceArrayItr = outputArray->begin<double>();
 

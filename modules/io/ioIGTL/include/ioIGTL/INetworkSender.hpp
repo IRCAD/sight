@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,10 @@ public:
 protected:
 
     /// Defines the signal's name emitted when service is connected.
-    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
+    IOIGTL_API static const core::com::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /// Defines the signal's name emitted when service is disconnected.
-    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
+    IOIGTL_API static const core::com::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
 
     /**
      * @brief Sends input objects
@@ -75,11 +75,11 @@ protected:
     IOIGTL_API virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
-    typedef ::fwCom::Signal< void () > ConnectedSignalType;
+    typedef core::com::Signal< void () > ConnectedSignalType;
     ConnectedSignalType::sptr m_sigConnected;
 
     /// Defines the signal emitted when service is disconnected.
-    typedef ::fwCom::Signal< void () > DisconnectSignalType;
+    typedef core::com::Signal< void () > DisconnectSignalType;
     DisconnectSignalType::sptr m_sigDisconnected;
 
 };

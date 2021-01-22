@@ -24,18 +24,16 @@
 
 #include "fwGui/Application.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-#include <core/include/core/thread/Worker.hxx>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -47,11 +45,11 @@ const std::string IFrameSrv::CLOSE_POLICY_EXIT    = "exit";
 const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
 
-const ::fwCom::Slots::SlotKeyType IFrameSrv::s_SET_VISIBLE_SLOT = "setVisible";
-const ::fwCom::Slots::SlotKeyType IFrameSrv::s_SHOW_SLOT        = "show";
-const ::fwCom::Slots::SlotKeyType IFrameSrv::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IFrameSrv::s_SET_VISIBLE_SLOT = "setVisible";
+const core::com::Slots::SlotKeyType IFrameSrv::s_SHOW_SLOT        = "show";
+const core::com::Slots::SlotKeyType IFrameSrv::s_HIDE_SLOT        = "hide";
 
-const ::fwCom::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
+const core::com::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
 
 ::fwGui::container::fwContainer::wptr IFrameSrv::m_progressWidget =
     std::weak_ptr< ::fwGui::container::fwContainer >();

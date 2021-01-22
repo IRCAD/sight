@@ -24,7 +24,9 @@
 
 #include <arMDSemanticPatch/PatchLoader.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -42,9 +44,6 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 

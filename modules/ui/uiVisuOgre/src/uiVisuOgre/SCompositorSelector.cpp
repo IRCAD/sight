@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiVisuOgre/SCompositorSelector.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 
@@ -45,7 +45,7 @@ namespace uiVisuOgre
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::fwData::Composite)
 
-const ::fwCom::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
+const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
 static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME = "compositorsPostFX";
 

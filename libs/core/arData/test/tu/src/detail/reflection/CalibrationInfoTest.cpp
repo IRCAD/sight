@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void CalibrationInfoTest::propertiesTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 

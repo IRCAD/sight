@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "opImageFilter/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -59,9 +59,9 @@ public:
 
     fwCoreServiceMacro(SFlip, ::fwServices::IOperator)
 
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
-    OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
+    OPIMAGEFILTER_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
+    OPIMAGEFILTER_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
+    OPIMAGEFILTER_API static const core::com::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
 
     /// Constructor, does nothing.
     OPIMAGEFILTER_API SFlip();

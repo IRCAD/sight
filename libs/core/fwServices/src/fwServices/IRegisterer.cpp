@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "fwServices/IRegisterer.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 namespace fwServices
 {
 
 // -----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IRegisterer::s_COMPUTE_REGISTRATION_SLOT = "computeRegistration";
+const core::com::Slots::SlotKeyType IRegisterer::s_COMPUTE_REGISTRATION_SLOT = "computeRegistration";
 
 // ----------------------------------------------------------------------------
 

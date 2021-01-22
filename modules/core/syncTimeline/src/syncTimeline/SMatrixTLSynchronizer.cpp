@@ -25,7 +25,8 @@
 #include <arData/MatrixTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -33,8 +34,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <functional>
 #include <sstream>
@@ -45,8 +44,8 @@ namespace syncTimeline
 // -----------------------------------------------------------------------------
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL)
 
-static const ::fwCom::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
-static const ::fwCom::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
+static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
+static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
 static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";

@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwAtomsPatch
     fwMDSemanticPatch
     core
-    fwTools
     fwMedData
     arData
 )

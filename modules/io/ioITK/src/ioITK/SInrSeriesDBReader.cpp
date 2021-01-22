@@ -23,6 +23,8 @@
 #include "ioITK/SInrSeriesDBReader.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -47,9 +49,6 @@
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -174,7 +173,7 @@ void SInrSeriesDBReader::updating()
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        const std::string instanceUID = ::fwTools::UUID::generateUUID();
+        const std::string instanceUID = core::tools::UUID::generateUUID();
 
         for(const std::filesystem::path& path :  this->getFiles())
         {
@@ -211,8 +210,8 @@ void SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std:
 {
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date = ::fwTools::getDate(now);
-    const std::string time = ::fwTools::getTime(now);
+    const std::string date = core::tools::getDate(now);
+    const std::string time = core::tools::getTime(now);
     series->setDate(date);
     series->setTime(time);
 

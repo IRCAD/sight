@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Blob.hpp"
+
+#include "fwAtoms/registry/macros.hpp"
 
 fwAtomsRegisterMacro( ::fwAtoms::Blob );
 
@@ -30,7 +31,7 @@ namespace fwAtoms
 
 //------------------------------------------------------------------------------
 
-Blob::sptr Blob::New(::fwMemory::BufferObject::sptr buffer)
+Blob::sptr Blob::New(core::memory::BufferObject::sptr buffer)
 {
     Blob::sptr blob = Blob::New();
     blob->m_bufferObject = buffer;
@@ -42,7 +43,7 @@ Blob::sptr Blob::New(::fwMemory::BufferObject::sptr buffer)
 
 Blob::sptr Blob::New(void* buffer, unsigned int size)
 {
-    ::fwMemory::BufferObject::sptr bufferObject = ::fwMemory::BufferObject::New();
+    core::memory::BufferObject::sptr bufferObject = core::memory::BufferObject::New();
     bufferObject->setBuffer(buffer, size);
     Blob::sptr blob = Blob::New(bufferObject);
     return blob;
@@ -50,31 +51,33 @@ Blob::sptr Blob::New(void* buffer, unsigned int size)
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::sptr Blob::getBufferObject() const
+core::memory::BufferObject::sptr Blob::getBufferObject() const
 {
     return m_bufferObject;
 }
 
 //------------------------------------------------------------------------------
 
-void Blob::setBufferObject(const ::fwMemory::BufferObject::sptr &bo)
+void Blob::setBufferObject(const core::memory::BufferObject::sptr& bo)
 {
     m_bufferObject = bo;
 }
 
+//------------------------------------------------------------------------------
+
 Base::sptr Blob::clone() const
 {
-    ::fwMemory::BufferObject::sptr bufferObjectDest = ::fwMemory::BufferObject::New();
-    Blob::sptr cloneBlob = Blob::New(bufferObjectDest);
+    core::memory::BufferObject::sptr bufferObjectDest = core::memory::BufferObject::New();
+    Blob::sptr cloneBlob                              = Blob::New(bufferObjectDest);
     if(m_bufferObject)
     {
         bufferObjectDest->allocate(m_bufferObject->getSize());
 
-        ::fwMemory::BufferObject::Lock lockerSource(m_bufferObject);
-        char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
+        core::memory::BufferObject::Lock lockerSource(m_bufferObject);
+        char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
 
-        ::fwMemory::BufferObject::Lock lockerDest(bufferObjectDest);
-        char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
+        core::memory::BufferObject::Lock lockerDest(bufferObjectDest);
+        char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
 
         std::copy(buffSrc, buffSrc + m_bufferObject->getSize(), buffDest );
     }
@@ -82,4 +85,3 @@ Base::sptr Blob::clone() const
 }
 
 }
-

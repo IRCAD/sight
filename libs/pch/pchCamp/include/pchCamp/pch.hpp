@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 
 #define CAMP_COMPILATION
 
-#include <fwCamp/UserObject.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/reflection/UserObject.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/reflection/mapper.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwCom/Connection.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/Connection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
@@ -90,9 +90,9 @@ public:
     /// Remove the TF connections
     FWDATATOOLS_API void removeTFConnections();
 
-    FWDATATOOLS_API ::fwCom::Connection getTFUpdateConnection() const;
+    FWDATATOOLS_API core::com::Connection getTFUpdateConnection() const;
 
-    FWDATATOOLS_API ::fwCom::Connection getTFWindowingConnection() const;
+    FWDATATOOLS_API core::com::Connection getTFWindowingConnection() const;
 
 protected:
 
@@ -107,9 +107,9 @@ protected:
     /// Slot: called when transfer function windowing is modified
     FWDATATOOLS_API void updateTFWindowing(double, double);
 
-    typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
+    typedef core::com::Slot<void ()> UpdateTFPointsSlotType;
 
-    typedef ::fwCom::Slot<void (double, double)> UpdateTFWindowingSlotType;
+    typedef core::com::Slot<void (double, double)> UpdateTFWindowingSlotType;
 
     /// Slot called when transfer function points are modified
     UpdateTFPointsSlotType::sptr m_slotUpdateTFPoints;
@@ -126,7 +126,7 @@ private:
     ::fwData::TransferFunction::wptr m_transferFunction;
 
     /// Connections to the transfer function
-    ::fwCom::helper::SigSlotConnection m_tfConnections;
+    core::com::helper::SigSlotConnection m_tfConnections;
 
     std::function<void()> m_updateTFPoints;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,15 @@
 
 #include "fwNetworkIO/http/ClientQt.hpp"
 
+#include <core/tools/System.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTools/UUID.hpp>
-
-#include <filesystem>
 #include <QList>
 #include <QtNetwork>
+
+#include <filesystem>
 
 namespace fwNetworkIO
 {
@@ -84,14 +85,14 @@ std::string ClientQt::getFile(Request::sptr request)
     QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
                          &QNetworkReply::error), this, &ClientQt::processError);
 
-    std::filesystem::path folderPath = ::fwTools::System::getTemporaryFolder();
-    std::filesystem::path filePath   = folderPath / ::fwTools::UUID::generateUUID();
+    std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
+    std::filesystem::path filePath   = folderPath / core::tools::UUID::generateUUID();
 
     QFile file(filePath.string().c_str());
 
     while(file.exists())
     {
-        filePath = folderPath / ::fwTools::UUID::generateUUID();
+        filePath = folderPath / core::tools::UUID::generateUUID();
         file.setFileName(filePath.string().c_str());
     }
 

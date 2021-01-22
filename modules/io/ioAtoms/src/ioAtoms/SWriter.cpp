@@ -24,6 +24,9 @@
 
 #include "ioAtoms/SReader.hpp"
 
+#include <core/com/Signal.hxx>
+#include <core/tools/System.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/types.hpp>
@@ -32,8 +35,6 @@
 #include <fwAtomsPatch/PatchingManager.hpp>
 #include <fwAtomsPatch/VersionsGraph.hpp>
 #include <fwAtomsPatch/VersionsManager.hpp>
-
-#include <fwCom/Signal.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
@@ -54,8 +55,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/System.hpp>
-
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
@@ -71,7 +70,7 @@ namespace ioAtoms
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::fwData::Object )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //-----------------------------------------------------------------------------
 
@@ -430,8 +429,8 @@ void SWriter::updating()
                                                          );
 
     // Generate a temporary file name for saving the file.
-    const std::filesystem::path tmpFolderPath = ::fwTools::System::getTemporaryFolder();
-    const std::filesystem::path tmpFilePath   = tmpFolderPath / (::fwTools::System::genTempFileName() + ".sight");
+    const std::filesystem::path tmpFolderPath = core::tools::System::getTemporaryFolder();
+    const std::filesystem::path tmpFilePath   = tmpFolderPath / (core::tools::System::genTempFileName() + ".sight");
     const std::filesystem::path tmpFilename   = tmpFilePath.filename();
 
     // Writing file : job 3
@@ -491,11 +490,11 @@ void SWriter::updating()
 
             // Rename the temporary file with the real name and move it to the right folder.
 
-            ::fwTools::System::robustRename(tmpFilePath, filePath);
+            core::tools::System::robustRename(tmpFilePath, filePath);
 
             if(std::filesystem::exists(tmpFolderPath/folderDirName))
             {
-                ::fwTools::System::robustRename(tmpFolderPath/folderDirName, folderPath/folderDirName);
+                core::tools::System::robustRename(tmpFolderPath/folderDirName, folderPath/folderDirName);
             }
 
             runningJob.done();

@@ -26,13 +26,13 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
 #include <cvIO/Matrix.hpp>
 #include <cvIO/PointList.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -54,7 +54,7 @@ fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessboa
 namespace videoCalibration
 {
 
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INPUT           = "transform";
 static const ::fwServices::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
@@ -64,8 +64,8 @@ static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_INOUT = "videoImage";
 
 static const ::fwServices::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
 
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::Slots::SlotKeyType s_TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 //-----------------------------------------------------------------------------
 

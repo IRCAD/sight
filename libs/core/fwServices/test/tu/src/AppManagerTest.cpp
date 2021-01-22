@@ -29,7 +29,7 @@
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>

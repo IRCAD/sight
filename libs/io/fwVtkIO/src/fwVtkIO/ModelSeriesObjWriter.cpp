@@ -26,6 +26,7 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/Material.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -36,8 +37,6 @@
 #include <fwJobs/Observer.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
@@ -125,7 +124,7 @@ void ModelSeriesObjWriter::write()
         vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
         renderWindow->AddRenderer(renderer);
 
-        const std::string filename = (prefix / (rec->getOrganName() + "_" + ::fwTools::UUID::get(rec))).string();
+        const std::string filename = (prefix / (rec->getOrganName() + "_" + core::tools::UUID::get(rec))).string();
 
         vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
         exporter->SetRenderWindow(renderWindow);

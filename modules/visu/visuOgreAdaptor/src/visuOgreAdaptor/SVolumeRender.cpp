@@ -24,8 +24,8 @@
 
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -51,14 +51,14 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
-static const ::fwCom::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
+static const core::com::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
+static const core::com::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
+static const core::com::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
+static const core::com::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
@@ -928,7 +928,7 @@ void SVolumeRender::updateClippingTM3D()
         const auto sig =
             clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
+        core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
 
         sig->asyncEmit();
     }

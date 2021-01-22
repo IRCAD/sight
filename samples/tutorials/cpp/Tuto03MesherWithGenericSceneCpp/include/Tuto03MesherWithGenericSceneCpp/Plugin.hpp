@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "Tuto03MesherWithGenericSceneCpp/config.hpp"
 
-#include <fwCom/SlotBase.hpp>
+#include <core/com/SlotBase.hpp>
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -59,8 +59,8 @@ private:
 
     std::unique_ptr< ::fwServices::AppManager > m_appManager;
 
-    ::fwCom::SlotBase::sptr m_slotRecSelected;
-    ::fwCom::SlotBase::sptr m_slotEmptySelection;
+    core::com::SlotBase::sptr m_slotRecSelected;
+    core::com::SlotBase::sptr m_slotEmptySelection;
 };
 
 } // namespace Tuto03MesherWithGenericSceneCpp

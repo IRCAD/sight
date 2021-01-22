@@ -24,10 +24,9 @@
 
 #include <arData/timeline/Buffer.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -42,12 +41,12 @@ namespace videoTools
 //-----------------------------------------------------------------------------
 
 //  Public slot
-const ::fwCom::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT = "updateFrame";
+const core::com::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT = "updateFrame";
 
 // Private slot
-const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
+const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
 
-const ::fwCom::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = "renderRequested";
+const core::com::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = "renderRequested";
 
 //-----------------------------------------------------------------------------
 
@@ -161,7 +160,7 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
                 m_image->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
 
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }

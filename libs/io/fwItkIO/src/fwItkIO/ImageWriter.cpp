@@ -26,11 +26,10 @@
 #include "fwItkIO/itk.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkImageFileWriter.h>
 
@@ -68,7 +67,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        SLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
+        SLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -116,7 +115,7 @@ void ImageWriter::write()
     saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< fwTools::SupportedDispatcherTypes, ITKSaverFunctor >::invoke(
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ITKSaverFunctor >::invoke(
         saverParam.m_dataImage->getType(), saverParam );
 }
 

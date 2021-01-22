@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,11 @@
 
 #include "monitorQt/config.hpp"
 
-#include <fwCom/Connection.hpp>
+#include <core/com/Connection.hpp>
+#include <core/memory/BufferManager.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QFutureWatcher>
 #include <QPointer>
@@ -62,7 +60,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(DumpEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(DumpEditor, ::fwGui::editor::IEditor)
 
     /// Constructor. Does nothing.
     MONITORQT_API DumpEditor() noexcept;
@@ -107,9 +105,9 @@ protected Q_SLOTS:
 
 private:
 
-    typedef ::fwCom::Slot<void ()> UpdateSlotType;
+    typedef core::com::Slot<void ()> UpdateSlotType;
 
-    QFutureWatcher< ::fwMemory::BufferManager::BufferInfoMapType > m_watcher;
+    QFutureWatcher< core::memory::BufferManager::BufferInfoMapType > m_watcher;
 
     // Managed buffers
     std::vector< const void* const* > m_objectsUID;
@@ -132,7 +130,7 @@ private:
     SPTR(UpdateSlotType) m_updateSlot;
 
     /// Manage connection between buffManager updated signal and onUpdate method
-    ::fwCom::Connection m_connection;
+    core::com::Connection m_connection;
 
     /// Timer use to call each 300 ms onRefreshButton() slot
     QPointer<QTimer> m_updateTimer;

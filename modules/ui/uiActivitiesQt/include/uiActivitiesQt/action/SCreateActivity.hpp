@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,11 +88,11 @@ public:
      * @name Signals API
      * @{
      */
-    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
-    typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
+    UIACTIVITIESQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
 
-    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
-    typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
+    UIACTIVITIESQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
+    typedef core::com::Signal< void (std::string) > ActivityIDSelectedSignalType;
     /// @}
 
 protected:

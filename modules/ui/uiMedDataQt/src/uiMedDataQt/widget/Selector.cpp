@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,8 +126,8 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& _indexList
     SeriesVectorType vSeries;
     for(QModelIndex index : _indexList)
     {
-        std::string uid = index.data(SelectorModel::UID).toString().toStdString();
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+        std::string uid               = index.data(SelectorModel::UID).toString().toStdString();
+        core::tools::Object::sptr obj = core::tools::fwID::getObject(uid);
 
         if (index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
         {
@@ -168,7 +168,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
         SLM_ASSERT("Child is null", child);
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SLM_ASSERT("UID must not be empty.", !uid.empty());
-        ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(uid);
+        core::tools::Object::sptr obj = core::tools::fwID::getObject(uid);
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
         vSeries.push_back(series);
     }
@@ -238,8 +238,9 @@ void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
                     const QStandardItem* const serieItem =
                         studyItem->child(serieIdx, int(SelectorModel::ColumnSeriesType::NAME));
                     selection.push_back(serieItem->index());
-                    const std::string serieUID = serieItem->index().data(SelectorModel::UID).toString().toStdString();
-                    ::fwTools::Object::sptr obj     = ::fwTools::fwID::getObject(serieUID);
+                    const std::string serieUID =
+                        serieItem->index().data(SelectorModel::UID).toString().toStdString();
+                    core::tools::Object::sptr obj = core::tools::fwID::getObject(serieUID);
                     ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
 
                     series.push_back(serie);
@@ -277,7 +278,7 @@ void Selector::onRemoveSerieID(const std::string& _id)
                 if(serieUID == _id)
                 {
                     selection.push_back(serieItem->index());
-                    ::fwTools::Object::sptr obj     = ::fwTools::fwID::getObject(serieUID);
+                    core::tools::Object::sptr obj = core::tools::fwID::getObject(serieUID);
                     ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
 
                     series.push_back(serie);

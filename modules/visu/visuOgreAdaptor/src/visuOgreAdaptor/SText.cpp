@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SText.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/GenericFieldBase.hpp>
 
@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
 
 static const ::fwServices::IService::KeyType s_OBJECT_INPUT = "object";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
+static const core::com::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
 
 static const std::string s_TEXT_CONFIG        = "text";
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";

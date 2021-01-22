@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,15 @@
 
 #include "opVTKMesh/action/SMeshCreation.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
@@ -164,7 +163,7 @@ void SMeshCreation::updating()
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

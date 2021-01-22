@@ -26,10 +26,9 @@
 
 #include <arServices/ITracker.hpp>
 
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -116,25 +115,25 @@ public:
 
     fwCoreServiceMacro(SArucoTracker, arServices::ITracker)
 
-    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
-    typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;
+    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
+    typedef core::com::Signal< void (bool) > MarkerDetectedSignalType;
 
     /**
      * @name Signal API
      * @{
      */
     /// Key in m_signals map of signal m_sigDetectionDone
-    TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_DETECTION_DONE_SIG;
+    TRACKERARUCO_API static const core::com::Signals::SignalKeyType s_DETECTION_DONE_SIG;
     /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
-    TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
+    TRACKERARUCO_API static const core::com::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
     /** @} */
     /**
      * @name Slots API
      * @{
      */
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    TRACKERARUCO_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    TRACKERARUCO_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    TRACKERARUCO_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     /** @} */
 
     typedef std::vector< int >          MarkerIDType;

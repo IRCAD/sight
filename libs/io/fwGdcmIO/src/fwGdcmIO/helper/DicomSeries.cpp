@@ -160,9 +160,9 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
             SLM_ERROR("DicomSeries doesn't not contain any instance.");
             break;
         }
-        const auto& firstItem                                  = series->getDicomContainer().begin();
-        const ::fwMemory::BufferObject::sptr bufferObj         = firstItem->second;
-        const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const auto& firstItem                                    = series->getDicomContainer().begin();
+        const core::memory::BufferObject::sptr bufferObj         = firstItem->second;
+        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
         SPTR(std::istream) is = streamInfo.stream;
 
         ::gdcm::Reader reader;
@@ -321,9 +321,9 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
         }
 
         // Load first instance
-        const auto& firstItem                                  = series->getDicomContainer().begin();
-        const ::fwMemory::BufferObject::sptr bufferObj         = firstItem->second;
-        const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const auto& firstItem                                    = series->getDicomContainer().begin();
+        const core::memory::BufferObject::sptr bufferObj         = firstItem->second;
+        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
         SPTR(std::istream) is = streamInfo.stream;
 
         ::gdcm::Reader reader;

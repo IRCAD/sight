@@ -3,13 +3,11 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES
-    fwCom
     fwData
     fwDataTools
     fwGui
     fwRuntime
     fwServices
-    fwTools
     )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher

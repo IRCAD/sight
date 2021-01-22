@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,9 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <filesystem>
 #include <gdcmImageReader.h>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::ImagePositionPatientSorterTest );
@@ -63,10 +64,10 @@ void ImagePositionPatientSorterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj)
+double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 {
     ::gdcm::ImageReader reader;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     reader.SetStream(*streamInfo.stream);
 
     if (!reader.Read())

@@ -26,7 +26,7 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwVideoQt/Player.hpp>
 
@@ -154,7 +154,7 @@ private:
     ::fwVideoQt::Player* m_videoPlayer;
 
     /// Slot to call present frame method
-    ::fwCom::Slot<void(const QVideoFrame& frame)>::sptr m_slotPresentFrame;
+    core::com::Slot<void(const QVideoFrame& frame)>::sptr m_slotPresentFrame;
 
     /// Worker for the m_slotPresentFrame
     core::thread::Worker::sptr m_workerPresentFrame;

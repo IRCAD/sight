@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 
+#include <core/tools/dateAndTime.hpp>
+
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
@@ -29,8 +31,6 @@
 #include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/infos/Logger.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -139,8 +139,8 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
     // Date and time
     ::boost::posix_time::ptime pdate =
         ::boost::posix_time::time_from_string(creationDate);
-    const std::string date = ::fwTools::getDate(pdate);
-    const std::string time = ::fwTools::getTime(pdate);
+    const std::string date = core::tools::getDate(pdate);
+    const std::string time = core::tools::getTime(pdate);
 
     helper.addAttribute("date", ::fwAtoms::String::New(date));
     helper.addAttribute("time", ::fwAtoms::String::New(time));

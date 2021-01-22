@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioNetwork/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -46,26 +46,26 @@ public:
      * @brief Service connected signal is emitted when listener is connected
      */
     [[deprecated("removed in sight 21.0, please use the interface ::igtlIO::INetworkListener")]]
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
+    IONETWORK_API static const core::com::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /**
      * @typedef ConnectedSignalType
      *
      * @brief ConnectedSignalType is stored and emit it when listener is connected
      */
-    typedef ::fwCom::Signal< void () >  ConnectedSignalType;
+    typedef core::com::Signal< void () >  ConnectedSignalType;
 
     /**
      * @brief Service disconnected signal is emitted when listener is disconnected
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
+    IONETWORK_API static const core::com::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
 
     /**
      * @typedef DisconnectSignalType
      *
      * @brief DisconnectSignalType is stored and emit it when listener is disconnected
      */
-    typedef ::fwCom::Signal< void () > DisconnectSignalType;
+    typedef core::com::Signal< void () > DisconnectSignalType;
 
     /// Constructor
     IONETWORK_API INetworkListener();

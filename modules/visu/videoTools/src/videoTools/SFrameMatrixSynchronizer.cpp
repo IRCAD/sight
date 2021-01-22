@@ -26,8 +26,9 @@
 #include <arData/MatrixTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -38,8 +39,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <algorithm>
 #include <functional>
 
@@ -48,12 +47,12 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixS
 namespace videoTools
 {
 
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_SKIPPED_SIG =
+const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
+const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_SKIPPED_SIG =
     "synchronizationSkipped";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
+const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
+const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
+const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
@@ -61,11 +60,11 @@ const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
 const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
-const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
+const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
 
 // Public slots
-const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT     = "synchronize";
-const ::fwCom::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT = "setFrameDelay";
+const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT     = "synchronize";
+const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT = "setFrameDelay";
 
 // ----------------------------------------------------------------------------
 

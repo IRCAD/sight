@@ -26,6 +26,8 @@
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
@@ -34,8 +36,6 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/helper/compare.hpp>
 #include <fwTest/Slow.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <fwZip/ReadZipArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
@@ -134,7 +134,7 @@ void DicomSeriesWriterTest::writeReadTest()
     }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    const std::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("writeReadTest") /
+    const std::filesystem::path destPath = core::tools::System::getTemporaryFolder("writeReadTest") /
                                            "dicomSeriesTest";
     std::filesystem::create_directories(destPath);
 
@@ -163,7 +163,7 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
     anonymizer->addExceptionTag(0x0010, 0x0010, "ANONYMIZED^ANONYMIZED "); // Patient's name
 
     const std::filesystem::path destPath
-        = ::fwTools::System::getTemporaryFolder("writeReadAnonymiseTest") / "dicomSeriesTest";
+        = core::tools::System::getTemporaryFolder("writeReadAnonymiseTest") / "dicomSeriesTest";
     std::filesystem::create_directories(destPath);
 
     // Write Dicom
@@ -187,7 +187,7 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
     const std::filesystem::path destPath
-        = ::fwTools::System::getTemporaryFolder("writeReadDirArchiveTest") / "dicomSeriesTest";
+        = core::tools::System::getTemporaryFolder("writeReadDirArchiveTest") / "dicomSeriesTest";
     std::filesystem::create_directories(destPath);
 
     ::fwZip::WriteDirArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(destPath);

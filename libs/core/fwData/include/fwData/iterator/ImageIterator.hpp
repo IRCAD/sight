@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "fwMemory/BufferObject.hpp"
+#include "core/memory/BufferObject.hpp"
 #include <iterator>
 
 namespace fwData
@@ -73,7 +73,7 @@ struct BGRA {
  * Example:
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
     auto iter    = img->begin<RGBA>();
     const auto iterEnd = img->end<RGBA>();
 
@@ -167,7 +167,7 @@ protected:
     /// allow to create a ConstIterator from an Iterator
     friend class ImageIteratorBase<FORMAT, true>;
 
-    ::fwMemory::BufferObject::Lock m_lock;
+    core::memory::BufferObject::Lock m_lock;
     pointer m_pointer{nullptr};
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};

@@ -24,9 +24,8 @@
 
 #include "ioPacs/config.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Slot.hpp>
+#include <core/com/Slot.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
@@ -71,20 +70,20 @@ public:
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
 
-    IOPACS_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    IOPACS_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
+    typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
 
     /// Signal to start the progress (bar id)
-    typedef ::fwCom::Signal< void ( std::string ) > StartedProgressSignalType;
+    typedef core::com::Signal< void ( std::string ) > StartedProgressSignalType;
     /// Signal to update the progress (bar id, percentage, message)
-    typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
+    typedef core::com::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
     /// Signal to stop the progress (bar id)
-    typedef ::fwCom::Signal< void ( std::string ) > StoppedProgressSignalType;
+    typedef core::com::Signal< void ( std::string ) > StoppedProgressSignalType;
 
     /// Key in m_signals map of signal m_sigProgressed
-    static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG;
-    static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG;
-    static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG;
+    static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG;
+    static const core::com::Signals::SignalKeyType s_STARTED_PROGRESS_SIG;
+    static const core::com::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG;
 
     /**
      * @brief Constructor

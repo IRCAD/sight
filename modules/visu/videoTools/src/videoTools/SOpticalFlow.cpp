@@ -22,10 +22,10 @@
 
 #include "videoTools/SOpticalFlow.hpp"
 
-#include <cvIO/FrameTL.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/FrameTL.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -37,8 +37,8 @@ namespace videoTools
 
 const ::fwServices::IService::KeyType s_FRAME_TIMELINE_INPUT = "timeline";
 
-static const ::fwCom::Signals::SignalKeyType s_CAMERA_MOVED_SIG    = "cameraMoved";
-static const ::fwCom::Signals::SignalKeyType s_CAMERA_REMAINED_SIG = "cameraRemained";
+static const core::com::Signals::SignalKeyType s_CAMERA_MOVED_SIG    = "cameraMoved";
+static const core::com::Signals::SignalKeyType s_CAMERA_REMAINED_SIG = "cameraRemained";
 
 // ----------------------------------------------------------------------------
 

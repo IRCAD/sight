@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
         imageDim++;
     }
 
-    const ::fwTools::Type imageType = ::fwTools::Type::create<T>();
+    const core::tools::Type imageType = core::tools::Type::create<T>();
     ::fwData::Image::Size imageSize = {0, 0, 0};
     imageSize[0]                    = _w;
     if(_h > 0)

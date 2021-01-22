@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include <fwDataTools/Image.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <sstream>
 
@@ -62,8 +62,8 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
         << "Test failed with types : img : " << imageTypeName
         << ", roi : " << roiTypeName;
     const std::string message = ss.str();
-    const ::fwTools::Type imageType(imageTypeName);
-    const ::fwTools::Type roiType(roiTypeName);
+    const core::tools::Type imageType(imageTypeName);
+    const core::tools::Type roiType(roiTypeName);
     ::fwData::Image::sptr imageRef;
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwData::Image::sptr roi   = ::fwData::Image::New();

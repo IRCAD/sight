@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #include "ioGdcm/SSeriesDBReader.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/tools/ProgressToLogger.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -52,14 +53,12 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include <fwTools/ProgressToLogger.hpp>
-
 namespace ioGdcm
 {
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 

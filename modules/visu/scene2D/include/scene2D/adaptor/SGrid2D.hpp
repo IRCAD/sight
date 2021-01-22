@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,13 +64,13 @@ class SCENE2D_CLASS_API SGrid2D : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SGrid2D, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SGrid2D, ::fwRenderQt::IAdaptor)
 
     /**
      * @name Slots API
      * @{
      */
-    SCENE2D_API static const ::fwCom::Slots::SlotKeyType s_SET_GRID_SPACING_SLOT;
+    SCENE2D_API static const core::com::Slots::SlotKeyType s_SET_GRID_SPACING_SLOT;
     /** @} */
 
     /// Constructor, set the x and y spacing to 10

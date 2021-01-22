@@ -23,11 +23,10 @@
 #include "uiTools/editor/SShowVectorSize.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -48,8 +47,8 @@ namespace uiTools
 namespace editor
 {
 
-const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
-const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
+const core::com::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
+const core::com::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector )
 

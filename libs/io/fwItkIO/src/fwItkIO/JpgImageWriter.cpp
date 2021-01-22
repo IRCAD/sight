@@ -26,6 +26,8 @@
 #include "fwItkIO/itk.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -36,9 +38,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
@@ -86,7 +85,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        SLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
+        SLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
 
         ::fwData::Image::csptr image = param.m_dataImage;
 
@@ -181,7 +180,7 @@ void JpgImageWriter::write()
     saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, JpgITKSaverFunctor >::invoke(
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, JpgITKSaverFunctor >::invoke(
         saverParam.m_dataImage->getType(), saverParam );
 }
 

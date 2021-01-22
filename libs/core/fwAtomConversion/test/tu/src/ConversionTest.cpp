@@ -29,14 +29,14 @@
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 
 #include <core/log/SpyLogger.hpp>
+#include <core/reflection/macros.hpp>
+#include <core/reflection/Mapper/ValueMapper.hpp>
+#include <core/reflection/UserObject.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
-
-#include <fwCamp/macros.hpp>
-#include <fwCamp/Mapper/ValueMapper.hpp>
-#include <fwCamp/UserObject.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -62,8 +62,6 @@
 
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <functional>
 
@@ -241,20 +239,20 @@ void ConversionTest::meshConversionTest()
 void ConversionTest::graphConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
-    ::fwTools::UUID::UUIDType gID, n1ID, n2ID, n3ID, e12ID, e23ID;
+    core::tools::UUID::UUIDType gID, n1ID, n2ID, n3ID, e12ID, e23ID;
     {
         ::fwData::Graph::sptr g  = ::fwData::Graph::New();
-        gID                      = ::fwTools::UUID::get(g);
+        gID                      = core::tools::UUID::get(g);
         ::fwData::Node::sptr n1  = ::fwData::Node::New();
-        n1ID                     = ::fwTools::UUID::get(n1);
+        n1ID                     = core::tools::UUID::get(n1);
         ::fwData::Node::sptr n2  = ::fwData::Node::New();
-        n2ID                     = ::fwTools::UUID::get(n2);
+        n2ID                     = core::tools::UUID::get(n2);
         ::fwData::Node::sptr n3  = ::fwData::Node::New();
-        n3ID                     = ::fwTools::UUID::get(n3);
+        n3ID                     = core::tools::UUID::get(n3);
         ::fwData::Edge::sptr e12 = ::fwData::Edge::New();
-        e12ID                    = ::fwTools::UUID::get(e12);
+        e12ID                    = core::tools::UUID::get(e12);
         ::fwData::Edge::sptr e23 = ::fwData::Edge::New();
-        e23ID                    = ::fwTools::UUID::get(e23);
+        e23ID                    = core::tools::UUID::get(e23);
 
         // build graph
         g->addNode(n1);
@@ -290,7 +288,7 @@ void ConversionTest::graphConversionTest()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size", (size_t)3, nodes.size() );
     for( ::fwData::Node::sptr node :  nodes )
     {
-        ::fwTools::UUID::UUIDType nodeID = ::fwTools::UUID::get(node);
+        core::tools::UUID::UUIDType nodeID = core::tools::UUID::get(node);
         CPPUNIT_ASSERT_MESSAGE("Test node uuid", nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
         if (  nodeID == n1ID )
         {
@@ -315,7 +313,7 @@ void ConversionTest::graphConversionTest()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size", (size_t)2, connections.size() );
     for( ::fwData::Graph::ConnectionContainer::value_type elem  :  connections )
     {
-        ::fwTools::UUID::UUIDType edgeID = ::fwTools::UUID::get(elem.first);
+        core::tools::UUID::UUIDType edgeID = core::tools::UUID::get(elem.first);
         CPPUNIT_ASSERT_MESSAGE("Test edge uuid", edgeID == e12ID || edgeID == e23ID );
         if ( edgeID == e12ID )
         {
@@ -489,10 +487,10 @@ void ConversionTest::objectMultiReferencedTest()
 void ConversionTest::recursiveObjectTest()
 {
     ::fwAtoms::Object::sptr atom;
-    ::fwTools::UUID::UUIDType compositeID;
+    core::tools::UUID::UUIDType compositeID;
     {
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        compositeID                         = ::fwTools::UUID::get( composite );
+        compositeID                         = core::tools::UUID::get( composite );
         composite->getContainer()["key"]    = composite;
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
@@ -501,7 +499,7 @@ void ConversionTest::recursiveObjectTest()
         composite->getContainer().erase("key");
     }
 
-    CPPUNIT_ASSERT( !::fwTools::UUID::exist( compositeID ) );
+    CPPUNIT_ASSERT( !core::tools::UUID::exist( compositeID ) );
 
     // Create Data from Atom
     ::fwData::Composite::sptr newComposite =
@@ -578,8 +576,8 @@ void ConversionTest::uuidChangeTest()
         );
     dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
 
-    CPPUNIT_ASSERT( ::fwTools::UUID::get(composite) != ::fwTools::UUID::get(compositeReloaded) );
-    CPPUNIT_ASSERT( ::fwTools::UUID::get(data) != ::fwTools::UUID::get(dataReloaded) );
+    CPPUNIT_ASSERT( core::tools::UUID::get(composite) != core::tools::UUID::get(compositeReloaded) );
+    CPPUNIT_ASSERT( core::tools::UUID::get(data) != core::tools::UUID::get(dataReloaded) );
 
 }
 
@@ -785,7 +783,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
         atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector" );
-        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, ::fwTools::UUID::generateUUID() );
+        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID() );
 
         CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( atomObj ),
                               ::fwAtomConversion::exception::ConversionNotManaged );
@@ -795,7 +793,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
         atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector");
-        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, ::fwTools::UUID::generateUUID());
+        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
 
         ::fwAtoms::Map::sptr atomFields = ::fwAtoms::Map::New();
         atomObj->setAttribute("fields", atomFields);

@@ -25,10 +25,10 @@
 #include "ioVTK/SMeshWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/ILocation.hpp>
@@ -50,8 +50,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/ObjMeshReader.hpp>
 #include <fwVtkIO/PlyMeshReader.hpp>
@@ -65,7 +63,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -184,7 +182,7 @@ void SModelSeriesReader::updating()
         auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
             ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(addedRecs);
         }
     }
@@ -230,8 +228,8 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData:
     }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ _file.extension().string() +
-                                             "' is not managed by ::ioVTK::SMeshReader."));
+        FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ _file.extension().string() +
+                                               "' is not managed by ::ioVTK::SMeshReader."));
     }
 
     m_sigJobCreated->emit(meshReader->getJob());
@@ -242,7 +240,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData:
     {
         meshReader->read();
     }
-    catch(::fwTools::Failed& e)
+    catch(core::tools::Failed& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();

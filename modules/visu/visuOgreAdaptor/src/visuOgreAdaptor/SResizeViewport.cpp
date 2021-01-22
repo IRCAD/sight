@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuOgreAdaptor/SResizeViewport.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwRenderOgre/Layer.hpp>
 
@@ -33,8 +33,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_REVERT_SLOT = "revert";
-static const ::fwCom::Slots::SlotKeyType s_RESIZE_SLOT = "resize";
+static const core::com::Slots::SlotKeyType s_REVERT_SLOT = "revert";
+static const core::com::Slots::SlotKeyType s_RESIZE_SLOT = "resize";
 
 static const std::string s_WIDTH_CONFIG    = "width";
 static const std::string s_HEIGHT_CONFIG   = "height";

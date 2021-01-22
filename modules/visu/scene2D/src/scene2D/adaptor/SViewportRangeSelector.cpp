@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "scene2D/adaptor/SViewportRangeSelector.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/data/Viewport.hpp>
@@ -140,7 +140,7 @@ void SViewportRangeSelector::starting()
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -325,7 +325,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             ::fwData::Object::ModifiedSignalType::sptr sig =
                 viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }

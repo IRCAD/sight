@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "ioGdcm/SSurfaceSegmentationWriter.hpp"
 
+#include <core/tools/ProgressToLogger.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/Vector.hpp>
 
@@ -41,8 +43,6 @@
 #include <fwMedData/Series.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/ProgressToLogger.hpp>
 
 #include <string>
 

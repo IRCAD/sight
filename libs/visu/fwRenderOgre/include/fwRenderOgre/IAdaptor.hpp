@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwServices/IHasServices.hpp>
 #include <fwServices/IService.hpp>
@@ -93,13 +93,13 @@ public:
 
 protected:
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Initializes slots.
     FWRENDEROGRE_API IAdaptor() noexcept;

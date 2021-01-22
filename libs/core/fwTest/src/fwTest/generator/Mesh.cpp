@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwTest/generator/Mesh.hpp"
 
-#include <fwTools/NumericRoundCast.hxx>
+#include <core/tools/NumericRoundCast.hxx>
 
 #include <cstdlib>
 #include <ctime>
@@ -45,7 +45,7 @@ struct RandFloat {
 
 void Mesh::initRand()
 {
-    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------

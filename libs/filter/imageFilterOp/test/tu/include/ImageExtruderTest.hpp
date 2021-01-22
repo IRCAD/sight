@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,7 +54,7 @@ public:
 
 private:
 
-    const ::fwTools::Type m_type { "int8" };
+    const core::tools::Type m_type { "int8" };
 
     const ::fwData::Image::PixelFormat m_format { ::fwData::Image::PixelFormat::GRAY_SCALE };
 

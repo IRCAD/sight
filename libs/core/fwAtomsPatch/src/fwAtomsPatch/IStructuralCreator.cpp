@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include <fwTools/UUID.hpp>
+#include "fwAtomsPatch/IStructuralCreator.hpp"
 
-#include <fwAtoms/Map.hpp>
-
+#include "fwAtomsPatch/helper/functions.hpp"
 #include <fwAtomsPatch/types.hpp>
 
-#include "fwAtomsPatch/IStructuralCreator.hpp"
-#include "fwAtomsPatch/helper/functions.hpp"
+#include <core/tools/UUID.hpp>
+
+#include <fwAtoms/Map.hpp>
 
 namespace fwAtomsPatch
 {
@@ -44,7 +44,7 @@ IStructuralCreator::~IStructuralCreator()
 
 // ----------------------------------------------------------------------------
 
-IStructuralCreator::IStructuralCreator( const IStructuralCreator &cpy )
+IStructuralCreator::IStructuralCreator( const IStructuralCreator& cpy )
 {
     m_classname = cpy.getObjectClassname();
     m_version   = cpy.getObjectVersion();

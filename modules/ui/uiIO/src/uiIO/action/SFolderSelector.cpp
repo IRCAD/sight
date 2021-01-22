@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiIO/action/SFolderSelector.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/location/Folder.hpp>
 
@@ -35,9 +35,9 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SFolderSelector, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SFolderSelector, ::fwData::Object )
 
-const ::fwCom::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
+const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
 
 //------------------------------------------------------------------------------
 

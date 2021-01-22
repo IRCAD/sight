@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwActivities
-    fwCom
     fwData
     fwGui
     fwQml

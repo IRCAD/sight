@@ -22,9 +22,9 @@
 
 #include "ioIGTL/SServerSender.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

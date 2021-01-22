@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "ioAtoms/config.hpp"
 
-#include <fwAtomsBoostIO/Writer.hpp>
+#include <core/com/Signal.hpp>
 
-#include <fwCom/Signal.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -96,7 +96,7 @@ public:
     fwCoreServiceMacro(SWriter, ::fwIO::IWriter)
 
     /// Signal type for job creation.
-    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
     /// Does nothing
     IOATOMS_API SWriter();

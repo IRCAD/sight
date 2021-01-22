@@ -23,14 +23,14 @@
 #include "guiQt/editor/SSelectionMenuButton.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -40,8 +40,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <QAction>
 #include <QMenu>
@@ -59,11 +57,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSelectionMenuButton )
 
-static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
+static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENABLED_SIG = "setEnabled";
-static const ::fwCom::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
-static const ::fwCom::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
+static const core::com::Slots::SlotKeyType s_SET_ENABLED_SIG = "setEnabled";
+static const core::com::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
+static const core::com::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
 
 SSelectionMenuButton::SSelectionMenuButton() noexcept :
     m_text(">"),

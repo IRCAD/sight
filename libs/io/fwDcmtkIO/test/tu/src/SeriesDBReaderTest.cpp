@@ -251,7 +251,7 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::readJMSSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readJMSSeries();
 }
 
@@ -259,7 +259,7 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
 
 void SeriesDBReaderTest::readJMSLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readJMSSeries();
 }
 
@@ -267,7 +267,7 @@ void SeriesDBReaderTest::readJMSLazySeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readCTSeries();
 }
 
@@ -275,7 +275,7 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
 
 void SeriesDBReaderTest::readCTLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readCTSeries();
 }
 
@@ -283,7 +283,7 @@ void SeriesDBReaderTest::readCTLazySeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readMRSeries();
 }
 
@@ -291,7 +291,7 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
 
 void SeriesDBReaderTest::readMRLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readMRSeries();
 }
 
@@ -299,7 +299,7 @@ void SeriesDBReaderTest::readMRLazySeriesDBTest()
 
 void SeriesDBReaderTest::readOTSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readOTSeries();
 }
 
@@ -307,7 +307,7 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
 
 void SeriesDBReaderTest::readOTLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readOTSeries();
 }
 
@@ -315,7 +315,7 @@ void SeriesDBReaderTest::readOTLazySeriesDBTest()
 
 void SeriesDBReaderTest::readUnsupportedSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readUnsupportedSeries();
 }
 
@@ -323,7 +323,7 @@ void SeriesDBReaderTest::readUnsupportedSeriesDBTest()
 
 void SeriesDBReaderTest::readUnsupportedLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readUnsupportedSeries();
 }
 
@@ -331,7 +331,7 @@ void SeriesDBReaderTest::readUnsupportedLazySeriesDBTest()
 
 void SeriesDBReaderTest::readDisabledSeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
     this->readDisabledSeries();
 }
 
@@ -339,7 +339,7 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
 
 void SeriesDBReaderTest::readDisabledLazySeriesDBTest()
 {
-    ::fwMemory::BufferManager::getDefault()->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::LAZY);
     this->readDisabledSeries();
 }
 
@@ -429,7 +429,7 @@ void SeriesDBReaderTest::readCTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT16, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT16, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -493,7 +493,7 @@ void SeriesDBReaderTest::readMRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 2000 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);
@@ -558,7 +558,7 @@ void SeriesDBReaderTest::readOTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), image->getWindowWidth(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT8, image->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, image->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, seriesDB);

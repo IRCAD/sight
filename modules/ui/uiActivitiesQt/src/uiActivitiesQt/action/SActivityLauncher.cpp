@@ -22,15 +22,16 @@
 
 #include "uiActivitiesQt/action/SActivityLauncher.hpp"
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/UUID.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
@@ -51,8 +52,6 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include <boost/foreach.hpp>
 
 #include <QApplication>
@@ -72,10 +71,10 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT          = "launchSeries";
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
-const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
+const core::com::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT          = "launchSeries";
+const core::com::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+const core::com::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
+const core::com::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
 static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 

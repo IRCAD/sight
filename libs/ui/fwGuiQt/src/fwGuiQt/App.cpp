@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "fwGuiQt/App.hpp"
 
+#include <core/tools/Os.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
-
-#include <fwTools/Os.hpp>
 
 #include <boost/tokenizer.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "fwMedData/DicomSeries.hpp"
 
+#include <core/memory/stream/in/Raw.hpp>
+
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
-
-#include <fwMemory/stream/in/Raw.hpp>
 
 #include <filesystem>
 
@@ -84,13 +84,13 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
     m_dicomContainer.clear();
     for(const auto& elt : other->m_dicomContainer)
     {
-        const ::fwMemory::BufferObject::sptr& bufferSrc = elt.second;
-        ::fwMemory::BufferObject::Lock lockerSource(bufferSrc);
+        const core::memory::BufferObject::sptr& bufferSrc = elt.second;
+        core::memory::BufferObject::Lock lockerSource(bufferSrc);
 
         if( !bufferSrc->isEmpty() )
         {
-            ::fwMemory::BufferObject::sptr bufferDest = ::fwMemory::BufferObject::New();
-            ::fwMemory::BufferObject::Lock lockerDest(bufferDest);
+            core::memory::BufferObject::sptr bufferDest = core::memory::BufferObject::New();
+            core::memory::BufferObject::Lock lockerDest(bufferDest);
 
             bufferDest->allocate(bufferSrc->getSize());
 
@@ -107,16 +107,16 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 
 void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
 {
-    ::fwMemory::BufferObject::sptr buffer = ::fwMemory::BufferObject::New();
-    const auto buffSize = std::filesystem::file_size(_path);
-    buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(_path),
-                               static_cast< ::fwMemory::BufferObject::SizeType>(buffSize), _path, ::fwMemory::RAW);
+    core::memory::BufferObject::sptr buffer = core::memory::BufferObject::New();
+    const auto buffSize                     = std::filesystem::file_size(_path);
+    buffer->setIStreamFactory( std::make_shared< core::memory::stream::in::Raw >(_path),
+                               static_cast< core::memory::BufferObject::SizeType>(buffSize), _path, core::memory::RAW);
     m_dicomContainer[_instanceIndex] = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addBinary(std::size_t _instanceIndex, const ::fwMemory::BufferObject::sptr& _buffer)
+void DicomSeries::addBinary(std::size_t _instanceIndex, const core::memory::BufferObject::sptr& _buffer)
 {
     m_dicomContainer[_instanceIndex] = _buffer;
 }

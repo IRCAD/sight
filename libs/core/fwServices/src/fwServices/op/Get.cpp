@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,8 @@ namespace fwServices
 
 ::fwServices::IService::sptr get( std::string uid )
 {
-    SLM_ASSERT("service does not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
-    return ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( uid ) );
+    SLM_ASSERT("service does not exist with uid "<<uid, core::tools::fwID::exist(uid ));
+    return ::fwServices::IService::dynamicCast( core::tools::fwID::getObject( uid ) );
 }
 
 //------------------------------------------------------------------------------

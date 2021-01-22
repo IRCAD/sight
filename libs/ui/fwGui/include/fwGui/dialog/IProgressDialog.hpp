@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ public:
     ///set the message for the dialog
     FWGUI_API virtual void setMessage(const std::string& msg) = 0;
 
-    /// action called by ::fwTools::ProgressAdviser
+    /// action called by core::tools::ProgressAdviser
     FWGUI_API virtual void operator()(float percent, std::string msg) = 0;
 
     FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);

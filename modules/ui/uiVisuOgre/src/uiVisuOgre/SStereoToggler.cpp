@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 namespace uiVisuOgre
 {
 
-static const ::fwCom::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActive";
+static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActive";
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "gui/action/SBooleanSlotCaller.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -53,16 +53,16 @@ void SBooleanSlotCaller::updating()
 {
     for(SlotInfoType info :  m_slotInfos)
     {
-        HasSlotIDType HasSlotId = info.first;
-        ::fwCom::Slots::SlotKeyType slotKey = info.second;
+        HasSlotIDType HasSlotId               = info.first;
+        core::com::Slots::SlotKeyType slotKey = info.second;
 
-        if (::fwTools::fwID::exist(HasSlotId))
+        if (core::tools::fwID::exist(HasSlotId))
         {
-            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
-            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
+            core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
             SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
-            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
+            core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 
             slot->asyncRun(this->getIsActive());
         }

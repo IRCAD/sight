@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -159,7 +159,7 @@ private:
     size_t m_previousHeight { 0 };
 
     /// Defines the previous image type.
-    ::fwTools::Type m_previousType;
+    core::tools::Type m_previousType;
 
     /// Contains the pointlist in the video space coordinates.
     ::fwData::PointList::sptr m_pointList { nullptr };

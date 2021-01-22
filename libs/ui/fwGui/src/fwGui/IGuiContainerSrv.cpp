@@ -30,26 +30,24 @@
 #include "fwGui/registrar/ViewRegistrar.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/fwID.hpp>
-
 namespace fwGui
 {
 
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_ENABLED_SLOT = "setEnabled";
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_ENABLE_SLOT      = "enable";
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_DISABLE_SLOT     = "disable";
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_VISIBLE_SLOT = "setVisible";
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SHOW_SLOT        = "show";
-const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SET_ENABLED_SLOT = "setEnabled";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_ENABLE_SLOT      = "enable";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_DISABLE_SLOT     = "disable";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SET_VISIBLE_SLOT = "setVisible";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SHOW_SLOT        = "show";
+const core::com::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "ctrlSelection/wrapper/SImageSignalForwarder.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -42,21 +42,21 @@ namespace ctrlSelection
 namespace wrapper
 {
 
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_MODIFIED_SLOT              = "forwardModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_BUFFER_MODIFIED_SLOT       = "forwardBufferModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_LANDMARK_ADDED_SLOT        = "forwardLandmarkAdded";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_LANDMARK_REMOVED_SLOT      = "forwardLandmarkRemoved";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_LANDMARK_DISPLAYED_SLOT    = "forwardLandmarkDisplayed";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_DISTANCE_ADDED_SLOT        = "forwardDistanceAdded";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_DISTANCE_REMOVED_SLOT      = "forwardDistanceRemoved";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_DISTANCE_DISPLAYED_SLOT    = "forwardDistanceDisplayed";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_SLICE_INDEX_MODIFIED_SLOT  = "forwardSliceIndexModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_SLICE_TYPE_MODIFIED_SLOT   = "forwardSliceTypeModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_VISIBILITY_MODIFIED_SLOT   = "forwardVisibilityModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_TRANSPARENCY_MODIFIED_SLOT = "forwardTransparencyModified";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_ADDED_FIELDS_SLOT          = "forwardAddedFields";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_CHANGED_FIELDS_SLOT        = "forwardChangedFields";
-static const ::fwCom::Slots::SlotKeyType s_FORWARD_REMOVED_FIELDS_SLOT        = "forwardRemovedFields";
+static const core::com::Slots::SlotKeyType s_FORWARD_MODIFIED_SLOT              = "forwardModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_BUFFER_MODIFIED_SLOT       = "forwardBufferModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_LANDMARK_ADDED_SLOT        = "forwardLandmarkAdded";
+static const core::com::Slots::SlotKeyType s_FORWARD_LANDMARK_REMOVED_SLOT      = "forwardLandmarkRemoved";
+static const core::com::Slots::SlotKeyType s_FORWARD_LANDMARK_DISPLAYED_SLOT    = "forwardLandmarkDisplayed";
+static const core::com::Slots::SlotKeyType s_FORWARD_DISTANCE_ADDED_SLOT        = "forwardDistanceAdded";
+static const core::com::Slots::SlotKeyType s_FORWARD_DISTANCE_REMOVED_SLOT      = "forwardDistanceRemoved";
+static const core::com::Slots::SlotKeyType s_FORWARD_DISTANCE_DISPLAYED_SLOT    = "forwardDistanceDisplayed";
+static const core::com::Slots::SlotKeyType s_FORWARD_SLICE_INDEX_MODIFIED_SLOT  = "forwardSliceIndexModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_SLICE_TYPE_MODIFIED_SLOT   = "forwardSliceTypeModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_VISIBILITY_MODIFIED_SLOT   = "forwardVisibilityModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_TRANSPARENCY_MODIFIED_SLOT = "forwardTransparencyModified";
+static const core::com::Slots::SlotKeyType s_FORWARD_ADDED_FIELDS_SLOT          = "forwardAddedFields";
+static const core::com::Slots::SlotKeyType s_FORWARD_CHANGED_FIELDS_SLOT        = "forwardChangedFields";
+static const core::com::Slots::SlotKeyType s_FORWARD_REMOVED_FIELDS_SLOT        = "forwardRemovedFields";
 
 static const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
 static const ::fwServices::IService::KeyType s_TARGET_INPUT = "target";

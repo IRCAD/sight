@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,12 @@
 
 #include "visuOgreAdaptor/SPointList.hpp"
 
+#include "fwRenderOgre/ogre.hpp"
+
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/String.hpp>
 
@@ -33,7 +35,6 @@
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
-#include "fwRenderOgre/ogre.hpp"
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
@@ -494,7 +495,8 @@ void SPointList::updateMaterialAdaptor()
 
             if(!m_textureName.empty())
             {
-                const auto texture = ::Ogre::TextureManager::getSingleton().load(m_textureName, ::fwRenderOgre::RESOURCE_GROUP);
+                const auto texture = ::Ogre::TextureManager::getSingleton().load(m_textureName,
+                                                                                 ::fwRenderOgre::RESOURCE_GROUP);
                 ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
                     m_materialAdaptor->getMaterialName(), ::fwRenderOgre::RESOURCE_GROUP);
 

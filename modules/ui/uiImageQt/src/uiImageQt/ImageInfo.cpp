@@ -23,11 +23,10 @@
 #include "uiImageQt/ImageInfo.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -49,7 +48,7 @@ namespace uiImageQt
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image )
 
-static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 

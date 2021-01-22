@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioGdcm/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -120,7 +120,7 @@ class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 public:
     fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
 
-    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
     /**
      * @brief   constructor

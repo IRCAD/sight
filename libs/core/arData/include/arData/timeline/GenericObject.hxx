@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace timeline
 //-----------------------------------------------------------------------------
 
 template< typename TYPE >
-GenericObject<TYPE>::GenericObject( unsigned int m_maxElementNum, ::fwCore::HiResClock::HiResClockType timestamp,
+GenericObject<TYPE>::GenericObject( unsigned int m_maxElementNum, core::HiResClock::HiResClockType timestamp,
                                     BufferDataType buffer, size_t size, DeleterType d) :
     GenericObjectBase(m_maxElementNum, timestamp, buffer, size, d)
 {

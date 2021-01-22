@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -292,7 +292,7 @@ private:
     std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
 
     /// Stores the current TF id and its unclamped alpha color value map.
-    std::pair< ::fwTools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
+    std::pair< core::tools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
 
 };
 

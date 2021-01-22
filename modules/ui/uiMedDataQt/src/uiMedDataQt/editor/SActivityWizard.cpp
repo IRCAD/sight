@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,16 @@
 
 #include "uiMedDataQt/editor/SActivityWizard.hpp"
 
-#include <fwActivities/IValidator.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <fwActivities/IValidator.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -49,9 +51,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
-
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -66,12 +65,12 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SActivityWizard::s_CREATE_ACTIVITY_SLOT        = "createActivity";
-const ::fwCom::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SLOT        = "updateActivity";
-const ::fwCom::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SERIES_SLOT = "updateActivitySeries";
-const ::fwCom::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_CREATED_SIG    = "activityCreated";
-const ::fwCom::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
-const ::fwCom::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
+const core::com::Slots::SlotKeyType SActivityWizard::s_CREATE_ACTIVITY_SLOT        = "createActivity";
+const core::com::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SLOT        = "updateActivity";
+const core::com::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SERIES_SLOT = "updateActivitySeries";
+const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_CREATED_SIG    = "activityCreated";
+const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
+const core::com::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
 
 static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
@@ -256,11 +255,11 @@ void SActivityWizard::createActivity(std::string activityID)
     m_actSeries = ::fwMedData::ActivitySeries::New();
 
     m_actSeries->setModality("OT");
-    m_actSeries->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
+    m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
 
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    m_actSeries->setDate(::fwTools::getDate(now));
-    m_actSeries->setTime(::fwTools::getTime(now));
+    m_actSeries->setDate(core::tools::getDate(now));
+    m_actSeries->setTime(core::tools::getTime(now));
 
     m_actSeries->setActivityConfigId(info.id);
 

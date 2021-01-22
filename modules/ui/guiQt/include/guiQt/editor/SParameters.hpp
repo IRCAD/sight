@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,24 +127,24 @@ public:
     fwCoreServiceMacro(SParameters, ::fwGui::editor::IEditor)
 
     /// Boolean changed signal type
-    typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;
+    typedef core::com::Signal< void (bool, std::string) > BooleanChangedSignalType;
 
     /// Color changed signal type
-    typedef ::fwCom::Signal< void (std::array<std::uint8_t, 4>, std::string) > ColorChangedSignalType;
+    typedef core::com::Signal< void (std::array<std::uint8_t, 4>, std::string) > ColorChangedSignalType;
 
     /// Double changed signal type
-    typedef ::fwCom::Signal< void (double, std::string) > DoubleChangedSignalType;
-    typedef ::fwCom::Signal< void (double, double, std::string) > Double2ChangedSignalType;
-    typedef ::fwCom::Signal< void (double, double, double, std::string) > Double3ChangedSignalType;
+    typedef core::com::Signal< void (double, std::string) > DoubleChangedSignalType;
+    typedef core::com::Signal< void (double, double, std::string) > Double2ChangedSignalType;
+    typedef core::com::Signal< void (double, double, double, std::string) > Double3ChangedSignalType;
 
     /// Integer changed signal type
-    typedef ::fwCom::Signal< void (int, std::string) > IntegerChangedSignalType;
-    typedef ::fwCom::Signal< void (int, int, std::string) > Integer2ChangedSignalType;
-    typedef ::fwCom::Signal< void (int, int, int, std::string) > Integer3ChangedSignalType;
+    typedef core::com::Signal< void (int, std::string) > IntegerChangedSignalType;
+    typedef core::com::Signal< void (int, int, std::string) > Integer2ChangedSignalType;
+    typedef core::com::Signal< void (int, int, int, std::string) > Integer3ChangedSignalType;
 
     /// Enum changed signal type
-    typedef ::fwCom::Signal< void (std::string, std::string) > EnumChangedSignalType;
-    typedef ::fwCom::Signal< void (int, std::string) > EnumChangedIndexSignalType;
+    typedef core::com::Signal< void (std::string, std::string) > EnumChangedSignalType;
+    typedef core::com::Signal< void (int, std::string) > EnumChangedIndexSignalType;
 
     /// Constructor. Initializes signals
     GUIQT_API SParameters() noexcept;

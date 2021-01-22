@@ -25,10 +25,9 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/BufferObject.hpp>
 #include <core/Profiling.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/BufferObject.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 

@@ -30,12 +30,11 @@
 
 #include <arServices/ITracker.hpp>
 
+#include <core/com/Signal.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 #include <core/HiResTimer.hpp>
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -236,7 +235,7 @@ private:
      */
     /// Type of the signals.
 
-    using SignalType = ::fwCom::Signal<void()>;
+    using SignalType = core::com::Signal<void()>;
     /** @} */
 
     /**

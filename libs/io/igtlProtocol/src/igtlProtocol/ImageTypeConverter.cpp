@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,20 +36,20 @@ ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
 {
     ImageTypeConverter::TypeConverterMap convertMap;
 
-    convertMap[::fwTools::Type::s_INT8]   = ::igtl::ImageMessage::TYPE_INT8;
-    convertMap[::fwTools::Type::s_UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
-    convertMap[::fwTools::Type::s_INT16]  = ::igtl::ImageMessage::TYPE_INT16;
-    convertMap[::fwTools::Type::s_UINT16] = ::igtl::ImageMessage::TYPE_UINT16;
-    convertMap[::fwTools::Type::s_INT32]  = ::igtl::ImageMessage::TYPE_INT32;
-    convertMap[::fwTools::Type::s_UINT32] = ::igtl::ImageMessage::TYPE_UINT32;
-    convertMap[::fwTools::Type::s_FLOAT]  = ::igtl::ImageMessage::TYPE_FLOAT32;
-    convertMap[::fwTools::Type::s_DOUBLE] = ::igtl::ImageMessage::TYPE_FLOAT64;
+    convertMap[core::tools::Type::s_INT8]   = ::igtl::ImageMessage::TYPE_INT8;
+    convertMap[core::tools::Type::s_UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
+    convertMap[core::tools::Type::s_INT16]  = ::igtl::ImageMessage::TYPE_INT16;
+    convertMap[core::tools::Type::s_UINT16] = ::igtl::ImageMessage::TYPE_UINT16;
+    convertMap[core::tools::Type::s_INT32]  = ::igtl::ImageMessage::TYPE_INT32;
+    convertMap[core::tools::Type::s_UINT32] = ::igtl::ImageMessage::TYPE_UINT32;
+    convertMap[core::tools::Type::s_FLOAT]  = ::igtl::ImageMessage::TYPE_FLOAT32;
+    convertMap[core::tools::Type::s_DOUBLE] = ::igtl::ImageMessage::TYPE_FLOAT64;
     return convertMap;
 }
 
 //-----------------------------------------------------------------------------
 
-const ::fwTools::Type& ImageTypeConverter::getFwToolsType(const std::uint8_t& igtlType)
+const core::tools::Type& ImageTypeConverter::getFwToolsType(const std::uint8_t& igtlType)
 {
     for(const auto& typeConverter : ImageTypeConverter::s_typeConverterMap)
     {
@@ -63,7 +63,7 @@ const ::fwTools::Type& ImageTypeConverter::getFwToolsType(const std::uint8_t& ig
 
 //-----------------------------------------------------------------------------
 
-std::uint8_t ImageTypeConverter::getIgtlType(const ::fwTools::Type& type)
+std::uint8_t ImageTypeConverter::getIgtlType(const core::tools::Type& type)
 {
     ImageTypeConverter::TypeConverterMap::const_iterator it;
 

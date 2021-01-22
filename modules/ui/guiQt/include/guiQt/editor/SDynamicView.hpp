@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,14 @@
 
 #include "guiQt/config.hpp"
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/Failed.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
 
@@ -39,8 +40,6 @@
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -121,10 +120,10 @@ public:
 
     GUIQT_API virtual ~SDynamicView() noexcept;
 
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > ActivitySelectedSignalType;
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
-    typedef ::fwCom::Signal< void () > NothingSelectedSignalType;
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;
+    typedef core::com::Signal< void ( ::fwData::Object::sptr ) > ActivitySelectedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    typedef core::com::Signal< void () > NothingSelectedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;
 protected:
 
     /**

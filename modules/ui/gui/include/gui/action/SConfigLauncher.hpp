@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,9 @@
 
 #include "gui/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -33,8 +34,6 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/helper/ConfigLauncher.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace gui
 {
@@ -92,14 +91,14 @@ public:
     GUI_API virtual void setIsActive(bool isActive) override;
 
     // Launched signal key
-    GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
+    GUI_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;
 
 protected:
 
     /**
      * @name Defines signal triggered when config is started
      * @{ */
-    typedef ::fwCom::Signal< void () > LaunchedSignalType;
+    typedef core::com::Signal< void () > LaunchedSignalType;
     LaunchedSignalType::sptr m_sigLaunched;
     /**  @} */
 

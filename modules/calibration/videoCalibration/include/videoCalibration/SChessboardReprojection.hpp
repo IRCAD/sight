@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SChessboardReprojection : public ::fwServices::IService
 {
 public:
-    fwCoreServiceMacro(SChessboardReprojection, fwServices::IService);
+    fwCoreServiceMacro(SChessboardReprojection, fwServices::IService)
 
     ///Constructor
     VIDEOCALIBRATION_API SChessboardReprojection();
@@ -110,7 +110,7 @@ protected:
 
 private:
 
-    using ErrorComputedSignalType = ::fwCom::Signal< void (double) >;
+    using ErrorComputedSignalType = core::com::Signal< void (double) >;
 
     /// Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void ArrayTest::allocation()
 
     ::fwData::Array::SizeType size = {10, 100};
 
-    // deprecated: replace by array->resize(size, ::fwTools::Type::s_UINT32, true)
+    // deprecated: replace by array->resize(size, core::tools::Type::s_UINT32, true)
     array->resize("uint32", size, 1, true);
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
     CPPUNIT_ASSERT(!array->empty());
@@ -75,7 +75,7 @@ void ArrayTest::allocation()
         ::fwData::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT32, array->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT32, array->getType());
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), array->getType().sizeOf());
 
     array->clear();
@@ -83,7 +83,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getNumberOfComponents()); //deprecated
     CPPUNIT_ASSERT(  array->empty() );
     CPPUNIT_ASSERT(  array->getBuffer() == nullptr );
-    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UNSPECIFIED_TYPE, array->getType());
+    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UNSPECIFIED_TYPE, array->getType());
 
     std::uint16_t* buffer = new std::uint16_t[1000];
 
@@ -92,7 +92,7 @@ void ArrayTest::allocation()
         buffer[i] = i;
     }
 
-    array->setBuffer(buffer, false, size, ::fwTools::Type::s_UINT16, ::fwMemory::BufferNewPolicy::New());
+    array->setBuffer(buffer, false, size, core::tools::Type::s_UINT16, core::memory::BufferNewPolicy::New());
 
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100), array->getSizeInBytes());
@@ -121,7 +121,7 @@ void ArrayTest::resize()
 
     ::fwData::Array::SizeType size {10, 100};
 
-    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
     auto lock = array->lock();
 
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
@@ -186,7 +186,7 @@ void ArrayTest::resize()
 
     newSize = {2, 10, 100};
 
-    array->resize(newSize, ::fwTools::Type::s_UINT16, false);
+    array->resize(newSize, core::tools::Type::s_UINT16, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
@@ -204,7 +204,7 @@ void ArrayTest::resize()
     //test deprecated API with component
     newSize = {10, 100};
 
-    array->resize(::fwTools::Type::s_UINT16, newSize, 2, false);
+    array->resize(core::tools::Type::s_UINT16, newSize, 2, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
@@ -229,7 +229,7 @@ void ArrayTest::reallocate()
 
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
     auto lock = array->lock();
 
     std::uint32_t count                              = 0;
@@ -293,7 +293,7 @@ void ArrayTest::reallocate()
     }
 
     newSize = {2, 100, 100};
-    array->resize(newSize, ::fwTools::Type::s_UINT32, true);
+    array->resize(newSize, core::tools::Type::s_UINT32, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*2*100*100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
@@ -331,7 +331,7 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 
     newSize = {2, 10, 100};
-    array->resize(newSize, ::fwTools::Type::s_UINT16, true);
+    array->resize(newSize, core::tools::Type::s_UINT16, true);
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100*2), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
@@ -363,7 +363,7 @@ void ArrayTest::copy()
 
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize(size, fwTools::Type::s_UINT32, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
     auto arrayLock = array->lock();
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
@@ -426,7 +426,7 @@ void ArrayTest::dumpLockTest()
 {
     ::fwData::Array::SizeType size = {10, 100};
     ::fwData::Array::sptr array    = ::fwData::Array::New();
-    array->resize({12, 15}, ::fwTools::Type::s_INT16, true);
+    array->resize({12, 15}, core::tools::Type::s_INT16, true);
 
     CPPUNIT_ASSERT_THROW(array->getBuffer(), ::fwData::Exception);
 
@@ -443,7 +443,7 @@ void ArrayTest::bufferAccessTest()
 
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
 
     {
         // Check that the iterator properly lock the buffer
@@ -527,7 +527,7 @@ void ArrayTest::constArrayTest()
 
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
     auto lock = array->lock();
 
     std::uint32_t count                           = 0;
@@ -570,7 +570,7 @@ void ArrayTest::constArrayTest()
 void ArrayTest::emptyIteratorTest()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    array->resize({10, 100}, ::fwTools::Type::s_UINT32);
+    array->resize({10, 100}, core::tools::Type::s_UINT32);
     auto lock = array->lock();
 
     std::uint32_t count                                     = 0;

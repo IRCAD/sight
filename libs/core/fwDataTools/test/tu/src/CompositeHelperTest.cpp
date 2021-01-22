@@ -24,10 +24,10 @@
 
 #include <fwDataTools/helper/Composite.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
 
 #include <fwData/String.hpp>
 
@@ -86,7 +86,7 @@ void CompositeHelperTest::testHelper()
             condition.notify_one();
         };
 
-    auto slotAdded = ::fwCom::newSlot( fnAdd );
+    auto slotAdded = core::com::newSlot( fnAdd );
     slotAdded->setWorker(worker);
     auto sigAdded = obj->signal< ::fwData::Composite::AddedObjectsSignalType>(::fwData::Composite::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
@@ -104,7 +104,7 @@ void CompositeHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotRemoved = ::fwCom::newSlot( fnRemove );
+    auto slotRemoved = core::com::newSlot( fnRemove );
     slotRemoved->setWorker(worker);
     auto sigRemoved = obj->signal< ::fwData::Composite::RemovedObjectsSignalType>(
         ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
@@ -125,7 +125,7 @@ void CompositeHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotChanged = ::fwCom::newSlot( fnChange );
+    auto slotChanged = core::com::newSlot( fnChange );
     slotChanged->setWorker(worker);
     auto sigChanged = obj->signal< ::fwData::Composite::ChangedObjectsSignalType>(
         ::fwData::Composite::s_CHANGED_OBJECTS_SIG);

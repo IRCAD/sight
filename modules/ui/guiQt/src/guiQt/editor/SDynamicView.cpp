@@ -22,12 +22,14 @@
 
 #include "guiQt/editor/SDynamicView.hpp"
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
@@ -42,9 +44,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
-
 #include <boost/foreach.hpp>
 
 #include <QBoxLayout>
@@ -58,10 +57,10 @@ namespace guiQt
 namespace editor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
+static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
-static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
-static const ::fwCom::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
+static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
+static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
 fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SDynamicView )
 

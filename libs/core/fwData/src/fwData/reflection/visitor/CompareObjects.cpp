@@ -27,8 +27,7 @@
 #include "fwData/reflection/mapper.hpp"
 
 #include <core/Exception.hpp>
-
-#include <fwMemory/BufferObject.hpp>
+#include <core/memory/BufferObject.hpp>
 
 #include <boost/functional/hash.hpp>
 
@@ -120,12 +119,12 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 CompareObjects visitor(value, m_prefix, m_props);
                 newMetaclass.visit(visitor);
             }
-            else if(classname == "::fwMemory::BufferObject")
+            else if(classname == "core::memory::BufferObject")
             {
-                ::fwMemory::BufferObject* bo = value.get< ::fwMemory::BufferObject* >();
+                core::memory::BufferObject* bo = value.get< core::memory::BufferObject* >();
                 if(bo)
                 {
-                    ::fwMemory::BufferObject::Lock lock = bo->lock();
+                    core::memory::BufferObject::Lock lock = bo->lock();
                     if(lock.getBuffer())
                     {
                         char* buffer               = static_cast< char* >(lock.getBuffer());

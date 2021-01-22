@@ -415,7 +415,7 @@ private:
     std::vector< SubTF* > m_subTF;
 
     /// Handles all connections between this adaptor and all TF.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
     /// Stores the main layer.
     QGraphicsItemGroup* m_layer;
@@ -441,7 +441,7 @@ private:
     std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
 
     /// Stores for each TF id, its unclamped alpha color value map.
-    std::map< ::fwTools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
+    std::map< core::tools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
 
 };
 

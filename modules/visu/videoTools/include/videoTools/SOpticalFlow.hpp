@@ -67,8 +67,8 @@ class VIDEOTOOLS_CLASS_API SOpticalFlow : public ::fwServices::IController
 public:
     fwCoreServiceMacro(SOpticalFlow, ::fwServices::IController)
 
-    typedef ::fwCom::Signal<void ()> MotionSignalType;
-    typedef ::fwCom::Signal<void ()> NoMotionSignalType;
+    typedef core::com::Signal<void ()> MotionSignalType;
+    typedef core::com::Signal<void ()> NoMotionSignalType;
 
     /// Constructor
     VIDEOTOOLS_CLASS_API SOpticalFlow() noexcept;

@@ -23,14 +23,14 @@
 #include "guiQt/editor/SSignalButton.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -38,8 +38,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <QVBoxLayout>
 
@@ -50,18 +48,18 @@ namespace guiQt
 namespace editor
 {
 
-static const ::fwCom::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
-static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
+static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
+static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
-static const ::fwCom::Slots::SlotKeyType s_CHECK_SLOT             = "check";
-static const ::fwCom::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
-static const ::fwCom::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
-static const ::fwCom::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
-static const ::fwCom::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
-static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT              = "show";
-static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
+static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
+static const core::com::Slots::SlotKeyType s_CHECK_SLOT             = "check";
+static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
+static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
+static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
+static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
+static const core::com::Slots::SlotKeyType s_SHOW_SLOT              = "show";
+static const core::com::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 //-----------------------------------------------------------------------------
 

@@ -28,7 +28,7 @@
 
 #include <arServices/IRGBDGrabber.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <OpenNI.h>
 
@@ -94,7 +94,7 @@ public:
      * @name Slots API
      * @{
      */
-    VIDEOOPENNI_API static const ::fwCom::Slots::SlotKeyType s_TAKE_SNAPSHOT_FRAME;
+    VIDEOOPENNI_API static const core::com::Slots::SlotKeyType s_TAKE_SNAPSHOT_FRAME;
     ///@}
 
 protected:
@@ -164,7 +164,7 @@ private:
     ::openni::Status m_status; ///< OpenNI status.
 
     ///private slot type
-    typedef ::fwCom::Slot<void ()> PresentFrameSlotType;
+    typedef core::com::Slot<void ()> PresentFrameSlotType;
     PresentFrameSlotType::sptr m_slotPresentFrame; ///< Slot for the present frame method.
 
     core::thread::Worker::sptr m_worker;  ///< Worker for the m_slotPresentFrame.

@@ -24,6 +24,8 @@
 
 #include "preferences/SPreferences.hpp"
 
+#include <core/tools/Os.hpp>
+
 #include <fwData/String.hpp>
 
 #include <fwPreferences/helper.hpp>
@@ -34,8 +36,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/Os.hpp>
 
 namespace preferences
 {
@@ -80,7 +80,7 @@ void Plugin::start()
 
 void Plugin::stop() noexcept
 {
-    if(::fwTools::fwID::exist(s_PREF_SERVICE_UID))
+    if(core::tools::fwID::exist(s_PREF_SERVICE_UID))
     {
         ::fwServices::IService::sptr prefSrv = ::fwServices::get(s_PREF_SERVICE_UID);
         prefSrv->stop();

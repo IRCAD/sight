@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,8 +107,8 @@ void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
               const size_t size = bosize / cellDataElementSize;
 
               // Create a new buffer object with a size of size*32.
-              ::fwMemory::BufferObject::sptr bufferMemory = ::fwMemory::BufferObject::New();
-              const auto bufferMemoryLock = bufferMemory->lock();
+              core::memory::BufferObject::sptr bufferMemory = core::memory::BufferObject::New();
+              const auto bufferMemoryLock                   = bufferMemory->lock();
               bufferMemory->allocate(size * sizeof(std::uint64_t));
 
               std::uint32_t* buff32 = static_cast<std::uint32_t*>( buff );

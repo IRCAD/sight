@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,17 @@
 
 #include "opImageFilter/SThreshold.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/fwID.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 namespace opImageFilter
 {
@@ -177,20 +176,20 @@ void SThreshold::updating()
     param.thresholdValue = m_threshold;
 
     // get image type
-    ::fwTools::Type type = param.imageIn->getType();
+    core::tools::Type type = param.imageIn->getType();
 
     /* The dispatcher allows to apply the filter on any type of image.
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
-     *   - ::fwTools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supportted by ::fwTools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
+     *     supportted by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:
-     *   - type: ::fwTools::Type of the image
+     *   - type: core::tools::Type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ThresholdFilter >::invoke( type, param );
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ThresholdFilter >::invoke( type, param );
 
     // register the output image to be accesible by the other service from the XML configuration
     this->setOutput(s_IMAGE_OUTPUT, output);

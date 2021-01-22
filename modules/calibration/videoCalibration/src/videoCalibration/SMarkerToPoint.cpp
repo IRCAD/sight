@@ -24,10 +24,10 @@
 
 #include <arData/MatrixTL.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
@@ -41,8 +41,8 @@ namespace videoCalibration
 {
 fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList)
 
-const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
-const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
+const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
+const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
 
 const ::fwServices::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
 const ::fwServices::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
@@ -126,7 +126,7 @@ void SMarkerToPoint::addPoint()
     pl->pushBack(p);
     auto sig = pl->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(p);
     }
 
@@ -146,7 +146,7 @@ void SMarkerToPoint::clear()
 
         auto sig = pl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

@@ -25,8 +25,8 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
 #include <core/macros.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
 

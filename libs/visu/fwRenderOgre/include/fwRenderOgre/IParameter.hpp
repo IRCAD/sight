@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,21 +38,21 @@ class FWRENDEROGRE_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreClassMacro(IParameter, ::fwRenderOgre::IAdaptor);
+    fwCoreClassMacro(IParameter, ::fwRenderOgre::IAdaptor)
 
     /**
      * @name Slots API
      * @{
      */
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
 
     ///@}
 

@@ -22,9 +22,9 @@
 
 #include "WorkerTest.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
+#include <core/thread/Timer.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwTest/Exception.hpp>
 

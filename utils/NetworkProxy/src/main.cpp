@@ -24,8 +24,8 @@
 #include "igtlMessageHeader.h"
 #include "igtlOSUtil.h"
 
-#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
+#include <core/thread/Worker.hpp>
 #include <core/util/FactoryRegistry.hpp>
 
 #include <igtlNetwork/Server.hpp>

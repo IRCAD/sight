@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include <fwMemory/BufferManager.hpp>
-
-#include <fwTools/System.hpp>
-#include <fwTools/UUID.hpp>
+#include <core/memory/BufferManager.hpp>
+#include <core/tools/System.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
@@ -63,7 +62,7 @@ void BoostIOTest::readWriteZipTest()
     SequenceGenerator gen;
 
     std::filesystem::path folderPath =
-        ::fwTools::System::getTemporaryFolder() / ( ::fwTools::UUID::generateUUID() + ".zip");
+        core::tools::System::getTemporaryFolder() / ( core::tools::UUID::generateUUID() + ".zip");
 
     ::fwZip::IWriteArchive::sptr writeArchive;
     ::fwZip::IReadArchive::sptr readArchive;
@@ -100,7 +99,7 @@ void BoostIOTest::readWriteDirTest()
 {
     SequenceGenerator gen;
     std::filesystem::path folderPath =
-        ::fwTools::System::getTemporaryFolder() / ::fwTools::UUID::generateUUID();
+        core::tools::System::getTemporaryFolder() / core::tools::UUID::generateUUID();
 
     ::fwZip::IWriteArchive::sptr writeArchive;
     ::fwZip::IReadArchive::sptr readArchive;

@@ -29,9 +29,8 @@
 #include "fwData/reflection/exception/ObjectNotFound.hpp"
 #include "fwData/reflection/mapper.hpp"
 
+#include <core/memory/BufferObject.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwMemory/BufferObject.hpp>
 
 namespace fwData
 {
@@ -101,10 +100,10 @@ struct LockVisitor : public camp::ValueVisitor< void >
                     ::fwData::Object::sptr obj = ptr->getSptr();
                     ::fwData::reflection::visitor::RecursiveLock visitor( obj, m_locks );
                 }
-                else if( value.call("is_a", ::camp::Args("::fwMemory::BufferObject")).to<bool>() )
+                else if( value.call("is_a", ::camp::Args("core::memory::BufferObject")).to<bool>() )
                 {
-                    ::fwMemory::BufferObject* ptr     = value.get< ::fwMemory::BufferObject* >();
-                    ::fwMemory::BufferObject::sptr bo = ptr->getSptr();
+                    core::memory::BufferObject* ptr     = value.get< core::memory::BufferObject* >();
+                    core::memory::BufferObject::sptr bo = ptr->getSptr();
                     SPTR(core::mt::ReadLock) lock
                         = SPTR(core::mt::ReadLock)(new core::mt::ReadLock(bo->getMutex()));
                     m_locks->push_back(lock);

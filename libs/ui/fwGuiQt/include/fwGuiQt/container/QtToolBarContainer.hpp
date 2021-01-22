@@ -25,10 +25,9 @@
 #include "fwGuiQt/config.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwGui/container/fwToolBar.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <QPointer>
 

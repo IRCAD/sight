@@ -194,7 +194,7 @@ void DefaultActivityTest::parametersTest()
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     ::fwData::Image::sptr img                  = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
     ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
@@ -263,11 +263,11 @@ void DefaultActivityTest::objectTest()
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
                                               img1->getOrigin2(), img1->getType(),
                                               ::fwData::Image::PixelFormat::GRAY_SCALE);
-    ::fwTest::generator::Image::generateRandomImage(img3, ::fwTools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img3, core::tools::Type::create<std::uint8_t>());
 
     ::fwData::Vector::sptr vector = ::fwData::Vector::New();
     vector->getContainer().push_back(img1);
@@ -330,7 +330,7 @@ void DefaultActivityTest::validatorTest()
     ::fwData::Composite::sptr modelCompo        = ::fwData::Composite::New();
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
     {
@@ -449,8 +449,8 @@ void DefaultActivityTest::bigActivityTest()
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+    ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateImage(img3, img2->getSize2(), img2->getSpacing2(),
                                               img2->getOrigin2(), img2->getType(),
                                               ::fwData::Image::PixelFormat::GRAY_SCALE);

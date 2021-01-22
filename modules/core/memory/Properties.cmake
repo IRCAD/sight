@@ -6,10 +6,10 @@ set( START ON )
 set( DEPENDENCIES 
     core 
     fwData 
-    fwMemory 
+    
     fwRuntime 
     fwServices 
-    fwTools 
+    
 )
 set( REQUIREMENTS  )
 

@@ -53,7 +53,7 @@ Proxy::sptr Proxy::getDefault()
 
 //-----------------------------------------------------------------------------
 
-void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
+void Proxy::connect(ChannelKeyType channel, core::com::SignalBase::sptr signal)
 {
     SPTR(SigSlots) sigslots;
 
@@ -80,7 +80,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
     if(ret.second)
     {
         // Only connect if the signal was not already in the proxy
-        for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
+        for( core::com::SlotBase::sptr slot :  sigslots->m_slots )
         {
             signal->connect( slot );
         }
@@ -89,7 +89,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
 //-----------------------------------------------------------------------------
 
-void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
+void Proxy::connect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 {
     SPTR(SigSlots) sigslots;
 
@@ -116,7 +116,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
     if(ret.second)
     {
         // Only connect if the slot was not already in the proxy
-        for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
+        for( core::com::SignalBase::sptr signal :  sigslots->m_signals )
         {
             signal->connect( slot );
         }
@@ -125,7 +125,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
 //-----------------------------------------------------------------------------
 
-void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
+void Proxy::disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signal)
 {
     core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
@@ -135,7 +135,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
+    for( core::com::SlotBase::sptr slot :  sigslots->m_slots )
     {
         signal->disconnect( slot );
     }
@@ -154,7 +154,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
 //-----------------------------------------------------------------------------
 
-void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
+void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 {
     core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
@@ -164,7 +164,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
+    for( core::com::SignalBase::sptr signal :  sigslots->m_signals )
     {
         signal->disconnect( slot );
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include "fwDataTools/helper/Composite.hpp"
 #include "fwDataTools/helper/Field.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/PointList.hpp>
@@ -253,7 +253,7 @@ const std::string Image::getPixelAsString(SizeType::value_type x,
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::Lock Image::getLock() const
+core::memory::BufferObject::Lock Image::getLock() const
 {
     return m_lock;
 }

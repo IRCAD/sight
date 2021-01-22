@@ -25,6 +25,9 @@
 #include "fwActivities/IActivityValidator.hpp"
 #include "fwActivities/IValidator.hpp"
 
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/mt/locked_ptr.hpp>
 #include <fwData/reflection/getObject.hpp>
@@ -32,9 +35,6 @@
 
 #include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
 
 namespace fwActivities
 {
@@ -175,11 +175,11 @@ fwMedData::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
     }
 
     actSeries->setModality("OT");
-    actSeries->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
+    actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
 
     const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    actSeries->setDate(::fwTools::getDate(now));
-    actSeries->setTime(::fwTools::getTime(now));
+    actSeries->setDate(core::tools::getDate(now));
+    actSeries->setTime(core::tools::getTime(now));
     actSeries->setActivityConfigId(info.id);
 
     return actSeries;

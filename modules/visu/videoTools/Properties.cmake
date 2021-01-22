@@ -10,9 +10,7 @@ set( DEPENDENCIES
         fwMath
         fwRuntime
         fwServices
-        fwTools
         arData
-        fwCom
         arServices
         cvIO
 )

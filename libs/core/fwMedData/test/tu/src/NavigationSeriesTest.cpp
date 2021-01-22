@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,15 @@
 
 #include "NavigationSeriesTest.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/tools/System.hpp>
+#include <core/tools/Type.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/System.hpp>
-#include <fwTools/Type.hpp>
 
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
@@ -39,7 +38,6 @@
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 // Registers the fixture into the 'registry'
@@ -200,7 +198,7 @@ void NavigationSeriesTest::navigationTest()
     CPPUNIT_ASSERT(lookAt == m_series->getLookAtMap());
 
     // Create Path
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "navigationtest";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "navigationtest";
     std::filesystem::create_directories(path);
 
     const std::string jsonzFile = "NavigationSeriesTest.jsonz";

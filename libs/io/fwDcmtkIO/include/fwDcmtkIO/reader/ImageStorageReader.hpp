@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/reader/IObjectReader.hpp"
 
-#include <fwData/Image.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwData/Image.hpp>
 
 #include <dcmtk/dcmdata/dcdatset.h>
 
@@ -72,7 +72,7 @@ protected:
                                   int depth, double rescaleSlope,
                                   double rescaleIntercept,
                                   unsigned short pixelRepresentation,
-                                  ::fwTools::Type imageType);
+                                  core::tools::Type imageType);
 
     /**
      * @brief Read an image using direct mode and perform a RGB lookup
@@ -109,7 +109,7 @@ protected:
                                 int depth, double rescaleSlope,
                                 double rescaleIntercept,
                                 unsigned short pixelRepresentation,
-                                ::fwTools::Type imageType);
+                                core::tools::Type imageType);
 
     /**
      * @brief Read an image using lazy mode and perform a RGB lookup
@@ -129,7 +129,7 @@ protected:
                                          DicomContainerType instances, unsigned short rows,
                                          unsigned short columns,
                                          int depth, unsigned short bitsAllocated,
-                                         ::fwTools::Type imageType);
+                                         core::tools::Type imageType);
 
 };
 

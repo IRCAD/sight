@@ -27,8 +27,8 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -46,10 +46,10 @@ namespace videoCalibration
 {
 
 // Public slot
-const ::fwCom::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeState";
+const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeState";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
+static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
@@ -174,7 +174,7 @@ void SDistortion::updating()
                 auto sig =
                     outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
                 {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
@@ -182,7 +182,7 @@ void SDistortion::updating()
             auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
                 ::fwData::Image::s_BUFFER_MODIFIED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }
@@ -204,7 +204,7 @@ void SDistortion::remap()
 
     auto sig = inputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
     // Blocking signals early allows to discard any event while we are updating
-    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
     ::fwData::mt::ObjectReadLock inputLock(inputImage);
 
@@ -322,7 +322,7 @@ void SDistortion::remap()
     {
         auto sigModified = outputImage->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
             sigModified->asyncEmit();
         }
     }

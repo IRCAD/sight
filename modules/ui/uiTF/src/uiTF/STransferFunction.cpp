@@ -324,7 +324,7 @@ void STransferFunction::deleteTF()
             {
                 const auto sig = poolTF->signal< ::fwData::Composite::RemovedObjectsSignalType >(
                     ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 compositeHelper.notify();
             }
 

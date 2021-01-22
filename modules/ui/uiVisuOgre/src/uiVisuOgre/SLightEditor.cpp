@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiVisuOgre/helper/Utils.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 
@@ -47,7 +47,7 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, :
 
 //------------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_EDIT_LIGHT_SLOT = "editLight";
+static const core::com::Slots::SlotKeyType s_EDIT_LIGHT_SLOT = "editLight";
 
 //------------------------------------------------------------------------------
 

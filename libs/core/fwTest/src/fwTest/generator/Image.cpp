@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwTest/generator/Image.hpp"
 
-#include <fwTools/NumericRoundCast.hxx>
-#include <fwTools/Type.hpp>
+#include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/Type.hpp>
 
 #include <ctime>
 
@@ -36,7 +36,7 @@ namespace generator
 
 void Image::initRand()
 {
-    std::srand(::fwTools::numericRoundCast< unsigned int >(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast< unsigned int >(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ void Image::generateImage(::fwData::Image::sptr image,
                           ::fwData::Image::SizeType size,
                           std::vector<double> spacing,
                           std::vector<double> origin,
-                          ::fwTools::Type type)
+                          core::tools::Type type)
 {
     image->setSpacing(spacing);
     image->setOrigin(origin);
@@ -64,7 +64,7 @@ void Image::generateImage(::fwData::Image::sptr image,
                           ::fwData::Image::Size size,
                           ::fwData::Image::Spacing spacing,
                           ::fwData::Image::Origin origin,
-                          ::fwTools::Type type,
+                          core::tools::Type type,
                           ::fwData::Image::PixelFormat format)
 {
     image->resize(size, type, format);
@@ -77,7 +77,7 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 //------------------------------------------------------------------------------
 
-void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type)
+void Image::generateRandomImage(::fwData::Image::sptr image, core::tools::Type type)
 {
     constexpr int SIZE        = 50;
     constexpr int DOUBLE_SIZE = SIZE * 2;
@@ -144,7 +144,7 @@ void Image::randomizeArray(::fwData::Array::sptr array)
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
 
-    array->resize(sizes,  ::fwTools::Type::create(type), true );
+    array->resize(sizes,  core::tools::Type::create(type), true );
 
     Image::randomizeArray( array );
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "visuOgreAdaptor/SNegato2D.hpp"
 
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -43,10 +43,10 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
-const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
+const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
+const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
-static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
+static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/Selector.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/Vector.hpp>
 
@@ -142,9 +142,9 @@ protected Q_SLOTS:
 
 private:
 
-    typedef ::fwCom::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+    typedef core::com::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
 
-    typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
+    typedef core::com::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
     void addSeries(::fwMedData::SeriesDB::ContainerType addedSeries);

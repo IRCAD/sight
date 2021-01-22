@@ -23,6 +23,7 @@
 #include "ioVTK/SImageWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -42,8 +43,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Failed.hpp>
-
 #include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
@@ -56,7 +55,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, ::fwData::Image )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -227,8 +226,8 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Unsupported " + ext + " format (Available formats: " +
-                                             ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
+        FW_RAISE_EXCEPTION(core::tools::Failed("Unsupported " + ext + " format (Available formats: " +
+                                               ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
     }
 
     myWriter->setObject(image);
@@ -280,7 +279,7 @@ void SImageWriter::updating()
         {
             this->saveImage(this->getFile(), pImage, m_sigJobCreated);
         }
-        catch(::fwTools::Failed& e)
+        catch(core::tools::Failed& e)
         {
             FW_RAISE_EXCEPTION(e);
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "imageFilterOp/Flipper.hpp"
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwItkIO/itk.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkFlipImageFilter.h>
 
@@ -117,8 +117,9 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
         params.i_flipAxes = _inFlipAxes;
         params.o_image    = _outImage;
 
-        const ::fwTools::Type type = _inImage->getType();
-        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, FlippingDimensionExtractor >::invoke(type, params);
+        const core::tools::Type type = _inImage->getType();
+        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, FlippingDimensionExtractor >::invoke(type,
+                                                                                                             params);
     }
     else
     {

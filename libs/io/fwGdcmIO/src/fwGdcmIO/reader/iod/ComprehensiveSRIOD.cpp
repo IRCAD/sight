@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,9 +65,9 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series)
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 
     // Read the first file
-    const auto& dicomContainer                             = m_dicomSeries->getDicomContainer();
-    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const auto& dicomContainer                               = m_dicomSeries->getDicomContainer();
+    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
     const bool success = reader->Read();

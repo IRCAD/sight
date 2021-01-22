@@ -25,10 +25,9 @@
 #include "fwTest/config.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwData/Image.hpp>
-
-#include <fwTools/Type.hpp>
 
 namespace fwTest
 {
@@ -60,7 +59,7 @@ public:
                                                                                             ::fwData::Image::SizeType size,
                                                                                             std::vector<double> spacing,
                                                                                             std::vector<double> origin,
-                                                                                            ::fwTools::Type type);
+                                                                                            core::tools::Type type);
 
     /**
      * @brief Generate an image with the given informations. Buffer is filled with 0.
@@ -75,11 +74,11 @@ public:
                                          fwData::Image::Size size,
                                          fwData::Image::Spacing spacing,
                                          fwData::Image::Origin origin,
-                                         ::fwTools::Type type,
+                                         core::tools::Type type,
                                          fwData::Image::PixelFormat format);
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
-    FWTEST_API static void generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type);
+    FWTEST_API static void generateRandomImage(::fwData::Image::sptr image, core::tools::Type type);
 
     /// Fill image array with random value
     FWTEST_API static void randomizeImage(::fwData::Image::sptr image);
@@ -112,7 +111,7 @@ public:
     {
         ::fwData::Array::sptr array = ::fwData::Array::New();
 
-        array->resize( ::fwTools::Type::create<TYPE>(), sizes, 1, true );
+        array->resize( core::tools::Type::create<TYPE>(), sizes, 1, true );
 
         Image::randomizeArray<TYPE>( array );
 

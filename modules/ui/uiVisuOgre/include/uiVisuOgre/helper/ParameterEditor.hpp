@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ public:
     UIVISUOGRE_API static ::fwServices::IService::ConfigType
     createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
                  const ::fwServices::IService::csptr& _paramSrv,
-                 ::fwCom::helper::SigSlotConnection& _connections);
+                 core::com::helper::SigSlotConnection& _connections);
 };
 
 } // namespace helper

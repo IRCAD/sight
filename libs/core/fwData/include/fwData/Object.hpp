@@ -26,24 +26,24 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/registry/detail.hpp"
 
-#include <fwCamp/macros.hpp>
+#include <core/reflection/macros.hpp>
 #ifdef CAMP_COMPILATION
-#include <fwCamp/Mapper/ArrayMapper.hpp>
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
-#include <fwCamp/camp/MapMapper.hpp>
-#include <fwCamp/camp/MapProperty.hpp>
-#include <fwCamp/camp/MapValueMapper.hpp>
-#include <fwCamp/camp/customtype.hpp>
-#include <fwCamp/camp/detail/MapPropertyImpl.hpp>
+#include <core/reflection/Mapper/ArrayMapper.hpp>
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
+#include <core/reflection/camp/MapMapper.hpp>
+#include <core/reflection/camp/MapProperty.hpp>
+#include <core/reflection/camp/MapValueMapper.hpp>
+#include <core/reflection/camp/customtype.hpp>
+#include <core/reflection/camp/detail/MapPropertyImpl.hpp>
 #endif
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
 
 #include <core/base.hpp>
 #include <core/mt/types.hpp>
 
-#include <fwTools/Object.hpp>
+#include <core/tools/Object.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -60,14 +60,14 @@ namespace fwData
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  */
-class FWDATA_CLASS_API Object  : public ::fwTools::Object,
-                                 public ::fwCom::HasSignals
+class FWDATA_CLASS_API Object  : public core::tools::Object,
+                                 public core::com::HasSignals
 {
 public:
 
     typedef ::fwData::factory::Key Key;
 
-    fwCoreClassMacro(Object, ::fwTools::Object)
+    fwCoreClassMacro(Object, core::tools::Object)
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Object));
 
@@ -92,23 +92,23 @@ public:
      * @{
      */
     /// Type of signal m_sigModified
-    typedef ::fwCom::Signal< void () > ModifiedSignalType;
+    typedef core::com::Signal< void () > ModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_MODIFIED_SIG;
 
     typedef std::map<std::string, ::fwData::Object::sptr> FieldsContainerType;
     /// Type of signal when objects are added
-    typedef ::fwCom::Signal< void (FieldsContainerType) > AddedFieldsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_FIELDS_SIG;
+    typedef core::com::Signal< void (FieldsContainerType) > AddedFieldsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_ADDED_FIELDS_SIG;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    typedef ::fwCom::Signal< void (FieldsContainerType, FieldsContainerType) > ChangedFieldsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CHANGED_FIELDS_SIG;
+    typedef core::com::Signal< void (FieldsContainerType, FieldsContainerType) > ChangedFieldsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_CHANGED_FIELDS_SIG;
 
     /// Type of signal when objects are removed
-    typedef ::fwCom::Signal< void (FieldsContainerType) > RemovedFieldsSignalType;
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_FIELDS_SIG;
+    typedef core::com::Signal< void (FieldsContainerType) > RemovedFieldsSignalType;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_FIELDS_SIG;
     /**
      * @}
      */

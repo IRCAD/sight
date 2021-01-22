@@ -23,10 +23,9 @@
 #include "arData/Camera.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
@@ -39,8 +38,8 @@ fwDataRegisterMacro(::arData::Camera);
 namespace arData
 {
 
-const ::fwCom::Signals::SignalKeyType Camera::s_INTRINSIC_CALIBRATED_SIG = "intrinsicCalibrated";
-const ::fwCom::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "idModified";
+const core::com::Signals::SignalKeyType Camera::s_INTRINSIC_CALIBRATED_SIG = "intrinsicCalibrated";
+const core::com::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "idModified";
 
 //------------------------------------------------------------------------------
 

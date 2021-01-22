@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -165,14 +165,14 @@ private:
     };
 
     /// Map each distances to there related list ID.
-    typedef std::map< ::fwTools::fwID::IDType, DistanceData > DistanceMap;
+    typedef std::map< core::tools::fwID::IDType, DistanceData > DistanceMap;
 
     /**
      * @brief Generates a color from a distance ID.
      * @param _id ID of the distance.
      * @return The generated color.
      */
-    static ::Ogre::ColourValue generateColor(::fwTools::fwID::IDType _id);
+    static ::Ogre::ColourValue generateColor(core::tools::fwID::IDType _id);
 
     /**
      * @brief Generates a dashed line in a ::Ogre::ManualObject.
@@ -233,7 +233,7 @@ private:
      * @brief Destroys a distance from its ID and remove it from m_distances.
      * @param _id ID of the distance.
      */
-    void destroyDistance(::fwTools::fwID::IDType _id);
+    void destroyDistance(core::tools::fwID::IDType _id);
 
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius { 3.5f };

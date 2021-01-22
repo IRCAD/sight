@@ -27,11 +27,10 @@
 #include <arServices/ISynchronizer.hpp>
 
 #include <core/base.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 #include <core/HiResClock.hpp>
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -131,28 +130,28 @@ public:
      * @name Signal API
      * @{
      */
-    typedef ::fwCom::Signal< void (core::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
-    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
+    VIDEOTOOLS_API static const core::com::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
 
-    typedef ::fwCom::Signal< void (void) > synchronizationSkippedSignalType;
-    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_SKIPPED_SIG;
+    typedef core::com::Signal< void (void) > synchronizationSkippedSignalType;
+    VIDEOTOOLS_API static const core::com::Signals::SignalKeyType s_SYNCHRONIZATION_SKIPPED_SIG;
 
-    typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
-    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
+    typedef core::com::Signal< void (bool) > AllMatricesFoundSignalType;
+    VIDEOTOOLS_API static const core::com::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
 
-    typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
-    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_SYNCHRONIZED_SIG;
+    typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
+    VIDEOTOOLS_API static const core::com::Signals::SignalKeyType s_MATRIX_SYNCHRONIZED_SIG;
 
-    typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
-    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_UNSYNCHRONIZED_SIG;
+    typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    VIDEOTOOLS_API static const core::com::Signals::SignalKeyType s_MATRIX_UNSYNCHRONIZED_SIG;
     /** @} */
 
     /**
      * @name Slots API
      * @{
      */
-    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_SYNCHRONIZE_SLOT;
-    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_FRAME_DELAY_SLOT;
+    VIDEOTOOLS_API static const core::com::Slots::SlotKeyType s_SYNCHRONIZE_SLOT;
+    VIDEOTOOLS_API static const core::com::Slots::SlotKeyType s_SET_FRAME_DELAY_SLOT;
     /** @} */
 
     /**

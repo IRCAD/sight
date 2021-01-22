@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiGenericQt/action/SDisplayTestNotifications.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -37,8 +37,8 @@ namespace uiGenericQt
 namespace action
 {
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SDisplayTestNotifications)
 

@@ -23,9 +23,14 @@
 #include "monitorQt/DumpEditor.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/ByteSize.hpp>
+#include <core/memory/IPolicy.hpp>
+#include <core/memory/tools/MemoryMonitorTools.hpp>
+#include <core/tools/fwID.hpp>
+#include <core/tools/Stringizer.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/IMessageDialog.hpp>
@@ -33,16 +38,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/ByteSize.hpp>
-#include <fwMemory/IPolicy.hpp>
-#include <fwMemory/tools/MemoryMonitorTools.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwTools/fwID.hpp>
-#include <fwTools/Stringizer.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -61,14 +58,14 @@ namespace monitorQt
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::monitorQt::DumpEditor )
 
-::fwMemory::BufferManager::BufferInfoMapType m_bufferInfos;
-::fwMemory::BufferManager::BufferStats m_bufferStats = {0, 0};
+core::memory::BufferManager::BufferInfoMapType m_bufferInfos;
+core::memory::BufferManager::BufferStats m_bufferStats = {0, 0};
 
 //------------------------------------------------------------------------------
 
-QString getHumanReadableSize(::fwMemory::ByteSize::SizeType bytes)
+QString getHumanReadableSize(core::memory::ByteSize::SizeType bytes)
 {
-    return QString::fromStdString(::fwMemory::ByteSize(bytes));
+    return QString::fromStdString(core::memory::ByteSize(bytes));
 }
 
 //------------------------------------------------------------------------------
@@ -100,10 +97,10 @@ QWidget* PolicyComboBoxDelegate::createEditor(QWidget* parent,
 
     const std::string value = index.model()->data(index, Qt::DisplayRole).toString().toStdString();
 
-    const ::fwMemory::policy::registry::Type::KeyVectorType& factories =
-        ::fwMemory::policy::registry::get()->getFactoryKeys();
+    const core::memory::policy::registry::Type::KeyVectorType& factories =
+        core::memory::policy::registry::get()->getFactoryKeys();
 
-    for( const ::fwMemory::policy::registry::KeyType& policy :  factories)
+    for( const core::memory::policy::registry::KeyType& policy :  factories)
     {
         policyComboBox->addItem(QString::fromStdString(policy));
         if(value == policy)
@@ -164,7 +161,7 @@ public:
     static const int s_EXTRA_INFO_NB;
 private:
 
-    ::fwMemory::BufferManager::sptr m_buffManager;
+    core::memory::BufferManager::sptr m_buffManager;
 };
 
 const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
@@ -172,7 +169,7 @@ const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 PolicyTableModel::PolicyTableModel(QObject* parent) :
     QAbstractTableModel(parent)
 {
-    m_buffManager = ::fwMemory::BufferManager::getDefault();
+    m_buffManager = core::memory::BufferManager::getDefault();
 }
 
 //------------------------------------------------------------------------------
@@ -184,8 +181,8 @@ int PolicyTableModel::rowCount(const QModelIndex& parent) const
     if(m_buffManager)
     {
         core::mt::ReadLock lock( m_buffManager->getMutex() );
-        ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
-        nbParam                                 = currentPolicy->getParamNames().size();
+        core::memory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
+        nbParam = currentPolicy->getParamNames().size();
     }
 
     return static_cast<int>(nbParam + s_EXTRA_INFO_NB);
@@ -208,7 +205,7 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
     core::mt::ReadLock lock( m_buffManager->getMutex() );
-    ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
+    core::memory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
 
     if (index.row() > (s_EXTRA_INFO_NB + currentPolicy->getParamNames().size()) || index.row() < 0)
     {
@@ -220,14 +217,14 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
 
         if (index.column() == 0)
         {
-            const ::fwMemory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+            const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
             if(index.row() == 0)
             {
                 return QString::fromStdString(currentPolicy->getLeafClassname());
             }
             else if( (unsigned int)index.row() <= names.size())
             {
-                const ::fwMemory::IPolicy::ParamNamesType::value_type& name = names.at(index.row() - 1);
+                const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(index.row() - 1);
 
                 return QString::fromStdString(currentPolicy->getParam(name));
 
@@ -249,15 +246,15 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
     if (m_buffManager && orientation == Qt::Vertical)
     {
         core::mt::ReadLock lock( m_buffManager->getMutex() );
-        ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
-        const ::fwMemory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+        core::memory::IPolicy::sptr currentPolicy          = m_buffManager->getDumpPolicy();
+        const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
         if (section <= 0)
         {
             return QString("Current policy");
         }
         else if( (unsigned int)section <= names.size() )
         {
-            const ::fwMemory::IPolicy::ParamNamesType::value_type& name = names.at(section - 1);
+            const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(section - 1);
             return QString::fromStdString(name);
         }
     }
@@ -275,18 +272,18 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
         const std::string strvalue = value.toString().toStdString();
 
         core::mt::ReadLock lock( m_buffManager->getMutex() );
-        ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
-        const ::fwMemory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+        core::memory::IPolicy::sptr currentPolicy          = m_buffManager->getDumpPolicy();
+        const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
 
         if (col == 0 && (unsigned int)row <= names.size() )
         {
-            ::fwMemory::IPolicy::sptr dumpPolicy;
+            core::memory::IPolicy::sptr dumpPolicy;
             switch (row)
             {
                 case 0:
                     if(strvalue != currentPolicy->getLeafClassname())
                     {
-                        dumpPolicy = ::fwMemory::policy::registry::get()->create(strvalue);
+                        dumpPolicy = core::memory::policy::registry::get()->create(strvalue);
                         if(dumpPolicy)
                         {
                             core::mt::ReadToWriteLock lock( m_buffManager->getMutex() );
@@ -297,7 +294,7 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
                     }
                     break;
                 default:
-                    const ::fwMemory::IPolicy::ParamNamesType::value_type& name = names.at(row - 1);
+                    const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(row - 1);
                     currentPolicy->setParam(name, strvalue);
                     return true;
             }
@@ -333,13 +330,13 @@ public:
 
 private:
 
-    ::fwMemory::BufferManager::sptr m_buffManager;
+    core::memory::BufferManager::sptr m_buffManager;
 };
 
 InfoTableModel::InfoTableModel(QObject* parent) :
     QAbstractTableModel(parent)
 {
-    m_buffManager = ::fwMemory::BufferManager::getDefault();
+    m_buffManager = core::memory::BufferManager::getDefault();
 }
 
 //------------------------------------------------------------------------------
@@ -377,15 +374,15 @@ QVariant InfoTableModel::data(const QModelIndex& index, int role) const
         if (index.column() == 0)
         {
             std::uint64_t sysMem;
-            ::fwMemory::BufferManager::SizeType bufferManagerMem;
+            core::memory::BufferManager::SizeType bufferManagerMem;
             switch (index.row())
             {
                 case 0:
-                    sysMem = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
+                    sysMem = core::memory::tools::MemoryMonitorTools::getTotalSystemMemory();
                     return QString(getHumanReadableSize(sysMem));
                     break;
                 case 1:
-                    sysMem = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
+                    sysMem = core::memory::tools::MemoryMonitorTools::getFreeSystemMemory();
                     return QString(getHumanReadableSize(sysMem));
                     break;
                 case 2:
@@ -508,10 +505,10 @@ void DumpEditor::starting()
     QObject::connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onRefreshButton()));
     QObject::connect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
 
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if (buffManager)
     {
-        m_updateSlot                                        = ::fwCom::newSlot( &DumpEditor::onUpdate, this );
+        m_updateSlot                                        = core::com::newSlot( &DumpEditor::onUpdate, this );
         ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
         m_updateSlot->setWorker( workers->getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ));
         m_connection = buffManager->getUpdatedSignal()->connect( m_updateSlot );
@@ -564,10 +561,10 @@ protected:
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferManager::BufferInfoMapType getInfoMap()
+core::memory::BufferManager::BufferInfoMapType getInfoMap()
 {
-    ::fwMemory::BufferManager::BufferInfoMapType infoMap;
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::BufferInfoMapType infoMap;
+    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if(buffManager)
     {
         infoMap = buffManager->getBufferInfos().get();
@@ -582,7 +579,7 @@ void DumpEditor::updating()
     m_policyEditor->reset();
     m_policyEditor->resizeColumnsToContents();
 
-    QFuture< ::fwMemory::BufferManager::BufferInfoMapType > qFuture = QtConcurrent::run(getInfoMap);
+    QFuture< core::memory::BufferManager::BufferInfoMapType > qFuture = QtConcurrent::run(getInfoMap);
     m_watcher.setFuture(qFuture);
 }
 
@@ -591,10 +588,10 @@ void DumpEditor::updating()
 void DumpEditor::onBufferInfo()
 {
     m_bufferInfos = m_watcher.result();
-    m_bufferStats = ::fwMemory::BufferManager::computeBufferStats(m_bufferInfos);
+    m_bufferStats = core::memory::BufferManager::computeBufferStats(m_bufferInfos);
 
     m_mapper->blockSignals(true);
-    ::fwCom::Connection::Blocker block(m_connection);
+    core::com::Connection::Blocker block(m_connection);
 
     for(int row = 0; row < m_list->rowCount(); row++)
     {
@@ -608,7 +605,7 @@ void DumpEditor::onBufferInfo()
     m_list->setRowCount(static_cast<int>(m_bufferInfos.size()));
     m_list->setColumnCount(5);
     QColor backColor;
-    for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type& elt :  m_bufferInfos)
+    for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt :  m_bufferInfos)
     {
         m_objectsUID.push_back(elt.first);
 
@@ -616,8 +613,8 @@ void DumpEditor::onBufferInfo()
         std::string date       = "?";
         std::string lockStatus = "?";
 
-        const ::fwMemory::BufferInfo& dumpBuffInfo = elt.second;
-        bool loaded                                = dumpBuffInfo.loaded;
+        const core::memory::BufferInfo& dumpBuffInfo = elt.second;
+        bool loaded                                  = dumpBuffInfo.loaded;
         if(!loaded)
         {
             backColor = Qt::darkYellow;
@@ -632,14 +629,14 @@ void DumpEditor::onBufferInfo()
         bool isLock = dumpBuffInfo.lockCount() > 0;
         if ( isLock )
         {
-            lockStatus = "locked(" + ::fwTools::getString(dumpBuffInfo.lockCount()) +")";
+            lockStatus = "locked(" + core::tools::getString(dumpBuffInfo.lockCount()) +")";
         }
         else
         {
             lockStatus = "unlocked";
         }
 
-        date = ::fwTools::getString(dumpBuffInfo.lastAccess.getLogicStamp());
+        date = core::tools::getString(dumpBuffInfo.lastAccess.getLogicStamp());
 
         QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem( getHumanReadableSize(dumpBuffInfo.size) );
         currentSizeItem->setData(Qt::UserRole, (qulonglong)dumpBuffInfo.size );
@@ -710,19 +707,19 @@ void DumpEditor::onRefreshButton()
 
 void DumpEditor::changeStatus( int index )
 {
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if(buffManager)
     {
-        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = m_bufferInfos;
-        ::fwMemory::BufferManager::ConstBufferPtrType selectedBuffer = m_objectsUID[index];
+        const core::memory::BufferManager::BufferInfoMapType buffInfoMap = m_bufferInfos;
+        core::memory::BufferManager::ConstBufferPtrType selectedBuffer   = m_objectsUID[index];
 
-        ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter;
+        core::memory::BufferManager::BufferInfoMapType::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())
         {
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
-            const ::fwMemory::BufferInfo& dumpBuffInfo = iter->second;
+            const core::memory::BufferInfo& dumpBuffInfo = iter->second;
 
             bool isLock = dumpBuffInfo.lockCount() > 0;
             if ( !isLock )

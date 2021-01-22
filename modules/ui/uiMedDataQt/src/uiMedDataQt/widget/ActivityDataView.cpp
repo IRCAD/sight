@@ -158,7 +158,7 @@ bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
                 if (!uid.empty())
                 {
                     // insert the object if it is in the required type
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj && obj->isA(requirement.type))
                     {
                         // Insert the new object
@@ -433,7 +433,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             std::string uid =
                 item->data(int(ColumnCommunType::ID), ActivityDataView::s_UID_ROLE).toString().toStdString();
 
-            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj && obj->isA(req.type))
             {
                 object = obj;
@@ -485,7 +485,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
                     {
                         vector->getContainer().push_back(obj);
@@ -511,7 +511,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
                     {
                         std::string key  = req.keys[i].key;
@@ -1014,7 +1014,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
         std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if (!uid.empty())
         {
-            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj)
             {
                 if (obj->isA("::fwData::String"))

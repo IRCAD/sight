@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwTools/System.hpp>
+#include <core/tools/System.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/system.h>
@@ -169,7 +169,7 @@ void HelperTest::writeReadConfig()
 
     const auto config = ::openvslamIO::Helper::createMonocularConfig(cam, orbParam, initParams);
 
-    const std::filesystem::path tmp = ::fwTools::System::getTemporaryFolder();
+    const std::filesystem::path tmp = core::tools::System::getTemporaryFolder();
 
     CPPUNIT_ASSERT_NO_THROW(::openvslamIO::Helper::writeOpenvslamConfig(config->yaml_node_,
                                                                         tmp.string() + "/test.yaml"));

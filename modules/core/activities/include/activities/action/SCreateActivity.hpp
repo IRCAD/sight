@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -88,11 +88,11 @@ public:
      * @name Signals API
      * @{
      */
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
-    typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
+    ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
 
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
-    typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
+    ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
+    typedef core::com::Signal< void (std::string) > ActivityIDSelectedSignalType;
     /// @}
 
 protected:

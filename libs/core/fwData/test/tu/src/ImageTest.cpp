@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,10 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwMemory/stream/in/Raw.hpp>
+#include <core/memory/stream/in/Raw.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <exception>
 #include <iostream>
@@ -97,7 +96,7 @@ void ImageTest::tearDown()
 void ImageTest::testGetterSetter()
 {
     const size_t DIMENSION                    = 2;
-    const ::fwTools::Type TYPE                = ::fwTools::Type::create("int16");
+    const core::tools::Type TYPE              = core::tools::Type::create("int16");
     const ::fwData::Image::Spacing SPACING    = {2.5, 2.6};
     const ::fwData::Image::Origin ORIGIN      = {2.7, 2.8};
     const ::fwData::Image::Size SIZE          = {42, 43};
@@ -153,7 +152,7 @@ void ImageTest::testGetterSetter()
 
 void ImageTest::testAllocation()
 {
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::create("int16");
+    const core::tools::Type TYPE               = core::tools::Type::create("int16");
     const ::fwData::Image::Size IMG_SIZE       = {14, 15, 26};
     const ::fwData::Image::SizeType VECTORSIZE = {14, 15, 26};
     const size_t NB_ELTS                       = 14*15*26;
@@ -211,9 +210,9 @@ void ImageTest::testAllocation()
 void ImageTest::testReallocation()
 {
     const std::uint8_t DIMENSION          = 3;
-    const ::fwTools::Type TYPE1           = ::fwTools::Type::create("int16");
-    const ::fwTools::Type TYPE2           = ::fwTools::Type::create("int64");
-    const ::fwTools::Type TYPE3           = ::fwTools::Type::create("uint8");
+    const core::tools::Type TYPE1         = core::tools::Type::create("int16");
+    const core::tools::Type TYPE2         = core::tools::Type::create("int64");
+    const core::tools::Type TYPE3         = core::tools::Type::create("uint8");
     const ::fwData::Image::Size IMG_SIZE1 = {10, 10, 10};
     const ::fwData::Image::Size IMG_SIZE2 = {20, 20, 20};
     const ::fwData::Image::Size IMG_SIZE3 = {5, 5, 5};
@@ -287,37 +286,37 @@ void ImageTest::testPixelType()
 {
     // old API begin --------------------------
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
-    ::fwTools::DynamicType DT1;
+    core::tools::DynamicType DT1;
 
-    img1->setType(::fwTools::Type::create("int8"));
+    img1->setType(core::tools::Type::create("int8"));
     DT1.setType< signed char >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("int16"));
+    img1->setType(core::tools::Type::create("int16"));
     DT1.setType< signed short >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("int32"));
+    img1->setType(core::tools::Type::create("int32"));
     DT1.setType< signed int >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("uint8"));
+    img1->setType(core::tools::Type::create("uint8"));
     DT1.setType< unsigned char >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("uint16"));
+    img1->setType(core::tools::Type::create("uint16"));
     DT1.setType< unsigned short >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("uint32"));
+    img1->setType(core::tools::Type::create("uint32"));
     DT1.setType< unsigned int >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("float"));
+    img1->setType(core::tools::Type::create("float"));
     DT1.setType< float >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
 
-    img1->setType(::fwTools::Type::create("double"));
+    img1->setType(core::tools::Type::create("double"));
     DT1.setType< double >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
     // old API end --------------------------
@@ -329,7 +328,7 @@ void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
+    const core::tools::Type TYPE     = core::tools::Type::s_INT16;
     const ::fwData::Image::Size SIZE = {10, 20, 30};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
@@ -450,7 +449,7 @@ void ImageTest::testSetGetPixelRGBA()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE     = core::tools::Type::s_UINT8;
     const ::fwData::Image::Size SIZE = {6, 5, 3};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
@@ -592,7 +591,7 @@ void ImageTest::testRGBAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT16;
+    const core::tools::Type TYPE     = core::tools::Type::s_UINT16;
     const ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
@@ -658,7 +657,7 @@ void ImageTest::testIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
+    const core::tools::Type TYPE     = core::tools::Type::s_INT16;
     const ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
@@ -725,7 +724,7 @@ void ImageTest::testRGBIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE     = core::tools::Type::s_UINT8;
     const ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
@@ -784,7 +783,7 @@ void ImageTest::testBGRIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE     = core::tools::Type::s_UINT8;
     const ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
@@ -826,7 +825,7 @@ void ImageTest::testBGRAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE     = core::tools::Type::s_UINT8;
     const ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);
@@ -873,7 +872,7 @@ void ImageTest::imageDeepCopy()
         const ::fwData::Image::Size size { 32, 32, 32 };
         const ::fwData::Image::Origin origin { 0.2, 123.4, 999.666 };
         const ::fwData::Image::Spacing spacing { 0.6, 0.6, 1.8};
-        const auto type   = ::fwTools::Type::s_UINT8;
+        const auto type   = core::tools::Type::s_UINT8;
         const auto format = ::fwData::Image::PixelFormat::RGB;
 
         {
@@ -885,7 +884,8 @@ void ImageTest::imageDeepCopy()
         const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
 
         // Lock the imgCopy buffer to make sure the underlying array isn't deleted.
-        // Attempting to delete a locked array raises an assert in `fwMemory::BufferManager::unregisterBufferImpl()`.
+        // Attempting to delete a locked array raises an assert in
+        // `core::memory::BufferManager::unregisterBufferImpl()`.
         const auto imgCopyLock = imgCopy->lock();
 
         imgCopy->deepCopy(img);
@@ -898,7 +898,7 @@ void ImageTest::imageDeepCopy()
         const ::fwData::Image::Size size { 156, 126, 0 };
         const ::fwData::Image::Origin origin { 1., 1., 0. };
         const ::fwData::Image::Spacing spacing {10., 10., 0. };
-        const auto type   = ::fwTools::Type::s_FLOAT;
+        const auto type   = core::tools::Type::s_FLOAT;
         const auto format = ::fwData::Image::PixelFormat::GRAY_SCALE;
 
         {
@@ -921,10 +921,10 @@ void ImageTest::imageDeepCopy()
 void ImageTest::setISStreamTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     const auto dumpLock              = image->lock();
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "ImageTest.raw";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "ImageTest.raw";
 
     std::ofstream ostr(PATH, std::ios::binary);
     ostr.write(static_cast<const char*>(image->getBuffer()), static_cast<std::streamsize>(image->getSizeInBytes()));
@@ -934,8 +934,8 @@ void ImageTest::setISStreamTest()
     newImage->setSize2(image->getSize2());
     newImage->setType(image->getType());
     newImage->setPixelFormat(image->getPixelFormat());
-    newImage->setIStreamFactory(std::make_shared< ::fwMemory::stream::in::Raw >(PATH),
-                                image->getSizeInBytes(), PATH, ::fwMemory::RAW);
+    newImage->setIStreamFactory(std::make_shared< core::memory::stream::in::Raw >(PATH),
+                                image->getSizeInBytes(), PATH, core::memory::RAW);
 
     const auto newDumpLock = newImage->lock();
 
@@ -954,7 +954,7 @@ void ImageTest::setISStreamTest()
 void ImageTest::emptyIteratorTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     const auto dumpLock = image->lock();
 

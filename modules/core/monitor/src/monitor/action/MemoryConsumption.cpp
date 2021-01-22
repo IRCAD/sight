@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         ::fwData::Array::sptr buffer = ::fwData::Array::New();
         ::fwData::Array::SizeType size(1, memorySizeInBytes);
-        buffer->resize(size, ::fwTools::Type::s_UINT8_TYPENAME, true);
+        buffer->resize(size, core::tools::Type::s_UINT8_TYPENAME, true);
 
         SLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 

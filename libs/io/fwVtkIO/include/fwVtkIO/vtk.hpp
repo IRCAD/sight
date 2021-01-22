@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_VTK_HPP__
-#define __FWVTKIO_VTK_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
@@ -43,8 +42,8 @@ namespace fwVtkIO
 struct TypeTranslator
 {
 
-    typedef std::map< ::fwTools::Type, int> fwToolsToVtkMap;
-    typedef std::map< int, ::fwTools::Type> VtkTofwToolsMap;
+    typedef std::map< core::tools::Type, int> fwToolsToVtkMap;
+    typedef std::map< int, core::tools::Type> VtkTofwToolsMap;
 
     FWVTKIO_API static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type& key );
     FWVTKIO_API static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type& key );
@@ -112,5 +111,3 @@ FWVTKIO_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  ::fwData::Transformation
 FWVTKIO_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
 
 }
-
-#endif // __FWVTKIO_VTK_HPP__

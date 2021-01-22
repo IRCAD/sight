@@ -25,13 +25,12 @@
 #include "uiMedDataQt/widget/Selector.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/helper/Vector.hpp>
 
@@ -62,10 +61,10 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelec
 
 //------------------------------------------------------------------------------
 
-static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
+static const core::com::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+static const core::com::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
+static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
 
 static const std::string s_SELECTION_MODE_CONFIG    = "selectionMode";
 static const std::string s_ALLOWED_REMOVE_CONFIG    = "allowedRemove";
@@ -365,7 +364,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
     {
         auto sig = seriesDB->signal< ::fwMedData::SeriesDB::RemovedSeriesSignalType >(
             ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG );
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
         seriesDBHelper.notify();
     }
 }

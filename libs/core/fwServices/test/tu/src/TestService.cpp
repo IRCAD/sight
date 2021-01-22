@@ -24,7 +24,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Object.hpp>
 
@@ -39,11 +39,11 @@ namespace fwServices
 namespace ut
 {
 
-const ::fwCom::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
-const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     = "update2";
+const core::com::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
+const core::com::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     = "update2";
 
-const ::fwCom::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";
-const ::fwCom::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
+const core::com::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";
+const core::com::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
 
 unsigned int TestService::s_START_COUNTER  = 0;
 unsigned int TestService::s_UPDATE_COUNTER = 0;

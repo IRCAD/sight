@@ -23,10 +23,9 @@
 #include "uiImageQml/SSliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
@@ -45,8 +44,8 @@ const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
     &fwDataTools::fieldHelper::Image::m_axialSliceIndexId
 };
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -188,7 +187,7 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
         ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
-    ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
+    core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
     sig->asyncEmit(static_cast<int>(m_axialIndex->value()), static_cast<int>(m_frontalIndex->value()),
                    static_cast<int>(m_sagittalIndex->value()));
 }
@@ -212,7 +211,7 @@ void SSliceIndexPositionEditor::onSliceType( int _type )
     auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(
         ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
+        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
         sig->asyncEmit(oldType, _type);
     }
     this->updateSliceIndexFromImg();

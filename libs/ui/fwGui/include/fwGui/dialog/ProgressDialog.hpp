@@ -53,7 +53,7 @@ public:
     ///set the message for the dialog
     FWGUI_API void setMessage(const std::string& message) override;
 
-    /// action called by ::fwTools::ProgressAdviser
+    /// action called by core::tools::ProgressAdviser
     FWGUI_API void operator()(float percent, std::string msg) override;
 
     FWGUI_API void setCancelCallback(CancelCallbackType callback) override;

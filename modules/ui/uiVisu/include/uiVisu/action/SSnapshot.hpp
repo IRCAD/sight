@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,11 @@
 
 #include "uiVisu/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <map>
 #include <string>
@@ -50,7 +49,7 @@ class UIVISU_CLASS_API SSnapshot : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(SSnapshot, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SSnapshot, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIVISU_API SSnapshot() noexcept;
@@ -91,8 +90,8 @@ private:
      * @{
      */
     /// Type of signal to snap shot
-    typedef ::fwCom::Signal< void (std::string) > SnappedSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_SNAPPED_SIG;
+    typedef core::com::Signal< void (std::string) > SnappedSignalType;
+    static const core::com::Signals::SignalKeyType s_SNAPPED_SIG;
 
     SnappedSignalType::sptr m_sigSnapped; ///< snap shot signal
     /**

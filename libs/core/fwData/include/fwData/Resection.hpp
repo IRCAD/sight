@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "fwData/PlaneList.hpp"
 #include "fwData/Reconstruction.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 
 #include <vector>
 
@@ -133,16 +133,16 @@ public:
      */
 
     /// Type of signal when a reconstruction is added
-    typedef ::fwCom::Signal< void () > ReconstructionAddedSignalType;
+    typedef core::com::Signal< void () > ReconstructionAddedSignalType;
 
     /// Key in m_signals map of signal m_sigReconstructionAdded
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_ADDED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_ADDED_SIG;
 
     /// Type of signal when the resection visibility is modified
-    typedef ::fwCom::Signal< void () > VisibilityModifiedSignalType;
+    typedef core::com::Signal< void () > VisibilityModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
 
     /**
      * @}

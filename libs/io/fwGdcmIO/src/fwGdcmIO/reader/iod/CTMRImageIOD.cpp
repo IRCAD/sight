@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,8 +70,8 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series)
     SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
 
     // Read the first file
-    const ::fwMemory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 

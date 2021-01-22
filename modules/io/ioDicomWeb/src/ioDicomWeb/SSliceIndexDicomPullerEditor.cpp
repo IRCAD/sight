@@ -22,14 +22,14 @@
 
 #include "ioDicomWeb/SSliceIndexDicomPullerEditor.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Timer.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
@@ -56,8 +56,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -290,8 +288,8 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
         return;
     }
 
-    // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
-    std::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");
+    // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
+    std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
     std::filesystem::path tmpPath = path / "tmp";
 
     SLM_INFO("Create " + tmpPath.string());
@@ -301,8 +299,8 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     auto iter            = binaries.find(selectedSliceIndex);
     SLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
-    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
-    const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+    const core::memory::BufferObject::sptr bufferObj = iter->second;
+    const core::memory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 
@@ -373,7 +371,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
     }
     else
     {
-        throw ::fwTools::Failed("'server' element not found");
+        throw core::tools::Failed("'server' element not found");
     }
 
     const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);

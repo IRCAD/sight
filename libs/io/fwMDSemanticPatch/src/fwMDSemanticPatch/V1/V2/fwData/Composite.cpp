@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -35,10 +38,6 @@
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -171,7 +170,7 @@ void processPlanning(
         helperActivity.replaceAttribute("data", mapObj);
 
         helperActivity.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
-        helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(::fwTools::UUID::generateUUID()));
+        helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(core::tools::UUID::generateUUID()));
         helperActivity.replaceAttribute("date", date);
         helperActivity.replaceAttribute("time", time);
         helperActivity.replaceAttribute("performing_physicians_name", experts);
@@ -254,7 +253,7 @@ void processProcessing(
         helperActivity.replaceAttribute("data", mapObj);
 
         helperActivity.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
-        helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(::fwTools::UUID::generateUUID()));
+        helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(core::tools::UUID::generateUUID()));
         helperActivity.replaceAttribute("date", date);
         helperActivity.replaceAttribute("time", time);
         helperActivity.replaceAttribute("performing_physicians_name", experts);
@@ -407,7 +406,7 @@ void Composite::apply(
 
                         msHelper.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
                         msHelper.replaceAttribute("instance_uid",
-                                                  ::fwAtoms::String::New(::fwTools::UUID::generateUUID()) );
+                                                  ::fwAtoms::String::New(core::tools::UUID::generateUUID()) );
                         msHelper.replaceAttribute("date", newImgSeries->getAttribute("date")->clone() );
                         msHelper.replaceAttribute("time", newImgSeries->getAttribute("time")->clone() );
                         msHelper.replaceAttribute("performing_physicians_name",

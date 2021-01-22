@@ -23,9 +23,8 @@
 #include "uiMeasurementQt/editor/Distance.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
@@ -54,7 +53,7 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image )
 
-const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
+const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,7 +98,7 @@ protected:
 
 private:
 
-    typedef ::fwCom::Signal< void (std::string) > LandmarkUpdatedSignalType;
+    typedef core::com::Signal< void (std::string) > LandmarkUpdatedSignalType;
 
     /// SLOT: updates selected point.
     void updateSelectedPoint( std::string name, size_t index );

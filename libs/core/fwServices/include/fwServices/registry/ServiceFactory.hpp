@@ -25,10 +25,9 @@
 #include "fwServices/config.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwRuntime/Module.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <boost/unordered_map.hpp>
 

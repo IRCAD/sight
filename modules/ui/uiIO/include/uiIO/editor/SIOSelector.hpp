@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiIO/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
 
@@ -100,13 +100,13 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceMacro(SIOSelector,  ::fwGui::editor::IDialogEditor);
+    fwCoreServiceMacro(SIOSelector,  ::fwGui::editor::IDialogEditor)
 
-    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
-    typedef ::fwCom::Signal< void ( ) > JobFailedSignalType;
-    typedef ::fwCom::Signal< void ( ) > JobSucceededSignalType;
+    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( ) > JobFailedSignalType;
+    typedef core::com::Signal< void ( ) > JobSucceededSignalType;
 
-    typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
+    typedef core::com::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

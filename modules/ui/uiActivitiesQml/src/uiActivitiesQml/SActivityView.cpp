@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "uiActivitiesQml/SActivityView.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -40,10 +40,10 @@ namespace uiActivitiesQml
 
 fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivityView )
 
-static const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
-static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
-static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
+static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
 
 //------------------------------------------------------------------------------
 

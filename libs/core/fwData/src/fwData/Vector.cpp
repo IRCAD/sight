@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,16 +25,16 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::Vector );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Vector::s_ADDED_OBJECTS_SIG   = "addedObjects";
-const ::fwCom::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removedObjects";
+const core::com::Signals::SignalKeyType Vector::s_ADDED_OBJECTS_SIG   = "addedObjects";
+const core::com::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removedObjects";
 
 //------------------------------------------------------------------------------
 

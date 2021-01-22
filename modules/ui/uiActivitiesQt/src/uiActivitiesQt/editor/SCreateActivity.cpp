@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,14 @@
 
 #include "uiActivitiesQt/editor/SCreateActivity.hpp"
 
-#include <boost/foreach.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -47,6 +45,8 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <QGridLayout>
 #include <QGroupBox>
@@ -65,8 +65,8 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
-const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG       = "loadRequested";
+const core::com::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
+const core::com::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG       = "loadRequested";
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ void FlipTest::flipAlongXAxisTest()
     const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
     const ::fwData::Image::Spacing spacing    = {{ 0.1, 0.4, 1.6 }};
     const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type type              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{true, false, false};
 
@@ -81,7 +81,7 @@ void FlipTest::flipAlongYAxisTest()
     const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
     const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
     const ::fwData::Image::Origin origin      = {{ 8., 4., 2. }};
-    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type type              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 
@@ -118,7 +118,7 @@ void FlipTest::flipAlongZAxisTest()
     const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
     const ::fwData::Image::Spacing spacing    = {{ 2.0, 2.0, 2.0 }};
     const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type type              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, false, true};
 
@@ -156,7 +156,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
         const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
         const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-        const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+        const core::tools::Type type              = core::tools::Type::s_UINT8;
         const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, false };
 
@@ -190,7 +190,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
         const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
         const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-        const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+        const core::tools::Type type              = core::tools::Type::s_UINT8;
         const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, true};
 
@@ -228,7 +228,7 @@ void FlipTest::flipEmptyImageTest()
     const ::fwData::Image::Size size          = {0, 0, 0};
     const ::fwData::Image::Spacing spacing    = {0., 0., 0.};
     const ::fwData::Image::Origin origin      = {0., 0., 0.};
-    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type type              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 

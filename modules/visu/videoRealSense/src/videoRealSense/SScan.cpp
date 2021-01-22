@@ -27,10 +27,10 @@
 #include <arData/FrameTL.hpp>
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/Type.hpp>
 
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -44,8 +44,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <librealsense2/rs_advanced_mode.hpp>
 
@@ -84,17 +82,17 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
-static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
+static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
+static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
+static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
+static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
 
-static const ::fwCom::Slots::SlotKeyType s_RECORD = "record";
+static const core::com::Slots::SlotKeyType s_RECORD = "record";
 
-static const ::fwCom::Signals::SignalKeyType s_DISTANCE_COMPUTED_SIG = "distanceComputed";
-static const ::fwCom::Signals::SignalKeyType s_DEVICE_PLAYED_SIG     = "devicePlayed";
-static const ::fwCom::Signals::SignalKeyType s_FILE_PLAYED_SIG       = "filePlayed";
+static const core::com::Signals::SignalKeyType s_DISTANCE_COMPUTED_SIG = "distanceComputed";
+static const core::com::Signals::SignalKeyType s_DEVICE_PLAYED_SIG     = "devicePlayed";
+static const core::com::Signals::SignalKeyType s_FILE_PLAYED_SIG       = "filePlayed";
 
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.f;
@@ -257,12 +255,12 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     const size_t colorStreamH = static_cast<size_t>(colorStream.height());
 
     m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
-    m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, ::fwTools::Type::s_UINT8, 4);
+    m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, core::tools::Type::s_UINT8, 4);
     m_colorTimeline->setMaximumSize(50);
 
     if (m_depthTimeline)
     {
-        m_depthTimeline->initPoolSize(depthStreamW, depthStreamH, ::fwTools::Type::s_UINT16, 1);
+        m_depthTimeline->initPoolSize(depthStreamW, depthStreamH, core::tools::Type::s_UINT16, 1);
         m_depthTimeline->setMaximumSize(50);
     }
 

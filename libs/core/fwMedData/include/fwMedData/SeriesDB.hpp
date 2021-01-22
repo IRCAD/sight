@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,12 +127,12 @@ public:
      * @{
      */
     /// Defines the type of signal sent when series are added.
-    typedef ::fwCom::Signal< void (ContainerType) > AddedSeriesSignalType;
-    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_SERIES_SIG;
+    typedef core::com::Signal< void (ContainerType) > AddedSeriesSignalType;
+    FWMEDDATA_API static const core::com::Signals::SignalKeyType s_ADDED_SERIES_SIG;
 
     /// Defines the type of signal sent when series are removed.
-    typedef ::fwCom::Signal< void (ContainerType) > RemovedSeriesSignalType;
-    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_SERIES_SIG;
+    typedef core::com::Signal< void (ContainerType) > RemovedSeriesSignalType;
+    FWMEDDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_SERIES_SIG;
     /**
      * @}
      */

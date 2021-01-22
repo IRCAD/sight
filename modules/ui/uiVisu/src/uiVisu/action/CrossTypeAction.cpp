@@ -23,10 +23,9 @@
 #include "uiVisu/action/CrossTypeAction.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -48,7 +47,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image )
 
-static const ::fwCom::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
+static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
 std::map< std::string, float > CrossTypeAction::m_scaleConversion = { { std::string("full"), 1.0 },
                                                                       { std::string("half"), 0.5 },

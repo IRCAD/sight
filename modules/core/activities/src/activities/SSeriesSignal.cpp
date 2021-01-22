@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "activities/SSeriesSignal.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -48,9 +48,9 @@ fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal,
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT = "reportSeries";
+const core::com::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT = "reportSeries";
 
-const ::fwCom::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "seriesAdded";
+const core::com::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "seriesAdded";
 
 static const std::string s_SERIES_DB_INPUT = "seriesDB";
 

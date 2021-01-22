@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "itkRegistrationOp/Resampler.hpp"
 
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
+
 #include <fwItkIO/helper/Transform.hpp>
 #include <fwItkIO/itk.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkAffineTransform.h>
 #include <itkBoundingBox.h>
@@ -140,8 +140,8 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
     params.i_trf         = transf.GetPointer();
     params.i_targetImage = _targetImg;
 
-    const ::fwTools::Type type = _inImage->getType();
-    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, Resampling >::invoke(type, params);
+    const core::tools::Type type = _inImage->getType();
+    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, Resampling >::invoke(type, params);
 }
 
 //-----------------------------------------------------------------------------

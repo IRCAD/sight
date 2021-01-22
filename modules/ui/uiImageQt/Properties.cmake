@@ -3,7 +3,6 @@ set( NAME uiImageQt )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwCom
     core
     fwData
     fwGui
@@ -11,7 +10,6 @@ set( DEPENDENCIES
     fwMath
     fwRuntime
     fwServices
-    fwTools
     fwDataTools
 )
 set( REQUIREMENTS  )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
 {
     ::fwServices::IService::ConfigType config;
 
-    // Configuration on fwTools::Object which uid is objectUUID
+    // Configuration on core::tools::Object which uid is objectUUID
     ::fwServices::IService::ConfigType objCfg;
     objCfg.add("<xmlattr>.uid", "objectUUID");
     objCfg.add("<xmlattr>.type", "::fwData::Image");

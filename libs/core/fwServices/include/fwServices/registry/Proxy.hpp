@@ -25,10 +25,9 @@
 #include "fwServices/config.hpp"
 
 #include <core/base.hpp>
+#include <core/com/SignalBase.hpp>
+#include <core/com/SlotBase.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwCom/SignalBase.hpp>
-#include <fwCom/SlotBase.hpp>
 
 #include <vector>
 
@@ -57,8 +56,8 @@ public:
      */
     struct SigSlots
     {
-        typedef std::set< ::fwCom::SignalBase::sptr > SignalContainerType;
-        typedef std::set< ::fwCom::SlotBase::sptr > SlotContainerType;
+        typedef std::set< core::com::SignalBase::sptr > SignalContainerType;
+        typedef std::set< core::com::SlotBase::sptr > SlotContainerType;
         SignalContainerType m_signals;
         SlotContainerType m_slots;
         SlotContainerType::iterator m_lastConnectedSlot;
@@ -78,16 +77,16 @@ public:
     FWSERVICES_API static Proxy::sptr getDefault();
 
     /// Registers a signal in the channel. It will be connected to all slots in the channel.
-    FWSERVICES_API void connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal);
+    FWSERVICES_API void connect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
 
     /// Registers a slot in the channel. It will be connected to all signals in the channel.
-    FWSERVICES_API void connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot);
+    FWSERVICES_API void connect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
 
     /// Unregisters the signal. Disconnects it from the slots in channel
-    FWSERVICES_API void disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal);
+    FWSERVICES_API void disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
 
     /// Unregisters the slot. Disconnects it from the signals in channel
-    FWSERVICES_API void disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot);
+    FWSERVICES_API void disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
 
 protected:
 

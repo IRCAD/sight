@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include "fwTest/generator/Image.hpp"
 #include "fwTest/generator/Mesh.hpp"
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -40,8 +42,6 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <sstream>
 
@@ -185,7 +185,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     SeriesDB::generateSeriesInformation(imgSeries);
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+    Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     imgSeries->setImage(image);
 
@@ -253,7 +253,7 @@ void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec, int in
     rec->setStructureType("Liver");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    Image::generateRandomImage(img, ::fwTools::Type::create("uint16"));
+    Image::generateRandomImage(img, core::tools::Type::create("uint16"));
     rec->setImage(img);
 
     ::fwData::Material::sptr material = ::fwData::Material::New();

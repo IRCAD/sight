@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,8 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/Sequence.hpp>
-#include <fwMemory/BufferObject.hpp>
+
+#include <core/memory/BufferObject.hpp>
 
 #include <limits>
 
@@ -39,16 +40,19 @@ namespace fwAtoms
 namespace ut
 {
 
-
+//------------------------------------------------------------------------------
 
 void AtomTest::setUp()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void AtomTest::tearDown()
 {
 }
 
+//------------------------------------------------------------------------------
 
 void AtomTest::blobTest()
 {
@@ -56,11 +60,12 @@ void AtomTest::blobTest()
 
     CPPUNIT_ASSERT_THROW(blob->getString(), ::fwAtoms::Exception);
 
-    ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
+    core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
     blob->setBufferObject(bo);
     CPPUNIT_ASSERT_EQUAL(bo, blob->getBufferObject());
 }
 
+//------------------------------------------------------------------------------
 
 void AtomTest::mapTest()
 {
@@ -89,6 +94,7 @@ void AtomTest::mapTest()
 
 }
 
+//------------------------------------------------------------------------------
 
 void AtomTest::objectTest()
 {
@@ -143,8 +149,6 @@ void AtomTest::objectTest()
     CPPUNIT_ASSERT_EQUAL( std::string("D"), clone->getMetaInfo("info 3") );
     CPPUNIT_ASSERT_EQUAL( size_t(3), clone->getMetaInfos().size() );
 
-
-
     obj->clearAttribute();
     CPPUNIT_ASSERT_EQUAL( size_t(0), obj->getAttributes().size() );
     obj->clearMetaInfo();
@@ -154,6 +158,7 @@ void AtomTest::objectTest()
     CPPUNIT_ASSERT_EQUAL( size_t(3), clone->getMetaInfos().size() );
 }
 
+//------------------------------------------------------------------------------
 
 void AtomTest::sequenceTest()
 {
@@ -173,7 +178,6 @@ void AtomTest::sequenceTest()
 
     CPPUNIT_ASSERT_EQUAL( size_t(4), clone->size() );
 
-
     ::fwAtoms::Sequence::ConstIteratorType iterSeq   = seq->begin();
     ::fwAtoms::Sequence::ConstIteratorType iterClone = clone->begin();
 
@@ -192,8 +196,5 @@ void AtomTest::sequenceTest()
     CPPUNIT_ASSERT_EQUAL( size_t(4), clone->size() );
 }
 
-
-
 }  // namespace ut
 }  // namespace fwAtoms
-

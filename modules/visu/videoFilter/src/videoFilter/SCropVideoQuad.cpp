@@ -22,21 +22,20 @@
 
 #include "videoFilter/SCropVideoQuad.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/Type.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Type.hpp>
 
 namespace videoFilter
 {
 
 fwServicesRegisterMacro( ::videoFilter::IVideoFilter, ::videoFilter::SCropVideoQuad, ::arData::FrameTL)
 
-const ::fwCom::Slots::SlotKeyType SCropVideoQuad::s_CROP_FRAME_SLOT = "cropFrame";
+const core::com::Slots::SlotKeyType SCropVideoQuad::s_CROP_FRAME_SLOT = "cropFrame";
 
 const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "quadFrameTL";
 const ::fwServices::IService::KeyType s_FRAMETL1_INOUT = "frameTL1";
@@ -108,7 +107,7 @@ void SCropVideoQuad::cropFrame(core::HiResClock::HiResClockType timestamp)
     if (widthCropped != widthTL1 || heightCropped != heightTL1)
     {
         const size_t numberOfComponents = frameTL->getNumberOfComponents();
-        const ::fwTools::Type type      = frameTL->getType();
+        const core::tools::Type type    = frameTL->getType();
 
         frameTL1->clearTimeline();
         frameTL1->initPoolSize(widthCropped, heightCropped, type, numberOfComponents);

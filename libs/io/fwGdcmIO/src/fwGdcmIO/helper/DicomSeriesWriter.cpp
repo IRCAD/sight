@@ -150,9 +150,9 @@ void DicomSeriesWriter::processWrite()
 
         const std::string filename = this->getFilename(value.first);
 
-        const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
-        ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
-        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        const core::memory::BufferObject::sptr sourceBuffer = value.second;
+        core::memory::BufferObject::Lock sourceLocker(sourceBuffer);
+        const core::memory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
         SPTR(std::istream) stream = streamInfo.stream;
 
         const std::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
@@ -198,9 +198,9 @@ void DicomSeriesWriter::processWriteArchive()
 
         const std::string filename = this->getFilename(value.first);
 
-        const ::fwMemory::BufferObject::sptr sourceBuffer = value.second;
-        ::fwMemory::BufferObject::Lock sourceLocker(sourceBuffer);
-        const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
+        const core::memory::BufferObject::sptr sourceBuffer = value.second;
+        core::memory::BufferObject::Lock sourceLocker(sourceBuffer);
+        const core::memory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
         SPTR(std::istream) stream = streamInfo.stream;
 
         const std::filesystem::path& dest_dir =

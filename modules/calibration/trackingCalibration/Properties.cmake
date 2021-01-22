@@ -8,10 +8,8 @@ set( DEPENDENCIES
     fwDataTools
     fwGuiQt
     fwServices
-    fwTools
     fwPreferences
     fwMath
-    fwCom
     arData
     eigenTools
     calibration3d

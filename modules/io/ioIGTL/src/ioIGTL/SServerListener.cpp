@@ -22,7 +22,7 @@
 
 #include "ioIGTL/SServerListener.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

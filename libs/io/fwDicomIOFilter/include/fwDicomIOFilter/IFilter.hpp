@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,11 @@
 #include "fwDicomIOFilter/factory/new.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
 
+#include <core/tools/Object.hpp>
+
 #include <fwLog/Logger.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
-
-#include <fwTools/Object.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -39,7 +39,7 @@ namespace fwDicomIOFilter
 /**
  * @brief Base class for Dicom instance filter.
  */
-class FWDICOMIOFILTER_CLASS_API IFilter :   public ::fwTools::Object
+class FWDICOMIOFILTER_CLASS_API IFilter :   public core::tools::Object
 {
 public:
 
@@ -61,7 +61,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IFilter, ::fwTools::Object);
+    fwCoreClassMacro(IFilter, core::tools::Object)
 
     typedef std::vector< ::fwMedData::DicomSeries::sptr > DicomSeriesContainerType;
 

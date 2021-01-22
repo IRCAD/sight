@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlCom/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -60,9 +60,9 @@ public:
      * @name Signals API
      * @{
      */
-    CTRLCOM_API static const ::fwCom::Signals::SignalKeyType s_ALL_RECEIVED_SIG;
-    typedef ::fwCom::Signal< void () > AllReceivedSignalType;
-    typedef ::fwCom::Slot< void () > ReceivedSignalType;
+    CTRLCOM_API static const core::com::Signals::SignalKeyType s_ALL_RECEIVED_SIG;
+    typedef core::com::Signal< void () > AllReceivedSignalType;
+    typedef core::com::Slot< void () > ReceivedSignalType;
     /** @} */
 
     /// Constructor
@@ -96,7 +96,7 @@ private:
     std::vector< ReceivedSignalType::sptr > m_waitingSlots;
 
     /// Store all internal signal connections
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 };
 
 } // namespace ctrlCom

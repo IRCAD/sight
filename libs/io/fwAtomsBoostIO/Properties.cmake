@@ -5,8 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwAtoms
     core
-    fwMemory
-    fwTools
     fwZip
 )
 set( REQUIREMENTS  )

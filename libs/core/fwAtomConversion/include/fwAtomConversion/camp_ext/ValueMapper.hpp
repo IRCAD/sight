@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include <fwAtoms/Blob.hpp>
+#include <core/memory/BufferObject.hpp>
 
-#include <fwMemory/BufferObject.hpp>
+#include <fwAtoms/Blob.hpp>
 
 #include <camp/valuemapper.hpp>
 
 namespace camp_ext
 {
 
-/// New value mapper to manage conversion in camp world between ::fwAtoms::Blob and a ::fwMemory::BufferObject
+/// New value mapper to manage conversion in camp world between ::fwAtoms::Blob and a core::memory::BufferObject
 template <>
 struct ValueMapper< ::fwAtoms::Blob::sptr >
 {
@@ -41,7 +41,7 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 
     //------------------------------------------------------------------------------
 
-    static const ::fwMemory::BufferObject::sptr to(const ReturnType& source)
+    static const core::memory::BufferObject::sptr to(const ReturnType& source)
     {
         return source->getBufferObject();
     }
@@ -85,7 +85,7 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 
     static ReturnType from(const camp::UserObject& source)
     {
-        ::fwMemory::BufferObject::sptr tmp = source.get< ::fwMemory::BufferObject::sptr>()->getSptr();
+        core::memory::BufferObject::sptr tmp = source.get< core::memory::BufferObject::sptr>()->getSptr();
         return ::fwAtoms::Blob::New(tmp);
     }
 };

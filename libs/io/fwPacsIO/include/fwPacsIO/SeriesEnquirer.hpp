@@ -25,11 +25,9 @@
 #include "fwPacsIO/config.hpp"
 
 #include <core/BaseObject.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
-#include <fwMemory/BufferObject.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/memory/BufferObject.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
@@ -74,9 +72,9 @@ public:
     fwCoreClassMacro(SeriesEnquirer, ::fwPacsIO::SeriesEnquirer, new SeriesEnquirer)
     fwCoreAllowSharedFromThis();
 
-    FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
+    FWPACSIO_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
 
-    typedef ::fwCom::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
     typedef std::vector< std::string > InstanceUIDContainer;
 

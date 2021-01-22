@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwMedData/detail/reflection/ModelSeries.hpp"
 #include "fwMedData/ModelSeries.hpp"
 
-#include <fwCamp/UserObject.hpp>
+#include <core/reflection/UserObject.hpp>
 
 #include <fwData/Reconstruction.hpp>
 

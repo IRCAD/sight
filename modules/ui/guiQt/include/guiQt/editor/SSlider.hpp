@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,11 @@
 
 #include "guiQt/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -81,7 +80,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SSlider, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     GUIQT_API SSlider() noexcept;
@@ -93,8 +92,8 @@ public:
      * @{
      */
 
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_VALUE_CHANGED_SIG;
-    typedef ::fwCom::Signal<void (int)> ValueChangedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_VALUE_CHANGED_SIG;
+    typedef core::com::Signal<void (int)> ValueChangedSignalType;
 
     /** @} */
 
@@ -103,9 +102,9 @@ public:
      * @{
      */
 
-    GUIQT_API static const ::fwCom::Slots::SlotKeyType s_SET_VALUE_SLIDER_SLOT;
-    GUIQT_API static const ::fwCom::Slots::SlotKeyType s_SET_MIN_VALUE_SLIDER_SLOT;
-    GUIQT_API static const ::fwCom::Slots::SlotKeyType s_SET_MAX_VALUE_SLIDER_SLOT;
+    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_VALUE_SLIDER_SLOT;
+    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MIN_VALUE_SLIDER_SLOT;
+    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MAX_VALUE_SLIDER_SLOT;
 
     ///@}
 

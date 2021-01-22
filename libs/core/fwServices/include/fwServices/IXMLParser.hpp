@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwServices/IService.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -42,7 +42,8 @@ namespace fwServices
  *
  * The updating() method of this base class parses the XML description: each object named XML children corresponds to a
  * field
- * added to the object (see ::fwTools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the related
+ * added to the object (see core::tools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the
+ * related
  * child is invoked, therefore allowing to build
  * tree like composite object which services.
  *
@@ -52,13 +53,13 @@ class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceMacro(IXMLParser, ::fwServices::IService);
+    fwCoreServiceMacro(IXMLParser, ::fwServices::IService)
 
 public:
 
     FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
 
-    FWSERVICES_API virtual void createConfig( ::fwTools::Object::sptr _obj );
+    FWSERVICES_API virtual void createConfig( core::tools::Object::sptr _obj );
 
     FWSERVICES_API virtual void startConfig();
 

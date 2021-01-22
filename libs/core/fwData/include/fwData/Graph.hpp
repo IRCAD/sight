@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
      * @brief Update signal type
      * Signal updated is composed of two parameters which represent added and removed elements in the graph.
      */
-    typedef ::fwCom::Signal< void (UpdatedDataType, UpdatedDataType ) > UpdatedSignalType;
+    typedef core::com::Signal< void (UpdatedDataType, UpdatedDataType ) > UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -228,7 +228,7 @@ public:
     FWDATA_API bool haveConnectedEdges(Node::csptr _node ) const;
 
     /// Updated signal key
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
+    FWDATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
 
 protected:
 

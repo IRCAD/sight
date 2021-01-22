@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <cvIO/Image.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/Image.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -49,11 +49,11 @@
 namespace videoCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "recordPoints";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "recordPoints";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
-static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
-static const ::fwCom::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
+static const core::com::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
+static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT     = "image";
 static const ::fwServices::IService::KeyType s_CALINFO_INOUT   = "calInfo";

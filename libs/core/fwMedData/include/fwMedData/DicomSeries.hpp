@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/factory/new.hpp>
+#include <core/memory/BufferObject.hpp>
 
-#include <fwMemory/BufferObject.hpp>
+#include <fwData/factory/new.hpp>
 
 #include <filesystem>
 
@@ -49,7 +49,7 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(DicomSeries))
 
-    typedef std::map < std::size_t, ::fwMemory::BufferObject::sptr > DicomContainerType;
+    typedef std::map < std::size_t, core::memory::BufferObject::sptr > DicomContainerType;
 
     typedef std::set < std::string > SOPClassUIDContainerType;
 
@@ -89,7 +89,7 @@ public:
      * @param _instanceIndex index of the instance.
      * @param _buffer the buffer.
      */
-    FWMEDDATA_API void addBinary(std::size_t _instanceIndex, const ::fwMemory::BufferObject::sptr& _buffer);
+    FWMEDDATA_API void addBinary(std::size_t _instanceIndex, const core::memory::BufferObject::sptr& _buffer);
 
     /**
      * @brief Gets if the instance is available on the local computer

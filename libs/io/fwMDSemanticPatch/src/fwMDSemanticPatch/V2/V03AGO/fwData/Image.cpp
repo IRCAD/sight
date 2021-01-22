@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "fwMDSemanticPatch/V2/V03AGO/fwData/Image.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 
 #include <fwAtomsPatch/helper/functions.hpp>
-
-#include <fwTools/UUID.hpp>
 
 namespace fwMDSemanticPatch
 {

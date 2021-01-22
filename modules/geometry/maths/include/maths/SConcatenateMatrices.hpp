@@ -25,8 +25,7 @@
 #include "maths/config.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 

@@ -23,9 +23,8 @@
 #include "guiQt/editor/SSlider.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -45,11 +44,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSlider )
 
-const ::fwCom::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
+const core::com::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
-const ::fwCom::Slots::SlotKeyType SSlider::s_SET_VALUE_SLIDER_SLOT     = "setValue";
-const ::fwCom::Slots::SlotKeyType SSlider::s_SET_MIN_VALUE_SLIDER_SLOT = "setMinValue";
-const ::fwCom::Slots::SlotKeyType SSlider::s_SET_MAX_VALUE_SLIDER_SLOT = "setMaxValue";
+const core::com::Slots::SlotKeyType SSlider::s_SET_VALUE_SLIDER_SLOT     = "setValue";
+const core::com::Slots::SlotKeyType SSlider::s_SET_MIN_VALUE_SLIDER_SLOT = "setMinValue";
+const core::com::Slots::SlotKeyType SSlider::s_SET_MAX_VALUE_SLIDER_SLOT = "setMaxValue";
 
 //------------------------------------------------------------------------------
 

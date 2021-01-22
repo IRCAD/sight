@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -36,7 +36,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, 
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 const ::fwServices::IService::KeyType s_POINTLIST_INOUT       = "pointList";
 const ::fwServices::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";

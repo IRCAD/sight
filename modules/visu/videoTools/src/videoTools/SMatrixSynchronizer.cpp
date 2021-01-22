@@ -25,11 +25,13 @@
 #include <arData/MatrixTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -39,9 +41,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
                         ::fwData::TransformationMatrix3D)
 
@@ -50,17 +49,17 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchr
 namespace videoTools
 {
 
-const ::fwCom::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = "updateMatrix";
+const core::com::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = "updateMatrix";
 
 // ----------------------------------------------------------------------------
 
 SMatrixSynchronizer::SMatrixSynchronizer() noexcept :
     m_lastTimestamp(0)
 {
-    m_slotUpdateMatrix = ::fwCom::newSlot(&SMatrixSynchronizer::updateMatrix, this);
+    m_slotUpdateMatrix = core::com::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
-    ::fwCom::HasSlots::m_slots(s_UPDATE_MATRIX_SLOT, m_slotUpdateMatrix);
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots(s_UPDATE_MATRIX_SLOT, m_slotUpdateMatrix);
+    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 // ----------------------------------------------------------------------------

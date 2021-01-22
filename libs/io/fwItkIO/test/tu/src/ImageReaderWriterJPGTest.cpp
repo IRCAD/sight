@@ -27,13 +27,12 @@
 #include <fwItkIO/JpgImageWriter.hpp>
 
 #include <core/base.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -67,10 +66,10 @@ void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // save image in inr
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
     std::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);
@@ -95,7 +94,7 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     myReader->read();
 
     // save image in inr
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
     std::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/helper/Codec.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwMedData/DicomSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -63,7 +63,7 @@ public:
      */
     template< typename T>
     static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                      const ::fwMemory::BufferObject::sptr& instance,
+                                      const core::memory::BufferObject::sptr& instance,
                                       const T* redLookup,
                                       const T* greenLookup,
                                       const T* blueLookup, unsigned short pixelValueBitsAllocated)
@@ -93,7 +93,7 @@ public:
      */
     template< typename T, typename U >
     static T* createInstanceBuffer(unsigned int rows, unsigned int columns,
-                                   const ::fwMemory::BufferObject::sptr& instance,
+                                   const core::memory::BufferObject::sptr& instance,
                                    const T* redLookup,
                                    const T* greenLookup,
                                    const T* blueLookup)
@@ -108,7 +108,7 @@ public:
         // Read instance
         const size_t buffSize       = instance->getSize();
         const std::string dicomPath = instance->getStreamInfo().fsFile.string();
-        ::fwMemory::BufferObject::Lock lock(instance);
+        core::memory::BufferObject::Lock lock(instance);
         char* buffer = static_cast< char* >( lock.getBuffer() );
 
         DcmInputBufferStream is;

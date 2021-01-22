@@ -23,11 +23,10 @@
 #include "gui/action/SSlotCaller.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -89,16 +88,16 @@ void SSlotCaller::updating()
     {
         for(const SlotInfoType& info :  m_slotInfos)
         {
-            const HasSlotIDType& HasSlotId             = info.first;
-            const ::fwCom::Slots::SlotKeyType& slotKey = info.second;
+            const HasSlotIDType& HasSlotId               = info.first;
+            const core::com::Slots::SlotKeyType& slotKey = info.second;
 
-            if (::fwTools::fwID::exist(HasSlotId))
+            if (core::tools::fwID::exist(HasSlotId))
             {
-                const ::fwTools::Object::sptr obj       = ::fwTools::fwID::getObject(HasSlotId);
-                const ::fwCom::HasSlots::csptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                const core::tools::Object::sptr obj       = core::tools::fwID::getObject(HasSlotId);
+                const core::com::HasSlots::csptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
                 SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
-                const ::fwCom::SlotBase::csptr slot = hasSlots->slot(slotKey);
+                const core::com::SlotBase::csptr slot = hasSlots->slot(slotKey);
 
                 if(m_synchronized)
                 {

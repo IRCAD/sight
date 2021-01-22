@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,13 @@
 
 #include "uiMeasurementQt/editor/SLandmarks.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/NumericRoundCast.hxx>
 
 #include <fwData/Exception.hpp>
 #include <fwData/Landmarks.hpp>
@@ -38,8 +39,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/NumericRoundCast.hxx>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -60,17 +59,17 @@ static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
 static const char* s_GROUP_PROPERTY_NAME                       = "group";
 static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
-static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT             = "pick";
-static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
-static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const ::fwCom::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const ::fwCom::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
+static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
+static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
+static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
 static const std::string s_SIZE_CONFIG     = "size";
 static const std::string s_OPACITY_CONFIG  = "opacity";
@@ -95,7 +94,7 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_MODIFY_GROUP_SLOT, &SLandmarks::modifyGroup, this);
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
 
-    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -303,7 +302,7 @@ void SLandmarks::onColorButton()
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
             sig->asyncEmit(groupName);
         }
     }
@@ -345,7 +344,7 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
                     ::fwData::Landmarks::s_GROUP_RENAMED_SIG);
 
                 {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_RENAME_GROUP_SLOT)));
+                    core::com::Connection::Blocker block(sig->getConnection(this->slot(s_RENAME_GROUP_SLOT)));
                     sig->asyncEmit(oldGroupName.toStdString(), newGroupName.toStdString());
                 }
 
@@ -380,7 +379,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         const auto deselectSig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
             ::fwData::Landmarks::s_POINT_DESELECTED_SIG);
 
-        const ::fwCom::Connection::Blocker block(deselectSig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
+        const core::com::Connection::Blocker block(deselectSig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
 
         if(m_advancedMode)
         {
@@ -425,7 +424,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
                 SLM_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
                            index < landmarks->getNumberOfPoints(groupName));
 
-                const ::fwCom::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
+                const core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
                 selectSig->asyncEmit(groupName, index);
             }
             else
@@ -437,7 +436,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         {
             groupName = _current->text(0).toStdString();
 
-            ::fwCom::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
+            core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
             selectSig->asyncEmit(groupName, 0);
         }
 
@@ -480,7 +479,7 @@ void SLandmarks::onSizeChanged(int _newSize)
         const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -520,7 +519,7 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
         auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -542,7 +541,7 @@ void SLandmarks::onVisibilityChanged(int _visibility)
         const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -568,7 +567,7 @@ void SLandmarks::onShapeChanged(const QString& _shape)
         auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -593,7 +592,7 @@ void SLandmarks::onAddNewGroup()
         ::fwData::Landmarks::s_GROUP_ADDED_SIG);
 
     {
-        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
         sig->asyncEmit(groupName);
     }
 }
@@ -628,7 +627,7 @@ void SLandmarks::onRemoveSelection()
                 ::fwData::Landmarks::s_POINT_REMOVED_SIG);
 
             {
-                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
                 sig->asyncEmit(groupName, index);
             }
         }
@@ -643,7 +642,7 @@ void SLandmarks::onRemoveSelection()
                 ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
 
             {
-                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
+                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
                 sig->asyncEmit(groupName);
             }
         }
@@ -696,7 +695,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                 const auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
                     ::fwData::Landmarks::s_GROUP_ADDED_SIG);
                 {
-                    const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+                    const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
                     sig->asyncEmit(groupName);
                 }
             }
@@ -722,7 +721,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
             const auto sig =
                 landmarks->signal< ::fwData::Landmarks::PointAddedSignalType >(::fwData::Landmarks::s_POINT_ADDED_SIG);
             {
-                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
+                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
                 sig->asyncEmit(groupName);
             }
         }
@@ -775,7 +774,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                     auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
                         ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
                     {
-                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
+                        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
                         sig->asyncEmit(foundGroupname);
                     }
                 }
@@ -791,7 +790,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                         ::fwData::Landmarks::s_POINT_REMOVED_SIG);
 
                     {
-                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
                         sig->asyncEmit(foundGroupname, foundIndex);
                     }
                 }

@@ -30,11 +30,10 @@
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <core/Exception.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
-
-#include <fwTools/Type.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::reflection::ut::CompareObjectsTest );
 
@@ -63,7 +62,7 @@ void CompareObjectsTest::tearDown()
 
 void CompareObjectsTest::compareImageTest()
 {
-    ::fwTools::Type type      = ::fwTools::Type::create< float >();
+    core::tools::Type type = core::tools::Type::create< float >();
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, type);
 
@@ -122,8 +121,8 @@ void CompareObjectsTest::compareBufferTest()
     ::fwData::Image::sptr imgRef  = ::fwData::Image::New();
     ::fwData::Image::sptr imgComp = ::fwData::Image::New();
 
-    ::fwTools::Type typeRef  = ::fwTools::Type::create< float >();
-    ::fwTools::Type typeComp = ::fwTools::Type::create< double >();
+    core::tools::Type typeRef  = core::tools::Type::create< float >();
+    core::tools::Type typeComp = core::tools::Type::create< double >();
 
     {
         ::fwTest::generator::Image::generateRandomImage(imgRef, typeRef);

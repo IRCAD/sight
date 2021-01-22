@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include "fwItkIO/config.hpp"
 
+#include <core/tools/ProgressAdviser.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
 
 #include <filesystem>
 
@@ -38,7 +38,7 @@ namespace fwItkIO
 
 class JpgImageWriter :  public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
                         public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-                        public ::fwTools::ProgressAdviser
+                        public core::tools::ProgressAdviser
 {
 
 public:

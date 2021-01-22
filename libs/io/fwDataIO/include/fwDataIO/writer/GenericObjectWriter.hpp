@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ public:
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */
-    virtual void setObject( ::fwTools::Object::csptr obj) override
+    virtual void setObject( core::tools::Object::csptr obj) override
     {
         SLM_ASSERT("Object type: '" << std::string(typeid(obj).name())
                                     << "' is not a '" << typeid(DataType()).name()<<"'",

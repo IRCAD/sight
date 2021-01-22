@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,7 +132,7 @@ class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(SActivityLauncher, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SActivityLauncher, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivityLauncher() noexcept;
@@ -144,19 +144,19 @@ public:
      * @name Slot API
      * @{
      */
-    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
-    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
-    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
+    ACTIVITIES_API static const core::com::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
+    ACTIVITIES_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
+    ACTIVITIES_API static const core::com::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    typedef ::fwCom::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+    ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
     /// @}
 
 protected:

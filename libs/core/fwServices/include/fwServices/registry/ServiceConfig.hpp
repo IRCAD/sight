@@ -24,9 +24,9 @@
 
 #include "fwServices/config.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <map>
 

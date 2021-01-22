@@ -23,9 +23,8 @@
 #include "memory/SDumpPolicy.hpp"
 
 #include <core/base.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/IPolicy.hpp>
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/IPolicy.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -82,10 +81,10 @@ void SDumpPolicy::configuring()
 
 void SDumpPolicy::starting()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
     if (manager)
     {
-        ::fwMemory::IPolicy::sptr policy = ::fwMemory::policy::registry::get()->create(m_policy);
+        core::memory::IPolicy::sptr policy = core::memory::policy::registry::get()->create(m_policy);
 
         if (policy)
         {

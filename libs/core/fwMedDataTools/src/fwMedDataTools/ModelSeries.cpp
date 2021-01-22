@@ -22,9 +22,8 @@
 
 #include "fwMedDataTools/ModelSeries.hpp"
 
+#include <core/com/Signal.hxx>
 #include <core/spyLog.hpp>
-
-#include <fwCom/Signal.hxx>
 
 namespace fwMedDataTools
 {

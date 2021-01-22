@@ -25,14 +25,12 @@
 #include <arData/Camera.hpp>
 
 #include <core/base.hpp>
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
 
 namespace uiCalibration
 {
@@ -43,7 +41,7 @@ static const ::fwServices::IService::KeyType s_CAMERA_INOUT = "camera";
 
 SIntrinsicEdition::SIntrinsicEdition()
 {
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
     m_dialog = new SUpdateIntrinsicDialog();
 
     QObject::connect(m_dialog, SIGNAL(newCalibration(std::array< double,12 >&)),

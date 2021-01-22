@@ -24,9 +24,9 @@
 
 #include <fwTest/generator/Image.hpp>
 
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <core/tools/Type.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::ImageTest );
@@ -73,7 +73,7 @@ void ImageTest::generator3DTest()
     const ::fwData::Image::Size size       = {10, 15, 23};
     const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
     const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
-    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
+    core::tools::Type type                 = core::tools::Type::create< std::int32_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
                                               ::fwData::Image::PixelFormat::GRAY_SCALE);
@@ -92,7 +92,7 @@ void ImageTest::generator2DTest()
     const ::fwData::Image::Size size       = {10, 15, 0};
     const ::fwData::Image::Spacing spacing = {0.85, 2.6, 0.};
     const ::fwData::Image::Origin origin   = {-45.6, 25.97, 0.};
-    ::fwTools::Type type = ::fwTools::Type::create< std::int16_t >();
+    core::tools::Type type                 = core::tools::Type::create< std::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
                                               ::fwData::Image::PixelFormat::GRAY_SCALE);
@@ -108,7 +108,7 @@ void ImageTest::deepCopyTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwData::Image::sptr image2;
-    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
+    core::tools::Type type = core::tools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
     image2 = ::fwData::Object::copy(image);
@@ -119,40 +119,40 @@ void ImageTest::deepCopyTest()
 
 void ImageTest::stressTest()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< std::int8_t >();
+    core::tools::Type type = core::tools::Type::create< std::int8_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::uint8_t >();
+    type = core::tools::Type::create< std::uint8_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::int16_t >();
+    type = core::tools::Type::create< std::int16_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::uint16_t >();
+    type = core::tools::Type::create< std::uint16_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::int32_t >();
+    type = core::tools::Type::create< std::int32_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::uint32_t >();
+    type = core::tools::Type::create< std::uint32_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::int64_t >();
+    type = core::tools::Type::create< std::int64_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< std::uint64_t >();
+    type = core::tools::Type::create< std::uint64_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< float >();
+    type = core::tools::Type::create< float >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< double >();
+    type = core::tools::Type::create< double >();
     this->stressTestWithType(type, 10);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
+void ImageTest::stressTestWithType(core::tools::Type type, int nbTest)
 {
     for (int nb = 0; nb < nbTest; ++nb)
     {

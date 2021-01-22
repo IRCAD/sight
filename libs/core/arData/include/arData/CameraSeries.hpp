@@ -25,10 +25,9 @@
 #include "arData/Camera.hpp"
 #include "arData/config.hpp"
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 #include <core/macros.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -79,14 +78,14 @@ public:
     /**@name Signals API
      * @{
      */
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_CAMERA_SIG;
-    typedef ::fwCom::Signal<void (::arData::Camera::sptr)> AddedCameraSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_ADDED_CAMERA_SIG;
+    typedef core::com::Signal<void (::arData::Camera::sptr)> AddedCameraSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_CAMERA_SIG;
-    typedef ::fwCom::Signal<void (::arData::Camera::sptr)> RemovedCameraSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_CAMERA_SIG;
+    typedef core::com::Signal<void (::arData::Camera::sptr)> RemovedCameraSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_EXTRINSIC_CALIBRATED_SIG;
-    typedef ::fwCom::Signal<void ()> ExtrinsicCalibratedSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_EXTRINSIC_CALIBRATED_SIG;
+    typedef core::com::Signal<void ()> ExtrinsicCalibratedSignalType;
     /** @} */
 
     typedef std::vector< ::fwData::TransformationMatrix3D::sptr > MatricesContainer;

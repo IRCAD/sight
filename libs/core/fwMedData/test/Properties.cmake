@@ -7,8 +7,6 @@ set( DEPENDENCIES
     fwTest
     fwData
     fwMedData
-    fwMemory
-    fwTools
     fwAtomsBoostIO
     fwZip
     fwAtomConversion

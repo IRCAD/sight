@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,7 +137,7 @@ void ImageSeriesTest::propertiesTest()
                                                                   { "acquisition_time" }, };
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));
+    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create("uint8"));
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
 

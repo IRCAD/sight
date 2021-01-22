@@ -28,9 +28,8 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 
 #include <core/LogicStamp.hpp>
+#include <core/tools/fwID.hpp>
 #include <core/util/LazyInstantiator.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -145,8 +144,8 @@ bool isRegistered(const ::fwServices::IService::KeyType& objKey,
 namespace registry
 {
 
-const ::fwCom::Signals::SignalKeyType ObjectService::s_REGISTERED_SIG   = "registered";
-const ::fwCom::Signals::SignalKeyType ObjectService::s_UNREGISTERED_SIG = "unregistered";
+const core::com::Signals::SignalKeyType ObjectService::s_REGISTERED_SIG   = "registered";
+const core::com::Signals::SignalKeyType ObjectService::s_UNREGISTERED_SIG = "unregistered";
 
 //------------------------------------------------------------------------------
 

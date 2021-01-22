@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,10 @@
 
 #include "memory/config.hpp"
 
-#include <fwMemory/IPolicy.hpp>
+#include <core/memory/IPolicy.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace memory
 {
@@ -38,7 +37,7 @@ class MEMORY_CLASS_API SDumpPolicy : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceMacro(SDumpPolicy, ::fwServices::IController);
+    fwCoreServiceMacro(SDumpPolicy, ::fwServices::IController)
 
     MEMORY_API SDumpPolicy();
 
@@ -74,7 +73,7 @@ public:
 
 protected:
 
-    typedef std::vector< std::pair< ::fwMemory::IPolicy::ParamNamesType::value_type, std::string > > ParametersType;
+    typedef std::vector< std::pair< core::memory::IPolicy::ParamNamesType::value_type, std::string > > ParametersType;
 
     std::string m_policy;
     ParametersType m_policyParams;

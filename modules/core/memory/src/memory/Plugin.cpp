@@ -23,18 +23,16 @@
 #include "memory/Plugin.hpp"
 
 #include <core/base.hpp>
-
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/policy/AlwaysDump.hpp>
-#include <fwMemory/policy/BarrierDump.hpp>
-#include <fwMemory/policy/NeverDump.hpp>
-#include <fwMemory/policy/ValveDump.hpp>
+#include <core/memory/BufferManager.hpp>
+#include <core/memory/policy/AlwaysDump.hpp>
+#include <core/memory/policy/BarrierDump.hpp>
+#include <core/memory/policy/NeverDump.hpp>
+#include <core/memory/policy/ValveDump.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <fwTools/System.hpp>
 
 namespace memory
 {
@@ -49,7 +47,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
 
     const std::string modeKey = "loading_mode";
 
@@ -59,12 +57,12 @@ void Plugin::start()
         std::string mode = this->getModule()->getParameterValue(modeKey);
         if (mode == "lazy")
         {
-            manager->setLoadingMode(::fwMemory::BufferManager::LAZY);
+            manager->setLoadingMode(core::memory::BufferManager::LAZY);
             SLM_INFO("Enabled lazy loading mode");
         }
         else if (mode == "direct")
         {
-            manager->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+            manager->setLoadingMode(core::memory::BufferManager::DIRECT);
             SLM_INFO("Enabled direct loading mode");
         }
         else

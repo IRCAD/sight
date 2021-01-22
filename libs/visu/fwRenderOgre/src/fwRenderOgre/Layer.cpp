@@ -30,10 +30,9 @@
 #include "fwRenderOgre/ogre.hpp"
 #include "fwRenderOgre/Text.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
 
 #include <fwDataTools/Color.hpp>
 
@@ -67,13 +66,13 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
+const core::com::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
+const core::com::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
+const core::com::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
+const core::com::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
-const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT  = "interaction";
-const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
+const core::com::Slots::SlotKeyType Layer::s_INTERACTION_SLOT  = "interaction";
+const core::com::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
 
@@ -548,7 +547,7 @@ void Layer::setOrder(int _order)
 
 void Layer::setWorker( const core::thread::Worker::sptr& _worker)
 {
-    ::fwCom::HasSlots::m_slots.setWorker(_worker);
+    core::com::HasSlots::m_slots.setWorker(_worker);
 }
 
 // ----------------------------------------------------------------------------

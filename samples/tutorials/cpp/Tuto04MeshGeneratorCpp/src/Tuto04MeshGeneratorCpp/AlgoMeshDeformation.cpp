@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "Tuto04MeshGeneratorCpp/AlgoMeshDeformation.hpp"
 
-#include <fwDataTools/Mesh.hpp>
+#include <core/tools/NumericRoundCast.hxx>
 
-#include <fwTools/NumericRoundCast.hxx>
+#include <fwDataTools/Mesh.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
@@ -144,7 +144,7 @@ void AlgoMeshDeformation::computeSimu()
         if(origPointsItr->point->y - m_yCenter > 0)
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
-            pointsItr->rgba->r  = ::fwTools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
+            pointsItr->rgba->r  = core::tools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
         }
         else
         {

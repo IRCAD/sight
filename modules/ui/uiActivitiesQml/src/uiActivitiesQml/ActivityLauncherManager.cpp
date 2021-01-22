@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiActivitiesQml/ActivityLauncherManager.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwMedData/SeriesDB.hpp>
 

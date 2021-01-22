@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,17 +25,17 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Mesh.hpp>
+#include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
@@ -98,10 +98,10 @@ public:
      * @name Slots API
      * @{
      */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_FIELD_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SWAP_TEXTURE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_TEXTURE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_TEXTURE_SLOT;
+    VISUOGREADAPTOR_API static const core::com::Slots::SlotKeyType s_UPDATE_FIELD_SLOT;
+    VISUOGREADAPTOR_API static const core::com::Slots::SlotKeyType s_SWAP_TEXTURE_SLOT;
+    VISUOGREADAPTOR_API static const core::com::Slots::SlotKeyType s_ADD_TEXTURE_SLOT;
+    VISUOGREADAPTOR_API static const core::com::Slots::SlotKeyType s_REMOVE_TEXTURE_SLOT;
     /** @} */
 
     /**
@@ -212,7 +212,7 @@ private:
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Handles connections with texture adaptor.
-    ::fwCom::helper::SigSlotConnection m_textureConnection;
+    core::com::helper::SigSlotConnection m_textureConnection;
 
     /// Defines the configured shading mode.
     std::string m_shadingMode;

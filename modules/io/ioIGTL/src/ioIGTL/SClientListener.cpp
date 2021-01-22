@@ -25,7 +25,7 @@
 #include <arData/FrameTL.hpp>
 #include <arData/MatrixTL.hpp>
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
@@ -92,7 +92,7 @@ void SClientListener::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("Server element not found");
+        throw core::tools::Failed("Server element not found");
     }
 }
 

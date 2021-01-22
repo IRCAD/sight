@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "visuOgreAdaptor/STexture.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/Type.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -33,15 +34,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Type.hpp>
-
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG = "textureSwapped";
+const core::com::Signals::SignalKeyType visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG = "textureSwapped";
 
 static const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
 

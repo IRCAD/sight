@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace modifier
 class FWDICOMIOFILTER_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
-    fwCoreClassMacro(SliceThicknessModifier, IModifier, ::fwDicomIOFilter::factory::New< SliceThicknessModifier >);
+    fwCoreClassMacro(SliceThicknessModifier, IModifier, ::fwDicomIOFilter::factory::New< SliceThicknessModifier >)
 
     /// Constructor
     FWDICOMIOFILTER_API SliceThicknessModifier(::fwDicomIOFilter::IFilter::Key key);
@@ -63,13 +63,13 @@ protected:
      *  tags.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FWDICOMIOFILTER_API virtual double getInstanceZPosition(const ::fwMemory::BufferObject::sptr& bufferObj) const;
+    FWDICOMIOFILTER_API virtual double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj) const;
 
     /**
      * @brief Get the SliceThickness value from an instance.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FWDICOMIOFILTER_API virtual double getSliceThickness(const ::fwMemory::BufferObject::sptr& bufferObj) const;
+    FWDICOMIOFILTER_API virtual double getSliceThickness(const core::memory::BufferObject::sptr& bufferObj) const;
 
     /// Filter name
     static const std::string s_FILTER_NAME;

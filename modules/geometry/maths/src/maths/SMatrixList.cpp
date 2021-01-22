@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "maths/SMatrixList.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -32,11 +32,11 @@
 
 namespace maths
 {
-static const ::fwCom::Signals::SignalKeyType s_MATRIX_ADDED_SIG   = "matrixAdded";
-static const ::fwCom::Signals::SignalKeyType s_MATRIX_REMOVED_SIG = "matrixRemoved";
+static const core::com::Signals::SignalKeyType s_MATRIX_ADDED_SIG   = "matrixAdded";
+static const core::com::Signals::SignalKeyType s_MATRIX_REMOVED_SIG = "matrixRemoved";
 
-static const ::fwCom::Slots::SlotKeyType s_SELECT_MATRIX_SLOT = "selectMatrix";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_MATRIX_SLOT = "removeMatrix";
+static const core::com::Slots::SlotKeyType s_SELECT_MATRIX_SLOT = "selectMatrix";
+static const core::com::Slots::SlotKeyType s_REMOVE_MATRIX_SLOT = "removeMatrix";
 
 const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 const ::fwServices::IService::KeyType s_VECTOR_INOUT   = "vector";

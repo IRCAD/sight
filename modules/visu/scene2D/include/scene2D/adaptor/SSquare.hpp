@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ private:
     bool m_pointIsCaptured{false};
     bool m_autoRefresh{true};
     bool m_interaction{true};
-    static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(const double val, std::string key);
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "fwGui/IMenuSrv.hpp"
 #include "fwGui/IToolBarSrv.hpp"
 
+#include <core/tools/fwID.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
@@ -63,7 +63,7 @@ void GuiRegistry::registerSIDContainer(std::string sid, ::fwGui::container::fwCo
 
 void GuiRegistry::unregisterSIDContainer(std::string sid)
 {
-    bool service_exists = ::fwTools::fwID::exist(sid );
+    bool service_exists = core::tools::fwID::exist(sid );
     SLM_INFO_IF("The service '"+sid +"' does not exist.", !service_exists );
     if(service_exists)
     {
@@ -151,7 +151,7 @@ void GuiRegistry::registerSIDMenuBar(std::string sid, ::fwGui::container::fwMenu
 
 void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 {
-    bool service_exists = ::fwTools::fwID::exist(sid );
+    bool service_exists = core::tools::fwID::exist(sid );
     SLM_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
@@ -190,7 +190,7 @@ void GuiRegistry::registerSIDToolBar(std::string sid, ::fwGui::container::fwTool
 
 void GuiRegistry::unregisterSIDToolBar(std::string sid)
 {
-    bool service_exists = ::fwTools::fwID::exist(sid );
+    bool service_exists = core::tools::fwID::exist(sid );
     SLM_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
@@ -229,7 +229,7 @@ void GuiRegistry::registerSIDMenu(std::string sid, ::fwGui::container::fwMenu::s
 
 void GuiRegistry::unregisterSIDMenu(std::string sid)
 {
-    bool service_exists = ::fwTools::fwID::exist(sid );
+    bool service_exists = core::tools::fwID::exist(sid );
     SLM_INFO_IF("The menu "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
@@ -279,7 +279,7 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
     if (m_actionSIDToParentSID[actionSid].size() == 1)
     {
         // Action has one parent
-        bool service_exists = ::fwTools::fwID::exist(actionSid );
+        bool service_exists = core::tools::fwID::exist(actionSid );
         SLM_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists );
         if(service_exists)
         {
@@ -310,7 +310,7 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
 
         for(std::string parentSid :  parentSids)
         {
-            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            bool service_exists = core::tools::fwID::exist(parentSid );
             SLM_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
                         !service_exists );
             if(service_exists)
@@ -347,7 +347,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
         for(std::string parentSid :  parentSids)
         {
-            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            bool service_exists = core::tools::fwID::exist(parentSid );
             SLM_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
                         !service_exists );
             if(service_exists)
@@ -385,7 +385,7 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 
         for(std::string parentSid :  parentSids)
         {
-            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            bool service_exists = core::tools::fwID::exist(parentSid );
             SLM_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
                         !service_exists );
             if(service_exists)
@@ -423,7 +423,7 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
 
         for(std::string parentSid :  parentSids)
         {
-            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            bool service_exists = core::tools::fwID::exist(parentSid );
             SLM_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
                         !service_exists );
             if(service_exists)
@@ -460,7 +460,7 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
 
         for(std::string parentSid :  parentSids)
         {
-            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            bool service_exists = core::tools::fwID::exist(parentSid );
             SLM_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
                         !service_exists );
             if(service_exists)

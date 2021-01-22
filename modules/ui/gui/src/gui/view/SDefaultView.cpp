@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "gui/view/SDefaultView.hpp"
 
-#include <fwServices/macros.hpp>
+#include <core/tools/fwID.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <fwServices/macros.hpp>
 
 namespace gui
 {

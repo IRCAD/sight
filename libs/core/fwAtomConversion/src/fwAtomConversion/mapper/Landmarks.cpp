@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 #include "fwAtomConversion/mapper/registry/macros.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -34,8 +36,6 @@
 #include <fwAtoms/String.hpp>
 
 #include <fwData/Landmarks.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -67,7 +67,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
     {
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
         ::fwAtoms::Object::sptr atomGroup = ::fwAtoms::Object::New();
-        atomGroup->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+        atomGroup->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
         const std::string colorStr = std::to_string(group.m_color[0]) + ";" +
                                      std::to_string(group.m_color[1]) + ";" +

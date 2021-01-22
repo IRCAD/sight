@@ -24,12 +24,11 @@
 
 #include <arData/CameraSeries.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
 #include <depthMapOp/Projection.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -45,7 +44,7 @@ namespace opDepthMap
 
 fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::SPointCloudFromDepthMap)
 
-const ::fwCom::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
+const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
 //------------------------------------------------------------------------------
 
@@ -205,7 +204,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     SLM_INFO("Input RGB map was empty, skipping colors");
 
     const auto type = depthMap->getType();
-    if(type != ::fwTools::Type::s_UINT16)
+    if(type != core::tools::Type::s_UINT16)
     {
         SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
@@ -269,7 +268,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     SLM_INFO("Input RGB map was supplied, including colors");
 
     const auto type = depthMap->getType();
-    if(type != ::fwTools::Type::s_UINT16)
+    if(type != core::tools::Type::s_UINT16)
     {
         SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
@@ -281,7 +280,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const size_t height = size[1];
 
     const auto rgbType = colorMap->getType();
-    if(rgbType != ::fwTools::Type::s_UINT8)
+    if(rgbType != core::tools::Type::s_UINT8)
     {
         SLM_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;

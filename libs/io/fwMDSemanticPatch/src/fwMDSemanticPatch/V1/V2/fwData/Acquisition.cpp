@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "fwMDSemanticPatch/V1/V2/fwData/Acquisition.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
-
-#include <fwTools/UUID.hpp>
 
 namespace fwMDSemanticPatch
 {
@@ -84,7 +84,7 @@ void Acquisition::apply(
     ::fwAtoms::String::sptr uid = current->getAttribute< ::fwAtoms::String >("instance_uid");
     if( uid->getValue().empty() )
     {
-        helper.replaceAttribute("instance_uid", ::fwAtoms::String::New( ::fwTools::UUID::generateUUID() ));
+        helper.replaceAttribute("instance_uid", ::fwAtoms::String::New( core::tools::UUID::generateUUID() ));
     }
 
 }

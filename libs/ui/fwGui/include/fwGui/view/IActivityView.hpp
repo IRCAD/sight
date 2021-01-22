@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "fwGui/config.hpp"
 #include "fwGui/IGuiContainerSrv.hpp"
 
+#include <core/com/Slots.hpp>
+
 #include <fwActivities/IActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwCom/Slots.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/Series.hpp>
@@ -74,8 +74,8 @@ public:
 
     fwCoreClassMacro(IActivityView, ::fwGui::IGuiContainerSrv)
 
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
-    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
+    FWGUI_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
 
 protected:
 

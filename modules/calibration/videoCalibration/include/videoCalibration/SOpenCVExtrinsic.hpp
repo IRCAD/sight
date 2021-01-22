@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,10 +61,10 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
 {
 public:
-    fwCoreServiceMacro(SOpenCVExtrinsic, ::arServices::ICalibration);
+    fwCoreServiceMacro(SOpenCVExtrinsic, ::arServices::ICalibration)
 
     /// Double changed signal type
-    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVExtrinsic() noexcept;

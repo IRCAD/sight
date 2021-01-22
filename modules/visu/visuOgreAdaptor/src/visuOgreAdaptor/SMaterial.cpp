@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -49,10 +49,10 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SMaterial::s_UPDATE_FIELD_SLOT   = "updateField";
-const ::fwCom::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTexture";
-const ::fwCom::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
-const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
+const core::com::Slots::SlotKeyType SMaterial::s_UPDATE_FIELD_SLOT   = "updateField";
+const core::com::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTexture";
+const core::com::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
+const core::com::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
 
 const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
@@ -258,7 +258,7 @@ void SMaterial::createShaderParameterAdaptors()
             const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
                                               shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
                                               "geometry";
-            const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
+            const core::tools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =

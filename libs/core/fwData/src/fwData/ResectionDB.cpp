@@ -26,17 +26,16 @@
 #include "fwData/registry/macros.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::ResectionDB );
 
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType ResectionDB::s_RESECTION_ADDED_SIG = "resectionAdded";
-const ::fwCom::Signals::SignalKeyType ResectionDB::s_SAFE_PART_ADDED_SIG = "safePartAdded";
+const core::com::Signals::SignalKeyType ResectionDB::s_RESECTION_ADDED_SIG = "resectionAdded";
+const core::com::Signals::SignalKeyType ResectionDB::s_SAFE_PART_ADDED_SIG = "safePartAdded";
 
 //------------------------------------------------------------------------------
 

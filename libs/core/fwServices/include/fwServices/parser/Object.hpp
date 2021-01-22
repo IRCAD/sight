@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwTools/Object.hpp>
+#include <core/tools/Object.hpp>
 
 namespace fwServices
 {
@@ -34,11 +34,11 @@ namespace parser
 {
 
 /**
- * @brief Specific ::fwTools::Object parser. Does nothing as no IService method is specialized: IXMLParser base class
+ * @brief Specific core::tools::Object parser. Does nothing as no IService method is specialized: IXMLParser base class
  *  methods are therefore considered.
  *
  * @note This implementation is only written to avoid the mix between the service type IXMLParser and the
- * ::fwTools::Object implementation (for homogeneity).
+ * core::tools::Object implementation (for homogeneity).
  *
  */
 class FWSERVICES_CLASS_API Object : public ::fwServices::IXMLParser
@@ -49,7 +49,7 @@ public:
     FWSERVICES_API Object( );
     FWSERVICES_API virtual ~Object();
 
-    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void createConfig( core::tools::Object::sptr _obj ) override;
     FWSERVICES_API void startConfig() override;
     FWSERVICES_API void updateConfig() override;
     FWSERVICES_API void stopConfig() override;

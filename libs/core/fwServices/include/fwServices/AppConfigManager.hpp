@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@
 #include "fwServices/IXMLParser.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/HasSlots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -54,7 +54,7 @@ namespace fwServices
  * - \b removeObject(fwData::Object::sptr, const std::string&): removes objects from the configuration.
  */
 class FWSERVICES_CLASS_API AppConfigManager :  public ::fwServices::IAppConfigManager,
-                                               public ::fwCom::HasSlots
+                                               public core::com::HasSlots
 {
 public:
 
@@ -258,10 +258,10 @@ private:
     unsigned int m_proxyID;
 
     /// Keep the connection between the OSR and `addObjects`.
-    ::fwCom::Connection m_addObjectConnection;
+    core::com::Connection m_addObjectConnection;
 
     /// Keep the connection between the OSR and `removeObjects`.
-    ::fwCom::Connection m_removeObjectConnection;
+    core::com::Connection m_removeObjectConnection;
 
     /// Hack to know if we are doing a unit test. We skip some code in this case to be able to launch a configuration.
     bool m_isUnitTest;

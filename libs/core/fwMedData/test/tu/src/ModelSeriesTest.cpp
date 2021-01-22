@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "ModelSeriesTest.hpp"
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
-
-#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ModelSeriesTest );

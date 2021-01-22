@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwData
     fwAtoms
     fwAtomsPatch
-    fwTools
     fwActivities
 )
 set( REQUIREMENTS  )

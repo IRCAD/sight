@@ -28,18 +28,16 @@
 #include <arPreferences/preferences.hpp>
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/Type.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -53,7 +51,7 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-static const ::fwCom::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
+static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
 // -----------------------------------------------------------------------------
 
@@ -467,16 +465,16 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             switch (type)
             {
                 case CV_8UC1:
-                    frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT8, 1);
+                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 1);
                     break;
                 case CV_8UC3:
-                    frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT8, 3);
+                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 3);
                     break;
                 case CV_8UC4:
-                    frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT8, 4);
+                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 4);
                     break;
                 case CV_16UC1:
-                    frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT16, 1);
+                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT16, 1);
                     break;
                 default:
                     ::fwGui::dialog::MessageDialog::show(
@@ -583,16 +581,16 @@ void SFrameGrabber::grabVideo()
                 switch (image.type())
                 {
                     case CV_8UC1:
-                        frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 1);
+                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 1);
                         break;
                     case CV_8UC3:
-                        frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 3);
+                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 3);
                         break;
                     case CV_8UC4:
-                        frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 4);
+                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 4);
                         break;
                     case CV_16UC1:
-                        frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
+                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
                         break;
                     default:
                         ::fwGui::dialog::MessageDialog::show(

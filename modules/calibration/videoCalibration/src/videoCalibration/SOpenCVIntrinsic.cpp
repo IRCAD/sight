@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,12 @@
 #include <arData/CalibrationInfo.hpp>
 #include <arData/Camera.hpp>
 
-#include <cvIO/Matrix.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/Matrix.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -45,9 +47,6 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
@@ -56,9 +55,9 @@ fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVI
 namespace videoCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
-static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 // ----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "opVTKSlicer/SPlaneSlicer.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
@@ -51,8 +51,8 @@ static const ::fwServices::IService::KeyType s_EXTENT_IN = "imageExtent";
 static const ::fwServices::IService::KeyType s_AXES_IN   = "axes";
 static const ::fwServices::IService::KeyType s_SLICE_OUT = "slice";
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
+static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
+static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
 
 //------------------------------------------------------------------------------
 

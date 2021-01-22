@@ -245,7 +245,7 @@ void SlotsSignalsTest::blockConnectionTest()
     showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
     showTestSrv->setWorker(worker1);
 
-    ::fwCom::Connection connection;
+    core::com::Connection connection;
     connection = buffer->signal(::fwData::Object::s_MODIFIED_SIG)->
                  connect(showTestSrv->slot(SShow2Test::s_UPDATE_BUFFER_SLOT));
 

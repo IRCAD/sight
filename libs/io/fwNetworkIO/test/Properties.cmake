@@ -3,7 +3,6 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     fwNetworkIO
-    fwTools
     core
     fwTest
     fwData

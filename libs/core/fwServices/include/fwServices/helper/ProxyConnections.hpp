@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_HELPER_PROXYCONNECTIONS_HPP__
-#define __FWSERVICES_HELPER_PROXYCONNECTIONS_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signals.hpp>
+#include <core/com/Slots.hpp>
 
 namespace fwServices
 {
@@ -37,8 +36,8 @@ namespace helper
 /// Helper class to register proxy connections.
 struct ProxyConnections
 {
-    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
-    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::pair< std::string, core::com::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, core::com::Slots::SlotKeyType > SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
     typedef std::string UIDType;
     typedef std::string KeyType;
@@ -49,11 +48,13 @@ struct ProxyConnections
     ProxyEltVectType m_slots;
     ProxyEltVectType m_signals;
 
-    ProxyConnections() : m_channel("undefined")
+    ProxyConnections() :
+        m_channel("undefined")
     {
     }
 
-    ProxyConnections(const std::string& channel) : m_channel(channel)
+    ProxyConnections(const std::string& channel) :
+        m_channel(channel)
     {
     }
 
@@ -61,22 +62,32 @@ struct ProxyConnections
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void addSignalConnection(UIDType uid, KeyType key)
     {
         m_signals.push_back(std::make_pair(uid, key));
     }
+    //------------------------------------------------------------------------------
+
     void addSignalConnection(const SignalInfoType& pair)
     {
         m_signals.push_back(pair);
     }
+    //------------------------------------------------------------------------------
+
     void addSlotConnection(UIDType uid, KeyType key)
     {
         m_slots.push_back(std::make_pair(uid, key));
     }
+    //------------------------------------------------------------------------------
+
     void addSlotConnection(const SlotInfoType& pair)
     {
         m_slots.push_back(pair);
     }
+    //------------------------------------------------------------------------------
+
     bool empty() const
     {
         return m_slots.empty() && m_signals.empty();
@@ -86,5 +97,3 @@ struct ProxyConnections
 } // namespace helper
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_HELPER_PROXYCONNECTIONS_HPP__

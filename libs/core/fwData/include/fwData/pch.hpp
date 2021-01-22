@@ -24,14 +24,12 @@
 #define __FWDATA_PCH_HPP__
 
 #include <core/base.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
 #include <core/macros.hpp>
 #include <core/mt/types.hpp>
+#include <core/tools/Object.hpp>
 #include <core/util/FactoryRegistry.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <string>
 #include <unordered_map>

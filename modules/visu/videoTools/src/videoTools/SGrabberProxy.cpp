@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include <arData/CameraSeries.hpp>
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -44,15 +44,15 @@ namespace videoTools
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigure";
+const core::com::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigure";
 
-const ::fwCom::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
-const ::fwCom::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
+const core::com::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
+const core::com::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
 
-const ::fwCom::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
-const ::fwCom::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
+const core::com::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
+const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
 
-const ::fwCom::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
+const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL)
 

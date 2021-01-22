@@ -25,10 +25,10 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ProxyTest );
@@ -102,14 +102,14 @@ void ProxyTest::basicTest()
 
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
-    ::fwCom::Signal< void(int, int) >::sptr sig        = ::fwCom::Signal< void(int, int) >::New();
-    ::fwCom::Signal< void(int, int, char) >::sptr sig2 = ::fwCom::Signal< void(int, int, char) >::New();
+    core::com::Signal< void(int, int) >::sptr sig        = core::com::Signal< void(int, int) >::New();
+    core::com::Signal< void(int, int, char) >::sptr sig2 = core::com::Signal< void(int, int, char) >::New();
 
     ProxyTestClass testObject;
-    ::fwCom::Slot< int (int, int) >::sptr slot = ::fwCom::newSlot( &ProxyTestClass::sum, &testObject );
-    ::fwCom::Slot< int (int) >::sptr slot2     = ::fwCom::newSlot( &ProxyTestClass::square, &testObject );
-    ::fwCom::Slot< void() >::sptr slot3        = ::fwCom::newSlot( &ProxyTestClass::doNothing, &testObject );
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
+    core::com::Slot< int (int, int) >::sptr slot = core::com::newSlot( &ProxyTestClass::sum, &testObject );
+    core::com::Slot< int (int) >::sptr slot2     = core::com::newSlot( &ProxyTestClass::square, &testObject );
+    core::com::Slot< void() >::sptr slot3        = core::com::newSlot( &ProxyTestClass::doNothing, &testObject );
+    core::thread::Worker::sptr worker            = core::thread::Worker::New();
     slot->setWorker(worker);
     slot2->setWorker(worker);
     slot3->setWorker(worker);

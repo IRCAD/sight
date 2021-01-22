@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,11 +72,11 @@ ImageStorageReader::~ImageStorageReader()
     DcmDataset* dataset;
 
     //Get informations from the first instance
-    const auto firstItem                           = series->getDicomContainer().begin();
-    const ::fwMemory::BufferObject::sptr bufferObj = firstItem->second;
-    const size_t buffSize                          = bufferObj->getSize();
-    const std::string dicomPath                    = bufferObj->getStreamInfo().fsFile.string();
-    ::fwMemory::BufferObject::Lock lock(bufferObj);
+    const auto firstItem                             = series->getDicomContainer().begin();
+    const core::memory::BufferObject::sptr bufferObj = firstItem->second;
+    const size_t buffSize                            = bufferObj->getSize();
+    const std::string dicomPath                      = bufferObj->getStreamInfo().fsFile.string();
+    core::memory::BufferObject::Lock lock(bufferObj);
     char* buffer = static_cast< char* >( lock.getBuffer() );
 
     DcmInputBufferStream is;
@@ -236,13 +236,13 @@ ImageStorageReader::~ImageStorageReader()
     //Find image type
     ::fwDicomTools::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
+    core::tools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
 
     //Set image type
     image->setType(imageType);
 
     //Direct reading mode
-    if(::fwMemory::BufferManager::getDefault()->getLoadingMode() == ::fwMemory::BufferManager::DIRECT)
+    if(core::memory::BufferManager::getDefault()->getLoadingMode() == core::memory::BufferManager::DIRECT)
     {
         SLM_INFO("Reading using DIRECT mode.");
 
@@ -327,7 +327,7 @@ void ImageStorageReader::directRead(const ::fwData::Image::sptr& image,
                                     int depth, double rescaleSlope,
                                     double rescaleIntercept,
                                     unsigned short pixelRepresentation,
-                                    ::fwTools::Type imageType)
+                                    core::tools::Type imageType)
 {
     //Allocate image
     image->resize();
@@ -420,7 +420,7 @@ void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
                                   int depth, double rescaleSlope,
                                   double rescaleIntercept,
                                   unsigned short pixelRepresentation,
-                                  ::fwTools::Type imageType)
+                                  core::tools::Type imageType)
 {
     // Create information object
     ::fwDcmtkIO::reader::main::ImageLazyInformation::sptr dcmInfo =
@@ -448,7 +448,7 @@ void ImageStorageReader::lazyRGBLookupRead(const ::fwData::Image::sptr& image,
                                            DicomContainerType,
                                            unsigned short rows, unsigned short columns,
                                            int depth, unsigned short bitsAllocated,
-                                           ::fwTools::Type imageType)
+                                           core::tools::Type imageType)
 {
     unsigned short pixelValueBitsAllocated = 8;
     dataset.findAndGetUint16(DCM_BitsAllocated, pixelValueBitsAllocated);

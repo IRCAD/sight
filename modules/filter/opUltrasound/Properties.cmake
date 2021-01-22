@@ -8,7 +8,6 @@ set( DEPENDENCIES
         fwDataTools
         core
         fwServices
-        fwCom
         fwMath
         )
 set( REQUIREMENTS fwData servicesReg)

@@ -5,7 +5,6 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwItkIO
-    fwTools
 )
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchServicesOmp )

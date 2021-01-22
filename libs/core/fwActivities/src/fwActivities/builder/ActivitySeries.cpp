@@ -24,6 +24,9 @@
 
 #include "fwActivities/builder/registry/macros.hpp"
 
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/Vector.hpp>
@@ -31,9 +34,6 @@
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -110,11 +110,11 @@ ActivitySeries::~ActivitySeries()
     }
 
     actSeries->setModality("OT");
-    actSeries->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
+    actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
 
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    actSeries->setDate(::fwTools::getDate(now));
-    actSeries->setTime(::fwTools::getTime(now));
+    actSeries->setDate(core::tools::getDate(now));
+    actSeries->setTime(core::tools::getTime(now));
 
     actSeries->setActivityConfigId(activityInfo.id);
     ::fwData::Composite::sptr data = actSeries->getData();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ protected:
      */
     FWACTIVITIES_API ::fwMedData::ActivitySeries::sptr getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
                                                                    size_t index,
-                                                                   const ::fwCom::SlotBase::sptr& slot         = nullptr,
+                                                                   const core::com::SlotBase::sptr& slot       = nullptr,
                                                                    const ::fwData::Composite::csptr& overrides = nullptr);
 
     /// List of the activity to create.

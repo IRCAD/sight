@@ -26,11 +26,11 @@
 #include "fwServices/factory/new.hpp"
 #include "fwServices/helper/ProxyConnections.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/HasSlots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/Object.hpp>
@@ -40,8 +40,8 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwTools/Failed.hpp>
-#include <fwTools/Object.hpp>
+#include <core/tools/Failed.hpp>
+#include <core/tools/Object.hpp>
 
 #ifdef BOOST_MSVC
 #pragma warning(push)
@@ -88,9 +88,9 @@ class Worker;
  * - \b swap() : @deprecated Swap the current object.
  * - \b swapKey(const KeyType&, ::fwData::Object::sptr) : Swap the object at the given key with the object in parameter.
  */
-class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
-                                      public ::fwCom::HasSlots,
-                                      public ::fwCom::HasSignals
+class FWSERVICES_CLASS_API IService : public core::tools::Object,
+                                      public core::com::HasSlots,
+                                      public core::com::HasSignals
 {
 
 // to give to OSR an access on IService objects;
@@ -99,7 +99,7 @@ friend class AppConfigManager;
 friend class AppManager;
 
 public:
-    fwCoreServiceMacro(IService, ::fwTools::Object)
+    fwCoreServiceMacro(IService, core::tools::Object)
     fwCoreAllowSharedFromThis();
 
     typedef ::boost::property_tree::ptree ConfigType;
@@ -202,23 +202,23 @@ public:
      * @name Signal API
      */
     //@{
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_STARTED_SIG;
-    typedef ::fwCom::Signal<void ()> StartedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_STARTED_SIG;
+    typedef core::com::Signal<void ()> StartedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
-    typedef ::fwCom::Signal<void ()> UpdatedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
+    typedef core::com::Signal<void ()> UpdatedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_STOPPED_SIG;
-    typedef ::fwCom::Signal<void ()> StoppedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_STOPPED_SIG;
+    typedef core::com::Signal<void ()> StoppedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::string)> InfoNotifiedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
+    typedef core::com::Signal<void (std::string)> InfoNotifiedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::string)> SuccessNotifiedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
+    typedef core::com::Signal<void (std::string)> SuccessNotifiedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::string)> FailureNotifiedSignalType;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
+    typedef core::com::Signal<void (std::string)> FailureNotifiedSignalType;
 
     //@}
 
@@ -230,20 +230,20 @@ public:
     typedef std::packaged_task< void ()> PackagedTaskType;
     typedef std::future< void > UniqueFutureType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
-    typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_START_SLOT;
+    typedef core::com::Slot<SharedFutureType()> StartSlotType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_SLOT;
-    typedef ::fwCom::Slot<SharedFutureType()> StopSlotType;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_STOP_SLOT;
+    typedef core::com::Slot<SharedFutureType()> StopSlotType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
-    typedef ::fwCom::Slot<SharedFutureType()> UpdateSlotType;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_UPDATE_SLOT;
+    typedef core::com::Slot<SharedFutureType()> UpdateSlotType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAP_SLOT;
-    typedef ::fwCom::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_SWAP_SLOT;
+    typedef core::com::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAPKEY_SLOT;
-    typedef ::fwCom::Slot<SharedFutureType(const KeyType&, ::fwData::Object::sptr)> SwapKeySlotType;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_SWAPKEY_SLOT;
+    typedef core::com::Slot<SharedFutureType(const KeyType&, ::fwData::Object::sptr)> SwapKeySlotType;
 
     /// Initializes m_associatedWorker and associates this worker to all service slots
     FWSERVICES_API void setWorker( SPTR(core::thread::Worker) worker );
@@ -600,7 +600,7 @@ public:
      */
     //@{
 
-    typedef ::fwCom::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
+    typedef core::com::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
 
     /**
      * @brief This class is a helper to define the connections of a service and its data.
@@ -611,8 +611,8 @@ public:
         //------------------------------------------------------------------------------
 
         void push (const KeyType& key,
-                   const ::fwCom::Signals::SignalKeyType& sig,
-                   const ::fwCom::Slots::SlotKeyType& slot)
+                   const core::com::Signals::SignalKeyType& sig,
+                   const core::com::Slots::SlotKeyType& slot)
         {
             m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
         }
@@ -1022,10 +1022,10 @@ private:
     ::fwServices::IService::Config m_serviceConfig;
 
     /// Regular connections between this service and other services, or this service and objects
-    ::fwCom::helper::SigSlotConnection m_srvConnections;
+    core::com::helper::SigSlotConnection m_srvConnections;
 
     /// Auto connections between this service and its objects
-    ::fwCom::helper::SigSlotConnection m_autoConnections;
+    core::com::helper::SigSlotConnection m_autoConnections;
 
     /// Proxies configurations, connected at start, and disconnected at stop
     std::map<std::string, helper::ProxyConnections> m_proxies;

@@ -23,10 +23,9 @@
 #include "ioDicom/SFilterSelectorDialog.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -189,7 +188,7 @@ void SFilterSelectorDialog::updating()
             auto sig
                 = obj->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }

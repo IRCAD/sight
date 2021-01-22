@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 fwDataRegisterMacro( ::fwData::Material );
 
@@ -35,8 +35,8 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Material::s_ADDED_TEXTURE_SIG   = "addedTexture";
-const ::fwCom::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "removedTexture";
+const core::com::Signals::SignalKeyType Material::s_ADDED_TEXTURE_SIG   = "addedTexture";
+const core::com::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "removedTexture";
 
 //------------------------------------------------------------------------------
 

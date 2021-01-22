@@ -24,10 +24,9 @@
 
 #include "arData/config.hpp"
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signals.hpp>
 #include <core/macros.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
@@ -60,17 +59,17 @@ public:
      * @name Signals API
      * @{
      */
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_RECORD_SIG;
-    typedef ::fwCom::Signal<void ()> AddedRecordSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_ADDED_RECORD_SIG;
+    typedef core::com::Signal<void ()> AddedRecordSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_RECORD_SIG;
-    typedef ::fwCom::Signal<void ()> RemovedRecordSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_REMOVED_RECORD_SIG;
+    typedef core::com::Signal<void ()> RemovedRecordSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_RESET_RECORD_SIG;
-    typedef ::fwCom::Signal<void ()> ResetRecordSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_RESET_RECORD_SIG;
+    typedef core::com::Signal<void ()> ResetRecordSignalType;
 
-    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_GET_RECORD_SIG;
-    typedef ::fwCom::Signal<void (size_t)> GetRecordSignalType;
+    ARDATA_API static const core::com::Signals::SignalKeyType s_GET_RECORD_SIG;
+    typedef core::com::Signal<void (size_t)> GetRecordSignalType;
 
     /**
      * @}

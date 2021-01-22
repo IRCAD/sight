@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 namespace uiGenericQt
 {
@@ -42,7 +42,7 @@ class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IAction
 
 public:
 
-    fwCoreServiceMacro(LaunchBrowserActionService, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(LaunchBrowserActionService, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIGENERICQT_API LaunchBrowserActionService() noexcept;

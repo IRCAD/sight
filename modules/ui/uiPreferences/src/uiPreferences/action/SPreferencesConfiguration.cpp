@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,8 @@
  ***********************************************************************/
 #include "uiPreferences/action/SPreferencesConfiguration.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
@@ -53,7 +53,7 @@ namespace uiPreferences
 namespace action
 {
 
-const ::fwCom::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
+const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
 
 //-----------------------------------------------------------------------------
 

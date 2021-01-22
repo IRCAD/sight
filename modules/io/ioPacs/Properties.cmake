@@ -4,12 +4,10 @@ set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     core
-    fwCom
     fwGui
     fwGuiQt
     fwPacsIO
     fwRuntime
-    fwTools
     fwData
     fwDataTools
     fwMedData

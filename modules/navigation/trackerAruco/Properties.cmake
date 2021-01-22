@@ -7,9 +7,7 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwServices
-    fwTools
     fwMath
-    fwCom
     arData
     fwMedData
     arServices

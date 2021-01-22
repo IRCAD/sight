@@ -22,9 +22,8 @@
 
 #include "style/SStyleSelector.hpp"
 
+#include <core/com/Slots.hxx>
 #include <core/macros.hpp>
-
-#include <fwCom/Slots.hxx>
 
 #include <fwPreferences/helper.hpp>
 
@@ -45,7 +44,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::style::SStyleSelector )
 namespace style
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
+static const core::com::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
 
 //-----------------------------------------------------------------------------
 

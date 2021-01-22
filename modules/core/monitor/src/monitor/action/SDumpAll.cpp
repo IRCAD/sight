@@ -23,11 +23,10 @@
 #include "monitor/action/SDumpAll.hpp"
 
 #include <core/base.hpp>
+#include <core/memory/BufferInfo.hpp>
+#include <core/memory/BufferManager.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwMemory/BufferInfo.hpp>
-#include <fwMemory/BufferManager.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -55,17 +54,17 @@ SDumpAll::~SDumpAll() noexcept
 void SDumpAll::updating( )
 {
     size_t nbBuffDumped = 0;
-    ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap;
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
+    core::memory::BufferManager::BufferInfoMapType buffInfoMap;
+    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if(buffManager)
     {
         buffInfoMap = buffManager->getBufferInfos().get();
     }
-    for(::fwMemory::BufferManager::BufferInfoMapType::value_type elt :  buffInfoMap)
+    for(core::memory::BufferManager::BufferInfoMapType::value_type elt :  buffInfoMap)
     {
-        ::fwMemory::BufferInfo dumpBuffInfo = elt.second;
-        bool loaded = dumpBuffInfo.loaded;
-        bool isLock = dumpBuffInfo.lockCount() > 0;
+        core::memory::BufferInfo dumpBuffInfo = elt.second;
+        bool loaded                           = dumpBuffInfo.loaded;
+        bool isLock                           = dumpBuffInfo.lockCount() > 0;
         if(loaded && !isLock)
         {
             bool dumped = buffManager->dumpBuffer(elt.first).get();

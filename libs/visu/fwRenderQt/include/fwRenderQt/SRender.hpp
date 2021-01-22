@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwRenderQt/data/Event.hpp"
 #include "fwRenderQt/data/Viewport.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwRender/IRender.hpp>
 

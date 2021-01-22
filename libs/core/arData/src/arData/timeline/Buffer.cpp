@@ -22,7 +22,7 @@
 
 #include "arData/timeline/Buffer.hpp"
 
-#include <fwMemory/exception/Memory.hpp>
+#include <core/memory/exception/Memory.hpp>
 
 namespace arData
 {

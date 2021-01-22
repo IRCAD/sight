@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiActivitiesQt/editor/SActivitySequencer.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -50,16 +50,16 @@ namespace editor
 
 const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
-const ::fwCom::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
-const ::fwCom::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
-const ::fwCom::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
-const ::fwCom::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
+const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
+const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
+const core::com::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
+const core::com::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
 
-const ::fwCom::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
-const ::fwCom::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
-const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT       = "next";
-const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
-const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
+const core::com::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
+const core::com::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
+const core::com::Slots::SlotKeyType s_NEXT_SLOT       = "next";
+const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
+const core::com::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
 
 static const std::string s_THEME_CONFIG      = "theme";
 static const std::string s_CLEAR_CONFIG      = "clear";

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_HELPER_PROGRESSITKTOFW_HPP__
-#define __FWITKIO_HELPER_PROGRESSITKTOFW_HPP__
+#pragma once
 
 #include <itkCommand.h>
 #include <itkProcessObject.h>
 
-#include <fwTools/ProgressAdviser.hpp>
+#include <core/tools/ProgressAdviser.hpp>
 
 namespace fwItkIO
 {
@@ -45,7 +44,7 @@ template< typename OBSERVEE >
 class ProgressItkToFw : public ProgressorBase
 {
 public:
-    ProgressItkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser)observer, std::string msg);
+    ProgressItkToFw(OBSERVEE observee, SPTR(core::tools::ProgressAdviser)observer, std::string msg);
 
     virtual ~ProgressItkToFw();
 
@@ -65,7 +64,7 @@ public:
     typedef SPTR (Progressor) sptr;
 
     template<typename OBS >
-    Progressor(OBS filter, SPTR(::fwTools::ProgressAdviser)observer, std::string message)
+    Progressor(OBS filter, SPTR(core::tools::ProgressAdviser)observer, std::string message)
     {
         typedef ProgressItkToFw< OBS > ProgressType;
         m_progressor = ProgressorBase::sptr(
@@ -79,5 +78,3 @@ public:
 }
 
 #include "fwItkIO/helper/ProgressItkToFw.hxx"
-
-#endif /* __FWITKIO_HELPER_PROGRESSITKTOFW_HPP__ */

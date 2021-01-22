@@ -27,7 +27,7 @@
 
 #include <arPreferences/preferences.hpp>
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -224,7 +224,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if (width != 0 && height != 0)
         {
-            frameTL->initPoolSize(width, height, ::fwTools::Type::s_FLOAT, 3);
+            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, 3);
         }
         else
         {

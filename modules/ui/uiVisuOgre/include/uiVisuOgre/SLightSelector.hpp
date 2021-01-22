@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef ::fwCom::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
+    typedef core::com::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
 
     /// Checks or unchecks all item in m_lightsList.
     void onCheckAllBoxes(bool visible);
@@ -180,7 +180,7 @@ private:
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
     /// Handles connections with the layer.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
 };
 

@@ -23,9 +23,8 @@
 #include "videoQt/editor/SSlider.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Object.hpp>
 
@@ -46,10 +45,10 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SSlider )
 
-const ::fwCom::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
+const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
-const ::fwCom::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPositionSlider";
-const ::fwCom::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
+const core::com::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPositionSlider";
+const core::com::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
 static const char* s_UNKNOWN_TIME = "--:--:--";
 

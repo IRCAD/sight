@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,14 @@
 
 #include "fwGui/dialog/MessageDialog.hpp"
 
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
@@ -39,16 +41,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
-
 namespace fwGui
 {
 namespace view
 {
 
-const ::fwCom::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
-const ::fwCom::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
+const core::com::Slots::SlotKeyType IActivityView::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
 
 //-----------------------------------------------------------------------------
 

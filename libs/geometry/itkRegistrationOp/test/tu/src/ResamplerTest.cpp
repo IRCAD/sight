@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void ResamplerTest::identityTest()
     // TODO: make it work with an anisotropic spacing.
     const ::fwData::Image::Spacing SPACING = {{ 0.5, 0.5, 0.5 }};
     const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE             = ::fwTools::Type::s_INT16;
+    const core::tools::Type TYPE           = core::tools::Type::s_INT16;
 
     ::fwData::Image::sptr imageIn = ::fwData::Image::New();
 
@@ -108,7 +108,7 @@ void ResamplerTest::translateTest()
     const ::fwData::Image::Size SIZE       = {{ 16, 16, 16 }};
     const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
     const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE             = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE           = core::tools::Type::s_UINT8;
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
@@ -173,7 +173,7 @@ void ResamplerTest::rotateTest()
     const ::fwData::Image::Size SIZE       = {{ 64, 64, 64 }};
     const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
     const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE             = ::fwTools::Type::s_FLOAT;
+    const core::tools::Type TYPE           = core::tools::Type::s_FLOAT;
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "fwTest/DicomReaderTest.hpp"
 
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/Type.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwMedData/Equipment.hpp>
@@ -30,9 +33,6 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/Type.hpp>
 
 namespace fwTest
 {

@@ -3,7 +3,6 @@ set( NAME fwRenderQt3D )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwCom
     core
     fwData
     fwDataTools

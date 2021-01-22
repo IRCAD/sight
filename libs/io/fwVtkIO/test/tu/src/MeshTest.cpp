@@ -34,15 +34,15 @@
 #include <fwVtkIO/VtpMeshReader.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
 
+#include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/System.hpp>
+
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Mesh.hpp>
-
-#include <fwTools/NumericRoundCast.hxx>
-#include <fwTools/System.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -80,7 +80,7 @@ void MeshTest::setUp()
 {
     // Set up context before running a test.
 
-    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "testExportImportSyntheticMesh.vtk";
 
     const ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
@@ -610,7 +610,7 @@ void MeshTest::testWriteVtkFile()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "vtkTestMesh.vtk";
 
     const ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
@@ -634,7 +634,7 @@ void MeshTest::testWriteVtpFile()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "vtpTestMesh.vtp";
 
     const ::fwVtkIO::VtpMeshWriter::sptr writer = ::fwVtkIO::VtpMeshWriter::New();
@@ -658,7 +658,7 @@ void MeshTest::testWriteObjFile()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "objTestMesh.obj";
 
     const ::fwVtkIO::ObjMeshWriter::sptr writer = ::fwVtkIO::ObjMeshWriter::New();
@@ -682,7 +682,7 @@ void MeshTest::testWritePlyFile()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "plyTestMesh.ply";
 
     const ::fwVtkIO::PlyMeshWriter::sptr writer = ::fwVtkIO::PlyMeshWriter::New();
@@ -706,7 +706,7 @@ void MeshTest::testWriteStlFile()
 
     mesh1->adjustAllocatedMemory();
 
-    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder() /
                                            "stlTestMesh.stl";
 
     const ::fwVtkIO::StlMeshWriter::sptr writer = ::fwVtkIO::StlMeshWriter::New();

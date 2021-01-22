@@ -24,9 +24,8 @@
 
 #include "fwJobs/config.hpp"
 
+#include <core/com/Signal.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwCom/Signal.hpp>
 
 #include <cstdint>
 #include <functional>
@@ -109,16 +108,16 @@ public:
     typedef std::vector< std::string > Logs;
 
     /// State signal type
-    typedef ::fwCom::Signal< void () > StateSignal;
+    typedef core::com::Signal< void () > StateSignal;
 
     /// Cancel request signal type
-    typedef ::fwCom::Signal< void () > CancelRequestedSignal;
+    typedef core::com::Signal< void () > CancelRequestedSignal;
 
     /// Done work signal type
-    typedef ::fwCom::Signal< void (std::uint64_t, std::uint64_t) > DoneWorkSignal;
+    typedef core::com::Signal< void (std::uint64_t, std::uint64_t) > DoneWorkSignal;
 
     /// Log signal type
-    typedef ::fwCom::Signal< void (std::string) > LogSignal;
+    typedef core::com::Signal< void (std::string) > LogSignal;
 
     /// Future type
     typedef std::shared_future< void > SharedFuture;

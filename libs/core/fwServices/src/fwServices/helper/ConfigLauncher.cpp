@@ -24,11 +24,11 @@
 
 #include <fwServices/macros.hpp>
 
+#include <core/tools/fwID.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 

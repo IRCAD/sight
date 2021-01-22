@@ -28,14 +28,13 @@
 #include "inr2itk/itkInrImageIOFactory.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/IntrinsicTypes.hpp>
+#include <core/tools/TypeInfoKeyTypeMapping.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/TypeInfoKeyTypeMapping.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageIOFactory.h>
@@ -78,7 +77,7 @@ struct ITKLoaderFunctor
     void operator()(Parameter& param)
     {
         SLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
-                  ::fwTools::Type::create<PIXELTYPE>().string());
+                  core::tools::Type::create<PIXELTYPE>().string());
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -143,12 +142,13 @@ void ImageReader::read()
     param.m_dataImage = this->getConcreteObject();
     param.m_fwReader  = this->getSptr();
 
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
+    core::tools::Dispatcher< core::tools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
     SLM_ASSERT("::fwData::Image is not well produced", m_object.lock() ); // verify that ::fwData::Image is well
                                                                           // produced
     // Post Condition image with a pixel type
-    SLM_ASSERT("Image has an unspecified type", getConcreteObject()->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE );
+    SLM_ASSERT("Image has an unspecified type",
+               getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------

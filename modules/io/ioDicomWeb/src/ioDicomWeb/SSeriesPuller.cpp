@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,11 @@
 
 #include "ioDicomWeb/SSeriesPuller.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/System.hpp>
 
 #include <fwData/Vector.hpp>
 
@@ -45,8 +46,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -96,7 +95,7 @@ void SSeriesPuller::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("'server' element not found");
+        throw core::tools::Failed("'server' element not found");
     }
 
 }

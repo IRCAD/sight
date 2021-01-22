@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <uiVisuOgre/helper/ParameterEditor.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
@@ -45,9 +45,9 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor)
 
-const ::fwCom::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
+const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 
 //------------------------------------------------------------------------------
 SCompositorParameterEditor::SCompositorParameterEditor() noexcept

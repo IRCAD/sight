@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,10 +53,10 @@ class GUIQT_CLASS_API SSignalShortcut : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SSignalShortcut, ::fwServices::IService);
+    fwCoreServiceMacro(SSignalShortcut, ::fwServices::IService)
 
     /// Signal emitted when the shortcut is received.
-    typedef ::fwCom::Signal< void () > ActivatedShortcutSignalType;
+    typedef core::com::Signal< void () > ActivatedShortcutSignalType;
 
     /// Constructor. Do nothing.
     GUIQT_API SSignalShortcut() noexcept;

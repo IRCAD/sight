@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Tuto05MultithreadConsoleCpp/SReadArray.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -70,7 +70,7 @@ void SReadArray::updating()
     // Initialize the array size and type.
     const int arraySize = 10;
     ::fwData::Array::SizeType size(1, arraySize);
-    array->resize(size, ::fwTools::Type::s_UINT32);
+    array->resize(size, core::tools::Type::s_UINT32);
 
     // Fill the array values.
     const auto dumpLock = array->lock();

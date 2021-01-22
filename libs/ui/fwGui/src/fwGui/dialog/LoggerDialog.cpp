@@ -22,8 +22,8 @@
 
 #include "fwGui/dialog/LoggerDialog.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-#include <core/include/core/thread/Worker.hxx>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 

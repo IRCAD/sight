@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMesh.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>

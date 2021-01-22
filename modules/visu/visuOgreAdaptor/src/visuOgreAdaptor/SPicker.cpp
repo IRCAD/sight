@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "visuOgreAdaptor/SPicker.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG = "picked";
+static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
 static const std::string s_PRIORITY_CONFIG              = "priority";
 static const std::string s_QUERY_MASK_CONFIG            = "queryMask";

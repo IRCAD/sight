@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "ioDicomWeb/SSeriesPusher.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Vector.hpp>
 
@@ -78,7 +78,7 @@ void SSeriesPusher::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("'server' element not found");
+        throw core::tools::Failed("'server' element not found");
     }
 }
 
@@ -164,8 +164,8 @@ void SSeriesPusher::pushSeries()
         {
             for(const auto& item : dicomContainer)
             {
-                const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-                const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+                const core::memory::BufferObject::sptr bufferObj = item.second;
+                const core::memory::BufferObject::Lock lockerDest(bufferObj);
                 const char* buffer = static_cast<char*>(lockerDest.getBuffer());
                 const size_t size  = bufferObj->getSize();
 

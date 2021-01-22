@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,12 @@
 
 #include "uiPreferences/config.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/String.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -152,8 +151,8 @@ protected:
 private:
 
     /// Type of signal when parameters are updated.
-    typedef ::fwCom::Signal< void () > ParametersModifiedSignalType;
-    UIPREFERENCES_API static const ::fwCom::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
+    typedef core::com::Signal< void () > ParametersModifiedSignalType;
+    UIPREFERENCES_API static const core::com::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
 
     enum class PreferenceType : std::int8_t
     {

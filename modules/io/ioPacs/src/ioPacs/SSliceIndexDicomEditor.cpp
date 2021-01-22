@@ -22,7 +22,8 @@
 
 #include "ioPacs/SSliceIndexDicomEditor.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/System.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -38,8 +39,6 @@
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
 #include <fwServices/registry/ServiceConfig.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <QHBoxLayout>
 
@@ -289,7 +288,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             }
 
             // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmpPath      = ::fwTools::System::getTemporaryFolder() / "dicom/";
+            std::filesystem::path tmpPath      = core::tools::System::getTemporaryFolder() / "dicom/";
             std::filesystem::path downloadPath = tmpPath.string() + seriesInstanceUID + "/" + sopInstanceUID;
             dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
@@ -342,13 +341,13 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
     const auto& binaries = _dicomSeries->getDicomContainer();
     auto iter            = binaries.find(_selectedSliceIndex);
     SLM_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
-    const ::fwMemory::BufferObject::sptr bufferObj = iter->second;
-    const ::fwMemory::BufferObject::Lock lockerDest(bufferObj);
+    const core::memory::BufferObject::sptr bufferObj = iter->second;
+    const core::memory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer      = static_cast<char*>(lockerDest.getBuffer());
     const size_t bufferSize = bufferObj->getSize();
 
     // Creates unique temporary folder to save the DICOM instance.
-    std::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("dicom");
+    std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("dicom");
     std::filesystem::create_directories(tmpPath);
 
     // Open the temporary folder and write the buffer.

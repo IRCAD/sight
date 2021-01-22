@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,8 +76,8 @@ void ImagePropertiesTest::propertiesTest()
     {
         ::fwData::Image::sptr img1 = ::fwData::Image::New();
         ::fwData::Image::sptr img2 = ::fwData::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
-        ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create<std::uint8_t>());
+        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+        ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
 
         ::fwData::Vector::sptr vector = ::fwData::Vector::New();
         vector->getContainer().push_back(img1);
@@ -100,7 +100,7 @@ void ImagePropertiesTest::propertiesTest()
         ::fwData::Image::sptr img1 = ::fwData::Image::New();
         ::fwData::Image::sptr img2 = ::fwData::Image::New();
 
-        ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
+        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
 
         ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
                                                   img1->getOrigin2(), img1->getType(),

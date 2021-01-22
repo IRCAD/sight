@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -159,7 +159,7 @@ protected:
     GUI_API virtual void stopping() override;
 
 private:
-    typedef ::fwTools::fwID::IDType IDSrvType;
+    typedef core::tools::fwID::IDType IDSrvType;
     typedef std::pair< IDSrvType, ActionType > PairIDActionType;
     typedef std::vector<PairIDActionType> VectPairIDActionType;
     typedef std::set<IDSrvType> SetIDSrvType;

@@ -25,11 +25,11 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwCom/Connection.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Connection.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/registry/macros.hpp>
@@ -105,7 +105,7 @@ void SReaderTest::updating()
     sig = buff->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
 
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -113,7 +113,7 @@ void SReaderTest::updating()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SShowTest::s_CHANGE_SLOT = "change";
+const core::com::Slots::SlotKeyType SShowTest::s_CHANGE_SLOT = "change";
 
 //------------------------------------------------------------------------------
 
@@ -121,8 +121,8 @@ SShowTest::SShowTest() :
     m_receiveCount(0),
     m_changeCount(0)
 {
-    m_slotChange = ::fwCom::newSlot( &SShowTest::change, this );
-    ::fwCom::HasSlots::m_slots( s_CHANGE_SLOT, m_slotChange );
+    m_slotChange = core::com::newSlot( &SShowTest::change, this );
+    core::com::HasSlots::m_slots( s_CHANGE_SLOT, m_slotChange );
 }
 
 //------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ void SShowTest::change()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SReader2Test::s_CHANGED_SIG = "changed";
+const core::com::Signals::SignalKeyType SReader2Test::s_CHANGED_SIG = "changed";
 
 //------------------------------------------------------------------------------
 
@@ -163,7 +163,7 @@ SReader2Test::SReader2Test()
 {
     m_sigChanged = ChangedSignalType::New();
     // Register
-    ::fwCom::HasSignals::m_signals( s_CHANGED_SIG,  m_sigChanged);
+    core::com::HasSignals::m_signals( s_CHANGED_SIG,  m_sigChanged);
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ void SReader2Test::updating()
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SShow2Test::s_UPDATE_BUFFER_SLOT = "updateBuffer";
+const core::com::Slots::SlotKeyType SShow2Test::s_UPDATE_BUFFER_SLOT = "updateBuffer";
 
 //------------------------------------------------------------------------------
 
@@ -199,7 +199,7 @@ void SShow2Test::updating()
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_BUFFER_SLOT)));
+        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_BUFFER_SLOT)));
         sig->asyncEmit();
     }
 }

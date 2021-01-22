@@ -3,7 +3,6 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     fwDicomIOFilter
-    fwTools
     core
     fwTest
     fwMath

@@ -24,8 +24,8 @@
 
 #include "fwServices/config.hpp"
 
-#include <core/include/core/thread/ActiveWorkers.hpp>
 #include <core/mt/types.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 namespace fwServices
 {

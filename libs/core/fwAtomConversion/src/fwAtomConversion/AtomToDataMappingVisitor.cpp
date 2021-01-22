@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,9 @@
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 #include "fwAtomConversion/mapper/Base.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/reflection/factory/new.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -35,11 +38,7 @@
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Sequence.hpp>
 
-#include <fwCamp/factory/new.hpp>
-
 #include <fwData/Object.hpp>
-
-#include <fwMemory/BufferObject.hpp>
 
 namespace fwAtomConversion
 {
@@ -271,7 +270,7 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
             case ::fwAtoms::Base::BLOB:
             {
                 ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(atom);
-                ::fwMemory::BufferObject::sptr buffer;
+                core::memory::BufferObject::sptr buffer;
                 buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
                 FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
                                            "A blob cannot contain a null buffer pointer"),
@@ -472,7 +471,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
                 case ::fwAtoms::Base::BLOB:
                 {
                     ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(elemAtom.second);
-                    ::fwMemory::BufferObject::sptr buffer;
+                    core::memory::BufferObject::sptr buffer;
                     buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
                     FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
                                                "A blob cannot contain a null buffer pointer"),

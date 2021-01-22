@@ -24,7 +24,7 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
+#include <core/thread/Timer.hpp>
 
 #include <fwServices/IService.hpp>
 

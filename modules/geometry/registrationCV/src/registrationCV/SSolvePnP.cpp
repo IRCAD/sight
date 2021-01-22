@@ -26,10 +26,10 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <core/com/Signal.hxx>
+
 #include <cvIO/Camera.hpp>
 #include <cvIO/Matrix.hpp>
-
-#include <fwCom/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>

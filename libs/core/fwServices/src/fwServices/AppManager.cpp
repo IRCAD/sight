@@ -27,13 +27,13 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 namespace fwServices
 {
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
+static const core::com::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
+static const core::com::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
 
 size_t AppManager::s_counter = 0;
 
@@ -72,7 +72,7 @@ void AppManager::create()
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
 
     auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
-    ::fwCom::HasSlots::m_slots.setWorker( defaultWorker );
+    core::com::HasSlots::m_slots.setWorker( defaultWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ bool AppManager::checkInputs()
         {
             case InputType::OBJECT:
             {
-                const auto obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(input.value));
+                const auto obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(input.value));
                 if (obj)
                 {
                     this->addObject(obj, input.value);

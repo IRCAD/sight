@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ const void* Array::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
+void Array::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocationPolicy::sptr policy)
 {
     if(m_array->getIsBufferOwner())
     {
@@ -71,8 +71,8 @@ void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
     }
     else
     {
-        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
-        ::fwMemory::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
+        core::memory::BufferObject::sptr newBufferObject = core::memory::BufferObject::New();
+        core::memory::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }
     m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes(), policy);
@@ -84,10 +84,10 @@ void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
 void Array::setBuffer(
     void* buf,
     bool takeOwnership,
-    const ::fwTools::Type& type,
+    const core::tools::Type& type,
     const ::fwData::Array::SizeType& size,
     size_t nbOfComponents,
-    ::fwMemory::BufferAllocationPolicy::sptr policy)
+    core::memory::BufferAllocationPolicy::sptr policy)
 {
     m_array->resize( type, size, nbOfComponents, false);
     this->setBuffer(buf, takeOwnership, policy);
@@ -191,7 +191,7 @@ void Array::getItem(const ::fwData::Array::IndexType& id, const size_t component
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::Lock Array::getLock() const
+core::memory::BufferObject::Lock Array::getLock() const
 {
     return m_lock;
 }

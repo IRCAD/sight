@@ -22,9 +22,9 @@
 
 #include "TaskHandlerTest.hpp"
 
-#include <core/include/core/thread/TaskHandler.hpp>
-#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
+#include <core/thread/TaskHandler.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <exception>
 #include <iostream>

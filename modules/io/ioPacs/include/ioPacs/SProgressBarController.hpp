@@ -24,9 +24,8 @@
 
 #include "ioPacs/config.hpp"
 
+#include <core/com/Slot.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwCom/Slot.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 

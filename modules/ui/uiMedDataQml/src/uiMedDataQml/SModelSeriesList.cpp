@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiMedDataQml/SModelSeriesList.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -34,8 +34,8 @@
 namespace uiMedDataQml
 {
 
-const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
+const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+const core::com::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 
 const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 

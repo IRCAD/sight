@@ -24,29 +24,29 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 namespace arServices
 {
 
-const ::fwCom::Signals::SignalKeyType IGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
-const ::fwCom::Signals::SignalKeyType IGrabber::s_DURATION_MODIFIED_SIG = "durationModified";
+const core::com::Signals::SignalKeyType IGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
+const core::com::Signals::SignalKeyType IGrabber::s_DURATION_MODIFIED_SIG = "durationModified";
 
-const ::fwCom::Signals::SignalKeyType IGrabber::s_CAMERA_STARTED_SIG = "cameraStarted";
-const ::fwCom::Signals::SignalKeyType IGrabber::s_CAMERA_STOPPED_SIG = "cameraStopped";
+const core::com::Signals::SignalKeyType IGrabber::s_CAMERA_STARTED_SIG = "cameraStarted";
+const core::com::Signals::SignalKeyType IGrabber::s_CAMERA_STOPPED_SIG = "cameraStopped";
 
-const ::fwCom::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "framePresented";
+const core::com::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "framePresented";
 
-const ::fwCom::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_PLAY_PAUSE_CAMERA_SLOT  = "playPauseCamera";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
-const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
+const core::com::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
+const core::com::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
+const core::com::Slots::SlotKeyType IGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
+const core::com::Slots::SlotKeyType IGrabber::s_PLAY_PAUSE_CAMERA_SLOT  = "playPauseCamera";
+const core::com::Slots::SlotKeyType IGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
+const core::com::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
+const core::com::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
+const core::com::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
+const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
 
 const ::fwServices::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
 const ::fwServices::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";

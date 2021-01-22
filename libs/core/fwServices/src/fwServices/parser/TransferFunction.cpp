@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ void TransferFunction::updating( )
 
 // ------------------------------------------------------------------------------
 
-void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
+void TransferFunction::createConfig( core::tools::Object::sptr _obj )
 {
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast( _obj );
     SLM_ASSERT("TransferFunction not instanced", tf);

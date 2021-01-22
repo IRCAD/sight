@@ -22,9 +22,8 @@
 
 #include "ExTimeLine/SConsumer.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
+#include <core/thread/Timer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -39,7 +38,7 @@ namespace ExTimeLine
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume";
+const core::com::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume";
 
 //------------------------------------------------------------------------------
 

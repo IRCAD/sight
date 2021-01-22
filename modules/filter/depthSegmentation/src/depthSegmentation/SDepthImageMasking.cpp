@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "depthSegmentation/SDepthImageMasking.hpp"
 
-#include <cvIO/Image.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <cvIO/Image.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -37,8 +37,8 @@
 namespace depthSegmentation
 {
 
-static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
-static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
+static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
+static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
 
 static const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
 static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
@@ -140,8 +140,8 @@ void SDepthImageMasking::setBackground()
 {
     const ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
     const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
-    if(maskImage && depthImage && (maskImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE) &&
-       (depthImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE))
+    if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE) &&
+       (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
     {
         ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
         ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);

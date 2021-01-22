@@ -23,9 +23,8 @@
 #include "guiQt/editor/SListView.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -41,12 +40,12 @@ namespace editor
 {
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SListView )
 
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
+const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
+const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
+const core::com::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
 
-const ::fwCom::Slots::SlotKeyType SListView::s_INSERT_ITEM_SLOT = "insertItem";
-const ::fwCom::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem";
+const core::com::Slots::SlotKeyType SListView::s_INSERT_ITEM_SLOT = "insertItem";
+const core::com::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem";
 
 //------------------------------------------------------------------------------
 

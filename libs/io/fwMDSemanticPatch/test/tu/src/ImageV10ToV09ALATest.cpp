@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include <fwMDSemanticPatch/V10/V09ALA/fwData/Image.hpp>
 
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -37,8 +39,6 @@
 #include <fwAtomsPatch/helper/Object.hpp>
 
 #include <fwTest/Exception.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -160,7 +160,7 @@ void ImageV10ToV09ALATest::addPoint(::fwAtoms::Map::sptr map, const std::array<d
                                     const std::string& label)
 {
     ::fwAtoms::Object::sptr atomGroup = ::fwAtoms::Object::New();
-    atomGroup->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+    atomGroup->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
     atomGroup->setAttribute("color", ::fwAtoms::String::New("1;1;1;1"));
     atomGroup->setAttribute("size", ::fwAtoms::Numeric::New(1));

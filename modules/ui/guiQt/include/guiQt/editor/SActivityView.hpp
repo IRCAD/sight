@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "guiQt/config.hpp"
 
+#include <core/tools/Failed.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
@@ -31,8 +33,6 @@
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
-
-#include <fwTools/Failed.hpp>
 
 namespace guiQt
 {
@@ -95,7 +95,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef ::fwCom::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
     /**
      * @}
      */

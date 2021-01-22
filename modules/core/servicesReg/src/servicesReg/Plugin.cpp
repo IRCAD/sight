@@ -22,7 +22,7 @@
 
 #include "servicesReg/Plugin.hpp"
 
-#include <core/include/core/thread/Pool.hpp>
+#include <core/thread/Pool.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 

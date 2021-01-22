@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "fwServices/config.hpp"
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/tools/Failed.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwTools/Failed.hpp>
-#include <fwTools/Object.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -56,7 +56,7 @@ public:
     {
     }
 
-    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void createConfig( core::tools::Object::sptr _obj ) override;
 protected:
 
     /**

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "scene2D/adaptor/SSquare.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -34,7 +34,7 @@ namespace scene2D
 {
 namespace adaptor
 {
-const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const core::com::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
 SSquare::SSquare() noexcept

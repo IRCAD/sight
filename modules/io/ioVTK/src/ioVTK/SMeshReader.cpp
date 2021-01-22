@@ -23,10 +23,9 @@
 #include "ioVTK/SMeshReader.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -53,7 +52,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::fwData::Mesh )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -179,8 +178,8 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ vtkFile.extension().string() +
-                                             "' is not managed by ::ioVTK::SMeshReader."));
+        FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ vtkFile.extension().string() +
+                                               "' is not managed by ::ioVTK::SMeshReader."));
     }
 
     m_sigJobCreated->emit(meshReader->getJob());
@@ -191,7 +190,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     {
         meshReader->read();
     }
-    catch(::fwTools::Failed& e)
+    catch(core::tools::Failed& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -254,7 +253,7 @@ void SMeshReader::notificationOfUpdate()
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = meshLockedPtr.get_shared()->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

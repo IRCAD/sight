@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
-#include <fwMemory/BufferObject.hpp>
-#include <fwMemory/IBuffered.hpp>
-
-#include <fwTools/Type.hpp>
+#include <core/memory/BufferObject.hpp>
+#include <core/memory/IBuffered.hpp>
+#include <core/tools/Type.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Array));
 
@@ -58,8 +57,8 @@ namespace fwData
  * memory.
  *
  * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
- * use setType(const ::fwTools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
- * resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate).
+ * use setType(const core::tools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
+ * resize(const SizeType& size, const core::tools::Type& type, bool reallocate).
  *
  * @section Access Buffer access
  *
@@ -116,7 +115,7 @@ namespace fwData
 /**
  * @code{.cpp}
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
+    array->resize({1920, 1080}, core::tools::Type::s_INT16);
     auto iter          = array->begin<std::int16_t>();
     const auto iterEnd = array->end<std::int16_t>();
 
@@ -148,7 +147,7 @@ namespace fwData
  */
 /* *INDENT-ON* */
 class FWDATA_CLASS_API Array : public ::fwData::Object,
-                               public ::fwMemory::IBuffered
+                               public core::memory::IBuffered
 {
 public:
 
@@ -280,14 +279,14 @@ public:
      * @param type new array type
      */
     FWDATA_API virtual void setType(const std::string& type);
-    FWDATA_API virtual void setType(const ::fwTools::Type& type);
+    FWDATA_API virtual void setType(const core::tools::Type& type);
     /// @}
     /**
      * @brief Getter for array's type
      *
      * @return Type of array
      */
-    FWDATA_API virtual ::fwTools::Type getType() const;
+    FWDATA_API virtual core::tools::Type getType() const;
 
     /**
      * @brief Compute offset in buffer
@@ -313,10 +312,10 @@ public:
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t sizeOfType );
 
     /// Return buffer object
-    ::fwMemory::BufferObject::sptr getBufferObject() const;
+    core::memory::BufferObject::sptr getBufferObject() const;
 
     /// Set buffer object
-    void setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj);
+    void setBufferObject (const core::memory::BufferObject::sptr& bufferObj);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -408,7 +407,7 @@ public:
         /// allow to create a ConstIterator from an Iterator
         friend class IteratorBase<TYPE, true>;
 
-        ::fwMemory::BufferObject::Lock m_lock;
+        core::memory::BufferObject::Lock m_lock;
         pointer m_pointer{nullptr};
         difference_type m_idx{0};
         difference_type m_numberOfElements{0};
@@ -438,18 +437,18 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = true);
+    FWDATA_API size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
 
     /**
      * @brief Return a lock on the array to prevent from dumping the buffer on the disk.
      *
      * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
-     * the buffer is restored from the disk if it was dumped and as long as the ::fwMemory::BufferObject::Lock is
+     * the buffer is restored from the disk if it was dumped and as long as the core::memory::BufferObject::Lock is
      * maintained, the buffer will not be dumped.
      *
      * An exception will be raised  if you try to access while the array is not locked.
      */
-    [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+    [[nodiscard]] FWDATA_API core::memory::BufferObject::Lock lock() const;
 
     /**
      * @brief Get the value of an element
@@ -530,8 +529,8 @@ public:
         void* buf,
         bool takeOwnership,
         const ::fwData::Array::SizeType& size,
-        const ::fwTools::Type& type,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        const core::tools::Type& type,
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     /**
@@ -568,7 +567,7 @@ public:
      * Example :
      * @code{.cpp}
         ::fwData::Array::sptr array = ::fwData::Array::New();
-        array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
+        array->resize({1920, 1080}, core::tools::Type::s_INT16);
         auto iter          = array->begin<std::int16_t>();
         const auto iterEnd = array->end<std::int16_t>();
 
@@ -612,29 +611,29 @@ public:
      *
      * @return return the size of the array view
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false).
+     * removed in sight 22.0. Use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false).
      *
      * @throw ::fwData::Exception
      */
     [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false)")]]
-    FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size,
+                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false)")]]
+    FWDATA_API virtual size_t resize(const core::tools::Type& type, const SizeType& size,
                                      size_t nbOfComponents,
                                      bool reallocate = false);
 
     /**
      * @brief  Aliases to the resize method
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false).
+     * removed in sight 22.0. Use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false).
      * @{
      */
     [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false) ")]]
+                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false) ")]]
     FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size,
                                      size_t nbOfComponents,
                                      bool reallocate = false);
     [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false)")]]
+                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false)")]]
     FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents,
                                      bool reallocate = false);
     /// @}
@@ -643,7 +642,7 @@ public:
      * @brief  Temporary method to resize an image's array.
      * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Image
      */
-    FWDATA_API virtual size_t resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents);
+    FWDATA_API virtual size_t resizeTMP(const core::tools::Type& type, const SizeType& size, size_t nbOfComponents);
 
     /**
      * @brief  Temporary method to resize a mesh's array.
@@ -685,8 +684,8 @@ protected:
      */
     FWDATA_API void setBuffer(
         void* buf,
-        bool takeOwnership                              = false,
-        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        bool takeOwnership                                = false,
+        core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
     // To allow locked_ptr to access protected lockBuffer()
@@ -698,7 +697,7 @@ protected:
      *
      * This is needed for IBuffered interface implementation
      */
-    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
+    FWDATA_API void lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const override;
 
     /**
      * @brief Compute strides for given parameters
@@ -739,8 +738,8 @@ protected:
 private:
 
     OffsetType m_strides;
-    ::fwTools::Type m_type;
-    ::fwMemory::BufferObject::sptr m_bufferObject;
+    core::tools::Type m_type;
+    core::memory::BufferObject::sptr m_bufferObject;
     SizeType m_size;
     size_t m_nbOfComponents;
     bool m_isBufferOwner;
@@ -749,14 +748,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline ::fwMemory::BufferObject::sptr Array::getBufferObject () const
+inline core::memory::BufferObject::sptr Array::getBufferObject () const
 {
     return m_bufferObject;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj)
+inline void Array::setBufferObject (const core::memory::BufferObject::sptr& bufferObj)
 {
     m_bufferObject = bufferObj;
 }

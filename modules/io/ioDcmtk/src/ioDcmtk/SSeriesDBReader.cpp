@@ -23,10 +23,10 @@
 #include "ioDcmtk/SSeriesDBReader.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+#include <core/tools/ProgressToLogger.hpp>
 
 #include <fwData/String.hpp>
 
@@ -44,8 +44,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
-
-#include <fwTools/ProgressToLogger.hpp>
 
 namespace ioDcmtk
 {

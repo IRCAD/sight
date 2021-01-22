@@ -25,7 +25,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
+#include <core/thread/Timer.hpp>
 
 namespace fwRenderOgre::interactor
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ public:
     UIACTIVITIESQML_API virtual ~SActivityView() override;
 
     /// Signal emited when the activity is launched
-    typedef ::fwCom::Signal< void () > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void () > ActivityLaunchedSignalType;
 
 Q_SIGNALS:
     void launchRequested(QUrl path, QVariantMap replace);

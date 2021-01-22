@@ -29,9 +29,8 @@
 #include <arServices/ISynchronizer.hpp>
 
 #include <core/base.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -60,8 +59,8 @@ public:
     }
 
     /// Slot definition
-    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MATRIX_SLOT;
-    typedef ::fwCom::Slot<void (core::HiResClock::HiResClockType)> UpdateMatrixSlotType;
+    VIDEOTOOLS_API static const core::com::Slots::SlotKeyType s_UPDATE_MATRIX_SLOT;
+    typedef core::com::Slot<void (core::HiResClock::HiResClockType)> UpdateMatrixSlotType;
 
 protected:
     /**

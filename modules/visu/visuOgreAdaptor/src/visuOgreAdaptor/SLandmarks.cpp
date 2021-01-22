@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Landmarks.hpp>
 
@@ -40,16 +40,16 @@ namespace visuOgreAdaptor
 static const std::string s_LANDMARKS_INPUT = "landmarks";
 static const std::string s_IMAGE_INPUT     = "image";
 
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const ::fwCom::Slots::SlotKeyType s_INSERT_POINT_SLOT     = "insertPoint";
-static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const ::fwCom::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const ::fwCom::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
-static const ::fwCom::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
-static const ::fwCom::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
+static const core::com::Slots::SlotKeyType s_INSERT_POINT_SLOT     = "insertPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
+static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
 
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
 static const std::string s_FONT_SOURCE_CONFIG = "fontSource";

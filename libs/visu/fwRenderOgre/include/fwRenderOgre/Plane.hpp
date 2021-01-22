@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,9 @@
 
 #pragma once
 
+#include "core/tools/fwID.hpp"
+
 #include "fwRenderOgre/config.hpp"
-
-#include "fwTools/fwID.hpp"
-
 #include <fwRenderOgre/TransferFunction.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
@@ -77,7 +76,7 @@ public:
      * @param _filtering filtering method used to apply the texture.
      * @param _entityOpacity opacity of the entity.
      */
-    FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
+    FWRENDEROGRE_API Plane(const core::tools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
                            ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
                            FilteringEnumType _filtering, float _entityOpacity = 1.0f, bool _displayBorder = true);
 

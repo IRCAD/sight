@@ -22,10 +22,10 @@
 
 #include "videoOpenCV/SVideoWriter.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -44,9 +44,9 @@ namespace videoOpenCV
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::arData::FrameTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
-static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
-static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
+static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
+static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 
 const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
 const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
@@ -279,15 +279,15 @@ void SVideoWriter::startRecord()
     {
         auto frameTL = this->getLockedInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
 
-        if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
+        if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
+        else if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if (frameTL->getType() == ::fwTools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
+        else if (frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }

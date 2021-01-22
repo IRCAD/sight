@@ -37,7 +37,7 @@ namespace fwAtomConversion
 
 ::fwData::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid, const std::string& classname) const
 {
-    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::UUID::get(uuid));
+    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::UUID::get(uuid));
 
     FW_RAISE_EXCEPTION_IF(
         exception::ClassnameMismatch("Loaded object classname (" + classname
@@ -61,7 +61,7 @@ namespace fwAtomConversion
             , !obj
             );
 
-        bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
+        bool uuidIsSet = core::tools::UUID::set(obj, uuid);
 
         SLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
     }
@@ -90,7 +90,7 @@ namespace fwAtomConversion
         , !obj
         );
 
-    ::fwTools::UUID::set(obj, uuid);
+    core::tools::UUID::set(obj, uuid);
     return obj;
 }
 
@@ -113,7 +113,7 @@ namespace fwAtomConversion
             std::string("Unable to build '") + classname + "': the data factory may be missing.")
         , !obj
         );
-    const bool uuidIsSet = ::fwTools::UUID::set(obj, uuid);
+    const bool uuidIsSet = core::tools::UUID::set(obj, uuid);
 
     FW_RAISE_EXCEPTION_IF(
         exception::DuplicatedDataUUID(
@@ -149,7 +149,7 @@ void AtomVisitor::visit()
 void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType& metaInfos )
 {
     const DataVisitor::ClassnameType& classname = metaInfos.find( DataVisitor::CLASSNAME_METAINFO )->second;
-    const ::fwTools::UUID::UUIDType& uuid       = metaInfos.find( DataVisitor::ID_METAINFO )->second;
+    const core::tools::UUID::UUIDType& uuid     = metaInfos.find( DataVisitor::ID_METAINFO )->second;
 
     m_dataObj     = m_uuidPolicy(uuid, classname);
     m_cache[uuid] = m_dataObj;

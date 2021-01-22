@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <fwData/String.hpp>
 
@@ -59,7 +59,7 @@ class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::fwGui::editor::IEdi
 
 public:
 
-    fwCoreServiceMacro(SShaderParameterEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SShaderParameterEditor, ::fwGui::editor::IEditor)
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
@@ -106,13 +106,13 @@ private:
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
         ::fwServices::IService::wptr service;
-        ::fwCom::helper::SigSlotConnection connections;
+        core::com::helper::SigSlotConnection connections;
     };
 
     ShaderEditorInfo m_editorInfo;
 
     /// Connection to the material
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
     QVBoxLayout* m_sizer;
 };

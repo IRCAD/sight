@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMTOOLS_IMAGE_HPP__
-#define __FWDICOMTOOLS_IMAGE_HPP__
+#pragma once
 
 #include "fwDicomTools/config.hpp"
 
-#include <fwTools/Type.hpp>
+#include <core/tools/Type.hpp>
 
 #include <stdint.h>
 
@@ -62,7 +61,7 @@ public:
     FWDICOMTOOLS_API virtual ~Image();
 
     /// Find Image Type
-    FWDICOMTOOLS_API ::fwTools::Type findImageTypeFromMinMaxValues() const;
+    FWDICOMTOOLS_API core::tools::Type findImageTypeFromMinMaxValues() const;
 
 protected:
 
@@ -96,6 +95,3 @@ protected:
 };
 
 } //fwDicomTools
-
-
-#endif /* __FWDICOMTOOLS_IMAGE_HPP__ */

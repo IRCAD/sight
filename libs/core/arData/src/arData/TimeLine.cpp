@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "arData/TimeLine.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 namespace arData
 {
 
-const ::fwCom::Signals::SignalKeyType TimeLine::s_OBJECT_PUSHED_SIG  = "objectPushed";
-const ::fwCom::Signals::SignalKeyType TimeLine::s_OBJECT_REMOVED_SIG = "objectRemoved";
-const ::fwCom::Signals::SignalKeyType TimeLine::s_CLEARED_SIG        = "objectCleared";
+const core::com::Signals::SignalKeyType TimeLine::s_OBJECT_PUSHED_SIG  = "objectPushed";
+const core::com::Signals::SignalKeyType TimeLine::s_OBJECT_REMOVED_SIG = "objectRemoved";
+const core::com::Signals::SignalKeyType TimeLine::s_CLEARED_SIG        = "objectCleared";
 
 //------------------------------------------------------------------------------
 
@@ -49,4 +49,3 @@ TimeLine::~TimeLine ()
 //------------------------------------------------------------------------------
 
 } // namespace arData
-

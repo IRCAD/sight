@@ -22,9 +22,8 @@
 #include "fwIO/IWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -32,12 +31,12 @@ namespace fwIO
 {
 
 // Public slot
-const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFolder";
-const ::fwCom::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
+const core::com::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER      = "setFileFolder";
+const core::com::Slots::SlotKeyType IWriter::s_SET_TIMESTAMP_PREFIX = "setTimestampPrefix";
 
 // Private slot
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
-static const ::fwCom::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_WITH_IHM   = "configureWithIHM"; // Deprecated
+static const core::com::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
 
 //-----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ private:
      */
 
     /// store connection from source image to this service.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
     std::string m_sourceImageUid; ///< fwID of the source image;
     std::string m_sourceCompoUid; ///< fwID of the composite containing the source image

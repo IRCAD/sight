@@ -25,10 +25,10 @@
 #include "ioVTK/SImageWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -50,8 +50,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Failed.hpp>
-
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
@@ -61,7 +59,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -158,7 +156,7 @@ void SImageSeriesWriter::updating()
         {
             SImageWriter::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
         }
-        catch(::fwTools::Failed& e)
+        catch(core::tools::Failed& e)
         {
             m_writeFailed = true;
             FW_RAISE_EXCEPTION(e);

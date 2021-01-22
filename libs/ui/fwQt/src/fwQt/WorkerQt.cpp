@@ -24,14 +24,13 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
-#include <core/include/core/thread/Timer.hpp>
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Timer.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/tools/Os.hpp>
 
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwTools/Os.hpp>
 
 #include <QDir>
 #include <QEvent>
@@ -210,7 +209,7 @@ void WorkerQt::init( int& argc, char** argv)
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use our binpkgs. If we use the system libraries, the Qt.conf file
     // of the system should do the job and the following might be useless.
-    std::filesystem::path qt5LibDir           = ::fwTools::os::getSharedLibraryPath("Qt5Core");
+    std::filesystem::path qt5LibDir           = core::tools::os::getSharedLibraryPath("Qt5Core");
     const std::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
 
     QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));

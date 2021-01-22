@@ -22,10 +22,10 @@
 
 #include "ioTimeline/SMatrixWriter.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -44,10 +44,10 @@ namespace ioTimeline
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
-static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
-static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
-static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
+static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
+static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
+static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
+static const core::com::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 

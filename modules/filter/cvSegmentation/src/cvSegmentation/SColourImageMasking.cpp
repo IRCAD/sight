@@ -24,11 +24,11 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -39,13 +39,13 @@ namespace cvSegmentation
 
 fwServicesRegisterMacro( ::fwServices::IOperator, ::cvSegmentation::SColourImageMasking)
 
-const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
-const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT             = "setThreshold";
-const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
-const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
-const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
-const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
+const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
+const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
+const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT             = "setThreshold";
+const core::com::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
+const core::com::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
+const core::com::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 const ::fwServices::IService::KeyType s_MASK_KEY          = "mask";
 const ::fwServices::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
@@ -184,7 +184,7 @@ void SColourImageMasking::updating()
         // one
         auto sig_ = videoTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
             ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
-        ::fwCom::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
 
         // Get the timestamp from the latest video frame
         core::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
@@ -289,7 +289,7 @@ void SColourImageMasking::setBackground()
 
     // Initialize the mask timeline
     auto videoMaskTL = this->getLockedInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
-    videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), ::fwTools::Type::s_UINT8, 4);
+    videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), core::tools::Type::s_UINT8, 4);
 }
 
 // ------------------------------------------------------------------------------

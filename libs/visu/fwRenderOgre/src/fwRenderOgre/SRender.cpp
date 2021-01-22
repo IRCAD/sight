@@ -26,8 +26,8 @@
 #include "fwRenderOgre/registry/Adaptor.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -64,21 +64,21 @@ static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
-const ::fwCom::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fullscreenSet";
+const core::com::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+const core::com::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fullscreenSet";
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
-const ::fwCom::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
-const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
-const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
-const ::fwCom::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
-const ::fwCom::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN            = "enableFullscreen";
+const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
+const core::com::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
+const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
+const core::com::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
+const core::com::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
+const core::com::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN            = "enableFullscreen";
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const core::com::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
+static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 

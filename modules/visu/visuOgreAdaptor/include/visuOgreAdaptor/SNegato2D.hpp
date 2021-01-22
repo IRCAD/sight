@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <core/com/Signal.hpp>
 
 #include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/helper/TransferFunction.hpp>
@@ -191,7 +191,7 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border { true };
 
-    using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
+    using SliceIndexChangedSignalType = core::com::Signal<void()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 

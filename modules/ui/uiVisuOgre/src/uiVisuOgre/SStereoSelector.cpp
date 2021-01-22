@@ -22,7 +22,7 @@
 
 #include "uiVisuOgre/SStereoSelector.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 

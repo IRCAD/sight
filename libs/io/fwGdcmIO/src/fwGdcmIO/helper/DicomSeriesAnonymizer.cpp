@@ -23,6 +23,7 @@
 #include "fwGdcmIO/helper/DicomSeriesAnonymizer.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
@@ -30,8 +31,6 @@
 #include <fwJobs/Observer.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -84,7 +83,7 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     const auto future = m_job->run();
 
     // Create destination directory
-    const std::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("AnonymizedSeries");
+    const std::filesystem::path destPath = core::tools::System::getTemporaryFolder("AnonymizedSeries");
     std::filesystem::create_directories( destPath );
 
     // Write DicomSeries (Copy files)

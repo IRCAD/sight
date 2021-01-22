@@ -23,6 +23,7 @@
 #include "ioGdcm/SSeriesDBWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/ProgressToLogger.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/Vector.hpp>
@@ -44,8 +45,6 @@
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/ProgressToLogger.hpp>
 
 namespace ioGdcm
 {

@@ -60,7 +60,7 @@ namespace ExTimeLine
 class EXTIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 {
 public:
-    EXTIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
+    EXTIMELINE_API static const core::com::Slots::SlotKeyType s_CONSUME_SLOT;
 
     fwCoreServiceMacro(SConsumer, ::fwServices::IService)
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <core/tools/Type.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>

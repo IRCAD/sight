@@ -64,13 +64,13 @@ public:
 
     fwCoreServiceMacro(SFrameUpdater, ::fwServices::IController)
 
-    static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
+    static const core::com::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 
     /// Type of signal m_sigRenderRequested
-    typedef ::fwCom::Signal< void () > RenderRequestedSignalType;
+    typedef core::com::Signal< void () > RenderRequestedSignalType;
 
     /// Key in m_signals map of signal m_sigObjectModified
-    static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
+    static const core::com::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
 
     /// Constructor
     VIDEOTOOLS_API SFrameUpdater() noexcept;

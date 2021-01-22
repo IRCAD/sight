@@ -65,7 +65,7 @@ void SStarter::stopping()
 
     for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
     {
-        bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
+        bool srv_exists = core::tools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
         {
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first );
@@ -96,7 +96,7 @@ void SStarter::updating()
     {
         ActionType action = m_uuidServices.at(i).second;
         IDSrvType uid     = m_uuidServices.at(i).first;
-        bool srv_exists   = ::fwTools::fwID::exist(uid);
+        bool srv_exists   = core::tools::fwID::exist(uid);
 
         // Manage special action
         if ( action == START_IF_EXISTS )

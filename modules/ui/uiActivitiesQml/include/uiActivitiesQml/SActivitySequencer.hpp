@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,8 +107,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef ::fwCom::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
+    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
     /**
      * @}
      */

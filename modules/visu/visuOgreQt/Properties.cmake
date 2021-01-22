@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    fwCom
     fwData
     fwGui
     fwGuiQt

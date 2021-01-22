@@ -26,13 +26,11 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <core/include/core/thread/Timer.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
-#include <fwTools/Failed.hpp>
+#include <core/thread/Timer.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <opencv2/videoio.hpp>
 

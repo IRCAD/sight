@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ void GenericField::updating( )
 
 //------------------------------------------------------------------------------
 
-void GenericField::createConfig( ::fwTools::Object::sptr _obj )
+void GenericField::createConfig( core::tools::Object::sptr _obj )
 {
     ::fwData::GenericFieldBase::sptr field = ::fwData::GenericFieldBase::dynamicCast( _obj );
     SLM_ASSERT("GenericField not instanced", field);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ public:
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */
-    virtual void setObject( ::fwTools::Object::sptr obj ) override
+    virtual void setObject( core::tools::Object::sptr obj ) override
     {
         assert( std::dynamic_pointer_cast< DataType >( obj ) );
         m_object = obj;

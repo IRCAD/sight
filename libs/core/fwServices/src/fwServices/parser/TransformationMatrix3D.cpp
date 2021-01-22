@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ void TransformationMatrix3D::updating( )
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
+void TransformationMatrix3D::createConfig( core::tools::Object::sptr _obj )
 {
     ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast( _obj );
     SLM_ASSERT("matrix not instanced", matrix);

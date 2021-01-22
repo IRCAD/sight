@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,15 +25,14 @@
 
 #include "fwServices/registry/Proxy.hpp"
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/HasSlots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/tools/Object.hpp>
 
 #include <fwData/Object.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <array>
 #include <regex>
@@ -52,22 +51,22 @@ const std::array< std::string, 3 > s_DATA_KEYWORDS = {{ "in", "out", "inout" }};
 //-----------------------------------------------------------------------------
 
 void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
-                                ::fwCom::helper::SigSlotConnection& connections,
-                                const CSPTR(::fwTools::Object)& obj)
+                                core::com::helper::SigSlotConnection& connections,
+                                const CSPTR(core::tools::Object)& obj)
 {
     ConnectionInfo info = parseConnections(connectionCfg, obj);
 
-    ::fwTools::Object::sptr sigSource    = ::fwTools::fwID::getObject(info.m_signal.first);
-    ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
+    core::tools::Object::sptr sigSource    = core::tools::fwID::getObject(info.m_signal.first);
+    core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(sigSource);
 
     SLM_ASSERT("Signal source not found '" + info.m_signal.first + "'", sigSource);
     SLM_ASSERT("invalid signal source '" + info.m_signal.first + "'", hasSignals);
 
     for(SlotInfoType slotInfo : info.m_slots)
     {
-        ::fwTools::Object::sptr slotObj = ::fwTools::fwID::getObject(slotInfo.first);
+        core::tools::Object::sptr slotObj = core::tools::fwID::getObject(slotInfo.first);
         SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", slotObj);
-        ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(slotObj);
+        core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(slotObj);
         SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
         connections.connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
@@ -77,7 +76,7 @@ void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& 
 //-----------------------------------------------------------------------------
 
 Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
-                                                 const CSPTR(::fwTools::Object)& obj)
+                                                 const CSPTR(core::tools::Object)& obj)
 {
     ConnectionInfo info;
 
@@ -210,21 +209,21 @@ void Config::createProxy( const std::string& objectKey,
 
             SLM_ASSERT(src + " configuration is not correct for " + elem->getName(), !uid.empty() && !key.empty());
 
-            ::fwTools::Object::sptr channelObj = ::fwTools::fwID::getObject(uid);
+            core::tools::Object::sptr channelObj = core::tools::fwID::getObject(uid);
 
             if (elem->getName() == "signal")
             {
-                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(channelObj);
+                core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(channelObj);
                 SLM_ASSERT("Can't find the holder of signal '" + key + "'", hasSignals);
-                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                core::com::SignalBase::sptr sig = hasSignals->signal(key);
                 proxy->connect(channel, sig);
                 proxyCnt.addSignalConnection(uid, key);
             }
             else if (elem->getName() == "slot")
             {
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(channelObj);
+                core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(channelObj);
                 SLM_ASSERT("Can't find the holder of slot '" + key + "'", hasSlots);
-                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                core::com::SlotBase::sptr slot = hasSlots->slot(key);
                 proxy->connect(channel, slot);
                 proxyCnt.addSlotConnection(uid, key);
             }
@@ -234,7 +233,7 @@ void Config::createProxy( const std::string& objectKey,
             uid = obj->getID();
             key = src;
             SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
-            ::fwCom::SignalBase::sptr sig = obj->signal(key);
+            core::com::SignalBase::sptr sig = obj->signal(key);
             proxy->connect(channel, sig);
             proxyCnt.addSignalConnection(uid, key);
         }
@@ -257,16 +256,16 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
         {
             for(ProxyConnections::ProxyEltType signalElt :  proxyConnections.m_signals)
             {
-                ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
-                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
+                core::tools::Object::sptr obj          = core::tools::fwID::getObject(signalElt.first);
+                core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(obj);
+                core::com::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
                 proxy->disconnect(proxyConnections.m_channel, sig);
             }
             for(ProxyConnections::ProxyEltType slotElt :  proxyConnections.m_slots)
             {
-                ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
+                core::tools::Object::sptr obj      = core::tools::fwID::getObject(slotElt.first);
+                core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
+                core::com::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
                 proxy->disconnect(proxyConnections.m_channel, slot);
             }
         }

@@ -24,7 +24,7 @@
 
 #include "basicRegistration/config.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <core/com/Slot.hpp>
 
 #include <fwServices/IRegisterer.hpp>
 
@@ -70,7 +70,7 @@ public:
      * @name Slots API
      * @{
      */
-    BASICREGISTRATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE;
+    BASICREGISTRATION_API static const core::com::Slots::SlotKeyType s_CHANGE_MODE;
     ///@}
 
     /**
@@ -78,7 +78,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
     ///@}
 
     BASICREGISTRATION_API SPointListRegistration();

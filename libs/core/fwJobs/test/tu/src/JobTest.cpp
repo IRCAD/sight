@@ -28,8 +28,8 @@
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
 #include <core/spyLog.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <exception>
 #include <functional>

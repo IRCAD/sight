@@ -44,7 +44,7 @@ public:
      * @name Slots API
      * @{
      */
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_REGISTRATION_SLOT;
+    FWSERVICES_API static const core::com::Slots::SlotKeyType s_COMPUTE_REGISTRATION_SLOT;
     ///@}
 
     /**

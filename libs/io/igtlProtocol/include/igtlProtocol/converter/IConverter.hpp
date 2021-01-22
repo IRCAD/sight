@@ -26,10 +26,9 @@
 #include "igtlProtocol/exception/Conversion.hpp"
 
 #include <core/macros.hpp>
+#include <core/tools/Failed.hpp>
 
 #include <fwData/Object.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <igtlMessageBase.h>
 

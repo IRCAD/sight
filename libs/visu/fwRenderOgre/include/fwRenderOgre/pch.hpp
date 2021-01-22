@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,12 +29,12 @@
 #define __FWRENDEROGRE_PCH_HPP__
 
 #ifndef _WIN32
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/HasSlots.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 #endif // _WIN32
 
 #include <fwServices/IService.hpp>

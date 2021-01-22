@@ -53,21 +53,21 @@ Image::~Image()
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Type Image::findImageTypeFromMinMaxValues() const
+core::tools::Type Image::findImageTypeFromMinMaxValues() const
 {
-    ::fwTools::Type result = ::fwTools::Type::s_UNSPECIFIED_TYPE;
+    core::tools::Type result = core::tools::Type::s_UNSPECIFIED_TYPE;
 
     // Bool & Monochrome values
     if(m_bitsAllocated == 1 && m_pixelRepresentation == 0)
     {
-        result = ::fwTools::Type::s_INT8;
+        result = core::tools::Type::s_INT8;
     }
     else
     {
         // Double
         if(m_rescaleSlope != (int) m_rescaleSlope || m_rescaleIntercept != (int) m_rescaleIntercept)
         {
-            result = ::fwTools::Type::s_DOUBLE;
+            result = core::tools::Type::s_DOUBLE;
         }
         else
         {
@@ -82,15 +82,15 @@ Image::~Image()
             {
                 if( max <= std::numeric_limits<uint8_t>::max() )
                 {
-                    result = ::fwTools::Type::s_UINT8;
+                    result = core::tools::Type::s_UINT8;
                 }
                 else if( max <= std::numeric_limits<uint16_t>::max() )
                 {
-                    result = ::fwTools::Type::s_UINT16;
+                    result = core::tools::Type::s_UINT16;
                 }
                 else if( max <= std::numeric_limits<uint32_t>::max() )
                 {
-                    result = ::fwTools::Type::s_UINT32;
+                    result = core::tools::Type::s_UINT32;
                 }
                 else
                 {
@@ -103,15 +103,15 @@ Image::~Image()
 
                 if( max <= std::numeric_limits<int8_t>::max() && min >= std::numeric_limits<int8_t>::min() )
                 {
-                    result = ::fwTools::Type::s_INT8;
+                    result = core::tools::Type::s_INT8;
                 }
                 else if( max <= std::numeric_limits<int16_t>::max() && min >= std::numeric_limits<int16_t>::min() )
                 {
-                    result = ::fwTools::Type::s_INT16;
+                    result = core::tools::Type::s_INT16;
                 }
                 else if( max <= std::numeric_limits<int32_t>::max() && min >= std::numeric_limits<int32_t>::min() )
                 {
-                    result = ::fwTools::Type::s_INT32;
+                    result = core::tools::Type::s_INT32;
                 }
                 else
                 {

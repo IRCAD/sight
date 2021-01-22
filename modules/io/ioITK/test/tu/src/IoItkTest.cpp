@@ -22,7 +22,9 @@
 
 #include "IoItkTest.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -38,9 +40,6 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -97,13 +96,13 @@ void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     imageSeries->setImage(image);
 
     // Create path
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageSeriesJPG";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageSeriesJPG";
     std::filesystem::create_directories(path);
 
     // Create Config
@@ -125,10 +124,10 @@ void IoItkTest::testImageWriterJPG()
 {
     // Create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // Create path
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageJPG";
     std::filesystem::create_directories( path );
 
     // Create Config
@@ -157,14 +156,14 @@ double tolerance(double num)
 void IoItkTest::testSaveLoadInr()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     // inr only support image origin (0,0,0)
     const ::fwData::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
 
     // save image in inr
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
     std::filesystem::create_directories( path.parent_path() );
 
     // Create Config
@@ -206,7 +205,7 @@ void IoItkTest::ImageSeriesInrTest()
 {
     ::fwData::Image::sptr image                = ::fwData::Image::New();
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     imageSeries->setImage(image);
 
@@ -215,7 +214,7 @@ void IoItkTest::ImageSeriesInrTest()
     image->setOrigin2(origin);
 
     // save image in inr
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
     std::filesystem::create_directories( path.parent_path() );
 
     // Create Config

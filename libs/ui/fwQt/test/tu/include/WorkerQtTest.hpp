@@ -23,7 +23,7 @@
 #pragma once
 
 #include <core/base.hpp>
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

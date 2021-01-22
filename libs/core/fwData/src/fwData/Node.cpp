@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,8 @@
  ***********************************************************************/
 
 //FIXME :This needs to be include first for GCC
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 //
 #include "fwData/Node.hpp"
 #include "fwData/registry/macros.hpp"
@@ -34,7 +34,7 @@ fwDataRegisterMacro( ::fwData::Node );
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
+const core::com::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
 
 //------------------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ void Node::shallowCopy(const Object::csptr& _source )
 
     if( other->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
+        core::tools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
         SLM_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->shallowCopy( other->m_object );

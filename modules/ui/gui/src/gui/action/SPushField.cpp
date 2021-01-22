@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "gui/action/SPushField.hpp"
 
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -32,8 +33,6 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTools/fwID.hpp>
-
 namespace gui
 {
 namespace action
@@ -41,7 +40,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
+static const core::com::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
 
 static const std::string s_SOURCE_KEY      = "source";
 static const std::string s_DESTINATION_KEY = "destination";

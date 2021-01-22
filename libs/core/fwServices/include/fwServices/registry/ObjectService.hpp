@@ -25,13 +25,13 @@
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
 
-#include <fwCom/HasSignals.hpp>
+#include <core/com/HasSignals.hpp>
 
 #include <core/LogicStamp.hpp>
 #include <core/mt/types.hpp>
 
-#include <fwTools/Failed.hpp>
-#include <fwTools/Object.hpp>
+#include <core/tools/Failed.hpp>
+#include <core/tools/Object.hpp>
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/multiset_of.hpp>
@@ -60,7 +60,7 @@ namespace registry
  * fwServices/op methods (i.e. add, get,...) should be used instead
  */
 class FWSERVICES_CLASS_API ObjectService : public core::BaseObject,
-                                           public ::fwCom::HasSignals
+                                           public core::com::HasSignals
 {
 public:
 
@@ -86,10 +86,10 @@ public:
      * @{
      */
     /// Type of signal m_sigRenderRequested
-    typedef ::fwCom::Signal< void (::fwData::Object::sptr, const std::string&) > RegisterSignalType;
+    typedef core::com::Signal< void (::fwData::Object::sptr, const std::string&) > RegisterSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_REGISTERED_SIG;
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_UNREGISTERED_SIG;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_REGISTERED_SIG;
+    FWSERVICES_API static const core::com::Signals::SignalKeyType s_UNREGISTERED_SIG;
     ///@}
 
     /// Constructor

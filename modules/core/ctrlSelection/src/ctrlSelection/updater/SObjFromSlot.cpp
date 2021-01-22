@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "ctrlSelection/updater/SObjFromSlot.hpp"
 
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwServices/macros.hpp>
 
@@ -33,8 +33,8 @@ namespace ctrlSelection
 namespace updater
 {
 
-const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_ADD_SLOT    = "add";
-const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_REMOVE_SLOT = "remove";
+const core::com::Slots::SlotKeyType SObjFromSlot::s_ADD_SLOT    = "add";
+const core::com::Slots::SlotKeyType SObjFromSlot::s_REMOVE_SLOT = "remove";
 
 static const std::string s_OBJECT = "object";
 

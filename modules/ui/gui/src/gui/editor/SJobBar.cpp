@@ -22,11 +22,10 @@
 
 #include "gui/editor/SJobBar.hpp"
 
-#include <core/include/core/thread/Worker.hxx>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hxx>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 
@@ -39,9 +38,9 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::gui::editor::SJobBar )
 
-static const ::fwCom::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
-static const ::fwCom::Signals::SignalKeyType STARTED_SIGNAL = "started";
-static const ::fwCom::Signals::SignalKeyType ENDED_SIGNAL   = "ended";
+static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
+static const core::com::Signals::SignalKeyType STARTED_SIGNAL = "started";
+static const core::com::Signals::SignalKeyType ENDED_SIGNAL   = "ended";
 
 //-----------------------------------------------------------------------------
 

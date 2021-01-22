@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "maths/SPointToLandmarkDistance.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Landmarks.hpp>
 #include <fwData/String.hpp>
@@ -40,10 +40,10 @@ namespace maths
 
 fwServicesRegisterMacro( ::fwServices::IService, ::maths::SPointToLandmarkDistance )
 
-static const ::fwCom::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
-const ::fwCom::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
-const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
-const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
+static const core::com::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
+const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
+const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
+const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ void SPointToLandmarkDistance::updating()
         auto sig =
             pointToLandmarkMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

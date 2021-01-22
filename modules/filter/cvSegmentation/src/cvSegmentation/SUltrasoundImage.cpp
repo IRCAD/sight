@@ -24,8 +24,8 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <core/Profiling.hpp>
 
@@ -49,13 +49,13 @@ const ::fwServices::IService::KeyType s_ULTRASOUND_IMAGE_INPUT = "ultrasoundImag
 
 const ::fwServices::IService::KeyType s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT    = "updateIntExtractionParameter";
-const ::fwCom::Slots::SlotKeyType s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT = "updateDoubleExtractionParameter";
-const ::fwCom::Slots::SlotKeyType s_RESET_ECHO_PLANE_SLOT                    = "resetEchoPlane";
-const ::fwCom::Slots::SlotKeyType s_CHANGE_DEBUG_ECHO_PLANE_SLOT             = "changeDebugEchoPlane";
-const ::fwCom::Slots::SlotKeyType s_CHANGE_ECHO_SHAPE_SLOT                   = "changeEchoShape";
+const core::com::Slots::SlotKeyType s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT    = "updateIntExtractionParameter";
+const core::com::Slots::SlotKeyType s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT = "updateDoubleExtractionParameter";
+const core::com::Slots::SlotKeyType s_RESET_ECHO_PLANE_SLOT                    = "resetEchoPlane";
+const core::com::Slots::SlotKeyType s_CHANGE_DEBUG_ECHO_PLANE_SLOT             = "changeDebugEchoPlane";
+const core::com::Slots::SlotKeyType s_CHANGE_ECHO_SHAPE_SLOT                   = "changeEchoShape";
 
-static const ::fwCom::Signals::SignalKeyType s_INTEGER_CHANGED_SIG = "intChanged";
+static const core::com::Signals::SignalKeyType s_INTEGER_CHANGED_SIG = "intChanged";
 
 static const std::string s_THRESHOLD_MIN_CONFIG = "thresholdMin";
 static const std::string s_US_DEPTH_CONFIG      = "USDepth";
@@ -177,13 +177,13 @@ void SUltrasoundImage::updating()
 
     const ::fwData::Image::Size outputSize = {{ m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
-    if(outputImage->getSize2() != outputSize || outputImage->getType() != ::fwTools::Type::s_UINT8 ||
+    if(outputImage->getSize2() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8 ||
        outputImage->getNumberOfComponents() != 1)
     {
         outputImage->setSize2(outputSize);
         outputImage->setSpacing2({{ 1., 1., 0.}});
         outputImage->setOrigin2({{ 0., 0., 0.}});
-        outputImage->setType( ::fwTools::Type::s_UINT8);
+        outputImage->setType( core::tools::Type::s_UINT8);
         outputImage->setNumberOfComponents(1);
         outputImage->resize();
     }

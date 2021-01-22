@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include <fwPreferences/helper.hpp>
 
+#include <core/tools/Os.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Profile.hpp>
-
-#include <fwTools/Os.hpp>
-#include <fwTools/UUID.hpp>
 
 #include <filesystem>
 
@@ -61,11 +61,11 @@ void PreferencesTest::runtimeTest()
 {
     ::fwRuntime::init();
 
-    const std::string profileName = ::fwTools::UUID::generateUUID();
+    const std::string profileName = core::tools::UUID::generateUUID();
     auto profile                  = ::fwRuntime::profile::getCurrentProfile();
     profile->setName(profileName);
 
-    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profileName);
     m_preferencesPath = appPrefDir / "preferences.json";
 
     // Check preference file dir
@@ -82,7 +82,7 @@ void PreferencesTest::helperTest()
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
 
-    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profile->getName());
+    const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profile->getName());
     const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
 
     //Check preference file dir

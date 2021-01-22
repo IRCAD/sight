@@ -5,7 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     fwData
-    fwTools
     )
 set( REQUIREMENTS  )
 

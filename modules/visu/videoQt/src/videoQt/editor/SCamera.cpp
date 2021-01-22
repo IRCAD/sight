@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,9 @@
 
 #include <arPreferences/preferences.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+#include <core/tools/pathDifference.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -47,8 +48,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/pathDifference.hpp>
-
 #include <QByteArray>
 #include <QCamera>
 #include <QHBoxLayout>
@@ -60,14 +59,14 @@ namespace videoQt
 namespace editor
 {
 
-static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
-static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG  = "configuredDevice";
-static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG    = "configuredFile";
-static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG  = "configuredStream";
+static const core::com::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
+static const core::com::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG  = "configuredDevice";
+static const core::com::Signals::SignalKeyType s_CONFIGURED_FILE_SIG    = "configuredFile";
+static const core::com::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG  = "configuredStream";
 
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT = "configureDevice";
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureFile";
-static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT = "configureDevice";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureFile";
+static const core::com::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
 
 static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
 static const ::fwServices::IService::KeyType s_CAMERA_INOUT        = "camera";
@@ -309,7 +308,7 @@ void SCamera::onChooseFile()
             if(std::filesystem::is_directory(videoDirPreferencePath))
             {
                 const std::filesystem::path videoRelativePath
-                    = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
+                    = core::tools::getPathDifference(videoDirPreferencePath, videoPath);
 
                 const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
                 if(std::filesystem::exists(concatenatedPath))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "ctrlSelection/SManage.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Exception.hpp>
@@ -45,13 +45,13 @@
 namespace ctrlSelection
 {
 
-const ::fwCom::Slots::SlotKeyType SManage::s_ADD_SLOT               = "add";
-const ::fwCom::Slots::SlotKeyType SManage::s_ADD_COPY_SLOT          = "addCopy";
-const ::fwCom::Slots::SlotKeyType SManage::s_ADD_OR_SWAP_SLOT       = "addOrSwap";
-const ::fwCom::Slots::SlotKeyType SManage::s_SWAP_OBJ_SLOT          = "swapObj";
-const ::fwCom::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove";
-const ::fwCom::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
-const ::fwCom::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
+const core::com::Slots::SlotKeyType SManage::s_ADD_SLOT               = "add";
+const core::com::Slots::SlotKeyType SManage::s_ADD_COPY_SLOT          = "addCopy";
+const core::com::Slots::SlotKeyType SManage::s_ADD_OR_SWAP_SLOT       = "addOrSwap";
+const core::com::Slots::SlotKeyType SManage::s_SWAP_OBJ_SLOT          = "swapObj";
+const core::com::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove";
+const core::com::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
+const core::com::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
 
 const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
 const ::fwServices::IService::KeyType s_VECTOR_INOUT       = "vector";

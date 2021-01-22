@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SListView, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SListView, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     GUIQT_API SListView() noexcept;
@@ -72,14 +72,14 @@ public:
      * @{
      */
 
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ITEM_ADDED_SIG;
-    typedef ::fwCom::Signal<void (int)> ItemAddedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_ADDED_SIG;
+    typedef core::com::Signal<void (int)> ItemAddedSignalType;
 
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
-    typedef ::fwCom::Signal<void (int)> ItemRemovedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
+    typedef core::com::Signal<void (int)> ItemRemovedSignalType;
 
-    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
-    typedef ::fwCom::Signal<void (int)> ItemDoubleClickedSignalType;
+    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
+    typedef core::com::Signal<void (int)> ItemDoubleClickedSignalType;
 
     /** @} */
 
@@ -88,8 +88,8 @@ public:
      * @{
      */
 
-    GUIQT_API static const ::fwCom::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
-    GUIQT_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
+    GUIQT_API static const core::com::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
+    GUIQT_API static const core::com::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
 
     /// SLOT : Called to insert an item at index.
     void insertItem( int index, std::string value );

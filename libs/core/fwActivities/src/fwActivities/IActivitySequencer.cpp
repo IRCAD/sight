@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,12 @@
 
 #include "fwActivities/IActivitySequencer.hpp"
 
-#include <fwCom/Connection.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Connection.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
 
 namespace fwActivities
 {
@@ -129,7 +128,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
 //------------------------------------------------------------------------------
 
 ::fwMedData::ActivitySeries::sptr IActivitySequencer::getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
-                                                                  size_t index, const ::fwCom::SlotBase::sptr& slot,
+                                                                  size_t index, const core::com::SlotBase::sptr& slot,
                                                                   const ::fwData::Composite::csptr& overrides)
 {
     ::fwMedData::ActivitySeries::sptr activity;
@@ -189,11 +188,11 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         activity = ::fwMedData::ActivitySeries::New();
 
         activity->setModality("OT");
-        activity->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
+        activity->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
 
         const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-        activity->setDate(::fwTools::getDate(now));
-        activity->setTime(::fwTools::getTime(now));
+        activity->setDate(core::tools::getDate(now));
+        activity->setTime(core::tools::getTime(now));
 
         activity->setActivityConfigId(info.id);
         activity->setDescription(info.description);
@@ -237,7 +236,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
                 ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
             if (slot)
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection( slot ));
+                core::com::Connection::Blocker block(sig->getConnection( slot ));
                 helper.notify();
             }
             else

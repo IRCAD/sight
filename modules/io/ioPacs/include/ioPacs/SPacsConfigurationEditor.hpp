@@ -24,7 +24,7 @@
 
 #include "ioPacs/config.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -146,7 +146,7 @@ private:
     bool m_showDialog { true };
 
     /// Contains the slot to show a dialog in the main thread.
-    ::fwCom::Slot< void(const std::string, const std::string) >::sptr m_slotShowDialog { nullptr };
+    core::com::Slot< void(const std::string, const std::string) >::sptr m_slotShowDialog { nullptr };
 
 private Q_SLOTS:
 

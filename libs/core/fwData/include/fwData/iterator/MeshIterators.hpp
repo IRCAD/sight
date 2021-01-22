@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/iterator/ImageIterator.hpp"
 
-#include <fwMemory/BufferObject.hpp>
+#include <core/memory/BufferObject.hpp>
 
 #include <iterator>
 

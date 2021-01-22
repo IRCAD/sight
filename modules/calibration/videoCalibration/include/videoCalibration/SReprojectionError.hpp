@@ -88,12 +88,12 @@ public:
     fwCoreServiceMacro(SReprojectionError, fwServices::IController)
 
     /// Double changed signal type
-    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
 
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_SLOT;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT;
 
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
 
     ///Constructor
     VIDEOCALIBRATION_API SReprojectionError();

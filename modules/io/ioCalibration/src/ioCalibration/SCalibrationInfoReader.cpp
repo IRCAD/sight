@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <cvIO/Image.hpp>
+#include <core/com/Slots.hxx>
 
-#include <fwCom/Slots.hxx>
+#include <cvIO/Image.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -47,7 +47,7 @@
 namespace ioCalibration
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 //------------------------------------------------------------------------------
 

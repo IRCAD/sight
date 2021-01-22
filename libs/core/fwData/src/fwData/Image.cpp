@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hxx>
-
-#include <fwTools/DynamicType.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/DynamicType.hpp>
+#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 
 #include <numeric>
 
@@ -41,17 +40,17 @@ fwDataRegisterMacro( ::fwData::Image );
 namespace fwData
 {
 
-const ::fwCom::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
-const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
-const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
-const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG    = "landmarkDisplayed";
-const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG        = "distanceAdded";
-const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG      = "distanceRemoved";
-const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG    = "distanceDisplayed";
-const ::fwCom::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG  = "sliceIndexModified";
-const ::fwCom::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG   = "sliceTypeModified";
-const ::fwCom::Signals::SignalKeyType Image::s_VISIBILITY_MODIFIED_SIG   = "visibilityModified";
-const ::fwCom::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "transparencyModified";
+const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG    = "landmarkDisplayed";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG        = "distanceAdded";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG      = "distanceRemoved";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG    = "distanceDisplayed";
+const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG  = "sliceIndexModified";
+const core::com::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG   = "sliceTypeModified";
+const core::com::Signals::SignalKeyType Image::s_VISIBILITY_MODIFIED_SIG   = "visibilityModified";
+const core::com::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "transparencyModified";
 
 //------------------------------------------------------------------------------
 
@@ -156,13 +155,13 @@ size_t Image::resize()
 
 //------------------------------------------------------------------------------
 
-size_t Image::resize(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format)
+size_t Image::resize(IndexType x, IndexType y,  IndexType z, const core::tools::Type& type, PixelFormat format)
 {
     return resize({ x, y, z}, type, format);
 }
 //------------------------------------------------------------------------------
 
-size_t Image::resize(const Size& size, const ::fwTools::Type& type, PixelFormat format)
+size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
 {
     m_size        = size;
     m_type        = type;
@@ -190,14 +189,14 @@ size_t Image::resize(const Size& size, const ::fwTools::Type& type, PixelFormat 
 
 //------------------------------------------------------------------------------
 
-::fwTools::Type Image::getType() const
+core::tools::Type Image::getType() const
 {
     return m_type;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setType(::fwTools::Type type)
+void Image::setType(core::tools::Type type)
 {
     m_type = type;
 }
@@ -206,7 +205,7 @@ void Image::setType(::fwTools::Type type)
 
 void Image::setType(const std::string& type)
 {
-    m_type = ::fwTools::Type(type);
+    m_type = core::tools::Type(type);
 }
 
 //------------------------------------------------------------------------------
@@ -274,14 +273,14 @@ size_t Image::getAllocatedSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::Lock Image::lock() const
+core::memory::BufferObject::Lock Image::lock() const
 {
     return m_dataArray->lock();
 }
 
 //------------------------------------------------------------------------------
 
-void Image::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+void Image::lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const
 {
     locks.push_back(this->lock());
 }
@@ -399,9 +398,9 @@ size_t Image::getNumElements() const
 void Image::setBuffer(
     void* buf,
     bool takeOwnership,
-    const ::fwTools::Type& type,
+    const core::tools::Type& type,
     const ::fwData::Image::Size& size,
-    ::fwMemory::BufferAllocationPolicy::sptr policy)
+    core::memory::BufferAllocationPolicy::sptr policy)
 {
     m_type = type;
     m_size = size;
@@ -411,7 +410,7 @@ void Image::setBuffer(
 
 //------------------------------------------------------------------------------
 
-void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
+void Image::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocationPolicy::sptr policy)
 {
     if(m_dataArray->getIsBufferOwner())
     {
@@ -422,8 +421,8 @@ void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
     }
     else
     {
-        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
-        ::fwMemory::BufferObject::sptr oldBufferObject = m_dataArray->getBufferObject();
+        core::memory::BufferObject::sptr newBufferObject = core::memory::BufferObject::New();
+        core::memory::BufferObject::sptr oldBufferObject = m_dataArray->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }
     m_dataArray->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_dataArray->getSizeInBytes(), policy);
@@ -432,25 +431,25 @@ void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::sptr Image::getBufferObject()
+core::memory::BufferObject::sptr Image::getBufferObject()
 {
     return m_dataArray->getBufferObject();
 }
 
 //------------------------------------------------------------------------------
 
-::fwMemory::BufferObject::csptr Image::getBufferObject() const
+core::memory::BufferObject::csptr Image::getBufferObject() const
 {
     return m_dataArray->getBufferObject();
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
+void Image::setIStreamFactory(const SPTR(core::memory::stream::in::IFactory)& factory,
                               const size_t size,
                               const std::filesystem::path& sourceFile,
-                              const ::fwMemory::FileFormatType format,
-                              const ::fwMemory::BufferAllocationPolicy::sptr& policy)
+                              const core::memory::FileFormatType format,
+                              const core::memory::BufferAllocationPolicy::sptr& policy)
 {
     const auto imageDims = this->getNumberOfDimensions();
     ::fwData::Array::SizeType arraySize(imageDims);
@@ -512,7 +511,7 @@ size_t Image::allocate()
 //------------------------------------------------------------------------------
 
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                       const ::fwTools::Type& type, size_t numberOfComponents)
+                       const core::tools::Type& type, size_t numberOfComponents)
 {
     m_size               = { x, y, z};
     m_type               = type;
@@ -522,7 +521,7 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
+size_t Image::allocate(const SizeType& size, const core::tools::Type& type, size_t numberOfComponents)
 {
     this->setSize(size);
     m_type               = type;
@@ -641,34 +640,34 @@ void Image::setSize(const SizeType& size)
 
 //------------------------------------------------------------------------------
 
-::fwTools::DynamicType Image::getPixelType() const
+core::tools::DynamicType Image::getPixelType() const
 {
-    typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
+    typedef std::map<std::string, core::tools::DynamicType> DynamicTypeMapType;
 
     static DynamicTypeMapType dynamicTypeMap = {
-        { ::fwTools::Type().string(), ::fwTools::DynamicType() },
-        { "uint8",  ::fwTools::makeDynamicType<std::string>("unsigned char")  },
-        { "uint16", ::fwTools::makeDynamicType<std::string>("unsigned short") },
-        { "uint32", ::fwTools::makeDynamicType<std::string>("unsigned int")   },
-        { "int8",   ::fwTools::makeDynamicType<std::string>("signed char")    },
-        { "int16",  ::fwTools::makeDynamicType<std::string>("signed short")   },
-        { "int32",  ::fwTools::makeDynamicType<std::string>("signed int")     },
-        { "float",  ::fwTools::makeDynamicType<std::string>("float")          },
-        { "double", ::fwTools::makeDynamicType<std::string>("double")         },
+        { core::tools::Type().string(), core::tools::DynamicType() },
+        { "uint8",  core::tools::makeDynamicType<std::string>("unsigned char")  },
+        { "uint16", core::tools::makeDynamicType<std::string>("unsigned short") },
+        { "uint32", core::tools::makeDynamicType<std::string>("unsigned int")   },
+        { "int8",   core::tools::makeDynamicType<std::string>("signed char")    },
+        { "int16",  core::tools::makeDynamicType<std::string>("signed short")   },
+        { "int32",  core::tools::makeDynamicType<std::string>("signed int")     },
+        { "float",  core::tools::makeDynamicType<std::string>("float")          },
+        { "double", core::tools::makeDynamicType<std::string>("double")         },
 
 //special case for dynamic type : 64bits integers was not managed by dynamic type.
 #if ( INT_MAX < LONG_MAX )
-        {"uint64",  ::fwTools::makeDynamicType<std::string>("unsigned long")  },
-        {"int64",   ::fwTools::makeDynamicType<std::string>("signed long")    },
+        {"uint64",  core::tools::makeDynamicType<std::string>("unsigned long")  },
+        {"int64",   core::tools::makeDynamicType<std::string>("signed long")    },
 #else
-        {"uint32",  ::fwTools::makeDynamicType<std::string>("unsigned long")  },
-        {"int32",   ::fwTools::makeDynamicType<std::string>("signed long")    },
-        {"uint64",  ::fwTools::DynamicType() },
-        {"int64",   ::fwTools::DynamicType() },
+        {"uint32",  core::tools::makeDynamicType<std::string>("unsigned long")  },
+        {"int32",   core::tools::makeDynamicType<std::string>("signed long")    },
+        {"uint64",  core::tools::DynamicType() },
+        {"int64",   core::tools::DynamicType() },
 #endif
     };
 
-    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()];
+    core::tools::DynamicType dtype = dynamicTypeMap[getType().string()];
     return dtype;
 }
 

@@ -22,11 +22,11 @@
 
 #include "fwActivities/registry/ActivityMsg.hpp"
 
+#include <core/tools/UUID.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -50,7 +50,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
     m_title       = info.title;
     m_appConfigID = info.appConfig.id;
     m_closable    = true;
-    m_tabID       = "TABID_" + ::fwTools::UUID::generateUUID();
+    m_tabID       = "TABID_" + core::tools::UUID::generateUUID();
 
     if(info.tabInfo.empty())
     {

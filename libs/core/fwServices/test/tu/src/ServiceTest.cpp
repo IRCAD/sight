@@ -28,11 +28,10 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slots.hxx>
+#include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
-
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -243,15 +242,15 @@ void ServiceTest::testServiceCreationWithUUID()
     service2->registerInOut(obj, dataKey);
 
     nbServices = 2;
-    CPPUNIT_ASSERT(::fwTools::fwID::exist(myUUID) );
-    CPPUNIT_ASSERT(::fwTools::fwID::exist(myUUID2));
+    CPPUNIT_ASSERT(core::tools::fwID::exist(myUUID) );
+    CPPUNIT_ASSERT(core::tools::fwID::exist(myUUID2));
 
     // Test getting the service its object
     ::fwServices::IService::sptr service2bis = ::fwServices::get(myUUID2);
     CPPUNIT_ASSERT(service2bis);
     CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut< ::fwData::Integer >(dataKey).get_shared());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->getID());
-    CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
+    CPPUNIT_ASSERT( !core::tools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices("::fwServices::ut::TestService").size() );
 
     // Test erasing service
@@ -320,7 +319,7 @@ void ServiceTest::testStartStopUpdateExceptions()
 
 //------------------------------------------------------------------------------
 
-struct TestServiceSignals : public ::fwCom::HasSlots
+struct TestServiceSignals : public core::com::HasSlots
 {
     typedef std::shared_ptr< TestServiceSignals > sptr;
 
@@ -403,7 +402,7 @@ void ServiceTest::testCommunication()
     TestServiceSignals::sptr receiver1 = std::make_shared< TestServiceSignals>();
     TestServiceSignals::sptr receiver2 = std::make_shared< TestServiceSignals>();
 
-    ::fwCom::helper::SigSlotConnection comHelper;
+    core::com::helper::SigSlotConnection comHelper;
     comHelper.connect(service1, ::fwServices::IService::s_STARTED_SIG, receiver1, "start");
     comHelper.connect(service1, ::fwServices::IService::s_UPDATED_SIG, receiver1, "update");
     comHelper.connect(service1, ::fwServices::IService::s_STOPPED_SIG, receiver1, "stop");
@@ -445,9 +444,9 @@ void ServiceTest::testCommunication()
     sig = service1->signal< ::fwServices::ut::TestServiceImplementation::MsgSentSignalType >(
         ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG);
     {
-        ::fwCom::SlotBase::sptr slot;
+        core::com::SlotBase::sptr slot;
         slot = service1->slot( ::fwServices::IService::s_UPDATE_SLOT );
-        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        core::com::Connection::Blocker block(sig->getConnection(slot));
         sig->asyncEmit(EVENT);
     }
 

@@ -2,7 +2,6 @@ set( NAME Tuto05MultithreadConsoleCpp )
 set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES   
-    fwCom
     fwData
     fwRuntime
     fwServices

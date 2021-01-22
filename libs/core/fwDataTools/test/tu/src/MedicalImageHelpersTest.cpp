@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const ::fwData::Image::Size size       = {125, 110, 45};
         const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
         const ::fwData::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
@@ -106,7 +106,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const ::fwData::Image::Size size       = {42, 34, 75};
         const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
         const ::fwData::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
@@ -145,7 +145,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const ::fwData::Image::Size size       = {156, 208, 0};
         const ::fwData::Image::Spacing spacing = { 1., 1., 0.};
         const ::fwData::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
@@ -184,7 +184,7 @@ template <class P>
     auto image = ::fwData::Image::New();
     ::fwData::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
     image->setSize2(size);
-    image->setType(::fwTools::Type::create<SubPixel>());
+    image->setType(core::tools::Type::create<SubPixel>());
     image->setNumberOfComponents(N_COMPONENTS);
     image->resize();
     image->setSpacing2({1., 1., 1.});

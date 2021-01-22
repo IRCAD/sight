@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,14 +52,14 @@ namespace action
 class UIIO_CLASS_API SFolderSelector : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SFolderSelector,  ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SFolderSelector,  ::fwGui::IActionSrv)
 
     /**
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void ( std::filesystem::path ) > FolderSelectedSignalType;
-    static const ::fwCom::Signals::SignalKeyType s_FOLDER_SELECTED_SIG;
+    typedef core::com::Signal< void ( std::filesystem::path ) > FolderSelectedSignalType;
+    static const core::com::Signals::SignalKeyType s_FOLDER_SELECTED_SIG;
     /// @}
 
     UIIO_API SFolderSelector() noexcept;

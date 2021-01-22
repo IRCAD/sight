@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ public:
                                 DicomContainerType& instances,
                                 void* destination, double rescaleSlope,
                                 double rescaleIntercept,
-                                unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                unsigned short pixelRepresentation, core::tools::Type imageType)
     {
         if (pixelRepresentation == 0)
         {
@@ -134,10 +134,10 @@ public:
         // Read every instances
         for(const auto& item : instances)
         {
-            const ::fwMemory::BufferObject::sptr bufferObj = item.second;
-            const size_t buffSize                          = bufferObj->getSize();
-            const std::string dicomPath                    = bufferObj->getStreamInfo().fsFile.string();
-            ::fwMemory::BufferObject::Lock lock(bufferObj);
+            const core::memory::BufferObject::sptr bufferObj = item.second;
+            const size_t buffSize                            = bufferObj->getSize();
+            const std::string dicomPath                      = bufferObj->getStreamInfo().fsFile.string();
+            core::memory::BufferObject::Lock lock(bufferObj);
             char* buffer = static_cast< char* >( lock.getBuffer() );
 
             DcmInputBufferStream is;
@@ -199,67 +199,67 @@ protected:
                                 DicomContainerType& instances,
                                 void* destination, double rescaleSlope,
                                 double rescaleIntercept,
-                                ::fwTools::Type imageType)
+                                core::tools::Type imageType)
     {
         T* tempoBuffer = ::fwDcmtkIO::reader::main::ImageReader::createTemporaryBuffer<T>(
             rows, columns, depth, instances);
 
         //Copy the temporary buffer to the final buffer
-        if (imageType == ::fwTools::Type::s_INT8)
+        if (imageType == core::tools::Type::s_INT8)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int8_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT16)
+        else if (imageType == core::tools::Type::s_INT16)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int16_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT32)
+        else if (imageType == core::tools::Type::s_INT32)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int32_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_INT64)
+        else if (imageType == core::tools::Type::s_INT64)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int64_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT8)
+        else if (imageType == core::tools::Type::s_UINT8)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint8_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT16)
+        else if (imageType == core::tools::Type::s_UINT16)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint16_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT32)
+        else if (imageType == core::tools::Type::s_UINT32)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint32_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_UINT64)
+        else if (imageType == core::tools::Type::s_UINT64)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint64_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_FLOAT)
+        else if (imageType == core::tools::Type::s_FLOAT)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< float >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
-        else if (imageType == ::fwTools::Type::s_DOUBLE)
+        else if (imageType == core::tools::Type::s_DOUBLE)
         {
             ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< double >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,

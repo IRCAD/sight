@@ -27,6 +27,10 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/memory/BufferObject.hpp>
+#include <core/memory/stream/in/IFactory.hpp>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -42,12 +46,6 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-#include <fwMemory/stream/in/IFactory.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -86,8 +84,8 @@ void initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID
 {
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date = ::fwTools::getDate(now);
-    const std::string time = ::fwTools::getTime(now);
+    const std::string date = core::tools::getDate(now);
+    const std::string time = core::tools::getTime(now);
     series->setDate(date);
     series->setTime(time);
 
@@ -219,15 +217,15 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
     }
 
     ::fwData::Image::sptr m_image;
-    ::fwMemory::BufferObject::sptr m_bufferObject;
-    ::fwMemory::BufferObject::Lock m_lock;
+    core::memory::BufferObject::sptr m_bufferObject;
+    core::memory::BufferObject::Lock m_lock;
     SPTR(BufferStreamType) m_bufferStream;
 };
 
 //------------------------------------------------------------------------------
 
 template< typename READER >
-class ImageStream : public ::fwMemory::stream::in::IFactory
+class ImageStream : public core::memory::stream::in::IFactory
 {
 public:
 
@@ -376,7 +374,7 @@ void SeriesDBReader::read()
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
-    const std::string instanceUID                           = ::fwTools::UUID::generateUUID();
+    const std::string instanceUID                           = core::tools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;

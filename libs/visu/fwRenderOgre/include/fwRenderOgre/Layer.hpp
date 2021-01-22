@@ -30,11 +30,10 @@
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Slot.hpp>
+#include <core/com/HasSignals.hpp>
+#include <core/com/HasSlots.hpp>
+#include <core/com/Slot.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
@@ -73,8 +72,8 @@ namespace fwRenderOgre
  */
 class FWRENDEROGRE_CLASS_API Layer :
     public core::BaseObject,
-    public ::fwCom::HasSignals,
-    public ::fwCom::HasSlots
+    public core::com::HasSignals,
+    public core::com::HasSlots
 
 {
 
@@ -95,29 +94,30 @@ public:
     using ViewportConfigType = std::tuple<float, float, float, float>;
 
     /// Contains the signal sent when the layer is initialized.
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
-    typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_INIT_LAYER_SIG;
+    typedef core::com::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
 
     /// Contains the signal sent when the layer is resized.
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
-    typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
+    typedef core::com::Signal<void (int, int)> ResizeLayerSignalType;
 
     /// @deprecated A listener is now in place in SCamera instead.
     [[deprecated("Removed in sight 22.0.")]]
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
 
     /// Contains signals sent when the camera is modified.
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
-    typedef ::fwCom::Signal<void ()> CameraUpdatedSignalType;
+    FWRENDEROGRE_API static const core::com::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
+    typedef core::com::Signal<void ()> CameraUpdatedSignalType;
 
-    typedef ::fwCom::Slot< void (::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo) > InteractionSlotType;
-    typedef ::fwCom::Slot< void () > DestroySlotType;
+    typedef core::com::Slot< void (::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo) >
+        InteractionSlotType;
+    typedef core::com::Slot< void () > DestroySlotType;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_INTERACTION_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_INTERACTION_SLOT;
 
     /// Contains the slot name taht request the reset of camera.
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
+    FWRENDEROGRE_API static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
     /// @deprecated please used s_DEFAULT_CAMERA_NAME.
     [[deprecated("Removed in sight 22.0.")]]
@@ -375,7 +375,7 @@ private:
     bool m_cancelFurtherInteraction { false };
 
     /// Handles all connections.
-    ::fwCom::helper::SigSlotConnection m_connections;
+    core::com::helper::SigSlotConnection m_connections;
 
     /// Contains the render service which this layer is attached.
     WPTR(::fwRenderOgre::SRender) m_renderService;

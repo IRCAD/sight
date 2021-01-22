@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,19 +144,19 @@ public:
      * @name Slot API
      * @{
      */
-    UIACTIVITIESQT_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
-    UIACTIVITIESQT_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
-    UIACTIVITIESQT_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
+    UIACTIVITIESQT_API static const core::com::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
+    UIACTIVITIESQT_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
+    UIACTIVITIESQT_API static const core::com::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    typedef ::fwCom::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
-    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+    UIACTIVITIESQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
     /// @}
 
 protected:

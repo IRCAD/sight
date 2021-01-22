@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "ctrlTF/SMergeTF.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 namespace ctrlTF
 {
@@ -31,7 +31,7 @@ namespace ctrlTF
 static const ::fwServices::IService::KeyType s_TF_POOL_INPUT = "tfPool";
 static const ::fwServices::IService::KeyType s_TF_INOUT      = "tf";
 
-static const ::fwCom::Slots::SlotKeyType s_MERGE_SLOT = "merge";
+static const core::com::Slots::SlotKeyType s_MERGE_SLOT = "merge";
 
 //------------------------------------------------------------------------------
 

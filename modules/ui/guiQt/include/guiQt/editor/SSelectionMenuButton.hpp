@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "guiQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QAction>
 #include <QObject>
@@ -88,7 +88,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSelectionMenuButton, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SSelectionMenuButton, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     GUIQT_API SSelectionMenuButton() noexcept;
@@ -133,7 +133,7 @@ private:
      * @{
      */
     /// Signal emitted when an item is selected
-    typedef ::fwCom::Signal< void (int) > SelectedSignalType;
+    typedef core::com::Signal< void (int) > SelectedSignalType;
     SelectedSignalType::sptr m_sigSelected;
     /**
      * @}

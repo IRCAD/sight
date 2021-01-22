@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,8 +78,8 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
                           "Only the first one will be read.");
     }
 
-    const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
+    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 

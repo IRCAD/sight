@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -39,8 +39,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
-static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
+static const core::com::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
+static const core::com::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
 
 static const std::string s_CAMERA_INPUT    = "camera";
 static const std::string s_NEAR_CONFIG     = "near";

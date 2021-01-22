@@ -57,8 +57,8 @@ void RecursiveLockTest::lockTest()
 {
     {
         ::fwData::Image::sptr image = ::fwData::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
-        ::fwMemory::BufferObject::sptr bo = image->getBufferObject();
+        ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+        core::memory::BufferObject::sptr bo = image->getBufferObject();
 
         {
             ::fwData::reflection::visitor::RecursiveLock visitor(image);
@@ -73,15 +73,15 @@ void RecursiveLockTest::lockTest()
 
     {
         ::fwData::Image::sptr img1 = ::fwData::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
         ::fwData::Image::sptr img2 = ::fwData::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+        ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
         composite->getContainer()["img1"]   = img1;
         composite->getContainer()["img2"]   = img2;
 
-        ::fwMemory::BufferObject::sptr bo1 = img1->getBufferObject();
-        ::fwMemory::BufferObject::sptr bo2 = img2->getBufferObject();
+        core::memory::BufferObject::sptr bo1 = img1->getBufferObject();
+        core::memory::BufferObject::sptr bo2 = img2->getBufferObject();
 
         {
             ::fwData::reflection::visitor::RecursiveLock visitor(composite);

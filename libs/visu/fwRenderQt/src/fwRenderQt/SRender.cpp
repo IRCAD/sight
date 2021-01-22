@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,11 @@
 #include "fwRenderQt/registry/Adaptor.hpp"
 #include "fwRenderQt/Scene2DGraphicsView.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
@@ -112,7 +112,7 @@ void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
             if(elt.second == this->getID())
             {
                 ::fwRenderQt::IAdaptor::sptr adaptor =
-                    ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.first));
+                    ::fwRenderQt::IAdaptor::dynamicCast(core::tools::fwID::getObject(elt.first));
                 if(adaptor != nullptr && adaptor->isStarted())
                 {
                     orderedAdaptors.push_back(adaptor);

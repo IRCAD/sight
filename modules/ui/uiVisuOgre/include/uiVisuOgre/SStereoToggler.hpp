@@ -24,7 +24,7 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -82,7 +82,7 @@ protected:
 private:
 
     using StereoModeType      = ::fwRenderOgre::compositorcore::StereoModeType;
-    using StereoActiveSigType = ::fwCom::Signal< void(bool) >;
+    using StereoActiveSigType = core::com::Signal< void(bool) >;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;

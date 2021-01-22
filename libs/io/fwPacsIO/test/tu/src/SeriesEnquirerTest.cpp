@@ -24,7 +24,7 @@
 
 #include <fwPacsIO/helper/Series.hpp>
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwDcmtkIO/helper/DicomSearch.hpp>
 

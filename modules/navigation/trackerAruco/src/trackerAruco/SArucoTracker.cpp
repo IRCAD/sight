@@ -27,12 +27,12 @@
 #include <arData/MarkerMap.hpp>
 #include <arData/MarkerTL.hpp>
 
+#include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
+
 #include <cvIO/Camera.hpp>
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
@@ -50,12 +50,12 @@ namespace trackerAruco
 fwServicesRegisterMacro(::arServices::ITracker, ::trackerAruco::SArucoTracker)
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
-const ::fwCom::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
+const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
+const core::com::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
 
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const core::com::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT           = "camera";
 const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";

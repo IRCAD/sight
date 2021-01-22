@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,8 +85,8 @@ public:
      * @name Slots API
      * @{
      */
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
-    typedef ::fwCom::Slot<void ()> ChangeStateSlotType;
+    VIDEOCALIBRATION_API static const core::com::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
+    typedef core::com::Slot<void ()> ChangeStateSlotType;
     ///@}
 
     /// Constructor.

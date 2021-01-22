@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,14 +44,14 @@ IObjectReader::~IObjectReader()
 
 //------------------------------------------------------------------------------
 
-void IObjectReader::setObject( ::fwTools::Object::sptr _pObject )
+void IObjectReader::setObject( core::tools::Object::sptr _pObject )
 {
     m_object = _pObject;
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr IObjectReader::getObject()
+core::tools::Object::sptr IObjectReader::getObject()
 {
     auto object = m_object.lock();
     SLM_ASSERT( "Object is null", object );

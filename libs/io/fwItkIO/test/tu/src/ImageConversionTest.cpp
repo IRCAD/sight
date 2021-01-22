@@ -62,7 +62,7 @@ void ImageConversionTest::testConversion()
 {
     // create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     typedef itk::Image< std::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
@@ -115,7 +115,7 @@ void ImageConversionTest::testConversion2D()
     ::fwData::Image::Size size       = { static_cast<size_t>(rand()%100 + 2), static_cast<size_t>(rand()%100 + 2), 0};
     ::fwData::Image::Spacing spacing = { (rand()%200 +1) / 100., (rand()%200 +1) / 100., 0.};
     ::fwData::Image::Origin origin   = {( rand()%200 - 100) / 3., (rand()%200 - 100) / 3., 0.};
-    ::fwTools::Type type             = ::fwTools::Type::s_INT16;
+    core::tools::Type type = core::tools::Type::s_INT16;
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, ::fwData::Image::GRAY_SCALE);
     ::fwTest::generator::Image::randomizeImage(image);

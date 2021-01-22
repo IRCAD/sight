@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiVisuOgre/SMaterialSelector.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/String.hpp>
@@ -53,7 +53,7 @@ namespace uiVisuOgre
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction)
 
-const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
+const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
 static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -182,7 +182,8 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
 void SMaterialSelector::onReloadMaterial()
 {
     auto materialName = m_materialBox->currentText().toStdString();
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName, ::fwRenderOgre::RESOURCE_GROUP);
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName,
+                                                                                     ::fwRenderOgre::RESOURCE_GROUP);
 
     if(!material)
     {

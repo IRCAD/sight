@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwPacsIO/exceptions/RequestFailure.hpp"
 #include "fwPacsIO/exceptions/TagMissing.hpp"
 
-#include <fwTools/System.hpp>
+#include <core/tools/System.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -41,7 +41,7 @@
 namespace fwPacsIO
 {
 
-const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
+const core::com::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     m_progressCallback = _progressCallback;
 
     // Creating folder.
-    m_path = ::fwTools::System::getTemporaryFolder() / "dicom/";
+    m_path = core::tools::System::getTemporaryFolder() / "dicom/";
     if (!m_path.empty() && !std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);

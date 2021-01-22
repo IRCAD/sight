@@ -25,11 +25,11 @@
 #include <fwDataIO/reader/DictionaryReader.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/StructureTraitsHelper.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -47,7 +47,7 @@ namespace ut
 void DictionaryReaderTest::setUp()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "Dictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "Dictionary.dic";
 
     this->generateDictionaryFile(m_tmpDictionaryFilePath);
 
@@ -117,7 +117,7 @@ void DictionaryReaderTest::test_1()
 void DictionaryReaderTest::test_2()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
@@ -133,7 +133,8 @@ void DictionaryReaderTest::test_2()
 
 void DictionaryReaderTest::test_3()
 {
-    m_tmpDictionaryFilePath                              = ::fwTools::System::getTemporaryFolder() / "NoDictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() /
+                              "NoDictionary.dic";
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
@@ -148,7 +149,7 @@ void DictionaryReaderTest::test_3()
 void DictionaryReaderTest::test_4()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
@@ -166,7 +167,7 @@ void DictionaryReaderTest::test_5()
 {
 
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();

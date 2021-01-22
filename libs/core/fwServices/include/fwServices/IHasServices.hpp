@@ -52,7 +52,7 @@ public:
      * @brief Return a specific registered service
      * @param[in] id Identifier of the service
      */
-    FWSERVICES_API CSPTR( ::fwServices::IService) getRegisteredService(const ::fwTools::fwID::IDType& _id) const;
+    FWSERVICES_API CSPTR( ::fwServices::IService) getRegisteredService(const core::tools::fwID::IDType& _id) const;
 
 protected:
 
@@ -82,7 +82,7 @@ protected:
      * @brief Unregister a specific service
      * @param id Identifier of the service
      */
-    FWSERVICES_API void unregisterService(const ::fwTools::fwID::IDType& _id);
+    FWSERVICES_API void unregisterService(const core::tools::fwID::IDType& _id);
 
     /**
      * @brief Unregister a specific service

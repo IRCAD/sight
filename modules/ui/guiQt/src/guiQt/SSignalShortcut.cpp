@@ -23,8 +23,7 @@
 #include "guiQt/SSignalShortcut.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/GuiRegistry.hpp>
@@ -43,7 +42,7 @@
 namespace guiQt
 {
 
-static const ::fwCom::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
+static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
 fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut )
 
@@ -87,7 +86,7 @@ void SSignalShortcut::starting()
     // Either get the container via a service id
     if(m_sid != "")
     {
-        bool sidExists = ::fwTools::fwID::exist(m_sid);
+        bool sidExists = core::tools::fwID::exist(m_sid);
 
         if(sidExists)
         {

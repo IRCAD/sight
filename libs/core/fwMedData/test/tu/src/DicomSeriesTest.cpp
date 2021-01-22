@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,12 @@
 
 #include "DicomSeriesTest.hpp"
 
+#include <core/tools/System.hpp>
+#include <core/tools/Type.hpp>
+
 #include <fwData/Array.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTools/Type.hpp>
-
 #include <filesystem>
-
 #include <fstream>
 
 // Registers the fixture into the 'registry'
@@ -62,7 +61,7 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicomtest";
+    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicomtest";
     std::filesystem::create_directories(path);
     const std::string filename = path.string()+"/"+"file";
     std::ofstream file;
@@ -81,7 +80,7 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series->isInstanceAvailable(42));
 
     //Binaries
-    ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
+    core::memory::BufferObject::sptr bufferObj = core::memory::BufferObject::New();
     m_series->addBinary(1664, bufferObj);
     CPPUNIT_ASSERT_EQUAL(bufferObj, m_series->getDicomContainer().at(1664));
 }

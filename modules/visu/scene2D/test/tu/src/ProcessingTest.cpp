@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ void ProcessingTest::histogramTest()
     ::fwData::Histogram::sptr histogram = ::fwData::Histogram::New();
 
     // Create image.
-    image->resize(sizeX, sizeY,  sizeZ, ::fwTools::Type::s_INT16, ::fwData::Image::GRAY_SCALE);
+    image->resize(sizeX, sizeY,  sizeZ, core::tools::Type::s_INT16, ::fwData::Image::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
     auto itr            = image->begin< ImageType >();

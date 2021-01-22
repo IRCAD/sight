@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "gui/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slots.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Slots.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
 #include <fwGui/IActionSrv.hpp>
@@ -63,7 +63,7 @@ public:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of showJob slot
-    typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) >  ShowJobSlot;
+    typedef core::com::Slot< void ( ::fwJobs::IJob::sptr ) >  ShowJobSlot;
 
     /**
      * @brief Constructor. Do nothing.
@@ -104,8 +104,8 @@ protected:
     typedef std::set< SPTR(::fwGui::dialog::ProgressDialog) > ProgressDialogs;
     ProgressDialogs m_progressDialogs;
 
-    typedef ::fwCom::Signal<void () > StartedSignalType;
-    typedef ::fwCom::Signal<void () > EndedSignalType;
+    typedef core::com::Signal<void () > StartedSignalType;
+    typedef core::com::Signal<void () > EndedSignalType;
 
     SPTR(StartedSignalType) m_sigStarted;
     SPTR(EndedSignalType) m_sigEnded;

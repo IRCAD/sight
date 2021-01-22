@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiMeasurementQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <core/tools/Failed.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -63,7 +63,7 @@ class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(Distance, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(Distance, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;
@@ -75,8 +75,8 @@ public:
      * @name Signal
      * @{
      */
-    UIMEASUREMENTQT_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REQUESTED_SIG;
-    typedef ::fwCom::Signal< void () > DistanceRequestedSignalType;
+    UIMEASUREMENTQT_API static const core::com::Signals::SignalKeyType s_DISTANCE_REQUESTED_SIG;
+    typedef core::com::Signal< void () > DistanceRequestedSignalType;
     /**
      * @}
      */

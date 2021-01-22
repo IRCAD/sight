@@ -22,8 +22,8 @@
 
 #include "ioQt/SPdfWriter.hpp"
 
-#include <core/include/core/thread/Pool.hpp>
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Pool.hpp>
+#include <core/thread/Worker.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>

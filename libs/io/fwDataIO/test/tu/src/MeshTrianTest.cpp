@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <fstream>
 #include <iomanip>
@@ -61,7 +61,7 @@ void MeshTrianTest::tearDown()
 
 void MeshTrianTest::testSimpleMesh()
 {
-    std::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
+    std::filesystem::path trianPath = core::tools::System::getTemporaryFolder() / "test.trian";
 
     ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
@@ -91,7 +91,7 @@ void MeshTrianTest::testSimpleMesh()
 
 void MeshTrianTest::testMeshWithCellNormals()
 {
-    std::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
+    std::filesystem::path trianPath = core::tools::System::getTemporaryFolder() / "test.trian";
 
     ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();

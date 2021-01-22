@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "uiMedDataQt/editor/SOrganTransformation.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/tools/fwID.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Material.hpp>
@@ -39,8 +40,6 @@
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -59,10 +58,10 @@ namespace uiMedDataQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
 
 static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
+static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT = "composite";
 
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 

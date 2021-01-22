@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,28 +88,28 @@ protected:
     /**
      * @brief Starts the service
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPDEPTHMAP_API virtual void starting() override;
 
     /**
      * @brief Stops the service
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPDEPTHMAP_API virtual void stopping() override;
 
     /**
      * @brief Configures the service
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPDEPTHMAP_API virtual void configuring() override;
 
     /**
      * @brief Does nothing
      *
-     * @throw ::fwTools::Failed
+     * @throw core::tools::Failed
      */
     OPDEPTHMAP_API virtual void updating() override;
 
@@ -119,7 +119,7 @@ private:
      * @name Slots API
      * @{
      */
-    OPDEPTHMAP_API static const ::fwCom::Slots::SlotKeyType s_SET_DEPTH_RANGE;
+    OPDEPTHMAP_API static const core::com::Slots::SlotKeyType s_SET_DEPTH_RANGE;
     /** @} */
 
     /// SLOT: update the depth range

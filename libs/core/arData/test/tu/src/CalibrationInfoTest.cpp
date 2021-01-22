@@ -25,6 +25,7 @@
 #include <arData/CalibrationInfo.hpp>
 
 #include <core/spyLog.hpp>
+#include <core/tools/Type.hpp>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -33,8 +34,6 @@
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CalibrationInfoTest );
@@ -65,7 +64,7 @@ void CalibrationInfoTest::calibrationInfoTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
@@ -116,7 +115,7 @@ void CalibrationInfoTest::shallowCopyTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
@@ -144,7 +143,7 @@ void CalibrationInfoTest::deepCopyTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, ::fwTools::Type::s_INT16);
+    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 

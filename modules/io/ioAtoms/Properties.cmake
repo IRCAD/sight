@@ -9,17 +9,14 @@ set( DEPENDENCIES
     fwAtomsPatch
     fwAtomsFilter
     fwMDSemanticPatch
-    fwTools
     core
     fwData
     fwDataTools
     fwGui
     fwJobs
-    fwMemory
     fwRuntime
     fwServices
     fwZip
-    fwCom
     fwIO
 )
 set( REQUIREMENTS

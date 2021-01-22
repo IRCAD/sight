@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ void ImageDiffCommandTest::undoredoTest()
     const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
     const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
     const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
@@ -122,7 +122,7 @@ void ImageDiffCommandTest::getSizeTest()
     const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
     const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
     const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                = ::fwTools::Type::s_UINT8;
+    const core::tools::Type TYPE              = core::tools::Type::s_UINT8;
     const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
 
     ::fwData::Image::sptr image = ::fwData::Image::New();

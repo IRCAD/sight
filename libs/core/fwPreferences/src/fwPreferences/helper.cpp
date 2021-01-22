@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "fwPreferences/helper.hpp"
 
+#include <core/tools/Os.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
@@ -29,8 +31,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwTools/Os.hpp>
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -230,7 +230,7 @@ std::filesystem::path getPreferencesFile()
     FW_RAISE_IF("No current profile set.", !profile);
 
     const std::string appName     = profile->getName();
-    const bfile::path appPrefDir  = ::fwTools::os::getUserDataDir("sight", appName, true);
+    const bfile::path appPrefDir  = core::tools::os::getUserDataDir("sight", appName, true);
     const bfile::path appPrefFile = appPrefDir / "preferences.json";
 
     FW_RAISE_IF("Unable to define user data directory", appPrefDir.empty());

@@ -26,8 +26,7 @@
 
 #include <core/Exception.hpp>
 #include <core/macros.hpp>
-
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
 
 namespace fwData
 {

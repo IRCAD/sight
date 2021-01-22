@@ -24,7 +24,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include <fwCom/Signals.hpp>
+#include <core/com/Signals.hpp>
 
 namespace fwServices
 {
@@ -153,13 +153,13 @@ class SReader2Test : public IBasicTest
 {
 public:
 
-    typedef ::fwCom::Signal< void () > ChangedSignalType;
+    typedef core::com::Signal< void () > ChangedSignalType;
 
     fwCoreServiceMacro(SReader2Test, IBasicTest)
 
     SReader2Test();
 
-    static const ::fwCom::Signals::SignalKeyType s_CHANGED_SIG;
+    static const core::com::Signals::SignalKeyType s_CHANGED_SIG;
 
 protected:
 
@@ -204,8 +204,8 @@ public:
 
     void change();
 
-    static const ::fwCom::Slots::SlotKeyType s_CHANGE_SLOT;
-    typedef ::fwCom::Slot<void ()> ChangeSlotType;
+    static const core::com::Slots::SlotKeyType s_CHANGE_SLOT;
+    typedef core::com::Slot<void ()> ChangeSlotType;
 
 protected:
 
@@ -247,7 +247,7 @@ public:
 
     fwCoreServiceMacro(SShow2Test, IBasicTest)
 
-    static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
+    static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 
     SShow2Test();
 

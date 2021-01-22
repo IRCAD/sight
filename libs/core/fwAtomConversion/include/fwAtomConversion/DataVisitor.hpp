@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,16 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef  __FWATOMCONVERSION_DATAVISITOR_HPP__
-#define  __FWATOMCONVERSION_DATAVISITOR_HPP__
-
-#include <map>
-
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
-
-#include <fwTools/UUID.hpp>
+#pragma once
 
 #include "fwAtomConversion/config.hpp"
+
+#include <core/reflection/camp/ExtendedClassVisitor.hpp>
+#include <core/tools/UUID.hpp>
+
+#include <map>
 
 namespace fwAtoms
 {
@@ -47,8 +45,6 @@ namespace fwAtomConversion
 /**
  * @brief Visitor used to convert a fwData to a fwAtoms. fwData camp property
  * names are used like key to store attributes in fwAtoms::Object
- * @class DataVisitor
- * @date 2013
  * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
  */
 class FWATOMCONVERSION_CLASS_API DataVisitor : public ::camp::ExtendedClassVisitor
@@ -56,7 +52,7 @@ class FWATOMCONVERSION_CLASS_API DataVisitor : public ::camp::ExtendedClassVisit
 
 public:
 
-    typedef std::map< ::fwTools::UUID::UUIDType, SPTR(::fwAtoms::Object) > AtomCacheType;
+    typedef std::map< core::tools::UUID::UUIDType, SPTR(::fwAtoms::Object) > AtomCacheType;
 
     typedef std::string ClassnameType;
 
@@ -71,7 +67,7 @@ public:
      * Creates a new ::fwAtoms::Object. Sets : ID from dataObj UUID, meta info
      * CLASSNAME_METAINFO from dataObj classname() and add tag information from camp data
      */
-    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object)dataObj, AtomCacheType & cache );
+    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object)dataObj, AtomCacheType& cache );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~DataVisitor();
@@ -112,9 +108,7 @@ private:
     SPTR(::fwAtoms::Object) m_atomObj;
 
     /// cache to register already converted object. Used when a data is referenced several times.
-    AtomCacheType & m_cache;
+    AtomCacheType& m_cache;
 };
 
 } // end namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_DATAVISITOR_HPP__

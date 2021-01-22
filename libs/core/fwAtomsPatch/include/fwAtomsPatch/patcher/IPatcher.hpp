@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 #include "fwAtomsPatch/VersionsGraph.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <core/tools/Object.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwAtoms/Object.hpp>
 
 #include <string>
 
@@ -44,7 +44,7 @@ namespace patcher
 /**
  * @brief Base class of all patchers
  */
-class FWATOMSPATCH_CLASS_API IPatcher : public ::fwTools::Object
+class FWATOMSPATCH_CLASS_API IPatcher : public core::tools::Object
 {
 
 public:
@@ -70,7 +70,7 @@ public:
 
 public:
 
-    fwCoreClassMacro(IPatcher, ::fwTools::Object);
+    fwCoreClassMacro(IPatcher, core::tools::Object)
     fwCoreAllowSharedFromThis();
 
     /// Constructor

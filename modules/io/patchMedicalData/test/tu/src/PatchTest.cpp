@@ -22,7 +22,9 @@
 
 #include "PatchTest.hpp"
 
-#include <core/include/core/thread/Worker.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/tools/dateAndTime.hpp>
+#include <core/tools/System.hpp>
 
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
@@ -40,9 +42,6 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 

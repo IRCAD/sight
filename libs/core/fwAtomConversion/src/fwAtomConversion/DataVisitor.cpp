@@ -26,6 +26,11 @@
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 #include "fwAtomConversion/mapper/factory/new.hpp"
 
+#include <core/memory/BufferObject.hpp>
+#include <core/reflection/factory/new.hpp>
+#include <core/reflection/Mapper/ValueMapper.hpp>
+#include <core/tools/UUID.hpp>
+
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -35,15 +40,8 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
-#include <fwCamp/factory/new.hpp>
-#include <fwCamp/Mapper/ValueMapper.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/reflection/mapper.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/UUID.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
@@ -123,10 +121,10 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
         {
             DataVisitor::ClassnameType classname = value.call("classname").to<std::string>();
 
-            if( classname == "::fwMemory::BufferObject" )
+            if( classname == "core::memory::BufferObject" )
             {
-                ::fwMemory::BufferObject* ptr = value.get< ::fwMemory::BufferObject* >();
-                baseObj                       = ::fwAtoms::Blob::New( ptr->getSptr() );
+                core::memory::BufferObject* ptr = value.get< core::memory::BufferObject* >();
+                baseObj = ::fwAtoms::Blob::New( ptr->getSptr() );
             }
             else
             {
@@ -153,7 +151,7 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType& cache )
     m_atomObj = ::fwAtoms::Object::New();
     ClassnameType classname = m_campDataObj.call("classname").to<std::string>();
     m_atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, classname );
-    ::fwTools::UUID::UUIDType uuid = ::fwTools::UUID::get(dataObj);
+    core::tools::UUID::UUIDType uuid = core::tools::UUID::get(dataObj);
     m_atomObj->setMetaInfo( DataVisitor::ID_METAINFO, uuid );
     m_cache[uuid] = m_atomObj;
 

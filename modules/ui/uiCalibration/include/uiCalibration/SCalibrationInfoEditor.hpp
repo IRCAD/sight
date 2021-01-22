@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,15 +61,15 @@ class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCalibrationInfoEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCalibrationInfoEditor, ::fwGui::editor::IEditor)
 
     /**
      * @name Slots API
      * @{
      */
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_RESET_SLOT;
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_GET_SELECTION_SLOT;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_RESET_SLOT;
+    UICALIBRATION_API static const core::com::Slots::SlotKeyType s_GET_SELECTION_SLOT;
     ///@}
 
     /**

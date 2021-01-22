@@ -25,10 +25,9 @@
 #include <arData/CalibrationInfo.hpp>
 
 #include <core/base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -46,9 +45,9 @@ namespace uiCalibration
 {
 fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
 
-const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
-const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
-const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
+const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
+const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
+const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
 
 static const std::string s_CALIBRATION_INFO_1 = "calInfo1";
 static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
@@ -197,7 +196,7 @@ void SCalibrationInfoEditor::remove()
         {
             auto sig = calInfo1->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
                 ::arData::CalibrationInfo::s_REMOVED_RECORD_SIG );
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
 
@@ -209,7 +208,7 @@ void SCalibrationInfoEditor::remove()
             {
                 auto sig = calInfo2->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
                     ::arData::CalibrationInfo::s_REMOVED_RECORD_SIG );
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
         }
@@ -233,7 +232,7 @@ void SCalibrationInfoEditor::reset()
     {
         auto sig = calInfo1->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
             ::arData::CalibrationInfo::s_RESET_RECORD_SIG);
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
@@ -245,7 +244,7 @@ void SCalibrationInfoEditor::reset()
         {
             auto sig = calInfo2->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
                 ::arData::CalibrationInfo::s_RESET_RECORD_SIG);
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
     }

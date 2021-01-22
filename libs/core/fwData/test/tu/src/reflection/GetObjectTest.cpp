@@ -64,9 +64,9 @@ void GetObjectTest::getTest()
 {
     // Visit 1
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+    ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
     composite->getContainer()["img1"]   = img1;
     composite->getContainer()["img2"]   = img2;
@@ -98,7 +98,7 @@ void GetObjectTest::invalidPathTest()
     ::fwData::Float::sptr floatValue    = ::fwData::Float::New(1.234f);
     ::fwData::Vector::sptr vector       = ::fwData::Vector::New();
     ::fwData::Image::sptr img           = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create("int16"));
 
     auto& internalVector = vector->getContainer();
     internalVector.push_back(intValue);

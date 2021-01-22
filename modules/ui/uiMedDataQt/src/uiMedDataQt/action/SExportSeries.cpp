@@ -23,13 +23,13 @@
 #include "uiMedDataQt/action/SExportSeries.hpp"
 
 #include <core/base.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/Os.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/InputDialog.hpp>
 
@@ -40,8 +40,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Os.hpp>
-
 namespace uiMedDataQt
 {
 
@@ -51,8 +49,8 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB )
 
-const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
-const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
+const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
+const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
 const static std::string s_SERIESDB_INOUT = "seriesDB";
 
@@ -145,7 +143,7 @@ void SExportSeries::updating()
         ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
         if(physicians.empty())
         {
-            std::string username = ::fwTools::os::getEnv("USERNAME", fwTools::os::getEnv("LOGNAME", "Unknown"));
+            std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
             physicians.push_back(username);
         }
 

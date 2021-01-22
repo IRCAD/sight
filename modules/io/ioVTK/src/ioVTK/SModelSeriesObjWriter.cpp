@@ -25,6 +25,7 @@
 #include "ioVTK/SMeshWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/Mesh.hpp>
@@ -40,8 +41,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include <fwVtkIO/ModelSeriesObjWriter.hpp>
 
 #include <filesystem>
@@ -51,7 +50,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesObjWriter, ::fwMedData::ModelSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwGui/GuiRegistry.hpp"
 
+#include <core/tools/fwID.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <utility>
 
@@ -115,13 +115,13 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
         if(sid.second.second) //service is auto started?
         {
             SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->start();
         }
         else
         {
-            bool service_exists = ::fwTools::fwID::exist(sid.first );
+            bool service_exists = core::tools::fwID::exist(sid.first );
             if (!service_exists || ::fwServices::get( sid.first )->isStopped())
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
@@ -139,7 +139,7 @@ void MenuBarRegistrar::unmanage()
         if(sid.second.second) //service is auto started?
         {
             SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                       ::fwTools::fwID::exist(sid.first ) );
+                       core::tools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop().wait();
         }

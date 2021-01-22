@@ -25,10 +25,10 @@
 #include "ioVTK/SMeshWriter.hpp"
 
 #include <core/base.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/tools/UUID.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/Mesh.hpp>
@@ -46,8 +46,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshWriter.hpp>
@@ -61,7 +59,7 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -240,8 +238,8 @@ void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const
     }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ ext.string() +
-                                             "' is not managed by ::ioVTK::SModelSeriesWriter."));
+        FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ ext.string() +
+                                               "' is not managed by ::ioVTK::SModelSeriesWriter."));
     }
 
     m_sigJobCreated->emit(meshWriter->getJob());
@@ -271,7 +269,7 @@ void SModelSeriesWriter::updating()
             SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
 
             const std::filesystem::path filename = this->getFolder() /
-                                                   (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) +
+                                                   (rec->getOrganName() + "_" + core::tools::UUID::get(mesh) +
                                                     m_selectedExtension);
             try
             {

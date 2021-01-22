@@ -26,6 +26,8 @@
 #include <fwGdcmIO/writer/Series.hpp>
 #include <fwGdcmIO/writer/SeriesDB.hpp>
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -49,8 +51,6 @@
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
 #include <fwTest/Slow.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -112,7 +112,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
     std::filesystem::create_directories( PATH );
 
@@ -154,7 +154,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwMedData::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 
-    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
     std::filesystem::create_directories( PATH );
 

@@ -22,6 +22,8 @@
 
 #include "IoAtomsTest.hpp"
 
+#include <core/tools/System.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/visitor/CompareObjects.hpp>
@@ -39,8 +41,6 @@
 
 #include <fwTest/Exception.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
-
-#include <fwTools/System.hpp>
 
 #include <filesystem>
 
@@ -259,7 +259,7 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
     const auto dumpLock = array->lock();
     ::fwData::Array::SizeType size {10, 100};
 
-    array->resize(size, ::fwTools::Type::s_UINT32);
+    array->resize(size, core::tools::Type::s_UINT32);
 
     std::uint32_t count = 0;
     auto iter           = array->begin<std::uint32_t>();
@@ -293,32 +293,32 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
 
 void IoAtomsTest::JSONTest()
 {
-    atomTest(::fwTools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest.json");
-    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest2.json");
+    atomTest(core::tools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest.json");
+    atomTestSimpleData(core::tools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest2.json");
 }
 
 //------------------------------------------------------------------------------
 
 void IoAtomsTest::JSONZTest()
 {
-    atomTest(::fwTools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest.jsonz");
-    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest2.jsonz");
+    atomTest(core::tools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest.jsonz");
+    atomTestSimpleData(core::tools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest2.jsonz");
 }
 
 //------------------------------------------------------------------------------
 
 void IoAtomsTest::XMLTest()
 {
-    atomTest(::fwTools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest.xml");
-    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest2.xml");
+    atomTest(core::tools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest.xml");
+    atomTestSimpleData(core::tools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest2.xml");
 }
 
 //------------------------------------------------------------------------------
 
 void IoAtomsTest::XMLZTest()
 {
-    atomTest(::fwTools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest.xmlz");
-    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest2.xmlz");
+    atomTest(core::tools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest.xmlz");
+    atomTestSimpleData(core::tools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest2.xmlz");
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <arData/CalibrationInfo.hpp>
 
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
 #include <fwData/String.hpp>
 
@@ -45,8 +45,8 @@ namespace uiCalibration
 
 fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, ::fwData::Object)
 
-static const ::fwCom::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
-static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
+static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
+static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 

@@ -24,8 +24,8 @@
 
 #include <arData/MatrixTL.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -77,7 +77,7 @@ void STDataListener::configuring()
     }
     else
     {
-        throw ::fwTools::Failed("Server element not found");
+        throw core::tools::Failed("Server element not found");
     }
 
     m_deviceNamesConfig = m_configuration->find("deviceName");
