@@ -70,7 +70,7 @@ MenuRegistrar::~MenuRegistrar()
 
 //-----------------------------------------------------------------------------
 
-void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void MenuRegistrar::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
     SLM_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,22 +20,26 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
 #include "ioVTK/Plugin.hpp"
+
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace ioVTK
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ioVTK::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ioVTK::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {

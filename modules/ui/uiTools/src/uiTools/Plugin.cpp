@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,22 +20,26 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
 #include "uiTools/Plugin.hpp"
+
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace uiTools
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiTools::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiTools::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {

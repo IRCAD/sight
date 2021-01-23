@@ -44,7 +44,7 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -152,7 +152,7 @@ void SCreateActivity::starting()
     // Add the load button
     ::fwActivities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
-    infoLoad.icon        = ::fwRuntime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
+    infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

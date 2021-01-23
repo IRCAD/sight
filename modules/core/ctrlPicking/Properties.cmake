@@ -4,6 +4,5 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwData
     fwDataTools
-    fwRuntime
     fwServices
 )

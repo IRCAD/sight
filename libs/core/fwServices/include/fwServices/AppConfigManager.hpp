@@ -140,7 +140,7 @@ private:
     /**
      * @brief Starts the module associated to the config
      * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
-     *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
+     *        with setConfig(core::runtime::ConfigurationElement::csptr cfgElem) ).
      */
     FWSERVICES_API virtual void startModule();
 
@@ -166,10 +166,10 @@ private:
     void processUpdateItems();
 
     /// Parses objects section and create objects.
-    void createObjects(::fwRuntime::ConfigurationElement::csptr cfgElem);
+    void createObjects(core::runtime::ConfigurationElement::csptr cfgElem);
 
     /// Parses services and create all the services that can be instantiated.
-    void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
+    void createServices(core::runtime::ConfigurationElement::csptr cfgElem);
 
     /// Creates a single service from its configuration.
     ::fwServices::IService::sptr createService(const ServiceConfig& srvConfig);

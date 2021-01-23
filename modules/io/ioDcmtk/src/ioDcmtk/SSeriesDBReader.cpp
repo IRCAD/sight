@@ -93,7 +93,7 @@ void SSeriesDBReader::openLocationDialog()
     if(!m_filterSelectorSrvConfig.empty())
     {
         // Get the config
-        ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
+        core::runtime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterSelectorSrvConfig, "::ioDicom::SFilterSelectorDialog");
         SLM_ASSERT("There is no service configuration "
@@ -105,7 +105,7 @@ void SSeriesDBReader::openLocationDialog()
         ::fwData::String::sptr key = ::fwData::String::New();
         filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
-        filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
+        filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
@@ -124,7 +124,7 @@ void SSeriesDBReader::configuring()
     ::fwIO::IReader::configuring();
 
     // Use filter selector
-    ::fwRuntime::ConfigurationElement::sptr selectorConfig =
+    core::runtime::ConfigurationElement::sptr selectorConfig =
         m_configuration->findConfigurationElement("FilterSelectorSrvConfig");
     if(selectorConfig)
     {
@@ -133,17 +133,18 @@ void SSeriesDBReader::configuring()
     }
 
     // Get SOP Class selection
-    const ::fwRuntime::ConfigurationElement::sptr sopClassSelection =
+    const core::runtime::ConfigurationElement::sptr sopClassSelection =
         m_configuration->findConfigurationElement("SOPClassSelection");
     if(sopClassSelection)
     {
-        ::fwRuntime::ConfigurationElementContainer sopClassElements =
+        core::runtime::ConfigurationElementContainer sopClassElements =
             sopClassSelection->findAllConfigurationElement("SOPClass");
 
-        for(::fwRuntime::ConfigurationElementContainer::Iterator it = sopClassElements.begin();
+        for(core::runtime::ConfigurationElementContainer::Iterator it = sopClassElements.begin();
             it != sopClassElements.end(); ++it)
         {
-            const ::fwRuntime::ConfigurationElement::AttributePair attributePair = (*it)->getSafeAttributeValue("uid");
+            const core::runtime::ConfigurationElement::AttributePair attributePair =
+                (*it)->getSafeAttributeValue("uid");
             if(attributePair.first)
             {
                 m_supportedSOPClassSelection.push_back(attributePair.second);
@@ -152,7 +153,7 @@ void SSeriesDBReader::configuring()
     }
 
     // Set filter
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     if(config)
     {
         m_filterType = config->getAttributeValue("filterType");

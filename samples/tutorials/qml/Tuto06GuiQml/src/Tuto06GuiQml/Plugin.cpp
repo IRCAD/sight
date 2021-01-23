@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "Tuto06GuiQml/Plugin.hpp"
 
-#include <fwQml/QmlEngine.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwQml/QmlEngine.hpp>
 
 namespace Tuto06GuiQml
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
     "::Tuto06GuiQml::Plugin");
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void Plugin::initialize()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // get the path of the qml ui file
-    auto path = ::fwRuntime::getModuleResourceFilePath("Tuto06GuiQml", "app.qml");
+    auto path = core::runtime::getModuleResourceFilePath("Tuto06GuiQml", "app.qml");
 
     // load the qml ui
     engine->loadMainComponent(path);

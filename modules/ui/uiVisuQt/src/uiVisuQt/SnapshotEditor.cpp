@@ -26,6 +26,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -34,8 +35,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -78,7 +77,7 @@ void SnapshotEditor::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    std::filesystem::path path = ::fwRuntime::getModuleResourceFilePath("uiVisuQt", "camera-photo.png");
+    std::filesystem::path path = core::runtime::getModuleResourceFilePath("uiVisuQt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

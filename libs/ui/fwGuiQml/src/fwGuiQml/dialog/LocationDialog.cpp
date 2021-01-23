@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "fwGuiQml/dialog/LocationDialog.hpp"
 
+#include <core/runtime/operations.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -31,8 +33,6 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QDir>
 #include <QGuiApplication>
@@ -82,7 +82,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
         "fwGuiQml-" FWGUIQML_VER "/dialog/LocationDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));

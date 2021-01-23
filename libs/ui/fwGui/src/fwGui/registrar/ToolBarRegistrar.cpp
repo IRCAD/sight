@@ -70,7 +70,7 @@ ToolBarRegistrar::~ToolBarRegistrar()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void ToolBarRegistrar::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
     SLM_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",

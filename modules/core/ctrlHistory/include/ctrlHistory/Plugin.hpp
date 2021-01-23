@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlHistory/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace ctrlHistory
 {
@@ -32,7 +32,7 @@ namespace ctrlHistory
 /**
  * @brief This class starts when the module is loaded.
  */
-struct CTRLHISTORY_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct CTRLHISTORY_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
     CTRLHISTORY_API ~Plugin() noexcept;

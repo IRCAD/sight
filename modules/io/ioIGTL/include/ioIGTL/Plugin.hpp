@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace ioIGTL
 {
@@ -32,7 +32,7 @@ namespace ioIGTL
 /**
  * @brief   This class is started when the module is loaded
  */
-struct IOIGTL_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct IOIGTL_CLASS_API Plugin : public core::runtime::Plugin
 {
 
     /// Destructor

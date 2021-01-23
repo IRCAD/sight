@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -103,7 +103,7 @@ public:
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
      */
-    FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
+    FWGUI_API virtual void initialize( core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief manages action service associated with menuItem of menu.
@@ -157,7 +157,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map< std::string, std::pair<unsigned int, bool> > SIDMenuMapType;
 
     /**

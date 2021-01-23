@@ -31,14 +31,13 @@
 #include "fwGdcmIO/writer/ie/Study.hpp"
 #include "fwGdcmIO/writer/ie/Surface.hpp"
 
+#include <core/runtime/operations.hpp>
 #include <core/spyLog.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
@@ -89,7 +88,7 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::csptr& series)
     ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry
-    const std::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))

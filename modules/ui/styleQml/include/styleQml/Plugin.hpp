@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "styleQml/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace styleQml
 {
@@ -32,7 +32,7 @@ namespace styleQml
 /**
  * @brief   This class is called when the styleQml module is loaded.
  */
-class STYLEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
+class STYLEQML_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:

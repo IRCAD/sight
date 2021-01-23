@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ class GUI_CLASS_API SModifyLayout : public ::fwGui::IActionSrv
 public:
 
     fwCoreServiceMacro(SModifyLayout, ::fwGui::IActionSrv)
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.

@@ -26,6 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -37,8 +38,6 @@
 
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -284,7 +283,7 @@ void SIOSelector::updating()
 
             // Get Config
             bool hasConfigForService = false;
-            ::fwRuntime::ConfigurationElement::csptr srvCfg;
+            core::runtime::ConfigurationElement::csptr srvCfg;
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
@@ -310,7 +309,7 @@ void SIOSelector::updating()
 
                 if ( hasConfigForService )
                 {
-                    reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
+                    reader->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
                     reader->configure();
                 }
 
@@ -368,7 +367,7 @@ void SIOSelector::updating()
 
                 if ( hasConfigForService )
                 {
-                    writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
+                    writer->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
                     writer->configure();
                 }
 

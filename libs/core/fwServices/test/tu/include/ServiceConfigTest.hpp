@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -52,7 +52,7 @@ public:
     void getAllConfigsTest();
 
 private:
-    ::fwRuntime::ConfigurationElement::sptr buildConfig();
+    core::runtime::ConfigurationElement::sptr buildConfig();
 };
 
 } //namespace ut

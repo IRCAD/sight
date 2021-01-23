@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "fwMDSemanticPatch/PatchLoader.hpp"
 
-#include <fwAtomsPatch/VersionsManager.hpp>
+#include <core/runtime/operations.hpp>
 
-#include <fwRuntime/operations.hpp>
+#include <fwAtomsPatch/VersionsManager.hpp>
 
 namespace fwMDSemanticPatch
 {
@@ -36,7 +36,7 @@ std::string PatchLoader::s_currentVersion = "V15";
 void PatchLoader::loadPatches()
 {
     SPTR(::fwAtomsPatch::VersionsManager) versionManager = ::fwAtomsPatch::VersionsManager::getDefault();
-    auto path = ::fwRuntime::getLibraryResourceFilePath("fwMDSemanticPatch-" FWMDSEMANTICPATCH_VER "/");
+    auto path = core::runtime::getLibraryResourceFilePath("fwMDSemanticPatch-" FWMDSEMANTICPATCH_VER "/");
     versionManager->buildVersionTable(path.string());
     versionManager->buildLinkTable(path.string());
 }

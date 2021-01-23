@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "GuiQtTest.hpp"
 
-#include <fwData/String.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/String.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/macros.hpp>

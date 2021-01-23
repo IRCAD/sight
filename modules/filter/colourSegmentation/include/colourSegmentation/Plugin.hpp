@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace colourSegmentation
 {
@@ -30,7 +30,7 @@ namespace colourSegmentation
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

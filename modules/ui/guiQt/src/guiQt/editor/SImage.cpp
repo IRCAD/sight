@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "guiQt/editor/SImage.hpp"
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <core/runtime/operations.hpp>
 
-#include <fwRuntime/operations.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -109,7 +109,7 @@ void SImage::configuring()
     const ConfigType cfg = this->getConfigTree();
     std::string pathCfg  = cfg.get< std::string >("path");
 
-    m_path = ::fwRuntime::getModuleResourceFilePath(pathCfg);
+    m_path = core::runtime::getModuleResourceFilePath(pathCfg);
 
     m_width  = cfg.get< int >("width", m_width);
     m_height = cfg.get< int >("height", m_height);

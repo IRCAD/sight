@@ -4,7 +4,6 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     fwData
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS

@@ -166,7 +166,7 @@ protected:
 
     FWGUI_API virtual ~IActionSrv();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize the action.

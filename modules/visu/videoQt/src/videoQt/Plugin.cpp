@@ -22,16 +22,15 @@
 
 #include "videoQt/Plugin.hpp"
 
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace videoQt
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::videoQt::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::videoQt::Plugin");
 
 //-----------------------------------------------------------------------------
 

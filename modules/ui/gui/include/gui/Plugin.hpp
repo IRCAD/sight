@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "gui/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace gui
 {
@@ -33,7 +33,7 @@ namespace gui
  * @brief   This class is called when the gui module is loaded.
  */
 
-class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
+class GUI_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:
@@ -44,7 +44,7 @@ public:
     /**
      * @brief This method is used by runtime to initialize the module.
      *
-     * @exception ::fwRuntime::RuntimeException
+     * @exception core::runtime::RuntimeException
      *
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.

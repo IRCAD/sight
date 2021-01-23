@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "styleQml/Plugin.hpp"
 
-#include <fwQml/QmlEngine.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwQml/QmlEngine.hpp>
 
 namespace styleQml
 {
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::styleQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::styleQml::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getModuleResourcePath("styleQml");
+    auto path = core::runtime::getModuleResourcePath("styleQml");
 
     engine->importModulePath(path);
 }

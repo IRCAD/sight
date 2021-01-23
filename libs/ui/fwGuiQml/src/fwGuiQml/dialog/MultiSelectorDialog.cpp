@@ -25,12 +25,11 @@
 #include "fwGuiQml/model/RoleListModel.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
 
@@ -78,7 +77,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MultiSelectorDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/MultiSelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
     // set the context for the new component

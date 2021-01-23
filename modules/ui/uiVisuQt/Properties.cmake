@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwMath
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS )

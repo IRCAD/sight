@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "Tuto01DataServiceBasicCpp/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <core/runtime/Plugin.hpp>
 
-#include <fwRuntime/Plugin.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -34,7 +34,7 @@ namespace Tuto01DataServiceBasicCpp
 {
 
 /// This class is started when the module is loaded.
-class TUTO01DATASERVICEBASICCPP_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class TUTO01DATASERVICEBASICCPP_CLASS_API Plugin final : public core::runtime::Plugin
 {
 
 public:

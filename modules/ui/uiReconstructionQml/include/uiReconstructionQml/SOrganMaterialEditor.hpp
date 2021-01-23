@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SOrganMaterialEditor, ::fwQml::IQmlEditor);
+    fwCoreServiceMacro(SOrganMaterialEditor, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQML_API SOrganMaterialEditor() noexcept;
@@ -88,7 +88,7 @@ Q_SIGNALS:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Call IQmlEditor::starting
     virtual void starting() override;

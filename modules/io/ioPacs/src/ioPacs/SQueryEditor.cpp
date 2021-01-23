@@ -22,6 +22,8 @@
 
 #include "ioPacs/SQueryEditor.hpp"
 
+#include <core/runtime/operations.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
@@ -30,8 +32,6 @@
 
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -82,7 +82,7 @@ void SQueryEditor::configuring()
         const auto iconPath = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
         if(iconPath)
         {
-            m_iconPath = ::fwRuntime::getModuleResourceFilePath(iconPath.value());
+            m_iconPath = core::runtime::getModuleResourceFilePath(iconPath.value());
         }
 
         m_advanced   = config->get<bool>(s_ADVANCED_CONFIG, m_advanced);

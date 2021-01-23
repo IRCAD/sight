@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     fwData
     fwGui
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS

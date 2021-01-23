@@ -55,7 +55,7 @@ void IXMLParser::configuring()
 
 void IXMLParser::updating()
 {
-    ::fwRuntime::ConfigurationElement::Iterator configEltIter;
+    core::runtime::ConfigurationElement::Iterator configEltIter;
     for(configEltIter = this->m_configuration->begin(); !(configEltIter == this->m_configuration->end());
         ++configEltIter)
     {
@@ -65,7 +65,7 @@ void IXMLParser::updating()
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem )
+void IXMLParser::setObjectConfig( core::runtime::ConfigurationElement::csptr _cfgElem )
 {
     m_cfg = _cfgElem;
 }

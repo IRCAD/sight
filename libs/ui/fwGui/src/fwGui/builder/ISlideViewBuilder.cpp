@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ ISlideViewBuilder::~ISlideViewBuilder()
 
 //-----------------------------------------------------------------------------
 
-void ISlideViewBuilder::initialize(::fwRuntime::ConfigurationElement::sptr _config)
+void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _config)
 {
     SLM_ASSERT("Bad configuration name " + _config->getName() + ", must be 'slideView'",
                _config->getName() == "slideView");
@@ -201,7 +201,7 @@ void ISlideViewBuilder::initialize(::fwRuntime::ConfigurationElement::sptr _conf
         }
     }
 
-    ::fwRuntime::ConfigurationElement::csptr styleCfg = _config->findConfigurationElement(s_STYLE_SHEET_CONFIG);
+    core::runtime::ConfigurationElement::csptr styleCfg = _config->findConfigurationElement(s_STYLE_SHEET_CONFIG);
     if(styleCfg)
     {
         m_styleSheet = styleCfg->getValue();

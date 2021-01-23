@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "Tuto01DataServiceBasicCpp/Plugin.hpp"
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -31,7 +31,7 @@
 namespace Tuto01DataServiceBasicCpp
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto01DataServiceBasicCpp::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto01DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 

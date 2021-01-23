@@ -30,6 +30,8 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -39,9 +41,6 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -138,7 +137,7 @@ void SliceIndexPositionEditor::configuring()
 
     if( this->m_configuration->size() > 0 )
     {
-        std::vector< ::fwRuntime::ConfigurationElement::sptr > slideIndexCfg = m_configuration->find("sliceIndex");
+        std::vector< core::runtime::ConfigurationElement::sptr > slideIndexCfg = m_configuration->find("sliceIndex");
         SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1 );
         SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty() );
         std::string orientation = (*slideIndexCfg.begin())->getValue();

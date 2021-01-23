@@ -70,7 +70,7 @@ SSeriesPuller::~SSeriesPuller() noexcept
 
 void SSeriesPuller::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicomWeb::SSeriesPuller must have a \"config\" element.", config);
 
     bool success;
@@ -123,7 +123,7 @@ void SSeriesPuller::starting()
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
-        ::fwRuntime::ConfigurationElement::csptr readerConfig =
+        core::runtime::ConfigurationElement::csptr readerConfig =
             ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
                 m_dicomReaderSrvConfig, "::fwIO::IReader");
 
@@ -131,7 +131,7 @@ void SSeriesPuller::starting()
                    << m_dicomReaderSrvConfig
                    << " for ::fwIO::IReader", readerConfig);
 
-        m_dicomReader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(readerConfig) );
+        m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }
 
     m_dicomReader->configure();

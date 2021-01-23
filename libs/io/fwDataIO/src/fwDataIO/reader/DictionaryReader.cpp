@@ -60,7 +60,7 @@ static std::stringstream spiritDebugStream;
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsHelper.hpp>
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include "fwDataIO/reader/DictionaryReader.hpp"
 #include "fwDataIO/reader/registry/macros.hpp"
@@ -372,7 +372,7 @@ std::string DictionaryReader::extension()
 
 std::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
+    return core::runtime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
 }
 
 //------------------------------------------------------------------------------

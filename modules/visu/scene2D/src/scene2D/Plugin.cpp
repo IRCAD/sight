@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-
 #include "scene2D/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace scene2D
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::scene2D::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::scene2D::Plugin");
 
 //-----------------------------------------------------------------------------
 

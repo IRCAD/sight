@@ -28,14 +28,13 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwMath/Compare.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 

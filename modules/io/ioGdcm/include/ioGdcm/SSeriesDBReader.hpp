@@ -135,7 +135,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::vector< std::string > SupportedSOPClassContainerType;
 
     enum DicomDirSupport

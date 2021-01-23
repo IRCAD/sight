@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,29 +20,32 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "ioITK/Plugin.hpp"
+
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <inr2itk/itkInrImageIO.hpp>
 
-#include "ioITK/Plugin.hpp"
-
-
-
 namespace ioITK
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioITK::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioITK::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::start()
 {
     // force use of code in LIB itkInrImageIO ...
     typedef ::itk::InrImageIO::Self Dummy;
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {

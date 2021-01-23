@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "visuOgreAdaptor/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace visuOgreAdaptor
 {
 
-using namespace ::fwRuntime::utils;
+using namespace core::runtime::utils;
 
 static GenericExecutableFactoryRegistrar<Plugin> registrar("::visuOgreAdaptor::Plugin");
 

@@ -99,13 +99,13 @@ void SSliceIndexDicomEditor::starting()
 
     if(!m_readerConfig.empty())
     {
-        ::fwRuntime::ConfigurationElement::csptr readerConfig =
+        core::runtime::ConfigurationElement::csptr readerConfig =
             ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
                 m_readerConfig, "::fwIO::IReader");
 
         SLM_ASSERT("No service configuration " << m_readerConfig << " for ::fwIO::IReader", readerConfig);
 
-        m_dicomReader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(readerConfig) );
+        m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }
 
     m_dicomReader->configure();

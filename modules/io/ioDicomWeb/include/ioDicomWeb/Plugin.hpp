@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace ioDicomWeb
 {
 
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

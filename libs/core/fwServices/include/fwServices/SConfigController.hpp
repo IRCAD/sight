@@ -26,10 +26,9 @@
 #include "fwServices/helper/ConfigLauncher.hpp"
 #include "fwServices/IController.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace fwServices
 {

@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwGui
     fwMedData
     fwMedDataTools
-    fwRuntime
     fwServices
     fwVtkIO
     fwJobs

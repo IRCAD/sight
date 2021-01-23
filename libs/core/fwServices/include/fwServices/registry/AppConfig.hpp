@@ -26,13 +26,12 @@
 #include "fwServices/registry/AppInfo.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/Extension.hpp>
 #include <core/tools/Object.hpp>
 
 #include <fwData/Composite.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/Extension.hpp>
 
 #include <map>
 #include <unordered_set>
@@ -73,7 +72,7 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API void parseBundleInformation(
-        const std::vector< std::shared_ptr< ::fwRuntime::Extension > >& extensions);
+        const std::vector< std::shared_ptr< core::runtime::Extension > >& extensions);
 
     /**
      * @brief Register a new config.
@@ -89,7 +88,7 @@ public:
                                     const std::string& group,
                                     const std::string& desc,
                                     const AppInfo::ParametersType& parameters,
-                                    const ::fwRuntime::ConfigurationElement::csptr& config,
+                                    const core::runtime::ConfigurationElement::csptr& config,
                                     const std::string& moduleId,
                                     const std::string& moduleVersion);
 
@@ -99,9 +98,9 @@ public:
      * @param replaceFields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
-                                                                                      const FieldAdaptorType replaceFields,
-                                                                                      bool autoPrefixId ) const;
+    FWSERVICES_API core::runtime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
+                                                                                        const FieldAdaptorType replaceFields,
+                                                                                        bool autoPrefixId ) const;
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -109,16 +108,16 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
-                                                                                      ::fwData::Composite::csptr replaceFields,
-                                                                                      bool autoPrefixId )
+    FWSERVICES_API core::runtime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
+                                                                                        ::fwData::Composite::csptr replaceFields,
+                                                                                        bool autoPrefixId )
     const;
 
     /**
      * @brief Retrieves the bunble from the config id
      * @param configId the config identifier
      */
-    FWSERVICES_API std::shared_ptr< ::fwRuntime::Module > getModule(const std::string& _configId);
+    FWSERVICES_API std::shared_ptr< core::runtime::Module > getModule(const std::string& _configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.
@@ -164,14 +163,14 @@ private:
     /// Convert the composite into map <pattern, value>.
     FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
 
-    static void collectUIDForParameterReplace(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+    static void collectUIDForParameterReplace(core::runtime::ConfigurationElement::csptr _cfgElem,
                                               UidParameterReplaceType& replaceMap);
 
     /// Adapts the configuration : replace field thanks to field adaptors
-    static ::fwRuntime::EConfigurationElement::sptr adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                                const FieldAdaptorType& _fieldAdaptors,
-                                                                const UidParameterReplaceType& _uidParameterReplace,
-                                                                const std::string& _autoPrefixId );
+    static core::runtime::EConfigurationElement::sptr adaptConfig(core::runtime::ConfigurationElement::csptr _cfgElem,
+                                                                  const FieldAdaptorType& _fieldAdaptors,
+                                                                  const UidParameterReplaceType& _uidParameterReplace,
+                                                                  const std::string& _autoPrefixId );
 
     /// Adapts field thanks to field adaptors
     static std::string adaptField(const std::string& _str, const FieldAdaptorType& _variablesMap );

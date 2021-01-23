@@ -22,12 +22,12 @@
 
 #include "fwServices/registry/AppConfigParameters.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/Runtime.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <regex>
 
@@ -55,9 +55,9 @@ AppConfigParameters::~AppConfigParameters()
 
 void AppConfigParameters::parseBundleInformation()
 {
-    std::vector< std::shared_ptr< ::fwRuntime::Extension > >  extensions = ::fwRuntime::getAllExtensionsForPoint(
+    std::vector< std::shared_ptr< core::runtime::Extension > >  extensions = core::runtime::getAllExtensionsForPoint(
         "::fwServices::registry::AppConfigParameters");
-    for( std::shared_ptr< ::fwRuntime::Extension > ext :  extensions )
+    for( std::shared_ptr< core::runtime::Extension > ext :  extensions )
     {
         // Get id
         std::string extensionId = ext->findConfigurationElement("id")->getValue();
@@ -65,9 +65,9 @@ void AppConfigParameters::parseBundleInformation()
         FieldAdaptorType parameters;
 
         // Get parmeters
-        ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
-        ::fwRuntime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-        for( ::fwRuntime::ConfigurationElement::sptr paramConfig :  elements )
+        core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
+        core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
+        for( core::runtime::ConfigurationElement::sptr paramConfig :  elements )
         {
             std::string name = paramConfig->getExistingAttributeValue("name");
             std::string val  = paramConfig->getExistingAttributeValue("value");

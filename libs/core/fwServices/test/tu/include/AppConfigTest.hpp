@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwServices/AppConfigManager.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -66,7 +66,7 @@ public:
     void parameterReplaceTest();
 
 private:
-    ::fwRuntime::ConfigurationElement::sptr buildConfig();
+    core::runtime::ConfigurationElement::sptr buildConfig();
 
     ::fwServices::AppConfigManager::sptr launchAppConfigMgr(const std::string& name,
                                                             bool autoPrefix = false);

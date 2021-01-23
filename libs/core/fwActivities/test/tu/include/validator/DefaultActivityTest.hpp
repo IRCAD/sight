@@ -25,8 +25,7 @@
 #include <fwActivities/registry/Activities.hpp>
 
 #include <core/macros.hpp>
-
-#include <fwRuntime/Module.hpp>
+#include <core/runtime/Module.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

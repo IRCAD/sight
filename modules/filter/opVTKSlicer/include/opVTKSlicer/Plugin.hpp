@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "opVTKSlicer/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace opVTKSlicer
 {
@@ -32,7 +32,7 @@ namespace opVTKSlicer
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct OPVTKSLICER_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct OPVTKSLICER_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
     OPVTKSLICER_API ~Plugin() noexcept;

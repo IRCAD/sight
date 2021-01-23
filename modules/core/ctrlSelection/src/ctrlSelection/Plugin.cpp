@@ -22,16 +22,15 @@
 
 #include "ctrlSelection/Plugin.hpp"
 
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace ctrlSelection
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlSelection::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlSelection::Plugin");
 
 //-----------------------------------------------------------------------------
 

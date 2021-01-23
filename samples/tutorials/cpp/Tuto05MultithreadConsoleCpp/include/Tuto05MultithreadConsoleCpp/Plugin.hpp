@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace Tuto05MultithreadConsoleCpp
 {
 
 /// This class is started when the module is loaded.
-class TUTO05MULTITHREADCONSOLECPP_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO05MULTITHREADCONSOLECPP_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:

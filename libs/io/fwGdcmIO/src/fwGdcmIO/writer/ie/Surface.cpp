@@ -27,6 +27,7 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
+#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 
 #include <fwData/Reconstruction.hpp>
@@ -37,8 +38,6 @@
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 

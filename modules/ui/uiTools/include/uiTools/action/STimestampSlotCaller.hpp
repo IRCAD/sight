@@ -58,7 +58,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string HasSlotIDType;
     typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;

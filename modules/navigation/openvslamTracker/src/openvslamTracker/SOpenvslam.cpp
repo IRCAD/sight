@@ -25,6 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <cvIO/FrameTL.hpp>
 
@@ -35,8 +36,6 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -245,7 +244,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     if(m_vocabularyPath.empty())
     {
         m_sigVocFileLoadingStarted->asyncEmit();
-        m_vocabularyPath = ::fwRuntime::getModuleResourceFilePath("openvslamTracker", "orb_vocab.dbow2").string();
+        m_vocabularyPath = core::runtime::getModuleResourceFilePath("openvslamTracker", "orb_vocab.dbow2").string();
         m_sigVocFileLoaded->asyncEmit();
     }
     if(m_slamSystem == nullptr)

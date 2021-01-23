@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "videoOpenni/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace videoOpenni
 {
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct VIDEOOPENNI_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct VIDEOOPENNI_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor
     VIDEOOPENNI_API ~Plugin() noexcept;

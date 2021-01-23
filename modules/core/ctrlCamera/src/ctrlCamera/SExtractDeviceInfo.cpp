@@ -29,7 +29,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwServices/registry/ServiceConfig.hpp>
 
@@ -60,7 +60,7 @@ SExtractDeviceInfo::~SExtractDeviceInfo()
 void SExtractDeviceInfo::configuring()
 {
     ConfigurationType configCfg = m_configuration->findConfigurationElement("configId");
-    ::fwRuntime::ConfigurationElement::csptr deviceConfig;
+    core::runtime::ConfigurationElement::csptr deviceConfig;
     if(configCfg)
     {
 

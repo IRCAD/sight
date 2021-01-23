@@ -24,7 +24,7 @@
 
 #include "guiQt/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace fwThread
 {
@@ -36,7 +36,7 @@ namespace guiQt
 /**
  * @brief   This class is called when the guiQt module is loaded.
  */
-class GUIQT_CLASS_API Plugin : public ::fwRuntime::Plugin
+class GUIQT_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:

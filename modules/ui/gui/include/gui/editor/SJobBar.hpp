@@ -60,7 +60,7 @@ public:
 
     fwCoreServiceMacro(SJobBar, ::fwGui::editor::IDialogEditor)
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of showJob slot
     typedef core::com::Slot< void ( ::fwJobs::IJob::sptr ) >  ShowJobSlot;

@@ -26,15 +26,15 @@
 #include <fwActivities/IValidator.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
+#include <core/runtime/Extension.hpp>
+#include <core/runtime/Module.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/Module.hpp>
 
 #include <fwTest/generator/Image.hpp>
 

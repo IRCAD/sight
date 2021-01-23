@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "activities/Plugin.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 namespace activities
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::activities::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::activities::Plugin");
 
 Plugin::~Plugin() noexcept
 {

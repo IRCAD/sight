@@ -55,7 +55,7 @@ SExtractObj::~SExtractObj()
 
 void SExtractObj::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     const ConfigurationType inoutCfg = m_configuration->findConfigurationElement("inout");
     SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);

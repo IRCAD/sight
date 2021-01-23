@@ -94,7 +94,7 @@ void IActionSrv::initialize()
     SLM_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
                !m_configuration->hasAttribute("state"));
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    core::runtime::ConfigurationElementContainer::Iterator iter;
     for( iter = m_configuration->begin(); iter != m_configuration->end(); ++iter )
     {
         if( (*iter)->getName() == "state" )

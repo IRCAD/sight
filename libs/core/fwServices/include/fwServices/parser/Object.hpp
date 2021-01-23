@@ -57,7 +57,7 @@ public:
 
 protected:
 
-    bool refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
+    bool refObjectValidator( core::runtime::ConfigurationElement::csptr _cfgElement );
     void updating() override;
 
     std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "gui/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace gui
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::gui::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::gui::Plugin");
 
 Plugin::~Plugin() noexcept
 {

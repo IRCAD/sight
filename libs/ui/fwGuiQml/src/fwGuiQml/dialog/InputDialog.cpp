@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "fwGuiQml/dialog/InputDialog.hpp"
 
+#include <core/runtime/operations.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
 #include <QObject>
@@ -79,7 +79,7 @@ std::string InputDialog::getInput()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/InputDialog.qml");
 
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));

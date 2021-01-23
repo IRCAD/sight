@@ -30,12 +30,11 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -91,11 +90,11 @@ void SSignalButton::configuring()
 {
     this->initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
 
     if(config)
     {
-        ::fwRuntime::ConfigurationElement::sptr checkableCfg = config->findConfigurationElement("checkable");
+        core::runtime::ConfigurationElement::sptr checkableCfg = config->findConfigurationElement("checkable");
         if(checkableCfg)
         {
             SLM_ASSERT("'checkable' value must be 'true' or 'false'",
@@ -103,7 +102,7 @@ void SSignalButton::configuring()
             m_checkable = (checkableCfg->getValue() == "true");
         }
 
-        ::fwRuntime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
+        core::runtime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
         if(executableCfg)
         {
             SLM_ASSERT("'executable' value must be 'true' or 'false'",
@@ -111,18 +110,18 @@ void SSignalButton::configuring()
             m_executable = (executableCfg->getValue() == "true");
         }
 
-        ::fwRuntime::ConfigurationElement::sptr txtCfg = config->findConfigurationElement("text");
+        core::runtime::ConfigurationElement::sptr txtCfg = config->findConfigurationElement("text");
         if(txtCfg)
         {
             m_text = txtCfg->getValue();
         }
-        ::fwRuntime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
+        core::runtime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
         if(iconCfg)
         {
-            m_icon = ::fwRuntime::getModuleResourceFilePath(iconCfg->getValue());
+            m_icon = core::runtime::getModuleResourceFilePath(iconCfg->getValue());
         }
 
-        ::fwRuntime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
+        core::runtime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
         if(txt2Cfg)
         {
             SLM_ASSERT("Button must be 'checkable' in order to defined 'text2'", m_checkable);
@@ -130,15 +129,15 @@ void SSignalButton::configuring()
             m_text2 = txt2Cfg->getValue();
         }
 
-        ::fwRuntime::ConfigurationElement::sptr icon2Cfg = config->findConfigurationElement("icon2");
+        core::runtime::ConfigurationElement::sptr icon2Cfg = config->findConfigurationElement("icon2");
         if(icon2Cfg)
         {
             SLM_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
             SLM_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
-            m_icon2 = ::fwRuntime::getModuleResourceFilePath(icon2Cfg->getValue());
+            m_icon2 = core::runtime::getModuleResourceFilePath(icon2Cfg->getValue());
         }
 
-        ::fwRuntime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");
+        core::runtime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");
         if(checkedCfg)
         {
             SLM_ASSERT("Button must be 'checkable' in order to defined 'checked'", m_checkable);
@@ -147,19 +146,19 @@ void SSignalButton::configuring()
             m_checkAtStart = (checkedCfg->getValue() == "true");
         }
 
-        ::fwRuntime::ConfigurationElement::sptr widthCfg = config->findConfigurationElement("iconWidth");
+        core::runtime::ConfigurationElement::sptr widthCfg = config->findConfigurationElement("iconWidth");
         if(widthCfg)
         {
             m_iconWidth = std::stoi(widthCfg->getValue());
         }
 
-        ::fwRuntime::ConfigurationElement::sptr heightCfg = config->findConfigurationElement("iconHeight");
+        core::runtime::ConfigurationElement::sptr heightCfg = config->findConfigurationElement("iconHeight");
         if(heightCfg)
         {
             m_iconHeight = std::stoi(heightCfg->getValue());
         }
 
-        ::fwRuntime::ConfigurationElement::sptr tooltipCfg = config->findConfigurationElement("toolTip");
+        core::runtime::ConfigurationElement::sptr tooltipCfg = config->findConfigurationElement("toolTip");
         if(tooltipCfg)
         {
             m_toolTip = tooltipCfg->getValue();

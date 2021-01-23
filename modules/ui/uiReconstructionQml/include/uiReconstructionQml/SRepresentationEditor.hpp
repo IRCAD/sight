@@ -106,7 +106,7 @@ Q_SIGNALS:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Call IQmlEditor::starting
     virtual void starting() override;

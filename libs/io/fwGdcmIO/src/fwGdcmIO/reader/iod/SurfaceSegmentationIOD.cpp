@@ -28,13 +28,13 @@
 #include "fwGdcmIO/reader/ie/Study.hpp"
 #include "fwGdcmIO/reader/ie/Surface.hpp"
 
+#include <core/runtime/operations.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <gdcmSegmentReader.h>
 #include <gdcmSurfaceHelper.h>
@@ -107,7 +107,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
                                               m_progressCallback, m_cancelRequestedCallback);
 
     // Load Segmented Property Registry
-    const std::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {

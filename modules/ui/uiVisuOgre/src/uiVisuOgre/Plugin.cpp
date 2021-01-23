@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "uiVisuOgre/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 
 namespace uiVisuOgre
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisuOgre::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisuOgre::Plugin");
 
 //-----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "appXml/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
 
@@ -34,7 +34,7 @@ namespace appXml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class APPXML_CLASS_API Plugin : public ::fwRuntime::Plugin
+class APPXML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.

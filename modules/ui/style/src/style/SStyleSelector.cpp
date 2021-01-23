@@ -24,10 +24,9 @@
 
 #include <core/com/Slots.hxx>
 #include <core/macros.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -71,7 +70,7 @@ void SStyleSelector::starting()
 {
     m_styleMap["DEFAULT"] = std::filesystem::path("");
 
-    const auto styleRc = ::fwRuntime::getModuleResourcePath("style");
+    const auto styleRc = core::runtime::getModuleResourcePath("style");
 
     // Stores each rcc & qss
 

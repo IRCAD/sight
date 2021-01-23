@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwTest
     core
     fwData
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS

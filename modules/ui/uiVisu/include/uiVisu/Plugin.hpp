@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace uiVisu
 {
 /**
  *
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

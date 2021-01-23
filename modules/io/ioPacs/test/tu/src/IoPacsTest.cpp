@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "IoPacsTest.hpp"
 
-#include <fwPacsIO/data/PacsConfiguration.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwPacsIO/data/PacsConfiguration.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/macros.hpp>
@@ -66,8 +66,8 @@ void IoPacsTest::pacsConfigurationInitializer()
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
-    ::fwRuntime::EConfigurationElement::sptr srvElement    = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr configElement = ::fwRuntime::EConfigurationElement::New("config");
+    core::runtime::EConfigurationElement::sptr srvElement    = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr configElement = core::runtime::EConfigurationElement::New("config");
     srvElement->addConfigurationElement(configElement);
     configElement->setAttributeValue("localApplicationTitle", "VRRender");
     configElement->setAttributeValue("pacsHostName", "mypacs.mycompany.com");

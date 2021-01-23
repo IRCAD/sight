@@ -28,15 +28,14 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/Runtime.hpp>
 #include <core/TimeStamp.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
-
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <fwTest/helper/wait.hpp>
 
@@ -68,15 +67,15 @@ void AppConfigTest::setUp()
 
     // Set up context before running a test.
     //modules location
-    ::fwRuntime::init();
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+    core::runtime::init();
+    core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
-    std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
+    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addModules(location);
-    ::fwRuntime::loadModule("servicesReg");
-    ::fwRuntime::loadModule("AppConfigTest");
+    core::runtime::loadModule("servicesReg");
+    core::runtime::loadModule("AppConfigTest");
 
     ::fwServices::registry::AppConfig::sptr appConfig = ::fwServices::registry::AppConfig::getDefault();
     appConfig->parseBundleInformation();
@@ -118,7 +117,7 @@ void AppConfigTest::addConfigTest()
     const std::string moduleVersion("0.1");
     ::fwServices::registry::AppInfo::ParametersType parameters;
 
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
+    core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 
     currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId, moduleVersion);
 
@@ -136,18 +135,18 @@ void AppConfigTest::addConfigTest()
 
     ::fwServices::registry::FieldAdaptorType replaceFields;
 
-    ::fwRuntime::ConfigurationElement::csptr configEltAdaptedConst;
+    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
 
-    ::fwRuntime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
+    core::runtime::ConfigurationElement::sptr configEltAdapted;
+    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
+    std::vector< core::runtime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
 
     const std::string uid = objCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL(std::string("image"), uid );
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
+    std::vector< core::runtime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
 
     const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService1"), serviceUid1);
@@ -169,18 +168,18 @@ void AppConfigTest::parametersConfigTest()
     auto it                                = std::find(allCconfigs.begin(), allCconfigs.end(), configId);
     CPPUNIT_ASSERT(it != allCconfigs.end());
 
-    ::fwRuntime::ConfigurationElement::csptr configEltAdaptedConst;
+    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
 
-    ::fwRuntime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
+    core::runtime::ConfigurationElement::sptr configEltAdapted;
+    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
+    std::vector< core::runtime::ConfigurationElement::sptr >  objCfg = configEltAdapted->find("object");
 
     const std::string uid = objCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid );
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
+    std::vector< core::runtime::ConfigurationElement::sptr >  servicesCfg = configEltAdapted->find("service");
 
     const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService1"), serviceUid1);
@@ -1267,7 +1266,7 @@ void AppConfigTest::parameterReplaceTest()
     auto srv2          = ::fwServices::IService::dynamicCast(gnsrv2);
     auto adaptedConfig = srv2->getConfiguration();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigType;
     const std::vector< ConfigType > paramsCfg = adaptedConfig->find("parameter");
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), paramsCfg.size());
 
@@ -1331,31 +1330,31 @@ void AppConfigTest::parameterReplaceTest()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildConfig()
+core::runtime::ConfigurationElement::sptr AppConfigTest::buildConfig()
 {
     // Object
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< core::runtime::EConfigurationElement > cfg( new core::runtime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "image");
     cfg->setAttributeValue( "type", "::fwData::Image");
 
     // Service
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
+    std::shared_ptr< core::runtime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
     serviceA->setAttributeValue("type", "::fwServices::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Connections
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
+    std::shared_ptr< core::runtime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
     connect1->setAttributeValue( "channel", "channel1" );
     connect1->addConfigurationElement("signal")->setValue( "image/modified" );
     connect1->addConfigurationElement("slot")->setValue( "myTestService1/update" );
 
     // Start method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
+    std::shared_ptr< core::runtime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
     startA->setAttributeValue( "uid", "myTestService1" );
 
     // Update method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
+    std::shared_ptr< core::runtime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
     updateA->setAttributeValue( "uid", "myTestService1" );
 
     return cfg;

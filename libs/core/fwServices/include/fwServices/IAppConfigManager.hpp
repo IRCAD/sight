@@ -61,7 +61,7 @@ public:
     bool isDestroyed() const;
 
     /// Set config param
-    void setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem);
+    void setConfig(core::runtime::ConfigurationElement::csptr cfgElem);
 
     /**
      * @brief Set configuration
@@ -113,7 +113,7 @@ protected:
     };
 
     /// XML Configuration tree
-    ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
+    core::runtime::ConfigurationElement::csptr m_cfgElem;
 
     /// Running state of the app config manager
     ConfigState m_state;
@@ -163,7 +163,7 @@ inline bool IAppConfigManager::isDestroyed() const
 
 //------------------------------------------------------------------------------
 
-inline void IAppConfigManager::setConfig(fwRuntime::ConfigurationElement::csptr cfgElem)
+inline void IAppConfigManager::setConfig(core::runtime::ConfigurationElement::csptr cfgElem)
 {
     m_cfgElem = cfgElem;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "uiActivitiesQt/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace uiActivitiesQt
 {
-struct UIACTIVITIESQT_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct UIACTIVITIESQT_CLASS_API Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

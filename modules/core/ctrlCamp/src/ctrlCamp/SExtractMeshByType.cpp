@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "ctrlCamp/SExtractMeshByType.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -56,7 +56,7 @@ SExtractMeshByType::~SExtractMeshByType()
 
 void SExtractMeshByType::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
     const ConfigType inoutCfg = m_configuration->findConfigurationElement("inout");
     SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);

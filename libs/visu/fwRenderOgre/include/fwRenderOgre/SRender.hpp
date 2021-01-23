@@ -33,12 +33,11 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/registry/ObjectService.hpp>

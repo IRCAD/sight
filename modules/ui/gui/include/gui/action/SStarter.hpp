@@ -108,7 +108,7 @@ class GUI_CLASS_API SStarter : public ::fwGui::IActionSrv
 public:
 
     fwCoreServiceMacro(SStarter, ::fwGui::IActionSrv)
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.

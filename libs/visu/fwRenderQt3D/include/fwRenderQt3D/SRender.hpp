@@ -25,9 +25,9 @@
 #include "fwRenderQt3D/config.hpp"
 #include "fwRenderQt3D/IRenderWindowInteractorManager.hpp"
 
-#include <fwRender/IRender.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRender/IRender.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>

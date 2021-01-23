@@ -23,15 +23,14 @@
 #include "uiTF/Plugin.hpp"
 
 #include <core/base.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace uiTF
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiTF::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiTF::Plugin");
 
 //-----------------------------------------------------------------------------
 

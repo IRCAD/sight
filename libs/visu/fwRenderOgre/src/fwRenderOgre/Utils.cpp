@@ -27,12 +27,11 @@
 #include "fwRenderOgre/factory/Text.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
+#include <core/runtime/operations.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/System.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -148,7 +147,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
     if(root == nullptr)
     {
-        const auto& confPath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
+        const auto& confPath = core::runtime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
 
         // Check file existence
         if(!std::filesystem::exists(confPath))
@@ -223,7 +222,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         root->initialise(false);
 
-        auto resourcePath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/resources.cfg" );
+        auto resourcePath = core::runtime::getLibraryResourceFilePath("fwRenderOgre-0.1/resources.cfg" );
         ::fwRenderOgre::Utils::addResourcesPath( resourcePath );
 
         loadResources();
@@ -796,7 +795,7 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
 
                 if(!currentPath.is_absolute())
                 {
-                    const auto absPath = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / currentPath;
+                    const auto absPath = core::runtime::Runtime::getDefault()->getWorkingPath() / currentPath;
 
                     output << key << "=" << absPath.string() << std::endl;
                 }

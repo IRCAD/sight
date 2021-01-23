@@ -22,6 +22,8 @@
 
 #include "preferences/SPreferences.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
@@ -32,8 +34,6 @@
 #include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -72,7 +72,7 @@ void SPreferences::updating()
 
 void SPreferences::configuring()
 {
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("filename");
+    std::vector < core::runtime::ConfigurationElement::sptr > vectConfig = m_configuration->find("filename");
     SLM_ASSERT("The <filename> element must exist.", !vectConfig.empty() );
     m_prefFile = vectConfig.at(0)->getValue();
 }

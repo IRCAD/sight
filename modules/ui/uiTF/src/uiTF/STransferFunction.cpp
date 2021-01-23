@@ -23,6 +23,8 @@
 #include "uiTF/STransferFunction.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -41,9 +43,6 @@
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -87,7 +86,7 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::STransferFunction)
 
 STransferFunction::STransferFunction()
 {
-    const std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";
@@ -118,7 +117,7 @@ void STransferFunction::configuring()
         const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = core::runtime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -131,32 +130,32 @@ void STransferFunction::configuring()
             const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
             if(deleteIconCfg)
             {
-                m_deleteIcon = ::fwRuntime::getModuleResourceFilePath(deleteIconCfg.value());
+                m_deleteIcon = core::runtime::getModuleResourceFilePath(deleteIconCfg.value());
             }
             const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
             if(newIconCfg)
             {
-                m_newIcon = ::fwRuntime::getModuleResourceFilePath(newIconCfg.value());
+                m_newIcon = core::runtime::getModuleResourceFilePath(newIconCfg.value());
             }
             const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
             if(reinitializeIconCfg)
             {
-                m_reinitializeIcon = ::fwRuntime::getModuleResourceFilePath(reinitializeIconCfg.value());
+                m_reinitializeIcon = core::runtime::getModuleResourceFilePath(reinitializeIconCfg.value());
             }
             const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
             if(renameIconCfg)
             {
-                m_renameIcon = ::fwRuntime::getModuleResourceFilePath(renameIconCfg.value());
+                m_renameIcon = core::runtime::getModuleResourceFilePath(renameIconCfg.value());
             }
             const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
             if(importIconCfg)
             {
-                m_importIcon = ::fwRuntime::getModuleResourceFilePath(importIconCfg.value());
+                m_importIcon = core::runtime::getModuleResourceFilePath(importIconCfg.value());
             }
             const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
             if(exportIconCfg)
             {
-                m_exportIcon = ::fwRuntime::getModuleResourceFilePath(exportIconCfg.value());
+                m_exportIcon = core::runtime::getModuleResourceFilePath(exportIconCfg.value());
             }
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
@@ -166,7 +165,7 @@ void STransferFunction::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -569,8 +568,10 @@ void STransferFunction::initTransferFunctions()
             const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
             reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
-            const ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-            const ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+            const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
+                "service");
+            const core::runtime::EConfigurationElement::sptr fileCfg =
+                core::runtime::EConfigurationElement::New("file");
             srvCfg->addConfigurationElement(fileCfg);
 
             for( std::filesystem::path file :  paths )

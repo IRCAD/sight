@@ -26,8 +26,7 @@
 #include "fwActivities/IBuilder.hpp"
 
 #include <core/base.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwActivities
 {

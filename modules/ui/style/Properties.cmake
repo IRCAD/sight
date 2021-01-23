@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwServices
-    fwRuntime
     fwPreferences
     )
 set( REQUIREMENTS  )

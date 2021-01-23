@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwAtoms
     fwAtomsFilter
     fwAtomsPatch
-    fwRuntime
 )
 
 set( REQUIREMENTS  )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,19 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __PREFERENCES_PLUGIN_HPP__
-#define __PREFERENCES_PLUGIN_HPP__
+#pragma once
+
+#include <core/runtime/Plugin.hpp>
 
 #include <fwData/Composite.hpp>
-
-#include <fwRuntime/Plugin.hpp>
 
 #include <string>
 
 namespace preferences
 {
 
-class Plugin : public ::fwRuntime::Plugin
+class Plugin : public core::runtime::Plugin
 {
 public:
     ~Plugin() noexcept
@@ -51,5 +50,3 @@ protected:
 };
 
 } // namespace preferences
-
-#endif //__PREFERENCES_PLUGIN_HPP__

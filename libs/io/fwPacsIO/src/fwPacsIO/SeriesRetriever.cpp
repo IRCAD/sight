@@ -24,10 +24,9 @@
 
 #include "fwPacsIO/exceptions/RequestFailure.hpp"
 
+#include <core/runtime/operations.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -75,7 +74,7 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
 
     // Load configuration
     std::filesystem::path cfgPath =
-        ::fwRuntime::getLibraryResourceFilePath("fwPacsIO-" FWPACSIO_VER "/storescp.cfg");
+        core::runtime::getLibraryResourceFilePath("fwPacsIO-" FWPACSIO_VER "/storescp.cfg");
     SLM_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");

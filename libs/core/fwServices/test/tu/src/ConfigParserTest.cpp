@@ -30,11 +30,11 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <core/runtime/Convert.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <fwRuntime/Convert.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ConfigParserTest );
@@ -69,7 +69,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     const std::string serviceUUID2 = "myTestService2";
 
     // Create object configuration
-    ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig();
+    core::runtime::ConfigurationElement::sptr config = buildObjectConfig();
 
     // Create the object and its services from the configuration
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
@@ -106,7 +106,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
+core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 {
     ::fwServices::IService::ConfigType config;
 
@@ -149,7 +149,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwServices::IService::ConfigType serviceCfg;
     serviceCfg.add_child("config", config);
 
-    return ::fwRuntime::Convert::fromPropertyTree(serviceCfg);
+    return core::runtime::Convert::fromPropertyTree(serviceCfg);
 }
 
 //------------------------------------------------------------------------------

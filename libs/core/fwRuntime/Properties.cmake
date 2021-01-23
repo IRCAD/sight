@@ -1,8 +1,0 @@
-set( NAME fwRuntime )
-set( VERSION 0.3 )
-set( TYPE LIBRARY )
-set( DEPENDENCIES core)
-set( REQUIREMENTS  )
-set( USE_PCH_FROM_TARGET core )
-set( WARNINGS_AS_ERRORS ON)
-set( GENERATE_OBJECT_LIB ON) # Needed for fwRuntimeDetailTest (generates fwRuntime_obj target)

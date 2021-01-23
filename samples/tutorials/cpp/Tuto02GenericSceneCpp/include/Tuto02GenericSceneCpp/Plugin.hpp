@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "Tuto02GenericSceneCpp/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 #include <fwServices/AppManager.hpp>
 
@@ -32,7 +32,7 @@ namespace Tuto02GenericSceneCpp
 {
 
 /// This class is started when the module is loaded.
-class TUTO02GENERICSCENECPP_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class TUTO02GENERICSCENECPP_CLASS_API Plugin final : public core::runtime::Plugin
 {
 
 public:

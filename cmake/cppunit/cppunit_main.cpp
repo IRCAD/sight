@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2020 IRCAD France
+ * Copyright (C) 2004-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,16 +35,16 @@
 
 #include <filesystem>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
 class MiniLauncher
 {
 public:
     MiniLauncher( std::filesystem::path profilePath )
     {
-        ::fwRuntime::init();
-        const auto& runtime = ::fwRuntime::Runtime::get();
+        core::runtime::init();
+        const auto& runtime = core::runtime::Runtime::get();
 
         const std::filesystem::path cwd = runtime.getWorkingPath();
 
@@ -58,7 +58,7 @@ public:
             throw (std::invalid_argument("<" + profilePath.string() + "> not found." ));
         }
 
-        m_profile = ::fwRuntime::io::ProfileReader::createProfile(profilePath);
+        m_profile = core::runtime::io::ProfileReader::createProfile(profilePath);
 
         m_profile->setParams(0, nullptr);
         m_profile->start();
@@ -73,7 +73,7 @@ public:
     }
 
 private:
-    ::fwRuntime::profile::Profile::sptr m_profile;
+    core::runtime::profile::Profile::sptr m_profile;
 
 };
 

@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwGui
     core
     fwData
-    fwRuntime
     fwMedData
     fwServices
     fwIO

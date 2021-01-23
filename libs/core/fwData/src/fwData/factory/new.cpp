@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwData/Object.hpp"
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <regex>
 
@@ -48,7 +48,7 @@ namespace factory
     if( std::regex_match(classname, match, reg ) && match.size() == 2)
     {
         const std::string libName = match[1].str();
-        const bool loaded         = ::fwRuntime::loadLibrary(libName);
+        const bool loaded         = core::runtime::loadLibrary(libName);
         if(!loaded)
         {
             return nullptr;

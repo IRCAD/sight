@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,15 +25,15 @@
 #include "uiMedDataQml/OrganListModel.hpp"
 #include "uiMedDataQml/SModelSeriesList.hpp"
 
-#include <fwQml/QmlEngine.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwQml/QmlEngine.hpp>
 
 namespace uiMedDataQml
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiMedDataQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiMedDataQml::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -53,7 +53,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getModuleResourcePath("uiMedDataQml");
+    auto path = core::runtime::getModuleResourcePath("uiMedDataQml");
 
     engine->importModulePath(path);
 }

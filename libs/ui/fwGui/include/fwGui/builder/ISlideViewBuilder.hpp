@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -98,7 +98,7 @@ public:
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer() const;
 
     /// Parses the configuration.
-    FWGUI_API virtual void initialize(::fwRuntime::ConfigurationElement::sptr _config);
+    FWGUI_API virtual void initialize(core::runtime::ConfigurationElement::sptr _config);
 
     /// Creates the container.
     FWGUI_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent) = 0;

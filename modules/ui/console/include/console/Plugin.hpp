@@ -24,7 +24,7 @@
 
 #include "console/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace fwThread
 {
@@ -36,7 +36,7 @@ namespace console
 /**
  * @brief   This class is called when the console module is loaded.
  */
-class CONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
+class CONSOLE_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:

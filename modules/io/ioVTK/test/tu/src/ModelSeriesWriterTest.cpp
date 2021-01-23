@@ -22,6 +22,7 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
 #include <fwData/Array.hpp>
@@ -30,8 +31,6 @@
 
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -76,7 +75,7 @@ void ModelSeriesWriterTest::tearDown()
 
 void runModelSeriesSrv(
     const std::string& impl,
-    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const SPTR(core::runtime::EConfigurationElement)& cfg,
     const SPTR(::fwData::Object)& obj)
 {
     ::fwServices::IService::sptr srv = ::fwServices::add(impl);
@@ -102,10 +101,10 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
+core::runtime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
 {
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr cfg    = ::fwRuntime::EConfigurationElement::New("folder");
+    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr cfg    = core::runtime::EConfigurationElement::New("folder");
     cfg->setValue(file.string());
     srvCfg->addConfigurationElement(cfg);
 
@@ -114,13 +113,13 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainerType& files)
+core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainerType& files)
 {
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
 
     for(std::string file :  files)
     {
-        ::fwRuntime::EConfigurationElement::sptr cfg = ::fwRuntime::EConfigurationElement::New("file");
+        core::runtime::EConfigurationElement::sptr cfg = core::runtime::EConfigurationElement::New("file");
         cfg->setValue(file);
         srvCfg->addConfigurationElement(cfg);
     }
@@ -162,7 +161,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         }
 
         auto cfg    = getIOCfgFromFolder(dir / ext);
-        auto extCfg = ::fwRuntime::EConfigurationElement::New("extension");
+        auto extCfg = core::runtime::EConfigurationElement::New("extension");
         extCfg->setValue(ext);
         cfg->addConfigurationElement(extCfg);
 

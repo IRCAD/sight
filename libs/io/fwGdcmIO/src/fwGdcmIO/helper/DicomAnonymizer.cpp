@@ -28,12 +28,11 @@
 #include "fwGdcmIO/helper/tags.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/System.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -66,7 +65,7 @@ DicomAnonymizer::DicomAnonymizer() :
     m_fileIndex(0),
     m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const std::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path tagsPathStr = core::runtime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/tags.csv");
     std::filesystem::path tagsPath = tagsPathStr;
     SLM_ASSERT("File '" + tagsPath.string() + "' must exists",

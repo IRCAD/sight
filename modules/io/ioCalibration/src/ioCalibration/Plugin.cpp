@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,24 +20,29 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/macros.hpp>
-
 #include <ioCalibration/Plugin.hpp>
+
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwServices/macros.hpp>
 
 namespace ioCalibration
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin>
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>
 registrar("::ioCalibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {

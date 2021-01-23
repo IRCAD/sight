@@ -29,6 +29,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 #include <core/tools/Object.hpp>
 
@@ -40,8 +41,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -84,7 +83,7 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
 
 void SOpenCVExtrinsic::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
+    core::runtime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
     if(cfgIdx)
     {
         std::string idxStr = cfgIdx->getValue();
@@ -92,7 +91,7 @@ void SOpenCVExtrinsic::configuring()
         m_camIndex = ::boost::lexical_cast<size_t>(idxStr);
     }
 
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
+    core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
 
     SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));

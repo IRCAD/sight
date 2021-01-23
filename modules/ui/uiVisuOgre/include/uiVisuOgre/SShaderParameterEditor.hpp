@@ -25,14 +25,13 @@
 #include "uiVisuOgre/config.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwData/String.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -74,7 +73,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Initialize the container
     UIVISUOGRE_API virtual void configuring() override;

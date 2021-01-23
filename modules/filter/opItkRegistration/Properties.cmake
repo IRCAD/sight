@@ -5,7 +5,6 @@ set( DEPENDENCIES
     core
     fwData
     fwGui
-    fwRuntime
     fwServices
     itkRegistrationOp
 )

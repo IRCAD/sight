@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "patchMedicalData/Plugin.hpp"
 
-#include <fwMDSemanticPatch/PatchLoader.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwStructuralPatch/PatchLoader.hpp>
 
 namespace patchMedicalData
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::patchMedicalData::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::patchMedicalData::Plugin");
 
 Plugin::~Plugin() noexcept
 {

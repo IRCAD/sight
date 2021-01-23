@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -67,7 +67,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
         }
     }
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    core::runtime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
         if( (*iter)->getName() == "menuItem" )
@@ -85,13 +85,13 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( toolBarItem->hasAttribute("icon") )
             {
-                info.m_icon = ::fwRuntime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon"));
+                info.m_icon = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon"));
             }
 
             if( toolBarItem->hasAttribute("icon2") )
             {
                 SLM_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
-                info.m_icon2 = ::fwRuntime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
+                info.m_icon2 = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
             }
 
             if( toolBarItem->hasAttribute("style") )
@@ -136,7 +136,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( (*iter)->hasAttribute("icon") )
             {
-                info.m_icon = ::fwRuntime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
+                info.m_icon = core::runtime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
             }
             m_actionInfo.push_back( info );
         }

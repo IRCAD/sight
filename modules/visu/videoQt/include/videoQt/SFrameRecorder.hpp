@@ -101,7 +101,7 @@ public:
     /// @}
 
 protected:
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Does nothing.
     VIDEOQT_API virtual void starting() override;

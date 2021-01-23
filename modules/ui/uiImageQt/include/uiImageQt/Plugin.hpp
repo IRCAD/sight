@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __UIIMAGEQT_PLUGIN_HPP__
-#define __UIIMAGEQT_PLUGIN_HPP__
+#pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace uiImageQt
 {
 /**
  * @brief   Contains editors attached to image.
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor
@@ -46,5 +45,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace uiImageQt
-
-#endif //__UIIMAGEQT_PLUGIN_HPP__

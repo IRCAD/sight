@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "fwGuiQml/model/RoleTableModel.hpp"
 
+#include <core/runtime/operations.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
 
@@ -85,7 +85,7 @@ bool LoggerDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/LoggerDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
 
@@ -103,13 +103,13 @@ bool LoggerDialog::show()
 
     // set the icon of the biggest type of error
     auto information =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
     SLM_ASSERT("The information svg is not found", std::filesystem::exists(information));
     auto warning =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
     SLM_ASSERT("The warning svg is not found", std::filesystem::exists(warning));
     auto critical =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
     SLM_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
@@ -133,10 +133,10 @@ bool LoggerDialog::show()
 
     // get the icon of the details checkbox
     auto detailshidden =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
     SLM_ASSERT("The details-hidden svg is not found", std::filesystem::exists(detailshidden));
     auto detailsshown =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
     SLM_ASSERT("The details-shown svg is not found", std::filesystem::exists(detailsshown));
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));

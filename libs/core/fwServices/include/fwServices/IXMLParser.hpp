@@ -24,9 +24,8 @@
 
 #include "fwServices/IService.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -38,11 +37,11 @@ namespace fwServices
  * configuration.
  * As each specific (data) object has a specific structure (attributes), it must be specialized for each one. Such a
  * service is used by the factory
- * New(::fwRuntime::ConfigurationElement::sptr ) method.
+ * New(core::runtime::ConfigurationElement::sptr ) method.
  *
  * The updating() method of this base class parses the XML description: each object named XML children corresponds to a
  * field
- * added to the object (see core::tools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the
+ * added to the object (see core::tools::Object). The New(core::runtime::ConfigurationElement::sptr ) method on the
  * related
  * child is invoked, therefore allowing to build
  * tree like composite object which services.
@@ -57,7 +56,7 @@ public:
 
 public:
 
-    FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
+    FWSERVICES_API void setObjectConfig( core::runtime::ConfigurationElement::csptr _cfgElem );
 
     FWSERVICES_API virtual void createConfig( core::tools::Object::sptr _obj );
 
@@ -69,7 +68,7 @@ public:
 
     FWSERVICES_API virtual void destroyConfig();
 
-    ::fwRuntime::ConfigurationElement::csptr m_cfg;
+    core::runtime::ConfigurationElement::csptr m_cfg;
 
 protected:
 

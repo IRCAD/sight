@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "ioDicom/Plugin.hpp"
 
-#include <fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp>
 
 #include <fwServices/macros.hpp>
 
 namespace ioDicom
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicom::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicom::Plugin");
 
 Plugin::Plugin()
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -117,7 +117,7 @@ public:
      *   with \<parent wid="editorWindow" /\>.
      *   - \b wid  (mandatory): the window identifier.
      */
-    FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
+    FWGUI_API virtual void initialize( core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief manages action service associated with menuItem of toolbar.
@@ -178,7 +178,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map< std::string, std::pair<unsigned int, bool> > SIDToolBarMapType;
     typedef std::map< std::string, unsigned int > WIDToolBarMapType;
 

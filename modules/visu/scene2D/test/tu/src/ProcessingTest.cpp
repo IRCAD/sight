@@ -22,10 +22,10 @@
 
 #include "ProcessingTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
+
 #include <fwData/Histogram.hpp>
 #include <fwData/Image.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
@@ -110,7 +110,7 @@ void ProcessingTest::histogramTest()
     auto srv = ::fwServices::add< ::fwServices::IController >(implementation, "");
     CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
-    ::fwRuntime::EConfigurationElement::sptr binsWidthCfg = ::fwRuntime::EConfigurationElement::New("binsWidth");
+    core::runtime::EConfigurationElement::sptr binsWidthCfg = core::runtime::EConfigurationElement::New("binsWidth");
     binsWidthCfg->setValue("1.0");
 
     srv->registerInput(image, "image");

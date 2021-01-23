@@ -58,7 +58,7 @@ class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
 public:
 
     fwCoreServiceMacro(SSlotCaller, ::fwGui::IActionSrv)
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
     typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;

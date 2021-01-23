@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwItkIO
     fwMedData
     fwMedDataTools
-    fwRuntime
     fwServices
     fwIO
 )

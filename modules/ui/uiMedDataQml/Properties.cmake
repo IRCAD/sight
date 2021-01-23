@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     fwData
     fwMedData
-    fwRuntime
     fwDataTools
     fwQml
 )

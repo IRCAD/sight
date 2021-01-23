@@ -7,7 +7,7 @@ set( DEPENDENCIES
     core 
     fwData 
     
-    fwRuntime 
+    
     fwServices 
     
 )

@@ -29,6 +29,8 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 
@@ -38,9 +40,6 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <QLabel>
 #include <QPointer>

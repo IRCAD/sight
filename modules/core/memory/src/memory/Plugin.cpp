@@ -28,16 +28,15 @@
 #include <core/memory/policy/BarrierDump.hpp>
 #include <core/memory/policy/NeverDump.hpp>
 #include <core/memory/policy/ValveDump.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/tools/System.hpp>
-
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace memory
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("memory::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("memory::Plugin");
 
 Plugin::~Plugin() noexcept
 {

@@ -26,10 +26,9 @@
 #include "fwServices/registry/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <map>
 

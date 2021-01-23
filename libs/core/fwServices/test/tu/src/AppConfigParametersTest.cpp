@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
 
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/Runtime.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <filesystem>
 
@@ -45,16 +45,16 @@ void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
     //modules location
-    ::fwRuntime::init();
+    core::runtime::init();
 
-    std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
+    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    auto& runtime = ::fwRuntime::Runtime::get();
+    auto& runtime = core::runtime::Runtime::get();
     runtime.addModules(location);
 
-    ::fwRuntime::loadModule("servicesReg");
-    ::fwRuntime::loadModule("AppConfigParametersTest");
+    core::runtime::loadModule("servicesReg");
+    core::runtime::loadModule("AppConfigParametersTest");
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();

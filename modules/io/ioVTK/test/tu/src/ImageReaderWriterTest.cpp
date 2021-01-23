@@ -22,6 +22,7 @@
 
 #include "ImageReaderWriterTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
@@ -29,8 +30,6 @@
 #include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -58,7 +57,7 @@ namespace ut
 
 void runImageSrv(
     const std::string& srvname,
-    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const SPTR(core::runtime::EConfigurationElement)& cfg,
     const SPTR(::fwData::Object)& image)
 {
 
@@ -102,10 +101,10 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const std::filesystem::path& file)
+core::runtime::EConfigurationElement::sptr getIOConfiguration(const std::filesystem::path& file)
 {
-    ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr readerCfg    = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr readerCfg    = core::runtime::EConfigurationElement::New("file");
     readerCfg->setValue(file.string());
     readerSrvCfg->addConfigurationElement(readerCfg);
 

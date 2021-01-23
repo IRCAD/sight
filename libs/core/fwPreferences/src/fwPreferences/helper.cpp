@@ -22,12 +22,11 @@
 
 #include "fwPreferences/helper.hpp"
 
+#include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -226,7 +225,7 @@ std::filesystem::path getPreferencesFile()
 {
     namespace bfile = std::filesystem;
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
     FW_RAISE_IF("No current profile set.", !profile);
 
     const std::string appName     = profile->getName();

@@ -22,6 +22,8 @@
 
 #include "uiMedDataQt/widget/ActivityDataView.hpp"
 
+#include <core/runtime/Convert.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -43,8 +45,6 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwRuntime/Convert.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Add.hpp>
@@ -762,11 +762,11 @@ void ActivityDataView::importObjectFromSDB()
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
 
-    ::fwRuntime::ConfigurationElement::csptr ioCfg;
+    core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
-    auto ioConfig  = ::fwRuntime::Convert::toPropertyTree(ioCfg);
+    auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
     srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 

@@ -39,8 +39,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
@@ -120,7 +120,7 @@ void AppConfigManager::startModule()
     SLM_ERROR_IF("Module is not specified, it can not be started.", m_configId.empty());
     if (!m_configId.empty() && !m_isUnitTest)
     {
-        std::shared_ptr< ::fwRuntime::Module > module = registry::AppConfig::getDefault()->getModule(m_configId);
+        std::shared_ptr< core::runtime::Module > module = registry::AppConfig::getDefault()->getModule(m_configId);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
                     module->isStarted());
         if (!module->isStarted())
@@ -286,7 +286,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
 ::fwData::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid) const
 {
     // Building object structure
-    SPTR(::fwRuntime::Extension) ext = ::fwRuntime::findExtension(type.first);
+    SPTR(core::runtime::Extension) ext = core::runtime::findExtension(type.first);
     if (ext)
     {
         const std::string className = core::getClassname< ::fwData::Object >();
@@ -478,7 +478,7 @@ void AppConfigManager::processUpdateItems()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cfgElem)
+void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr cfgElem)
 {
     for(const auto& elem :  cfgElem->getElements())
     {
@@ -559,7 +559,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr cfgElem)
+void AppConfigManager::createServices(core::runtime::ConfigurationElement::csptr cfgElem)
 {
     for(const auto& elem : cfgElem->getElements())
     {

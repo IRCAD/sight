@@ -104,7 +104,7 @@ protected:
     /// used to catch the del key released event
     bool eventFilter(QObject* watched, QEvent* event) override;
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
     virtual void starting() override;

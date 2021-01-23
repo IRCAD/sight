@@ -47,7 +47,7 @@ SDumpPolicy::~SDumpPolicy()
 
 void SDumpPolicy::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     std::vector < ConfigurationType > config = m_configuration->find("config");
 
     if (!config.empty())
@@ -67,7 +67,7 @@ void SDumpPolicy::configuring()
         {
             const ConfigurationType& params = paramsElement.at(0);
 
-            ::fwRuntime::ConfigurationElement::Container::const_iterator iter;
+            core::runtime::ConfigurationElement::Container::const_iterator iter;
 
             for (iter = params->begin(); iter != params->end(); ++iter)
             {

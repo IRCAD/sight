@@ -3,7 +3,6 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     core
-    fwRuntime
     fwServices
     fwPacsIO
     fwTest

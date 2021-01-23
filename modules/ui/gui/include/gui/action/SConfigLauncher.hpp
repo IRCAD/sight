@@ -26,12 +26,11 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/helper/ConfigLauncher.hpp>
 

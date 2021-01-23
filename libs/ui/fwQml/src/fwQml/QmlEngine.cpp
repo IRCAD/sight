@@ -22,9 +22,8 @@
 
 #include "fwQml/QmlEngine.hpp"
 
+#include <core/runtime/Runtime.hpp>
 #include <core/util/LazyInstantiator.hpp>
-
-#include <fwRuntime/Runtime.hpp>
 
 #include <QDir>
 #include <QQmlComponent>
@@ -45,7 +44,7 @@ QmlEngine::QmlEngine()
     m_engine = new QQmlApplicationEngine();
 
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+    const auto runtimePath = core::runtime::Runtime::getDefault()->getWorkingPath();
     const auto qmlDir      = runtimePath / "qml";
     if (std::filesystem::exists(qmlDir))
     {

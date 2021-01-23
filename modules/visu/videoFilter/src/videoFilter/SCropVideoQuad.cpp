@@ -24,9 +24,8 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Type.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 

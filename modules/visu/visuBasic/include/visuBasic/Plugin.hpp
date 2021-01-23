@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "visuBasic/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace visuBasic
 {
 
 /// This class is started when the module is loaded.
-class VISUBASIC_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class VISUBASIC_CLASS_API Plugin final : public core::runtime::Plugin
 {
 
 public:

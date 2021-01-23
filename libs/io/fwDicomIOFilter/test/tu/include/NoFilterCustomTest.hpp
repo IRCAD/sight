@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_UT_NOFILTERCUSTOMTEST_HPP__
-#define __FWDICOMIOFILTER_UT_NOFILTERCUSTOMTEST_HPP__
+#pragma once
+
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,5 +54,3 @@ public:
 
 } // namespace ut
 } // namespace fwDicomIOFilter
-
-#endif // __FWDICOMIOFILTER_UT_NOFILTERCUSTOMTEST_HPP__

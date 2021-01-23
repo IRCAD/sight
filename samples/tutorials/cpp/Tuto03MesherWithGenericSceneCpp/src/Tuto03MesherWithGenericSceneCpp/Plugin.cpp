@@ -23,8 +23,7 @@
 #include "Tuto03MesherWithGenericSceneCpp/Plugin.hpp"
 
 #include <core/com/Slot.hxx>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/Proxy.hpp>
@@ -32,7 +31,7 @@
 namespace Tuto03MesherWithGenericSceneCpp
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
     "::Tuto03MesherWithGenericSceneCpp::Plugin");
 
 static const std::string s_IMAGE_ID          = "image";

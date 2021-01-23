@@ -27,13 +27,12 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 

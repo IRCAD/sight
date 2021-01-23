@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlCom/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace ctrlCom
 {
@@ -32,7 +32,7 @@ namespace ctrlCom
 /**
  * @brief   This class is started when the module is loaded.
  */
-class CTRLCOM_CLASS_API Plugin : public ::fwRuntime::Plugin
+class CTRLCOM_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Destructor. Do nothing.

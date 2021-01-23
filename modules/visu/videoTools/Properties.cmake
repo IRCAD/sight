@@ -8,7 +8,6 @@ set( DEPENDENCIES
         fwDataTools
         fwGui
         fwMath
-        fwRuntime
         fwServices
         arData
         arServices

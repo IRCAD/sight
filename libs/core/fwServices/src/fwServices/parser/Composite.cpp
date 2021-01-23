@@ -37,11 +37,11 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-bool Composite::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement )
+bool Composite::refObjectValidator( core::runtime::ConfigurationElement::sptr _cfgElement )
 {
     bool isOk = true;
 
-    for(    ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin();
+    for(    core::runtime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin();
             configEltIter != _cfgElement->end();
             ++configEltIter)
     {
@@ -78,7 +78,7 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
     ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
     SLM_ASSERT("The passed object must be a fwData::Composite", dataComposite);
 
-    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
+    for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
         if( elem->getName() == "item" )
         {

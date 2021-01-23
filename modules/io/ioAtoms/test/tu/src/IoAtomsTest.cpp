@@ -22,6 +22,7 @@
 
 #include "IoAtomsTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
 #include <fwData/Array.hpp>
@@ -31,8 +32,6 @@
 #include <fwIO/ioTypes.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>

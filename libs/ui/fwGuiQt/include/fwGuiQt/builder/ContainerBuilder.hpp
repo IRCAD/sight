@@ -26,11 +26,10 @@
 #include "fwGuiQt/container/QtContainer.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwGui/builder/IContainerBuilder.hpp>
 #include <fwGui/container/fwContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {

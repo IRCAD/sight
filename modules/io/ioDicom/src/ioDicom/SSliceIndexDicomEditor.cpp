@@ -85,7 +85,7 @@ void SSliceIndexDicomEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
                "a \"config\" element.", config);
 
@@ -97,8 +97,8 @@ void SSliceIndexDicomEditor::configuring()
                "config element.", success);
 
     // Reader configuration
-    ::fwRuntime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
-    m_readerConfig                                       =
+    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    m_readerConfig =
         (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
 
     // Delay

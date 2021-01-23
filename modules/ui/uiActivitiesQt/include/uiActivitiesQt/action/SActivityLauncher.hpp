@@ -24,15 +24,15 @@
 
 #include "uiActivitiesQt/config.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwData/Vector.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace uiActivitiesQt
 {

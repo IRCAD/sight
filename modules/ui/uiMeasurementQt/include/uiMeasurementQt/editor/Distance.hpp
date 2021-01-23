@@ -82,7 +82,7 @@ public:
      */
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /**
      * @brief Install the layout.

@@ -22,16 +22,15 @@
 
 #include "ctrlMemory/Plugin.hpp"
 
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace ctrlMemory
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlMemory::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlMemory::Plugin");
 
 //-----------------------------------------------------------------------------
 

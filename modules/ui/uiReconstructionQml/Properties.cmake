@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwData
     fwGui
     fwQml
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS styleQml )

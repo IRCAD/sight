@@ -83,7 +83,7 @@ void SSlider::configuring()
 
     // VALUE
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("value");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("value");
         if(config)
         {
             m_value = std::stoi(config->getValue());
@@ -92,7 +92,7 @@ void SSlider::configuring()
 
     // DEFAULT VALUE
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("defaultValue");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("defaultValue");
         if(config)
         {
             m_defaultValue = std::stoi(config->getValue());
@@ -101,7 +101,7 @@ void SSlider::configuring()
 
     // RESET BUTTON
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("resetButton");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("resetButton");
         if(config)
         {
             m_hasResetButton = (config->getValue() == "true");
@@ -110,7 +110,7 @@ void SSlider::configuring()
 
     // UPDATE ON RELEASE
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("updateOnRelease");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("updateOnRelease");
         if(config)
         {
             m_isUpdatedOnRelease = (config->getValue() == "true");
@@ -119,7 +119,7 @@ void SSlider::configuring()
 
     // EDIT BOX
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("editBox");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("editBox");
         if(config)
         {
             m_hasEditBox = (config->getValue() == "true");
@@ -128,7 +128,7 @@ void SSlider::configuring()
 
     // TEXT
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("text");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("text");
         if(config)
         {
             m_text = QString(config->getValue().c_str());
@@ -137,11 +137,11 @@ void SSlider::configuring()
 
     // RANGE
     {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("range");
+        core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("range");
         if(config)
         {
-            ::fwRuntime::ConfigurationElement::sptr minCfg = config->findConfigurationElement("min");
-            ::fwRuntime::ConfigurationElement::sptr maxCfg = config->findConfigurationElement("max");
+            core::runtime::ConfigurationElement::sptr minCfg = config->findConfigurationElement("min");
+            core::runtime::ConfigurationElement::sptr maxCfg = config->findConfigurationElement("max");
             SLM_ASSERT("Missing min and max configuration", minCfg && maxCfg);
 
             m_minValue = std::stoi(minCfg->getValue());

@@ -24,10 +24,9 @@
 
 #include "ExTimeLine/SConsumer.hpp"
 
+#include <core/runtime/Runtime.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -37,7 +36,7 @@ namespace ExTimeLine
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ExTimeLine::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ExTimeLine::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -54,8 +53,8 @@ void Plugin::start()
     ::fwServices::registry::ActiveWorkers::getDefault()
     ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
 
-    ::fwRuntime::Runtime* const rntm = ::fwRuntime::Runtime::getDefault();
-    std::shared_ptr< ::fwRuntime::Module >    module = rntm->findModule( "ExTimeLine" );
+    core::runtime::Runtime* const rntm                 = core::runtime::Runtime::getDefault();
+    std::shared_ptr< core::runtime::Module >    module = rntm->findModule( "ExTimeLine" );
     std::cout << module->getLibraryLocation() << std::endl;
 }
 

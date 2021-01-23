@@ -27,6 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -36,8 +37,6 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 

@@ -48,7 +48,7 @@ void TransformationMatrix3D::createConfig( core::tools::Object::sptr _obj )
     ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast( _obj );
     SLM_ASSERT("matrix not instanced", matrix);
 
-    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
+    for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
         if ( elem->getName() == "matrix" )
         {

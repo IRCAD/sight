@@ -25,6 +25,8 @@
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
@@ -32,9 +34,6 @@
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -78,7 +77,7 @@ void Distance::starting()
         this->getContainer() );
 
     namespace fs = std::filesystem;
-    fs::path pathImageDist = ::fwRuntime::getModuleResourceFilePath("uiMeasurementQt", "distance.png");
+    fs::path pathImageDist = core::runtime::getModuleResourceFilePath("uiMeasurementQt", "distance.png");
     SLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));

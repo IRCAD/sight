@@ -115,7 +115,7 @@ SImageSignalForwarder::~SImageSignalForwarder() noexcept
 
 void SImageSignalForwarder::configuring()
 {
-    std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("forward");
+    std::vector< core::runtime::ConfigurationElement::sptr > configs = m_configuration->find("forward");
 
     for (auto cfg : configs)
     {

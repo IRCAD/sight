@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "ioGdcm/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 
 namespace ioGdcm
 {
 
-using namespace ::fwRuntime::utils;
+using namespace core::runtime::utils;
 static GenericExecutableFactoryRegistrar<Plugin> registrar("::ioGdcm::Plugin");
 
 Plugin::~Plugin() noexcept

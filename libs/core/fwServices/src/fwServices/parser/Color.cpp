@@ -24,9 +24,9 @@
 
 #include "fwServices/macros.hpp"
 
-#include <fwData/Color.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwData/Color.hpp>
 
 fwServicesRegisterMacro(::fwServices::IXMLParser, ::fwServices::parser::Color)
 fwServicesRegisterObjectMacro(::fwServices::parser::Color, ::fwData::Color)
@@ -45,13 +45,13 @@ void Color::createConfig(core::tools::Object::sptr _obj)
     const ::fwData::Color::sptr color = ::fwData::Color::dynamicCast(_obj);
     SLM_ASSERT("Color does not exist.", color);
 
-    ::fwRuntime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement(s_VALUE_CONFIG);
+    core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement(s_VALUE_CONFIG);
     SLM_ASSERT("Color config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
     if(configs.size() == 1)
     {
-        const ::fwRuntime::ConfigurationElement::csptr config = *configs.begin();
-        const std::string hexaColor                           = config->getValue();
+        const core::runtime::ConfigurationElement::csptr config = *configs.begin();
+        const std::string hexaColor                             = config->getValue();
         SLM_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
             "hexadecimal digits. Given color: " << hexaColor,

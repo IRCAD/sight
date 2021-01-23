@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwData
     arData
     fwServices
-    fwRuntime
     fwGui
     fwPreferences
     fwIO

@@ -28,12 +28,11 @@
 #include "fwServices/registry/AppConfig.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace fwServices
 {

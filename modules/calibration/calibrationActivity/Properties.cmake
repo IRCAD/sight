@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     fwData
     fwActivities
-    fwRuntime
 )
 set( REQUIREMENTS
     preferences             # Start the module, load file location or window preferences

@@ -26,7 +26,7 @@
 #include "fwRenderQt3D/IAdaptor.hpp"
 #include "fwRenderQt3D/registry/Adaptor.hpp"
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>

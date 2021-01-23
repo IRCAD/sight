@@ -22,16 +22,15 @@
 
 #include "opDepthMap/Plugin.hpp"
 
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace opDepthMap
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin>
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>
 registrar("::opDepthMap::Plugin");
 
 //-----------------------------------------------------------------------------

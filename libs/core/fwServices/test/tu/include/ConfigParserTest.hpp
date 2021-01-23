@@ -25,8 +25,7 @@
 #include <fwServices/macros.hpp>
 
 #include <core/base.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -56,7 +55,7 @@ public:
 
 private:
     /// Create a configurationElement to build an object
-    ::fwRuntime::ConfigurationElement::sptr buildObjectConfig();
+    core::runtime::ConfigurationElement::sptr buildObjectConfig();
 };
 
 } //namespace ut

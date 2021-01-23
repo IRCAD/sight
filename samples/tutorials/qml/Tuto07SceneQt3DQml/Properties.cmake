@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwQml
     fwServices
     fwRenderQt3D
-    fwRuntime
 )
 set( REQUIREMENTS
     guiQml

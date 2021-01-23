@@ -84,7 +84,7 @@ void ViewRegistrar::setParent(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void ViewRegistrar::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
     SLM_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",

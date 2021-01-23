@@ -61,7 +61,7 @@ void STimestampSlotCaller::configuring()
 
     ConfigurationType cfg = m_configuration->findConfigurationElement("slots");
 
-    ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
+    core::runtime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
 
     std::regex re("(.*)/(.*)");
     std::smatch match;

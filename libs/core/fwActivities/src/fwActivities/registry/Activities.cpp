@@ -22,13 +22,13 @@
 
 #include "fwActivities/registry/Activities.hpp"
 
-#include <fwData/Vector.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/Runtime.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/Runtime.hpp>
+#include <fwData/Vector.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -112,27 +112,27 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
+ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     id(ext->findConfigurationElement("id")->getValue()),
     title(ext->findConfigurationElement("title")->getValue()),
     description(ext->findConfigurationElement("desc")->getValue()),
-    icon(::fwRuntime::getModuleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
+    icon(core::runtime::getModuleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
     tabInfo(title),
     bundleId(ext->getModule()->getIdentifier()),
     bundleVersion(ext->getModule()->getVersion().string()),
-    appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
+    appConfig(core::runtime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     if(ext->findConfigurationElement("tabinfo"))
     {
         tabInfo = ext->findConfigurationElement("tabinfo")->getValue();
     }
 
-    ::fwRuntime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
-    for(  ::fwRuntime::ConfigurationElementContainer::Iterator elem = req->begin();
+    core::runtime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
+    for(  core::runtime::ConfigurationElementContainer::Iterator elem = req->begin();
           elem != req->end();
           ++elem )
     {
-        ActivityRequirement requirement( ::fwRuntime::Convert::toPropertyTree(*elem).get_child("requirement") );
+        ActivityRequirement requirement( core::runtime::Convert::toPropertyTree(*elem).get_child("requirement") );
         requirements.push_back( requirement );
 
         MinMaxType& minMax = m_requirementCount[requirement.type];
@@ -149,7 +149,7 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
         }
     }
 
-    ::fwRuntime::ConfigurationElement::csptr builderCfg = ext->findConfigurationElement("builder");
+    core::runtime::ConfigurationElement::csptr builderCfg = ext->findConfigurationElement("builder");
     if (builderCfg)
     {
         builderImpl = builderCfg->getValue();
@@ -160,7 +160,7 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
     }
 
     // backward compatibility
-    ::fwRuntime::ConfigurationElement::csptr validatorCfg = ext->findConfigurationElement("validator");
+    core::runtime::ConfigurationElement::csptr validatorCfg = ext->findConfigurationElement("validator");
     if(validatorCfg)
     {
         std::string validatorImplStr = validatorCfg->getValue();
@@ -170,10 +170,10 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
         }
     }
 
-    ::fwRuntime::ConfigurationElement::sptr validatorsCfg = ext->findConfigurationElement("validators");
+    core::runtime::ConfigurationElement::sptr validatorsCfg = ext->findConfigurationElement("validators");
     if( validatorsCfg )
     {
-        auto validators = ::fwRuntime::Convert::toPropertyTree(validatorsCfg).get_child("validators");
+        auto validators = core::runtime::Convert::toPropertyTree(validatorsCfg).get_child("validators");
         BOOST_FOREACH( auto const &validator, validators.equal_range("validator") )
         {
             validatorsImpl.push_back( validator.second.get_value<std::string>() );
@@ -253,10 +253,10 @@ Activities::~Activities()
 
 void Activities::parseBundleInformation()
 {
-    std::vector< SPTR( ::fwRuntime::Extension ) >  extensions
-        = ::fwRuntime::getAllExtensionsForPoint("::fwActivities::registry::Activities");
+    std::vector< SPTR( core::runtime::Extension ) >  extensions
+        = core::runtime::getAllExtensionsForPoint("::fwActivities::registry::Activities");
 
-    for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
+    for( const SPTR( core::runtime::Extension ) &ext :  extensions )
     {
         SLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);

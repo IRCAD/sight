@@ -26,11 +26,10 @@
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwGui/container/fwToolBar.hpp>
 #include <fwGui/layoutManager/IToolBarLayoutManager.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {

@@ -140,7 +140,7 @@ void ActivityLauncherManager::open()
     reader->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig", "::uiIO::editor::SIOSelector");
-    reader->setConfiguration(::fwRuntime::ConfigurationElement::constCast(cfgElem));
+    reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     reader->configure();
 
     reader->start();
@@ -161,7 +161,7 @@ void ActivityLauncherManager::save()
     writer->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig", "::uiIO::editor::SIOSelector");
-    writer->setConfiguration(::fwRuntime::ConfigurationElement::constCast(cfgElem));
+    writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     writer->configure();
     writer->start();
     writer->update();

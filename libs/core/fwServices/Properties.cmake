@@ -1,7 +1,7 @@
 set( NAME fwServices )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
-set( DEPENDENCIES fwActivities fwRuntime )
+set( DEPENDENCIES fwActivities )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )
 set( WARNINGS_AS_ERRORS ON )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "activities/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace activities
 {
 /**
  *
  */
-struct ACTIVITIES_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct ACTIVITIES_CLASS_API Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

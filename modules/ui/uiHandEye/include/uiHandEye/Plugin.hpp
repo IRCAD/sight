@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiHandEye/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace uiHandEye
 {
@@ -33,7 +33,7 @@ namespace uiHandEye
  * @brief This struct is started when the module is loaded.
  * @deprecated This module is not supported anymore, it will be removed in sight 21.0.
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   Destructor
@@ -43,7 +43,7 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief Start method.
      *
-     * @exception ::fwRuntime::RuntimeException.
+     * @exception core::runtime::RuntimeException.
      * This method is used by runtime in order to initialize the module.
      */
     [[deprecated("This module is not supported anymore, it will be removed in sight 21.0.")]]

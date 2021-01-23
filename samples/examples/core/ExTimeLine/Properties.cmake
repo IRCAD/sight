@@ -4,7 +4,6 @@ set( TYPE APP )
 set( DEPENDENCIES
     arData
     fwData
-    fwRuntime
     fwServices
     core
     exTimeLineData

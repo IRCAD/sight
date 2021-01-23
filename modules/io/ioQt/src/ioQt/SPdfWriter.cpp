@@ -22,6 +22,8 @@
 
 #include "ioQt/SPdfWriter.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
 
@@ -33,9 +35,6 @@
 #include <fwGui/GuiRegistry.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/ConfigurationElementContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -77,7 +76,7 @@ void SPdfWriter::configuring()
 {
     this->::fwIO::IWriter::configuring();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
     if (containersConfig)
     {

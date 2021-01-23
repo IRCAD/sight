@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_UT_IMAGECONVERSIONTEST_HPP__
-#define __FWITKIO_UT_IMAGECONVERSIONTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <fwData/Image.hpp>
-
 
 namespace fwItkIO
 {
@@ -63,5 +61,3 @@ public:
 } //namespace fwItkIO
 
 #include "ImageConversionTest.hxx"
-
-#endif // __FWITKIO_UT_IMAGECONVERSIONTEST_HPP__

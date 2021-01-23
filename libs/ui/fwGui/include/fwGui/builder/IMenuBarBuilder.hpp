@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -60,7 +60,7 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
+    FWGUI_API virtual void initialize( core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief Instantiate layout with parent menuBar.

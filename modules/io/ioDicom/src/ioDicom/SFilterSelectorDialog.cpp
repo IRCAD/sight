@@ -77,7 +77,7 @@ void SFilterSelectorDialog::configuring()
     //  <addSelection filter="::fwDicomIOFilter::composite::CTImageStorageDefaultComposite" />
     //  <addSelection filter="::fwDicomIOFilter::composite::CTImageStorageDefaultComposite" />
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+    core::runtime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
     for(; iter != this->m_configuration->end(); ++iter )
     {
         SLM_INFO( "SFilterSelectorDialog "  + (*iter)->getName());

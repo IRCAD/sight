@@ -27,6 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -36,8 +37,6 @@
 #include <fwData/Composite.hpp>
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 

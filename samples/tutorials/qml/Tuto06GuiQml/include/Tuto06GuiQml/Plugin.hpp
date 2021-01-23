@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "Tuto06GuiQml/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace Tuto06GuiQml
 {
@@ -32,7 +32,7 @@ namespace Tuto06GuiQml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO06GUIQML_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO06GUIQML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.

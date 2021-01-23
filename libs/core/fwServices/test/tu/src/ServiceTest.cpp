@@ -30,6 +30,8 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
 
@@ -37,9 +39,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Object.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
 
 #include <fwTest/helper/wait.hpp>
 

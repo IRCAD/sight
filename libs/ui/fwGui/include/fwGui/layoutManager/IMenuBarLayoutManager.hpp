@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -46,7 +46,7 @@ class FWGUI_CLASS_API IMenuBarLayoutManager : public ::fwGui::GuiBaseObject
 public:
     fwCoreClassMacro(IMenuBarLayoutManager, ::fwGui::GuiBaseObject)
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;

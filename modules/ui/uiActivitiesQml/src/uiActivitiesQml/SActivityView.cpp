@@ -24,14 +24,13 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -110,7 +109,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
-        std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+        std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
                     "started !", module->isStarted())
         if (!module->isStarted())
@@ -119,7 +118,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         }
 
         // get Activity path, it allows to retrieve the associated Qml file
-        const auto path = ::fwRuntime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
+        const auto path = core::runtime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);

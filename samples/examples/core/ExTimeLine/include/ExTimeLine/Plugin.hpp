@@ -24,15 +24,14 @@
 
 #include "ExTimeLine/config.hpp"
 
+#include <core/runtime/Plugin.hpp>
 #include <core/thread/Worker.hpp>
-
-#include <fwRuntime/Plugin.hpp>
 
 namespace ExTimeLine
 {
 
 /// This class is started when the module is loaded.
-class EXTIMELINE_CLASS_API Plugin : public ::fwRuntime::Plugin
+class EXTIMELINE_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:

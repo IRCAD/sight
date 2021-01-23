@@ -26,11 +26,10 @@
 
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <fwData/String.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
@@ -131,7 +130,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         ::fwData::PointList::sptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"]           = pointList1->getID();
 
-        ::fwRuntime::ConfigurationElement::csptr config;
+        core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
             strConfig = "displayTwoImagesConfig";

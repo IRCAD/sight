@@ -24,14 +24,13 @@
 
 #include <fwPreferences/helper.hpp>
 
+#include <core/runtime/operations.hpp>
+#include <core/runtime/Profile.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/Profile.hpp>
 
 #include <filesystem>
 
@@ -59,10 +58,10 @@ void PreferencesTest::tearDown()
 
 void PreferencesTest::runtimeTest()
 {
-    ::fwRuntime::init();
+    core::runtime::init();
 
     const std::string profileName = core::tools::UUID::generateUUID();
-    auto profile                  = ::fwRuntime::profile::getCurrentProfile();
+    auto profile                  = core::runtime::profile::getCurrentProfile();
     profile->setName(profileName);
 
     const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profileName);
@@ -80,7 +79,7 @@ void PreferencesTest::helperTest()
     const std::string preferenceKey   = "PREF_KEY_TEST";
     const std::string preferenceValue = "PREF_VALUE_TEST";
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
 
     const std::filesystem::path appPrefDir = core::tools::os::getUserDataDir("sight", profile->getName());
     const std::filesystem::path prefFile   = appPrefDir / "preferences.json";

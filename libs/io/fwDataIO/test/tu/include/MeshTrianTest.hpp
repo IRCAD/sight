@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <fwData/Mesh.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

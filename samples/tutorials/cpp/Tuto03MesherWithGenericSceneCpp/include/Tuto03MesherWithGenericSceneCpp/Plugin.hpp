@@ -25,8 +25,7 @@
 #include "Tuto03MesherWithGenericSceneCpp/config.hpp"
 
 #include <core/com/SlotBase.hpp>
-
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 #include <fwServices/AppManager.hpp>
 
@@ -36,7 +35,7 @@ namespace Tuto03MesherWithGenericSceneCpp
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO03MESHERWITHGENERICSCENECPP_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO03MESHERWITHGENERICSCENECPP_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.

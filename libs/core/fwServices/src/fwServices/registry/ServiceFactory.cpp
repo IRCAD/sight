@@ -25,14 +25,13 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/Runtime.hpp>
 #include <core/util/LazyInstantiator.hpp>
 
 #include <fwData/Exception.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <functional>
 #include <vector>
@@ -54,11 +53,11 @@ void ServiceFactory::parseBundleInformation()
 {
     SrvRegContainer moduleInfoMap;
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    typedef std::shared_ptr< core::runtime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
-    extElements = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::ServiceFactory");
+    extElements = core::runtime::getAllExtensionsForPoint("::fwServices::registry::ServiceFactory");
     for(ExtensionType extElt :  extElements)
     {
         std::vector< ConfigurationType > cfgEltVec = extElt->getElements();
@@ -185,7 +184,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
         info.module->start();
         lock.lock();
 
-        ::fwRuntime::profile::getCurrentProfile()->setup();
+        core::runtime::profile::getCurrentProfile()->setup();
 
         FW_RAISE_EXCEPTION_IF(
             ::fwData::Exception( "After loading the module " + info.module->getIdentifier() + " , factory " + _srvImpl

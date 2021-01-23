@@ -23,13 +23,12 @@
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -93,7 +92,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
 
     if(!icon.empty())
     {
-        m_frameInfo.m_iconPath = ::fwRuntime::getModuleResourceFilePath(icon.at(0)->getValue());
+        m_frameInfo.m_iconPath = core::runtime::getModuleResourceFilePath(icon.at(0)->getValue());
         SLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
                    std::filesystem::exists(m_frameInfo.m_iconPath));
     }
@@ -114,7 +113,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
 
     if(!styles.empty())
     {
-        ::fwRuntime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
+        core::runtime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
         SLM_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode") );
         const std::string style = stylesCfgElt->getExistingAttributeValue("mode");
 

@@ -29,6 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -42,8 +43,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -106,19 +105,20 @@ void SCameraConfigLauncher::starting()
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString::fromStdString(::fwRuntime::getModuleResourceFilePath("media", "icons/Import.svg").string()));
+    QIcon addIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+                                                                                  "icons/Import.svg").string()));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon importIcon(QString::fromStdString(::fwRuntime::getModuleResourceFilePath("media",
-                                                                                   "icons/CameraSeries.svg").string()));
+    QIcon importIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+                                                                                     "icons/CameraSeries.svg").string()));
     m_importButton = new QPushButton(importIcon, "");
     m_importButton->setToolTip("Import an intrinsic calibration.");
     layout->addWidget(m_importButton);
 
-    QIcon removeIcon(QString::fromStdString(::fwRuntime::getModuleResourceFilePath("media",
-                                                                                   "icons/remove.svg").string()));
+    QIcon removeIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+                                                                                     "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);

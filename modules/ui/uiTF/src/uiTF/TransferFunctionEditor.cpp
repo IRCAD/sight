@@ -23,6 +23,8 @@
 #include "uiTF/TransferFunctionEditor.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
@@ -38,9 +40,6 @@
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -95,7 +94,7 @@ void TransferFunctionEditor::configuring()
         const auto pathCfg = config.equal_range("path");
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = core::runtime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -106,7 +105,7 @@ void TransferFunctionEditor::configuring()
     }
     if (useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -124,7 +123,7 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
+    std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
 
     const auto deletePath = modulePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
@@ -493,8 +492,8 @@ void TransferFunctionEditor::initTransferFunctions()
         ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
         reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
-        ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-        ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+        core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
+        core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
         srvCfg->addConfigurationElement(fileCfg);
 
         for( std::filesystem::path file :  paths )

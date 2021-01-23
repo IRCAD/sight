@@ -83,7 +83,7 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
-    FWSERVICES_API static ConnectionInfo parseConnections(const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+    FWSERVICES_API static ConnectionInfo parseConnections(const CSPTR(core::runtime::ConfigurationElement)& cfg,
                                                           const CSPTR(core::tools::Object)& obj =
                                                               CSPTR(core::tools::Object)());
 
@@ -94,7 +94,7 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      */
     FWSERVICES_API static ProxyConnections parseConnections2(
-        const CSPTR(::fwRuntime::ConfigurationElement)& connectionCfg,
+        const CSPTR(core::runtime::ConfigurationElement)& connectionCfg,
         const std::string& errMsgHead,
         std::function<std::string()> generateChannelNameFn);
 
@@ -106,7 +106,7 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     FWSERVICES_API static void createConnections(
-        const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+        const CSPTR(core::runtime::ConfigurationElement)& cfg,
         core::com::helper::SigSlotConnection& helper,
         const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)());
 
@@ -120,7 +120,7 @@ public:
      */
     FWSERVICES_API static void createProxy(
         const std::string& objectKey,
-        const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+        const CSPTR(core::runtime::ConfigurationElement)& cfg,
         ProxyConnectionsMapType& proxyMap,
         const CSPTR(::fwData::Object)& obj = CSPTR(::fwData::Object)());
 
@@ -130,7 +130,7 @@ public:
 
     /// Parse a service and return a service configuration
     FWSERVICES_API static ::fwServices::IService::Config parseService(
-        const CSPTR(::fwRuntime::ConfigurationElement)& srvElem,
+        const CSPTR(core::runtime::ConfigurationElement)& srvElem,
         const std::string& errMsgHead);
 };
 

@@ -22,13 +22,13 @@
 
 #include "fwServices/registry/AppConfig.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/Runtime.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <regex>
 
@@ -66,7 +66,7 @@ AppConfig::~AppConfig()
 
 void AppConfig::parseBundleInformation()
 {
-    auto extensions = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
+    auto extensions = core::runtime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
     for( const auto& ext : extensions )
     {
         // Get id
@@ -88,9 +88,9 @@ void AppConfig::parseBundleInformation()
         AppInfo::ParametersType parameters;
         if ( ext->hasConfigurationElement("parameters") )
         {
-            ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
-            ::fwRuntime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-            for( ::fwRuntime::ConfigurationElement::sptr paramConfig :  elements )
+            core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
+            core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
+            for( core::runtime::ConfigurationElement::sptr paramConfig :  elements )
             {
                 std::string name = paramConfig->getExistingAttributeValue("name");
 
@@ -107,12 +107,12 @@ void AppConfig::parseBundleInformation()
         }
 
         // Get config
-        ::fwRuntime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
+        core::runtime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
         // Get module
-        std::shared_ptr< ::fwRuntime::Module> module = ext->getModule();
-        std::string moduleId                         = module->getIdentifier();
-        std::string moduleVersion                    = module->getVersion().string();
+        std::shared_ptr< core::runtime::Module> module = ext->getModule();
+        std::string moduleId                           = module->getIdentifier();
+        std::string moduleVersion                      = module->getVersion().string();
 
         // Add app info
         this->addAppInfo( configId, group, desc, parameters, config, moduleId, moduleVersion );
@@ -125,7 +125,7 @@ void AppConfig::addAppInfo( const std::string& configId,
                             const std::string& group,
                             const std::string& desc,
                             const AppInfo::ParametersType& parameters,
-                            const ::fwRuntime::ConfigurationElement::csptr& config,
+                            const core::runtime::ConfigurationElement::csptr& config,
                             const std::string& moduleId,
                             const std::string& moduleVersion)
 {
@@ -160,7 +160,7 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
+core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
     const std::string& configId,
     const FieldAdaptorType fieldAdaptors,
     bool autoPrefixId) const
@@ -172,7 +172,7 @@ void AppConfig::clearRegistry()
                iter != m_reg.end());
 
     // Adapt config
-    ::fwRuntime::ConfigurationElement::sptr newConfig;
+    core::runtime::ConfigurationElement::sptr newConfig;
 
     FieldAdaptorType fields;
     AppInfo::ParametersType parameters = iter->second->parameters;
@@ -210,9 +210,9 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string& configId,
-                                                                              ::fwData::Composite::csptr replaceFields,
-                                                                              bool autoPrefixId )
+core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string& configId,
+                                                                                ::fwData::Composite::csptr replaceFields,
+                                                                                bool autoPrefixId )
 const
 {
     FieldAdaptorType fieldAdaptors = compositeToFieldAdaptor( replaceFields );
@@ -221,13 +221,13 @@ const
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::Module > AppConfig::getModule(const std::string& _configId)
+std::shared_ptr< core::runtime::Module > AppConfig::getModule(const std::string& _configId)
 {
     Registry::const_iterator iter = m_reg.find( _configId );
     SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
                iter != m_reg.end());
 
-    auto module = ::fwRuntime::findModule(iter->second->moduleId, iter->second->moduleVersion);
+    auto module = core::runtime::findModule(iter->second->moduleId, iter->second->moduleVersion);
 
     return module;
 }
@@ -297,7 +297,7 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 
 //-----------------------------------------------------------------------------
 
-void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+void AppConfig::collectUIDForParameterReplace(core::runtime::ConfigurationElement::csptr _cfgElem,
                                               UidParameterReplaceType& _replaceMap)
 {
     const auto& name = _cfgElem->getName();
@@ -322,12 +322,13 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                                const FieldAdaptorType& _fieldAdaptors,
-                                                                const UidParameterReplaceType& _uidParameterReplace,
-                                                                const std::string& _autoPrefixId)
+core::runtime::EConfigurationElement::sptr AppConfig::adaptConfig(core::runtime::ConfigurationElement::csptr _cfgElem,
+                                                                  const FieldAdaptorType& _fieldAdaptors,
+                                                                  const UidParameterReplaceType& _uidParameterReplace,
+                                                                  const std::string& _autoPrefixId)
 {
-    ::fwRuntime::EConfigurationElement::sptr result = ::fwRuntime::EConfigurationElement::New( _cfgElem->getName() );
+    core::runtime::EConfigurationElement::sptr result =
+        core::runtime::EConfigurationElement::New( _cfgElem->getName() );
     result->setValue( adaptField( _cfgElem->getValue(), _fieldAdaptors ) );
 
     for( const auto& attribute :  _cfgElem->getAttributes() )
@@ -380,7 +381,7 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
             if ( !std::regex_match( subElem->getValue(), s_isVariable ) )
             {
                 // This is not a variable, add the prefix
-                auto elt = ::fwRuntime::EConfigurationElement::New( subElem->getName() );
+                auto elt = core::runtime::EConfigurationElement::New( subElem->getName() );
                 elt->setValue( _autoPrefixId + "_" + subElem->getValue() );
 
                 for (const auto& attr : subElem->getAttributes())

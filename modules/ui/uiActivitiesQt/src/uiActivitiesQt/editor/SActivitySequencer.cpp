@@ -24,13 +24,12 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -130,7 +129,8 @@ void SActivitySequencer::starting()
     m_widget = new QQuickWidget();
     mainLayout->addWidget(m_widget);
 
-    const auto path = ::fwRuntime::getModuleResourceFilePath("uiActivitiesQt", "uiActivitiesQt/ActivitySequencer.qml");
+    const auto path =
+        core::runtime::getModuleResourceFilePath("uiActivitiesQt", "uiActivitiesQt/ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
     auto engine     = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -166,7 +166,7 @@ void SActivitySequencer::starting()
     }
 
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+    const auto runtimePath = core::runtime::Runtime::getDefault()->getWorkingPath();
     const auto qmlDir      = runtimePath / "qml";
     if (std::filesystem::exists(qmlDir))
     {

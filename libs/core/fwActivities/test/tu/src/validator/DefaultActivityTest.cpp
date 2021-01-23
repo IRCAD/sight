@@ -26,6 +26,10 @@
 #include <fwActivities/IValidator.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
+#include <core/runtime/Extension.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
@@ -38,10 +42,6 @@
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -60,8 +60,8 @@ namespace ut
 void DefaultActivityTest::setUp()
 {
     // Set up context before running a test.
-    ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
-    ::fwRuntime::loadModule("tu_validator");
+    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    core::runtime::loadModule("tu_validator");
 
     ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
 }

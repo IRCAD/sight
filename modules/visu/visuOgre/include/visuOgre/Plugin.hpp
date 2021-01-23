@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuOgre/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 #include <OgreLog.h>
 
@@ -56,7 +56,7 @@ public:
 };
 
 /// This class is started when the module is loaded.
-class VISUOGRE_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class VISUOGRE_CLASS_API Plugin final : public core::runtime::Plugin
 {
 public:
 

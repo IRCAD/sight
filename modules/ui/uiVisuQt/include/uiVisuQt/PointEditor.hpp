@@ -59,7 +59,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
     virtual void starting() override;

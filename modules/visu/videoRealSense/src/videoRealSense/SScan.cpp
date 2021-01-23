@@ -30,6 +30,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/Type.hpp>
 
 #include <fwData/location/SingleFile.hpp>
@@ -39,9 +41,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -164,7 +163,7 @@ void SScan::configuring()
 
     }
 
-    static const auto s_modulePath = ::fwRuntime::getModuleResourcePath(std::string("videoRealSense"));
+    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("videoRealSense"));
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
 }

@@ -25,10 +25,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 

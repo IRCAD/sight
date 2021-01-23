@@ -25,6 +25,8 @@
 #include "fwActivities/IActivityValidator.hpp"
 #include "fwActivities/IValidator.hpp"
 
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -32,9 +34,6 @@
 #include <fwData/mt/locked_ptr.hpp>
 #include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
 
 namespace fwActivities
 {
@@ -120,7 +119,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
     if (!module->isStarted())
     {
         module->start();

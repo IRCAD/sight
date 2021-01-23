@@ -22,9 +22,6 @@
 
 #pragma once
 
-#error core/com/util/AutoBind.hpp not included
-#endif
-
 #include <boost/function_types/function_arity.hpp>
 
 namespace sight::core::com

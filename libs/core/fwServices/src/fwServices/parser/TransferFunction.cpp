@@ -24,10 +24,10 @@
 
 #include "fwServices/macros.hpp"
 
+#include <core/runtime/Convert.hpp>
+
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>
-
-#include <fwRuntime/Convert.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransferFunction, ::fwData::TransferFunction )
 
@@ -50,7 +50,7 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast( _obj );
     SLM_ASSERT("TransferFunction not instanced", tf);
 
-    const ConfigType config = ::fwRuntime::Convert::toPropertyTree(m_cfg).get_child("object");
+    const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
     if(config.count("colors"))
     {
         const ConfigType colorCfg = config.get_child("colors");

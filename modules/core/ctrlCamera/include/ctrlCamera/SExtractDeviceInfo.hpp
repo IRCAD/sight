@@ -103,9 +103,9 @@ protected:
 
 private:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map< std::string, ConfigurationType > DeviceConfigType;
-    typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
+    typedef core::runtime::ConfigurationElementContainer::Container CfgContainer;
 
     DeviceConfigType m_devicesConfig;
 

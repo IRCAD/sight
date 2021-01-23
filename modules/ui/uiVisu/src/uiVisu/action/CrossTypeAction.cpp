@@ -26,12 +26,11 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

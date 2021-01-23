@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "ioQt/Plugin.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace ioQt
 {
 
-using namespace ::fwRuntime::utils;
+using namespace core::runtime::utils;
 static GenericExecutableFactoryRegistrar<Plugin> registrar("::ioQt::Plugin");
 
 //-----------------------------------------------------------------------------

@@ -126,7 +126,7 @@ protected:
 
     FWGUI_API virtual ~IFrameSrv();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     /**
      * @brief Initialize frame managers.
      *
@@ -160,9 +160,9 @@ private:
     void onCloseExit();
     void onCloseNotify();
     void onCloseMessage();
-    void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
-    void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
-    void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
+    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
+    void initializeMenuBarBuilder( core::runtime::ConfigurationElement::sptr menuBarConfig );
+    void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
 
     ::fwGui::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
     ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;

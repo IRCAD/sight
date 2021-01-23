@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,9 @@
 
 #include "uiTF/SMultipleTF.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
+
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -36,9 +39,6 @@
 
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/op/Add.hpp>
 
@@ -73,7 +73,7 @@ static const std::string s_VERSION_TF = "V1";
 
 SMultipleTF::SMultipleTF()
 {
-    const std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";
@@ -105,7 +105,7 @@ void SMultipleTF::configuring()
         const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = core::runtime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -119,37 +119,37 @@ void SMultipleTF::configuring()
             const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
             if(deleteIconCfg)
             {
-                m_deleteIcon = ::fwRuntime::getModuleResourceFilePath(deleteIconCfg.value());
+                m_deleteIcon = core::runtime::getModuleResourceFilePath(deleteIconCfg.value());
             }
             const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
             if(newIconCfg)
             {
-                m_newIcon = ::fwRuntime::getModuleResourceFilePath(newIconCfg.value());
+                m_newIcon = core::runtime::getModuleResourceFilePath(newIconCfg.value());
             }
             const auto copyIconCfg = configAttr->get_optional<std::string>(s_COPY_ICON_CONFIG);
             if(copyIconCfg)
             {
-                m_copyIcon = ::fwRuntime::getModuleResourceFilePath(copyIconCfg.value());
+                m_copyIcon = core::runtime::getModuleResourceFilePath(copyIconCfg.value());
             }
             const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
             if(reinitializeIconCfg)
             {
-                m_reinitializeIcon = ::fwRuntime::getModuleResourceFilePath(reinitializeIconCfg.value());
+                m_reinitializeIcon = core::runtime::getModuleResourceFilePath(reinitializeIconCfg.value());
             }
             const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
             if(renameIconCfg)
             {
-                m_renameIcon = ::fwRuntime::getModuleResourceFilePath(renameIconCfg.value());
+                m_renameIcon = core::runtime::getModuleResourceFilePath(renameIconCfg.value());
             }
             const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
             if(importIconCfg)
             {
-                m_importIcon = ::fwRuntime::getModuleResourceFilePath(importIconCfg.value());
+                m_importIcon = core::runtime::getModuleResourceFilePath(importIconCfg.value());
             }
             const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
             if(exportIconCfg)
             {
-                m_exportIcon = ::fwRuntime::getModuleResourceFilePath(exportIconCfg.value());
+                m_exportIcon = core::runtime::getModuleResourceFilePath(exportIconCfg.value());
             }
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
@@ -159,7 +159,7 @@ void SMultipleTF::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }

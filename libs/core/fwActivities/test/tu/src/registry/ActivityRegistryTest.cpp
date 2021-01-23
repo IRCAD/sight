@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,16 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
+#include <core/runtime/Extension.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <algorithm>
 
@@ -58,8 +58,8 @@ void ActivityRegistryTest::setUp()
     m_pimpl             = std::make_shared< ActivityRegistryTestPimpl >();
     m_pimpl->activities = fwActivities::registry::Activities::New();
 
-    ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
-    ::fwRuntime::loadModule("tu_registry");
+    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    core::runtime::loadModule("tu_registry");
 
     m_pimpl->activities->parseBundleInformation();
 }

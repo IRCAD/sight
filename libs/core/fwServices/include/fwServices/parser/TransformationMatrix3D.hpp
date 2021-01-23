@@ -25,10 +25,9 @@
 #include "fwServices/config.hpp"
 #include <fwServices/IXMLParser.hpp>
 
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwServices
 {

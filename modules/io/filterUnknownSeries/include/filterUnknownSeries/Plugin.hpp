@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace filterUnknownSeries
 {
 
-class Plugin : public ::fwRuntime::Plugin
+class Plugin : public core::runtime::Plugin
 {
 public:
     //! @brief Destructor.
@@ -38,7 +38,7 @@ public:
      *
      * This method is used by runtime in order to initialize the module.
      *
-     * @exception ::fwRuntime::RuntimeException
+     * @exception core::runtime::RuntimeException
      */
     void start();
 

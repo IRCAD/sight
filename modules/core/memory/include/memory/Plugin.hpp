@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace memory
 {
 /**
  * @brief   Implements a plugin for the memory module.
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   Destructor
@@ -41,7 +41,7 @@ struct Plugin : public ::fwRuntime::Plugin
      *
      * This method is used by runtime in order to initialise the module.
      *
-     * @exception ::fwRuntime::RuntimeException.
+     * @exception core::runtime::RuntimeException.
      */
     void start();
 

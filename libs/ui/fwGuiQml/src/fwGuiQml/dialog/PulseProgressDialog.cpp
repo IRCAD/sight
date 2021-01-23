@@ -23,12 +23,11 @@
 #include "fwGuiQml/dialog/PulseProgressDialog.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QFutureWatcher>
 #include <QGuiApplication>
@@ -78,7 +77,7 @@ void PulseProgressDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/PulseProgressDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/PulseProgressDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("pulseProgressDialog", this);

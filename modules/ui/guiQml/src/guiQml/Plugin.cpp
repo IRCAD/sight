@@ -23,6 +23,9 @@
 #include "guiQml/Plugin.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
@@ -32,10 +35,6 @@
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwQt/WorkerQt.hpp>
-
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -49,7 +48,7 @@ namespace guiQml
 {
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQml::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -63,7 +62,7 @@ void Plugin::start()
 {
     qmlRegisterType< ::fwQml::IQmlAppManager >("fwQml", 1, 0, "IQmlAppManager");
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
@@ -81,9 +80,9 @@ void Plugin::start()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
-    auto path = ::fwRuntime::getModuleResourcePath("guiQml");
+    auto path = core::runtime::getModuleResourcePath("guiQml");
     engine->importModulePath(path);
-    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +100,7 @@ void Plugin::stop() noexcept
 
 void setup()
 {
-    ::fwRuntime::profile::getCurrentProfile()->setup();
+    core::runtime::profile::getCurrentProfile()->setup();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +110,7 @@ int Plugin::run() noexcept
     m_workerQt->post( std::bind( &setup ) );
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    core::runtime::profile::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();

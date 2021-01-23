@@ -27,6 +27,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 #include <core/tools/Object.hpp>
 
@@ -41,8 +42,6 @@
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -80,7 +79,7 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
 
 void SOpenCVIntrinsic::configuring()
 {
-    ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
+    core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
 
     SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));

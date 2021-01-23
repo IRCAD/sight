@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,11 +61,12 @@ void ServiceConfigTest::serviceConfigTest()
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const std::string service("::fwServices::ut::TestService");
     const std::string desc("Description of config");
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
+    core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 
     currentServiceConfig->addServiceConfigInfo( configId, service, desc, config );
 
-    ::fwRuntime::ConfigurationElement::csptr serviceConfig = currentServiceConfig->getServiceConfig(configId, service);
+    core::runtime::ConfigurationElement::csptr serviceConfig =
+        currentServiceConfig->getServiceConfig(configId, service);
     CPPUNIT_ASSERT( serviceConfig );
     CPPUNIT_ASSERT(serviceConfig->hasAttribute("uid"));
     CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), serviceConfig->getAttributeValue("uid"));
@@ -211,14 +212,14 @@ void ServiceConfigTest::getAllConfigsTest()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
+core::runtime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg( new ::fwRuntime::EConfigurationElement(
-                                                                          "config"));
+    std::shared_ptr< core::runtime::EConfigurationElement > serviceCfg( new core::runtime::EConfigurationElement(
+                                                                            "config"));
     serviceCfg->setAttributeValue( "uid", "serviceUUID");
     serviceCfg->setAttributeValue( "type", "serviceType");
 
-    ::fwRuntime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
+    core::runtime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
     cfg->setValue("Parameter");
 
     return serviceCfg;

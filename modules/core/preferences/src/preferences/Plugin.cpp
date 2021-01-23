@@ -24,14 +24,13 @@
 
 #include "preferences/SPreferences.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/tools/Os.hpp>
 
 #include <fwData/String.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -42,7 +41,7 @@ namespace preferences
 
 const std::string Plugin::s_PREF_SERVICE_UID = "PREF_SERVICE_UID";
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("preferences::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("preferences::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -56,8 +55,8 @@ void Plugin::start()
 
     try
     {
-        ::fwRuntime::EConfigurationElement::sptr prefConfig = ::fwRuntime::EConfigurationElement::New( "filename" );
-        std::filesystem::path prefFile = ::fwPreferences::getPreferencesFile();
+        core::runtime::EConfigurationElement::sptr prefConfig = core::runtime::EConfigurationElement::New( "filename" );
+        std::filesystem::path prefFile                        = ::fwPreferences::getPreferencesFile();
         prefConfig->setValue(prefFile.string());
 
         prefSrv->setConfiguration(prefConfig);

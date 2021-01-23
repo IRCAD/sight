@@ -155,11 +155,11 @@ void SRender::configuring()
 {
     this->initialize();
 
-    std::vector < SPTR(::fwRuntime::ConfigurationElement) > vectConfig = m_configuration->find("scene");
+    std::vector < SPTR(core::runtime::ConfigurationElement) > vectConfig = m_configuration->find("scene");
     SLM_ASSERT("There is no implementation between \"scene\" tags", !vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    core::runtime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
     {
         if ((*iter)->getName() == "axis")

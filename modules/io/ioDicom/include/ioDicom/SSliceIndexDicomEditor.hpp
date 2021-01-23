@@ -191,7 +191,7 @@ private:
     std::size_t m_delay;
 
     /// Optional configuration to set to reader implementation
-    SPTR(::fwRuntime::ConfigurationElement) m_readerConfig;
+    SPTR(core::runtime::ConfigurationElement) m_readerConfig;
 };
 
 } // namespace ioDicom

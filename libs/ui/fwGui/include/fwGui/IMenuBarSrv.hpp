@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ protected:
 
     FWGUI_API virtual ~IMenuBarSrv();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -96,7 +96,7 @@ protected:
 
 private:
 
-    void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
+    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IMenuBarLayoutManager::sptr m_layoutManager;
     ::fwGui::registrar::MenuBarRegistrar::sptr m_registrar;

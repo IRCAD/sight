@@ -23,15 +23,14 @@
 #include "uiReconstructionQt/OrganMaterialEditor.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

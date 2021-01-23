@@ -30,6 +30,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 #include <core/tools/pathDifference.hpp>
 
 #include <fwData/location/Folder.hpp>
@@ -43,8 +44,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 

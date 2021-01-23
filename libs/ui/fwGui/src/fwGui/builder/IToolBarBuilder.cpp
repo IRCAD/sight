@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ IToolBarBuilder::~IToolBarBuilder()
 
 //-----------------------------------------------------------------------------
 
-void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void IToolBarBuilder::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
     SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be toolBar",
                configuration->getName() == "toolBar");
@@ -97,7 +97,7 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         }
     }
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    core::runtime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
         if( (*iter)->getName() == "toolBitmapSize" )

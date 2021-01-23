@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "Tuto05EditorQml/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace Tuto05EditorQml
 {
@@ -32,7 +32,7 @@ namespace Tuto05EditorQml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO05EDITORQML_CLASS_API Plugin : public ::fwRuntime::Plugin
+class TUTO05EDITORQML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.

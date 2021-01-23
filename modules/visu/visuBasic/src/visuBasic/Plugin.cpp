@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "visuBasic/Plugin.hpp"
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace visuBasic
 {
 
 //------------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuBasic::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuBasic::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ void Plugin::start()
     // This module is intended to be used for the first tutorials.
     // Thus we load the adaptors model here instead in the .xml of the
     // application to hide the complexity.
-    auto module = ::fwRuntime::loadModule("visuOgreAdaptor");
+    auto module = core::runtime::loadModule("visuOgreAdaptor");
     SLM_FATAL_IF("'visuOgreAdaptor' module failed to load.", !module);
 }
 

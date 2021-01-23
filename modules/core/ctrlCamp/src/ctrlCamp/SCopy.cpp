@@ -59,7 +59,7 @@ SCopy::~SCopy()
 
 void SCopy::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     m_hasExtractTag = false;
     const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");

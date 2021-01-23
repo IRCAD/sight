@@ -27,6 +27,9 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <fwActivities/IActivityValidator.hpp>
@@ -42,10 +45,6 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/macros.hpp>
@@ -455,7 +454,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo& info )
 {
     // Start module containing the activity if it is not started
-    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
     SLM_WARN_IF("Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
                 module->isStarted());
     if (!module->isStarted())

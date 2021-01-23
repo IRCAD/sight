@@ -25,6 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -38,8 +39,6 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
@@ -89,7 +88,7 @@ void SDynamicView::configuring()
 {
     this->::fwGui::view::IActivityView::configuring();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
     ConfigType activityConfig = m_configuration->findConfigurationElement("mainActivity");
     if (activityConfig)

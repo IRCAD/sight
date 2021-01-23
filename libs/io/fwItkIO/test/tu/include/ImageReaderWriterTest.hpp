@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <fwData/Image.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwServices/macros.hpp>
 

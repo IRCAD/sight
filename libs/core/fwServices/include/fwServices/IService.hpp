@@ -38,7 +38,7 @@
 #include <fwData/mt/weak_ptr.hpp>
 #include <fwData/mt/shared_ptr.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
@@ -158,7 +158,7 @@ public:
         std::map<std::string, size_t> m_groupSize;
 
         /// Service configuration (only used with XML config)
-        CSPTR(::fwRuntime::ConfigurationElement) m_config;
+        CSPTR(core::runtime::ConfigurationElement) m_config;
     };
 
     /// Name of the key to identify the default Composite object that is used for services that don't work on any data.
@@ -264,7 +264,7 @@ public:
      * @param[in] _cfgElement a structure which represents the xml configuration
      * @post m_configurationState == UNCONFIGURED
      */
-    FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    FWSERVICES_API void setConfiguration( const core::runtime::ConfigurationElement::sptr _cfgElement );
 
     /**
      * @brief Set the configuration.
@@ -378,7 +378,7 @@ public:
      * @brief Return the configuration, in an xml format read using runtime library
      * @return m_configuration, a structure which represents the service configuration
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::sptr getConfiguration() const;
+    FWSERVICES_API core::runtime::ConfigurationElement::sptr getConfiguration() const;
 
     /**
      * @brief Return the configuration, in an boost property tree
@@ -912,7 +912,7 @@ protected:
      * @brief Configuration element used to configure service internal state using a generic XML like structure
      * TODO Make this const, we are not supposed to edit that !
      */
-    ::fwRuntime::ConfigurationElement::sptr m_configuration;
+    core::runtime::ConfigurationElement::sptr m_configuration;
 
     /**
      * @name Slot API

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __UIRECONSTRUCTIONQT_PLUGIN_HPP__
-#define __UIRECONSTRUCTIONQT_PLUGIN_HPP__
+#pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace uiReconstructionQt
 {
 /**
  */
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor
@@ -45,5 +44,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace uiReconstructionQt
-
-#endif //__UIRECONSTRUCTIONQT_PLUGIN_HPP__

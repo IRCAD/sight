@@ -31,6 +31,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 
 #include <fwDataTools/helper/Vector.hpp>
 
@@ -42,8 +43,6 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -101,7 +100,7 @@ void SSelector::configuring()
 
     // Deprecated configuration.
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg =
+    std::vector < core::runtime::ConfigurationElement::sptr > selectionModeCfg =
         m_configuration->find(s_SELECTION_MODE_CONFIG);
     if(!selectionModeCfg.empty())
     {
@@ -126,7 +125,7 @@ void SSelector::configuring()
         }
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > allowedRemoveCfg =
+    std::vector < core::runtime::ConfigurationElement::sptr > allowedRemoveCfg =
         m_configuration->find(s_ALLOWED_REMOVE_CONFIG);
     if(!allowedRemoveCfg.empty())
     {
@@ -148,7 +147,7 @@ void SSelector::configuring()
         }
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > insertCfg =
+    std::vector < core::runtime::ConfigurationElement::sptr > insertCfg =
         m_configuration->find(s_INSERT_MODE_CONFIG);
     if(!insertCfg.empty())
     {
@@ -172,14 +171,14 @@ void SSelector::configuring()
 
     // Better configuration.
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find(s_ICONS_CONFIG);
+    std::vector < core::runtime::ConfigurationElement::sptr > iconsCfg = m_configuration->find(s_ICONS_CONFIG);
     if (!iconsCfg.empty())
     {
         SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
 
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find(s_ICON_CONFIG);
+        std::vector < core::runtime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find(s_ICON_CONFIG);
 
-        for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
+        for(core::runtime::ConfigurationElement::sptr elt :  cfg)
         {
             const std::string series = elt->getAttributeValue("series");
             SLM_ASSERT("'series' attribute is missing", !series.empty());
@@ -187,7 +186,7 @@ void SSelector::configuring()
             const std::string icon = elt->getAttributeValue("icon");
             SLM_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            const auto file = ::fwRuntime::getResourceFilePath(icon);
+            const auto file = core::runtime::getResourceFilePath(icon);
             m_seriesIcons[series] = file.string();
         }
     }
@@ -202,13 +201,13 @@ void SSelector::configuring()
         const auto removeStudyIconCfg = configAttr->get_optional< std::string >(s_REMOVE_STUDY_ICON_CONFIG);
         if(removeStudyIconCfg)
         {
-            m_removeStudyIcon = ::fwRuntime::getModuleResourceFilePath(removeStudyIconCfg.value());
+            m_removeStudyIcon = core::runtime::getModuleResourceFilePath(removeStudyIconCfg.value());
         }
 
         const auto removeSerieIconCfg = configAttr->get_optional< std::string >(s_REMOVE_SERIE_ICON_CONFIG);
         if(removeSerieIconCfg)
         {
-            m_removeSerieIcon = ::fwRuntime::getModuleResourceFilePath(removeSerieIconCfg.value());
+            m_removeSerieIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
         }
 
         const auto selectionMode = configAttr->get< std::string >(s_SELECTION_MODE_CONFIG, "extended");

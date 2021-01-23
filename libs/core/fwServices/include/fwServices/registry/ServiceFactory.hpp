@@ -25,9 +25,8 @@
 #include "fwServices/config.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/runtime/Module.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/Module.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -127,7 +126,7 @@ private:
         std::vector<std::string> objectImpl;
         std::string desc;
         std::string tags;
-        std::shared_ptr< ::fwRuntime::Module > module;
+        std::shared_ptr< core::runtime::Module > module;
         FactoryType factory;
         bool objectsSetFromModule {false}; // True if the objects implementation are set from the module information
     };

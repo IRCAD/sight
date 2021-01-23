@@ -23,9 +23,8 @@
 #include "fwRender/IRender.hpp"
 
 #include <core/base.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 

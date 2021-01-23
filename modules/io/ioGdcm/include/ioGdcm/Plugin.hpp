@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __IOGDCM_PLUGIN_HPP__
-#define __IOGDCM_PLUGIN_HPP__
+#pragma once
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace ioGdcm
 {
 
-struct Plugin : public ::fwRuntime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor
@@ -44,5 +43,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_PLUGIN_HPP__

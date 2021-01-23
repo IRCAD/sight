@@ -22,9 +22,8 @@
 
 #include "servicesReg/Plugin.hpp"
 
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/thread/Pool.hpp>
-
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
@@ -35,7 +34,7 @@
 namespace servicesReg
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::servicesReg::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::servicesReg::Plugin");
 
 //-----------------------------------------------------------------------------
 

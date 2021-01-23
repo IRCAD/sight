@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -55,7 +55,7 @@ public:
     void cleanup();
 
 private:
-    ::fwRuntime::profile::Profile::sptr m_profile;
+    core::runtime::profile::Profile::sptr m_profile;
     std::filesystem::path m_preferencesPath;
 };
 

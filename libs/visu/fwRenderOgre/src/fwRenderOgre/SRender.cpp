@@ -34,8 +34,8 @@
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwRuntime/ConfigurationElementContainer.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/ConfigurationElementContainer.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>

@@ -37,7 +37,7 @@
 #include <filesystem>
 #include <core/base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include "uiGenericQt/action/SShowAbout.hpp"
 
@@ -77,7 +77,7 @@ void SShowAbout::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 
-    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR (core::runtime::ConfigurationElement) ConfigurationElement;
 
     ConfigurationElement cfgFilename = m_configuration->findConfigurationElement("filename");
     ConfigurationElement cfgTitle    = m_configuration->findConfigurationElement("title");
@@ -87,7 +87,7 @@ void SShowAbout::configuring()
     {
         const std::string& filename = cfgFilename->getExistingAttributeValue("id");
         // Convert the path from a module location
-        m_fsAboutPath = ::fwRuntime::getModuleResourceFilePath(filename);
+        m_fsAboutPath = core::runtime::getModuleResourceFilePath(filename);
 
         m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);

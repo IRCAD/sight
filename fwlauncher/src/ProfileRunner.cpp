@@ -24,8 +24,8 @@
 #include <windows.h>
 #endif
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
 #include <filesystem>
 #include <boost/program_options/options_description.hpp>
@@ -107,7 +107,7 @@ void signal_handler(int signal)
 
     try
     {
-        const ::fwRuntime::profile::Profile::sptr& profile = ::fwRuntime::profile::getCurrentProfile();
+        const core::runtime::profile::Profile::sptr& profile = core::runtime::profile::getCurrentProfile();
         profile->cleanup();
         profile->stop();
     }
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
     PathListType modulePaths;
     PathType rwd;
     PathType profileFile;
-    ::fwRuntime::profile::Profile::ParamsContainer profileArgs;
+    core::runtime::profile::Profile::ParamsContainer profileArgs;
 
     // Launcher options
     po::options_description options("Launcher options");
@@ -335,13 +335,13 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     SLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
-    ::fwRuntime::init();
+    core::runtime::init();
 
     for(const fs::path& modulePath :  modulePaths )
     {
         if ( fs::is_directory(modulePath))
         {
-            ::fwRuntime::addModules( modulePath );
+            core::runtime::addModules( modulePath );
         }
         else
         {
@@ -353,11 +353,11 @@ int main(int argc, char* argv[])
 
     if ( fs::is_regular_file(profileFile))
     {
-        ::fwRuntime::profile::Profile::sptr profile;
+        core::runtime::profile::Profile::sptr profile;
 
         try
         {
-            profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
+            profile = core::runtime::io::ProfileReader::createProfile(profileFile);
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);

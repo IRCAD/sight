@@ -74,7 +74,7 @@ void SPreferencesConfiguration::configuring()
 {
     this->initialize();
 
-    ::fwRuntime::ConfigurationElementContainer config = m_configuration->findAllConfigurationElement("preference");
+    core::runtime::ConfigurationElementContainer config = m_configuration->findAllConfigurationElement("preference");
     for(const auto& elt : config.getElements())
     {
         PreferenceElt pref;

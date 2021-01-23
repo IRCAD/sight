@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwRenderQt3D/techniques/Lighting.hpp"
 
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <QGraphicsApiFilter>
 #include <QRasterMode>
@@ -61,11 +61,11 @@ Lighting::Lighting()
     this->addParameter(m_lightingMode);
 
     // Point normals visualisation shader program & render pass : render normals if specified.
-    const auto vertexShaderNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto vertexShaderNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/normalVisu_VP.glsl");
-    const auto geometryShaderNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto geometryShaderNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/normalVisu_GP.glsl");
-    const auto fragmentShaderNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto fragmentShaderNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/normalVisu_FP.glsl");
     Qt3DRender::QShaderProgram* const normalShaderProgram = new Qt3DRender::QShaderProgram();
     normalShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
@@ -86,11 +86,11 @@ Lighting::Lighting()
     this->addRenderPass(m_normalPass);
 
     // Cell normals visualisation shader program & render pass : render normals if specified.
-    const auto vertexShaderCellNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto vertexShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/normalVisu_VP.glsl");
-    const auto geometryShaderCellNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto geometryShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/cellsNormalVisu_GP.glsl");
-    const auto fragmentShaderCellNormalPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto fragmentShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/normalVisu_FP.glsl");
     Qt3DRender::QShaderProgram* const cellNormalShaderProgram = new Qt3DRender::QShaderProgram();
     cellNormalShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
@@ -113,9 +113,9 @@ Lighting::Lighting()
     this->addRenderPass(m_cellNormalPass);
 
     // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
-    const auto vertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto vertexShaderPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
-    const auto fragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto fragmentShaderPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_FP.glsl");
     Qt3DRender::QShaderProgram* const renderShaderProgram = new Qt3DRender::QShaderProgram();
     renderShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
@@ -132,9 +132,9 @@ Lighting::Lighting()
     this->addRenderPass(m_renderPass);
 
     // Adds a render pass needed with "EDGE" polygon mode.
-    const auto edgeVertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto edgeVertexShaderPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
-    const auto edgeFragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
+    const auto edgeFragmentShaderPath = core::runtime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/edgeRender_FP.glsl");
     Qt3DRender::QShaderProgram* const edgeShaderProgram = new Qt3DRender::QShaderProgram();
     edgeShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::

@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwGuiQt
     fwJobs
     fwLog
-    fwRuntime
     fwServices
     fwIO
     fwData

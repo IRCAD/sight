@@ -23,14 +23,13 @@
 #include "uiReconstructionQt/RepresentationEditor.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>

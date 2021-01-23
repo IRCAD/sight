@@ -119,7 +119,7 @@ void SSeriesDBReader::openLocationDialog()
     if(!m_filterConfig.empty())
     {
         // Get the config
-        ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
+        core::runtime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterConfig, "::ioDicom::SFilterSelectorDialog");
 
@@ -132,7 +132,7 @@ void SSeriesDBReader::openLocationDialog()
         ::fwData::String::sptr key = ::fwData::String::New();
         filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
-        filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
+        filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();

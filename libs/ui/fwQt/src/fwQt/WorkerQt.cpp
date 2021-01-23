@@ -24,11 +24,10 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
+#include <core/runtime/Runtime.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
-
-#include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 

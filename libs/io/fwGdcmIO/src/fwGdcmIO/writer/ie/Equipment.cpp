@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwMedData/Equipment.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
-#include <fwRuntime/profile/Profile.hpp>
+#include <fwMedData/Equipment.hpp>
 
 namespace fwGdcmIO
 {
@@ -69,7 +69,7 @@ void Equipment::writeGeneralEquipmentModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0080 >(institutName, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    const auto profile                = ::fwRuntime::profile::getCurrentProfile();
+    const auto profile                = core::runtime::profile::getCurrentProfile();
     const std::string softwareVersion = profile ? profile->getName() + " " + profile->getVersion() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one

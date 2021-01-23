@@ -22,9 +22,9 @@
 
 #include "fwServices/registry/ServiceConfig.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Runtime.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/Runtime.hpp>
 
 namespace fwServices
 {
@@ -52,10 +52,10 @@ ServiceConfig::~ServiceConfig()
 
 void ServiceConfig::parseBundleInformation()
 {
-    typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
+    typedef std::shared_ptr< core::runtime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
-    extElements = ::fwRuntime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
+    extElements = core::runtime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
     for(ExtensionType ext :  extElements)
     {
         // Get id
@@ -77,7 +77,7 @@ void ServiceConfig::parseBundleInformation()
         }
 
         // Get config
-        ::fwRuntime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
+        core::runtime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
         // Add service config info
         this->addServiceConfigInfo(id, service, desc, config);
@@ -90,7 +90,7 @@ void ServiceConfig::addServiceConfigInfo
     (   const std::string& configId,
     const std::string& service,
     const std::string& desc,
-    ::fwRuntime::ConfigurationElement::csptr config)
+    core::runtime::ConfigurationElement::csptr config)
 {
     core::mt::WriteLock lock(m_registryMutex);
 
@@ -126,8 +126,8 @@ void ServiceConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string& configId,
-                                                                          const std::string& serviceImpl ) const
+core::runtime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string& configId,
+                                                                            const std::string& serviceImpl ) const
 {
 #ifndef _DEBUG
     FwCoreNotUsedMacro(serviceImpl);

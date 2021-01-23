@@ -73,7 +73,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Initialize the UI
     virtual void starting() override;

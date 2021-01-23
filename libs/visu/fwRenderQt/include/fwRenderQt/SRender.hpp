@@ -168,7 +168,7 @@ protected:
 private:
 
     /// A ConfigurationElement type representing a configuration.
-    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationType;
+    typedef SPTR (core::runtime::ConfigurationElement) ConfigurationType;
 
     /// Create the QtContainer, the scene, the viewport, the view.
     void startContext();

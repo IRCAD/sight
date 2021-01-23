@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwData
     fwGui
     fwMedData
-    fwRuntime
     fwServices
     fwMedDataTools
 )

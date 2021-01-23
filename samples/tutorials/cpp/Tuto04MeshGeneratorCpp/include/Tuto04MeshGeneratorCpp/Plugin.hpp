@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "Tuto04MeshGeneratorCpp/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
 
 /// This class is started when the module is loaded.
-class TUTO04MESHGENERATORCPP_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class TUTO04MESHGENERATORCPP_CLASS_API Plugin final : public core::runtime::Plugin
 {
 
 public:

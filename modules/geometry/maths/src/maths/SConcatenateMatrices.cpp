@@ -24,13 +24,12 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -52,7 +51,7 @@ SConcatenateMatrices::SConcatenateMatrices() noexcept
 
 void SConcatenateMatrices::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
     SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 

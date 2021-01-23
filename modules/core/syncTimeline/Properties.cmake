@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwMath
-    fwRuntime
     fwServices
 )
 set( REQUIREMENTS  )

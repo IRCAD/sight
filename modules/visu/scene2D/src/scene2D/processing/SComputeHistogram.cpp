@@ -63,7 +63,7 @@ SComputeHistogram::~SComputeHistogram() noexcept
 
 void SComputeHistogram::configuring()
 {
-    const std::vector < ::fwRuntime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
+    const std::vector < core::runtime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
     SLM_ASSERT("Missing tag 'binsWidth'", !binsWidthCfg.empty());
 
     const std::string binsWidth = binsWidthCfg.front()->getValue();

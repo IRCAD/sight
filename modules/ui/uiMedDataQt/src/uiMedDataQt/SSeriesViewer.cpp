@@ -139,19 +139,19 @@ void SSeriesViewer::updating()
 
 void SSeriesViewer::configuring()
 {
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
+    std::vector < core::runtime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
     SLM_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
 
     m_parentView = viewCfg[0]->getAttributeValue("wid");
     SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
+    std::vector < core::runtime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
     SLM_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
+    std::vector < core::runtime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    for(const ::fwRuntime::ConfigurationElement::sptr& elt :  config)
+    for(const core::runtime::ConfigurationElement::sptr& elt :  config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -161,7 +161,7 @@ void SSeriesViewer::configuring()
         SLM_ASSERT("Type " << seriesType << " is already defined.",
                    m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
 
-        for(const ::fwRuntime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
+        for(const core::runtime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -170,7 +170,7 @@ void SSeriesViewer::configuring()
             info.extractValues[pattern] = path;
         }
 
-        for(const ::fwRuntime::ConfigurationElement::sptr& param :  elt->find("parameter"))
+        for(const core::runtime::ConfigurationElement::sptr& param :  elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());

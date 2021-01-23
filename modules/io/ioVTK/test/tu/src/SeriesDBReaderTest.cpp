@@ -22,6 +22,7 @@
 
 #include "SeriesDBReaderTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
 #include <fwData/Image.hpp>
@@ -34,8 +35,6 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -96,9 +95,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + meshFile.string() + "' does not exist",
                            std::filesystem::exists(meshFile));
 
-    ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr file1Cfg     = ::fwRuntime::EConfigurationElement::New("file");
-    ::fwRuntime::EConfigurationElement::sptr file2Cfg     = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr file1Cfg     = core::runtime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr file2Cfg     = core::runtime::EConfigurationElement::New("file");
     file1Cfg->setValue(imageFile.string());
     readerSrvCfg->addConfigurationElement(file1Cfg);
     file2Cfg->setValue(meshFile.string());
@@ -175,8 +174,8 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            std::filesystem::exists(imageFile));
 
-    ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg      = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileCfg      = core::runtime::EConfigurationElement::New("file");
     fileCfg->setValue(imageFile.string());
     readerSrvCfg->addConfigurationElement(fileCfg);
 

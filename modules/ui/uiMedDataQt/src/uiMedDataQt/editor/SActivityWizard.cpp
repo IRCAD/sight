@@ -28,6 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -45,9 +47,6 @@
 #include <fwMedData/Study.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -131,7 +130,7 @@ void SActivityWizard::configuring()
         const std::string icon = iconCfg.get<std::string>("icon");
         SLM_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
-        const auto file = ::fwRuntime::getResourceFilePath(icon);
+        const auto file = core::runtime::getResourceFilePath(icon);
         m_objectIcons[type] = file.string();
     }
     SLM_ASSERT("icons are empty", !m_objectIcons.empty());
@@ -246,7 +245,7 @@ void SActivityWizard::createActivity(std::string activityID)
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activityID);
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
     if (!module->isStarted())
     {
         module->start();
@@ -316,8 +315,8 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId,
-                                                                            info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId,
+                                                                                info.bundleVersion);
     if (!module->isStarted())
     {
         module->start();

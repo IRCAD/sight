@@ -26,9 +26,8 @@
 
 #include <core/BaseObject.hpp>
 #include <core/mt/types.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -199,7 +198,7 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     {
     }
 
-    FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension)& ext);
+    FWACTIVITIES_API ActivityInfo(const SPTR(core::runtime::Extension)& ext);
 
     FWACTIVITIES_API bool usableWith(DataCountType dataCount) const;
 

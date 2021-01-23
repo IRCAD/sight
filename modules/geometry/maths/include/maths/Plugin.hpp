@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "maths/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace maths
 {
@@ -32,7 +32,7 @@ namespace maths
 /**
  * @brief This class is started when the module is loaded.
  */
-struct MATHS_CLASS_API Plugin final : public ::fwRuntime::Plugin
+struct MATHS_CLASS_API Plugin final : public core::runtime::Plugin
 {
     /// Destroys the plugin.
     MATHS_API ~Plugin() noexcept override;

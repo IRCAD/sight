@@ -23,14 +23,13 @@
 #include "guiQt/Plugin.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwGuiQt/App.hpp>
 
 #include <fwQt/WorkerQt.hpp>
-
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -47,7 +46,7 @@ namespace guiQt
 {
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQt::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQt::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -59,7 +58,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
@@ -76,7 +75,7 @@ void Plugin::start()
 
     m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
 
-    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +93,7 @@ void Plugin::stop() noexcept
 
 void setup()
 {
-    ::fwRuntime::profile::getCurrentProfile()->setup();
+    core::runtime::profile::getCurrentProfile()->setup();
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +103,7 @@ int Plugin::run() noexcept
     m_workerQt->post( std::bind( &setup ) );
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    core::runtime::profile::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
@@ -120,7 +119,7 @@ void Plugin::loadStyleSheet()
     if( this->getModule()->hasParameter("resource") )
     {
         const std::string resourceFile = this->getModule()->getParameterValue("resource");
-        const auto path                = fwRuntime::getModuleResourceFilePath(resourceFile);
+        const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
 
         const bool resourceLoaded = QResource::registerResource(path.string().c_str());
         SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
@@ -135,7 +134,7 @@ void Plugin::loadStyleSheet()
     if( this->getModule()->hasParameter("stylesheet") )
     {
         const std::string stylesheetFile = this->getModule()->getParameterValue("stylesheet");
-        const auto path                  = fwRuntime::getModuleResourceFilePath(stylesheetFile);
+        const auto path                  = core::runtime::getModuleResourceFilePath(stylesheetFile);
 
         QFile data(QString::fromStdString(path.string()));
         QString style;

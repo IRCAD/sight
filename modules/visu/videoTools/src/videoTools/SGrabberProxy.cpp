@@ -440,9 +440,9 @@ void SGrabberProxy::startCamera()
                 {
                     const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
 
-                    ::fwRuntime::ConfigurationElement::csptr srvCfg =
+                    core::runtime::ConfigurationElement::csptr srvCfg =
                         srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
-                    srv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
+                    srv->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
                     srv->configure();
                 }
 

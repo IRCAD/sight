@@ -23,10 +23,9 @@
 #include "monitorQt/action/ComponentsTree.hpp"
 
 #include <core/base.hpp>
-
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/Module.hpp>
-#include <fwRuntime/Runtime.hpp>
+#include <core/runtime/Extension.hpp>
+#include <core/runtime/Module.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -59,7 +58,7 @@ void ComponentsTree::updating( )
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    ::fwRuntime::Runtime* defaultRuntime = ::fwRuntime::Runtime::getDefault();
+    core::runtime::Runtime* defaultRuntime = core::runtime::Runtime::getDefault();
 
     for (const auto& module : defaultRuntime->getModules())
     {

@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwMedData
     fwDataTools
     fwServices
-    fwRuntime
 )
 set( REQUIREMENTS
     ctrlCamp

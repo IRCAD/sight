@@ -31,6 +31,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 #include <core/tools/Object.hpp>
 
@@ -44,8 +45,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwPreferences/helper.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

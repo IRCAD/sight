@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwNetworkIO
-    fwRuntime
     fwData
     fwDataTools
     fwMedData

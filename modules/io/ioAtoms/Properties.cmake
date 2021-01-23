@@ -14,7 +14,6 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwJobs
-    fwRuntime
     fwServices
     fwZip
     fwIO

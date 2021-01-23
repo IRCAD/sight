@@ -24,9 +24,8 @@
 
 #include "fwServices/config.hpp"
 
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <map>
 
@@ -56,7 +55,7 @@ public:
 
     std::string service;
     std::string desc;
-    ::fwRuntime::ConfigurationElement::csptr config;
+    core::runtime::ConfigurationElement::csptr config;
 };
 
 /**
@@ -109,15 +108,15 @@ public:
     FWSERVICES_API void addServiceConfigInfo( const std::string& configId,
                                               const std::string& service,
                                               const std::string& desc,
-                                              ::fwRuntime::ConfigurationElement::csptr config );
+                                              core::runtime::ConfigurationElement::csptr config );
 
     /**
      * @brief Returns the configuration with the given id for the service with the given implementation
      * @note This method is thread safe
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getServiceConfig( const std::string& configId,
-                                                                              const std::string& serviceImpl =
-                                                                                  "" ) const;
+    FWSERVICES_API core::runtime::ConfigurationElement::csptr getServiceConfig( const std::string& configId,
+                                                                                const std::string& serviceImpl =
+                                                                                    "" ) const;
 
     /**
      * @brief Returns the description of the given configuration name.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,12 @@
 #pragma once
 #include "cvSegmentation/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace cvSegmentation
 {
 
-class CVSEGMENTATION_CLASS_API Plugin final : public ::fwRuntime::Plugin
+class CVSEGMENTATION_CLASS_API Plugin final : public core::runtime::Plugin
 {
 
 public:

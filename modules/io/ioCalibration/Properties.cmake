@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwData
-    fwRuntime
     fwServices
     arData
     fwGui

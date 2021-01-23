@@ -54,7 +54,7 @@ class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
 public:
 
     fwCoreServiceMacro(SSignal, ::fwGui::IActionSrv)
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
     typedef core::com::Signal< void (bool) > TriggeredSignalType;

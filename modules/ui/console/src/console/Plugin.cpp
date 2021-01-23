@@ -22,8 +22,8 @@
 
 #include "console/Plugin.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -31,7 +31,7 @@ namespace console
 {
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::console::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::console::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ void Plugin::start()
     m_worker = core::thread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_worker);
 
-    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -63,10 +63,10 @@ void Plugin::stop() noexcept
 
 int Plugin::run() noexcept
 {
-    m_worker->post( []() {::fwRuntime::profile::getCurrentProfile()->setup(); } );
+    m_worker->post( []() {core::runtime::profile::getCurrentProfile()->setup(); } );
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
-    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    core::runtime::profile::getCurrentProfile()->cleanup();
     const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();

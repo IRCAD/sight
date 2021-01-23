@@ -4,7 +4,6 @@ set( TYPE TEST )
 set( DEPENDENCIES
     core
     fwTest
-    fwRuntime
     fwData
     fwServices
     fwPreferences

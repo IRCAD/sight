@@ -1,0 +1,6 @@
+set( NAME runtimeTest )
+set( VERSION  )
+set( TYPE TEST )
+set( DEPENDENCIES core )
+set( REQUIREMENTS fwData servicesReg )
+set( WARNINGS_AS_ERRORS ON )

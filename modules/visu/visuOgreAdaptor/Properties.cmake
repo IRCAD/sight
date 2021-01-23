@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwGui
     fwMedData
     fwRenderOgre
-    fwRuntime
     fwServices
     fwDataTools
     arData

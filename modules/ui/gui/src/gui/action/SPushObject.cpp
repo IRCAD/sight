@@ -24,14 +24,13 @@
 
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>

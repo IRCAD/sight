@@ -73,7 +73,7 @@ protected:
 
     void info( std::ostream& _sstream ) override;
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
 private:
 

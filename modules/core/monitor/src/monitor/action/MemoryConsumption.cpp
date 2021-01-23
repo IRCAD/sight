@@ -107,7 +107,7 @@ void MemoryConsumption::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr consumptionCfg;
+    core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("Missing mode tag", consumptionCfg);
 

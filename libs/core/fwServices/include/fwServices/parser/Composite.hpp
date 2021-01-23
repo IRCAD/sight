@@ -26,10 +26,9 @@
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
 
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -82,7 +81,7 @@ protected:
 private:
 
     /// To verify some conditions in xml file
-    bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+    bool refObjectValidator( core::runtime::ConfigurationElement::sptr _cfgElement );
 
     std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;
 };

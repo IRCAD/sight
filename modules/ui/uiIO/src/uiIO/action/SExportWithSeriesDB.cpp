@@ -103,7 +103,7 @@ void SExportWithSeriesDB::updating( )
     /// Create IOSelectorService on the new SeriesDB and execute it.
 
     // Get the config
-    ::fwRuntime::ConfigurationElement::csptr ioCfg;
+    core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
     SLM_ASSERT("There is no service configuration "
@@ -123,7 +123,7 @@ void SExportWithSeriesDB::updating( )
         jobCreatedSignal->connect(m_slotForwardJob);
     }
 
-    ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
+    ioSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(ioCfg) );
     ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();

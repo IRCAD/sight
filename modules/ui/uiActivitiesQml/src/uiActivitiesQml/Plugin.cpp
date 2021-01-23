@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,17 +26,17 @@
 #include "uiActivitiesQml/SActivitySequencer.hpp"
 #include "uiActivitiesQml/SActivityView.hpp"
 
-#include <fwQml/QmlEngine.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwQml/QmlEngine.hpp>
 
 #include <QIcon>
 
 namespace uiActivitiesQml
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQml::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -57,7 +57,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getModuleResourcePath("uiActivitiesQml");
+    auto path = core::runtime::getModuleResourcePath("uiActivitiesQml");
 
     engine->importModulePath(path);
     QStringList iconPath = QIcon::themeSearchPaths();

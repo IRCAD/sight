@@ -47,11 +47,11 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement )
+bool Object::refObjectValidator( core::runtime::ConfigurationElement::csptr _cfgElement )
 {
     bool isOk = true;
 
-    for( ::fwRuntime::ConfigurationElement::csptr elem :  _cfgElement->getElements() )
+    for( core::runtime::ConfigurationElement::csptr elem :  _cfgElement->getElements() )
     {
         std::string subElementName = elem->getName();
         if(     subElementName != "service" &&
@@ -86,7 +86,7 @@ void Object::createConfig( core::tools::Object::sptr _obj )
     ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
+    for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
 
         if( elem->getName() == "item" )

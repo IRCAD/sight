@@ -78,7 +78,7 @@ void SDicomSeriesDBReader::configuring()
     ::fwIO::IReader::configuring();
 
     // Show log dialog
-    ::fwRuntime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
+    core::runtime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
     if(logDialog)
     {
         std::string logDialogStr = logDialog->getValue();
@@ -87,7 +87,7 @@ void SDicomSeriesDBReader::configuring()
     }
 
     // Enable dicomdir
-    ::fwRuntime::ConfigurationElement::sptr dicomDir = m_configuration->findConfigurationElement("dicomdirSupport");
+    core::runtime::ConfigurationElement::sptr dicomDir = m_configuration->findConfigurationElement("dicomdirSupport");
     if(dicomDir)
     {
         std::string dicomDirStr = dicomDir->getValue();

@@ -22,6 +22,7 @@
 
 #include "IoItkTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
@@ -30,8 +31,6 @@
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -75,7 +74,7 @@ void IoItkTest::tearDown()
 void executeService(
     const SPTR(::fwData::Object)& obj,
     const std::string& srvImpl,
-    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const SPTR(core::runtime::EConfigurationElement)& cfg,
     const ::fwServices::IService::AccessType access = ::fwServices::IService::AccessType::INOUT)
 {
     ::fwServices::IService::sptr srv = ::fwServices::add(srvImpl);
@@ -106,8 +105,8 @@ void IoItkTest::testImageSeriesWriterJPG()
     std::filesystem::create_directories(path);
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
+    core::runtime::EConfigurationElement::sptr srvCfg    = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr folderCfg = core::runtime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
 
@@ -131,8 +130,8 @@ void IoItkTest::testImageWriterJPG()
     std::filesystem::create_directories( path );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
+    core::runtime::EConfigurationElement::sptr srvCfg    = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr folderCfg = core::runtime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
 
@@ -167,8 +166,8 @@ void IoItkTest::testSaveLoadInr()
     std::filesystem::create_directories( path.parent_path() );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
     fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
@@ -218,8 +217,8 @@ void IoItkTest::ImageSeriesInrTest()
     std::filesystem::create_directories( path.parent_path() );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
     fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
@@ -268,12 +267,12 @@ void IoItkTest::SeriesDBInrTest()
                            std::filesystem::exists(skinFile));
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg       = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileImageCfg = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr srvCfg       = core::runtime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr fileImageCfg = core::runtime::EConfigurationElement::New("file");
     fileImageCfg->setValue(imageFile.string());
     srvCfg->addConfigurationElement(fileImageCfg);
 
-    ::fwRuntime::EConfigurationElement::sptr fileSkinCfg = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr fileSkinCfg = core::runtime::EConfigurationElement::New("file");
     fileSkinCfg->setValue(skinFile.string());
     srvCfg->addConfigurationElement(fileSkinCfg);
 

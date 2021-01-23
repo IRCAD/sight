@@ -23,14 +23,13 @@
 #include "fwGuiQml/dialog/ProgressDialog.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/IFrameSrv.hpp>
 #include <fwGui/registry/macros.hpp>
 
 #include <fwQml/QmlEngine.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <QGuiApplication>
 #include <QObject>
@@ -68,7 +67,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
-            ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
+            core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/Progress.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
         SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
@@ -84,7 +83,7 @@ ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::stri
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
-            ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
+            core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_window = engine->createComponent(dialogPath);
         SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_window);

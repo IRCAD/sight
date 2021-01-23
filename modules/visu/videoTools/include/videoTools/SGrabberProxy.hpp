@@ -165,7 +165,7 @@ protected:
 
 private:
 
-    typedef std::pair<std::string, ::fwRuntime::ConfigurationElement::csptr > ServiceConfigPair;
+    typedef std::pair<std::string, core::runtime::ConfigurationElement::csptr > ServiceConfigPair;
 
     enum class CameraType : std::uint8_t
     {

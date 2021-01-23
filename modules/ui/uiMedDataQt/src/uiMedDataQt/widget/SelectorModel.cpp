@@ -24,6 +24,7 @@
 
 #include "uiMedDataQt/InsertSeries.hpp"
 
+#include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
@@ -36,8 +37,6 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
@@ -448,12 +447,12 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
         ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(_series);
         if(imageSeries)
         {
-            const auto path = ::fwRuntime::getModuleResourceFilePath("media", "icons/ImageSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("media", "icons/ImageSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (modelSeries)
         {
-            const auto path = ::fwRuntime::getModuleResourceFilePath("media", "icons/ModelSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("media", "icons/ModelSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (activitySeries)

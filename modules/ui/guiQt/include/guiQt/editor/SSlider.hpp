@@ -110,7 +110,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
     virtual void starting() override;

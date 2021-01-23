@@ -200,7 +200,7 @@ private:
     unsigned int m_delay { 500 };
 
     /// Contains the optional configuration to set to reader implementation.
-    SPTR(::fwRuntime::ConfigurationElement) m_readerConfig;
+    SPTR(core::runtime::ConfigurationElement) m_readerConfig;
 };
 
 } // namespace ioPacs

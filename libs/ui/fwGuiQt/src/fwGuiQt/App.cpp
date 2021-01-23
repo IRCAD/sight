@@ -22,11 +22,10 @@
 
 #include "fwGuiQt/App.hpp"
 
+#include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -50,7 +49,7 @@ App::App(int& argc, char** argv, bool guiEnabled) :
 
     std::string appName = "No name";
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
 
     if (profile)
     {

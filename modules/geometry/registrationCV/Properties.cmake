@@ -8,7 +8,6 @@ set( DEPENDENCIES
     core
     fwData
     fwMath
-    fwRuntime
     fwServices
     cvIO
 )

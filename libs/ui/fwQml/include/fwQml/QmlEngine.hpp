@@ -90,7 +90,7 @@ public:
      * -  import the path using:
      * @code{.cpp}
          SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
-         engine->importModulePath(::fwRuntime::getModuleResourcePath("myBundle"));
+         engine->importModulePath(core::runtime::getModuleResourcePath("myBundle"));
        @endcode
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "videoFilter/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
 namespace videoFilter
 {
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct VIDEOFILTER_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct VIDEOFILTER_CLASS_API Plugin : public core::runtime::Plugin
 {
     /**
      * @brief   destructor

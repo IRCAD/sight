@@ -30,11 +30,10 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/fwID.hpp>
-
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <functional>
 #include <regex>
@@ -60,7 +59,7 @@ const core::com::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 //-----------------------------------------------------------------------------
 
 IService::IService() :
-    m_configuration( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") ),
+    m_configuration( new core::runtime::EConfigurationElement("EmptyConfigurationElement") ),
     m_globalState( STOPPED ),
     m_updatingState( NOTUPDATING ),
     m_configurationState( UNCONFIGURED )
@@ -309,7 +308,7 @@ void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 
 //-----------------------------------------------------------------------------
 
-void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _cfgElement)
+void IService::setConfiguration(const core::runtime::ConfigurationElement::sptr _cfgElement)
 {
     SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement );
     m_configuration      = _cfgElement;
@@ -323,7 +322,7 @@ void IService::setConfiguration(const Config& _configuration)
     SLM_ASSERT( "Invalid ConfigurationElement", _configuration.m_config );
 
     // TODO: Remove this ugly const_cast
-    m_configuration      = ::fwRuntime::ConfigurationElement::constCast(_configuration.m_config);
+    m_configuration      = core::runtime::ConfigurationElement::constCast(_configuration.m_config);
     m_configurationState = UNCONFIGURED;
 
     m_serviceConfig = _configuration;
@@ -333,12 +332,12 @@ void IService::setConfiguration(const Config& _configuration)
 
 void IService::setConfiguration( const ConfigType& ptree )
 {
-    ::fwRuntime::ConfigurationElement::sptr ce;
+    core::runtime::ConfigurationElement::sptr ce;
 
     ConfigType serviceConfig;
     serviceConfig.add_child("service", ptree);
 
-    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
+    ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
 
     SLM_ASSERT( "Invalid ConfigurationElement", ce );
 
@@ -347,7 +346,7 @@ void IService::setConfiguration( const ConfigType& ptree )
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr IService::getConfiguration() const
+core::runtime::ConfigurationElement::sptr IService::getConfiguration() const
 {
     return m_configuration;
 }
@@ -356,7 +355,7 @@ void IService::setConfiguration( const ConfigType& ptree )
 
 IService::ConfigType IService::getConfigTree() const
 {
-    const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+    const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
 
     // This is in case we get the configuration from a ::fwServices::registry::ServiceConfig
     auto srvConfig = configTree.get_child_optional("config");
@@ -406,12 +405,12 @@ void IService::configure()
 
 void IService::configure(const ConfigType& ptree)
 {
-    ::fwRuntime::ConfigurationElement::sptr ce;
+    core::runtime::ConfigurationElement::sptr ce;
 
     ConfigType serviceConfig;
     serviceConfig.add_child("service", ptree);
 
-    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
+    ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
 
     SLM_ASSERT( "Invalid ConfigurationElement", ce );
 

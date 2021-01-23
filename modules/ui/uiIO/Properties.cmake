@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwJobs
     fwMedData
     fwMedDataTools
-    fwRuntime
     fwServices
     fwIO
 )

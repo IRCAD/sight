@@ -22,6 +22,7 @@
 
 #include "PatchTest.hpp"
 
+#include <core/runtime/EConfigurationElement.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
@@ -33,8 +34,6 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -72,7 +71,7 @@ void PatchTest::tearDown()
 //------------------------------------------------------------------------------
 
 template <typename T>
-SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const std::string& reader)
+SPTR(T) read(const core::runtime::EConfigurationElement::sptr& srvCfg, const std::string& reader)
 {
 
     typename T::sptr readObj = T::New();
@@ -130,14 +129,14 @@ void PatchTest::patchMedicalDataTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
 
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
 
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
     fileCfg->setValue(file.string());
     srvCfg->addConfigurationElement(fileCfg);
 
     //<patcher context="..." version="..." />
-    ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
+    core::runtime::EConfigurationElement::sptr patcherCfg = core::runtime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context", "MedicalData");
     patcherCfg->setAttributeValue("version", ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);

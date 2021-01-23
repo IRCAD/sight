@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,23 +20,28 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/macros.hpp>
-
 #include "uiVisu/Plugin.hpp"
+
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwServices/macros.hpp>
 
 namespace uiVisu
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisu::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiVisu::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {

@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwGui
-    fwRuntime
     fwServices
     fwPreferences
     cvIO

@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwRenderQt3D
-    fwRuntime
 )
 set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )

@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwData
     fwDataTools
     fwGui
-    fwRuntime
     fwServices
     )
 set( REQUIREMENTS

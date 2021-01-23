@@ -70,7 +70,7 @@ public:
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout and call updating() method
     virtual void starting() override;

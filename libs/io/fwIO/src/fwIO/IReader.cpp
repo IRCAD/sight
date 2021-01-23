@@ -23,12 +23,11 @@
 #include "fwIO/IReader.hpp"
 
 #include <core/com/Slots.hxx>
-
-#include <fwRuntime/operations.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
-using fwRuntime::ConfigurationElementContainer;
+using core::runtime::ConfigurationElementContainer;
 
 namespace fwIO
 {
@@ -187,7 +186,7 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            const auto file            = ::fwRuntime::getResourceFilePath(resource);
+            const auto file            = core::runtime::getResourceFilePath(resource);
             this->setFile(file);
         }
     }
@@ -209,7 +208,7 @@ void IReader::configuring()
         for (auto resourceCfg = resourcesCfg.first; resourceCfg != resourcesCfg.second; ++resourceCfg)
         {
             const std::string resource = resourceCfg->second.get_value<std::string>();
-            const auto file            = ::fwRuntime::getResourceFilePath(resource);
+            const auto file            = core::runtime::getResourceFilePath(resource);
             locations.push_back(file);
         }
         this->setFiles(locations);
@@ -226,11 +225,11 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            auto folder                = ::fwRuntime::getModuleResourceFilePath(resource);
+            auto folder                = core::runtime::getModuleResourceFilePath(resource);
             if(folder.empty())
             {
                 // If not found in a module, look into libraries
-                folder = ::fwRuntime::getLibraryResourceFilePath(resource);
+                folder = core::runtime::getLibraryResourceFilePath(resource);
                 SLM_ERROR_IF("Resource '" + resource + "' has not been found in any module or library", folder.empty());
             }
 

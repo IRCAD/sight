@@ -27,6 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -41,8 +42,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -133,7 +132,7 @@ void SCreateActivity::starting()
     // Add the load button
     ::fwActivities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
-    infoLoad.icon        = ::fwRuntime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
+    infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

@@ -28,11 +28,10 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
 
 #include <fwData/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <array>
 #include <regex>
@@ -50,7 +49,7 @@ const std::array< std::string, 3 > s_DATA_KEYWORDS = {{ "in", "out", "inout" }};
 
 //-----------------------------------------------------------------------------
 
-void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
+void Config::createConnections( const core::runtime::ConfigurationElement::csptr& connectionCfg,
                                 core::com::helper::SigSlotConnection& connections,
                                 const CSPTR(core::tools::Object)& obj)
 {
@@ -75,7 +74,7 @@ void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& 
 
 //-----------------------------------------------------------------------------
 
-Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
+Config::ConnectionInfo Config::parseConnections( const core::runtime::ConfigurationElement::csptr& connectionCfg,
                                                  const CSPTR(core::tools::Object)& obj)
 {
     ConnectionInfo info;
@@ -84,7 +83,7 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
     std::smatch match;
     std::string src, uid, key;
 
-    for(::fwRuntime::ConfigurationElement::csptr elem :   connectionCfg->getElements())
+    for(core::runtime::ConfigurationElement::csptr elem :   connectionCfg->getElements())
     {
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
@@ -125,7 +124,7 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
 
 //-----------------------------------------------------------------------------
 
-ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
+ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationElement::csptr& connectionCfg,
                                            const std::string& errMsgHead,
                                            std::function<std::string()> generateChannelNameFn)
 {
@@ -150,7 +149,7 @@ ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationEleme
 
     ProxyConnections proxyCnt(channel);
 
-    for(::fwRuntime::ConfigurationElement::csptr elem : connectionCfg->getElements())
+    for(core::runtime::ConfigurationElement::csptr elem : connectionCfg->getElements())
     {
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
@@ -185,7 +184,7 @@ ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationEleme
 //-----------------------------------------------------------------------------
 
 void Config::createProxy( const std::string& objectKey,
-                          const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+                          const CSPTR(core::runtime::ConfigurationElement)& cfg,
                           Config::ProxyConnectionsMapType& proxyMap,
                           const CSPTR(::fwData::Object)& obj)
 {
@@ -198,7 +197,7 @@ void Config::createProxy( const std::string& objectKey,
     std::regex re("(.*)/(.*)");
     std::smatch match;
     std::string src, uid, key;
-    for(::fwRuntime::ConfigurationElement::csptr elem :   cfg->getElements())
+    for(core::runtime::ConfigurationElement::csptr elem :   cfg->getElements())
     {
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
@@ -276,7 +275,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::Config Config::parseService(const ::fwRuntime::ConfigurationElement::csptr& srvElem,
+::fwServices::IService::Config Config::parseService(const core::runtime::ConfigurationElement::csptr& srvElem,
                                                     const std::string& errMsgHead)
 {
 #ifndef _DEBUG
@@ -312,7 +311,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
     // AutoConnect
     srvConfig.m_globalAutoConnect = false;
-    const ::fwRuntime::ConfigurationElement::AttributePair attribAutoConnect =
+    const core::runtime::ConfigurationElement::AttributePair attribAutoConnect =
         srvElem->getSafeAttributeValue("autoConnect");
     if(attribAutoConnect.first)
     {
@@ -325,7 +324,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
     srvConfig.m_worker = srvElem->getAttributeValue("worker");
 
     // Get service configuration
-    ::fwRuntime::ConfigurationElement::csptr cfgElem = srvElem;
+    core::runtime::ConfigurationElement::csptr cfgElem = srvElem;
     if (!config.empty())
     {
         const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
@@ -334,7 +333,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
     srvConfig.m_config = cfgElem;
 
     // Check if user did not bind a service to another service
-    for(::fwRuntime::ConfigurationElement::csptr elem :  cfgElem->getElements())
+    for(core::runtime::ConfigurationElement::csptr elem :  cfgElem->getElements())
     {
         SLM_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
                    elem->getName() != "service" &&
@@ -343,10 +342,10 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
     // Check first if we can create this service
     // If there is a missing object in its data list, then it is not possible
-    auto cfgConstElem = ::fwRuntime::ConfigurationElement::constCast(srvElem);
+    auto cfgConstElem = core::runtime::ConfigurationElement::constCast(srvElem);
 
     // Collect all input/output configurations
-    std::vector< ::fwRuntime::ConfigurationElement::sptr > objectCfgs;
+    std::vector< core::runtime::ConfigurationElement::sptr > objectCfgs;
     for(const auto& dataKeyword : s_DATA_KEYWORDS)
     {
         auto objCfgs = cfgConstElem->find(dataKeyword);
@@ -407,7 +406,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
         std::string group = cfg->getAttributeValue("group");
         if(!group.empty())
         {
-            std::vector< ::fwRuntime::ConfigurationElement::sptr > keyCfgs = cfg->find("key");
+            std::vector< core::runtime::ConfigurationElement::sptr > keyCfgs = cfg->find("key");
 
             size_t count = 0;
             for(const auto& groupCfg : keyCfgs)

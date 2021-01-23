@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwRenderOgre
-    fwRuntime
 )
 set( REQUIREMENTS
     visuOgre

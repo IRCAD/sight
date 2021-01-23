@@ -126,7 +126,7 @@ void SSlotCaller::configuring()
                m_configuration->hasConfigurationElement(s_SLOTS_KEY));
     ConfigurationType cfg = m_configuration->findConfigurationElement(s_SLOTS_KEY);
 
-    ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement(s_SLOT_KEY);
+    core::runtime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement(s_SLOT_KEY);
 
     std::regex re("(.*)/(.*)");
     std::smatch match;

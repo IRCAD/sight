@@ -82,11 +82,11 @@ void STDataListener::configuring()
 
     m_deviceNamesConfig = m_configuration->find("deviceName");
 
-    ::fwRuntime::ConfigurationElement::sptr tdata = m_configuration->findConfigurationElement("TData");
+    core::runtime::ConfigurationElement::sptr tdata = m_configuration->findConfigurationElement("TData");
 
     if(tdata)
     {
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > matrices = tdata->find("matrix");
+        std::vector < core::runtime::ConfigurationElement::sptr > matrices = tdata->find("matrix");
 
         for(const auto& m : matrices)
         {

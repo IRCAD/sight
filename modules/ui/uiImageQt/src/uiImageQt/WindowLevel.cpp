@@ -26,6 +26,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -39,8 +40,6 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -136,8 +135,8 @@ void WindowLevel::starting()
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;
-    std::string squareIcon(::fwRuntime::getModuleResourceFilePath("uiImageQt", "square.png").string());
-    std::string rampIcon(::fwRuntime::getModuleResourceFilePath("uiImageQt", "ramp.png").string());
+    std::string squareIcon(core::runtime::getModuleResourceFilePath("uiImageQt", "square.png").string());
+    std::string rampIcon(core::runtime::getModuleResourceFilePath("uiImageQt", "ramp.png").string());
     ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
     ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
@@ -146,9 +145,9 @@ void WindowLevel::starting()
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
-    std::string windo(::fwRuntime::getModuleResourceFilePath("uiImageQt", "windowing.svg").string());
+    std::string windo(core::runtime::getModuleResourceFilePath("uiImageQt", "windowing.svg").string());
     icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
-    std::string nowindo(::fwRuntime::getModuleResourceFilePath("uiImageQt", "nowindowing.svg").string());
+    std::string nowindo(core::runtime::getModuleResourceFilePath("uiImageQt", "nowindowing.svg").string());
     icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");

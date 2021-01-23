@@ -2,7 +2,6 @@ set( NAME trackingCalibration )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwRuntime
     core
     fwData
     fwDataTools

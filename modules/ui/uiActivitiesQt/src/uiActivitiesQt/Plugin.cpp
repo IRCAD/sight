@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "uiActivitiesQt/Plugin.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 namespace uiActivitiesQt
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQt::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQt::Plugin");
 
 Plugin::~Plugin() noexcept
 {

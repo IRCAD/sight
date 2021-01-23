@@ -7,7 +7,6 @@ set( DEPENDENCIES
     core
     fwData
     fwServices
-    fwRuntime
     fwMedData
     fwMDSemanticPatch
 )

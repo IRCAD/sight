@@ -22,9 +22,8 @@
 
 #include "fwAtomsPatch/infos/Logger.hpp"
 
+#include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
-
-#include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
@@ -65,7 +64,7 @@ Logger::Logger()
     namespace bfile = std::filesystem;
 
     //Create PATCH.log in a user data dir nammed sight/appName/
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
 
     //default name of application with no profile.xml
     std::string appName = "default";

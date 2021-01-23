@@ -174,13 +174,13 @@ void IWriter::configuring()
                ( this->getIOPathType() & ::fwIO::FILE || this->getIOPathType() & ::fwIO::FILES ) ||
                (m_configuration->find("file").size() == 0));
 
-    ::fwRuntime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
-    m_windowTitle                                       = titleConfig ? titleConfig->getValue() : "";
+    core::runtime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
+    m_windowTitle = titleConfig ? titleConfig->getValue() : "";
 
     if ( this->getIOPathType() & ::fwIO::FILE )
     {
         FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & ::fwIO::FILES );
-        std::vector< ::fwRuntime::ConfigurationElement::sptr > config = m_configuration->find("file");
+        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
         FW_RAISE_IF("No more than one file must be defined in the configuration", config.size() > 1 );
         if (config.size() == 1)
         {
@@ -192,9 +192,9 @@ void IWriter::configuring()
     if ( this->getIOPathType() & ::fwIO::FILES )
     {
         FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & ::fwIO::FILE );
-        std::vector< ::fwRuntime::ConfigurationElement::sptr > config = m_configuration->find("file");
+        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
         ::fwIO::LocationsType locations;
-        for(::fwRuntime::ConfigurationElement::sptr elt :  config)
+        for(core::runtime::ConfigurationElement::sptr elt :  config)
         {
             std::string location = elt->getValue();
             locations.push_back(std::filesystem::path(location));
@@ -204,7 +204,7 @@ void IWriter::configuring()
 
     if ( this->getIOPathType() & ::fwIO::FOLDER )
     {
-        std::vector< ::fwRuntime::ConfigurationElement::sptr > config = m_configuration->find("folder");
+        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("folder");
         FW_RAISE_IF("No more than one folder must be defined in configuration", config.size() > 1 );
         if (config.size() == 1)
         {

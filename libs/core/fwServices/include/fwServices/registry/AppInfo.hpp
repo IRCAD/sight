@@ -25,8 +25,7 @@
 #include "fwServices/config.hpp"
 
 #include <core/BaseObject.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <map>
 
@@ -61,7 +60,7 @@ public:
     std::string desc;
     typedef std::map< std::string, std::string > ParametersType;
     ParametersType parameters;
-    ::fwRuntime::ConfigurationElement::csptr config;
+    core::runtime::ConfigurationElement::csptr config;
     std::string moduleId; ///< Module identifier (used to start the module when the appConfig is launched)
     std::string moduleVersion; ///< Module version (used to start the module when the appConfig is launched)
 };

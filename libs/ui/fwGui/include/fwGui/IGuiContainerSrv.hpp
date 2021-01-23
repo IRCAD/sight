@@ -135,7 +135,7 @@ protected:
 
     FWGUI_API virtual ~IGuiContainerSrv();
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize managers.
@@ -198,9 +198,9 @@ private:
 
     typedef std::vector< SPTR(::fwGui::builder::ISlideViewBuilder) > SlideViewContainerType;
 
-    void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
-    void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
-    void initializeSlideViewBuilder( ::fwRuntime::ConfigurationElement::sptr slideViewConfig );
+    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
+    void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
+    void initializeSlideViewBuilder( core::runtime::ConfigurationElement::sptr slideViewConfig );
 
     bool m_viewLayoutManagerIsCreated;
     SPTR( ::fwGui::layoutManager::IViewLayoutManager) m_viewLayoutManager;

@@ -30,6 +30,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <fwData/Boolean.hpp>
@@ -42,8 +43,6 @@
 #include <fwDataTools/helper/Field.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwRuntime/operations.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -188,15 +187,15 @@ void SModelSeriesList::configuring()
         m_enableDelete  = config->get<bool>("enableDelete", m_enableDelete);
     }
 
-    const ::fwRuntime::ConfigurationElement::sptr& columns = m_configuration->findConfigurationElement( "columns" );
+    const core::runtime::ConfigurationElement::sptr& columns = m_configuration->findConfigurationElement( "columns" );
     if(columns)
     {
-        ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
+        core::runtime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
         m_headers.clear();
         for(; cIt != columns->end(); cIt++)
         {
             ValueView* view;
-            ::fwRuntime::ConfigurationElement::AttributePair configView = (*cIt)->getSafeAttributeValue("view");
+            core::runtime::ConfigurationElement::AttributePair configView = (*cIt)->getSafeAttributeValue("view");
             if(!configView.first)
             {
                 view = new ValueView();

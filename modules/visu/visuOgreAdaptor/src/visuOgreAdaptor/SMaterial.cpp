@@ -27,6 +27,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/Convert.hpp>
 
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -37,8 +38,6 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Utils.hpp>
-
-#include <fwRuntime/Convert.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -177,7 +176,7 @@ void SMaterial::starting()
         this->createTextureAdaptor();
     }
 
-    const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+    const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
 
     if(configTree.find("config") != configTree.not_found())
     {
