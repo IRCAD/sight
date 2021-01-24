@@ -82,7 +82,7 @@ void SFilterSelectionEditor::starting()
 {
 
     // Get Destination SeriesDB
-    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
+    m_destinationSeriesDB = this->getInOut< data::SeriesDB>("target");
     SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
 
     data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
@@ -393,7 +393,7 @@ void SFilterSelectionEditor::updateButtonStatus(int filterIndex)
 
 void SFilterSelectionEditor::applyFilters()
 {
-    typedef std::vector< ::fwMedData::DicomSeries::sptr > DicomSeriesContainertype;
+    typedef std::vector< data::DicomSeries::sptr > DicomSeriesContainertype;
     typedef std::vector< ::fwDicomIOFilter::IFilter::sptr > FilterContainertype;
 
     // Get selected DicomSeries
@@ -428,10 +428,10 @@ void SFilterSelectionEditor::applyFilters()
         // Copy selected DicomSeries
         for(const data::Object::sptr& obj: vector->getContainer())
         {
-            ::fwMedData::DicomSeries::sptr srcDicomSeries = ::fwMedData::DicomSeries::dynamicCast(obj);
+            data::DicomSeries::sptr srcDicomSeries = data::DicomSeries::dynamicCast(obj);
             SLM_ASSERT("The series should be a DicomSeries.", srcDicomSeries);
 
-            ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::New();
+            data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
             dicomSeries->deepCopy(srcDicomSeries);
             dicomSeriesContainer.push_back(dicomSeries);
         }
@@ -472,7 +472,7 @@ void SFilterSelectionEditor::applyFilters()
         if(forcedApply || ssInfos.str().empty())
         {
             // Add filtered series to SeriesDB
-            for(const ::fwMedData::DicomSeries::sptr& series: dicomSeriesContainer)
+            for(const data::DicomSeries::sptr& series: dicomSeriesContainer)
             {
                 sDBhelper.add(series);
             }

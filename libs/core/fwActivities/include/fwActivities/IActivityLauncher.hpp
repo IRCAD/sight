@@ -25,10 +25,9 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
+#include <data/ActivitySeries.hpp>
 #include <data/mt/weak_ptr.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Series.hpp>
+#include <data/Series.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -61,14 +60,14 @@ protected:
                                                      const InOutMapType& inouts = InOutMapType());
 
     /// Create the activity series given in 'mainActivity' configuration
-    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr createMainActivity() const;
+    FWACTIVITIES_API virtual data::ActivitySeries::sptr createMainActivity() const;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
     FWACTIVITIES_API std::pair<bool, std::string> validateActivity(
-        const ::fwMedData::ActivitySeries::csptr& activitySeries) const;
+        const data::ActivitySeries::csptr& activitySeries) const;
 
     /**
      * @brief Translate parameters from source object.

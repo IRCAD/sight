@@ -28,12 +28,11 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
+#include <data/Equipment.hpp>
+#include <data/Patient.hpp>
 #include <data/reflection/getObject.hpp>
+#include <data/Study.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -86,16 +85,16 @@ data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
 
 //-----------------------------------------------------------------------------
 
-::fwMedData::ActivitySeries::sptr ActivitySeries::buildData(
+data::ActivitySeries::sptr ActivitySeries::buildData(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
     const data::Vector::csptr& currentSelection ) const
 {
-    ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
 
-    ::fwMedData::Series::sptr series;
+    data::Series::sptr series;
     for(const data::Object::sptr& obj :  *currentSelection)
     {
-        series = ::fwMedData::Series::dynamicCast(obj);
+        series = data::Series::dynamicCast(obj);
         if(series)
         {
             break;

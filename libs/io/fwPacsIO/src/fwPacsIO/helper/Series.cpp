@@ -26,12 +26,12 @@
 
 #include <core/spyLog.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -69,10 +69,10 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > _response
             OFString data;
 
             // Create series and get informations.
-            ::fwMedData::DicomSeries::sptr series  = ::fwMedData::DicomSeries::New();
-            ::fwMedData::Patient::sptr patient     = series->getPatient();
-            ::fwMedData::Study::sptr study         = series->getStudy();
-            ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+            data::DicomSeries::sptr series  = data::DicomSeries::New();
+            data::Patient::sptr patient     = series->getPatient();
+            data::Study::sptr study         = series->getStudy();
+            data::Equipment::sptr equipment = series->getEquipment();
 
             // Series
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
@@ -94,7 +94,7 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > _response
             series->setTime(data.c_str());
 
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data);
-            ::fwMedData::DicomValuesType performingPhysiciansName;
+            data::DicomValuesType performingPhysiciansName;
             performingPhysiciansName.push_back(data.c_str());
             series->setPerformingPhysiciansName(performingPhysiciansName);
 
@@ -205,7 +205,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    for(const ::fwMedData::Series::sptr& s: _series )
+    for(const data::Series::sptr& s: _series )
     {
         result.push_back(s->getInstanceUID());
     }

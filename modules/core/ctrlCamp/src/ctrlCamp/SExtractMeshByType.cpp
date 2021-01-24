@@ -25,11 +25,10 @@
 #include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -102,7 +101,7 @@ void SExtractMeshByType::starting()
 
 void SExtractMeshByType::updating()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries>("source");
+    data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries>("source");
     SLM_ASSERT("ModelSeries not found", modelSeries);
 
     data::mt::ObjectReadLock lock(modelSeries);
@@ -113,8 +112,8 @@ void SExtractMeshByType::updating()
         const std::string type  = elt.first;
         const std::string regex = elt.second;
 
-        bool found                                                    = false;
-        const ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+        bool found                                             = false;
+        const data::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
         for(const data::Reconstruction::csptr element : recs)
         {
             if(element->getStructureType() == type)

@@ -56,7 +56,7 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
 
     if(itKey != keys.end())
     {
-        if(classname == "::fwMedData::ActivitySeries")
+        if(classname == "data::ActivitySeries")
         {
             // Check if activity config id is known
             ::fwAtoms::String::sptr asId = series->getAttribute< ::fwAtoms::String >("activity_config_id");

@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ImageSeries/V2ToV1Test.hpp"
+#include "data/ImageSeries/V2ToV1Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ImageSeries/V2ToV1.hpp>
+#include <fwStructuralPatch/data/ImageSeries/V2ToV1.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
@@ -35,13 +35,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ImageSeries::V2ToV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ImageSeries::V2ToV1Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ImageSeries
 {
@@ -67,7 +67,7 @@ void V2ToV1Test::applyPatchTest()
     ::fwAtoms::Object::sptr imgSeriesV2 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr imgSeriesV1;
 
-    ::fwAtomsPatch::helper::setClassname(imgSeriesV2, "::fwMedData::ImageSeries");
+    ::fwAtomsPatch::helper::setClassname(imgSeriesV2, "data::ImageSeries");
     ::fwAtomsPatch::helper::setVersion(imgSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(imgSeriesV2);
@@ -91,8 +91,8 @@ void V2ToV1Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgSeriesV2] = imgSeriesV1;
 
-        ::fwStructuralPatch::fwMedData::ImageSeries::V2ToV1::sptr v2ToV1Patch;
-        v2ToV1Patch = ::fwStructuralPatch::fwMedData::ImageSeries::V2ToV1::New();
+        ::fwStructuralPatchdata::ImageSeries::V2ToV1::sptr v2ToV1Patch;
+        v2ToV1Patch = ::fwStructuralPatchdata::ImageSeries::V2ToV1::New();
         CPPUNIT_ASSERT_NO_THROW(v2ToV1Patch->apply(imgSeriesV2, imgSeriesV1, newVersions));
 
         CPPUNIT_ASSERT(imgSeriesV1);
@@ -104,6 +104,6 @@ void V2ToV1Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ImageSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

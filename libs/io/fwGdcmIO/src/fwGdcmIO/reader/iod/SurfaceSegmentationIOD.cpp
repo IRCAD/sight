@@ -32,9 +32,8 @@
 
 #include <data/Boolean.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <gdcmSegmentReader.h>
 #include <gdcmSurfaceHelper.h>
@@ -49,7 +48,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(const data::DicomSeries::csptr& dicomSeries,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
@@ -66,16 +65,16 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
+void SurfaceSegmentationIOD::read(data::Series::sptr series)
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(series);
     SLM_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
     SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
 
     // Dicom container
-    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
     if(dicomContainer.size() > 1)
     {
         m_logger->warning("More than one surface segmentation storage have been found in the series. "

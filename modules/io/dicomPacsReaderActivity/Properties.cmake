@@ -9,7 +9,6 @@ set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
     data
-    fwMedData
     gui
     guiQt
     ioDicom

@@ -24,9 +24,9 @@
 
 #include "uiActivitiesQml/config.hpp"
 
-#include <fwActivities/IActivityLauncher.hpp>
+#include <data/ActivitySeries.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <fwActivities/IActivityLauncher.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -46,9 +46,9 @@ namespace uiActivitiesQml
  * - \b activityLaunched(): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivity( data::ActivitySeries::sptr ): This slot allows to create a view for the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivitySeries( data::Series::sptr ): This slot allows to create a view for the given activity
  *   series.
  *
  * @section Config Configuration
@@ -144,10 +144,10 @@ protected:
 private:
 
     /// Slot: Launch the given activity in the stackView.
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    void launchActivity(data::ActivitySeries::sptr activitySeries);
 
     /// Slot: Launch the given activity in the stackView.
-    void launchActivitySeries(::fwMedData::Series::sptr series);
+    void launchActivitySeries(data::Series::sptr series);
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 };

@@ -30,21 +30,20 @@
 
 #include <data/Boolean.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Object.hpp>
@@ -109,7 +108,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
         return;
     }
     ::fwTest::generator::Image::initRand();
-    ::fwMedData::ImageSeries::sptr imgSeries;
+    data::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
@@ -122,7 +121,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb           = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr sdb = data::SeriesDB::New();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(sdb);
     reader->setFolder(PATH);
@@ -134,9 +133,9 @@ void WriterReaderTest::writeReadImageSeriesTest()
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
 
-    ::fwMedData::Series::sptr series         = sdb->getContainer().front();
-    ::fwMedData::ImageSeries::sptr imgseries = ::fwMedData::ImageSeries::dynamicCast(series);
-    data::Image::sptr image = imgseries->getImage();
+    data::Series::sptr series         = sdb->getContainer().front();
+    data::ImageSeries::sptr imgseries = data::ImageSeries::dynamicCast(series);
+    data::Image::sptr image           = imgseries->getImage();
     roundSpacing(image);
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
@@ -151,7 +150,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
         return;
     }
     ::fwTest::generator::Image::initRand();
-    ::fwMedData::SeriesDB::sptr seriesDB;
+    data::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
@@ -164,7 +163,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb           = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr sdb = data::SeriesDB::New();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(sdb);
     reader->setFolder(PATH);
@@ -179,12 +178,12 @@ void WriterReaderTest::writeReadSeriesDBTest()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr WriterReaderTest::createSeriesDB()
+data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 {
     //create SeriesDB
-    ::fwMedData::SeriesDB::sptr sdb            = ::fwMedData::SeriesDB::New();
-    ::fwMedData::ImageSeries::sptr imgSeries   = ::fwTest::generator::SeriesDB::createImageSeries();
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(1);
+    data::SeriesDB::sptr sdb            = data::SeriesDB::New();
+    data::ImageSeries::sptr imgSeries   = ::fwTest::generator::SeriesDB::createImageSeries();
+    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(1);
 
     sdb->getContainer().push_back(imgSeries);
     sdb->getContainer().push_back(modelSeries);

@@ -24,18 +24,17 @@
 
 #include "fwActivities/IObjectValidator.hpp"
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 namespace fwActivities
 {
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkRequirements(const ::fwMedData::ActivitySeries::csptr& activity)
+IValidator::ValidationType IActivityValidator::checkRequirements(const data::ActivitySeries::csptr& activity)
 const
 {
     IValidator::ValidationType validation;
@@ -216,7 +215,7 @@ const
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData::ActivitySeries::csptr& activity) const
+IValidator::ValidationType IActivityValidator::checkParameters(const data::ActivitySeries::csptr& activity) const
 {
     IValidator::ValidationType validation;
     validation.first  = true;

@@ -29,7 +29,7 @@
 #include "fwGdcmIO/reader/ie/Series.hpp"
 #include "fwGdcmIO/reader/ie/Study.hpp"
 
-#include <fwMedData/ImageSeries.hpp>
+#include <data/ImageSeries.hpp>
 
 #include <gdcmImageReader.h>
 
@@ -42,7 +42,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-CTMRImageIOD::CTMRImageIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+CTMRImageIOD::CTMRImageIOD(const data::DicomSeries::csptr& dicomSeries,
                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                            const ::fwLog::Logger::sptr& logger,
                            ProgressCallback progress,
@@ -60,10 +60,10 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::read(::fwMedData::Series::sptr series)
+void CTMRImageIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader

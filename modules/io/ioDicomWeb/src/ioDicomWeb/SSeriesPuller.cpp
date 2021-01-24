@@ -28,12 +28,11 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
+#include <data/DicomSeries.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -105,11 +104,11 @@ void SSeriesPuller::configuring()
 void SSeriesPuller::starting()
 {
     // Get Destination SeriesDB
-    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    m_destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
     SLM_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
 
     // Create temporary SeriesDB
-    m_tempSeriesDB = ::fwMedData::SeriesDB::New();
+    m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
@@ -217,7 +216,7 @@ void SSeriesPuller::pullSeries()
         data::Vector::ConstIteratorType it = selectedSeries->begin();
         for(; it != selectedSeries->end(); ++it)
         {
-            ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+            data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
 
             // Check if the series must be pulled
             if(series &&
@@ -353,7 +352,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
     // Create temporary series helper
     ::fwMedDataTools::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
 
-    for(const ::fwMedData::Series::sptr& series: selectedSeries)
+    for(const data::Series::sptr& series: selectedSeries)
     {
         const std::string& selectedSeriesUID = series->getInstanceUID();
 

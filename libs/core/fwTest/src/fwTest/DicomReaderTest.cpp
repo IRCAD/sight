@@ -25,14 +25,13 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/Type.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
 
 namespace fwTest
 {
@@ -54,14 +53,14 @@ namespace fwTest
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr& series )
+bool DicomReaderTest::checkSeriesJMSGenou( const data::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
 
-    ::fwMedData::Patient::sptr patient     = series->getPatient();
-    ::fwMedData::Study::sptr study         = series->getStudy();
-    ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+    data::Patient::sptr patient     = series->getPatient();
+    data::Study::sptr study         = series->getStudy();
+    data::Equipment::sptr equipment = series->getEquipment();
 
     // Study, Acquisition
     data::Image::sptr img = series->getImage();
@@ -114,7 +113,7 @@ bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr&
     CHECK_VALUE(ok, "Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     {
-        fwMedData::DicomValuesType physiciansName;
+        data::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
         SLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
                      (physiciansName == series->getPerformingPhysiciansName()));
@@ -248,14 +247,14 @@ bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr&
 
 //------------------------------------------------------------------------------
 
-bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries::sptr& series )
+bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const data::ImageSeries::sptr& series )
 {
     bool ok               = true;
     bool notReallyChecked = true;
 
-    ::fwMedData::Patient::sptr patient     = series->getPatient();
-    ::fwMedData::Study::sptr study         = series->getStudy();
-    ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+    data::Patient::sptr patient     = series->getPatient();
+    data::Study::sptr study         = series->getStudy();
+    data::Equipment::sptr equipment = series->getEquipment();
 
     // Study, Acquisition
     data::Image::sptr img = series->getImage();
@@ -308,7 +307,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries
     CHECK_VALUE(ok, "Study Description doesn't match : ", "", study->getDescription() ); // 0008,1030
     //(0008,1040) LO [ID_DEPARTMENT ]                                   # 14,1 Institutional Department Name
     {
-        fwMedData::DicomValuesType physiciansName;
+        data::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
         SLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
                      (physiciansName == series->getPerformingPhysiciansName()));

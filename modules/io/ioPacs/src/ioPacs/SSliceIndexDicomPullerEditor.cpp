@@ -29,8 +29,11 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
@@ -38,10 +41,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -62,7 +61,7 @@ namespace ioPacs
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
-                         ::fwMedData::DicomSeries )
+                         data::DicomSeries )
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG_CONFIG = "dicomReaderConfig";
@@ -140,7 +139,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     QHBoxLayout* layout = new QHBoxLayout();
 
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -166,7 +165,7 @@ void SSliceIndexDicomPullerEditor::starting()
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
     // Create temporary SeriesDB
-    m_tempSeriesDB = ::fwMedData::SeriesDB::New();
+    m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
@@ -248,7 +247,7 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
 void SSliceIndexDicomPullerEditor::triggerNewSlice()
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
@@ -275,7 +274,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR" && dicomSeries->getModality() != "XA")
     {
@@ -328,11 +327,11 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
     }
 
     //Copy image
-    ::fwMedData::ImageSeries::sptr imageSeries;
+    data::ImageSeries::sptr imageSeries;
 
     if(m_tempSeriesDB->getContainer().size() > 0)
     {
-        imageSeries = ::fwMedData::ImageSeries::dynamicCast(*(m_tempSeriesDB->getContainer().begin()));
+        imageSeries = data::ImageSeries::dynamicCast(*(m_tempSeriesDB->getContainer().begin()));
     }
 
     if(imageSeries)
@@ -364,8 +363,8 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         try
         {
             // DicomSeries
-            ::fwMedData::DicomSeries::sptr dicomSeries =
-                this->getInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+            data::DicomSeries::sptr dicomSeries =
+                this->getInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
             SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
             // Get selected slice

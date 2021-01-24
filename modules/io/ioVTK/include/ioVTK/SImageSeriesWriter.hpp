@@ -60,7 +60,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * - \b data [data::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

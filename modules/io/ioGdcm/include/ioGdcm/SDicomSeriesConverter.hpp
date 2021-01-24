@@ -26,9 +26,9 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 namespace fwJobs
 {
@@ -54,9 +54,9 @@ namespace ioGdcm
    </service>
    @endcode
  * @subsection Input Input:
- * - \b source [::fwMedData::SeriesDB]: Source SeriesDB containing DicomSeries.
+ * - \b source [data::SeriesDB]: Source SeriesDB containing DicomSeries.
  * @subsection In-Out In-Out:
- * - \b target [::fwMedData::SeriesDB]: Destination SeriesDB.
+ * - \b target [data::SeriesDB]: Destination SeriesDB.
  */
 class IOGDCM_CLASS_API SDicomSeriesConverter : public ::fwGui::IActionSrv
 {

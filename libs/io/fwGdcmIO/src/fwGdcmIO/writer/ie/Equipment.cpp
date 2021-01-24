@@ -26,7 +26,7 @@
 
 #include <core/runtime/profile/Profile.hpp>
 
-#include <fwMedData/Equipment.hpp>
+#include <data/Equipment.hpp>
 
 namespace fwGdcmIO
 {
@@ -39,12 +39,12 @@ namespace ie
 
 Equipment::Equipment(const SPTR(::gdcm::Writer)& writer,
                      const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                     const ::fwMedData::Equipment::csptr& equipment,
+                     const data::Equipment::csptr& equipment,
                      const ::fwLog::Logger::sptr& logger,
                      ProgressCallback progress,
                      CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Equipment >(writer, instance, equipment,
-                                                                        logger, progress, cancel)
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Equipment >(writer, instance, equipment,
+                                                                 logger, progress, cancel)
 {
 }
 

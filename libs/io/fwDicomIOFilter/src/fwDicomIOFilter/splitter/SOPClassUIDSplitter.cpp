@@ -82,12 +82,12 @@ bool SOPClassUIDSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
-    const ::fwMedData::DicomSeries::sptr& series,
+    const data::DicomSeries::sptr& series,
     const ::fwLog::Logger::sptr& logger) const
 {
     const DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series, logger);
 
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries :  result)
+    for(const data::DicomSeries::sptr& dicomSeries :  result)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
@@ -123,7 +123,7 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
         FW_RAISE_IF("Unable to read tags: \""+dicomPath+"\"", status.bad());
 
-        ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer;
+        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer;
         sopClassUIDContainer.insert(data.c_str());
         dicomSeries->setSOPClassUIDs(sopClassUIDContainer);
     }

@@ -27,12 +27,11 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/DicomSeries.hpp>
+#include <data/Series.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
 
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
@@ -183,7 +182,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         data::Vector::ConstIteratorType it = seriesVector->begin();
         for(; it != seriesVector->end(); ++it)
         {
-            ::fwMedData::DicomSeries::csptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+            data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(*it);
             SLM_ASSERT("The SeriesDB should contain only DicomSeries.", series);
 
             // Try to find series on PACS
@@ -209,7 +208,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
             ss << "Those series are already on the PACS: \n";
 
             // Display duplicated Series
-            for(const ::fwMedData::Series::csptr& series: duplicateSeriesVector)
+            for(const data::Series::csptr& series: duplicateSeriesVector)
             {
                 std::string description = series->getDescription();
                 description = (description.empty()) ? "[No description]" : description;
@@ -265,7 +264,7 @@ void SSeriesPusher::pushSeries()
         // Connect to PACS
         for(const auto& series : *seriesVector)
         {
-            ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+            data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
             SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
 
             for(const auto& item : dicomSeries->getDicomContainer())

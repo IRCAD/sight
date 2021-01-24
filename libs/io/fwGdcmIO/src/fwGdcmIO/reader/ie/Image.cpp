@@ -26,13 +26,12 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 
 #include <fwDicomTools/Image.hpp>
 
 #include <fwMath/VectorFunctions.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -56,7 +55,7 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Image::Image(const data::DicomSeries::csptr& dicomSeries,
              const SPTR(::gdcm::Reader)& reader,
              const ::fwGdcmIO::container::DicomInstance::sptr& instance,
              const data::Image::sptr& image,
@@ -156,7 +155,7 @@ void Image::readImagePlaneModule()
     }
 
     // Compute Z image spacing
-    const ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    const data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
     if(dicomContainer.size() > 1)
     {
         auto firstItem       = dicomContainer.begin();
@@ -378,7 +377,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
     const ::gdcm::Image& gdcmFirstImage = imageReader->GetImage();
 
     // Path container
-    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     // Raw buffer for all frames
     char* frameBuffer;

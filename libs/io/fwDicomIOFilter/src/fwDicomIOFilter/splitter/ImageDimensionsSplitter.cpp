@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,18 @@
  *
  ***********************************************************************/
 
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmimgle/dcmimage.h>
+#include "fwDicomIOFilter/splitter/ImageDimensionsSplitter.hpp"
 
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/helper/Filter.hpp"
 #include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
-#include "fwDicomIOFilter/splitter/ImageDimensionsSplitter.hpp"
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmimgle/dcmimage.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::ImageDimensionsSplitter );
 
@@ -45,7 +46,8 @@ const std::string ImageDimensionsSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImageDimensionsSplitter::ImageDimensionsSplitter(::fwDicomIOFilter::IFilter::Key key) : ISplitter()
+ImageDimensionsSplitter::ImageDimensionsSplitter(::fwDicomIOFilter::IFilter::Key key) :
+    ISplitter()
 {
 }
 
@@ -72,7 +74,7 @@ std::string ImageDimensionsSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);

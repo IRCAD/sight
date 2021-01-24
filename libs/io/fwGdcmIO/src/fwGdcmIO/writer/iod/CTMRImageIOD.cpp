@@ -32,12 +32,11 @@
 
 #include <core/spyLog.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -68,10 +67,10 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::write(const ::fwMedData::Series::csptr& series)
+void CTMRImageIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image

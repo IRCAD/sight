@@ -26,6 +26,7 @@
 #include <core/tools/System.hpp>
 
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -39,8 +40,6 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
@@ -51,7 +50,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -166,10 +165,10 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
+data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
-    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(dicomDir);
 
@@ -263,13 +262,13 @@ void SDicomSeriesDBReader::updating()
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        ::fwMedData::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder() );
+        data::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder() );
 
         if( seriesDB->size() > 0 && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+            data::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
@@ -283,10 +282,10 @@ void SDicomSeriesDBReader::updating()
                 associatedSeriesDB->shallowCopy(seriesDB);
             }
 
-            ::fwMedData::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
+            data::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
 
-            auto sig = associatedSeriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            auto sig = associatedSeriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
+                data::SeriesDB::s_ADDED_SERIES_SIG);
             sig->asyncEmit(addedSeries);
         }
         cursor.setDefaultCursor();

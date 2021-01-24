@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -66,7 +66,7 @@ private:
     void checkDicomSeries(
         const std::filesystem::path& p, bool anonymized = false);
 
-    ::fwMedData::DicomSeries::sptr m_srcDicomSeries;
+    data::DicomSeries::sptr m_srcDicomSeries;
 
 };
 

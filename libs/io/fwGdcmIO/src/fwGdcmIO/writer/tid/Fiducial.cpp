@@ -34,13 +34,12 @@
 #include <core/tools/Stringizer.hpp>
 
 #include <data/PointList.hpp>
+#include <data/Series.hpp>
 #include <data/String.hpp>
+#include <data/types.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 

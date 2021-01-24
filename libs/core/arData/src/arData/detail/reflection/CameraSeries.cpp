@@ -34,7 +34,7 @@ fwCampImplementDataMacro((arData)(CameraSeries))
     builder
     .tag("object_version", "3")
     .tag("lib_name", "arData")
-    .base< ::fwMedData::Series>()
+    .base< sight::data::Series>()
     .property("cameras", &::arData::CameraSeries::m_cameras)
     .property("extrinsic_matrices", &::arData::CameraSeries::m_extrinsicMatrices)
     ;

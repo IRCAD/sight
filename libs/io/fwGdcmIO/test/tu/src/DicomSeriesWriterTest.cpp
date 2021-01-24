@@ -28,10 +28,9 @@
 
 #include <core/tools/System.hpp>
 
+#include <data/DicomSeries.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -66,7 +65,7 @@ void DicomSeriesWriterTest::setUp()
     }
 
     // Set up context before running a test.
-    ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr srcSeriesDB    = data::SeriesDB::New();
     const std::filesystem::path srcPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
@@ -80,7 +79,7 @@ void DicomSeriesWriterTest::setUp()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), srcSeriesDB->size());
 
     m_srcDicomSeries =
-        ::fwMedData::DicomSeries::dynamicCast(srcSeriesDB->getContainer().front());
+        data::DicomSeries::dynamicCast(srcSeriesDB->getContainer().front());
 }
 
 //------------------------------------------------------------------------------
@@ -98,15 +97,15 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
     {
         return;
     }
-    ::fwMedData::SeriesDB::sptr destSeriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr destSeriesDB = data::SeriesDB::New();
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(destSeriesDB);
     reader->setFolder(p);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), destSeriesDB->size());
-    ::fwMedData::DicomSeries::sptr destDicomSeries =
-        ::fwMedData::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
+    data::DicomSeries::sptr destDicomSeries =
+        data::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
 
     // Compare Source and Destination Series
     ExcludeSetType excludeSetPrefix;

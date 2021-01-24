@@ -31,6 +31,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
@@ -46,8 +47,6 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/ImageWriter.hpp>
@@ -57,7 +56,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageSeriesWriter, data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -144,7 +143,7 @@ void SImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SLM_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());

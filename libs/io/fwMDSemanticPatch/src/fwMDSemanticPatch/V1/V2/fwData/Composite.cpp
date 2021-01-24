@@ -25,6 +25,8 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/ActivitySeries.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -36,8 +38,6 @@
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -138,7 +138,7 @@ void processPlanning(
         }
 
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
-        ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "::fwMedData::ActivitySeries", "1");
+        ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "data::ActivitySeries", "1");
 
         ::fwAtoms::Object::sptr imgComposite = ::fwAtoms::Object::New();
         ::fwAtomsPatch::helper::setClassname(imgComposite, "data::Composite");
@@ -234,7 +234,7 @@ void processProcessing(
         }
 
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
-        ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "::fwMedData::ActivitySeries", "1");
+        ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "data::ActivitySeries", "1");
 
         ::fwAtoms::Map::sptr activityDataMap = ::fwAtoms::Map::New();
         activityDataMap->insert("processing", oldProcessingAtom.second);
@@ -308,7 +308,7 @@ void Composite::apply(
     if ( previous->getMetaInfo("compositeType") == "MedicalWorkspace" )
     {
         // Update type/version
-        ::fwAtomsPatch::helper::setClassname( current, "::fwMedData::SeriesDB" );
+        ::fwAtomsPatch::helper::setClassname( current, "data::SeriesDB" );
         ::fwAtomsPatch::helper::setVersion( current, "1" );
 
         // Update Attributes
@@ -389,7 +389,7 @@ void Composite::apply(
                     {
                         // Create new model series
                         ::fwAtoms::Object::sptr newModelSeries =
-                            creators->create( "::fwMedData::ModelSeries", "1");
+                            creators->create( "data::ModelSeries", "1");
 
                         ::fwAtomsPatch::helper::Object msHelper(newModelSeries);
                         ::fwAtoms::Object::sptr msPatient = ::fwAtoms::Object::dynamicCast(clonedPatient->clone());

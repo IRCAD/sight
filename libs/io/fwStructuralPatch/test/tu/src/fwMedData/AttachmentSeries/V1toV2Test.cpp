@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/AttachmentSeries/V1ToV2Test.hpp"
+#include "data/AttachmentSeries/V1ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/AttachmentSeries/V1ToV2.hpp>
+#include <fwStructuralPatch/data/AttachmentSeries/V1ToV2.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::AttachmentSeries::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::AttachmentSeries::V1ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace AttachmentSeries
 {
@@ -63,7 +63,7 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr attachmentSeriesV1 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr attachmentSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(attachmentSeriesV1, "::fwMedData::AttachmentSeries");
+    ::fwAtomsPatch::helper::setClassname(attachmentSeriesV1, "data::AttachmentSeries");
     ::fwAtomsPatch::helper::setVersion(attachmentSeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(attachmentSeriesV1);
@@ -84,8 +84,8 @@ void V1ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[attachmentSeriesV1] = attachmentSeriesV2;
 
-        ::fwStructuralPatch::fwMedData::AttachmentSeries::V1ToV2::sptr v1ToV2Patch;
-        v1ToV2Patch = ::fwStructuralPatch::fwMedData::AttachmentSeries::V1ToV2::New();
+        ::fwStructuralPatchdata::AttachmentSeries::V1ToV2::sptr v1ToV2Patch;
+        v1ToV2Patch = ::fwStructuralPatchdata::AttachmentSeries::V1ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v1ToV2Patch->apply(attachmentSeriesV1, attachmentSeriesV2, newVersions));
 
         CPPUNIT_ASSERT(attachmentSeriesV2);
@@ -109,6 +109,6 @@ void V1ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace AttachmentSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

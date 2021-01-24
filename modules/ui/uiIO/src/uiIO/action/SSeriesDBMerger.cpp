@@ -26,13 +26,13 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/Series.hpp>
+
 #include <fwGui/Cursor.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedData/Series.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -45,7 +45,7 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
@@ -95,11 +95,11 @@ void SSeriesDBMerger::updating( )
 {
     ::fwGui::LockAction lock(this->getSptr());
 
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIES_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIES_INOUT);
     SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
 
     // Create a new SeriesDB
-    ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
     /// Create IOSelectorService on the new SeriesDB and execute it.
 

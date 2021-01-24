@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwMedData/ImageSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/ImageSeries/V1ToV2.hpp"
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 
 namespace fwStructuralPatch
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ImageSeries
 {
@@ -35,8 +35,8 @@ namespace ImageSeries
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwMedData::ImageSeries";
-    m_targetClassname = "::fwMedData::ImageSeries";
+    m_originClassname = "data::ImageSeries";
+    m_targetClassname = "data::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -70,5 +70,5 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
 }
 
 } // namespace ImageSeries
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace fwStructuralPatch

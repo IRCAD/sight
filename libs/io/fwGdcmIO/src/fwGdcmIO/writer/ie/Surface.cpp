@@ -31,13 +31,12 @@
 #include <core/tools/dateAndTime.hpp>
 
 #include <data/Reconstruction.hpp>
+#include <data/Series.hpp>
+#include <data/types.hpp>
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
 #include <fwDataTools/Mesh.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -59,12 +58,12 @@ namespace ie
 Surface::Surface(const SPTR(::gdcm::Writer)& writer,
                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                  const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                 const ::fwMedData::ModelSeries::csptr& series,
+                 const data::ModelSeries::csptr& series,
                  const ::fwLog::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series,
-                                                                          logger, progress, cancel),
+    ::fwGdcmIO::writer::ie::InformationEntity< data::ModelSeries >(writer, instance, series,
+                                                                   logger, progress, cancel),
     m_imageInstance(imageInstance)
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);

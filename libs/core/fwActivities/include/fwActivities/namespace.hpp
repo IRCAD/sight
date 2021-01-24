@@ -63,8 +63,8 @@ namespace factory
  * @page Activity Activity configuration
  *
  * An activity is defined by the extension "::fwActivities::registry::Activities". It is used to launch an
- * AppConfig with the selected data, it will create a new data ::fwMedData::ActivitySeries that inherits from a
- * ::fwMedData::Series.
+ * AppConfig with the selected data, it will create a new data data::ActivitySeries that inherits from a
+ * data::Series.
  *
  * The service ::activities::action::SActivityLauncher allows to launch an activity. Its role is to create the specific
  * Activity associated with the selected data.
@@ -90,8 +90,8 @@ namespace factory
                 <key>Item3</key>
             </requirement>
             <requirement name="param3" type="data::Mesh" maxOccurs="*" container="vector" />
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="data::ImageSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="modelSeries" type="data::ModelSeries" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
@@ -122,7 +122,7 @@ namespace factory
  * - \b requirements: it is the list of the data required to launch the activity.
  *     - \b requirement: a required data.
  *         - \b name: key used to add the data in the activity Composite.
- *         - \b type: the data type (ex: ``::fwMedData::ImageSeries``).
+ *         - \b type: the data type (ex: ``data::ImageSeries``).
  *         - \b minOccurs (optional, "1" by default): the minimum number of occurrences of this type of object in the
  *           vector.
  *         - \b maxOccurs (optional, "1" by default): the maximum number of occurrences of this type of object in the
@@ -136,7 +136,7 @@ namespace factory
  *         - \b validator (optional): validator to check if the associated data is well formed (inherited of
  *           ::fwAtivities::IObjectValidator)
  * - \b builder: implementation of the activity builder. The default builder is
- *   ``::fwActivities::builder::ActivitySeries`` : it creates the ``::fwMedData::ActivitySeries`` and adds the required
+ *   ``::fwActivities::builder::ActivitySeries`` : it creates the ``data::ActivitySeries`` and adds the required
  *   data in its composite with de defined key.
  *   The builder ``::fwActivities::builder::ActivitySeriesInitData`` allows, in addition to what the default builder
  *   does, to create data when minOccurs == 0 et maxOccurs == 0.
@@ -171,11 +171,11 @@ namespace factory
  *
  * @subsection activity Activity validator
  *
- * This type of validator checks if the ::fwMedData::ActivitySeries is correct to launch its associated activity.
+ * This type of validator checks if the data::ActivitySeries is correct to launch its associated activity.
  * It inherits of ::fwActivities::IActivityValidator and must implement the method:
  *
  * @code {.cpp}
-   ValidationType validate(const CSPTR(::fwMedData::ActivitySeries) &activity ) const;
+   ValidationType validate(const CSPTR(data::ActivitySeries) &activity ) const;
    @endcode
  *
  * The validator ::fwActivities::validator::DefaultActivity is applied if no other validator is defined. It checks if

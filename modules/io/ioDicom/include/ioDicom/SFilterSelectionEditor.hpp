@@ -24,11 +24,11 @@
 
 #include "ioDicom/config.hpp"
 
+#include <data/SeriesDB.hpp>
+
 #include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -56,7 +56,7 @@ namespace ioDicom
  * @subsection Input Input:
  * - \b selection [data::Vector]: selection.
  * @subsection In-Out In-Out:
- * - \b target [::fwMedData::SeriesDB]: seriesDB where to put the selection.
+ * - \b target [data::SeriesDB]: seriesDB where to put the selection.
  */
 
 class IODICOM_CLASS_API SFilterSelectionEditor : public QObject,
@@ -179,7 +179,7 @@ protected:
     std::string m_destinationSeriesDBID;
 
     /// Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
+    data::SeriesDB::sptr m_destinationSeriesDB;
 
 };
 

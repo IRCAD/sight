@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ActivitySeries/V1ToV2Test.hpp"
+#include "data/ActivitySeries/V1ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ActivitySeries/V1ToV2.hpp>
+#include <fwStructuralPatch/data/ActivitySeries/V1ToV2.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ActivitySeries::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ActivitySeries::V1ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ActivitySeries
 {
@@ -63,7 +63,7 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr activitySeriesV1 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr activitySeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(activitySeriesV1, "::fwMedData::ActivitySeries");
+    ::fwAtomsPatch::helper::setClassname(activitySeriesV1, "data::ActivitySeries");
     ::fwAtomsPatch::helper::setVersion(activitySeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(activitySeriesV1);
@@ -86,8 +86,8 @@ void V1ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[activitySeriesV1] = activitySeriesV2;
 
-        ::fwStructuralPatch::fwMedData::ActivitySeries::V1ToV2::sptr v1ToV2Patch;
-        v1ToV2Patch = ::fwStructuralPatch::fwMedData::ActivitySeries::V1ToV2::New();
+        ::fwStructuralPatchdata::ActivitySeries::V1ToV2::sptr v1ToV2Patch;
+        v1ToV2Patch = ::fwStructuralPatchdata::ActivitySeries::V1ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v1ToV2Patch->apply(activitySeriesV1, activitySeriesV2, newVersions));
 
         CPPUNIT_ASSERT(activitySeriesV2);
@@ -111,6 +111,6 @@ void V1ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ActivitySeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

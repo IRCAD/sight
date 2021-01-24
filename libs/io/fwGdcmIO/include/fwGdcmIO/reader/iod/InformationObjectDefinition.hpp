@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwLog/Logger.hpp>
+#include <data/DicomSeries.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwLog/Logger.hpp>
 
 #include <gdcmReader.h>
 
@@ -60,7 +60,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API InformationObjectDefinition(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+    FWGDCMIO_API InformationObjectDefinition(const data::DicomSeries::csptr& dicomSeries,
                                              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                              const ::fwLog::Logger::sptr& logger = nullptr,
                                              ProgressCallback progress           = nullptr,
@@ -74,7 +74,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API virtual void read(::fwMedData::Series::sptr series) = 0;
+    FWGDCMIO_API virtual void read(data::Series::sptr series) = 0;
 
 protected:
 
@@ -82,7 +82,7 @@ protected:
     SPTR(::fwGdcmIO::container::DicomInstance) m_instance;
 
     /// Dicom Series
-    ::fwMedData::DicomSeries::csptr m_dicomSeries;
+    data::DicomSeries::csptr m_dicomSeries;
 
     ///Logger
     ::fwLog::Logger::sptr m_logger;

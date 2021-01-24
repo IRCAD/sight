@@ -43,7 +43,7 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Fiducial::Fiducial(const data::DicomSeries::csptr& dicomSeries,
                    const SPTR(::gdcm::Reader)& reader,
                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                    const data::Image::sptr& image,

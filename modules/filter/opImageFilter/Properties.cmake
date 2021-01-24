@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     fwDataTools
-    fwMedData
     fwServices
     imageFilterOp
 )

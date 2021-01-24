@@ -27,10 +27,10 @@
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupLazyStream.hpp"
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupReader.hpp"
 
+#include <data/ImageSeries.hpp>
+
 #include <fwDicomTools/Image.hpp>
 #include <fwDicomTools/Series.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -58,13 +58,14 @@ ImageStorageReader::~ImageStorageReader()
 
 //-----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr ImageStorageReader::read(const ::fwMedData::DicomSeries::csptr& series)
+data::Series::sptr ImageStorageReader::read(const data::DicomSeries::csptr& series)
 {
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
-    std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
+    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
+    std::string sopClassUID                                          = dcmFindNameOfUID(
+        sopClassUIDContainer.begin()->c_str());
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
-    DicomContainerType instances = series->getDicomContainer();
+    data::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
+    DicomContainerType instances        = series->getDicomContainer();
 
     data::Image::sptr image = data::Image::New();
     DcmFileFormat fileFormat;
@@ -415,7 +416,7 @@ void ImageStorageReader::directRGBLookupRead(const data::Image::sptr& image,
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::lazyRead(const data::Image::sptr& image,
-                                  const ::fwMedData::DicomSeries::csptr& series,
+                                  const data::DicomSeries::csptr& series,
                                   unsigned short rows, unsigned short columns,
                                   int depth, double rescaleSlope,
                                   double rescaleIntercept,
@@ -443,7 +444,7 @@ void ImageStorageReader::lazyRead(const data::Image::sptr& image,
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::lazyRGBLookupRead(const data::Image::sptr& image,
-                                           const ::fwMedData::DicomSeries::csptr& series,
+                                           const data::DicomSeries::csptr& series,
                                            DcmDataset& dataset,
                                            DicomContainerType,
                                            unsigned short rows, unsigned short columns,

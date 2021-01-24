@@ -42,7 +42,7 @@ namespace reader
 class FWDCMTKIO_CLASS_API ImageStorageReader : public ::fwDcmtkIO::reader::IObjectReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
+    typedef data::DicomSeries::DicomContainerType DicomContainerType;
 
     /// Constructor
     FWDCMTKIO_API ImageStorageReader();
@@ -51,7 +51,7 @@ public:
     FWDCMTKIO_API virtual ~ImageStorageReader();
 
     /// Override
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& series);
+    FWDCMTKIO_API virtual data::Series::sptr read(const data::DicomSeries::csptr& series);
 
 protected:
     /**
@@ -104,7 +104,7 @@ protected:
      * @param[in] imageType Image Type
      */
     FWDCMTKIO_API void lazyRead(const data::Image::sptr& image,
-                                const ::fwMedData::DicomSeries::csptr& series,
+                                const data::DicomSeries::csptr& series,
                                 unsigned short rows, unsigned short columns,
                                 int depth, double rescaleSlope,
                                 double rescaleIntercept,
@@ -124,7 +124,7 @@ protected:
      * @param[in] imageType Image type
      */
     FWDCMTKIO_API void lazyRGBLookupRead(const data::Image::sptr& image,
-                                         const ::fwMedData::DicomSeries::csptr& series,
+                                         const data::DicomSeries::csptr& series,
                                          DcmDataset& dataset,
                                          DicomContainerType instances, unsigned short rows,
                                          unsigned short columns,

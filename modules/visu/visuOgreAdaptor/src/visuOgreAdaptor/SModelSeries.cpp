@@ -31,10 +31,9 @@
 #include <data/Boolean.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -110,12 +109,12 @@ void SModelSeries::starting()
 ::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
     return connections;
 }
 
@@ -124,7 +123,7 @@ void SModelSeries::starting()
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    const auto modelSeries = this->getLockedInput< data::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();
 
@@ -178,7 +177,7 @@ void SModelSeries::setVisible(bool _visible)
 
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    const auto modelSeries = this->getLockedInput< data::ModelSeries >(s_MODEL_INPUT);
 
     const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 

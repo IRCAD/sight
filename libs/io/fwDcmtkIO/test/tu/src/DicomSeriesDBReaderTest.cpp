@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -54,7 +54,7 @@ void DicomSeriesDBReaderTest::tearDown()
 
 void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 

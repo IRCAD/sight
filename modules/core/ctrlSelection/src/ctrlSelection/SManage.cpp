@@ -29,14 +29,13 @@
 
 #include <data/Composite.hpp>
 #include <data/Exception.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 #include <fwDataTools/helper/Field.hpp>
 #include <fwDataTools/helper/Vector.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -131,8 +130,8 @@ void SManage::addOrSwap()
 
     data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
     data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
+    data::SeriesDB::sptr seriesDB   = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -165,7 +164,7 @@ void SManage::addOrSwap()
     }
     else if (seriesDB)
     {
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series = data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
@@ -227,8 +226,8 @@ void SManage::remove()
 
     data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
     data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
+    data::SeriesDB::sptr seriesDB   = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -250,7 +249,7 @@ void SManage::remove()
     else if (seriesDB)
     {
         SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series = data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
@@ -277,8 +276,8 @@ void SManage::removeIfPresent()
 
     data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
     data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
+    data::SeriesDB::sptr seriesDB   = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -308,7 +307,7 @@ void SManage::removeIfPresent()
     else if (seriesDB)
     {
         SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series = data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
@@ -345,8 +344,8 @@ void SManage::clear()
 
     data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
     data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
+    data::SeriesDB::sptr seriesDB   = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -395,8 +394,8 @@ void SManage::internalAdd(bool _copy)
 
     data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
     data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
+    data::SeriesDB::sptr seriesDB   = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -416,7 +415,7 @@ void SManage::internalAdd(bool _copy)
     }
     else if (seriesDB)
     {
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series = data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
         ::fwMedDataTools::helper::SeriesDB helper( seriesDB );

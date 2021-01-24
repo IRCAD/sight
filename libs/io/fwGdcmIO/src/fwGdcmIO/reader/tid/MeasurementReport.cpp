@@ -34,7 +34,7 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-MeasurementReport::MeasurementReport(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+MeasurementReport::MeasurementReport(const data::DicomSeries::csptr& dicomSeries,
                                      const SPTR(::gdcm::Reader)& reader,
                                      const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                                      const data::Image::sptr& image,

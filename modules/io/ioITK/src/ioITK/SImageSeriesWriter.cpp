@@ -27,6 +27,7 @@
 #include <core/base.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
@@ -39,14 +40,12 @@
 
 #include <fwItkIO/ImageWriter.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <fwServices/macros.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SImageSeriesWriter, ::fwMedData::ImageSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SImageSeriesWriter, data::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -135,7 +134,7 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
 
-        ::fwMedData::ImageSeries::csptr iseries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();

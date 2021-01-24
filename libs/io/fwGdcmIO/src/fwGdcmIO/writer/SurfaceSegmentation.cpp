@@ -24,8 +24,14 @@
 
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
 #include <data/PointList.hpp>
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
@@ -33,13 +39,6 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SurfaceSegmentation);
 
@@ -67,10 +66,10 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 void SurfaceSegmentation::write()
 {
-    const ::fwMedData::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
-    const ::fwMedData::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
+    const data::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
+    const data::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
-    SLM_ASSERT("::fwMedData::ModelSeries not instanced", srcModelSeries);
+    SLM_ASSERT("data::ModelSeries not instanced", srcModelSeries);
 
     if(!associatedDicomSeries)
     {
@@ -108,7 +107,7 @@ void SurfaceSegmentation::write()
     }
 
     // Complete Model Series with information from associated Image Series
-    const ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
+    const data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     modelSeries->shallowCopy(srcModelSeries);
     modelSeries->setPatient(associatedDicomSeries->getPatient());
     modelSeries->setStudy(associatedDicomSeries->getStudy());

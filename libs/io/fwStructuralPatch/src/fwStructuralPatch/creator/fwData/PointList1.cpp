@@ -68,6 +68,6 @@ PointList1::PointList1( const PointList1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

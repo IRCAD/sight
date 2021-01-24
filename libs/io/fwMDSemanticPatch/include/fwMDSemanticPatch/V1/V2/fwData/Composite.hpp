@@ -54,7 +54,7 @@ public:
      * @brief Applies patch
      *
      * If the related composite describes a 'Medical workspace' (i.e has value 'MedicalWorkspace' for 'compositeType'
-     * meta info), then converts the composite to a ::fwMedData::SeriesDB and insert model series built from previous
+     * meta info), then converts the composite to a data::SeriesDB and insert model series built from previous
      * acquisitions.
      */
     FWMDSEMANTICPATCH_API virtual void apply(

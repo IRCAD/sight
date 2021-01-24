@@ -31,7 +31,7 @@ namespace fwJobs
 class IJob;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -54,7 +54,7 @@ namespace ioGdcm
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where the dicom series comes from.
+ * - \b seriesDB [data::SeriesDB]: SeriesDB where the dicom series comes from.
  * - \b selectedSeries [data::Vector]: List of DICOM series to be anonymized.
  */
 class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController

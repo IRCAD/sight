@@ -32,7 +32,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -66,7 +66,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::SeriesDB]: seriesDB to load.
+ * - \b data [data::SeriesDB]: seriesDB to load.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
@@ -152,13 +152,13 @@ private:
     /**
      * @brief Load VTK mesh or image and push it into SeriesDB.
      * @param[in] vtkFiles vector of std::filesystem::path.
-     * @param[out] seriesDB std::shared_ptr< ::fwMedData::SeriesDB >.
+     * @param[out] seriesDB std::shared_ptr< data::SeriesDB >.
      * @return bool.
      *
      * This method is used to load a mesh using the file path.
      */
     void loadSeriesDB( const data::location::ILocation::VectPathType& vtkFiles,
-                       const SPTR(::fwMedData::SeriesDB)& seriesDB );
+                       const SPTR(data::SeriesDB)& seriesDB );
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

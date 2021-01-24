@@ -21,9 +21,19 @@
  ***********************************************************************/
 
 #include "fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
+#include "fwStructuralPatch/data/ActivitySeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/ActivitySeries/V2ToV1.hpp"
+#include "fwStructuralPatch/data/AttachmentSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/AttachmentSeries/V2ToV1.hpp"
+#include "fwStructuralPatch/data/DicomSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/DicomSeries/V2ToV1.hpp"
 #include "fwStructuralPatch/data/Image/V1ToV2.hpp"
 #include "fwStructuralPatch/data/Image/V2ToV3.hpp"
 #include "fwStructuralPatch/data/Image/V3ToV2.hpp"
+#include "fwStructuralPatch/data/ImageSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/ImageSeries/V2ToV1.hpp"
+#include "fwStructuralPatch/data/ImageSeries/V2ToV3.hpp"
+#include "fwStructuralPatch/data/ImageSeries/V3ToV2.hpp"
 #include "fwStructuralPatch/data/Material/V1ToV2.hpp"
 #include "fwStructuralPatch/data/Material/V2ToV3.hpp"
 #include "fwStructuralPatch/data/Material/V3ToV4.hpp"
@@ -33,29 +43,19 @@
 #include "fwStructuralPatch/data/Mesh/V2ToV3.hpp"
 #include "fwStructuralPatch/data/Mesh/V3ToV4.hpp"
 #include "fwStructuralPatch/data/Mesh/V4ToV3.hpp"
+#include "fwStructuralPatch/data/ModelSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/ModelSeries/V2ToV1.hpp"
+#include "fwStructuralPatch/data/ModelSeries/V2ToV3.hpp"
+#include "fwStructuralPatch/data/ModelSeries/V3ToV2.hpp"
+#include "fwStructuralPatch/data/NavigationSeries/V1ToV2.hpp"
+#include "fwStructuralPatch/data/NavigationSeries/V2ToV1.hpp"
 #include "fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp"
 #include "fwStructuralPatch/data/Reconstruction/V1ToV2.hpp"
 #include "fwStructuralPatch/data/Reconstruction/V2ToV3.hpp"
 #include "fwStructuralPatch/data/Study/V1ToFwMedDataStudyV1.hpp"
+#include "fwStructuralPatch/data/Study/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Study/V2ToV1.hpp"
 #include "fwStructuralPatch/data/TransformationMatrix3D/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/ActivitySeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/ActivitySeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/AttachmentSeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/AttachmentSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/DicomSeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/DicomSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/ImageSeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/ImageSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/ImageSeries/V2ToV3.hpp"
-#include "fwStructuralPatch/fwMedData/ImageSeries/V3ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/ModelSeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/ModelSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/ModelSeries/V2ToV3.hpp"
-#include "fwStructuralPatch/fwMedData/ModelSeries/V3ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/NavigationSeries/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/NavigationSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/Study/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/Study/V2ToV1.hpp"
 
 #include <fwAtomsPatch/StructuralPatchDB.hpp>
 
@@ -86,24 +86,24 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V3ToV4::New());
         structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V4ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatchdata::TransformationMatrix3D::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::AttachmentSeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::AttachmentSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::DicomSeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::DicomSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ImageSeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ImageSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ImageSeries::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ImageSeries::V3ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ModelSeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ModelSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ModelSeries::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ModelSeries::V3ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::NavigationSeries::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::NavigationSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Study::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Study::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ActivitySeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ActivitySeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::AttachmentSeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::AttachmentSeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::DicomSeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::DicomSeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ImageSeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ImageSeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ImageSeries::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ImageSeries::V3ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ModelSeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ModelSeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ModelSeries::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::ModelSeries::V3ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::NavigationSeries::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::NavigationSeries::V2ToV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Study::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Study::V2ToV1::New());
     }
 
     static runner r;

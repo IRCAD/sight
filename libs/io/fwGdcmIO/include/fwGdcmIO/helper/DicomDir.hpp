@@ -30,7 +30,7 @@
 #include <filesystem>
 #include <functional>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
@@ -69,7 +69,7 @@ public:
      * @param[in] fileLookupObserver file lookup observer
      */
     FWGDCMIO_API static void retrieveDicomSeries(const std::filesystem::path& dicomdir,
-                                                 std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
+                                                 std::vector< SPTR(data::DicomSeries) >& seriesDB,
                                                  const SPTR(::fwLog::Logger)& logger,
                                                  std::function< void(std::uint64_t) > progress = nullptr,
                                                  std::function< bool() > cancel                = nullptr);

@@ -34,7 +34,7 @@ namespace fwAtomsFilter
 {
 
 /**
- * @brief Returns true if given atom matches a defined ::fwMedData::Series implementations.
+ * @brief Returns true if given atom matches a defined data::Series implementations.
  * */
 FWATOMSFILTER_API bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series);
 

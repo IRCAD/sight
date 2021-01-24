@@ -96,7 +96,7 @@ void SActivityView::notifyActivityCreation()
 
 //------------------------------------------------------------------------------
 
-void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
+void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
     bool isValid;
     std::string message;
@@ -146,9 +146,9 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
 
 //------------------------------------------------------------------------------
 
-void SActivityView::launchActivitySeries(fwMedData::Series::sptr series)
+void SActivityView::launchActivitySeries(data::Series::sptr series)
 {
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
         this->launchActivity(activitySeries);

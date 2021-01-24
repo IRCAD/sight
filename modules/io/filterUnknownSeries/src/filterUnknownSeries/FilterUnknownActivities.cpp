@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ void FilterUnknownActivities::apply(const SPTR(::fwAtoms::Object)& atom)
 
     SLM_ASSERT("Unable to filter atom : invalid object", atom);
 
-    const std::string expName    = "::fwMedData::SeriesDB"; // expected classname
+    const std::string expName    = "data::SeriesDB"; // expected classname
     const std::string& classname = ::fwAtomsPatch::helper::getClassname(atom);
     FW_RAISE_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
                 classname != expName);

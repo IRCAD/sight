@@ -33,7 +33,7 @@
 namespace ctrlCamp
 {
 /**
- * @brief This service extract meshes of a specific structure type from ::fwMedData::ModelSeries.
+ * @brief This service extract meshes of a specific structure type from data::ModelSeries.
  * If the model series have some meshes with the same structure type, it will extract the first found.
  * Additionnaly, it can also match the organ name with a regular expression.
  *
@@ -55,7 +55,7 @@ namespace ctrlCamp
        @endcode
 
  * @subsection In-Out In-Out
- * - \b source [::fwMedData::ModelSeries]: define the source models where meshes are extracted from.
+ * - \b source [data::ModelSeries]: define the source models where meshes are extracted from.
  *
  * @subsection Output Output
  * - \b target [data::Mesh]: define the target meshes. The number of \b target keys must match

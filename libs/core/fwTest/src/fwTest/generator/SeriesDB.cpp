@@ -27,21 +27,20 @@
 
 #include <core/tools/Type.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
 #include <data/Reconstruction.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/Study.hpp>
 
 #include <sstream>
 
@@ -52,29 +51,29 @@ namespace generator
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDB::createSeriesDB(const unsigned char nbImgSeries,
-                                                     const unsigned char nbModelSeries,
-                                                     const unsigned char nbActivitySeries)
+data::SeriesDB::sptr SeriesDB::createSeriesDB(const unsigned char nbImgSeries,
+                                              const unsigned char nbModelSeries,
+                                              const unsigned char nbActivitySeries)
 {
     Image::initRand();
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     for (unsigned char nb = 0; nb < nbImgSeries; ++nb)
     {
-        ::fwMedData::Series::sptr imgSeries;
+        data::Series::sptr imgSeries;
         imgSeries = SeriesDB::createImageSeries();
         seriesDB->getContainer().push_back(imgSeries);
     }
 
     for (unsigned char nb = 0; nb < nbModelSeries; ++nb)
     {
-        ::fwMedData::Series::sptr modelSeries;
+        data::Series::sptr modelSeries;
         modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(rand()%5+1));
         seriesDB->getContainer().push_back(modelSeries);
     }
 
     for (unsigned char nb = 0; nb < nbActivitySeries; ++nb)
     {
-        ::fwMedData::Series::sptr activitySeries;
+        data::Series::sptr activitySeries;
         activitySeries = SeriesDB::createActivitySeries();
         seriesDB->getContainer().push_back(activitySeries);
     }
@@ -83,9 +82,9 @@ namespace generator
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Patient::sptr SeriesDB::createPatient()
+data::Patient::sptr SeriesDB::createPatient()
 {
-    ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
+    data::Patient::sptr patient         = data::Patient::New();
     const std::string PATIENT_NAME      = "NomSeriesDB1";
     const std::string PATIENT_FIRSTNAME = "PrenomSeriesDB1";
     const std::string PATIENT_ID        = "4564383757";
@@ -102,9 +101,9 @@ namespace generator
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Study::sptr SeriesDB::createStudy()
+data::Study::sptr SeriesDB::createStudy()
 {
-    ::fwMedData::Study::sptr study = ::fwMedData::Study::New();
+    data::Study::sptr study = data::Study::New();
 
     static unsigned int count = 1;
     std::stringstream str;
@@ -134,10 +133,10 @@ namespace generator
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Equipment::sptr SeriesDB::createEquipement()
+data::Equipment::sptr SeriesDB::createEquipement()
 {
-    ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
-    const std::string INSTITUTION = "hospital";
+    data::Equipment::sptr equipment = data::Equipment::New();
+    const std::string INSTITUTION   = "hospital";
     equipment->setInstitutionName(INSTITUTION);
 
     return equipment;
@@ -145,7 +144,7 @@ namespace generator
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
+void SeriesDB::generateSeriesInformation(data::Series::sptr series)
 {
     series->setPatient(SeriesDB::createPatient());
     series->setStudy(SeriesDB::createStudy());
@@ -163,7 +162,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     const std::string TIME        = "101010.101010 ";
     const std::string DESCRIPTION = "Description ";
 
-    ::fwMedData::DicomValuesType performingPhysiciansName;
+    data::DicomValuesType performingPhysiciansName;
     performingPhysiciansName.push_back("Dr^Jekyl");
     performingPhysiciansName.push_back("Dr^House");
     performingPhysiciansName.push_back("Dr^Einstein ");
@@ -178,9 +177,9 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::ImageSeries::sptr SeriesDB::createImageSeries()
+data::ImageSeries::sptr SeriesDB::createImageSeries()
 {
-    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
+    data::ImageSeries::sptr imgSeries = data::ImageSeries::New();
 
     SeriesDB::generateSeriesInformation(imgSeries);
 
@@ -194,13 +193,13 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::ModelSeries::sptr SeriesDB::createModelSeries(unsigned char nbReconstruction)
+data::ModelSeries::sptr SeriesDB::createModelSeries(unsigned char nbReconstruction)
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
 
     SeriesDB::generateSeriesInformation(modelSeries);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType recDB;
+    data::ModelSeries::ReconstructionVectorType recDB;
     for (unsigned char nb = 0; nb < nbReconstruction; ++nb)
     {
         data::Reconstruction::sptr rec = data::Reconstruction::New();
@@ -216,9 +215,9 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::ActivitySeries::sptr SeriesDB::createActivitySeries()
+data::ActivitySeries::sptr SeriesDB::createActivitySeries()
 {
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::New();
 
     SeriesDB::generateSeriesInformation(activitySeries);
 

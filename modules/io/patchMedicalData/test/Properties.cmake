@@ -7,7 +7,6 @@ set( DEPENDENCIES
     core
     data
     fwServices
-    fwMedData
     fwMDSemanticPatch
 )
 set( REQUIREMENTS data servicesReg ioAtoms gui guiQt patchMedicalData )

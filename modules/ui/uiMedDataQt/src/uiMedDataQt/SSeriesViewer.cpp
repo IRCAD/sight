@@ -25,10 +25,9 @@
 #include <core/base.hpp>
 
 #include <data/reflection/getObject.hpp>
+#include <data/Series.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/Series.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>

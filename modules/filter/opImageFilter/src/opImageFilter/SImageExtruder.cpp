@@ -73,9 +73,9 @@ void SImageExtruder::starting()
 ::fwServices::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MESHES_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MESHES_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
-    connections.push(s_MESHES_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
 
     connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
@@ -102,9 +102,9 @@ void SImageExtruder::updating()
             sig->asyncEmit();
         }
 
-        const auto meshes = this->getLockedInput< ::fwMedData::ModelSeries >(s_MESHES_INPUT);
+        const auto meshes = this->getLockedInput< data::ModelSeries >(s_MESHES_INPUT);
 
-        ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
+        data::ModelSeries::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
 
         this->addReconstructions(reconstructions);
     }
@@ -118,7 +118,7 @@ void SImageExtruder::stopping()
 
 //------------------------------------------------------------------------------
 
-void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const
+void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const
 {
     const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 

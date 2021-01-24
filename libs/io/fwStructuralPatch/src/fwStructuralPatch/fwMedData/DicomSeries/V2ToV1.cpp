@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwMedData/DicomSeries/V2ToV1.hpp"
+#include "fwStructuralPatch/data/DicomSeries/V2ToV1.hpp"
 
 #include <fwAtoms/String.hpp>
 
 namespace fwStructuralPatch
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace DicomSeries
 {
@@ -34,8 +34,8 @@ namespace DicomSeries
 V2ToV1::V2ToV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwMedData::DicomSeries";
-    m_targetClassname = "::fwMedData::DicomSeries";
+    m_originClassname = "data::DicomSeries";
+    m_targetClassname = "data::DicomSeries";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }
@@ -83,5 +83,5 @@ void V2ToV1::apply( const ::fwAtoms::Object::sptr& previous,
 }
 
 } // namespace DicomSeries
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace fwStructuralPatch

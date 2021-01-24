@@ -26,12 +26,12 @@
 
 #include <core/base.hpp>
 
+#include <data/DicomSeries.hpp>
+
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <fwZip/WriteZipArchive.hpp>
 
@@ -118,7 +118,7 @@ void DicomSeriesWriter::processStream(std::istream& inputStream, std::ostream& o
 
 void DicomSeriesWriter::processWrite()
 {
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
+    data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
     // Create folder
     std::filesystem::path folder = this->getFolder();
@@ -182,7 +182,7 @@ void DicomSeriesWriter::processWriteArchive()
 {
     SLM_ASSERT("Output archive shall be set", m_archive);
 
-    ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
+    data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
     const size_t nbInstances = dicomSeries->getNumberOfInstances();
     unsigned int count       = 0;

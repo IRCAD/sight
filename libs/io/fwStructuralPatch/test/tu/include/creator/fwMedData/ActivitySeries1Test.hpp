@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace ut
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 class ActivitySeries1Test : public CPPUNIT_NS::TestFixture
@@ -50,7 +50,7 @@ public:
 
 };
 
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace creator
 } //namespace ut
 } //namespace fwStructuralPatch

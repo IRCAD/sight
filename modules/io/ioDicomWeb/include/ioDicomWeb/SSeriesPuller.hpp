@@ -24,9 +24,9 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
@@ -34,7 +34,7 @@
 
 #include <filesystem>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
@@ -62,7 +62,7 @@ namespace ioDicomWeb
  * @subsection Input Input:
  * - \b selectedSeries [data::Vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * - \b seriesDB [data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
@@ -75,10 +75,10 @@ public:
 
     fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController )
 
-    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
     typedef std::map < std::string, unsigned int > InstanceCountMapType;
-    typedef std::map < std::string, WPTR(::fwMedData::DicomSeries) > DicomSeriesMapType;
+    typedef std::map < std::string, WPTR(data::DicomSeries) > DicomSeriesMapType;
 
     /**
      * @brief Constructor
@@ -134,10 +134,10 @@ private:
     std::string m_dicomReaderType;
 
     /// Temporary SeriesDB
-    ::fwMedData::SeriesDB::sptr m_tempSeriesDB;
+    data::SeriesDB::sptr m_tempSeriesDB;
 
     /// Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
+    data::SeriesDB::sptr m_destinationSeriesDB;
 
     /// Local Series
     InstanceUIDContainerType m_localSeries;

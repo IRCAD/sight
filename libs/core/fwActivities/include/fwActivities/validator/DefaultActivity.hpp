@@ -51,7 +51,7 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
-        const CSPTR(::fwMedData::ActivitySeries)& activitySeries ) const override;
+        const CSPTR(data::ActivitySeries)& activitySeries ) const override;
 };
 
 } // namespace validator

@@ -50,12 +50,12 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
 
 //-----------------------------------------------------------------------------
 
-::fwMedData::ActivitySeries::sptr ActivitySeriesInitData::buildData(
+data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
     const data::Vector::csptr& currentSelection ) const
 {
-    ::fwMedData::ActivitySeries::sptr actSeries = this->ActivitySeries::buildData(activityInfo, currentSelection);
-    data::Composite::sptr data = actSeries->getData();
+    data::ActivitySeries::sptr actSeries = this->ActivitySeries::buildData(activityInfo, currentSelection);
+    data::Composite::sptr data           = actSeries->getData();
 
     namespace ActReg = ::fwActivities::registry;
 

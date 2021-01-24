@@ -27,15 +27,15 @@
 #include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
+
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -196,14 +196,14 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
 
         if(!performingPhysicianNamesStr.empty())
         {
-            ::fwMedData::DicomValuesType performingPhysicianNames;
+            data::DicomValuesType performingPhysicianNames;
             ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
 
         // Add the SOPClassUID to the series
-        std::string sopClassUID = getStringValue( dataset, s_SOPClassUIDTag );
-        ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
+        std::string sopClassUID                                          = getStringValue( dataset, s_SOPClassUIDTag );
+        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
         sopClassUIDContainer.insert(sopClassUID);
         series->setSOPClassUIDs(sopClassUIDContainer);
     }
@@ -308,7 +308,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
     std::uint64_t progress = 0;
 
     // Fill series
-    for(const ::fwMedData::DicomSeries::sptr& series : seriesDB)
+    for(const data::DicomSeries::sptr& series : seriesDB)
     {
         // Compute number of instances
         const size_t size = series->getDicomContainer().size();
@@ -337,9 +337,9 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
         // Create data objects from first instance
-        ::fwMedData::Patient::sptr patient     = this->createPatient(dataset);
-        ::fwMedData::Study::sptr study         = this->createStudy(dataset);
-        ::fwMedData::Equipment::sptr equipment = this->createEquipment(dataset);
+        data::Patient::sptr patient     = this->createPatient(dataset);
+        data::Study::sptr study         = this->createStudy(dataset);
+        data::Equipment::sptr equipment = this->createEquipment(dataset);
 
         // Fill series
         series->setPatient(patient);
@@ -364,7 +364,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
                                const ::gdcm::Scanner& scanner,
                                const std::filesystem::path& filename)
 {
-    ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::sptr();
+    data::DicomSeries::sptr series = data::DicomSeries::sptr();
 
     const std::string stringFilename = filename.string();
 
@@ -372,7 +372,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     std::string seriesInstanceUID = getStringValue( scanner, stringFilename, s_SeriesInstanceUIDTag );
 
     // Check if the series already exists
-    for(::fwMedData::DicomSeries::sptr dicomSeries : seriesDB)
+    for(data::DicomSeries::sptr dicomSeries : seriesDB)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -384,7 +384,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // If the series doesn't exist we create it
     if(!series)
     {
-        series = ::fwMedData::DicomSeries::New();
+        series = data::DicomSeries::New();
 
         seriesDB.push_back(series);
 
@@ -413,15 +413,16 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
 
         if(!performingPhysicianNamesStr.empty())
         {
-            ::fwMedData::DicomValuesType performingPhysicianNames;
+            data::DicomValuesType performingPhysicianNames;
             ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
     }
 
     // Add the SOPClassUID to the series
-    std::string sopClassUID = getStringValue( scanner, stringFilename, s_SOPClassUIDTag );
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
+    std::string sopClassUID = getStringValue( scanner, stringFilename,
+                                              s_SOPClassUIDTag );
+    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     sopClassUIDContainer.insert(sopClassUID);
     series->setSOPClassUIDs(sopClassUIDContainer);
 
@@ -432,9 +433,9 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
+data::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
 {
-    ::fwMedData::Patient::sptr result;
+    data::Patient::sptr result;
 
     // Get Patient ID
     std::string patientID = getStringValue( dataset, s_PatientIDTag );
@@ -442,7 +443,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result                  = ::fwMedData::Patient::New();
+        result                  = data::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -463,7 +464,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = ::fwMedData::Patient::New();
+        result = data::Patient::New();
         result->deepCopy(m_patientMap[patientID]);
     }
 
@@ -472,9 +473,9 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
+data::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
 {
-    ::fwMedData::Study::sptr result;
+    data::Study::sptr result;
 
     // Get Study ID
     std::string studyInstanceUID = getStringValue( dataset, s_StudyInstanceUIDTag );
@@ -482,7 +483,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the study already exists
     if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
     {
-        result                       = ::fwMedData::Study::New();
+        result                       = data::Study::New();
         m_studyMap[studyInstanceUID] = result;
 
         //Study ID
@@ -511,7 +512,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = ::fwMedData::Study::New();
+        result = data::Study::New();
         result->deepCopy(m_studyMap[studyInstanceUID]);
     }
 
@@ -520,9 +521,9 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& dataset)
+data::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& dataset)
 {
-    ::fwMedData::Equipment::sptr result;
+    data::Equipment::sptr result;
 
     // Get Institution Name
     std::string institutionName = getStringValue( dataset, s_InstitutionNameTag );
@@ -530,7 +531,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result                          = ::fwMedData::Equipment::New();
+        result                          = data::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name
@@ -539,7 +540,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = ::fwMedData::Equipment::New();
+        result = data::Equipment::New();
         result->deepCopy(m_equipmentMap[institutionName]);
     }
 

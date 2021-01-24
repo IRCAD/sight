@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
 const
 {
     DicomSeriesContainerType result;
@@ -85,13 +85,13 @@ const
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
     // Apply default filters depending on SOPClassUIDs
-    for(const ::fwMedData::DicomSeries::sptr& s :  seriesContainer)
+    for(const data::DicomSeries::sptr& s :  seriesContainer)
     {
         DicomSeriesContainerType tempo;
 
         // Create filter depending on SOPClassUID
-        ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
-        std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
+        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
+        std::string sopClassUID                                          = sopClassUIDContainer.begin()->c_str();
         if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34")    // FIXME Remove hard coded string
         {
             sopClassUID = "Comprehensive3DSR";
@@ -121,7 +121,7 @@ const
             tempo.push_back(s);
         }
 
-        for(::fwMedData::DicomSeries::sptr filteredSeries :  tempo)
+        for(data::DicomSeries::sptr filteredSeries :  tempo)
         {
             result.push_back(filteredSeries);
         }

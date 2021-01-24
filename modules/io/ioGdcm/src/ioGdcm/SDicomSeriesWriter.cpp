@@ -28,6 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
+#include <data/DicomSeries.hpp>
 #include <data/location/Folder.hpp>
 
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
@@ -42,14 +43,12 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-
 #include <fwServices/macros.hpp>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, data::DicomSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -125,7 +124,7 @@ void SDicomSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::DicomSeries::csptr series = this->getInput< ::fwMedData::DicomSeries >(::fwIO::s_DATA_KEY);
+        data::DicomSeries::csptr series     = this->getInput< data::DicomSeries >(::fwIO::s_DATA_KEY);
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
@@ -178,7 +177,7 @@ void SDicomSeriesWriter::updating()
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
-                                          const ::fwMedData::DicomSeries::csptr& series ) const
+                                          const data::DicomSeries::csptr& series ) const
 {
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
 

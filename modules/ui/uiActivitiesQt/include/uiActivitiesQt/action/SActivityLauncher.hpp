@@ -49,11 +49,11 @@ namespace action
  * signals and launchs the activity in a new tab.
  *
  * @section Slots Slots
- * - \b launchSeries(::fwMedData::Series::sptr) : This slot allows to launch the series. If series is an
+ * - \b launchSeries(data::Series::sptr) : This slot allows to launch the series. If series is an
  *      ActivitySeries, it is launched, otherwise it launches the first available activity for this series or used
  *      m_quickLaunch information if a default association is defined for this series type. It sends the
  *      signal 'activityLaunched' with all the activity information.
- * - \b launchActivitySeries(::fwMedData::ActivitySeries::sptr) : This slot allows to launch the given activity series.
+ * - \b launchActivitySeries(data::ActivitySeries::sptr) : This slot allows to launch the given activity series.
  *   It sends the signal 'activityLaunched' with all the activity information.
  *
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
@@ -88,14 +88,14 @@ namespace action
             <!-- Definition of quick association between series type and an activity id.
                  This mapping is used by launchSeries slot (see the function to have few details ) -->
             <quickLaunch>
-                <association type="::fwMedData::ImageSeries" id="2DVisualizationActivity" />
-                <association type="::fwMedData::ModelSeries" id="3DVisualizationActivity" />
+                <association type="data::ImageSeries" id="2DVisualizationActivity" />
+                <association type="data::ModelSeries" id="3DVisualizationActivity" />
             </quickLaunch>
         </config>
     </service>
         @endcode
  * @subsection Input Input
- * - \b series [data::Vector]: vector containg series inherited from ::fwMedData::Series
+ * - \b series [data::Vector]: vector containg series inherited from data::Series
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
@@ -117,7 +117,7 @@ namespace action
  * - \b quickLaunch (optional): defines the activity that will be launched on a double-click on a series. The
  *   launched activity depends of the series type (ImageSeries, ModelSeries, ...).
  *    - \b association: allows to associate an activity to launch with a type of series
- *       - \b type: type of series (::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ....)
+ *       - \b type: type of series (data::ImageSeries, data::ModelSeries, ....)
  *       - \b id: identifier of the activity.
  *
  *
@@ -216,13 +216,13 @@ private:
      * If series is an ActivitySeries, it is launched, otherwise it launches the first available activity for
      * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
-    void launchSeries(::fwMedData::Series::sptr series);
+    void launchSeries(data::Series::sptr series);
 
     /**
      * @brief Slots to launch the given activity series.
      * @param series the activity series to launch.
      */
-    void launchActivitySeries(::fwMedData::ActivitySeries::sptr series);
+    void launchActivitySeries(data::ActivitySeries::sptr series);
 
     /**
      * @brief Send message to launch new tab view

@@ -29,8 +29,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -40,16 +40,16 @@ namespace activities
 /**
  * @brief This service emits a signal for each added series (the signal contains the added series)
  *
- * This action works on a ::fwMedData::SeriesDB. It listens all the added series in the SeriesDB and emits the signal.
+ * This action works on a data::SeriesDB. It listens all the added series in the SeriesDB and emits the signal.
  *
  * It is possible to configure the service to report only one type of series.
  *
  * @section Slots Slots
- * - \b reportSeries(::fwMedData::SeriesDB::ContainerType) : This slot is called when a series is added in the SeriesDB.
+ * - \b reportSeries(data::SeriesDB::ContainerType) : This slot is called when a series is added in the SeriesDB.
  *   It emits a signal for each added series corresponding to the configured type.
  *
  * @section Signal Signal
- * - \b seriesAdded(::fwMedData::Series::sptr) : This signal is emitted when the added series correspond to the
+ * - \b seriesAdded(data::Series::sptr) : This signal is emitted when the added series correspond to the
  *   configured type.
  *
  * @section XML XML Configuration
@@ -60,13 +60,13 @@ namespace activities
              Filter mode 'exclude' allows all series excepted given ones. -->
         <filter>
             <mode>include</mode>
-            <type>::fwMedData::ImageSeries</type>
-            <type>::fwMedData::ModelSeries</type>
+            <type>data::ImageSeries</type>
+            <type>data::ModelSeries</type>
         </filter>
     </service>
         @endcode
  * @subsection Input Input
- * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB to listen to forward the added series signal.
+ * - \b seriesDB [data::SeriesDB]: seriesDB to listen to forward the added series signal.
  *
  * @subsection Configuration Configuration
  * - \b filter (optional): it allows to filter the series that can be notified.
@@ -88,7 +88,7 @@ public:
 
     ACTIVITIES_API static const core::com::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
 
-    typedef core::com::Signal< void ( ::fwMedData::Series::sptr ) > SeriesAddedSignalType;
+    typedef core::com::Signal< void ( data::Series::sptr ) > SeriesAddedSignalType;
     ACTIVITIES_API static const core::com::Signals::SignalKeyType s_SERIES_ADDED_SIG;
 
 protected:
@@ -122,7 +122,7 @@ private:
      * @brief This slot is called when a series is added in the SeriesDB.
      * It emits a signal for each added series corresponding to the configured type.
      */
-    void reportSeries(::fwMedData::SeriesDB::ContainerType addedSeries);
+    void reportSeries(data::SeriesDB::ContainerType addedSeries);
 
     /**
      * @brief Filter mode : include or exclude activity configurations.

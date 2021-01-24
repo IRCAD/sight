@@ -27,12 +27,11 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/DicomSeries.hpp>
+#include <data/Series.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
 
 #include <fwNetworkIO/exceptions/Base.hpp>
 #include <fwNetworkIO/helper/Series.hpp>
@@ -147,8 +146,8 @@ void SSeriesPusher::pushSeries()
 
     data::Vector::csptr seriesVector = this->getInput< data::Vector >(s_SERIES_IN);
 
-    const std::vector< ::fwMedData::DicomSeries::sptr > dataVector =
-        seriesVector->getDataContainer< ::fwMedData::DicomSeries >();
+    const std::vector< data::DicomSeries::sptr > dataVector =
+        seriesVector->getDataContainer< data::DicomSeries >();
     // Connect to PACS
     const size_t seriesVectorSize = seriesVector->size();
     size_t nbSeriesSuccess        = 0;
@@ -156,8 +155,8 @@ void SSeriesPusher::pushSeries()
     {
         nbSeriesSuccess++;
 
-        ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
-        const size_t dicomContainerSize = dicomContainer.size();
+        data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
+        const size_t dicomContainerSize                      = dicomContainer.size();
 
         size_t nbInstanceSuccess = 0;
         try

@@ -7,6 +7,5 @@ set( DEPENDENCIES
     core
     fwTest
     data
-    fwMedData
     )
 set( REQUIREMENTS )

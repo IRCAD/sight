@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/creator/fwMedData/ModelSeries1.hpp"
+#include "fwStructuralPatch/creator/data/ModelSeries1.hpp"
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,12 +33,12 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 ModelSeries1::ModelSeries1()
 {
-    m_classname = "::fwMedData::ModelSeries";
+    m_classname = "data::ModelSeries";
     m_version   = "1";
 }
 
@@ -67,6 +67,6 @@ ModelSeries1::ModelSeries1( const ModelSeries1& cpy ) :
     return modelSeries;
 }
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

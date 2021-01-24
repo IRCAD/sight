@@ -8,14 +8,12 @@ set( DEPENDENCIES
     data
     fwGui
     fwGuiQt
-    fwMedData
     fwMedDataTools
     fwServices
     fwDataTools
     fwIO
     )
 set( REQUIREMENTS
-    fwMedData
     servicesReg
     uiImageQt
     ctrlSelection

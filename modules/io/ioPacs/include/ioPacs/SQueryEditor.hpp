@@ -26,9 +26,9 @@
 
 #include <core/thread/Worker.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
@@ -91,7 +91,7 @@ protected:
     /// Configures the editor.
     IOPACS_API void configuring() override;
 
-    /// Creates the GUI and connects widget to updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
+    /// Creates the GUI and connects widget to updateSeriesDB(const data::SeriesDB::ContainerType&).
     IOPACS_API void starting() override;
 
     /// Executes a query with last settings.
@@ -109,7 +109,7 @@ private:
      * @brief Adds series in the series DB.
      * @param _series series to add.
      */
-    void updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series);
+    void updateSeriesDB(const data::SeriesDB::ContainerType& _series);
 
     /// Contains the worker of the series enquire thread.
     core::thread::Worker::sptr m_requestWorker { nullptr };

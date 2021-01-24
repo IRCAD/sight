@@ -26,12 +26,12 @@
 
 #include <core/macros.hpp>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class ImageSeries;
 class ModelSeries;
@@ -50,15 +50,15 @@ public:
      * @brief Convert a DicomSeries to an ImageSeries
      * @param[in] series DicomSeries that must be converted
      */
-    FWDICOMTOOLS_API static SPTR(::fwMedData::ImageSeries) convertToImageSeries(
-        const CSPTR(::fwMedData::DicomSeries)& series);
+    FWDICOMTOOLS_API static SPTR(data::ImageSeries) convertToImageSeries(
+        const CSPTR(data::DicomSeries)& series);
 
     /**
      * @brief Convert a DicomSeries to a ModelSeries
      * @param[in] series DicomSeries that must be converted
      */
-    FWDICOMTOOLS_API static SPTR(::fwMedData::ModelSeries) convertToModelSeries(
-        const CSPTR(::fwMedData::DicomSeries)& series);
+    FWDICOMTOOLS_API static SPTR(data::ModelSeries) convertToModelSeries(
+        const CSPTR(data::DicomSeries)& series);
 
 };
 

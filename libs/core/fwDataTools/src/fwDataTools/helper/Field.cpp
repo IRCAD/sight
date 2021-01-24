@@ -207,12 +207,12 @@ void Field::buildMessage(const data::Object::FieldMapType& oldFields,
     std::transform(
         oldFields.begin(), oldFields.end(),
         std::back_inserter(oldFieldNames),
-        std::bind(&data::Object::FieldMapType::value_type::first, std::placeholders::_1)
+        std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
     std::transform(
         newFields.begin(), newFields.end(),
         std::back_inserter(newFieldNames),
-        std::bind(&data::Object::FieldMapType::value_type::first, std::placeholders::_1)
+        std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
 
     std::sort(oldFieldNames.begin(), oldFieldNames.end());

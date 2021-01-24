@@ -95,7 +95,7 @@ void SSeriesPuller::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
-    m_seriesDB = ::fwMedData::SeriesDB::New();
+    m_seriesDB = data::SeriesDB::New();
 
     m_dicomReader = this->registerService< ::fwIO::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
@@ -172,7 +172,7 @@ void SSeriesPuller::pullSeries()
     for(; it != itEnd; ++it)
     {
         // Check that the series is a DICOM series.
-        ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+        data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
 
         // Check if the series must be pulled.
         if(series && std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID()) == localEnd)
@@ -307,7 +307,7 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 {
-    const auto destinationSeriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto destinationSeriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
 
     // Read only series that are not in the series DB.
     std::vector< std::string > alreadyLoadedSeries =
@@ -323,7 +323,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
     const auto sucessNotif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
         ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
 
-    for(const ::fwMedData::Series::sptr& series: _selectedSeries)
+    for(const data::Series::sptr& series: _selectedSeries)
     {
         const std::string modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
@@ -372,7 +372,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::removeSeries( ::fwMedData::SeriesDB::ContainerType _removedSeries)
+void SSeriesPuller::removeSeries( data::SeriesDB::ContainerType _removedSeries)
 {
     // Find which series to delete
     if(!m_localSeries.empty())
@@ -400,7 +400,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
     // Add path in the DICOM series.
     if(!m_pullingDicomSeriesMap[_seriesInstanceUID].expired())
     {
-        ::fwMedData::DicomSeries::sptr series = m_pullingDicomSeriesMap[_seriesInstanceUID].lock();
+        data::DicomSeries::sptr series = m_pullingDicomSeriesMap[_seriesInstanceUID].lock();
         series->addDicomPath(_instanceNumber, _filePath);
     }
     else
@@ -420,7 +420,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
 ::fwServices::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
 
     return connections;
 }

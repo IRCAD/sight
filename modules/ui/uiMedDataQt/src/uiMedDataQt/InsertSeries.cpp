@@ -50,7 +50,7 @@ void InsertSeries::shallowCopy(const data::Object::csptr& _source)
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
-    this->::fwMedData::Series::shallowCopy(_source);
+    this->data::Series::shallowCopy(_source);
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void InsertSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
-    this->::fwMedData::Series::cachedDeepCopy(_source, cache);
+    this->data::Series::cachedDeepCopy(_source, cache);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace ioITK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwMedData::ImageSeries]: image series to save.
+ * - \b data [data::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.

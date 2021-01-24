@@ -29,8 +29,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
+#include <data/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -142,15 +141,15 @@ void SThreshold::updating()
     auto input = this->getLockedInput< data::Object >(s_IMAGE_INPUT);
 
     // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
-    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input.get_shared());
-    data::Image::csptr imageSrc = data::Image::dynamicConstCast(input.get_shared());
+    data::ImageSeries::csptr imageSeriesSrc = data::ImageSeries::dynamicConstCast(input.get_shared());
+    data::Image::csptr imageSrc             = data::Image::dynamicConstCast(input.get_shared());
     data::Object::sptr output;
 
     // Get source/target image
     if(imageSeriesSrc)
     {
-        param.imageIn                                  = imageSeriesSrc->getImage();
-        ::fwMedData::ImageSeries::sptr imageSeriesDest = ::fwMedData::ImageSeries::copy(imageSeriesSrc);
+        param.imageIn = imageSeriesSrc->getImage();
+        data::ImageSeries::sptr imageSeriesDest = data::ImageSeries::copy(imageSeriesSrc);
         // define the input image series as the reference
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 

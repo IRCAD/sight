@@ -36,7 +36,7 @@ namespace fwJobs
 class IJob;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 class Patient;
@@ -60,7 +60,7 @@ namespace ioGdcm
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b data [::fwMedData::SeriesDB]: Destination container for DicomSeries
+ * - \b data [data::SeriesDB]: Destination container for DicomSeries
  * @subsection Configuration Configuration:
  * - \b dicomdirSupport (optional) : DicomDir support mode.
  * dicomdirSupport available mode:
@@ -135,7 +135,7 @@ private:
      * @brief Create a seriesDB and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
+    SPTR(data::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;

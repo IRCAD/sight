@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/IFilter.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -38,7 +38,7 @@ namespace composite
 class FWDICOMIOFILTER_CLASS_API IComposite : public ::fwDicomIOFilter::IFilter
 {
 public:
-    fwCoreClassMacro(IComposite, ::fwDicomIOFilter::IFilter);
+    fwCoreClassMacro(IComposite, ::fwDicomIOFilter::IFilter)
 
     typedef std::vector< ::fwDicomIOFilter::IFilter::sptr > FilterContainerType;
 
@@ -50,7 +50,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /**
      * @brief Apply every filters without throwing any exceptions.
@@ -58,7 +58,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API DicomSeriesContainerType forcedApply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
 
     /// Add a filter to the composite
     FWDICOMIOFILTER_API void addChild(

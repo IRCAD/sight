@@ -24,9 +24,9 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/DicomSeries.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -503,15 +503,15 @@ void SQueryEditor::executeQuery()
         {
             ofSeriesResponse.push_back(res);
         }
-        ::fwMedData::SeriesDB::ContainerType series = ::fwPacsIO::helper::Series::toFwMedData(ofSeriesResponse);
+        data::SeriesDB::ContainerType series = ::fwPacsIO::helper::Series::toFwMedData(ofSeriesResponse);
 
         // Clean memory.
         ::fwPacsIO::helper::Series::releaseResponses(responses);
 
         // Check whether the instance number start at 1 or 0.
-        for(::fwMedData::Series::sptr s: series)
+        for(data::Series::sptr s: series)
         {
-            ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(s);
+            data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
             SLM_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
             const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getInstanceUID(), 0);
             dicomSeries->setFirstInstanceNumber((instanceUID.empty() ? 1 : 0));
@@ -537,9 +537,9 @@ void SQueryEditor::executeQuery()
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series)
+void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
 {
-    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIESDB_INOUT);
 
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
@@ -547,9 +547,9 @@ void SQueryEditor::updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _s
     seriesDBHelper.clear();
 
     // Push new series in the SeriesDB.
-    for(const ::fwMedData::Series::sptr& s: _series)
+    for(const data::Series::sptr& s: _series)
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(s);
+        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
         seriesDBHelper.add(dicomSeries);
     }
 

@@ -31,14 +31,13 @@
 
 #include <core/tools/System.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
@@ -90,7 +89,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
         return;
     }
     ::fwTest::generator::Image::initRand();
-    ::fwMedData::ImageSeries::sptr imgSeries;
+    data::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
@@ -107,7 +106,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
 
     // Load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb           = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr sdb = data::SeriesDB::New();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(sdb);
     reader->setFolder(path);
@@ -116,8 +115,8 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     // Check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
 
-    ::fwMedData::ImageSeries::sptr anonymizedSeries =
-        ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer().front());
+    data::ImageSeries::sptr anonymizedSeries =
+        data::ImageSeries::dynamicCast(sdb->getContainer().front());
 
     CPPUNIT_ASSERT(anonymizedSeries);
 
@@ -258,7 +257,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     }
     m_uidContainer.erase("");
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

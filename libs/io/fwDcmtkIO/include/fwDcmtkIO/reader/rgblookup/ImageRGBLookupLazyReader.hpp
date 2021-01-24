@@ -27,7 +27,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>

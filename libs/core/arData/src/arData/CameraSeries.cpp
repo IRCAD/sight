@@ -71,7 +71,7 @@ void CameraSeries::shallowCopy( const data::Object::csptr& _source )
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
-    this->::fwMedData::Series::shallowCopy(_source);
+    this->data::Series::shallowCopy(_source);
 
     m_cameras           = other->m_cameras;
     m_extrinsicMatrices = other->m_extrinsicMatrices;
@@ -86,7 +86,7 @@ void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
-    this->::fwMedData::Series::cachedDeepCopy( _source, cache );
+    this->data::Series::cachedDeepCopy( _source, cache );
 
     m_cameras.clear();
     m_extrinsicMatrices.clear();

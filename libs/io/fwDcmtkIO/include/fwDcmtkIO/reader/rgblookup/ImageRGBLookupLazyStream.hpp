@@ -28,7 +28,7 @@
 #include <core/memory/stream/in/IFactory.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <boost/iostreams/stream.hpp>
 
@@ -52,7 +52,7 @@ public:
     typedef SPTR ( ImageRGBLookupLazyInformation ) sptr;
 
     /// Dicom series used to get the paths of the instances
-    ::fwMedData::DicomSeries::csptr m_dicomSeries;
+    data::DicomSeries::csptr m_dicomSeries;
 
     /// Number of rows in the image
     unsigned int m_rows;
@@ -115,7 +115,7 @@ private:
     char* m_frame;
 
     /// Current path
-    ::fwMedData::DicomSeries::DicomContainerType::const_iterator m_currentDicom;
+    data::DicomSeries::DicomContainerType::const_iterator m_currentDicom;
 
     /// Red lookup table
     void* m_redLookup;

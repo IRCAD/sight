@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
-#include <fwMedData/Patient.hpp>
+#include <data/Patient.hpp>
 
 namespace fwGdcmIO
 {
@@ -36,7 +36,7 @@ namespace ie
 /**
  * @brief Patient Information Entity class
  */
-class FWGDCMIO_CLASS_API Patient : public ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Patient >
+class FWGDCMIO_CLASS_API Patient : public ::fwGdcmIO::writer::ie::InformationEntity< data::Patient >
 {
 
 public:
@@ -51,7 +51,7 @@ public:
      */
     FWGDCMIO_API Patient(const SPTR(::gdcm::Writer)& writer,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                         const ::fwMedData::Patient::csptr& patient,
+                         const data::Patient::csptr& patient,
                          const ::fwLog::Logger::sptr& logger = nullptr,
                          ProgressCallback progress           = nullptr,
                          CancelRequestedCallback cancel      = nullptr);

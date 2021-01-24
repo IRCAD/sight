@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -61,7 +61,7 @@ void ActivityLauncherManager::initialize()
 {
     this->create();
 
-    m_seriesDB = data::factory::New< ::fwMedData::SeriesDB >();
+    m_seriesDB = data::factory::New< data::SeriesDB >();
 
     this->addObject(m_seriesDB, this->getInputID(s_SERIESDB_INOUT));
 
@@ -135,7 +135,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
 void ActivityLauncherManager::open()
 {
-    const auto& seriesDB = ::fwMedData::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
+    const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
     auto reader          = ::fwServices::add("::uiIO::editor::SIOSelector");
     reader->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
@@ -156,7 +156,7 @@ void ActivityLauncherManager::open()
 
 void ActivityLauncherManager::save()
 {
-    const auto& seriesDB = ::fwMedData::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
+    const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
     auto writer          = ::fwServices::add("::uiIO::editor::SIOSelector");
     writer->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();

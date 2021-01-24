@@ -27,9 +27,8 @@
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -437,7 +436,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     imageSeries->setImage(image);
 
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "imageSeries.vtk";

@@ -28,6 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
@@ -39,8 +40,6 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
@@ -48,7 +47,7 @@
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -188,10 +187,10 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
+data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
     ::fwDcmtkIO::SeriesDBReader::sptr myLoader = ::fwDcmtkIO::SeriesDBReader::New();
-    ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr dummy = data::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
     myLoader->setDicomFilterType(m_filterType);
@@ -238,13 +237,13 @@ void SSeriesDBReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
+        data::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
 
         if( seriesDB->size() > 0 )
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+            data::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -273,17 +272,17 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    ::fwMedData::SeriesDB::ContainerType addedSeries;
-    for(const ::fwMedData::Series::sptr& s :  seriesDB->getContainer() )
+    data::SeriesDB::ContainerType addedSeries;
+    for(const data::Series::sptr& s :  seriesDB->getContainer() )
     {
         addedSeries.push_back(s);
     }
 
-    auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-        ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+    auto sig = seriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
+        data::SeriesDB::s_ADDED_SERIES_SIG);
     sig->asyncEmit(addedSeries);
 }
 

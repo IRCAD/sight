@@ -25,12 +25,12 @@
 #include <core/base.hpp>
 #include <core/tools/System.hpp>
 
+#include <data/SeriesDB.hpp>
+
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -54,15 +54,15 @@ DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& source)
+void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source)
 {
     this->anonymize(source, source);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& source,
-                                      const ::fwMedData::DicomSeries::sptr& destination)
+void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source,
+                                      const data::DicomSeries::sptr& destination)
 {
     auto writerObserver     = m_writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
@@ -107,7 +107,7 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     }
 
     // Read anonymized series
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     m_reader->setObject(seriesDB);
     m_reader->setFolder(destPath);
     m_reader->readDicomSeries();
@@ -121,8 +121,8 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     future.get();
 
     // Update DicomSeries
-    ::fwMedData::DicomSeries::sptr anonymizedSeries =
-        ::fwMedData::DicomSeries::dynamicCast(seriesDB->getContainer().front());
+    data::DicomSeries::sptr anonymizedSeries =
+        data::DicomSeries::dynamicCast(seriesDB->getContainer().front());
     destination->deepCopy(anonymizedSeries);
 }
 

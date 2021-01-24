@@ -30,11 +30,10 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -82,7 +81,7 @@ class ValueView;
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b modelSeries [::fwMedData::ModelSeries]: model series containing the organs to list
+ * - \b modelSeries [data::ModelSeries]: model series containing the organs to list
  *
  * @subsection Configuration Configuration
  * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
@@ -125,9 +124,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwMedData::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
 
@@ -147,7 +146,7 @@ private:
     void updateReconstructions();
 
     /// Fills the editor tree.
-    void fillTree(const data::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries);
+    void fillTree(const data::mt::locked_ptr< data::ModelSeries >& _modelSeries);
 
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);

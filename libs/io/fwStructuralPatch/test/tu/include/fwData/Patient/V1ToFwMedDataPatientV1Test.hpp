@@ -33,7 +33,7 @@ namespace sight::data
 namespace Patient
 {
 /**
- * @brief Test patch to convert data::Patient version 1 to ::fwMedData::Patient version 1.
+ * @brief Test patch to convert data::Patient version 1 to data::Patient version 1.
  */
 class V1ToFwMedDataPatientV1Test : public CPPUNIT_NS::TestFixture
 {

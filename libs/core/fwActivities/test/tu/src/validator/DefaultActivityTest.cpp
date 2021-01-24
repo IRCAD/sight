@@ -30,18 +30,17 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
 #include <data/Float.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/String.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -86,7 +85,7 @@ void DefaultActivityTest::requirementsTest()
         ::fwActivities::IActivityValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(activityValidator);
 
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::New();
     activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
@@ -94,12 +93,12 @@ void DefaultActivityTest::requirementsTest()
     data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
-    ::fwMedData::ImageSeries::sptr imageSeries  = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ImageSeries::sptr imageSeries2 = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    data::Composite::sptr modelCompo = data::Composite::New();
+    data::ImageSeries::sptr imageSeries  = data::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
+    data::Composite::sptr modelCompo     = data::Composite::New();
 
     {
         // Empty data should NOT be valid
@@ -184,7 +183,7 @@ void DefaultActivityTest::parametersTest()
         ::fwActivities::IActivityValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(activityValidator);
 
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::New();
     activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
@@ -192,14 +191,14 @@ void DefaultActivityTest::parametersTest()
     data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
-    data::Image::sptr img = data::Image::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
+    data::Image::sptr img               = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
-    ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    data::Composite::sptr modelCompo = data::Composite::New();
+    data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::Composite::sptr modelCompo     = data::Composite::New();
 
     {
         // Empty data should NOT be valid
@@ -314,7 +313,7 @@ void DefaultActivityTest::validatorTest()
         ::fwActivities::IActivityValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(activityValidator);
 
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::New();
     activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
@@ -322,12 +321,12 @@ void DefaultActivityTest::validatorTest()
     data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
-    ::fwMedData::ImageSeries::sptr imageSeries  = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ImageSeries::sptr imageSeries2 = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    data::Composite::sptr modelCompo = data::Composite::New();
+    data::ImageSeries::sptr imageSeries  = data::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
+    data::Composite::sptr modelCompo     = data::Composite::New();
 
     data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
@@ -416,7 +415,7 @@ void DefaultActivityTest::bigActivityTest()
         ::fwActivities::IActivityValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(activityValidator);
 
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::New();
     activitySeries->setActivityConfigId("TestValidator1");
 
     ::fwActivities::IValidator::ValidationType validation;
@@ -424,12 +423,12 @@ void DefaultActivityTest::bigActivityTest()
     data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
-    ::fwMedData::ImageSeries::sptr imageSeries1 = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ImageSeries::sptr imageSeries2 = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ImageSeries::sptr imageSeries3 = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries1 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
+    data::ImageSeries::sptr imageSeries1 = data::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries3 = data::ImageSeries::New();
+    data::ModelSeries::sptr modelSeries1 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
 
     data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 

@@ -29,9 +29,9 @@
 
 #include <core/tools/Object.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/DicomSeries.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwLog/Logger.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -63,7 +63,7 @@ public:
 
     fwCoreClassMacro(IFilter, core::tools::Object)
 
-    typedef std::vector< ::fwMedData::DicomSeries::sptr > DicomSeriesContainerType;
+    typedef std::vector< data::DicomSeries::sptr > DicomSeriesContainerType;
 
     /**
      * @brief Filter types
@@ -85,7 +85,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const = 0;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const = 0;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const = 0;

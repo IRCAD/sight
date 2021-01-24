@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/creator/fwMedData/Equipment1.hpp"
+#include "fwStructuralPatch/creator/data/Equipment1.hpp"
 
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -32,14 +32,14 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 // ----------------------------------------------------------------------------
 
 Equipment1::Equipment1()
 {
-    m_classname = "::fwMedData::Equipment";
+    m_classname = "data::Equipment";
     m_version   = "1";
 }
 
@@ -70,6 +70,6 @@ Equipment1::Equipment1( const Equipment1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

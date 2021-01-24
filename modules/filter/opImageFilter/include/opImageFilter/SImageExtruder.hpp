@@ -25,8 +25,7 @@
 #include "opImageFilter/config.hpp"
 
 #include <data/Mesh.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -46,7 +45,7 @@ namespace opImageFilter
  * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  *
  * @section Slots Slots
- * - \b addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType): extrude reconstructions from the image.
+ * - \b addReconstructions(data::ModelSeries::ReconstructionVectorType): extrude reconstructions from the image.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -58,7 +57,7 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input
- * - \b meshes [::fwMedData::ModelSeries]: model series where all meshes used for extrusion are stored.
+ * - \b meshes [data::ModelSeries]: model series where all meshes used for extrusion are stored.
  * - \b image [data::Image]: image to extrude, must be in 3 dimensions.
  *
  * @subsection In-Out In-Out
@@ -89,9 +88,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwMedData::ModelSeries::s_MODIFIED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to s_ADD_RECONSTRUCTIONS_SLOT.
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to s_ADD_RECONSTRUCTIONS_SLOT.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
      * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
      */
@@ -104,7 +103,7 @@ private:
     virtual void stopping() override;
 
     /// SLOT: called when reconstructions are added to the model series.
-    void addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const;
+    void addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const;
 
     /// Extrudes one mesh from the image.
     void extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const;

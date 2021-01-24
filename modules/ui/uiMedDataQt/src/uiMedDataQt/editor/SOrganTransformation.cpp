@@ -29,6 +29,7 @@
 #include <data/Composite.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
@@ -36,8 +37,6 @@
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -175,7 +174,7 @@ void SOrganTransformation::refresh()
     m_reconstructionMap.clear();
     m_reconstructionListBox->clear();
 
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -257,7 +256,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 
 void SOrganTransformation::onResetClick()
 {
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     //search the corresponding triangular mesh
     for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -280,7 +279,7 @@ void SOrganTransformation::onSaveClick()
 {
     InnerMatMappingType matMap;
 
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     if(!series->getReconstructionDB().empty())
     {
@@ -313,7 +312,7 @@ void SOrganTransformation::onLoadClick()
     {
         InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
-        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
         //search the corresponding triangular mesh
         for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -345,7 +344,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
     {
         m_reconstructionListBox->setEnabled(false);
 
-        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
         for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
@@ -379,7 +378,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
 void SOrganTransformation::addMeshTransform()
 {
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     for(const data::Reconstruction::sptr& rec :  series->getReconstructionDB())
     {
@@ -399,9 +398,9 @@ void SOrganTransformation::addMeshTransform()
 ::fwServices::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
     connections.push(s_COMPOSITE_INOUT, data::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_COMPOSITE_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
     connections.push(s_COMPOSITE_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);

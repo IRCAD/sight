@@ -26,8 +26,7 @@
 
 #include <data/Color.hpp>
 #include <data/Material.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataTools::ut::ModelSeriesTest );
@@ -54,12 +53,12 @@ void ModelSeriesTest::tearDown()
 
 void ModelSeriesTest::addReconstruction()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
+    data::Reconstruction::sptr rec1     = data::Reconstruction::New();
 
     ::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec1);
 
-    const ::fwMedData::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
+    const data::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(rec1, recDB[0]);
 
     data::Reconstruction::sptr rec2 = data::Reconstruction::New();
@@ -136,8 +135,8 @@ void ModelSeriesTest::createReconstructionFromMesh()
 
 void ModelSeriesTest::addMesh()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-    const ::fwMedData::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
+    data::ModelSeries::sptr modelSeries                      = data::ModelSeries::New();
+    const data::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
 
     {
         data::Mesh::sptr mesh           = data::Mesh::New();

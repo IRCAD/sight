@@ -5,7 +5,6 @@ set( DEPENDENCIES
     core
     data
     fwMath
-    fwMedData
     fwLog
 )
 set( USE_PCH_FROM_TARGET pchData )

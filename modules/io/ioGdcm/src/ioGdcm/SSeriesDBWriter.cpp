@@ -26,6 +26,8 @@
 #include <core/tools/ProgressToLogger.hpp>
 
 #include <data/location/Folder.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
@@ -38,9 +40,6 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwIO/IWriter.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -148,12 +147,12 @@ void SSeriesDBWriter::updating()
         data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
 
         // Create SeriesDB
-        ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+        data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
         ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
         for(const data::Object::sptr& object : vector->getContainer())
         {
-            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
+            data::Series::sptr series = data::Series::dynamicCast(object);
             SLM_ASSERT("The container should only contain series.", series);
             seriesDBHelper.add(series);
         }
@@ -171,7 +170,7 @@ void SSeriesDBWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, ::fwMedData::SeriesDB::sptr seriesDB )
+void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::SeriesDB::sptr seriesDB )
 {
     ::fwGdcmIO::writer::SeriesDB::sptr writer = ::fwGdcmIO::writer::SeriesDB::New();
     writer->setObject(seriesDB);
@@ -217,12 +216,12 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
 
     // Create SeriesDB
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     for(const data::Object::sptr& object : vector->getContainer())
     {
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
+        data::Series::sptr series = data::Series::dynamicCast(object);
         SLM_ASSERT("The container should only contain series.", series);
         seriesDBHelper.add(series);
     }

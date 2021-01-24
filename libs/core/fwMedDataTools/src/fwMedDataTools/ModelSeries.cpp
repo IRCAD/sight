@@ -30,7 +30,7 @@ namespace fwMedDataTools
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, const data::Mesh::sptr& _mesh,
+void ModelSeries::addMesh(const data::ModelSeries::sptr& _modelSeries, const data::Mesh::sptr& _mesh,
                           const std::string& _organName, const std::string& _structureType,
                           const data::Color::sptr& _colour, data::Material::RepresentationType _mode,
                           bool _visible)
@@ -41,10 +41,10 @@ void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, co
 
     addReconstruction(_modelSeries, reconstructionQuadMesh);
 
-    auto sig = _modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType>(
-        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+    auto sig = _modelSeries->signal< data::ModelSeries::ReconstructionsAddedSignalType>(
+        data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructionsVector;
+    data::ModelSeries::ReconstructionVectorType reconstructionsVector;
     reconstructionsVector.push_back(reconstructionQuadMesh);
     sig->asyncEmit(reconstructionsVector);
 }
@@ -76,10 +76,10 @@ data::Reconstruction::sptr ModelSeries::createReconstructionFromMesh( const data
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::addReconstruction( const ::fwMedData::ModelSeries::sptr& _modelSeries,
+void ModelSeries::addReconstruction( const data::ModelSeries::sptr& _modelSeries,
                                      const data::Reconstruction::sptr& _rec)
 {
-    ::fwMedData::ModelSeries::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
 
     FW_RAISE_IF("Reconstruction is invalid.", _rec == nullptr);
     FW_RAISE_IF("Reconstruction already exists in ModelSeries.",

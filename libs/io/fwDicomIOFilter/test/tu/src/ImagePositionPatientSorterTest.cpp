@@ -116,7 +116,7 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 
 void ImagePositionPatientSorterTest::simpleApplication()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -132,9 +132,9 @@ void ImagePositionPatientSorterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
@@ -148,7 +148,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
 
     double oldPosition = -1.0;
 
-    const ::fwMedData::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
+    const data::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
     for(size_t index = dicomSeries->getFirstInstanceNumber(); index < dicomSeries->getNumberOfInstances(); ++index)
     {
         const double position = getInstanceZPosition(dicomContainer.at(index));
@@ -163,7 +163,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
 
 void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -179,9 +179,9 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter

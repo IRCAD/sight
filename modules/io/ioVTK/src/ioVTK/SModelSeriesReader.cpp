@@ -34,6 +34,7 @@
 #include <data/location/ILocation.hpp>
 #include <data/location/MultiFiles.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
@@ -45,8 +46,6 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -61,7 +60,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -156,14 +155,14 @@ void SModelSeriesReader::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(::fwIO::s_DATA_KEY);
         const auto modelSeries          = modelSeriesLockedPtr.get_shared();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
-        ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
+        data::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
+        data::ModelSeries::ReconstructionVectorType addedRecs;
         for(const data::location::ILocation::PathType& file :  this->getFiles())
         {
             data::Mesh::sptr mesh = data::Mesh::New();
@@ -179,8 +178,8 @@ void SModelSeriesReader::updating()
         cursor.setDefaultCursor();
         modelSeries->setReconstructionDB(recDB);
 
-        auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
-            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+        auto sig = modelSeries->signal< data::ModelSeries::ReconstructionsAddedSignalType >(
+            data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(addedRecs);

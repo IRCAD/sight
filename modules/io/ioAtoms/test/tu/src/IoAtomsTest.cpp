@@ -28,10 +28,9 @@
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwIO/ioTypes.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -167,19 +166,19 @@ void atomTest(const std::filesystem::path& filePath)
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
+    data::SeriesDB::sptr seriesDB   = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
     data::Composite::sptr workspace = data::Composite::New();
     workspace->getContainer()["processingDB"] = data::Composite::New();
     workspace->getContainer()["planningDB"]   = data::Composite::New();
 
     std::filesystem::create_directories( filePath.parent_path() );
     writeReadFile< data::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
-    writeReadFile< ::fwMedData::SeriesDB >( srvCfg, seriesDB, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
+    writeReadFile< data::SeriesDB >( srvCfg, seriesDB, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
 
-    ::fwMedData::SeriesDB::sptr readSeriesDB;
+    data::SeriesDB::sptr readSeriesDB;
 
     // Default policy
-    readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -188,7 +187,7 @@ void atomTest(const std::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
-    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -200,7 +199,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Change' UUID policy
     srvCfg.add("uuidPolicy", "Change");
 
-    readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -210,7 +209,7 @@ void atomTest(const std::filesystem::path& filePath)
     }
 
     // Output with 'Change' UUID policy
-    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -222,7 +221,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Strict' UUID policy
     srvCfg.put("uuidPolicy", "Strict");
 
-    readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         // DuplicatedDataUUID exception should have been thrown and catch by reader before any data/atom conversion.
@@ -234,7 +233,7 @@ void atomTest(const std::filesystem::path& filePath)
     // Output with 'Reuse' UUID policy
     srvCfg.put("uuidPolicy", "Reuse");
 
-    readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
         CPPUNIT_ASSERT_MESSAGE("Failed to retrieve output SeriesDB", readSeriesDB);

@@ -29,12 +29,12 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/Os.hpp>
 
+#include <data/ActivitySeries.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -47,7 +47,7 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -73,8 +73,8 @@ SExportSeries::~SExportSeries() noexcept
 ::fwServices::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT );
 
     return connections;
 }
@@ -91,9 +91,9 @@ void SExportSeries::configuring()
 void SExportSeries::starting()
 {
     this->actionServiceStarting();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>(s_SERIESDB_INOUT);
 
-    for( ::fwMedData::Series::sptr series :  seriesDB->getContainer() )
+    for( data::Series::sptr series :  seriesDB->getContainer() )
     {
         if(series == this->getSeries())
         {
@@ -113,12 +113,12 @@ void SExportSeries::stopping()
 
 void SExportSeries::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
-    ::fwMedData::Series::sptr series     = this->getSeries();
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>(s_SERIESDB_INOUT);
+    data::Series::sptr series     = this->getSeries();
 
     std::string description = series->getDescription();
 
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
         ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
@@ -140,7 +140,7 @@ void SExportSeries::updating()
 
     if(!description.empty())
     {
-        ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
+        data::DicomValuesType physicians = series->getPerformingPhysiciansName();
         if(physicians.empty())
         {
             std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
@@ -167,17 +167,17 @@ void SExportSeries::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr SExportSeries::getSeries()
+data::Series::sptr SExportSeries::getSeries()
 {
-    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series>("series");
+    data::Series::sptr series = this->getInOut< data::Series>("series");
     return series;
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::checkAddedSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
+void SExportSeries::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
 {
-    for( ::fwMedData::Series::sptr series :  addedSeries )
+    for( data::Series::sptr series :  addedSeries )
     {
         if(series == this->getSeries())
         {
@@ -188,9 +188,9 @@ void SExportSeries::checkAddedSeries(::fwMedData::SeriesDB::ContainerType addedS
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::checkRemovedSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
+void SExportSeries::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 {
-    for( ::fwMedData::Series::sptr series :  removedSeries )
+    for( data::Series::sptr series :  removedSeries )
     {
         if(series == this->getSeries())
         {

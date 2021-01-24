@@ -25,11 +25,10 @@
 #include "fwVtkIO/config.hpp"
 
 #include <data/location/MultiFiles.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <filesystem>
 
@@ -47,13 +46,13 @@ namespace fwVtkIO
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
 class FWVTKIO_CLASS_API SeriesDBReader :
-    public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+    public ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
     public data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(SeriesDBReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+    fwCoreClassMacro(SeriesDBReader, ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
                      ::fwDataIO::reader::factory::New< SeriesDBReader >)
     fwCoreAllowSharedFromThis()
 

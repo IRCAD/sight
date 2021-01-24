@@ -25,13 +25,13 @@
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 
+#include <data/DicomSeries.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -108,7 +108,7 @@ std::string getSubPath(int index)
 
 void DicomSeriesDBWriter::write()
 {
-    ::fwMedData::SeriesDB::csptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SLM_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
 
     ::fwZip::IWriteArchive::sptr writeArchive;
@@ -127,9 +127,9 @@ void DicomSeriesDBWriter::write()
     const auto nbSeries = seriesDB->getContainer().size();
     int processedSeries = 0;
 
-    for(::fwMedData::Series::sptr series: seriesDB->getContainer())
+    for(data::Series::sptr series: seriesDB->getContainer())
     {
-        const ::fwMedData::DicomSeries::sptr& dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+        const data::DicomSeries::sptr& dicomSeries = data::DicomSeries::dynamicCast(series);
 
         ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series", [&, dicomSeries](::fwJobs::Job& runningJob)
                 {

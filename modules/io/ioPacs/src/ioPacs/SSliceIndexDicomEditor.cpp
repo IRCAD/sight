@@ -26,13 +26,12 @@
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/exceptions/Base.hpp>
@@ -90,7 +89,7 @@ void SSliceIndexDicomEditor::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
-    m_seriesDB = ::fwMedData::SeriesDB::New();
+    m_seriesDB = data::SeriesDB::New();
 
     m_dicomReader = this->registerService< ::fwIO::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
@@ -149,7 +148,7 @@ void SSliceIndexDicomEditor::starting()
 ::fwServices::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_DICOMSERIES_INOUT, ::fwMedData::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -159,7 +158,7 @@ void SSliceIndexDicomEditor::starting()
 void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
-    const auto dicomSeries   = this->getLockedInOut< const ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries   = this->getLockedInOut< const data::DicomSeries >(s_DICOMSERIES_INOUT);
     const size_t sliceNumber = dicomSeries->getNumberOfInstances();
 
     // If the current slice index is the initial value of the slider, we just send a signal to trigger other services.
@@ -215,7 +214,7 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
-    const auto dicomSeries          = this->getLockedInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries          = this->getLockedInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
     const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
@@ -260,7 +259,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         notif->asyncEmit("Unable to connect to PACS");
     }
 
-    const auto dicomSeries = this->getLockedInOut< ::fwMedData::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries = this->getLockedInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
 
     // Get selected slice.
     try
@@ -324,7 +323,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
+void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSeries >& _dicomSeries,
                                        std::size_t _selectedSliceIndex) const
 {
     // Retrieve informations.
@@ -368,8 +367,8 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< ::fwMedData::
     if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
     {
         // Copy the read serie to the image.
-        const ::fwMedData::ImageSeries::sptr imageSeries =
-            ::fwMedData::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
+        const data::ImageSeries::sptr imageSeries =
+            data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const data::Image::sptr newImage = imageSeries->getImage();
 
         const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);

@@ -36,7 +36,7 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Document::Document(const data::DicomSeries::csptr& dicomSeries,
                    const SPTR(::gdcm::Reader)& reader,
                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                    const data::Image::sptr& image,

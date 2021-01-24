@@ -27,12 +27,12 @@
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 
+#include <data/DicomSeries.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwGui/editor/IEditor.hpp>
 
 #include <fwIO/IReader.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IHasServices.hpp>
 
@@ -62,7 +62,7 @@ namespace ioPacs
  * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
- * - \b series [::fwMedData::DicomSeries]: DICOM series where to extract the images.
+ * - \b series [data::DicomSeries]: DICOM series where to extract the images.
  * - \b image [data::Image]: downloaded slice.
  *
  * @subsection Configuration Configuration:
@@ -101,7 +101,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwMedData::DicomSeries::s_MODIFIED_SIG of s_DICOMSERIES_INOUT to s_UPDATE_SLOT
+     * Connect data::DicomSeries::s_MODIFIED_SIG of s_DICOMSERIES_INOUT to s_UPDATE_SLOT
      */
     IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -135,7 +135,7 @@ private:
      * @param _dicomSeries the dicom series instance.
      * @param _selectedSliceIndex index of the slice to read.
      */
-    void readSlice(const data::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
+    void readSlice(const data::mt::locked_ptr< data::DicomSeries >& _dicomSeries,
                    std::size_t _selectedSliceIndex) const;
 
     /// Contains the worker of the series enquire thread.
@@ -163,7 +163,7 @@ private:
     ::fwIO::IReader::sptr m_dicomReader;
 
     /// Contains the seriesDB where the DICOM reader sets its output.
-    ::fwMedData::SeriesDB::sptr m_seriesDB;
+    data::SeriesDB::sptr m_seriesDB;
 
 };
 

@@ -114,7 +114,7 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(acqObj, isObj, newVersions));
 
     CPPUNIT_ASSERT(isObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("::fwMedData::ImageSeries"), ::fwAtomsPatch::helper::getClassname(isObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("data::ImageSeries"), ::fwAtomsPatch::helper::getClassname(isObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), ::fwAtomsPatch::helper::getVersion(isObj));
 
     CPPUNIT_ASSERT(!isObj->getAttribute("bits_per_pixel"));

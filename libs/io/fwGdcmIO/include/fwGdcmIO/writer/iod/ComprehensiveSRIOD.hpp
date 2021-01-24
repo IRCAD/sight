@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
     FWGDCMIO_API virtual ~ComprehensiveSRIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(const ::fwMedData::Series::csptr& series) override;
+    FWGDCMIO_API virtual void write(const data::Series::csptr& series) override;
 
 protected:
     /// True if we must use 3DSR

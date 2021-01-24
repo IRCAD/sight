@@ -43,13 +43,13 @@ namespace uiMedDataQt
         <in key="series" uid="..." autoConnect="yes" />
         <parentView>preview</parentView>
         <configs>
-            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
+            <config id="2DSimpleConfig" type="data::ImageSeries">
                 <extract path="@image" pattern="imageID" />
             </config>
-            <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
+            <config id="2DPacsPreviewConfig" type="data::DicomSeries" >
                 <parameter replace="PACS_CONFIGURATION" by="None" />
             </config>
-            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
+            <config id="3DSimpleConfig" type="data::ModelSeries" />
         </configs>
        </service>
    </service>

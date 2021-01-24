@@ -24,10 +24,10 @@
 
 #include "ioPacs/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <fwPacsIO/SeriesRetriever.hpp>
 
@@ -62,7 +62,7 @@ namespace ioPacs
  * - \b selectedSeries [data::Vector]: list of DICOM series to pull from the PACS.
  *
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: series DB where to put the retrieved dicom series.
+ * - \b seriesDB [data::SeriesDB]: series DB where to put the retrieved dicom series.
  *
  * @subsection Configuration Configuration:
  * - \b dicomReader (mandatory, string): reader type to use.
@@ -104,11 +104,11 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connects ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
+     * Connects data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
      */
     IOPACS_API virtual KeyConnectionsMap getAutoConnections() const override;
 
-    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef core::com::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
     typedef core::com::Signal< void ( std::string ) > ProgressStartedSignalType;
     typedef core::com::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
@@ -133,7 +133,7 @@ private:
                                const std::string& _filePath);
 
     ///SLOT: removes series from m_localSeries, when deleted in a gui Selector for instance.
-    void removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries);
+    void removeSeries(data::SeriesDB::ContainerType _removedSeries);
 
     /// Defines the worker of the series enquire thread.
     core::thread::Worker::sptr m_requestWorker;
@@ -148,7 +148,7 @@ private:
     ::fwIO::IReader::sptr m_dicomReader { nullptr };
 
     /// Contains the seriesDB where the DICOM reader sets its output.
-    ::fwMedData::SeriesDB::sptr m_seriesDB { nullptr };
+    data::SeriesDB::sptr m_seriesDB { nullptr };
 
     /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
     ::fwPacsIO::SeriesRetriever::ProgressCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingMoveRequests { nullptr };
@@ -172,7 +172,7 @@ private:
     std::size_t m_instanceCount { 0 };
 
     /// Stores a map of DICOM series being pulled.
-    std::map < std::string, ::fwMedData::DicomSeries::wptr > m_pullingDicomSeriesMap;
+    std::map < std::string, data::DicomSeries::wptr > m_pullingDicomSeriesMap;
 
 };
 

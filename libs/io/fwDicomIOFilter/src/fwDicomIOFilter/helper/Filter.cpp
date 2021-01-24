@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,16 @@
  *
  ***********************************************************************/
 
-#include "fwDicomIOFilter/composite/IComposite.hpp"
-
 #include "fwDicomIOFilter/helper/Filter.hpp"
+
+#include "fwDicomIOFilter/composite/IComposite.hpp"
 
 namespace fwDicomIOFilter
 {
 namespace helper
 {
 
+//------------------------------------------------------------------------------
 
 bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDicomIOFilter::IFilter::sptr filter,
                          bool forcedApply, const ::fwLog::Logger::sptr& logger)
@@ -37,7 +38,7 @@ bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDic
     DicomSeriesContainerType result;
 
     // On every DicomSeries
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries :  dicomSeriesContainer)
+    for(const data::DicomSeries::sptr& dicomSeries :  dicomSeriesContainer)
     {
         // Apply filter and copy result
         DicomSeriesContainerType tempo;

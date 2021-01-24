@@ -24,18 +24,17 @@
 
 #include "fwNetworkIO/config.hpp"
 
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <QJsonObject>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class ImageSeries;
 class ModelSeries;
@@ -53,18 +52,18 @@ class FWNETWORKIO_CLASS_API Series
 {
 public:
 
-    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainer;
+    typedef data::SeriesDB::ContainerType DicomSeriesContainer;
     typedef std::vector< std::string > InstanceUIDContainer;
     typedef std::map < std::string, unsigned int > InstanceCountMap;
 
     /**
-     * @brief Convert HTTP series response to ::fwMedData::DicomSeries
+     * @brief Convert HTTP series response to data::DicomSeries
      * @param[in] answer HTTP responses from the PACS that must be converted
      */
     FWNETWORKIO_API static DicomSeriesContainer toFwMedData(const QJsonObject& answer);
 
     /**
-     * @brief Convert std::vector< ::fwMedData::DicomSeries > to series instance uid container
+     * @brief Convert std::vector< data::DicomSeries > to series instance uid container
      * @param[in] series Series vector used to extract the series instance uids
      */
     FWNETWORKIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);

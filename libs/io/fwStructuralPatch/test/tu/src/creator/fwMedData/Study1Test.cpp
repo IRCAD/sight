@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "creator/fwMedData/Study1Test.hpp"
+#include "creator/data/Study1Test.hpp"
 
 #include "fwAtoms/String.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
 
-#include "fwStructuralPatch/creator/fwMedData/Study1.hpp"
+#include "fwStructuralPatch/creator/data/Study1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creator::fwMedData::Study1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creatordata::Study1Test );
 
 namespace fwStructuralPatch
 {
@@ -38,7 +38,7 @@ namespace ut
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 //------------------------------------------------------------------------------
@@ -64,14 +64,14 @@ void Study1Test::createTest()
 
     CPPUNIT_ASSERT(studyCreator);
     const std::string& classname = studyCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Study") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Study") == classname );
     const std::string& objectVersion = studyCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ::fwAtoms::Object::sptr study = studyCreator->create();
 
     const std::string& studyClassname = ::fwAtomsPatch::helper::getClassname(study);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Study") == studyClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Study") == studyClassname );
     const std::string& studyObjectVersion = ::fwAtomsPatch::helper::getVersion(study);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == studyObjectVersion );
 
@@ -92,7 +92,7 @@ void Study1Test::copyTest()
     Study1 studyCreator;
 
     const std::string& classname = studyCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Study") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Study") == classname );
     const std::string& objectVersion = studyCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -100,7 +100,7 @@ void Study1Test::copyTest()
 
     CPPUNIT_ASSERT(studyCreator2);
     const std::string& classnamestudyCreator2 = studyCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Study") == classnamestudyCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Study") == classnamestudyCreator2 );
 
     const std::string& objectVersionstudyCreator2 = studyCreator2->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionstudyCreator2 );
@@ -110,7 +110,7 @@ void Study1Test::copyTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace creator
 } //namespace ut
 } //namespace fwStructuralPatch

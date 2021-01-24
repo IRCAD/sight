@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
-#include <fwMedData/Series.hpp>
+#include <data/Series.hpp>
 
 namespace fwGdcmIO
 {
@@ -36,7 +36,7 @@ namespace ie
 /**
  * @brief Series Information Entity class
  */
-class FWGDCMIO_CLASS_API Series : public ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >
+class FWGDCMIO_CLASS_API Series : public ::fwGdcmIO::reader::ie::InformationEntity< data::Series >
 {
 
 public:
@@ -50,10 +50,10 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Series(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Series(const CSPTR(data::DicomSeries)& dicomSeries,
                         const SPTR(::gdcm::Reader)& reader,
                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                        const ::fwMedData::Series::sptr& series,
+                        const data::Series::sptr& series,
                         const ::fwLog::Logger::sptr& logger = nullptr,
                         ProgressCallback progress           = nullptr,
                         CancelRequestedCallback cancel      = nullptr);

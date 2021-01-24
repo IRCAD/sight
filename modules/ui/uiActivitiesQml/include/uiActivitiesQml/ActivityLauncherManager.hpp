@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwQml/IQmlAppManager.hpp>
 
@@ -89,7 +89,7 @@ private:
 
     ::fwServices::IService::sptr m_activitySequencer;
 
-    ::fwMedData::SeriesDB::sptr m_seriesDB;
+    data::SeriesDB::sptr m_seriesDB;
 
     ::fwServices::IService::ConfigType m_activityViewConfig;
     ::fwServices::IService::ConfigType m_sequencerConfig;

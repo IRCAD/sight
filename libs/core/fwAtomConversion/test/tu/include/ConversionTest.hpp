@@ -71,7 +71,7 @@ public:
     //// Test data::TransferFunction conversion
     void tfConversionTest();
 
-    /// Test fwMedData::SeriesDB conversion
+    /// Test data::SeriesDB conversion
     void seriesDBConversionTest();
 
     /// Test using an object multi referenced in different structures, test also data::Composite conversion

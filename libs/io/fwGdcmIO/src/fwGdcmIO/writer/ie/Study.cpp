@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwMedData/Study.hpp>
+#include <data/Study.hpp>
 
 namespace fwGdcmIO
 {
@@ -37,12 +37,12 @@ namespace ie
 
 Study::Study(const SPTR(::gdcm::Writer)& writer,
              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-             const ::fwMedData::Study::csptr& study,
+             const data::Study::csptr& study,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Study >(writer, instance, study,
-                                                                    logger, progress, cancel)
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Study >(writer, instance, study,
+                                                             logger, progress, cancel)
 {
 }
 

@@ -93,7 +93,7 @@ bool parseTrian2(Iterator first, Iterator last, data::Mesh::sptr mesh)
         phx::bind(static_cast<size_t (data::Mesh::*)(
                                   data::Mesh::Size, data::Mesh::Size, data::Mesh::CellType,
                                   data::Mesh::Attributes)>(
-                      &data::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
+                      &sight::data::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
                       nbCells), data::Mesh::CellType::TRIANGLE,
                   data::Mesh::Attributes::CELL_NORMALS);
 
@@ -121,7 +121,7 @@ bool parseTrian2(Iterator first, Iterator last, data::Mesh::sptr mesh)
                                                                  data::Mesh::PointValueType,
                                                                  data::Mesh::PointValueType,
                                                                  data::Mesh::PointValueType)>(
-                                                    &data::Mesh::pushPoint), mesh, _1, _2, _3)
+                                                    &sight::data::Mesh::pushPoint), mesh, _1, _2, _3)
                                   ]
                               ]
 
@@ -138,7 +138,7 @@ bool parseTrian2(Iterator first, Iterator last, data::Mesh::sptr mesh)
                                       phx::bind(static_cast< data::Mesh::CellId (data::Mesh::*)(
                                                                  data::Mesh::PointId,
                                                                  data::Mesh::PointId,
-                                                                 data::Mesh::PointId)>( &data::Mesh::
+                                                                 data::Mesh::PointId)>( &sight::data::Mesh::
                                                                                         pushCell),
                                                 mesh, _1, _2, _3),
                                       phx::bind(static_cast< void (data::Mesh::*)(
@@ -146,7 +146,7 @@ bool parseTrian2(Iterator first, Iterator last, data::Mesh::sptr mesh)
                                                                  data::Mesh::NormalValueType,
                                                                  data::Mesh::NormalValueType,
                                                                  data::Mesh::NormalValueType)>(
-                                                    &data::Mesh::setCellNormal), mesh, ref(count), _4, _5, _6),
+                                                    &sight::data::Mesh::setCellNormal), mesh, ref(count), _4, _5, _6),
                                       ref(count)++
                                   ]
                               ]

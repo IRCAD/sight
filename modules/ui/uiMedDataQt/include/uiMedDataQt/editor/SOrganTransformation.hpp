@@ -56,7 +56,7 @@ namespace editor
    </service>
    @endcode
  * @subsection InOut InOut
- * - \b modelSeries [::fwMedData::ModelSeries]: modelSeries to modify.
+ * - \b modelSeries [data::ModelSeries]: modelSeries to modify.
  * - \b composite [data::Composite]: composite.
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,

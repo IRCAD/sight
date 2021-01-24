@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/Study/V1ToV2Test.hpp"
+#include "data/Study/V1ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/Study/V1ToV2.hpp>
+#include <fwStructuralPatch/data/Study/V1ToV2.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::Study::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Study::V1ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace Study
 {
@@ -63,7 +63,7 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr StudyV1 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr StudyV2;
 
-    ::fwAtomsPatch::helper::setClassname(StudyV1, "::fwMedData::Study");
+    ::fwAtomsPatch::helper::setClassname(StudyV1, "data::Study");
     ::fwAtomsPatch::helper::setVersion(StudyV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(StudyV1);
@@ -81,8 +81,8 @@ void V1ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[StudyV1] = StudyV2;
 
-        ::fwStructuralPatch::fwMedData::Study::V1ToV2::sptr v1ToV2Patch;
-        v1ToV2Patch = ::fwStructuralPatch::fwMedData::Study::V1ToV2::New();
+        ::fwStructuralPatchdata::Study::V1ToV2::sptr v1ToV2Patch;
+        v1ToV2Patch = ::fwStructuralPatchdata::Study::V1ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v1ToV2Patch->apply(StudyV1, StudyV2, newVersions));
 
         CPPUNIT_ASSERT(StudyV2);
@@ -111,6 +111,6 @@ void V1ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Study
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

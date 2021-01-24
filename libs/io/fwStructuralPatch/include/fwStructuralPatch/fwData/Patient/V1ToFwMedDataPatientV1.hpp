@@ -35,7 +35,7 @@ namespace sight::data
 namespace Patient
 {
 
-/// Transforms a data::Patient to a ::fwMedData::Patient.
+/// Transforms a data::Patient to a data::Patient.
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataPatientV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:

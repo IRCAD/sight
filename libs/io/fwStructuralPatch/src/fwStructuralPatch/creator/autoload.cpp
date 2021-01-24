@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
+#include "fwStructuralPatch/creator/data/ActivitySeries1.hpp"
+#include "fwStructuralPatch/creator/data/Equipment1.hpp"
+#include "fwStructuralPatch/creator/data/ImageSeries1.hpp"
 #include "fwStructuralPatch/creator/data/Landmarks1.hpp"
+#include "fwStructuralPatch/creator/data/ModelSeries1.hpp"
+#include "fwStructuralPatch/creator/data/Patient1.hpp"
 #include "fwStructuralPatch/creator/data/PointList1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/ActivitySeries1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/Equipment1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/ImageSeries1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/ModelSeries1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/Patient1.hpp"
-#include "fwStructuralPatch/creator/fwMedData/Study1.hpp"
+#include "fwStructuralPatch/creator/data/Study1.hpp"
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -42,13 +42,13 @@ struct runner
     runner()
     {
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::Equipment1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::Patient1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::Study1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ModelSeries1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ImageSeries1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ActivitySeries1::New());
-        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ActivitySeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::Equipment1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::Patient1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::Study1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::ModelSeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::ImageSeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::ActivitySeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creatordata::ActivitySeries1::New());
         creators->registerCreator(::fwStructuralPatch::creatordata::Landmarks1::New());
         creators->registerCreator(::fwStructuralPatch::creatordata::PointList1::New());
     }

@@ -27,9 +27,9 @@
 
 #include <core/base.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <data/ActivitySeries.hpp>
 
-namespace fwMedData
+namespace sight::data
 {
 class ActivitySeries;
 }
@@ -64,14 +64,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwMedData::ActivitySeries)& activity ) const = 0;
+    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(data::ActivitySeries)& activity ) const = 0;
 
     /**
      * @brief Checks if all the required data are present in the activity series.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    FWACTIVITIES_API ValidationType checkRequirements(const CSPTR(::fwMedData::ActivitySeries)& activity) const;
+    FWACTIVITIES_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity) const;
 
     /**
      * @brief Checks if all the activity's AppConfig parameters are valid.
@@ -80,7 +80,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    FWACTIVITIES_API ValidationType checkParameters(const CSPTR(::fwMedData::ActivitySeries)& activity) const;
+    FWACTIVITIES_API ValidationType checkParameters(const CSPTR(data::ActivitySeries)& activity) const;
 
     /**
      * @brief Calls the object validator if it is defined.

@@ -28,11 +28,10 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <QAbstractItemView>
 #include <QObject>
@@ -62,7 +61,7 @@ namespace editor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
+ * - \b seriesDB [data::SeriesDB]: seriesDB on which the editor operates.
  * - \b selection [data::Vector]: defines the id of the data::Vector where the selection will be put or get.
  *
  * @subsection Configuration Configuration
@@ -73,7 +72,7 @@ namespace editor
  * - \b removeStudyIcon (optional, string, default=""): remove study button icon.
  * - \b removeSerieIcon (optional, string, default=""): remove serie button icon.
  * - \b icons (optional): defines the icon to associate for a series.
- *     - \b series (mandatory, string): series name, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}.
+ *     - \b series (mandatory, string): series name, e.g. {data::ImageSeries, data::ModelSeries, ...}.
  *     - \b icon (mandatory, string): icon path.
  */
 class UIMEDDATAQT_CLASS_API SSelector final :
@@ -106,8 +105,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
-     * Connect ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
+     * Connect data::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
+     * Connect data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
      */
     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -124,8 +123,8 @@ protected Q_SLOTS:
      * @param _selection series to add in selection vector.
      * @param _deselection series to remove from selection vector.
      */
-    void onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
-                          QVector< ::fwMedData::Series::sptr > _deselection);
+    void onSelectedSeries(QVector< data::Series::sptr > _selection,
+                          QVector< data::Series::sptr > _deselection);
 
     /**
      * @brief Sends a 'seriesDoubleClicked' signal when the user double click on a series.
@@ -138,19 +137,19 @@ protected Q_SLOTS:
      * @brief Removes series from seriesDB and notify.
      * @param _selection series to remove from seriesDB.
      */
-    void onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection);
+    void onRemoveSeries(QVector< data::Series::sptr > _selection);
 
 private:
 
-    typedef core::com::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+    typedef core::com::Slot<void (data::SeriesDB::ContainerType)> RemoveSeriesSlotType;
 
-    typedef core::com::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
+    typedef core::com::Signal< void ( SPTR( data::Series ) ) > SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
-    void addSeries(::fwMedData::SeriesDB::ContainerType addedSeries);
+    void addSeries(data::SeriesDB::ContainerType addedSeries);
 
     /// SLOT: removes series from the selector.
-    void removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
+    void removeSeries(data::SeriesDB::ContainerType removedSeries);
 
     /// Contains the slot used to remove series from the selector.
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;

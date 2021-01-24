@@ -76,20 +76,20 @@ void SSeriesDBMerger::configuring()
 
 void SSeriesDBMerger::updating()
 {
-    auto destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    auto destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
     SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
     ::fwMedDataTools::helper::SeriesDB sDBhelper(destinationSeriesDB);
-    ::fwMedData::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    data::Vector::csptr selectedSeries = this->getInput< data::Vector >("selectedSeries");
+    data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
+    data::Vector::csptr selectedSeries      = this->getInput< data::Vector >("selectedSeries");
 
     // Save added series in this container in order to display information on the push
-    std::vector< ::fwMedData::Series::sptr > addedSeries;
+    std::vector< data::Series::sptr > addedSeries;
 
     // Loop through all selected series
     for(const data::Object::sptr& obj: selectedSeries->getContainer())
     {
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series = data::Series::dynamicCast(obj);
 
         if(series && std::find(container.begin(), container.end(), series) == container.end())
         {
@@ -125,7 +125,7 @@ void SSeriesDBMerger::updating()
             ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
         }
 
-        for(const ::fwMedData::Series::sptr& series: addedSeries)
+        for(const data::Series::sptr& series: addedSeries)
         {
             std::string description = series->getDescription();
             description = (description.empty()) ? "[No description]" : description;

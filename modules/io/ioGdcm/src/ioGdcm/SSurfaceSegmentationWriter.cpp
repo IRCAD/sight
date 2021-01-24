@@ -24,7 +24,9 @@
 
 #include <core/tools/ProgressToLogger.hpp>
 
+#include <data/DicomSeries.hpp>
 #include <data/location/Folder.hpp>
+#include <data/Series.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
@@ -39,9 +41,6 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <string>
@@ -49,7 +48,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwMedData::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, data::ModelSeries )
 
 //------------------------------------------------------------------------------
 
@@ -144,7 +143,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::csptr model = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(::fwIO::s_DATA_KEY);
 
         if(!model->getDicomReference())
         {
@@ -173,7 +172,7 @@ void SSurfaceSegmentationWriter::updating()
 //------------------------------------------------------------------------------
 
 void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem::path filename,
-                                                          const ::fwMedData::ModelSeries::csptr& model)
+                                                          const data::ModelSeries::csptr& model)
 {
     ::fwGdcmIO::writer::SurfaceSegmentation::sptr writer = ::fwGdcmIO::writer::SurfaceSegmentation::New();
 

@@ -28,8 +28,7 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Material.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
@@ -68,7 +67,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b extrudedMeshes [::fwMedData::ModelSeries]: model series where all extruded meshes are stored.
+ * - \b extrudedMeshes [data::ModelSeries]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines the layer.

@@ -34,7 +34,7 @@
 
 #include <vector>
 
-namespace fwMedData
+namespace sight::data
 {
 class Series;
 }
@@ -68,7 +68,7 @@ public:
 
     fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController )
 
-    typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
+    typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 
     IOPACS_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
     typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;

@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwTest
     data
     fwServices
-    fwMedData
     fwGui
     fwIO
 )

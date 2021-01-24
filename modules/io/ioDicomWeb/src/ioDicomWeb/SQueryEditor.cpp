@@ -22,11 +22,11 @@
 
 #include "ioDicomWeb/SQueryEditor.hpp"
 
+#include <data/DicomSeries.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -163,7 +163,7 @@ void SQueryEditor::queryPatientName()
     try
     {
         // Vector of all Series that will be retrieved.
-        ::fwMedData::SeriesDB::ContainerType allSeries;
+        data::SeriesDB::ContainerType allSeries;
 
         // Find series according to patient's name
         QJsonObject query;
@@ -203,7 +203,7 @@ void SQueryEditor::queryPatientName()
             seriesJson.insert( "NumberOfSeriesRelatedInstances", instanceArray.count() );
 
             // Convert response to DicomSeries
-            ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
+            data::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
 
             allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
             this->updateSeriesDB(allSeries);
@@ -234,7 +234,7 @@ void SQueryEditor::queryStudyDate()
     try
     {
         // Vector of all Series that will be retrieved.
-        ::fwMedData::SeriesDB::ContainerType allSeries;
+        data::SeriesDB::ContainerType allSeries;
 
         // Find Studies according to their StudyDate
         QJsonObject query;
@@ -302,7 +302,7 @@ void SQueryEditor::queryStudyDate()
                 seriesJson.insert( "NumberOfSeriesRelatedInstances", instanceArray.count() );
 
                 // Convert response to DicomSeries
-                ::fwMedData::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
+                data::SeriesDB::ContainerType series = ::fwNetworkIO::helper::Series::toFwMedData(seriesJson);
 
                 allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
                 this->updateSeriesDB(allSeries);
@@ -320,18 +320,18 @@ void SQueryEditor::queryStudyDate()
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
+void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >("seriesDB");
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Delete old series from the SeriesDB
     seriesDBHelper.clear();
 
     // Push new series in the SeriesDB
-    for(const ::fwMedData::Series::sptr& s: series)
+    for(const data::Series::sptr& s: series)
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(s);
+        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
         seriesDBHelper.add(dicomSeries);
     }
 

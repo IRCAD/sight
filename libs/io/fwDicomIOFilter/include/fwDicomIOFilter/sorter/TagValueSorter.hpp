@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/sorter/ISorter.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <dcmtk/dcmdata/dctagkey.h>
 
@@ -40,7 +40,7 @@ namespace sorter
 class FWDICOMIOFILTER_CLASS_API TagValueSorter : public ISorter
 {
 public:
-    fwCoreClassMacro(TagValueSorter, ISorter, ::fwDicomIOFilter::factory::New< TagValueSorter >);
+    fwCoreClassMacro(TagValueSorter, ISorter, ::fwDicomIOFilter::factory::New< TagValueSorter >)
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueSorter(::fwDicomIOFilter::IFilter::Key key);
@@ -50,7 +50,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const override;

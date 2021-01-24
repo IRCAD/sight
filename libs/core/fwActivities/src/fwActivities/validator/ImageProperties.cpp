@@ -26,11 +26,10 @@
 
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Vector.hpp>
 
 #include <fwMath/Compare.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 namespace fwActivities
 {
@@ -65,7 +64,7 @@ IValidator::ValidationType ImageProperties::validate(
         validation.first  = true;
         validation.second = "Input images have the same properties.";
 
-        ::fwMedData::ImageSeries::sptr imgSeries0 = ::fwMedData::ImageSeries::dynamicCast((*currentSelection)[0]);
+        data::ImageSeries::sptr imgSeries0 = data::ImageSeries::dynamicCast((*currentSelection)[0]);
         SLM_ASSERT("Failed to retrieve an image series", imgSeries0);
         data::Image::sptr img0 = imgSeries0->getImage();
         SLM_ASSERT("Failed to retrieve image from image series", img0);
@@ -77,7 +76,7 @@ IValidator::ValidationType ImageProperties::validate(
         data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
-            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(*it);
+            data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(*it);
             SLM_ASSERT("Failed to retrieve an image series", imgSeries);
             data::Image::sptr img = imgSeries->getImage();
             SLM_ASSERT("Failed to retrieve an image data", img);
@@ -125,8 +124,8 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
     {
         for (data::Object::sptr obj : *vector)
         {
-            ::fwMedData::ImageSeries::csptr imgSeries = ::fwMedData::ImageSeries::dynamicConstCast(obj);
-            data::Image::csptr img = data::Image::dynamicConstCast(obj);
+            data::ImageSeries::csptr imgSeries = data::ImageSeries::dynamicConstCast(obj);
+            data::Image::csptr img             = data::Image::dynamicConstCast(obj);
             if (imgSeries)
             {
                 img = imgSeries->getImage();
@@ -169,8 +168,8 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
     {
         for (auto elt : *composite)
         {
-            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(elt.second);
-            data::Image::sptr img = data::Image::dynamicCast(elt.second);
+            data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(elt.second);
+            data::Image::sptr img             = data::Image::dynamicCast(elt.second);
             if (imgSeries)
             {
                 img = imgSeries->getImage();

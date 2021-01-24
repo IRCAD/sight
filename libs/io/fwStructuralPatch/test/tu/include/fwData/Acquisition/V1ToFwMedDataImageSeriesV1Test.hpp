@@ -33,7 +33,7 @@ namespace sight::data
 namespace Acquisition
 {
 /**
- * @brief Test patch to convert data::Acquisition version 1 to ::fwMedData::ImageSeries version 1.
+ * @brief Test patch to convert data::Acquisition version 1 to data::ImageSeries version 1.
  */
 class V1ToFwMedDataImageSeriesV1Test : public CPPUNIT_NS::TestFixture
 {

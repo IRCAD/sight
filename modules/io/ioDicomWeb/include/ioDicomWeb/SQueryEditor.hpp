@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,20 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <filesystem>
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QWidget>
+
+#include <filesystem>
 
 namespace ioDicomWeb
 {
@@ -56,7 +57,7 @@ namespace ioDicomWeb
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB on which the queried data will be pushed.
+ * - \b seriesDB [data::SeriesDB]: SeriesDB on which the queried data will be pushed.
  * @subsection Configuration Configuration:
  * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
@@ -70,7 +71,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor );
+    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor )
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;
@@ -110,7 +111,7 @@ private:
      * @brief Update the seriesDB with the series retrieved from the pacs
      * @param[in] series Series which must be added to the SeriesDB
      */
-    void updateSeriesDB(::fwMedData::SeriesDB::ContainerType series);
+    void updateSeriesDB(data::SeriesDB::ContainerType series);
 
     /// Patient Name Field
     QPointer< QLineEdit > m_patientNameLineEdit;

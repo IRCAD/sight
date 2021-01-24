@@ -49,7 +49,7 @@ namespace thread
 class Timer;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -83,7 +83,7 @@ namespace ioDicom
        </service>
    @endcode
  * @subsection Input Input:
- * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
+ * - \b series [data::DicomSeries]: Dicom Series where to extract the images.
  * @subsection Output Output:
  * - \b image [data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
@@ -175,7 +175,7 @@ private:
     ::fwIO::IReader::wptr m_dicomReader;
 
     /// Temporary SeriesDB
-    SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
+    SPTR(data::SeriesDB) m_tempSeriesDB;
 
     /// Axial slice index
     SPTR(data::Integer) m_axialIndex;

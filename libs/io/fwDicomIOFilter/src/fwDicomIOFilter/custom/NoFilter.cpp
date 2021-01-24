@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwDicomIOFilter/custom/NoFilter.hpp"
+
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/registry/macros.hpp"
 
@@ -36,7 +37,8 @@ const std::string NoFilter::s_FILTER_DESCRIPTION = "No filter.";
 
 //-----------------------------------------------------------------------------
 
-NoFilter::NoFilter(::fwDicomIOFilter::IFilter::Key key) : ICustom()
+NoFilter::NoFilter(::fwDicomIOFilter::IFilter::Key key) :
+    ICustom()
 {
 }
 
@@ -63,7 +65,7 @@ std::string NoFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
 const
 {
     DicomSeriesContainerType result;

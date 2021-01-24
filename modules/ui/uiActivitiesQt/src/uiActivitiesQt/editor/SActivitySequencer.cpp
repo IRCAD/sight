@@ -223,7 +223,7 @@ void SActivitySequencer::stopping()
 
 void SActivitySequencer::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     m_currentActivity = this->parseActivities(seriesDB);
@@ -254,7 +254,7 @@ void SActivitySequencer::goTo(int index)
         SLM_ERROR("no activity to launch at index " << index)
         return;
     }
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     if (m_currentActivity >= 0)
@@ -264,7 +264,7 @@ void SActivitySequencer::goTo(int index)
 
     const size_t newIdx = static_cast<size_t>(index);
 
-    ::fwMedData::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate);
+    data::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
@@ -290,7 +290,7 @@ void SActivitySequencer::goTo(int index)
 
 void SActivitySequencer::checkNext()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     // Store current activity data before checking the next one,
@@ -303,7 +303,7 @@ void SActivitySequencer::checkNext()
     const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
     if (nextIdx < m_activityIds.size())
     {
-        ::fwMedData::ActivitySeries::sptr nextActivity = this->getActivity(seriesDB, nextIdx, m_slotUpdate);
+        data::ActivitySeries::sptr nextActivity = this->getActivity(seriesDB, nextIdx, m_slotUpdate);
 
         bool ok = true;
         std::string errorMsg;
@@ -355,8 +355,8 @@ void SActivitySequencer::enableActivity(int index)
 ::fwServices::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

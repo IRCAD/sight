@@ -10,6 +10,6 @@ set( REQUIREMENTS
     uiIO
     uiMedDataQt
         media
-        fwMedData
+        data
         filterUnknownSeries
     )

@@ -5,7 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwMedData
     fwGui
     fwGuiQt
     )

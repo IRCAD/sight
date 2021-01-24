@@ -7,7 +7,6 @@ set( DEPENDENCIES
     core
     data
     fwServices
-    fwMedData
     arMDSemanticPatch
 )
 set( REQUIREMENTS data servicesReg ioAtoms patchMedicalData arPatchMedicalData)

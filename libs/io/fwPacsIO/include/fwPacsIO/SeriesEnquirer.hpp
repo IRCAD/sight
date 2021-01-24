@@ -52,7 +52,7 @@ namespace fwPacsIO
             "ORTHANC";
         seriesEnquirer->connect();
         OFList< QRResponse* > responses = seriesEnquire->findSeriesByModality("CT");
-        ::fwMedData::SeriesDB::ContainerType series = ::fwPacsIO::helper::Series::toFwMedData(responses);
+        data::SeriesDB::ContainerType series = ::fwPacsIO::helper::Series::toFwMedData(responses);
         ::fwPacsIO::helper::Series::releaseResponses(responses);
     }
     catch(::fwPacsIO::exceptions::Base& _e)

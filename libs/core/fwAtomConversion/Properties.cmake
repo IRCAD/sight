@@ -6,6 +6,6 @@ set( DEPENDENCIES
     fwAtoms
     core
     data
-    fwMedData    
+       
 )
 set( REQUIREMENTS  )

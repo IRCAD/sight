@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/DicomSeries/V2ToV1Test.hpp"
+#include "data/DicomSeries/V2ToV1Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/DicomSeries/V2ToV1.hpp>
+#include <fwStructuralPatch/data/DicomSeries/V2ToV1.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::DicomSeries::V2ToV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::DicomSeries::V2ToV1Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace DicomSeries
 {
@@ -63,7 +63,7 @@ void V2ToV1Test::applyPatchTest()
     ::fwAtoms::Object::sptr dicomSeriesV2 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr dicomSeriesV1;
 
-    ::fwAtomsPatch::helper::setClassname(dicomSeriesV2, "::fwMedData::DicomSeries");
+    ::fwAtomsPatch::helper::setClassname(dicomSeriesV2, "data::DicomSeries");
     ::fwAtomsPatch::helper::setVersion(dicomSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(dicomSeriesV2);
@@ -103,8 +103,8 @@ void V2ToV1Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[dicomSeriesV2] = dicomSeriesV1;
 
-        ::fwStructuralPatch::fwMedData::DicomSeries::V2ToV1::sptr v2ToV1Patch;
-        v2ToV1Patch = ::fwStructuralPatch::fwMedData::DicomSeries::V2ToV1::New();
+        ::fwStructuralPatchdata::DicomSeries::V2ToV1::sptr v2ToV1Patch;
+        v2ToV1Patch = ::fwStructuralPatchdata::DicomSeries::V2ToV1::New();
         CPPUNIT_ASSERT_NO_THROW(v2ToV1Patch->apply(dicomSeriesV2, dicomSeriesV1, newVersions));
 
         CPPUNIT_ASSERT(dicomSeriesV1);
@@ -128,6 +128,6 @@ void V2ToV1Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace DicomSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

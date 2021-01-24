@@ -30,14 +30,14 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
+#include <data/ActivitySeries.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 
@@ -72,9 +72,9 @@ namespace editor
  * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): this slot allows to create a tab with the given activity
+ * - \b launchActivity( data::ActivitySeries::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): this slot allows to create a tab with the given activity
+ * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
  * - \b createTab( ::fwActivities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
@@ -173,7 +173,7 @@ private:
         std::string tabID;
         std::string viewConfigID;
         ReplaceMapType replaceMap;
-        ::fwMedData::ActivitySeries::sptr activitySeries;
+        data::ActivitySeries::sptr activitySeries;
     };
 
     typedef std::map< QWidget*, SDynamicViewInfo > SDynamicViewInfoMapType;
@@ -187,7 +187,7 @@ private:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity series cannot be launched in two different tabs.
      */
-    virtual void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) override;
+    virtual void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
     void createTab(::fwActivities::registry::ActivityMsg info);
@@ -196,7 +196,7 @@ private:
     virtual void buildMainActivity();
 
     /// Create view info from activitySeries
-    SDynamicViewInfo createViewInfo(::fwMedData::ActivitySeries::sptr activitySeries);
+    SDynamicViewInfo createViewInfo(data::ActivitySeries::sptr activitySeries);
 
     /**
      * @brief Close the tab at the given index.

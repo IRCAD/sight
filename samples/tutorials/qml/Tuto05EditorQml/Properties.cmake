@@ -5,7 +5,6 @@ set( START ON)
 set( DEPENDENCIES
     data
     fwServices
-    fwMedData
     fwQml
 )
 set( REQUIREMENTS

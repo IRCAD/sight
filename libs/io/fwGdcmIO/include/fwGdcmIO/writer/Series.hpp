@@ -28,11 +28,10 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -44,14 +43,14 @@ namespace writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
+class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< data::Series >,
                                   public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                                   public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(Series, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
+    fwCoreClassMacro(Series, ::fwDataIO::writer::GenericObjectWriter< data::Series >,
                      ::fwDataIO::writer::factory::New< Series >);
 
     typedef enum
@@ -102,7 +101,7 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    bool hasDocumentSR(const ::fwMedData::ImageSeries::csptr& series) const;
+    bool hasDocumentSR(const data::ImageSeries::csptr& series) const;
 
     /**
      * @brief Returns the image instance used to create the reconstruction

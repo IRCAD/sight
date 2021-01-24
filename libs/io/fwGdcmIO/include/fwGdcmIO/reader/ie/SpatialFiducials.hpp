@@ -50,7 +50,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SpatialFiducials(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API SpatialFiducials(const CSPTR(data::DicomSeries)& dicomSeries,
                                   const SPTR(::gdcm::Reader)& reader,
                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                   const data::Image::sptr& series,

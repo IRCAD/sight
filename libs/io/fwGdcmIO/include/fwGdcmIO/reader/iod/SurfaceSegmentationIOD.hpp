@@ -31,7 +31,7 @@ namespace sight::data
 class Reconstruction;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class ModelSeries;
 }
@@ -59,7 +59,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+    FWGDCMIO_API SurfaceSegmentationIOD(const data::DicomSeries::csptr& dicomSeries,
                                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                         const ::fwLog::Logger::sptr& logger = nullptr,
                                         ProgressCallback progress           = nullptr,
@@ -73,7 +73,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
+    FWGDCMIO_API void read(data::Series::sptr series);
 
 };
 

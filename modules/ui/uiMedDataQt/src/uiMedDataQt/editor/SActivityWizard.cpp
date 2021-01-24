@@ -34,17 +34,16 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
+#include <data/Equipment.hpp>
+#include <data/Patient.hpp>
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 
 #include <fwActivities/IValidator.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -75,7 +74,7 @@ static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -227,7 +226,7 @@ void SActivityWizard::stopping()
 
 void SActivityWizard::updating()
 {
-    auto as = this->getInOut< ::fwMedData::ActivitySeries>("activitySeries");
+    auto as = this->getInOut< data::ActivitySeries>("activitySeries");
     if (as)
     {
         this->updateActivity(as);
@@ -251,7 +250,7 @@ void SActivityWizard::createActivity(std::string activityID)
         module->start();
     }
 
-    m_actSeries = ::fwMedData::ActivitySeries::New();
+    m_actSeries = data::ActivitySeries::New();
 
     m_actSeries->setModality("OT");
     m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
@@ -297,7 +296,7 @@ void SActivityWizard::createActivity(std::string activityID)
             (*data)[req.name] = data::factory::New(req.type);
         }
 
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
         SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
         ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
@@ -309,7 +308,7 @@ void SActivityWizard::createActivity(std::string activityID)
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activitySeries)
+void SActivityWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
 {
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
@@ -360,9 +359,9 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::updateActivitySeries(::fwMedData::Series::sptr series)
+void SActivityWizard::updateActivitySeries(data::Series::sptr series)
 {
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
         this->updateActivity(activitySeries);
@@ -461,10 +460,10 @@ void SActivityWizard::onBuildActivity()
                 data::Composite::sptr data = m_actSeries->getData();
 
                 // Copy the patient/study information of a series
-                ::fwMedData::Series::sptr series;
+                data::Series::sptr series;
                 for(const auto& elt : (*data) )
                 {
-                    series = ::fwMedData::Series::dynamicCast(elt.second);
+                    series = data::Series::dynamicCast(elt.second);
                     if(series)
                     {
                         m_actSeries->setPatient( data::Object::copy(series->getPatient()) );
@@ -490,7 +489,7 @@ void SActivityWizard::onBuildActivity()
                         return;
                     }
                     m_actSeries->setDescription(description);
-                    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+                    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
                     SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
                     ::fwMedDataTools::helper::SeriesDB helper(seriesDB);

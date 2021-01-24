@@ -7,7 +7,6 @@ set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
     data
-    fwMedData
     gui
     guiQt
     ctrlCamp

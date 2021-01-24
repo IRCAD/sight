@@ -24,9 +24,8 @@
 
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 fwServicesRegisterMacro( ::fwServices::ut::TestConfigService, ::fwServices::ut::TestServiceImplementationImage,
                          data::Image );

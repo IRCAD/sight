@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/creator/fwMedData/Series1.hpp"
+#include "fwStructuralPatch/creator/data/Series1.hpp"
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,12 +33,12 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 Series1::Series1()
 {
-    m_classname = "::fwMedData::Series";
+    m_classname = "data::Series";
     m_version   = "1";
 }
 
@@ -63,9 +63,9 @@ Series1::Series1( const Series1& cpy ) :
     ::fwAtomsPatch::helper::Object helper(series);
 
     ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
-    helper.addAttribute("patient", creators->create( "::fwMedData::Patient", "1") );
-    helper.addAttribute("study", creators->create( "::fwMedData::Study", "1") );
-    helper.addAttribute("equipment", creators->create( "::fwMedData::Equipment", "1") );
+    helper.addAttribute("patient", creators->create( "data::Patient", "1") );
+    helper.addAttribute("study", creators->create( "data::Study", "1") );
+    helper.addAttribute("equipment", creators->create( "data::Equipment", "1") );
 
     helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
     helper.addAttribute("modality", ::fwAtoms::String::New(""));
@@ -77,6 +77,6 @@ Series1::Series1( const Series1& cpy ) :
     return series;
 }
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 class Patient;
@@ -51,7 +51,7 @@ namespace ioDcmtk
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::SeriesDB]: dicom seriesDB to read.
+ * - \b data [data::SeriesDB]: dicom seriesDB to read.
  */
 class IODCMTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
@@ -131,7 +131,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
+    SPTR(data::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterSelectorSrvConfig;

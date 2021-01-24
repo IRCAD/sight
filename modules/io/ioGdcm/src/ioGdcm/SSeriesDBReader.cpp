@@ -27,6 +27,7 @@
 
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
@@ -45,8 +46,6 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
@@ -56,7 +55,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -230,10 +229,10 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
+data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
 {
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
-    ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr dummy = data::SeriesDB::New();
     reader->setObject(dummy);
     reader->setFolder(dicomDir);
     reader->setDicomFilterType(m_filterType);
@@ -329,12 +328,12 @@ void SSeriesDBReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ::fwMedData::SeriesDB::sptr localSeriesDB = this->createSeriesDB(this->getFolder());
+        data::SeriesDB::sptr localSeriesDB = this->createSeriesDB(this->getFolder());
 
         if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
 
             // Clear SeriesDB and add new series
             ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
@@ -347,12 +346,12 @@ void SSeriesDBReader::updating()
                 seriesDB->shallowCopy(localSeriesDB);
             }
 
-            ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+            data::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
 
             m_readFailed = false;
 
-            auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            auto sig = seriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
+                data::SeriesDB::s_ADDED_SERIES_SIG);
             sig->asyncEmit(addedSeries);
         }
         else

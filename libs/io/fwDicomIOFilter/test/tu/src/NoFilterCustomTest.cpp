@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ void NoFilterCustomTest::tearDown()
 
 void NoFilterCustomTest::simpleApplication()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SEG";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -74,13 +74,13 @@ void NoFilterCustomTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeriesA = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
-    ::fwMedData::DicomSeries::sptr dicomSeriesB = ::fwMedData::DicomSeries::New();
+    data::DicomSeries::sptr dicomSeriesA = data::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeriesB = data::DicomSeries::New();
     dicomSeriesB->deepCopy(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesB);
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainerA;
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainerB;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainerA;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainerB;
     dicomSeriesContainerA.push_back(dicomSeriesA);
     dicomSeriesContainerB.push_back(dicomSeriesB);
 

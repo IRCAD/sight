@@ -25,8 +25,7 @@
 #include "uiMedDataQt/config.hpp"
 
 #include <data/factory/new.hpp>
-
-#include <fwMedData/Series.hpp>
+#include <data/Series.hpp>
 
 namespace uiMedDataQt
 {
@@ -36,7 +35,7 @@ namespace uiMedDataQt
  * series
  * DB.
  */
-class UIMEDDATAQT_CLASS_API InsertSeries : public ::fwMedData::Series
+class UIMEDDATAQT_CLASS_API InsertSeries : public data::Series
 {
 
 public:

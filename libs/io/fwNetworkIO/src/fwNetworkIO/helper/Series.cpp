@@ -24,12 +24,12 @@
 
 #include <core/spyLog.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -45,10 +45,10 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     DicomSeriesContainer seriesContainer;
 
     // Create series
-    ::fwMedData::DicomSeries::sptr series  = ::fwMedData::DicomSeries::New();
-    ::fwMedData::Patient::sptr patient     = ::fwMedData::Patient::New();
-    ::fwMedData::Study::sptr study         = ::fwMedData::Study::New();
-    ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
+    data::DicomSeries::sptr series  = data::DicomSeries::New();
+    data::Patient::sptr patient     = data::Patient::New();
+    data::Study::sptr study         = data::Study::New();
+    data::Equipment::sptr equipment = data::Equipment::New();
 
     // Set informations to series
     series->setPatient(patient);
@@ -104,7 +104,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    for(const ::fwMedData::Series::sptr& s: series )
+    for(const data::Series::sptr& s: series )
     {
         result.push_back(s->getInstanceUID());
     }

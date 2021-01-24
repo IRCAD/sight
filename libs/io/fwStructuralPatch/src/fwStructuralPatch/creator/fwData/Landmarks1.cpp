@@ -68,6 +68,6 @@ Landmarks1::Landmarks1( const Landmarks1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

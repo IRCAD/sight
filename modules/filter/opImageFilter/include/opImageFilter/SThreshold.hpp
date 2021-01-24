@@ -47,10 +47,10 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input:
- * - \b source [data::Object]: Source image, can be a ::fwMedData::ImageSeries or a data::Image.
+ * - \b source [data::Object]: Source image, can be a data::ImageSeries or a data::Image.
  * @subsection Output Output:
  * - \b target [data::Object]: Target image (ie the filtered image),
- * if the type of the source is a ::fwMedData::ImageSeries then target will be a ::fwMedData::ImageSeries,
+ * if the type of the source is a data::ImageSeries then target will be a data::ImageSeries,
  * otherwise it will be an simple data::Image.
  * @subsection Configuration Configuration
  * - \b threshold : Specify the desired threshold used in filter

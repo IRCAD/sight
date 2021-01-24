@@ -26,9 +26,9 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwActivities/IActivitySequencer.hpp>
+#include <data/ActivitySeries.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <fwActivities/IActivitySequencer.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -47,7 +47,7 @@ namespace activities
  * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
  *
  * @section Signal Signal
- * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
+ * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
  * - \b enabledNext(bool): This signal is emitted when the next button is enabled (when the activity is not the last
@@ -77,7 +77,7 @@ namespace activities
  *   data that would normally be passed from an activity to the next.
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
  *
  * @subsection Configuration Configuration
  * - \b activity : id of the activities to launch. The first activity in the list is the first that will be launched.
@@ -105,8 +105,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr) > DataRequiredSignalType;
     typedef core::com::Signal<void (bool) > EnabledPreviousSignalType;
     typedef core::com::Signal<void (bool) > EnabledNextSignalType;
     /**
@@ -148,7 +148,7 @@ private:
     void sendInfo() const;
 
     /// Check if the activity can be launch. If showDialog = true, display the reason
-    bool checkValidity(const ::fwMedData::ActivitySeries::csptr& activity, bool showDialog = true) const;
+    bool checkValidity(const data::ActivitySeries::csptr& activity, bool showDialog = true) const;
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ void AcquisitionNumberSplitterTest::tearDown()
 
 void AcquisitionNumberSplitterTest::simpleApplication()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -74,9 +74,9 @@ void AcquisitionNumberSplitterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
@@ -85,8 +85,8 @@ void AcquisitionNumberSplitterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     ::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());
-    ::fwMedData::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
-    ::fwMedData::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
+    data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
+    data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check number of instances in series
     CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getDicomContainer().size());

@@ -30,9 +30,8 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -43,7 +42,7 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -107,9 +106,9 @@ void SSeriesSignal::configuring()
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
+void SSeriesSignal::reportSeries(data::SeriesDB::ContainerType addedSeries)
 {
-    for(const ::fwMedData::Series::sptr& series : addedSeries)
+    for(const data::Series::sptr& series : addedSeries)
     {
         const bool isIncludeMode = m_filterMode == "include";
 
@@ -131,7 +130,7 @@ void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSerie
 
 void SSeriesSignal::updating()
 {
-    const ::fwMedData::SeriesDB::csptr seriesDB = this->getInput< ::fwMedData::SeriesDB >(s_SERIES_DB_INPUT);
+    const data::SeriesDB::csptr seriesDB = this->getInput< data::SeriesDB >(s_SERIES_DB_INPUT);
     SLM_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
     data::mt::ObjectReadLock lock(seriesDB);
 
@@ -143,8 +142,8 @@ void SSeriesSignal::updating()
 ::fwServices::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INPUT,  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);
-    connections.push(s_SERIES_DB_INPUT,  ::fwMedData::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES_DB_INPUT,  data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INPUT,  data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

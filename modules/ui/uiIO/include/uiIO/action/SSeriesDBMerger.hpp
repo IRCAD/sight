@@ -27,9 +27,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 namespace fwJobs
 {
@@ -75,7 +75,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: the SeriesDB to merge.
+ * - \b seriesDB [data::SeriesDB]: the SeriesDB to merge.
  */
 class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {

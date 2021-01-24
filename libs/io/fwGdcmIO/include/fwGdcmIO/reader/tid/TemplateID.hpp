@@ -54,7 +54,7 @@ public:
      * @param[in] object Sight data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API TemplateID(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API TemplateID(const CSPTR(data::DicomSeries)& dicomSeries,
                             const SPTR(::gdcm::Reader)& reader,
                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                             const SPTR(DATATYPE)& object,
@@ -66,7 +66,7 @@ public:
 protected:
 
     /// Dicom Series
-    CSPTR(::fwMedData::DicomSeries) m_dicomSeries;
+    CSPTR(data::DicomSeries) m_dicomSeries;
 
     /// GDCM Reader
     SPTR(::gdcm::Reader) m_reader;
@@ -84,7 +84,7 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-TemplateID<DATATYPE>::TemplateID(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+TemplateID<DATATYPE>::TemplateID(const CSPTR(data::DicomSeries)& dicomSeries,
                                  const SPTR(::gdcm::Reader)& reader,
                                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                  const SPTR(DATATYPE)& object,

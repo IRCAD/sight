@@ -37,7 +37,7 @@ namespace fwJobs
 class IJob;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -102,7 +102,7 @@ namespace ioGdcm
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::SeriesDB]: object to read
+ * - \b data [data::SeriesDB]: object to read
  * @subsection Configuration Configuration:
  * - \b filterType: Define a filter that must be applied prior to the reading process.
  * - \b enableBufferRotation (optional, default set to yes): Enable buffer rotation
@@ -182,7 +182,7 @@ private:
      * @brief Create a seriesDB and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
+    SPTR(data::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterConfig;

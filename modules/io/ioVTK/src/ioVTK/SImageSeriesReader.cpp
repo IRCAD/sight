@@ -30,9 +30,13 @@
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -45,11 +49,6 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/BitmapImageReader.hpp>
@@ -61,7 +60,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::fwMedData::ImageSeries )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -158,7 +157,7 @@ void SImageSeriesReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void initSeries(::fwMedData::Series::sptr series)
+void initSeries(data::Series::sptr series)
 {
     const std::string instanceUID        = core::tools::UUID::generateUUID();
     const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
@@ -169,7 +168,7 @@ void initSeries(::fwMedData::Series::sptr series)
     series->setDate(date);
     series->setTime(time);
     series->setDescription("Image imported with VTK");
-    ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
+    data::DicomValuesType physicians = series->getPerformingPhysiciansName();
     if(physicians.empty())
     {
         const std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
@@ -188,7 +187,7 @@ void SImageSeriesReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
 
         ::fwGui::Cursor cursor;
@@ -217,7 +216,7 @@ void SImageSeriesReader::updating()
 
 void SImageSeriesReader::notificationOfDBUpdate()
 {
-    ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("imageSeries not instanced", imageSeries);
 
     auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);

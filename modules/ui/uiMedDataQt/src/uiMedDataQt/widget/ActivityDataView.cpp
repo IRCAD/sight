@@ -27,10 +27,15 @@
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
 #include <data/Float.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
+#include <data/Patient.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
+#include <data/Study.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
@@ -39,12 +44,6 @@
 #include <fwActivities/IValidator.hpp>
 
 #include <fwIO/ioTypes.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Add.hpp>
@@ -293,7 +292,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         // If the type is a Series, we add a button to import the data from a SeriesDB,
         // we also improve the tree header by adding more informations.
         data::Object::sptr newObject = data::factory::New(req.type);
-        if (newObject && ::fwMedData::Series::dynamicCast(newObject))
+        if (newObject && data::Series::dynamicCast(newObject))
         {
             QPushButton* const buttonAddFromSDB = new QPushButton("Import");
             buttonLayout->addWidget(buttonAddFromSDB);
@@ -308,7 +307,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
                     << "Study description" << "Date" << "Time"
                     << "Patient age";
 
-            if(::fwMedData::ImageSeries::dynamicCast(newObject))
+            if(data::ImageSeries::dynamicCast(newObject))
             {
                 headers << "Body part examined" << "Patient position" << "Contrast agent" << "Acquisition time" <<
                     "Contrast/bolus time";
@@ -349,7 +348,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& _activitySeries)
+void ActivityDataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries)
 {
     namespace ActReg = ::fwActivities::registry;
     ::fwActivities::registry::ActivityInfo info;
@@ -560,7 +559,7 @@ data::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _erro
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sptr& actSeries, std::string& errorMsg)
+bool ActivityDataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, std::string& errorMsg)
 {
     namespace ActReg = ::fwActivities::registry;
 
@@ -720,15 +719,15 @@ void ActivityDataView::importObjectFromSDB()
     data::Object::sptr newObject = data::factory::New(type);
     if (newObject)
     {
-        SLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
+        SLM_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
-        auto obj      = this->readObject("::fwMedData::SeriesDB", m_sdbIoSelectorSrvConfig);
-        auto seriesDB = ::fwMedData::SeriesDB::dynamicCast(obj);
+        auto obj      = this->readObject("data::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto seriesDB = data::SeriesDB::dynamicCast(obj);
         if (seriesDB)
         {
             unsigned int nbImportedObj = 0;
-            for (const ::fwMedData::Series::sptr& series : *seriesDB)
+            for (const data::Series::sptr& series : *seriesDB)
             {
                 if (series->isA(type))
                 {
@@ -807,7 +806,7 @@ void ActivityDataView::addObjectItem(size_t _index, const data::Object::csptr& _
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
     newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
-    const ::fwMedData::Series::csptr series       = ::fwMedData::Series::dynamicCast(_obj);
+    const data::Series::csptr series              = data::Series::dynamicCast(_obj);
     const data::String::csptr strObj              = data::String::dynamicCast(_obj);
     const data::Integer::csptr intObj             = data::Integer::dynamicCast(_obj);
     const data::Float::csptr floatObj             = data::Float::dynamicCast(_obj);
@@ -857,7 +856,7 @@ void ActivityDataView::addObjectItem(size_t _index, const data::Object::csptr& _
         }
         newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
 
-        const ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(_obj);
+        const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(_obj);
         if(imageSeries)
         {
             newItem->setText(int(ColumnImageSeriesType::BODY_PART_EXAMINED),

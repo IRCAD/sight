@@ -14,7 +14,6 @@ set( REQUIREMENTS
     uiImageQt
     scene2D
     data
-    fwMedData
     uiTF
     uiMedDataQt
     media

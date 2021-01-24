@@ -28,9 +28,8 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 namespace sight::data
 {
@@ -64,7 +63,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Document(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Document(const CSPTR(data::DicomSeries)& dicomSeries,
                           const SPTR(::gdcm::Reader)& reader,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                           const data::Image::sptr& image,

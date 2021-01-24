@@ -30,9 +30,8 @@
 #include <core/macros.hpp>
 
 #include <data/Object.hpp>
+#include <data/Series.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwMedData/Series.hpp>
 
 #include <map>
 #include <vector>
@@ -45,7 +44,7 @@ namespace arData
  * @brief  This class contains the information about cameras (container of camera and extrinsec matrix).
  */
 
-class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
+class ARDATA_CLASS_API CameraSeries : public data::Series
 {
 public:
     fwCoreClassMacro(CameraSeries, data::Object, data::factory::New< CameraSeries >)

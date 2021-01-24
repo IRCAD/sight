@@ -34,7 +34,7 @@ namespace fwJobs
 class IJob;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
@@ -57,7 +57,7 @@ namespace ioGdcm
  * @endcode
  *
  * @subsection Input Input
- * - \b data [::fwMedData::DicomSeries]: data to save in Dicom.
+ * - \b data [data::DicomSeries]: data to save in Dicom.
  */
 class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 {
@@ -107,7 +107,7 @@ protected:
 private:
     /// Save the selected Dicom series
     void saveDicomSeries( const std::filesystem::path folder,
-                          const CSPTR(::fwMedData::DicomSeries)& series ) const;
+                          const CSPTR(data::DicomSeries)& series ) const;
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;

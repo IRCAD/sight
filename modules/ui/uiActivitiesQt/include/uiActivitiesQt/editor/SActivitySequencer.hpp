@@ -50,7 +50,7 @@ namespace editor
  * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
  *
  * @section Signal Signal
- * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
+ * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
  * - \b enabledNext(bool): This signal is emitted when the next button is enabled (when the activity is not the last
@@ -87,7 +87,7 @@ namespace editor
  *   data that would normally be passed from an activity to the next.
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
  *
  * @subsection Configuration Configuration
  * - \b activity :
@@ -124,8 +124,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr) > DataRequiredSignalType;
     typedef core::com::Signal<void (bool) > EnabledPreviousSignalType;
     typedef core::com::Signal<void (bool) > EnabledNextSignalType;
     /**

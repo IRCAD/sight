@@ -14,7 +14,6 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    fwMedData
     servicesReg             # fwService
 
     # UI declaration/Actions

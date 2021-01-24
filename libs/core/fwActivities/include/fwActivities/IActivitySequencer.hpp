@@ -27,8 +27,7 @@
 
 #include <data/Composite.hpp>
 #include <data/Object.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 namespace fwActivities
 {
@@ -58,10 +57,10 @@ protected:
      *
      * @warning This method remove the series that are not in the list of activity to launch
      */
-    FWACTIVITIES_API int parseActivities(const ::fwMedData::SeriesDB::sptr& seriesDB);
+    FWACTIVITIES_API int parseActivities(const data::SeriesDB::sptr& seriesDB);
 
     /// Store the data of the activity at the given index
-    FWACTIVITIES_API void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
+    FWACTIVITIES_API void storeActivityData(const data::SeriesDB::sptr& seriesDB, int index,
                                             const data::Composite::csptr& overrides = nullptr);
 
     /**
@@ -76,10 +75,10 @@ protected:
      * the seriesDB
      * @param overrides Composite that contains data to override the previouly stored data (from the other activities)
      */
-    FWACTIVITIES_API ::fwMedData::ActivitySeries::sptr getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
-                                                                   size_t index,
-                                                                   const core::com::SlotBase::sptr& slot   = nullptr,
-                                                                   const data::Composite::csptr& overrides = nullptr);
+    FWACTIVITIES_API data::ActivitySeries::sptr getActivity(const data::SeriesDB::sptr& seriesDB,
+                                                            size_t index,
+                                                            const core::com::SlotBase::sptr& slot   = nullptr,
+                                                            const data::Composite::csptr& overrides = nullptr);
 
     /// List of the activity to create.
     ActivitesType m_activityIds;

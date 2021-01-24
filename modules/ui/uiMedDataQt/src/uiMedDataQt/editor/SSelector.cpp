@@ -33,14 +33,14 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -56,7 +56,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -251,10 +251,10 @@ void SSelector::starting()
     layout->addWidget(m_selectorWidget);
     qtContainer->setLayout(layout);
 
-    QObject::connect(m_selectorWidget, SIGNAL(selectSeries(QVector< ::fwMedData::Series::sptr >,
-                                                           QVector< ::fwMedData::Series::sptr >)),
-                     this, SLOT(onSelectedSeries(QVector< ::fwMedData::Series::sptr >,
-                                                 QVector< ::fwMedData::Series::sptr >)));
+    QObject::connect(m_selectorWidget, SIGNAL(selectSeries(QVector< data::Series::sptr >,
+                                                           QVector< data::Series::sptr >)),
+                     this, SLOT(onSelectedSeries(QVector< data::Series::sptr >,
+                                                 QVector< data::Series::sptr >)));
 
     if(!m_insertMode)
     {
@@ -264,8 +264,8 @@ void SSelector::starting()
 
     if(m_allowedRemove)
     {
-        QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
-                         this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
+        QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< data::Series::sptr >)),
+                         this, SLOT(onRemoveSeries(QVector< data::Series::sptr >)));
     }
 
     this->updating();
@@ -276,8 +276,8 @@ void SSelector::starting()
 ::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);
-    connections.push(s_SERIES_DB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
 
     return connections;
 }
@@ -286,11 +286,11 @@ void SSelector::starting()
 
 void SSelector::updating()
 {
-    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
 
     m_selectorWidget->clear();
 
-    for(::fwMedData::Series::sptr series : seriesDB->getContainer())
+    for(data::Series::sptr series : seriesDB->getContainer())
     {
         m_selectorWidget->addSeries(series);
     }
@@ -305,18 +305,18 @@ void SSelector::stopping()
 
 //------------------------------------------------------------------------------
 
-void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
-                                 QVector< ::fwMedData::Series::sptr > _deselection)
+void SSelector::onSelectedSeries(QVector< data::Series::sptr > _selection,
+                                 QVector< data::Series::sptr > _deselection)
 {
     const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
     ::fwDataTools::helper::Vector vectorHelper(selectionVector.get_shared());
 
-    for( ::fwMedData::Series::sptr series :  _deselection)
+    for( data::Series::sptr series :  _deselection)
     {
         vectorHelper.remove(series);
     }
 
-    for( ::fwMedData::Series::sptr series :  _selection)
+    for( data::Series::sptr series :  _selection)
     {
         vectorHelper.add(series);
     }
@@ -336,9 +336,9 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
-        data::Object::sptr obj = selectionVector->front();
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-        SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
+        data::Object::sptr obj    = selectionVector->front();
+        data::Series::sptr series = data::Series::dynamicCast(obj);
+        SLM_ASSERT("Object must be a 'data::Series'", series);
 
         m_sigSeriesDoubleClicked->asyncEmit(series);
     }
@@ -346,23 +346,23 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 //------------------------------------------------------------------------------
 
-void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
+void SSelector::onRemoveSeries(QVector< data::Series::sptr > _selection)
 {
-    const auto seriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Remove duplicated series
-    std::set< ::fwMedData::Series::sptr > seriesSet;
+    std::set< data::Series::sptr > seriesSet;
     std::copy(_selection.begin(), _selection.end(), std::inserter(seriesSet, seriesSet.begin()));
 
-    for( ::fwMedData::Series::sptr series :  seriesSet)
+    for( data::Series::sptr series :  seriesSet)
     {
         seriesDBHelper.remove(series);
     }
 
     {
-        auto sig = seriesDB->signal< ::fwMedData::SeriesDB::RemovedSeriesSignalType >(
-            ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG );
+        auto sig = seriesDB->signal< data::SeriesDB::RemovedSeriesSignalType >(
+            data::SeriesDB::s_REMOVED_SERIES_SIG );
         core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
         seriesDBHelper.notify();
     }
@@ -370,9 +370,9 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > _selection)
 
 //------------------------------------------------------------------------------
 
-void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType _addedSeries)
+void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
 {
-    for(::fwMedData::Series::sptr series : _addedSeries)
+    for(data::Series::sptr series : _addedSeries)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -380,9 +380,9 @@ void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType _addedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType _removedSeries)
+void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 {
-    for(::fwMedData::Series::sptr series : _removedSeries)
+    for(data::Series::sptr series : _removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }

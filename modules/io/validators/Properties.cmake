@@ -7,6 +7,5 @@ set( DEPENDENCIES
     data
     fwActivities
     arData
-    fwMedData
 )
 set( REQUIREMENTS )

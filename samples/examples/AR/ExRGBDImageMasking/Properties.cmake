@@ -13,7 +13,6 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    fwMedData
     servicesReg             # fwService
     arData
 

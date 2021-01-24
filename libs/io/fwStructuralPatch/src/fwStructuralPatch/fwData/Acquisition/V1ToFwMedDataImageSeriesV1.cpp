@@ -50,7 +50,7 @@ V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
     m_originClassname = "data::Acquisition";
-    m_targetClassname = "::fwMedData::ImageSeries";
+    m_targetClassname = "data::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 
@@ -119,13 +119,13 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
     ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
     // Create Patient
-    helper.addAttribute("patient", creators->create( "::fwMedData::Patient", "1") );
+    helper.addAttribute("patient", creators->create( "data::Patient", "1") );
 
     // Create Equipment
-    helper.addAttribute("equipment", creators->create( "::fwMedData::Equipment", "1") );
+    helper.addAttribute("equipment", creators->create( "data::Equipment", "1") );
 
     // Create Study
-    helper.addAttribute("study", creators->create( "::fwMedData::Study", "1") );
+    helper.addAttribute("study", creators->create( "data::Study", "1") );
 
     // Create performing_physicians_name
     helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());

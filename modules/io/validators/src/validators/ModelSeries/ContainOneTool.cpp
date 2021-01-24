@@ -23,12 +23,11 @@
 #include "validators/ModelSeries/ContainOneTool.hpp"
 
 #include <data/Composite.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
 #include <fwActivities/validator/registry/macros.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 namespace validators
 {
@@ -61,9 +60,9 @@ ContainOneTool::~ContainOneTool()
     validation.first  = true;
     validation.second = "";
 
-    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicConstCast(currentData);
-    data::Vector::csptr vector       = data::Vector::dynamicConstCast(currentData);
-    data::Composite::csptr composite = data::Composite::dynamicConstCast(currentData);
+    data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicConstCast(currentData);
+    data::Vector::csptr vector           = data::Vector::dynamicConstCast(currentData);
+    data::Composite::csptr composite     = data::Composite::dynamicConstCast(currentData);
 
     if (modelSeries)
     {
@@ -90,7 +89,7 @@ ContainOneTool::~ContainOneTool()
     {
         for (auto obj : *vector)
         {
-            ::fwMedData::ModelSeries::sptr model = ::fwMedData::ModelSeries::dynamicCast(obj);
+            data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(obj);
             if (!model)
             {
                 validation.first  = false;
@@ -124,7 +123,7 @@ ContainOneTool::~ContainOneTool()
     {
         for (auto elt : *composite)
         {
-            ::fwMedData::ModelSeries::sptr model = ::fwMedData::ModelSeries::dynamicCast(elt.second);
+            data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(elt.second);
             if (!model)
             {
                 validation.first  = false;

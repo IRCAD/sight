@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 
 #include <arData/CameraSeries.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <data/ActivitySeries.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <fwServices/helper/ConfigLauncher.hpp>
 
@@ -71,7 +71,7 @@ namespace uiCalibration
  *
  * @subsection In-Out In-Out:
  * - \b cameraSeries [::arData::CameraSeries] : stores camera calibrations.
- * - \b activitySeries [::fwMedData::ActivitySeries]: stores the information used to generate the calibration.
+ * - \b activitySeries [data::ActivitySeries]: stores the information used to generate the calibration.
  *        It allows to re-open the activity with this information.
  *
  * @subsection Configuration Configuration:
@@ -86,7 +86,7 @@ class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SCameraConfigLauncher, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCameraConfigLauncher, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;
@@ -136,7 +136,7 @@ private:
     ::fwServices::helper::ConfigLauncher m_extrinsicLauncher;
 
     ::arData::CameraSeries::sptr m_cameraSeries;
-    ::fwMedData::ActivitySeries::sptr m_activitySeries;
+    data::ActivitySeries::sptr m_activitySeries;
 
 };
 

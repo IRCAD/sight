@@ -31,7 +31,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -103,7 +103,7 @@ private:
      * @param[in] folder DICOM folder
      * @param[in] seriesDB SeriesDB that must be writen
      */
-    void saveSeriesDB( const std::filesystem::path folder, SPTR(::fwMedData::SeriesDB) seriesDB );
+    void saveSeriesDB( const std::filesystem::path folder, SPTR(data::SeriesDB) seriesDB );
 
     /// Select Fiducial Export Mode using a dialog
     bool selectFiducialsExportMode();

@@ -25,12 +25,11 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 
+#include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -41,7 +40,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+SpatialFiducialsIOD::SpatialFiducialsIOD(const data::DicomSeries::csptr& dicomSeries,
                                          const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                                          const ::fwLog::Logger::sptr& logger,
                                          ProgressCallback progress,
@@ -58,10 +57,10 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
+void SpatialFiducialsIOD::read(data::Series::sptr series)
 {
     // Retrieve images
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("ImageSeries should not be null.", imageSeries);
     data::Image::sptr image = imageSeries->getImage();
     SLM_ASSERT("data::Image not instanced", image);
@@ -70,7 +69,7 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 
     // Read the first file
-    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     if(dicomContainer.size() > 1)
     {

@@ -11,7 +11,6 @@ set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
     data
-    fwMedData
     uiVisu
     uiVisuQt
     servicesReg

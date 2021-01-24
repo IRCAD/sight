@@ -32,12 +32,12 @@
 
 #include <memory>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class Series;
 }
@@ -69,7 +69,7 @@ public:
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(const CSPTR(::fwMedData::Series)& series,
+    FWGDCMIO_API DicomInstance(const CSPTR(data::Series)& series,
                                const SPTR(::fwLog::Logger)& logger = nullptr,
                                bool isMultiFiles                   = true);
 
@@ -78,7 +78,7 @@ public:
      * @param[in] dicomSeries DicomSeries from which the instance is created
      * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API DicomInstance(const CSPTR(data::DicomSeries)& dicomSeries,
                                const SPTR(::fwLog::Logger)& logger = nullptr);
 
     /// Copy constructor
@@ -170,19 +170,19 @@ protected:
      * @brief Compute SOPClassUID
      * @param[in] series Series
      */
-    void computeSOPClassUID(const CSPTR(::fwMedData::Series)& series);
+    void computeSOPClassUID(const CSPTR(data::Series)& series);
 
     /**
      * @brief Generate SOPInstanceUIDs according to series type and dimension
      * @param[in] series Series
      */
-    void generateSOPInstanceUIDs(const CSPTR(::fwMedData::Series)& series);
+    void generateSOPInstanceUIDs(const CSPTR(data::Series)& series);
 
     /**
      * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
      * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
      */
-    void readUIDFromDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries);
+    void readUIDFromDicomSeries(const CSPTR(data::DicomSeries)& dicomSeries);
 
 private:
 

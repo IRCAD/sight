@@ -24,10 +24,9 @@
 
 #include "fwActivities/validator/registry/macros.hpp"
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 namespace fwActivities
 {
@@ -51,7 +50,7 @@ DefaultActivity::~DefaultActivity()
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType DefaultActivity::validate(const ::fwMedData::ActivitySeries::csptr& activitySeries ) const
+IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries ) const
 {
     IValidator::ValidationType validation;
 

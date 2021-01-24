@@ -33,7 +33,7 @@ namespace sight::data
 namespace Study
 {
 /**
- * @brief Test patch to convert data::Study version 1 to ::fwMedData::Study version 1.
+ * @brief Test patch to convert data::Study version 1 to data::Study version 1.
  */
 class V1ToFwMedDataStudyV1Test : public CPPUNIT_NS::TestFixture
 {

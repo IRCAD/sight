@@ -90,7 +90,7 @@ void Composite::clear()
     std::vector<std::string> vectKey;
     std::transform( composite->begin(), composite->end(),
                     std::back_inserter(vectKey),
-                    std::bind(&data::Composite::value_type::first, std::placeholders::_1) );
+                    std::bind(&sight::data::Composite::value_type::first, std::placeholders::_1) );
 
     for(std::string key :  vectKey)
     {

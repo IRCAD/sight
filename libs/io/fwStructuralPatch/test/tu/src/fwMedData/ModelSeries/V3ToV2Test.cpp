@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ModelSeries/V3ToV2Test.hpp"
+#include "data/ModelSeries/V3ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ModelSeries/V3ToV2.hpp>
+#include <fwStructuralPatch/data/ModelSeries/V3ToV2.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ModelSeries::V3ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ModelSeries::V3ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ModelSeries
 {
@@ -63,7 +63,7 @@ void V3ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr modelSeriesV3 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr modelSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(modelSeriesV3, "::fwMedData::ModelSeries");
+    ::fwAtomsPatch::helper::setClassname(modelSeriesV3, "data::ModelSeries");
     ::fwAtomsPatch::helper::setVersion(modelSeriesV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(modelSeriesV3);
@@ -100,8 +100,8 @@ void V3ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[modelSeriesV3] = modelSeriesV2;
 
-        ::fwStructuralPatch::fwMedData::ModelSeries::V3ToV2::sptr v3ToV2Patch;
-        v3ToV2Patch = ::fwStructuralPatch::fwMedData::ModelSeries::V3ToV2::New();
+        ::fwStructuralPatchdata::ModelSeries::V3ToV2::sptr v3ToV2Patch;
+        v3ToV2Patch = ::fwStructuralPatchdata::ModelSeries::V3ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v3ToV2Patch->apply(modelSeriesV3, modelSeriesV2, newVersions));
 
         CPPUNIT_ASSERT(modelSeriesV2);
@@ -125,6 +125,6 @@ void V3ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ModelSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

@@ -24,6 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/DicomSeries.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
@@ -33,9 +35,6 @@
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -129,8 +128,8 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
 
 void SDicomSeriesAnonymizer::anonymize()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
-    data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>("seriesDB");
+    data::Vector::sptr vector     = this->getInOut< data::Vector >("selectedSeries");
 
     ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
@@ -138,12 +137,12 @@ void SDicomSeriesAnonymizer::anonymize()
         ::fwGdcmIO::helper::DicomSeriesAnonymizer::New();
     m_sigJobCreated->emit(anonymizer->getJob());
 
-    std::vector< ::fwMedData::DicomSeries::sptr > anonymizedDicomSeriesVector;
+    std::vector< data::DicomSeries::sptr > anonymizedDicomSeriesVector;
 
     for(const auto& value : vector->getContainer())
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries           = ::fwMedData::DicomSeries::dynamicCast(value);
-        ::fwMedData::DicomSeries::sptr anonymizedDicomSeries = ::fwMedData::DicomSeries::New();
+        data::DicomSeries::sptr dicomSeries           = data::DicomSeries::dynamicCast(value);
+        data::DicomSeries::sptr anonymizedDicomSeries = data::DicomSeries::New();
         anonymizer->anonymize(dicomSeries, anonymizedDicomSeries);
         anonymizedDicomSeriesVector.push_back(anonymizedDicomSeries);
 
@@ -158,7 +157,7 @@ void SDicomSeriesAnonymizer::anonymize()
     {
         for(const auto& value : vector->getContainer())
         {
-            ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(value);
+            data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(value);
             sDBhelper.remove(dicomSeries);
         }
 

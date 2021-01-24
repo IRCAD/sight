@@ -25,19 +25,18 @@
 #include "fwPacsIO/config.hpp"
 #include "fwPacsIO/data/PacsConfiguration.hpp"
 
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class ImageSeries;
 class ModelSeries;
@@ -53,7 +52,7 @@ class FWPACSIO_CLASS_API Series
 {
 public:
 
-    typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainer;
+    typedef data::SeriesDB::ContainerType DicomSeriesContainer;
     typedef std::vector< std::string > InstanceUIDContainer;
     typedef std::map < std::string, unsigned int > InstanceCountMap;
 
@@ -64,7 +63,7 @@ public:
     FWPACSIO_API static void releaseResponses(OFList< QRResponse* > _responses);
 
     /**
-     * @brief Converts DCMTK series to ::fwMedData::DicomSeries.
+     * @brief Converts DCMTK series to data::DicomSeries.
      * @param _responses the DCMTK responses from the pacs that must be converted.
      */
     FWPACSIO_API static DicomSeriesContainer toFwMedData(OFList< QRResponse* > _responses);
@@ -76,7 +75,7 @@ public:
     FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(OFList< QRResponse* > _responses);
 
     /**
-     * @brief Converts std::vector< ::fwMedData::DicomSeries > to series instance uid container.
+     * @brief Converts std::vector< data::DicomSeries > to series instance uid container.
      * @param _series the series vector used to extract the series instance uids.
      */
     FWPACSIO_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer _series);

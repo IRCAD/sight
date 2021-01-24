@@ -49,6 +49,7 @@
 #include <data/PointList.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/TransferFunction.hpp>
 #include <data/TransformationMatrix3D.hpp>
@@ -57,8 +58,6 @@
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
@@ -355,13 +354,13 @@ void ConversionTest::seriesDBConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
 
-    ::fwMedData::SeriesDB::sptr sdb = ::fwTest::generator::SeriesDB::createSeriesDB(2, 3, 1);
+    data::SeriesDB::sptr sdb = ::fwTest::generator::SeriesDB::createSeriesDB(2, 3, 1);
 
     // Create Atom
     atom = ::fwAtomConversion::convert( sdb );
 
-    ::fwMedData::SeriesDB::sptr newSdb =
-        ::fwMedData::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
+    data::SeriesDB::sptr newSdb =
+        data::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
 
     compare(sdb, newSdb);
 }

@@ -27,10 +27,10 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwIO/ioTypes.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <fwIO/ioTypes.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -97,7 +97,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     imageSeries->setImage(image);
 
     // Create path
@@ -202,8 +202,8 @@ void IoItkTest::testSaveLoadInr()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    data::Image::sptr image = data::Image::New();
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    data::Image::sptr image             = data::Image::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     imageSeries->setImage(image);
@@ -277,7 +277,7 @@ void IoItkTest::SeriesDBInrTest()
     srvCfg->addConfigurationElement(fileSkinCfg);
 
     // load SeriesDB
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr sdb = data::SeriesDB::New();
     executeService(
         sdb,
         "::ioITK::SInrSeriesDBReader",
@@ -288,7 +288,7 @@ void IoItkTest::SeriesDBInrTest()
     const data::Image::Size size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
-    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);
+    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[0]);
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
 
@@ -300,7 +300,7 @@ void IoItkTest::SeriesDBInrTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
 
-    imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[1]);
+    imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[1]);
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
     CPPUNIT_ASSERT(imgSeries->getImage());

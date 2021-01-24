@@ -27,9 +27,8 @@
 #include <data/Color.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <string>
 
@@ -48,7 +47,7 @@ public:
      * @param _modelSeries Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
-    FWMEDDATATOOLS_API static void addReconstruction(const ::fwMedData::ModelSeries::sptr& _modelSeries,
+    FWMEDDATATOOLS_API static void addReconstruction(const data::ModelSeries::sptr& _modelSeries,
                                                      const data::Reconstruction::sptr& _rec);
 
     /**
@@ -80,7 +79,7 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      */
     FWMEDDATATOOLS_API static void
-    addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries,
+    addMesh(const data::ModelSeries::sptr& _modelSeries,
             const data::Mesh::sptr& _mesh,
             const std::string& _organName, const std::string& _structureType,
             const data::Color::sptr& _color          = data::Color::New(),

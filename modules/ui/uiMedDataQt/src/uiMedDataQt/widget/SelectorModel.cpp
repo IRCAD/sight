@@ -27,16 +27,15 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/ActivitySeries.hpp>
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Series.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
@@ -153,10 +152,10 @@ std::string formatTime(const std::string& _time)
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
+void SelectorModel::addSeries(data::Series::sptr _series)
 {
-    ::fwMedData::Study::sptr study       = _series->getStudy();
-    ::fwMedData::DicomValueType studyUID = study->getInstanceUID();
+    data::Study::sptr study           = _series->getStudy();
+    data::DicomValueType studyUID     = study->getInstanceUID();
     StudyUidItemMapType::iterator itr = m_items.find(studyUID);
     QStandardItem* studyRootItem;
 
@@ -166,8 +165,8 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
     }
     else
     {
-        ::fwMedData::Patient::sptr patient     = _series->getPatient();
-        ::fwMedData::Equipment::sptr equipment = _series->getEquipment();
+        data::Patient::sptr patient     = _series->getPatient();
+        data::Equipment::sptr equipment = _series->getEquipment();
 
         const std::string studyInstanceUID = study->getInstanceUID();
 
@@ -294,7 +293,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
                 });
     }
 
-    const ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(_series);
+    const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(_series);
     if(imageSeries)
     {
         studyRootItem->setChild(nbRow, int(ColumnSeriesType::BODY_PART_EXAMINED),
@@ -433,7 +432,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardItem* _item)
+void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _item)
 {
     SeriesIconType::iterator iter = m_seriesIcons.find(_series->getClassname());
     if (iter != m_seriesIcons.end())
@@ -442,9 +441,9 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
     }
     else
     {
-        ::fwMedData::ImageSeries::sptr imageSeries       = ::fwMedData::ImageSeries::dynamicCast(_series);
-        ::fwMedData::ModelSeries::sptr modelSeries       = ::fwMedData::ModelSeries::dynamicCast(_series);
-        ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(_series);
+        data::ImageSeries::sptr imageSeries       = data::ImageSeries::dynamicCast(_series);
+        data::ModelSeries::sptr modelSeries       = data::ModelSeries::dynamicCast(_series);
+        data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(_series);
         if(imageSeries)
         {
             const auto path = core::runtime::getModuleResourceFilePath("media", "icons/ImageSeries.svg");
@@ -474,7 +473,7 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr _series, QStandardIt
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::removeSeries(::fwMedData::Series::sptr _series)
+void SelectorModel::removeSeries(data::Series::sptr _series)
 {
     QStandardItem* seriesItem = this->findSeriesItem(_series);
     this->removeSeriesItem(seriesItem);
@@ -534,8 +533,8 @@ bool SelectorModel::removeStudyItem(QStandardItem* _item)
 {
     bool isRemoved = false;
     SLM_ASSERT("Index must represent a study.", _item->data(Role::ITEM_TYPE) == ItemType::STUDY);
-    QString uid = _item->data(Role::UID).toString();
-    ::fwMedData::DicomValueType instanceUID = uid.toStdString();
+    QString uid                      = _item->data(Role::UID).toString();
+    data::DicomValueType instanceUID = uid.toStdString();
 
     isRemoved = this->QStandardItemModel::removeRow(_item->row());
     SLM_ASSERT("Remove can not be done!", isRemoved);
@@ -564,11 +563,11 @@ bool SelectorModel::removeSeriesItem(QStandardItem* _item)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr _series)
+QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
 {
     QStandardItem* seriesItem = nullptr;
-    ::fwMedData::Study::sptr study = _series->getStudy();
-    QStandardItem* studyItem = this->findStudyItem(study);
+    data::Study::sptr study   = _series->getStudy();
+    QStandardItem* studyItem  = this->findStudyItem(study);
 
     int nbRow = studyItem->rowCount();
     for(int row = 0; row < nbRow; ++row)
@@ -586,9 +585,9 @@ QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* SelectorModel::findStudyItem(::fwMedData::Study::sptr _study)
+QStandardItem* SelectorModel::findStudyItem(data::Study::sptr _study)
 {
-    ::fwMedData::DicomValueType studyInstanceUid = _study->getInstanceUID();
+    data::DicomValueType studyInstanceUid = _study->getInstanceUID();
 
     QStandardItem* studyItem = m_items[studyInstanceUid];
     return studyItem;

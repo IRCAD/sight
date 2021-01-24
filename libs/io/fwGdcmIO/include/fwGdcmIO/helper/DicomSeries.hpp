@@ -33,12 +33,12 @@
 #include <filesystem>
 #include <vector>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class Patient;
 class Study;
@@ -66,7 +66,7 @@ class FWGDCMIO_CLASS_API DicomSeries
 public:
 
     typedef std::vector< std::filesystem::path > FilenameContainerType;
-    typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
+    typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
 
     /// Constructor
     FWGDCMIO_API DicomSeries();
@@ -124,23 +124,23 @@ protected:
      * @brief Create a patient from the dataset and store it in the patient map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Patient) createPatient(const ::gdcm::DataSet& dataset);
+    SPTR(data::Patient) createPatient(const ::gdcm::DataSet& dataset);
 
     /**
      * @brief Create a study from the dataset and store it in the study map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Study) createStudy(const ::gdcm::DataSet& dataset);
+    SPTR(data::Study) createStudy(const ::gdcm::DataSet& dataset);
 
     /**
      * @brief Create an equipment from the dataset and store it in the equipment map
      * @param[in] dataset GDCM Dataset used to read information
      */
-    SPTR(::fwMedData::Equipment) createEquipment(const ::gdcm::DataSet& dataset);
+    SPTR(data::Equipment) createEquipment(const ::gdcm::DataSet& dataset);
 
-    typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
-    typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;
-    typedef std::map< std::string, SPTR(::fwMedData::Equipment) > EquipmentMapType;
+    typedef std::map< std::string, SPTR(data::Patient) > PatientMapType;
+    typedef std::map< std::string, SPTR(data::Study) > StudyMapType;
+    typedef std::map< std::string, SPTR(data::Equipment) > EquipmentMapType;
 
     ///Patient Map
     PatientMapType m_patientMap;

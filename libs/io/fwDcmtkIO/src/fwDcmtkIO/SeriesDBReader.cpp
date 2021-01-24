@@ -27,19 +27,19 @@
 #include "fwDcmtkIO/helper/DicomSearch.hpp"
 #include "fwDcmtkIO/reader/ImageStorageReader.hpp"
 
+#include <data/Equipment.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
+
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -115,7 +115,7 @@ void SeriesDBReader::read()
     }
 
     // Read series
-    for(::fwMedData::DicomSeries::csptr series: m_dicomSeriesContainer)
+    for(data::DicomSeries::csptr series: m_dicomSeriesContainer)
     {
         this->convertDicomSeries(series);
     }
@@ -123,13 +123,13 @@ void SeriesDBReader::read()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB,
+void SeriesDBReader::readFromDicomSeriesDB(data::SeriesDB::csptr dicomSeriesDB,
                                            ::fwServices::IService::sptr notifier)
 {
     // Read series
-    for(const ::fwMedData::Series::csptr& series : dicomSeriesDB->getContainer())
+    for(const data::Series::csptr& series : dicomSeriesDB->getContainer())
     {
-        ::fwMedData::DicomSeries::csptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+        data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
         SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
         this->convertDicomSeries(dicomSeries, notifier);
     }
@@ -139,7 +139,7 @@ void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSer
 
 void SeriesDBReader::readDicomSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Get filenames
@@ -149,7 +149,7 @@ void SeriesDBReader::readDicomSeries()
     this->addSeries(filenames);
 
     // Push Dicom Series
-    for(::fwMedData::DicomSeries::sptr series: m_dicomSeriesContainer)
+    for(data::DicomSeries::sptr series: m_dicomSeriesContainer)
     {
         seriesDBHelper.add(series);
     }
@@ -181,7 +181,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
     }
 
     // Fill series
-    for(const ::fwMedData::DicomSeries::sptr& series : m_dicomSeriesContainer)
+    for(const data::DicomSeries::sptr& series : m_dicomSeriesContainer)
     {
         // Compute number of instances
         series->setNumberOfInstances(series->getDicomContainer().size());
@@ -210,9 +210,9 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
         DcmDataset* dataset = fileFormat.getDataset();
 
         // Create data objects from first instance
-        ::fwMedData::Patient::sptr patient     = this->createPatient(dataset);
-        ::fwMedData::Study::sptr study         = this->createStudy(dataset);
-        ::fwMedData::Equipment::sptr equipment = this->createEquipment(dataset);
+        data::Patient::sptr patient     = this->createPatient(dataset);
+        data::Study::sptr study         = this->createStudy(dataset);
+        data::Equipment::sptr equipment = this->createEquipment(dataset);
 
         // Fill series
         series->setPatient(patient);
@@ -223,9 +223,9 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Patient::sptr SeriesDBReader::createPatient(DcmDataset* dataset)
+data::Patient::sptr SeriesDBReader::createPatient(DcmDataset* dataset)
 {
-    ::fwMedData::Patient::sptr result;
+    data::Patient::sptr result;
     OFString data;
 
     // Get Patient ID
@@ -235,7 +235,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result                  = ::fwMedData::Patient::New();
+        result                  = data::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -264,9 +264,9 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Study::sptr SeriesDBReader::createStudy(DcmDataset* dataset)
+data::Study::sptr SeriesDBReader::createStudy(DcmDataset* dataset)
 {
-    ::fwMedData::Study::sptr result;
+    data::Study::sptr result;
     OFString data;
 
     // Get Study ID
@@ -276,7 +276,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
     // Check if the study already exists
     if(m_studyMap.find(studyUID) == m_studyMap.end())
     {
-        result               = ::fwMedData::Study::New();
+        result               = data::Study::New();
         m_studyMap[studyUID] = result;
 
         //Study UID
@@ -333,9 +333,9 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Equipment::sptr SeriesDBReader::createEquipment(DcmDataset* dataset)
+data::Equipment::sptr SeriesDBReader::createEquipment(DcmDataset* dataset)
 {
-    ::fwMedData::Equipment::sptr result;
+    data::Equipment::sptr result;
     OFString data;
 
     // Get Institution Name
@@ -345,7 +345,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result                          = ::fwMedData::Equipment::New();
+        result                          = data::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name
@@ -364,7 +364,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
 void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filename)
 {
-    ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::sptr();
+    data::DicomSeries::sptr series = data::DicomSeries::sptr();
     OFString data;
 
     // Get Series Instance UID
@@ -372,7 +372,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     std::string seriesInstanceUID = data.c_str();
 
     // Check if the series already exists
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
+    for(const data::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -384,7 +384,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     // If the series doesn't exist we create it
     if(!series)
     {
-        series = ::fwMedData::DicomSeries::New();
+        series = data::DicomSeries::New();
         m_dicomSeriesContainer.push_back(series);
 
         //Modality
@@ -469,7 +469,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 
     // Add the SOPClassUID to the series
     dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
+    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     sopClassUIDContainer.insert(data.c_str());
     series->setSOPClassUIDs(sopClassUIDContainer);
 
@@ -480,14 +480,14 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::convertDicomSeries(::fwMedData::DicomSeries::csptr dicomSeries,
+void SeriesDBReader::convertDicomSeries(data::DicomSeries::csptr dicomSeries,
                                         ::fwServices::IService::sptr notifier)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
-    ::fwMedData::Series::sptr result = ::fwMedData::Series::sptr();
+    data::Series::sptr result = data::Series::sptr();
 
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
     FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
                 sopClassUIDContainer.size() != 1);
     std::string sopClassUID = sopClassUIDContainer.begin()->c_str();

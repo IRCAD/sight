@@ -25,11 +25,10 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Boolean.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 namespace uiMedDataQml
 {
@@ -82,7 +81,7 @@ void SModelSeriesList::configuring()
 
 void SModelSeriesList::updating()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
     SLM_ASSERT("inout 'modelSeries' is missing", modelSeries);
 
     SLM_ASSERT("list model is not defined.", m_listModel);
@@ -95,7 +94,7 @@ void SModelSeriesList::onOrganSelected(int index)
 {
     if (index >= 0)
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
         SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
         const auto& recs = modelSeries->getReconstructionDB();
@@ -113,7 +112,7 @@ void SModelSeriesList::onOrganSelected(int index)
 
 void SModelSeriesList::onShowReconstructions(int state )
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
     SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
     ::fwDataTools::helper::Field helper( modelSeries );
     helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
@@ -126,7 +125,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 {
     if (index >= 0)
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
         SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
         const auto& recs        = modelSeries->getReconstructionDB();
@@ -148,7 +147,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 
 void SModelSeriesList::onCheckAllBoxes( bool checked )
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
     SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
     for (const auto& rec : modelSeries->getReconstructionDB())
@@ -173,11 +172,11 @@ void SModelSeriesList::onCheckAllBoxes( bool checked )
     KeyConnectionsMap connections;
 
     // FIXME hack to support deprecated getObject() with any key
-    if (this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT))
+    if (this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT))
     {
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
     }
 
     return connections;

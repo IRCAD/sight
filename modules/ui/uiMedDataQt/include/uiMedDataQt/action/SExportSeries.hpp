@@ -26,10 +26,10 @@
 
 #include <core/com/Slots.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 namespace uiMedDataQt
 {
@@ -43,9 +43,9 @@ namespace action
  * @note This action is not executable if the series already exists in the SeriesDB.
  *
  * @section Slots Slots
- * - \b checkAddedSeries(::fwMedData::SeriesDB::ContainerType): make the action executable if the added series matches
+ * - \b checkAddedSeries(data::SeriesDB::ContainerType): make the action executable if the added series matches
  * the series we want to export.
- * - \b checkAddedSeries(::fwMedData::SeriesDB::ContainerType): make the action inexecutable if the added series matches
+ * - \b checkAddedSeries(data::SeriesDB::ContainerType): make the action inexecutable if the added series matches
  * the series we want to export.
 
  * @section XML XML Configuration
@@ -57,8 +57,8 @@ namespace action
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b series [::fwMedData::Series]: Source series to export.
- * - \b seriesDB [::fwMedData::SeriesDB]: Target series database where the series should be exported.
+ * - \b series [data::Series]: Source series to export.
+ * - \b seriesDB [data::SeriesDB]: Target series database where the series should be exported.
  */
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
@@ -75,8 +75,8 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection.
      *
-     * Connect ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
-     * Connect ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
+     * Connect data::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
+     * Connect data::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
      */
     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -106,17 +106,17 @@ private:
     static const core::com::Slots::SlotKeyType s_CHECK_REMOVED_SERIES_SLOT;
 
     /// Slot: check if specified series is added and set action not executable
-    void checkAddedSeries(::fwMedData::SeriesDB::ContainerType addedSeries);
+    void checkAddedSeries(data::SeriesDB::ContainerType addedSeries);
 
     /// Slot: check if specified series is removed and set action executable
-    void checkRemovedSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
+    void checkRemovedSeries(data::SeriesDB::ContainerType removedSeries);
 
     /**
      * @}
      */
 
     /// Returns current series given by its fwID m_seriesId.
-    ::fwMedData::Series::sptr getSeries();
+    data::Series::sptr getSeries();
 
     /// fwID of the series to add in SeriesDB
     /// @deprecated appXml

@@ -35,7 +35,7 @@ namespace sight::data
 namespace Study
 {
 
-/// Transforms a data::Study to a ::fwMedData::Study.
+/// Transforms a data::Study to a data::Study.
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataStudyV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:

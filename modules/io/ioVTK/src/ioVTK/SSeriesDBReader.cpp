@@ -28,6 +28,7 @@
 
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -36,8 +37,6 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -50,7 +49,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -143,7 +142,7 @@ void SSeriesDBReader::info(std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathType& vtkFiles,
-                                    const ::fwMedData::SeriesDB::sptr& seriesDB )
+                                    const data::SeriesDB::sptr& seriesDB )
 {
     ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
@@ -186,9 +185,9 @@ void SSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        auto lockedSeriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
 
-        ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
+        data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -204,10 +203,10 @@ void SSeriesDBReader::updating()
             lockedSeriesDB->shallowCopy(localSeriesDB);
         }
 
-        ::fwMedData::SeriesDB::ContainerType addedSeries = lockedSeriesDB->getContainer();
+        data::SeriesDB::ContainerType addedSeries = lockedSeriesDB->getContainer();
 
-        auto sig = lockedSeriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-            ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+        auto sig = lockedSeriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
+            data::SeriesDB::s_ADDED_SERIES_SIG);
         sig->asyncEmit(addedSeries);
 
         cursor.setDefaultCursor();

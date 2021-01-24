@@ -28,7 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -50,19 +50,19 @@ public:
      * @brief Return true if the series contains at least one image containing landmarks.
      * @param[in] seriesDB SeriesDB where to look for landmarks
      */
-    FWGDCMIO_API static bool containsLandmarks(const SPTR(::fwMedData::SeriesDB)& seriesDB);
+    FWGDCMIO_API static bool containsLandmarks(const SPTR(data::SeriesDB)& seriesDB);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
      * @param[in] seriesDB SeriesDB where to look for distances
      */
-    FWGDCMIO_API static bool containsDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB);
+    FWGDCMIO_API static bool containsDistances(const SPTR(data::SeriesDB)& seriesDB);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
      * @param[in] seriesDB SeriesDB where to look for 3D distances
      */
-    FWGDCMIO_API static bool contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB);
+    FWGDCMIO_API static bool contains3DDistances(const SPTR(data::SeriesDB)& seriesDB);
 };
 
 } // namespace helper

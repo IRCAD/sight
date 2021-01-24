@@ -50,7 +50,7 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API MeasurementReport(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API MeasurementReport(const CSPTR(data::DicomSeries)& dicomSeries,
                                    const SPTR(::gdcm::Reader)& reader,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                    const data::Image::sptr& image,

@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomTools
     fwLog
-    fwMedData
     fwMedDataTools
     fwServices
     fwZip

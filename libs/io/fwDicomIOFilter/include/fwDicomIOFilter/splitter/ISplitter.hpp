@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/IFilter.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -38,7 +38,7 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API ISplitter : public ::fwDicomIOFilter::IFilter
 {
 public:
-    fwCoreClassMacro(ISplitter, ::fwDicomIOFilter::IFilter);
+    fwCoreClassMacro(ISplitter, ::fwDicomIOFilter::IFilter)
 
     /// Destructor
     FWDICOMIOFILTER_API virtual ~ISplitter();

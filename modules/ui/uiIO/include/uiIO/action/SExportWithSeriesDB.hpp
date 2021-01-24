@@ -65,7 +65,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b series [::fwMedData::Series]: series to export using a SeriesDB writer
+ * - \b series [data::Series]: series to export using a SeriesDB writer
  *
  * @subsection Configuration Configuration
  * With :

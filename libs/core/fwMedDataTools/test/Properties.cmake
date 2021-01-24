@@ -1,5 +1,5 @@
 set( NAME fwMedDataToolsTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES core data fwMedData fwMedDataTools fwTest )
+set( DEPENDENCIES core dataTools fwTest )
 set( REQUIREMENTS  )

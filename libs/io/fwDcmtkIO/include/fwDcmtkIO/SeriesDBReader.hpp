@@ -34,7 +34,7 @@
 
 #include <fwServices/IService.hpp>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 class Patient;
@@ -52,7 +52,7 @@ namespace fwDcmtkIO
  *
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
-class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
                                            public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                                            public data::location::enableMultiFiles< ::fwDataIO::reader::
                                                                                     IObjectReader >,
@@ -63,15 +63,15 @@ public:
 
     fwCoreClassMacro(
         SeriesDBReader,
-        ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+        ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
         ::fwDataIO::reader::factory::New< SeriesDBReader >
         );
     fwCoreAllowSharedFromThis();
 
-    typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
-    typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;
-    typedef std::map< std::string, SPTR(::fwMedData::Equipment) > EquipmentMapType;
-    typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
+    typedef std::map< std::string, SPTR(data::Patient) > PatientMapType;
+    typedef std::map< std::string, SPTR(data::Study) > StudyMapType;
+    typedef std::map< std::string, SPTR(data::Equipment) > EquipmentMapType;
+    typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
     typedef std::vector< std::string > FilenameContainerType;
     typedef std::vector< std::string > SupportedSOPClassContainerType;
 
@@ -87,7 +87,7 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWDCMTKIO_API void readFromDicomSeriesDB(CSPTR(::fwMedData::SeriesDB) dicomSeriesDB,
+    FWDCMTKIO_API void readFromDicomSeriesDB(CSPTR(data::SeriesDB) dicomSeriesDB,
                                              ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /// Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -152,19 +152,19 @@ private:
      * @brief Create a patient from the dataset and store it in the patient map
      * @param[in] dataset Dataset from which the patient is created
      */
-    SPTR(::fwMedData::Patient) createPatient(DcmDataset* dataset);
+    SPTR(data::Patient) createPatient(DcmDataset* dataset);
 
     /**
      * @brief Create a study from the dataset and store it in the study map
      * @param[in] dataset Dataset from which the study is created
      */
-    SPTR(::fwMedData::Study) createStudy(DcmDataset* dataset);
+    SPTR(data::Study) createStudy(DcmDataset* dataset);
 
     /**
      * @brief Create an equipment from the dataset and store it in the equipment map
      * @param[in] dataset Dataset from which the equipment is created
      */
-    SPTR(::fwMedData::Equipment) createEquipment(DcmDataset* dataset);
+    SPTR(data::Equipment) createEquipment(DcmDataset* dataset);
 
     /**
      * @brief Create a series from the dataset and store it in the series map
@@ -178,7 +178,7 @@ private:
      * @param[in] dicomSeries Dicom Series that must be converted
      * @param[in] notifier Service used to notify the modification
      */
-    void convertDicomSeries(CSPTR(::fwMedData::DicomSeries) dicomSeries,
+    void convertDicomSeries(CSPTR(data::DicomSeries) dicomSeries,
                             ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     ///Patient Map

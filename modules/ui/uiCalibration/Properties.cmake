@@ -10,6 +10,5 @@ set( DEPENDENCIES
         arData
         fwGui
         fwGuiQt
-        fwMedData
         fwIO
 )

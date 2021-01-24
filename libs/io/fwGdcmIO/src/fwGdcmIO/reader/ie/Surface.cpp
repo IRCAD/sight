@@ -31,7 +31,7 @@
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 
@@ -51,15 +51,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Surface::Surface(const data::DicomSeries::csptr& dicomSeries,
                  const SPTR(::gdcm::Reader)& reader,
                  const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                 const ::fwMedData::ModelSeries::sptr& series,
+                 const data::ModelSeries::sptr& series,
                  const ::fwLog::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::ModelSeries >(dicomSeries, reader, instance, series,
-                                                                          logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< data::ModelSeries >(dicomSeries, reader, instance, series,
+                                                                   logger, progress, cancel)
 {
 }
 
@@ -94,7 +94,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
     const auto& segmentContainer = surfaceReader->GetSegments();
 
     // Retrieve reconstruction DB
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
 
     // Lambda used to display reading errors
     auto displayError = [&](const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,

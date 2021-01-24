@@ -25,7 +25,7 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/modifier/IModifier.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -49,7 +49,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const override;

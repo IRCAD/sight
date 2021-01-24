@@ -26,14 +26,14 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwGui/Cursor.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -93,11 +93,11 @@ void SExportWithSeriesDB::updating( )
 {
     ::fwGui::LockAction lock(this->getSptr());
 
-    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
+    data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
     SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
 
     // Create a new SeriesDB
-    ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
     localSeriesDB->getContainer().push_back(series);
 
     /// Create IOSelectorService on the new SeriesDB and execute it.
@@ -137,8 +137,8 @@ void SExportWithSeriesDB::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
-    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series >(s_SERIES_INOUT);
-    SLM_FATAL_IF( "The associated object must be a ::fwMedData::Series.", !series);
+    data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
+    SLM_FATAL_IF( "The associated object must be a data::Series.", !series);
 }
 
 //------------------------------------------------------------------------------

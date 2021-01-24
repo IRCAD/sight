@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ class FWGDCMIO_CLASS_API Series
 {
 public:
 
-    typedef std::map< SPTR(::fwGdcmIO::container::DicomInstance), ::fwMedData::Series::sptr > SeriesContainerMapType;
+    typedef std::map< SPTR(::fwGdcmIO::container::DicomInstance), data::Series::sptr > SeriesContainerMapType;
 
     typedef std::function< void (std::uint64_t) > ProgressCallback;
     typedef std::function< bool () > CancelRequestedCallback;
@@ -54,7 +54,7 @@ public:
      * @param[in] dicomSeries DICOM series that shall be read
      * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& dicomSeries);
+    FWGDCMIO_API data::Series::sptr read(const data::DicomSeries::csptr& dicomSeries);
 
     /// Get Logger
     const ::fwLog::Logger::sptr& getLogger() const
@@ -95,11 +95,11 @@ protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(::fwGdcmIO::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-        const ::fwMedData::DicomSeries::csptr& dicomSeries);
+        const data::DicomSeries::csptr& dicomSeries);
 
     /// Get referenced series when dealing with Structured Report
     SPTR(::fwGdcmIO::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-        const ::fwMedData::DicomSeries::csptr& dicomSeries);
+        const data::DicomSeries::csptr& dicomSeries);
 
     /// Series Container Map
     SeriesContainerMapType m_seriesContainerMap;

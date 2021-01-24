@@ -55,7 +55,7 @@ namespace ioVTK
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::ImageSeries]: ImageSeries containing read image
+ * - \b data [data::ImageSeries]: ImageSeries containing read image
  *
  */
 class IOVTK_CLASS_API SImageSeriesReader : public ::fwIO::IReader

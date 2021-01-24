@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,9 +46,9 @@ namespace opVTKMesh
     @endcode
  *
  * @subsection Input Input
- * - \b imageSeries [::fwMedData::ImageSeries] : image used to generate the output mesh
+ * - \b imageSeries [data::ImageSeries] : image used to generate the output mesh
  * @subsection Output Output
- * - \b modelSeries [::fwMedData::ModelSeries]: mesh generated from ImageSeries
+ * - \b modelSeries [data::ModelSeries]: mesh generated from ImageSeries
  * @subsection Configuration Configuration
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)

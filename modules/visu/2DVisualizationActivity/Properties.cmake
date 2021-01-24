@@ -8,7 +8,6 @@ set( REQUIREMENTS
     gui
     guiQt
     data
-    fwMedData
     uiMeasurement
     uiMeasurementQt
     ctrlCamp

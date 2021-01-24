@@ -29,11 +29,10 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 #include <algorithm>
 
@@ -198,8 +197,8 @@ void ActivityRegistryTest::registryTest()
 
     // 1 images, 2 mesh, 1 ImageSeries, 1 ModelSeries
     v->getContainer().push_back( data::Mesh::New() );
-    v->getContainer().push_back( ::fwMedData::ImageSeries::New() );
-    v->getContainer().push_back( ::fwMedData::ModelSeries::New() );
+    v->getContainer().push_back( data::ImageSeries::New() );
+    v->getContainer().push_back( data::ModelSeries::New() );
 
     activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());

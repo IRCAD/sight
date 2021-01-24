@@ -42,7 +42,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <data/ActivitySeries.hpp>
 
 #include <core/runtime/operations.hpp>
 

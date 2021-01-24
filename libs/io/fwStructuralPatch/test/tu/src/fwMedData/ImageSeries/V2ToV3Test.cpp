@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ImageSeries/V2ToV3Test.hpp"
+#include "data/ImageSeries/V2ToV3Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ImageSeries/V2ToV3.hpp>
+#include <fwStructuralPatch/data/ImageSeries/V2ToV3.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ImageSeries::V2ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ImageSeries::V2ToV3Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ImageSeries
 {
@@ -63,7 +63,7 @@ void V2ToV3Test::applyPatchTest()
     ::fwAtoms::Object::sptr imgSeriesV2 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr imgSeriesV3;
 
-    ::fwAtomsPatch::helper::setClassname(imgSeriesV2, "::fwMedData::ImageSeries");
+    ::fwAtomsPatch::helper::setClassname(imgSeriesV2, "data::ImageSeries");
     ::fwAtomsPatch::helper::setVersion(imgSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(imgSeriesV2);
@@ -86,8 +86,8 @@ void V2ToV3Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgSeriesV2] = imgSeriesV3;
 
-        ::fwStructuralPatch::fwMedData::ImageSeries::V2ToV3::sptr v2ToV3Patch;
-        v2ToV3Patch = ::fwStructuralPatch::fwMedData::ImageSeries::V2ToV3::New();
+        ::fwStructuralPatchdata::ImageSeries::V2ToV3::sptr v2ToV3Patch;
+        v2ToV3Patch = ::fwStructuralPatchdata::ImageSeries::V2ToV3::New();
         CPPUNIT_ASSERT_NO_THROW(v2ToV3Patch->apply(imgSeriesV2, imgSeriesV3, newVersions));
 
         CPPUNIT_ASSERT(imgSeriesV3);
@@ -123,6 +123,6 @@ void V2ToV3Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ImageSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

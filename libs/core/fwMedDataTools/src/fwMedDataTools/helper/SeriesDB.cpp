@@ -26,7 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 namespace fwMedDataTools
 {
@@ -35,7 +35,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-SeriesDB::SeriesDB( ::fwMedData::SeriesDB::wptr seriesDB ) :
+SeriesDB::SeriesDB( data::SeriesDB::wptr seriesDB ) :
     m_seriesDB( seriesDB )
 {
 }
@@ -48,9 +48,9 @@ SeriesDB::~SeriesDB()
 
 //-----------------------------------------------------------------------------
 
-void SeriesDB::add( ::fwMedData::Series::sptr newSeries )
+void SeriesDB::add( data::Series::sptr newSeries )
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
+    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
     SLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
                 std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
 
@@ -63,10 +63,10 @@ void SeriesDB::add( ::fwMedData::Series::sptr newSeries )
 
 //-----------------------------------------------------------------------------
 
-void SeriesDB::remove( ::fwMedData::Series::sptr oldSeries )
+void SeriesDB::remove( data::Series::sptr oldSeries )
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-    ::fwMedData::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
+    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
+    data::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
     SLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
                 iter != seriesDB->end());
 
@@ -81,7 +81,7 @@ void SeriesDB::remove( ::fwMedData::Series::sptr oldSeries )
 
 void SeriesDB::clear()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
+    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
 
     while (!seriesDB->empty())
     {
@@ -91,10 +91,10 @@ void SeriesDB::clear()
 
 //-----------------------------------------------------------------------------
 
-void SeriesDB::merge(::fwMedData::SeriesDB::sptr seriesDBIn)
+void SeriesDB::merge(data::SeriesDB::sptr seriesDBIn)
 {
-    ::fwMedData::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
-    for(::fwMedData::Series::sptr series :  vectIn)
+    data::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
+    for(data::Series::sptr series :  vectIn)
     {
         this->add(series);
     }
@@ -106,16 +106,16 @@ void SeriesDB::notify()
 {
     if (!m_addedSeries.empty())
     {
-        auto sig = m_seriesDB.lock()->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-            ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+        auto sig = m_seriesDB.lock()->signal< data::SeriesDB::AddedSeriesSignalType >(
+            data::SeriesDB::s_ADDED_SERIES_SIG);
         sig->asyncEmit(m_addedSeries);
 
     }
 
     if (!m_removedSeries.empty())
     {
-        auto sig = m_seriesDB.lock()->signal< ::fwMedData::SeriesDB::RemovedSeriesSignalType >(
-            ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG);
+        auto sig = m_seriesDB.lock()->signal< data::SeriesDB::RemovedSeriesSignalType >(
+            data::SeriesDB::s_REMOVED_SERIES_SIG);
         sig->asyncEmit(m_removedSeries);
 
     }

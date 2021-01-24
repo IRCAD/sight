@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API CTMRImageIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+    FWGDCMIO_API CTMRImageIOD(const data::DicomSeries::csptr& dicomSeries,
                               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                               const ::fwLog::Logger::sptr& logger = nullptr,
                               ProgressCallback progress           = nullptr,
@@ -61,7 +61,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw(::fwGdcmIO::exception::Failed)
      */
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
+    FWGDCMIO_API void read(data::Series::sptr series);
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)

@@ -24,11 +24,10 @@
 
 #include "uiMedDataQt/config.hpp"
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <QEvent>
 #include <QPointer>
@@ -106,7 +105,7 @@ public:
     /**
      * @brief Creates all tabs from an activity information.
      *
-     * One tab will be added for each activity parameter, if the type of the data is a @ref ::fwMedData::Series,
+     * One tab will be added for each activity parameter, if the type of the data is a @ref data::Series,
      * more informations will be displayed in the tree widget.
      *
      * @param _info the struct containing the activity configuration.
@@ -117,7 +116,7 @@ public:
      * @brief Creates all tabs from an activity series.
      * @param _actSeries the series containing activities.
      */
-    UIMEDDATAQT_API void fillInformation(const ::fwMedData::ActivitySeries::sptr& _actSeries);
+    UIMEDDATAQT_API void fillInformation(const data::ActivitySeries::sptr& _actSeries);
 
     /**
      * @brief Checks if all the required data are selected and fill activity data composite.
@@ -130,7 +129,7 @@ public:
      * @param _actSeries activitySeries to fill with the selected data.
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      */
-    UIMEDDATAQT_API bool checkAndComputeData(const ::fwMedData::ActivitySeries::sptr& _actSeries,
+    UIMEDDATAQT_API bool checkAndComputeData(const data::ActivitySeries::sptr& _actSeries,
                                              std::string& _errorMsg);
 
     /**

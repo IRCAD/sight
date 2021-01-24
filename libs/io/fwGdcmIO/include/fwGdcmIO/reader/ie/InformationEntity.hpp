@@ -33,7 +33,7 @@
 
 #include <cstdint>
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
@@ -67,7 +67,7 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API InformationEntity(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API InformationEntity(const CSPTR(data::DicomSeries)& dicomSeries,
                                    const SPTR(::gdcm::Reader)& reader,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                    const SPTR(DATATYPE)& object,
@@ -81,7 +81,7 @@ public:
 protected:
 
     /// Dicom Series
-    CSPTR(::fwMedData::DicomSeries) m_dicomSeries;
+    CSPTR(data::DicomSeries) m_dicomSeries;
 
     /// GDCM Reader
     SPTR(::gdcm::Reader) m_reader;
@@ -105,7 +105,7 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-InformationEntity<DATATYPE>::InformationEntity(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+InformationEntity<DATATYPE>::InformationEntity(const CSPTR(data::DicomSeries)& dicomSeries,
                                                const SPTR(::gdcm::Reader)& reader,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const SPTR(DATATYPE)& object,

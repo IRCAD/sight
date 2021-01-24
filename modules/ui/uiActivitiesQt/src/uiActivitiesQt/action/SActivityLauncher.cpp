@@ -32,6 +32,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
@@ -43,8 +44,6 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/macros.hpp>
@@ -327,9 +326,9 @@ void SActivityLauncher::updateState()
 
     bool isExecutable = false;
 
-    if(selection->size() == 1 && ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]))
+    if(selection->size() == 1 && data::ActivitySeries::dynamicCast((*selection)[0]))
     {
-        ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
+        data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast((*selection)[0]);
 
         if(m_filterMode == "include" || m_filterMode == "exclude")
         {
@@ -361,7 +360,7 @@ void SActivityLauncher::updateState()
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
             data::Object::sptr obj = selection->front();
-            if (::fwMedData::ActivitySeries::dynamicCast(obj))
+            if (data::ActivitySeries::dynamicCast(obj))
             {
                 isExecutable = true;
             }
@@ -386,7 +385,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     builder = ::fwActivities::builder::factory::New(info.builderImpl);
     SLM_ASSERT(info.builderImpl << " instantiation failed", builder);
 
-    ::fwMedData::ActivitySeries::sptr actSeries;
+    data::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
 
     if( !actSeries )
@@ -507,7 +506,7 @@ bool SActivityLauncher::launchAS(const data::Vector::csptr& selection)
     {
         for(data::Object::sptr obj :  *selection)
         {
-            ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(obj);
+            data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast(obj);
             if (!as)
             {
                 launchAS = false;
@@ -525,9 +524,9 @@ bool SActivityLauncher::launchAS(const data::Vector::csptr& selection)
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
+void SActivityLauncher::launchSeries(data::Series::sptr series)
 {
-    ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr as = data::ActivitySeries::dynamicCast(series);
     if (as)
     {
         this->launchActivitySeries(as);
@@ -560,7 +559,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr series)
+void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
 {
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(series->getActivityConfigId());

@@ -29,6 +29,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
@@ -40,8 +41,6 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/macros.hpp>
 

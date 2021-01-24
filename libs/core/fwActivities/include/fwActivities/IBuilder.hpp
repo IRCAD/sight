@@ -29,7 +29,7 @@
 
 #include <core/base.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <data/ActivitySeries.hpp>
 
 namespace sight::data
 {
@@ -48,7 +48,7 @@ class FWACTIVITIES_CLASS_API IBuilder : public core::BaseObject
 public:
 
     typedef ::fwActivities::builder::factory::Key Key;
-    typedef ::fwMedData::ActivitySeries::ConfigIdType ConfigIdType;
+    typedef data::ActivitySeries::ConfigIdType ConfigIdType;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -75,7 +75,7 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data ActivitySeries for the specified Activity.
      */
-    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
+    FWACTIVITIES_API virtual data::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const = 0;
 

@@ -29,12 +29,11 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -112,7 +111,7 @@ void SActivitySequencer::stopping()
 
 void SActivitySequencer::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     m_currentActivity = this->parseActivities(seriesDB);
@@ -120,9 +119,9 @@ void SActivitySequencer::updating()
     if (m_currentActivity >= 0)
     {
         // launch the last series
-        const size_t index               = static_cast<size_t>(m_currentActivity);
-        data::Composite::csptr overrides = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
-        ::fwMedData::ActivitySeries::sptr lastActivity = this->getActivity(seriesDB, index, m_slotUpdate, overrides);
+        const size_t index                      = static_cast<size_t>(m_currentActivity);
+        data::Composite::csptr overrides        = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
+        data::ActivitySeries::sptr lastActivity = this->getActivity(seriesDB, index, m_slotUpdate, overrides);
 
         if (this->checkValidity(lastActivity, false))
         {
@@ -163,7 +162,7 @@ void SActivitySequencer::goTo(int index)
         SLM_ERROR("no activity to launch at index " << index)
         return;
     }
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     if (m_currentActivity >= 0)
@@ -173,8 +172,8 @@ void SActivitySequencer::goTo(int index)
 
     const size_t newIdx = static_cast<size_t>(index);
 
-    data::Composite::csptr overrides = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
-    ::fwMedData::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate, overrides);
+    data::Composite::csptr overrides    = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
+    data::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate, overrides);
 
     if(this->checkValidity(activity, true))
     {
@@ -201,7 +200,7 @@ void SActivitySequencer::sendInfo() const
 
 //------------------------------------------------------------------------------
 
-bool SActivitySequencer::checkValidity(const fwMedData::ActivitySeries::csptr& activity, bool showDialog) const
+bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activity, bool showDialog) const
 {
     bool ok = true;
     std::string errorMsg;
@@ -220,8 +219,8 @@ bool SActivitySequencer::checkValidity(const fwMedData::ActivitySeries::csptr& a
 ::fwServices::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
-    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
+    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

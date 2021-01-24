@@ -37,7 +37,7 @@ namespace ctrlSelection
  * It works on different objects:
  * - data::Composite: the object is added/swapped/removed from composite at the given key
  * - data::Vector: the object is added or removed from the container
- * - ::fwMedData::SeriesDB: the object is added or removed from the container
+ * - data::SeriesDB: the object is added or removed from the container
  * - data::Object: the object is added or removed from the field map at the given key
  *
  * @section Slots Slots
@@ -72,7 +72,7 @@ namespace ctrlSelection
    </service>
    @endcode
  *
- * For ::fwMedData::SeriesDB:
+ * For data::SeriesDB:
  * @code{.xml}
    <service type="::ctrlSelection::SManage">
       <inout key="object" uid="..." />
@@ -94,7 +94,7 @@ namespace ctrlSelection
  * slots with composites and fields, since the removal is based on the name.
  * - \b composite [data::Composite] (optional): Composite where to add/swap/remove object.
  * - \b vector [data::Vector] (optional): Vector where to add/remove object.
- * - \b seriesDB [::fwMedData::SeriesDB] (optional): SeriesDB where to add/remove object.
+ * - \b seriesDB [data::SeriesDB] (optional): SeriesDB where to add/remove object.
  * - \b fieldHolder [data::Object] (optional): Object where to add/swap/remove object as a field.
  *
  * <b>Only one of the target (composite, vector or seriesDB) is allowed.</b>

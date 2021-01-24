@@ -180,13 +180,13 @@ void SeriesDB::readDicomSeries()
         return;
     }
 
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Push Dicom Series
     if(!m_job->cancelRequested())
     {
-        for(::fwMedData::DicomSeries::sptr series : m_dicomSeriesContainer)
+        for(data::DicomSeries::sptr series : m_dicomSeriesContainer)
         {
             seriesDBHelper.add(series);
         }
@@ -272,7 +272,7 @@ void SeriesDB::readDicom()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSeriesDB,
+void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
                                      const ::fwServices::IService::sptr& notifier)
 {
     // Clear DicomSeries container
@@ -281,9 +281,9 @@ void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSe
     m_job->add(m_converterJob);
 
     // Read series
-    for(::fwMedData::Series::sptr series : dicomSeriesDB->getContainer())
+    for(data::Series::sptr series : dicomSeriesDB->getContainer())
     {
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
         SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
         m_dicomSeriesContainer.push_back(dicomSeries);
     }
@@ -335,7 +335,7 @@ bool SeriesDB::isDicomDirAvailable()
 
 void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     // Sort DicomSeries
     std::sort(m_dicomSeriesContainer.begin(), m_dicomSeriesContainer.end(), SeriesDB::dicomSeriesComparator);
@@ -351,7 +351,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     // We do not use an Aggregator here as the jobs
     // are created after updating the main aggregator.
     std::uint64_t totalWorkUnits = 0;
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
+    for(const data::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         totalWorkUnits += dicomSeries->getDicomContainer().size();
     }
@@ -364,9 +364,9 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
                             };
 
     // Read series
-    for(const ::fwMedData::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
+    for(const data::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
     {
-        ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
         FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
                     sopClassUIDContainer.size() != 1);
         const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
@@ -380,7 +380,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
             seriesReader->setCancelRequestedCallback(m_converterJob->cancelRequestedCallback());
             try
             {
-                ::fwMedData::Series::sptr series = seriesReader->read(dicomSeries);
+                data::Series::sptr series = seriesReader->read(dicomSeries);
 
                 if(series)
                 {
@@ -420,13 +420,13 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
-                                     const SPTR(::fwMedData::DicomSeries)& b)
+bool SeriesDB::dicomSeriesComparator(const SPTR(data::DicomSeries)& a,
+                                     const SPTR(data::DicomSeries)& b)
 {
-    const ::fwMedData::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
-    const std::string aSOPClassUID                                                 = *(aSOPClassUIDContainer.begin());
-    const ::fwMedData::DicomSeries::SOPClassUIDContainerType bSOPClassUIDContainer = b->getSOPClassUIDs();
-    const std::string bSOPClassUID                                                 = *(bSOPClassUIDContainer.begin());
+    const data::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
+    const std::string aSOPClassUID                                          = *(aSOPClassUIDContainer.begin());
+    const data::DicomSeries::SOPClassUIDContainerType bSOPClassUIDContainer = b->getSOPClassUIDs();
+    const std::string bSOPClassUID                                          = *(bSOPClassUIDContainer.begin());
 
     // a > b if a contains a SR and not b
     const bool aIsAnImage =

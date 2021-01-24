@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,13 @@ namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ModelSeries
 {
 
 /**
- * @brief Test patch to convert ::fwMedData::ModelSeries from version 1 to version 2.
+ * @brief Test patch to convert data::ModelSeries from version 1 to version 2.
  */
 class V1ToV2Test : public CPPUNIT_NS::TestFixture
 {
@@ -51,6 +51,6 @@ public:
 };
 
 } //namespace ModelSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

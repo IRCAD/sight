@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ModelSeries/V2ToV3Test.hpp"
+#include "data/ModelSeries/V2ToV3Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ModelSeries/V2ToV3.hpp>
+#include <fwStructuralPatch/data/ModelSeries/V2ToV3.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ModelSeries::V2ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ModelSeries::V2ToV3Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ModelSeries
 {
@@ -63,7 +63,7 @@ void V2ToV3Test::applyPatchTest()
     ::fwAtoms::Object::sptr modelSeriesV2 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr modelSeriesV3;
 
-    ::fwAtomsPatch::helper::setClassname(modelSeriesV2, "::fwMedData::ModelSeries");
+    ::fwAtomsPatch::helper::setClassname(modelSeriesV2, "data::ModelSeries");
     ::fwAtomsPatch::helper::setVersion(modelSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(modelSeriesV2);
@@ -86,8 +86,8 @@ void V2ToV3Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[modelSeriesV2] = modelSeriesV3;
 
-        ::fwStructuralPatch::fwMedData::ModelSeries::V2ToV3::sptr v2ToV3Patch;
-        v2ToV3Patch = ::fwStructuralPatch::fwMedData::ModelSeries::V2ToV3::New();
+        ::fwStructuralPatchdata::ModelSeries::V2ToV3::sptr v2ToV3Patch;
+        v2ToV3Patch = ::fwStructuralPatchdata::ModelSeries::V2ToV3::New();
         CPPUNIT_ASSERT_NO_THROW(v2ToV3Patch->apply(modelSeriesV2, modelSeriesV3, newVersions));
 
         CPPUNIT_ASSERT(modelSeriesV3);
@@ -111,6 +111,6 @@ void V2ToV3Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ModelSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

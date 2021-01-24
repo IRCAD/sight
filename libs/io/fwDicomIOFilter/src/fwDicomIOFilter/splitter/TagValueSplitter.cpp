@@ -81,7 +81,7 @@ bool TagValueSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
-    const ::fwMedData::DicomSeries::sptr& series,
+    const data::DicomSeries::sptr& series,
     const ::fwLog::Logger::sptr& logger) const
 {
     if(m_tag == DCM_UndefinedTagKey)
@@ -137,7 +137,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     for(const InstanceGroupContainer::value_type& group :  groupContainer)
     {
         // Copy the series
-        ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::New();
+        data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
         dicomSeries->shallowCopy(series);
         dicomSeries->clearDicomContainer();
 

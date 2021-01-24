@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwDicomIOFilterQt/config.hpp"
 
-#include <fwDicomIOFilter/sorter/TagValueSorter.hpp>
+#include <data/DicomSeries.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwDicomIOFilter/sorter/TagValueSorter.hpp>
 
 namespace fwDicomIOFilterQt
 {

@@ -42,7 +42,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro(::fwGui::IActionSrv, ::ioGdcm::SDicomSeriesConverter, ::fwMedData::SeriesDB)
+fwServicesRegisterMacro(::fwGui::IActionSrv, ::ioGdcm::SDicomSeriesConverter, data::SeriesDB)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -88,11 +88,11 @@ void SDicomSeriesConverter::configuring()
 void SDicomSeriesConverter::updating()
 {
     // Get Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
+    data::SeriesDB::sptr destinationSeriesDB = this->getInOut< data::SeriesDB>("target");
     SLM_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
 
-    ::fwMedData::SeriesDB::csptr dicomSeriesDB = this->getInput< ::fwMedData::SeriesDB >("source");
-    ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::csptr dicomSeriesDB = this->getInput< data::SeriesDB >("source");
+    data::SeriesDB::sptr dummy          = data::SeriesDB::New();
 
     if(dicomSeriesDB->empty())
     {

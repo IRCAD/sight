@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwAtomsPatch
     fwMDSemanticPatch
     core
-    fwMedData
+    data
     arData
 )
 set( REQUIREMENTS  )

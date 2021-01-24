@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,10 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
-/// Structural creator for ::fwMedData::Equipment version '1'.
+/// Structural creator for data::Equipment version '1'.
 class FWSTRUCTURALPATCH_CLASS_API Equipment1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
@@ -53,6 +53,6 @@ public:
 
 };
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

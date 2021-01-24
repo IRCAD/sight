@@ -31,7 +31,7 @@ namespace creator
 {
 
 /// Contains creators for fwMedData.
-namespace fwMedData
+namespace sight::data
 {
 }
 } // namespace creator
@@ -61,16 +61,16 @@ namespace Study
 } // namespace sight::data
 
 /// Contains the structural patch (::fwAtomsPatch::IStructuralPatch) to tranforms atoms from fwMedData objects.
-namespace fwMedData
+namespace sight::data
 {
-/// Contains the structural patch to transform atoms from fwMedData::ImageSeries.
+/// Contains the structural patch to transform atoms from data::ImageSeries.
 namespace ImageSeries
 {
 }
-/// Contains the structural patch to transform atoms from fwMedData::ModelSeries.
+/// Contains the structural patch to transform atoms from data::ModelSeries.
 namespace ModelSeries
 {
 }
-} // namespace fwMedData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

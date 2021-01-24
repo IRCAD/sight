@@ -25,15 +25,14 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/MultiFiles.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
 #include <fwLog/Logger.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -53,7 +52,7 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::SeriesDB.
  */
-class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
                                     public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                                     public data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
                                     public core::com::HasSignals
@@ -61,10 +60,10 @@ class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectRead
 
 public:
 
-    fwCoreClassMacro(SeriesDB, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+    fwCoreClassMacro(SeriesDB, ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
                      ::fwDataIO::reader::factory::New< SeriesDB >);
 
-    typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
+    typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
     typedef std::vector< std::string > FilenameContainerType;
     typedef std::vector< std::string > SupportedSOPClassContainerType;
 
@@ -82,7 +81,7 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWGDCMIO_API void readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSeriesDB,
+    FWGDCMIO_API void readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
                                             const ::fwServices::IService::sptr& notifier
                                                 = ::fwServices::IService::sptr());
 
@@ -172,8 +171,8 @@ private:
      * @param[in] a First DicomSeries
      * @param[in] b Second DicomSeries
      */
-    static bool dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
-                                      const SPTR(::fwMedData::DicomSeries)& b);
+    static bool dicomSeriesComparator(const SPTR(data::DicomSeries)& a,
+                                      const SPTR(data::DicomSeries)& b);
 
     /// Object Reader Map
     DicomSeriesContainerType m_dicomSeriesContainer;

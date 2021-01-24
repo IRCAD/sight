@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -35,15 +35,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Equipment::Equipment(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Equipment::Equipment(const data::DicomSeries::csptr& dicomSeries,
                      const SPTR(::gdcm::Reader)& reader,
                      const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                     const ::fwMedData::Equipment::sptr& equipment,
+                     const data::Equipment::sptr& equipment,
                      const ::fwLog::Logger::sptr& logger,
                      ProgressCallback progress,
                      CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Equipment >(dicomSeries, reader, instance, equipment,
-                                                                        logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< data::Equipment >(dicomSeries, reader, instance, equipment,
+                                                                 logger, progress, cancel)
 {
 }
 

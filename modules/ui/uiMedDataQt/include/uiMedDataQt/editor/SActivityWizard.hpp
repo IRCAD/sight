@@ -32,14 +32,13 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
+#include <data/ActivitySeries.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -54,20 +53,20 @@ namespace editor
  * @brief This editor allows to select the data required by an activity in order to create the ActivitySeries.
  *
  * This editor displays a tab widget (one tab by data).
- * It works on a ::fwMedData::SeriesDB and adds the created activity series into the seriesDB.
+ * It works on a data::SeriesDB and adds the created activity series into the seriesDB.
  *
  * @section Slots Slots
- * - \b createActivity(std::string) : This slot displays the gui allowing to create a ::fwMedData::ActivitySeries with
+ * - \b createActivity(std::string) : This slot displays the gui allowing to create a data::ActivitySeries with
  *      the required data for the given activity.
- * - \b updateActivity(::fwMedData::ActivitySeries::sptr) : This slot displays the gui allowing to update the required
+ * - \b updateActivity(data::ActivitySeries::sptr) : This slot displays the gui allowing to update the required
  *      data for the given activity.
- * - \b updateActivitySeries(::fwMedData::Series::sptr) : This slot receives a ::fwMedData::Series, but works only if
+ * - \b updateActivitySeries(data::Series::sptr) : This slot receives a data::Series, but works only if
  *   the series is an ActivitySeries, else it does nothing. It displays the gui allowing to update the required data for
  *   the given activity.
  *
  * @section Signals Signals
- * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when the activitySeries is built.
- * - \b activityUpdated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when the activitySeries is updated.
+ * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when the activitySeries is built.
+ * - \b activityUpdated(data::ActivitySeries::sptr) : This signal is emitted when the activitySeries is updated.
  * - \b canceled() : This signal is emitted when the cancel button is clicked.
  *
  * @section XML XML Configuration
@@ -81,13 +80,13 @@ namespace editor
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
-         <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
+         <icon type="data::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+         <icon type="data::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
      </icons>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB to store the create activity series
+ * - \b seriesDB [data::SeriesDB]: seriesDB to store the create activity series
  * @subsection Configuration Configuration
  * - \b ioSelectorConfig : configuration for the SIOSelector service used to import data in this editor.
  * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SIOSelector service used to
@@ -131,10 +130,10 @@ public:
      * @{
      */
     UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
-    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
 
     UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
-    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
+    typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
 
     UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
     typedef core::com::Signal< void () > CanceledSignalType;
@@ -166,15 +165,15 @@ private:
     void createActivity(std::string activityID);
 
     /// SLOT: Displays the gui allowing to update the required data for the activity.
-    void updateActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    void updateActivity(data::ActivitySeries::sptr activitySeries);
 
     /// SLOT: Displays the gui allowing to update the required data for the activity.
     /**
      * @brief SLOT: It displays the gui allowing to update the required data for the given activity.
-     * @note This slot receives a ::fwMedData::Series, but works only if the series is an ActivitySeries, else it does
+     * @note This slot receives a data::Series, but works only if the series is an ActivitySeries, else it does
      *       nothing.
      */
-    void updateActivitySeries(::fwMedData::Series::sptr series);
+    void updateActivitySeries(data::Series::sptr series);
 
     /**
      * @brief Called when the user click on the 'apply' Button.
@@ -193,7 +192,7 @@ private:
     /// Called when the user click on the 'cancel' Button.
     void onCancel();
 
-    ::fwMedData::ActivitySeries::sptr m_actSeries; ///< Activity series builded
+    data::ActivitySeries::sptr m_actSeries; ///< Activity series builded
 
     QPointer<widget::ActivityDataView> m_activityDataView; ///< view used to select required data for activity
     QPointer<QPushButton> m_okButton; ///<  Button 'Apply' or 'Next' to validate the activity creation

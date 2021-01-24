@@ -29,12 +29,11 @@
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwTest/generator/Image.hpp>
 

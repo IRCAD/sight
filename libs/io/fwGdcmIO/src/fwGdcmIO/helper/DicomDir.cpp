@@ -27,12 +27,12 @@
 #include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
+#include <data/DicomSeries.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
 #include <fwLog/Logger.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -77,8 +77,8 @@ std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
 
 void processDirInformation(const std::filesystem::path& dicomdir,
                            const std::filesystem::path& rootDicomDirPath,
-                           ::fwMedData::DicomSeries::sptr currentSeries,
-                           std::map < std::string, ::fwMedData::DicomSeries::sptr >& dicomSeriesMap,
+                           data::DicomSeries::sptr currentSeries,
+                           std::map < std::string, data::DicomSeries::sptr >& dicomSeriesMap,
                            const ::fwLog::Logger::sptr& logger,
                            std::function< void(std::uint64_t) >& progress,
                            std::function< bool() >& cancel,
@@ -181,7 +181,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
                             ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000e >(item.GetNestedDataSet());
                         if(dicomSeriesMap.find(seriesUID) == dicomSeriesMap.end())
                         {
-                            ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::New();
+                            data::DicomSeries::sptr series = data::DicomSeries::New();
                             series->setInstanceUID(seriesUID);
                             dicomSeriesMap[seriesUID] = series;
                         }
@@ -216,7 +216,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
 // ----------------------------------------------------------------------------
 
 void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
-                                   std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
+                                   std::vector< SPTR(data::DicomSeries) >& seriesDB,
                                    const ::fwLog::Logger::sptr& logger,
                                    std::function< void(std::uint64_t) > progress,
                                    std::function< bool() > cancel)
@@ -282,7 +282,7 @@ void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
         ptotal = 1.;
     }
 
-    std::map < std::string, ::fwMedData::DicomSeries::sptr > dicomSeriesMap;
+    std::map < std::string, data::DicomSeries::sptr > dicomSeriesMap;
     processDirInformation(dicomdir, dicomdir.parent_path(), nullptr, dicomSeriesMap,
                           logger, progress, cancel, p, ptotal);
 

@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     data
     fwDataTools
-    fwMedData
     fwMedDataTools
     fwServices
 )

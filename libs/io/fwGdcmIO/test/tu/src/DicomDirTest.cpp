@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include <fwGdcmIO/helper/DicomDir.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/DicomSeries.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwLog/Logger.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/Slow.hpp>
@@ -78,7 +78,7 @@ void DicomDirTest::readDicomDir()
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
 
-    std::vector< ::fwMedData::DicomSeries::sptr > seriesDB;
+    std::vector< data::DicomSeries::sptr > seriesDB;
 
     ::fwLog::Logger::sptr logger = ::fwLog::Logger::New();
 

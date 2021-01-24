@@ -25,7 +25,7 @@
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <gdcmSegment.h>
 
@@ -41,7 +41,7 @@ namespace ie
 /**
  * @brief Surface Information Entity class
  */
-class FWGDCMIO_CLASS_API Surface : public ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >
+class FWGDCMIO_CLASS_API Surface : public ::fwGdcmIO::writer::ie::InformationEntity< data::ModelSeries >
 {
 
 public:
@@ -57,7 +57,7 @@ public:
     FWGDCMIO_API Surface(const SPTR(::gdcm::Writer)& writer,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                         const ::fwMedData::ModelSeries::csptr& series,
+                         const data::ModelSeries::csptr& series,
                          const ::fwLog::Logger::sptr& logger = nullptr,
                          ProgressCallback progress           = nullptr,
                          CancelRequestedCallback cancel      = nullptr);

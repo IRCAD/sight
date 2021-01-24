@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwServices
     fwMath
     arData
-    fwMedData
     arServices
     cvIO
 

@@ -28,16 +28,15 @@
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/PointList.hpp>
+#include <data/Series.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::Series);
 
@@ -64,8 +63,8 @@ Series::~Series()
 
 void Series::write()
 {
-    ::fwMedData::Series::csptr series = this->getConcreteObject();
-    SLM_ASSERT("::fwMedData::Series not instanced", series);
+    data::Series::csptr series = this->getConcreteObject();
+    SLM_ASSERT("data::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
@@ -80,8 +79,8 @@ void Series::write()
     if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage) ||
        sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
-        ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
-        SLM_ASSERT("::fwMedData::ImageSeries not instanced", imageSeries);
+        data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
+        SLM_ASSERT("data::ImageSeries not instanced", imageSeries);
         data::Image::sptr image = imageSeries->getImage();
         SLM_ASSERT("data::Image not instanced", image);
 
@@ -127,7 +126,7 @@ void Series::write()
 
 //------------------------------------------------------------------------------
 
-bool Series::hasDocumentSR(const ::fwMedData::ImageSeries::csptr& imageSeries) const
+bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
 {
     data::Image::csptr image = imageSeries->getImage();
     SLM_ASSERT("Image not instanced", image);

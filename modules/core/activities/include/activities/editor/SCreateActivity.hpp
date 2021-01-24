@@ -133,7 +133,7 @@ private:
      * @brief Slots to launch the given activitySeries.
      * @param activitySeries the activity is launched on this series.
      */
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    void launchActivity(data::ActivitySeries::sptr activitySeries);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 

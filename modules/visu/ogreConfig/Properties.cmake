@@ -6,7 +6,6 @@ set( DEPENDENCIES)
 set( REQUIREMENTS
     servicesReg
     data
-    fwMedData
     gui
     uiTF
     scene2D

@@ -75,9 +75,9 @@ void IActivityView::configuring()
 
 //------------------------------------------------------------------------------
 
-void IActivityView::launchActivitySeries(fwMedData::Series::sptr series)
+void IActivityView::launchActivitySeries(data::Series::sptr series)
 {
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
         this->launchActivity(activitySeries);
@@ -86,7 +86,7 @@ void IActivityView::launchActivitySeries(fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-bool IActivityView::validateActivity(fwMedData::ActivitySeries::sptr activitySeries) const
+bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) const
 {
     bool isValid;
     std::string message;
@@ -105,9 +105,9 @@ bool IActivityView::validateActivity(fwMedData::ActivitySeries::sptr activitySer
 
 //------------------------------------------------------------------------------
 
-fwMedData::ActivitySeries::sptr IActivityView::createMainActivity() const
+data::ActivitySeries::sptr IActivityView::createMainActivity() const
 {
-    ::fwMedData::ActivitySeries::sptr actSeries = this->::fwActivities::IActivityLauncher::createMainActivity();
+    data::ActivitySeries::sptr actSeries = this->::fwActivities::IActivityLauncher::createMainActivity();
 
     if (nullptr == actSeries)
     {

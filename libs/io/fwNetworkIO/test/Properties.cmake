@@ -7,6 +7,5 @@ set( DEPENDENCIES
     fwTest
     data
     fwQt
-    fwMedData
     )
 set( REQUIREMENTS )

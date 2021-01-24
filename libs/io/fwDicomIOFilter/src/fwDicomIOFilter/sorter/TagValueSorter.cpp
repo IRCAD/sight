@@ -81,7 +81,7 @@ bool TagValueSorter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
 const
 {
     if(m_tag == DCM_UndefinedTagKey)
@@ -92,7 +92,7 @@ const
 
     DicomSeriesContainerType result;
 
-    ::fwMedData::DicomSeries::DicomContainerType sortedDicom;
+    data::DicomSeries::DicomContainerType sortedDicom;
 
     OFCondition status;
     DcmDataset* dataset;

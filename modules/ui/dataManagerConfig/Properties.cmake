@@ -13,6 +13,5 @@ set( REQUIREMENTS
     media
     uiImageQt
     servicesReg
-    fwMedData
     data
 )

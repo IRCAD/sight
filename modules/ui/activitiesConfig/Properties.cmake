@@ -4,7 +4,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
         data
-        fwMedData
         activities
         ctrlSelection
         gui

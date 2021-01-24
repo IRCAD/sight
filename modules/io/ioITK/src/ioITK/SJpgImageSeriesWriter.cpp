@@ -27,6 +27,7 @@
 #include <core/base.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
@@ -36,14 +37,12 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <fwServices/macros.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, data::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -150,7 +149,7 @@ void SJpgImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
+        data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());

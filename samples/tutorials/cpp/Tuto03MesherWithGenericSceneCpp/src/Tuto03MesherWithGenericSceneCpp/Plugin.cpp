@@ -316,7 +316,7 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType imageSeriesReaderConfig;
     imageSeriesReaderConfig.put("type.<xmlattr>.mode", "reader");
-    imageSeriesReaderConfig.put("type.<xmlattr>.class", "::fwMedData::ImageSeries");
+    imageSeriesReaderConfig.put("type.<xmlattr>.class", "data::ImageSeries");
     imageSeriesReader->configure(imageSeriesReaderConfig);
 
     ::fwServices::IService::ConfigType modelSeriesWriterConfig;

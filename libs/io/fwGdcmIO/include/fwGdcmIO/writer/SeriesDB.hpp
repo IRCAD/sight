@@ -28,11 +28,10 @@
 #include <core/tools/ProgressAdviser.hpp>
 
 #include <data/location/Folder.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 namespace fwGdcmIO
 {
@@ -43,14 +42,14 @@ namespace writer
 /**
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
                  public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                  public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(SeriesDB, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+    fwCoreClassMacro(SeriesDB, ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
                      ::fwDataIO::writer::factory::New< SeriesDB >);
 
     /// Constructor
@@ -88,8 +87,8 @@ protected:
      * @param[in] a First Series
      * @param[in] b Second Series
      */
-    static bool seriesComparator(const ::fwMedData::Series::csptr& a,
-                                 const ::fwMedData::Series::csptr& b);
+    static bool seriesComparator(const data::Series::csptr& a,
+                                 const data::Series::csptr& b);
 
     /// Fiducials Export Mode
     ::fwGdcmIO::writer::Series::FiducialsExportMode m_fiducialsExportMode;

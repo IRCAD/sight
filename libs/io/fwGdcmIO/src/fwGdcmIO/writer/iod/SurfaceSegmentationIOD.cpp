@@ -34,10 +34,10 @@
 #include <core/runtime/operations.hpp>
 #include <core/spyLog.hpp>
 
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/Equipment.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
@@ -69,10 +69,10 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::write(const ::fwMedData::Series::csptr& series)
+void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 {
     // Retrieve model series
-    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+    data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer

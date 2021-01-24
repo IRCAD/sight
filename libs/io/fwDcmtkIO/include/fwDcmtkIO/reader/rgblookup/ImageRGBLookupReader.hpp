@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -46,7 +46,7 @@ namespace rgblookup
 class FWDCMTKIO_CLASS_API ImageRGBLookupReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
+    typedef data::DicomSeries::DicomContainerType DicomContainerType;
 
     /**
      * @brief Fill the buffer of an image

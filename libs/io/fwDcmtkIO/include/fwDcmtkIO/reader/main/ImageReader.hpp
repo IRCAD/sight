@@ -24,7 +24,7 @@
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -46,7 +46,7 @@ namespace main
 class FWDCMTKIO_CLASS_API ImageReader
 {
 public:
-    typedef ::fwMedData::DicomSeries::DicomContainerType DicomContainerType;
+    typedef data::DicomSeries::DicomContainerType DicomContainerType;
 
     /**
      * @brief Fill the buffer of an image

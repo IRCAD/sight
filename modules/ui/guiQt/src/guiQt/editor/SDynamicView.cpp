@@ -172,7 +172,7 @@ void SDynamicView::swapping()
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
+void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
     if (this->validateActivity(activitySeries))
     {
@@ -377,7 +377,7 @@ void SDynamicView::changedTab( int index )
 
 void SDynamicView::buildMainActivity()
 {
-    ::fwMedData::ActivitySeries::sptr actSeries = this->createMainActivity();
+    data::ActivitySeries::sptr actSeries = this->createMainActivity();
 
     if (actSeries)
     {
@@ -391,7 +391,7 @@ void SDynamicView::buildMainActivity()
 
 //------------------------------------------------------------------------------
 
-SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::ActivitySeries::sptr activitySeries)
+SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries::sptr activitySeries)
 {
     ReplaceMapType replaceMap;
     this->translateParameters(m_parameters, replaceMap);

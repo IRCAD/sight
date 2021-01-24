@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 
 #include <QPointer>
 #include <QStandardItem>
@@ -102,13 +102,13 @@ public:
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr _series);
+    UIMEDDATAQT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr _series);
+    UIMEDDATAQT_API void removeSeries(data::Series::sptr _series);
 
     /// Clears all items in the model.
     UIMEDDATAQT_API void clear();
@@ -133,10 +133,10 @@ public:
     UIMEDDATAQT_API void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    UIMEDDATAQT_API QStandardItem* findSeriesItem(::fwMedData::Series::sptr _series);
+    UIMEDDATAQT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
 
     /// Returns the item representing the study.
-    UIMEDDATAQT_API QStandardItem* findStudyItem(::fwMedData::Study::sptr _study);
+    UIMEDDATAQT_API QStandardItem* findStudyItem(data::Study::sptr _study);
 
     /**
      * @brief Sets the specific icons for series in selector.
@@ -172,7 +172,7 @@ Q_SIGNALS:
 
 private:
 
-    typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
+    typedef std::map< data::DicomValueType, QStandardItem* > StudyUidItemMapType;
 
     /**
      * @brief Returns the informations contained in the data container as a string, all items are separated by the
@@ -188,7 +188,7 @@ private:
     bool removeSeriesItem(QStandardItem* _item);
 
     /// Adds the icon corresponding to the type of series.
-    void addSeriesIcon(::fwMedData::Series::sptr _series, QStandardItem* _item);
+    void addSeriesIcon(data::Series::sptr _series, QStandardItem* _item);
 
     /// Initializes model. Sets headers of the selector.
     void init();

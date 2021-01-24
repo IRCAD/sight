@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,22 +23,22 @@
 #pragma once
 
 #include "fwStructuralPatch/config.hpp"
-#include "fwStructuralPatch/creator/fwMedData/Series1.hpp"
+#include "fwStructuralPatch/creator/data/Series1.hpp"
 
 namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
-/// Structural creator for ::fwMedData::ModelSeries version '1'.
-class FWSTRUCTURALPATCH_CLASS_API ModelSeries1 : public ::fwStructuralPatch::creator::fwMedData::Series1
+/// Structural creator for data::ModelSeries version '1'.
+class FWSTRUCTURALPATCH_CLASS_API ModelSeries1 : public ::fwStructuralPatch::creatordata::Series1
 {
 
 public:
 
-    fwCoreClassMacro(ModelSeries1, ::fwStructuralPatch::creator::fwMedData::Series1, new ModelSeries1)
+    fwCoreClassMacro(ModelSeries1, ::fwStructuralPatch::creatordata::Series1, new ModelSeries1)
 
     /// Constructor
     FWSTRUCTURALPATCH_API ModelSeries1();
@@ -54,6 +54,6 @@ public:
 
 };
 
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

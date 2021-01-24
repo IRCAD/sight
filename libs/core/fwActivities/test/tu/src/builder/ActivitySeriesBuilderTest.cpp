@@ -29,12 +29,11 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwActivities::ut::ActivitySeriesBuilderTest );
@@ -71,9 +70,9 @@ void ActivitySeriesBuilderTest::tearDown()
 
 void ActivitySeriesBuilderTest::buildDataTest()
 {
-    data::Vector::sptr selection = data::Vector::New();
-    ::fwMedData::ImageSeries::sptr imgSeriesSelected   = ::fwMedData::ImageSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeriesSelected = ::fwMedData::ModelSeries::New();
+    data::Vector::sptr selection                = data::Vector::New();
+    data::ImageSeries::sptr imgSeriesSelected   = data::ImageSeries::New();
+    data::ModelSeries::sptr modelSeriesSelected = data::ModelSeries::New();
     selection->getContainer().push_back(imgSeriesSelected);
     selection->getContainer().push_back(modelSeriesSelected);
 
@@ -82,7 +81,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), activities.size());
 
     ::fwActivities::registry::ActivityInfo activityInfo = activities[0];
-    ::fwMedData::ActivitySeries::sptr actSeries;
+    data::ActivitySeries::sptr actSeries;
     ::fwActivities::IBuilder::sptr builder;
     builder = ::fwActivities::builder::factory::New(activityInfo.builderImpl);
     CPPUNIT_ASSERT_MESSAGE("<" + activityInfo.builderImpl + "> instantiation failed", builder);

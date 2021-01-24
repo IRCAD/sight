@@ -57,7 +57,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b model [::fwMedData::ModelSeries]: adapted model series.
+ * - \b model [data::ModelSeries]: adapted model series.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the modelSeries's layer
@@ -99,12 +99,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwMedData::ModelSeries::s_VERTEX_MODIFIED_SIG to s_UPDATE_SLOT
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to s_UPDATE_SLOT
-     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to s_UPDATE_SLOT
-     * Connect ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
-     * Connect ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
-     * Connect ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to s_UPDATE_SLOT
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to s_UPDATE_SLOT
+     * Connect data::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

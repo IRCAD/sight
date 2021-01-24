@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwTest/config.hpp"
 
-#include <fwMedData/ImageSeries.hpp>
+#include <data/ImageSeries.hpp>
 
 namespace fwTest
 {
@@ -41,12 +41,12 @@ public:
      * This file is located here on test database : "sight/Patient/Dicom/JMSGenou",
      * its represents a CT image of a knee ( 400 slices ).
      */
-    FWTEST_API static bool checkSeriesJMSGenou( const SPTR(::fwMedData::ImageSeries)& series );
+    FWTEST_API static bool checkSeriesJMSGenou( const SPTR(data::ImageSeries)& series );
 
     /**
      * @brief This method is the same as checkSeriesJMSGenou but it checks trimmed strings instead of even sized strings
      */
-    FWTEST_API static bool checkSeriesJMSGenouTrimmed( const SPTR(::fwMedData::ImageSeries)& series );
+    FWTEST_API static bool checkSeriesJMSGenouTrimmed( const SPTR(data::ImageSeries)& series );
 };
 
 } // namespace fwTest

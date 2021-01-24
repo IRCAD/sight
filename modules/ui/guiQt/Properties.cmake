@@ -8,7 +8,6 @@ set( DEPENDENCIES
     core
     data
     fwDataTools
-    fwMedData
     fwGui
     fwQt
     fwGuiQt

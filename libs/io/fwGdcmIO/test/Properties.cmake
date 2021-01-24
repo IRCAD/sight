@@ -5,7 +5,6 @@ set( DEPENDENCIES
     fwGdcmIO
     core
     data
-    fwMedData
     fwTest
     fwDataTools
     fwZip

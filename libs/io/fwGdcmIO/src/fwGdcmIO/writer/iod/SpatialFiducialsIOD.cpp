@@ -32,15 +32,14 @@
 
 #include <core/spyLog.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <gdcmWriter.h>
 
@@ -70,10 +69,10 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(const ::fwMedData::Series::csptr& series)
+void SpatialFiducialsIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image

@@ -57,7 +57,7 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return ActivitySeries or null
      */
-    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
+    FWACTIVITIES_API virtual data::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const override;
 };

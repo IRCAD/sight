@@ -110,7 +110,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> IActivityLauncher::validateActivity(
-    const ::fwMedData::ActivitySeries::csptr& activitySeries) const
+    const data::ActivitySeries::csptr& activitySeries) const
 {
     bool isValid = true;
     std::string message;
@@ -151,12 +151,12 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-fwMedData::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
+data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
 {
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(m_mainActivityId);
 
-    ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
+    data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
     if (info.requirements.size() > 0)
     {
         data::Composite::sptr data = actSeries->getData();

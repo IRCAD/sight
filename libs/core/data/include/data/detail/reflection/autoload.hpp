@@ -26,15 +26,22 @@
 #include "data/Boolean.hpp"
 #include "data/Color.hpp"
 #include "data/Composite.hpp"
+#include "data/detail/reflection/ActivitySeries.hpp"
+#include "data/detail/reflection/DicomSeries.hpp"
 #include "data/detail/reflection/Image.hpp"
+#include "data/detail/reflection/ImageSeries.hpp"
 #include "data/detail/reflection/Material.hpp"
+#include "data/detail/reflection/Series.hpp"
 #include "data/detail/reflection/StructureTraits.hpp"
 #include "data/detail/reflection/TransferFunction.hpp"
+#include "data/DicomSeries.hpp"
 #include "data/Edge.hpp"
+#include "data/Equipment.hpp"
 #include "data/Float.hpp"
 #include "data/Graph.hpp"
 #include "data/Histogram.hpp"
 #include "data/Image.hpp"
+#include "data/ImageSeries.hpp"
 #include "data/Integer.hpp"
 #include "data/Landmarks.hpp"
 #include "data/Line.hpp"
@@ -43,6 +50,9 @@
 #include "data/location/SingleFile.hpp"
 #include "data/Material.hpp"
 #include "data/Mesh.hpp"
+#include "data/ModelSeries.hpp"
+#include "data/NavigationSeries.hpp"
+#include "data/Patient.hpp"
 #include "data/Plane.hpp"
 #include "data/PlaneList.hpp"
 #include "data/Point.hpp"
@@ -54,9 +64,12 @@
 #include "data/Resection.hpp"
 #include "data/ResectionDB.hpp"
 #include "data/ROITraits.hpp"
+#include "data/Series.hpp"
+#include "data/SeriesDB.hpp"
 #include "data/String.hpp"
 #include "data/StructureTraits.hpp"
 #include "data/StructureTraitsDictionary.hpp"
+#include "data/Study.hpp"
 #include "data/Tag.hpp"
 #include "data/TransformationMatrix3D.hpp"
 #include "data/Vector.hpp"
@@ -120,6 +133,16 @@ struct runner
         localDeclaresightdataProcessObject();
         localDeclaresightdataTag();
         localDeclaresightdataLandmarks();
+        localDeclaresightdataEquipment();
+        localDeclaresightdataStudy();
+        localDeclaresightdataPatient();
+        localDeclaresightdataSeries();
+        localDeclaresightdataSeriesDB();
+        localDeclaresightdataDicomSeries();
+        localDeclaresightdataImageSeries();
+        localDeclaresightdataModelSeries();
+        localDeclaresightdataActivitySeries();
+        localDeclaresightdataNavigationSeries();
     }
 
     static runner r;

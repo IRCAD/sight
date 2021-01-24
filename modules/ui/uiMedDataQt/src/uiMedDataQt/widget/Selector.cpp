@@ -22,13 +22,12 @@
 
 #include "uiMedDataQt/widget/Selector.hpp"
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 
 #include <QItemSelectionModel>
 #include <QKeyEvent>
@@ -68,7 +67,7 @@ Selector::~Selector()
 
 //-----------------------------------------------------------------------------
 
-void Selector::addSeries(::fwMedData::Series::sptr _series)
+void Selector::addSeries(data::Series::sptr _series)
 {
     m_model->addSeries(_series);
     QStandardItem* studyItem = m_model->findStudyItem(_series->getStudy());
@@ -82,7 +81,7 @@ void Selector::addSeries(::fwMedData::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-void Selector::removeSeries(::fwMedData::Series::sptr _series)
+void Selector::removeSeries(data::Series::sptr _series)
 {
     m_model->removeSeries(_series);
 }
@@ -131,7 +130,7 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& _indexList
 
         if (index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
         {
-            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+            data::Series::sptr series = data::Series::dynamicCast(obj);
             vSeries.push_back(series);
         }
     }
@@ -169,7 +168,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SLM_ASSERT("UID must not be empty.", !uid.empty());
         core::tools::Object::sptr obj = core::tools::fwID::getObject(uid);
-        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        data::Series::sptr series     = data::Series::dynamicCast(obj);
         vSeries.push_back(series);
     }
     return vSeries;
@@ -241,7 +240,7 @@ void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
                     const std::string serieUID =
                         serieItem->index().data(SelectorModel::UID).toString().toStdString();
                     core::tools::Object::sptr obj = core::tools::fwID::getObject(serieUID);
-                    ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
+                    data::Series::sptr serie      = data::Series::dynamicCast(obj);
 
                     series.push_back(serie);
                 }
@@ -279,7 +278,7 @@ void Selector::onRemoveSerieID(const std::string& _id)
                 {
                     selection.push_back(serieItem->index());
                     core::tools::Object::sptr obj = core::tools::fwID::getObject(serieUID);
-                    ::fwMedData::Series::sptr serie = ::fwMedData::Series::dynamicCast(obj);
+                    data::Series::sptr serie      = data::Series::dynamicCast(obj);
 
                     series.push_back(serie);
                     break;

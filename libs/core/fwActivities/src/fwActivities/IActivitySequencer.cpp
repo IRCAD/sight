@@ -46,13 +46,13 @@ IActivitySequencer::~IActivitySequencer()
 
 //------------------------------------------------------------------------------
 
-int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& seriesDB)
+int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
 {
     int lastActivityIndex = -1;
 
     for (const auto& series: seriesDB->getContainer())
     {
-        ::fwMedData::ActivitySeries::sptr activity = ::fwMedData::ActivitySeries::dynamicCast(series);
+        data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
 
         if (!activity)
         {
@@ -93,14 +93,14 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
 
 //------------------------------------------------------------------------------
 
-void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
+void IActivitySequencer::storeActivityData(const data::SeriesDB::sptr& seriesDB, int index,
                                            const data::Composite::csptr& overrides)
 {
     // Retrives the current activity data
     const size_t currentIdx = static_cast<size_t>(index);
     SLM_ASSERT("SeriesDB does not contain enough series.", seriesDB->size() > currentIdx);
-    ::fwMedData::Series::sptr series           = seriesDB->getContainer()[currentIdx];
-    ::fwMedData::ActivitySeries::sptr activity = ::fwMedData::ActivitySeries::dynamicCast(series);
+    data::Series::sptr series           = seriesDB->getContainer()[currentIdx];
+    data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
     SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
     data::Composite::sptr composite = activity->getData();
 
@@ -127,15 +127,15 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
 
 //------------------------------------------------------------------------------
 
-::fwMedData::ActivitySeries::sptr IActivitySequencer::getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
-                                                                  size_t index, const core::com::SlotBase::sptr& slot,
-                                                                  const data::Composite::csptr& overrides)
+data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB::sptr& seriesDB,
+                                                           size_t index, const core::com::SlotBase::sptr& slot,
+                                                           const data::Composite::csptr& overrides)
 {
-    ::fwMedData::ActivitySeries::sptr activity;
+    data::ActivitySeries::sptr activity;
     if (seriesDB->size() > index) // The activity already exists, update the data
     {
-        ::fwMedData::Series::sptr series = seriesDB->getContainer()[index];
-        activity                         = ::fwMedData::ActivitySeries::dynamicCast(series);
+        data::Series::sptr series = seriesDB->getContainer()[index];
+        activity = data::ActivitySeries::dynamicCast(series);
         SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
         data::Composite::sptr composite = activity->getData();
 
@@ -185,7 +185,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         const ::fwActivities::registry::ActivityInfo& info =
             ::fwActivities::registry::Activities::getDefault()->getInfo(activityId);
 
-        activity = ::fwMedData::ActivitySeries::New();
+        activity = data::ActivitySeries::New();
 
         activity->setModality("OT");
         activity->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
@@ -232,8 +232,8 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         helper.add(activity);
         {
-            auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
-                ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+            auto sig = seriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
+                data::SeriesDB::s_ADDED_SERIES_SIG);
             if (slot)
             {
                 core::com::Connection::Blocker block(sig->getConnection( slot ));

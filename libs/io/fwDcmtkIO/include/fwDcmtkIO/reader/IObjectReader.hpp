@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwDcmtkIO
 {
@@ -47,7 +47,7 @@ public:
      * @brief Read the series from the group of instances.
      * @return Returns the created Series.
      */
-    FWDCMTKIO_API virtual ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& series) = 0;
+    FWDCMTKIO_API virtual data::Series::sptr read(const data::DicomSeries::csptr& series) = 0;
 
 };
 

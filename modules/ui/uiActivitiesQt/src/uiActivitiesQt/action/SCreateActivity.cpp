@@ -28,6 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
@@ -37,8 +38,6 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/macros.hpp>
 

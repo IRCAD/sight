@@ -26,14 +26,13 @@
 
 #include <core/Exception.hpp>
 
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
@@ -88,15 +87,15 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
  * @param filename DICOM folder name
  * @param seriesDB SeriesDB object containing DICOM series
  */
-void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::sptr& seriesDB)
+void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& seriesDB)
 {
     const double delta                    = 0.001;
     const std::filesystem::path dicomPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const std::filesystem::path metaPath  = dicomPath / "META";
 
-    for(::fwMedData::SeriesDB::iterator sIt = seriesDB->begin(); sIt != seriesDB->end(); ++sIt)
+    for(data::SeriesDB::iterator sIt = seriesDB->begin(); sIt != seriesDB->end(); ++sIt)
     {
-        ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(*sIt);
+        data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(*sIt);
 
         // Parse META File
         const std::string metaName           = filename + "/" + series->getInstanceUID() + ".json";
@@ -112,9 +111,9 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesTime", mf), series->getTime());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "SeriesDescription", mf), series->getDescription());
 
-        ::fwMedData::DicomValuesType performingPhysiciansName = series->getPerformingPhysiciansName();
-        std::string performingPhysiciansNameStr = "";
-        for(::fwMedData::DicomValuesType::iterator i = performingPhysiciansName.begin();
+        data::DicomValuesType performingPhysiciansName = series->getPerformingPhysiciansName();
+        std::string performingPhysiciansNameStr        = "";
+        for(data::DicomValuesType::iterator i = performingPhysiciansName.begin();
             i != performingPhysiciansName.end(); ++i)
         {
             performingPhysiciansNameStr += *i;
@@ -126,14 +125,14 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PerformingPhysiciansName", mf), performingPhysiciansNameStr);
 
         // Patient
-        ::fwMedData::Patient::sptr patient = series->getPatient();
+        data::Patient::sptr patient = series->getPatient();
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientID", mf), patient->getPatientId());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientName", mf), patient->getName());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientBirthDate", mf), patient->getBirthdate());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientSex", mf), patient->getSex());
 
         // Study
-        ::fwMedData::Study::sptr study = series->getStudy();
+        data::Study::sptr study = series->getStudy();
         CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyInstanceUID", mf), study->getInstanceUID());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyDate", mf), study->getDate());
         CPPUNIT_ASSERT_EQUAL(getValue(root, "StudyTime", mf), study->getTime());
@@ -142,7 +141,7 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(getValue(root, "PatientAge", mf), study->getPatientAge());
 
         // Equipment
-        ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+        data::Equipment::sptr equipment = series->getEquipment();
         CPPUNIT_ASSERT_EQUAL(getValue(root, "InstitutionName", mf), equipment->getInstitutionName());
 
         // Image
@@ -347,7 +346,7 @@ void SeriesDBReaderTest::readDisabledLazySeriesDBTest()
 
 void SeriesDBReaderTest::readJMSSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
@@ -362,7 +361,7 @@ void SeriesDBReaderTest::readJMSSeries()
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
-    ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
+    data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
@@ -375,7 +374,7 @@ void SeriesDBReaderTest::readJMSSeries()
 
 void SeriesDBReaderTest::readCTSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -397,9 +396,9 @@ void SeriesDBReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
 
     // Read image buffer
-    ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    data::Image::sptr image = series->getImage();
-    const auto dumpLock     = image->lock();
+    data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
+    data::Image::sptr image        = series->getImage();
+    const auto dumpLock            = image->lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
@@ -439,7 +438,7 @@ void SeriesDBReaderTest::readCTSeries()
 
 void SeriesDBReaderTest::readMRSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -461,9 +460,9 @@ void SeriesDBReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
 
     // Read image buffer
-    ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    data::Image::sptr image = series->getImage();
-    const auto dumpLock     = image->lock();
+    data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
+    data::Image::sptr image        = series->getImage();
+    const auto dumpLock            = image->lock();
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
@@ -503,7 +502,7 @@ void SeriesDBReaderTest::readMRSeries()
 
 void SeriesDBReaderTest::readOTSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "42-OT-BARRE-MONO2-8-colon";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -525,9 +524,9 @@ void SeriesDBReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
 
     // Read image buffer
-    ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    data::Image::sptr image = series->getImage();
-    const auto dumpLock     = image->lock();
+    data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
+    data::Image::sptr image        = series->getImage();
+    const auto dumpLock            = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
@@ -568,7 +567,7 @@ void SeriesDBReaderTest::readOTSeries()
 
 void SeriesDBReaderTest::readUnsupportedSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SEG";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -589,7 +588,7 @@ void SeriesDBReaderTest::readUnsupportedSeries()
 
 void SeriesDBReaderTest::readDisabledSeries()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;

@@ -22,18 +22,18 @@
 
 #include "fwDicomTools/Series.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 namespace fwDicomTools
 {
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::ImageSeries::sptr Series::convertToImageSeries(const ::fwMedData::DicomSeries::csptr& series)
+data::ImageSeries::sptr Series::convertToImageSeries(const data::DicomSeries::csptr& series)
 {
-    ::fwMedData::ImageSeries::sptr result = ::fwMedData::ImageSeries::New();
+    data::ImageSeries::sptr result = data::ImageSeries::New();
     result->setPatient(series->getPatient());
     result->setStudy(series->getStudy());
     result->setEquipment(series->getEquipment());
@@ -48,9 +48,9 @@ namespace fwDicomTools
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::ModelSeries::sptr Series::convertToModelSeries(const ::fwMedData::DicomSeries::csptr& series)
+data::ModelSeries::sptr Series::convertToModelSeries(const data::DicomSeries::csptr& series)
 {
-    ::fwMedData::ModelSeries::sptr result = ::fwMedData::ModelSeries::New();
+    data::ModelSeries::sptr result = data::ModelSeries::New();
     result->setPatient(series->getPatient());
     result->setStudy(series->getStudy());
     result->setEquipment(series->getEquipment());

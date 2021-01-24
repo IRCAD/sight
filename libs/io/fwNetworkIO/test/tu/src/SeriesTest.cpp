@@ -22,10 +22,10 @@
 
 #include "SeriesTest.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -107,10 +107,10 @@ void SeriesTest::testSeries()
     ::fwNetworkIO::helper::Series::DicomSeriesContainer seriesVector =
         ::fwNetworkIO::helper::Series::toFwMedData(m_json);
     CPPUNIT_ASSERT(seriesVector.size() == 1);
-    ::fwMedData::Series::sptr series = seriesVector[0];
+    data::Series::sptr series = seriesVector[0];
     CPPUNIT_ASSERT(series);
 
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
     CPPUNIT_ASSERT(dicomSeries);
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getInstanceUID(), seriesInstanceUID.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getDate(), seriesDate.toStdString());
@@ -120,14 +120,14 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getNumberOfInstances(),
                          static_cast<size_t>(numberOfSeriesRelatedInstances.toULong()));
 
-    ::fwMedData::Patient::sptr patient = series->getPatient();
+    data::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT(patient);
     CPPUNIT_ASSERT_EQUAL(patient->getName(), patientName.toStdString());
     CPPUNIT_ASSERT_EQUAL(patient->getPatientId(), patientID.toStdString());
     CPPUNIT_ASSERT_EQUAL(patient->getBirthdate(), patientBirthDate.toStdString());
     CPPUNIT_ASSERT_EQUAL(patient->getSex(), patientSex.toStdString());
 
-    ::fwMedData::Study::sptr study = series->getStudy();
+    data::Study::sptr study = series->getStudy();
     CPPUNIT_ASSERT(study);
     CPPUNIT_ASSERT_EQUAL(study->getInstanceUID(), studyInstanceUID.toStdString());
     CPPUNIT_ASSERT_EQUAL(study->getDate(), studyDate.toStdString());
@@ -135,7 +135,7 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(study->getDescription(), studyDescription.toStdString());
     CPPUNIT_ASSERT_EQUAL(study->getPatientAge(), patientAge.toStdString());
 
-    ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+    data::Equipment::sptr equipment = series->getEquipment();
     CPPUNIT_ASSERT(equipment);
     CPPUNIT_ASSERT_EQUAL(equipment->getInstitutionName(), institutionName.toStdString());
 

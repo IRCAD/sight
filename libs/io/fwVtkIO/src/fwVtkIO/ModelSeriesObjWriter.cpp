@@ -29,14 +29,13 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Material.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
@@ -111,7 +110,7 @@ void ModelSeriesObjWriter::write()
 
     const std::filesystem::path prefix = this->getFolder();
 
-    const ::fwMedData::ModelSeries::csptr modelSeries = getConcreteObject();
+    const data::ModelSeries::csptr modelSeries = getConcreteObject();
 
     m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;

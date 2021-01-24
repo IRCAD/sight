@@ -29,13 +29,12 @@
 #include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
 
 #include <fwDicomTools/Series.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -64,7 +63,7 @@ Series::~Series()
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr Series::read(const ::fwMedData::DicomSeries::csptr& dicomSeries)
+data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Logger should not be null.", m_logger);
@@ -74,20 +73,20 @@ Series::~Series()
         std::make_shared< ::fwGdcmIO::container::DicomInstance >(dicomSeries);
 
     // Create result
-    ::fwMedData::Series::sptr result;
+    data::Series::sptr result;
 
     if(!dicomSeries->getDicomContainer().empty())
     {
         // Get SOPClassUID
-        ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-        const std::string sopClassUID = *sopClassUIDContainer.begin();
+        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+        const std::string sopClassUID                                    = *sopClassUIDContainer.begin();
 
         // If the DicomSeries contains an image (ImageSeries)
         if (::gdcm::MediaStorage::IsImage(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())) &&
             ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Read the image
-            ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
+            data::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
             imageSeries->setDicomReference(dicomSeries);
             data::Image::sptr image = data::Image::New();
             imageSeries->setImage(image);
@@ -105,7 +104,7 @@ Series::~Series()
             {
                 // NOTE : if there is no image, reading is stopped.
                 m_logger->critical(e.what());
-                imageSeries = ::fwMedData::ImageSeries::sptr();
+                imageSeries = data::ImageSeries::sptr();
             }
 
             // Set result
@@ -116,7 +115,7 @@ Series::~Series()
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) ==
                  ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
-            ::fwMedData::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
+            data::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
             modelSeries->setDicomReference(dicomSeries);
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
@@ -130,7 +129,7 @@ Series::~Series()
             {
                 // NOTE : if there is no image, reading is stopped.
                 m_logger->critical(e.what());
-                modelSeries = ::fwMedData::ModelSeries::sptr();
+                modelSeries = data::ModelSeries::sptr();
             }
 
             // Set result
@@ -145,8 +144,8 @@ Series::~Series()
 
             if(imageInstance)
             {
-                ::fwMedData::ImageSeries::sptr imageSeries =
-                    ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+                data::ImageSeries::sptr imageSeries =
+                    data::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
 
                 imageSeries->setDicomReference(dicomSeries);
 
@@ -181,11 +180,11 @@ Series::~Series()
             SPTR(::fwGdcmIO::container::DicomInstance) referencedInstance =
                 this->getStructuredReportReferencedSeriesInstance(dicomSeries);
 
-            ::fwMedData::ImageSeries::sptr imageSeries;
+            data::ImageSeries::sptr imageSeries;
             const auto& iter = m_seriesContainerMap.find(referencedInstance);
             if(iter != m_seriesContainerMap.end())
             {
-                imageSeries = ::fwMedData::ImageSeries::dynamicCast(iter->second);
+                imageSeries = data::ImageSeries::dynamicCast(iter->second);
             }
 
             if(referencedInstance && imageSeries)
@@ -231,12 +230,12 @@ Series::~Series()
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSeriesInstance(
-    const ::fwMedData::DicomSeries::csptr& dicomSeries)
+    const data::DicomSeries::csptr& dicomSeries)
 {
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
     // Dicom container
-    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
+    data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
     std::shared_ptr< ::gdcm::Reader > reader =
@@ -290,13 +289,13 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSeriesInstance(
-    const ::fwMedData::DicomSeries::csptr& dicomSeries)
+    const data::DicomSeries::csptr& dicomSeries)
 {
 
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
     // Dicom container
-    ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
+    data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
     std::shared_ptr< ::gdcm::Reader > reader =

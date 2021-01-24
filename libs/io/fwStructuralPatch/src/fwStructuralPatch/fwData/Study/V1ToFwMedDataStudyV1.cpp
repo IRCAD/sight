@@ -39,7 +39,7 @@ V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
     m_originClassname = "data::Study";
-    m_targetClassname = "::fwMedData::Study";
+    m_targetClassname = "data::Study";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }

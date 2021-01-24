@@ -27,10 +27,9 @@
 
 #include <data/Array.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -131,7 +130,7 @@ core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainer
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
 
     const std::vector< std::string > allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -185,20 +184,20 @@ void ModelSeriesWriterTest::testWriteMeshes()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of saved files",
                                      modelSeries->getReconstructionDB().size(), files.size());
 
-        ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+        data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
         runModelSeriesSrv(
             "::ioVTK::SSeriesDBReader",
             getIOCfgFromFiles(files),
             seriesDB);
 
-        const ::fwMedData::SeriesDB::ContainerType& series = seriesDB->getContainer();
+        const data::SeriesDB::ContainerType& series = seriesDB->getContainer();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (size_t)1, series.size());
 
-        ::fwMedData::ModelSeries::sptr readSeries = ::fwMedData::ModelSeries::dynamicCast(series[0]);
+        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series[0]);
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
-        typedef ::fwMedData::ModelSeries::ReconstructionVectorType RecVecType;
+        typedef data::ModelSeries::ReconstructionVectorType RecVecType;
         const RecVecType& readRecs = readSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
 
@@ -287,7 +286,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
 
     const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
 
@@ -306,7 +305,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
         getIOCfgFromFolder(dir),
         modelSeries);
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     FileContainerType files;
     for(fs::directory_iterator it(dir); it != fs::directory_iterator(); ++it)

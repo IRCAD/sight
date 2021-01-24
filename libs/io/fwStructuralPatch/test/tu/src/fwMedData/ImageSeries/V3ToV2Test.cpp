@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ImageSeries/V3ToV2Test.hpp"
+#include "data/ImageSeries/V3ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ImageSeries/V3ToV2.hpp>
+#include <fwStructuralPatch/data/ImageSeries/V3ToV2.hpp>
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ImageSeries::V3ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ImageSeries::V3ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ImageSeries
 {
@@ -63,7 +63,7 @@ void V3ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr imgSeriesV3 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr imgSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(imgSeriesV3, "::fwMedData::ImageSeries");
+    ::fwAtomsPatch::helper::setClassname(imgSeriesV3, "data::ImageSeries");
     ::fwAtomsPatch::helper::setVersion(imgSeriesV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(imgSeriesV3);
@@ -112,8 +112,8 @@ void V3ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgSeriesV3] = imgSeriesV2;
 
-        ::fwStructuralPatch::fwMedData::ImageSeries::V3ToV2::sptr v3ToV2Patch;
-        v3ToV2Patch = ::fwStructuralPatch::fwMedData::ImageSeries::V3ToV2::New();
+        ::fwStructuralPatchdata::ImageSeries::V3ToV2::sptr v3ToV2Patch;
+        v3ToV2Patch = ::fwStructuralPatchdata::ImageSeries::V3ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v3ToV2Patch->apply(imgSeriesV3, imgSeriesV2, newVersions));
 
         CPPUNIT_ASSERT(imgSeriesV2);
@@ -149,6 +149,6 @@ void V3ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ImageSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

@@ -24,9 +24,9 @@
 
 #include "uiActivitiesQml/config.hpp"
 
-#include <fwActivities/IActivitySequencer.hpp>
+#include <data/ActivitySeries.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <fwActivities/IActivitySequencer.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -47,7 +47,7 @@ namespace uiActivitiesQml
  * This service should be associated to the SActivityView to display the current activity
  *
  * @section Signal Signal
- * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
+ * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
  *
@@ -84,7 +84,7 @@ namespace uiActivitiesQml
    @endcode
  *
  *  @subsubsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
  */
 class UIACTIVITIESQML_CLASS_API SActivitySequencer : public ::fwQml::IQmlEditor,
                                                      public ::fwActivities::IActivitySequencer
@@ -107,8 +107,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef core::com::Signal<void (::fwMedData::ActivitySeries::sptr) > DataRequiredSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr) > DataRequiredSignalType;
     /**
      * @}
      */

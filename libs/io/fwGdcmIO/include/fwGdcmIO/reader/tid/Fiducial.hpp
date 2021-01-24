@@ -25,9 +25,8 @@
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/reader/tid/TemplateID.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -52,7 +51,7 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API Fiducial(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Fiducial(const CSPTR(data::DicomSeries)& dicomSeries,
                           const SPTR(::gdcm::Reader)& reader,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                           const data::Image::sptr& image,

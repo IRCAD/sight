@@ -31,7 +31,7 @@ namespace sight::data
 class Reconstruction;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 class Series;
@@ -64,33 +64,33 @@ public:
      * @param nbActivitySeries  number of ActivitySeries to add in seriesDB
      * @return The created SeriesDB
      */
-    FWTEST_API static SPTR(::fwMedData::SeriesDB) createSeriesDB(const unsigned char nbImgSeries,
-                                                                 const unsigned char nbModelSeries,
-                                                                 const unsigned char nbActivitySeries);
+    FWTEST_API static SPTR(data::SeriesDB) createSeriesDB(const unsigned char nbImgSeries,
+                                                          const unsigned char nbModelSeries,
+                                                          const unsigned char nbActivitySeries);
 
     /// Returns a Patient with dummy informations
-    FWTEST_API static SPTR(::fwMedData::Patient) createPatient();
+    FWTEST_API static SPTR(data::Patient) createPatient();
 
     /// Returns a Study with dummy informations
-    FWTEST_API static SPTR(::fwMedData::Study) createStudy();
+    FWTEST_API static SPTR(data::Study) createStudy();
 
     /// Returns an Equipment with dummy informations
-    FWTEST_API static SPTR(::fwMedData::Equipment) createEquipement();
+    FWTEST_API static SPTR(data::Equipment) createEquipement();
 
     /// Generates dummy informations for the series
-    FWTEST_API static void generateSeriesInformation(SPTR(::fwMedData::Series) series);
+    FWTEST_API static void generateSeriesInformation(SPTR(data::Series) series);
 
     /// Returns an ImageSeries with a randomized image
-    FWTEST_API static SPTR(::fwMedData::ImageSeries) createImageSeries();
+    FWTEST_API static SPTR(data::ImageSeries) createImageSeries();
 
     /**
      * @brief Returns a ModelSeries containing random Reconstructions
      * @param nbReconstruction number of Reconstrutions to add in the ModelSeries
      */
-    FWTEST_API static SPTR(::fwMedData::ModelSeries) createModelSeries(unsigned char nbReconstruction);
+    FWTEST_API static SPTR(data::ModelSeries) createModelSeries(unsigned char nbReconstruction);
 
     /// Returns an ActivitySeries with dummy data
-    FWTEST_API static SPTR(::fwMedData::ActivitySeries) createActivitySeries();
+    FWTEST_API static SPTR(data::ActivitySeries) createActivitySeries();
 
     /**
      * @brief Generate a reconstruction.

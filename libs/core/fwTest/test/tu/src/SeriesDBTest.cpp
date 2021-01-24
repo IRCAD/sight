@@ -24,17 +24,16 @@
 
 #include <fwTest/generator/SeriesDB.hpp>
 
+#include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
+#include <data/Equipment.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/Study.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::SeriesDBTest );
@@ -66,15 +65,15 @@ void SeriesDBTest::generationTest()
     const unsigned char nbImgSeries      = 3;
     const unsigned char nbModelSeries    = 4;
     const unsigned char nbActivitySeries = 5;
-    ::fwMedData::SeriesDB::sptr seriesDB;
+    data::SeriesDB::sptr seriesDB;
     seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(nbImgSeries, nbModelSeries, nbActivitySeries);
 
-    ::fwMedData::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
+    data::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
     CPPUNIT_ASSERT_EQUAL((size_t) (nbImgSeries + nbModelSeries + nbActivitySeries), seriesContainer.size());
 
-    CPPUNIT_ASSERT(::fwMedData::ImageSeries::dynamicCast(seriesContainer[0]));
+    CPPUNIT_ASSERT(data::ImageSeries::dynamicCast(seriesContainer[0]));
 
-    ::fwMedData::DicomValuesType performingPhysiciansName;
+    data::DicomValuesType performingPhysiciansName;
     performingPhysiciansName.push_back("Dr^Jekyl");
     performingPhysiciansName.push_back("Dr^House");
     performingPhysiciansName.push_back("Dr^Einstein ");
@@ -85,7 +84,7 @@ void SeriesDBTest::generationTest()
 
     unsigned int count = 1;
     std::stringstream str;
-    for(::fwMedData::Series::sptr series :  seriesContainer)
+    for(data::Series::sptr series :  seriesContainer)
     {
         str.str("");
         str.width(4);
@@ -99,13 +98,13 @@ void SeriesDBTest::generationTest()
         CPPUNIT_ASSERT_EQUAL(std::string("Description "), series->getDescription());
         CPPUNIT_ASSERT(performingPhysiciansName == series->getPerformingPhysiciansName());
 
-        ::fwMedData::Patient::sptr patient = series->getPatient();
+        data::Patient::sptr patient = series->getPatient();
         CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesDB1^PrenomSeriesDB1"), patient->getName());
         CPPUNIT_ASSERT_EQUAL(std::string("4564383757"), patient->getPatientId());
         CPPUNIT_ASSERT_EQUAL(std::string("19710418"), patient->getBirthdate());
         CPPUNIT_ASSERT_EQUAL(std::string("O "), patient->getSex());
 
-        ::fwMedData::Study::sptr study = series->getStudy();
+        data::Study::sptr study = series->getStudy();
         CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str()),
                              study->getInstanceUID());
         CPPUNIT_ASSERT_EQUAL(std::string("20130418"), study->getDate());
@@ -114,12 +113,12 @@ void SeriesDBTest::generationTest()
         CPPUNIT_ASSERT_EQUAL(std::string("Say 33. "), study->getDescription());
         CPPUNIT_ASSERT_EQUAL(std::string("042Y"), study->getPatientAge());
 
-        ::fwMedData::Equipment::sptr equipement = series->getEquipment();
+        data::Equipment::sptr equipement = series->getEquipment();
         CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipement->getInstitutionName());
 
-        ::fwMedData::ImageSeries::sptr imgSeries         = ::fwMedData::ImageSeries::dynamicCast(series);
-        ::fwMedData::ModelSeries::sptr modelSeries       = ::fwMedData::ModelSeries::dynamicCast(series);
-        ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+        data::ImageSeries::sptr imgSeries         = data::ImageSeries::dynamicCast(series);
+        data::ModelSeries::sptr modelSeries       = data::ModelSeries::dynamicCast(series);
+        data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
 
         if (imgSeries)
         {

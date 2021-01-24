@@ -48,7 +48,7 @@ namespace action
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
  *      contains all activity identifier. It should be connected to the slot 'createActivity' of the service
  *     'SActivityWizard'.
- * - \b activitySelected(::fwMedData::ActivitySeries::sptr) : This signal is emitted when the activity is selected in
+ * - \b activitySelected(data::ActivitySeries::sptr) : This signal is emitted when the activity is selected in
  *      the current vector. It should be connected to the slot 'updateActivity' of the service 'SActivityWizard'.
  *
  * @section XML XML Configuration
@@ -89,7 +89,7 @@ public:
      * @{
      */
     ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
-    typedef core::com::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
+    typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivitySelectedSignalType;
 
     ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
     typedef core::com::Signal< void (std::string) > ActivityIDSelectedSignalType;
@@ -122,7 +122,7 @@ private:
      * @brief Slots to launch the given activitySeries.
      * @param activitySeries the activity is launched on this series.
      */
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    void launchActivity(data::ActivitySeries::sptr activitySeries);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 

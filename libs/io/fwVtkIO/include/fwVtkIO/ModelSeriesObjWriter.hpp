@@ -35,7 +35,7 @@ namespace sight::data
 class Reconstruction;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class ModelSeries;
 }
@@ -53,13 +53,13 @@ namespace fwVtkIO
  *
  * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
                              public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(ModelSeriesObjWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+    fwCoreClassMacro(ModelSeriesObjWriter, ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
                      ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >)
 
     fwCoreAllowSharedFromThis()

@@ -38,7 +38,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <data/ActivitySeries.hpp>
 
 #include <fwServices/macros.hpp>
 

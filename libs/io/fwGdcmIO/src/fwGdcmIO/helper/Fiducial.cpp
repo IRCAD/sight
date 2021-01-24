@@ -25,13 +25,12 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
 
 namespace fwGdcmIO
 {
@@ -40,12 +39,12 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsLandmarks(const SPTR(::fwMedData::SeriesDB)& seriesDB)
+bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
 {
     // Let's find if a series contains distances
-    for(const ::fwMedData::Series::sptr& series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
-        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
             data::Image::sptr image = imageSeries->getImage();
@@ -66,12 +65,12 @@ bool Fiducial::containsLandmarks(const SPTR(::fwMedData::SeriesDB)& seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
+bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
 {
     // Let's find if a series contains distances
-    for(const ::fwMedData::Series::sptr& series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
-        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
             data::Image::sptr image = imageSeries->getImage();
@@ -92,12 +91,12 @@ bool Fiducial::containsDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
+bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
 {
     // Let's find if a series contains distances
-    for(const ::fwMedData::Series::sptr& series : seriesDB->getContainer())
+    for(const data::Series::sptr& series : seriesDB->getContainer())
     {
-        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
             data::Image::csptr image = imageSeries->getImage();

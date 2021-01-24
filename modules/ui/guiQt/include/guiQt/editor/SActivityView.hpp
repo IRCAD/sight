@@ -26,11 +26,11 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/ActivitySeries.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 
@@ -46,12 +46,12 @@ namespace editor
  * This service should receive signals containing ActivitySeries connected to the slot \b launchActivity.
  *
  * @section Signals Signals
- * - \b activityLaunched( ::fwMedData::ActivitySeries::sptr ): signal emitted when the activity is launched
+ * - \b activityLaunched( data::ActivitySeries::sptr ): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): this slot allows to create a view for the given activity
+ * - \b launchActivity( data::ActivitySeries::sptr ): this slot allows to create a view for the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): this slot allows to create a view for the given activity
+ * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a view for the given activity
  *   series.
  *
  * @section XML XML Configuration
@@ -95,7 +95,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void (data::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
     /**
      * @}
      */
@@ -119,7 +119,7 @@ private:
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) override;
+    void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// Helper to launch activity configuration
     ::fwServices::IAppConfigManager::sptr m_configManager;

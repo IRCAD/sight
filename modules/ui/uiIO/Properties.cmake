@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwJobs
-    fwMedData
     fwMedDataTools
     fwServices
     fwIO

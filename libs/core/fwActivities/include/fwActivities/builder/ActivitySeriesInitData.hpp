@@ -54,7 +54,7 @@ public:
      * @brief Instanciates a new object where requirement maxOccurs and minOccurs are both set to 0.
      * @see ::fwActivities::builder::ActivitySeries::buildData
      */
-    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
+    FWACTIVITIES_API virtual data::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const override;
 };

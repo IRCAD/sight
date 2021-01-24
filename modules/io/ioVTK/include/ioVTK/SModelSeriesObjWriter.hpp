@@ -62,7 +62,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwMedData::ModelSeries]: model to save.
+ * - \b data [data::ModelSeries]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.

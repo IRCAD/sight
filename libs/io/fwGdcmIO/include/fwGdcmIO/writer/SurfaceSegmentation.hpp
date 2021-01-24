@@ -26,14 +26,13 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
+#include <data/ImageSeries.hpp>
 #include <data/location/SingleFile.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <fwLog/Logger.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 namespace fwDicomData
 {
@@ -55,13 +54,13 @@ namespace writer
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
 class FWGDCMIO_CLASS_API SurfaceSegmentation :
-    public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+    public ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
     public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(SurfaceSegmentation, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+    fwCoreClassMacro(SurfaceSegmentation, ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
                      ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
 
     /// Constructor

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ void ImagePositionPatientSplitterTest::tearDown()
 
 void ImagePositionPatientSplitterTest::simpleApplication()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -76,9 +76,9 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
@@ -92,8 +92,8 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     ::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());
-    ::fwMedData::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
-    ::fwMedData::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
+    data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
+    data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check number of instances in series
     CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getDicomContainer().size());
@@ -105,7 +105,7 @@ void ImagePositionPatientSplitterTest::simpleApplication()
 
 void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "04-CT-DICOM_SCRAT_CORRUPTED/46140000";
     const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -123,7 +123,7 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
     // Retrieve DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(seriesDB->at(0));
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(0));
     CPPUNIT_ASSERT(dicomSeries);
 
     // On Unix, the correct series with 304 elements is placed first and the one with 196 elements is at last position,
@@ -132,14 +132,14 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     // The test is written to assume the one of 304 elements is taken.
     if(dicomSeries->getNumberOfInstances() != 304)
     {
-        dicomSeries = ::fwMedData::DicomSeries::dynamicCast(seriesDB->at(1));
+        dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(1));
         CPPUNIT_ASSERT(dicomSeries);
     }
 
     // Just in case we load the wrong series or the data is corrupted.
     CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->getNumberOfInstances());
 
-    std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number

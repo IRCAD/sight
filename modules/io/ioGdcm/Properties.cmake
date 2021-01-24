@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwMedData
     fwDataIO
     fwGdcmIO
     fwGui

@@ -31,7 +31,7 @@
 
 #include <string>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -50,14 +50,14 @@ namespace helper
 class DicomAnonymizer;
 
 class FWGDCMIO_CLASS_API DicomSeriesDBWriter :
-    public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+    public ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
     public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
     public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 
 {
 public:
 
-    fwCoreClassMacro(DicomSeriesDBWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB>,
+    fwCoreClassMacro(DicomSeriesDBWriter, ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB>,
                      ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
     fwCoreAllowSharedFromThis();
 

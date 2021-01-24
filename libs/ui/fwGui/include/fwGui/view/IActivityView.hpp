@@ -27,11 +27,11 @@
 
 #include <core/com/Slots.hpp>
 
+#include <data/ActivitySeries.hpp>
+#include <data/Series.hpp>
+
 #include <fwActivities/IActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-#include <fwMedData/Series.hpp>
 
 namespace fwGui
 {
@@ -42,9 +42,9 @@ namespace view
  * @brief Defines the base class for services displaying activity view
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivity( data::ActivitySeries::sptr ): This slot allows to create a view for the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivitySeries( data::Series::sptr ): This slot allows to create a view for the given activity
  *   series.
  *
  *  * @section XML XML Configuration
@@ -96,22 +96,22 @@ protected:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity series cannot be launch in two different tabs.
      */
-    FWGUI_API virtual void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) = 0;
+    FWGUI_API virtual void launchActivity(data::ActivitySeries::sptr activitySeries) = 0;
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity series cannot be launch in two different tabs.
      */
-    FWGUI_API virtual void launchActivitySeries(::fwMedData::Series::sptr series);
+    FWGUI_API virtual void launchActivitySeries(data::Series::sptr series);
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    FWGUI_API virtual bool validateActivity(::fwMedData::ActivitySeries::sptr activitySeries) const;
+    FWGUI_API virtual bool validateActivity(data::ActivitySeries::sptr activitySeries) const;
 
     /// Create the activity series given in 'mainActivity' configuration
-    FWGUI_API virtual ::fwMedData::ActivitySeries::sptr createMainActivity() const override;
+    FWGUI_API virtual data::ActivitySeries::sptr createMainActivity() const override;
 
 };
 

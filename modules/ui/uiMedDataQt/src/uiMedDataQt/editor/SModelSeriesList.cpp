@@ -142,7 +142,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries)
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, data::ModelSeries)
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
@@ -283,9 +283,9 @@ void SModelSeriesList::starting()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -347,8 +347,8 @@ void SModelSeriesList::updateReconstructions()
 
     SLM_ASSERT("container not instanced", container);
 
-    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
-        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::mt::locked_ptr< data::ModelSeries > modelSeries =
+        this->getLockedInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );
@@ -368,7 +368,7 @@ void SModelSeriesList::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::fillTree(const data::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries)
+void SModelSeriesList::fillTree(const data::mt::locked_ptr< data::ModelSeries >& _modelSeries)
 {
 
     auto& reconstructions = _modelSeries->getReconstructionDB();
@@ -452,8 +452,8 @@ void SModelSeriesList::onShowReconstructions(int _state)
     m_unCheckAllButton->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
-    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
-        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::mt::locked_ptr< data::ModelSeries > modelSeries =
+        this->getLockedInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     {
         ::fwDataTools::helper::Field helper( modelSeries.get_shared() );
@@ -513,16 +513,16 @@ void SModelSeriesList::onCheckAllBoxes(bool _visible)
 
 void SModelSeriesList::onDeleteAllCheckBox()
 {
-    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
-        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::mt::locked_ptr< data::ModelSeries > modelSeries =
+        this->getLockedInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     // Remove all reconstructions.
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = modelSeries->getReconstructionDB();
-    modelSeries->setReconstructionDB(::fwMedData::ModelSeries::ReconstructionVectorType());
+    data::ModelSeries::ReconstructionVectorType reconstructions = modelSeries->getReconstructionDB();
+    modelSeries->setReconstructionDB(data::ModelSeries::ReconstructionVectorType());
 
     // Send the signals.
-    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
-        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+    auto sig = modelSeries->signal< data::ModelSeries::ReconstructionsRemovedSignalType >(
+        data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
     sig->asyncEmit(reconstructions);
 }
 
@@ -536,16 +536,16 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
         QAction* const deleteAction = new QAction("Delete");
         QObject::connect(deleteAction, &QAction::triggered, this, [ = ]()
                 {
-                    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries
-                        = this->getLockedInOut< ::fwMedData::ModelSeries >(
+                    data::mt::locked_ptr< data::ModelSeries > modelSeries
+                        = this->getLockedInOut< data::ModelSeries >(
                               s_MODEL_SERIES_INOUT);
 
-                    ::fwMedData::ModelSeries::ReconstructionVectorType deletedReconstructions;
+                    data::ModelSeries::ReconstructionVectorType deletedReconstructions;
 
                     // Remove reconstruction.
-                    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions
+                    data::ModelSeries::ReconstructionVectorType reconstructions
                         = modelSeries->getReconstructionDB();
-                    const ::fwMedData::ModelSeries::ReconstructionVectorType::iterator recIt
+                    const data::ModelSeries::ReconstructionVectorType::iterator recIt
                         = reconstructions.begin() + index.row();
                     const data::Reconstruction::sptr reconstruction = *recIt;
                     reconstructions.erase(recIt);
@@ -553,8 +553,8 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
 
                     // Send the signals.
                     deletedReconstructions.push_back(reconstruction);
-                    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
-                        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+                    auto sig = modelSeries->signal< data::ModelSeries::ReconstructionsRemovedSignalType >(
+                        data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
                     sig->asyncEmit(deletedReconstructions);
                 });
 

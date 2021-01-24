@@ -27,11 +27,10 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/ImageSeries.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -101,11 +100,11 @@ void SVTKMesher::configuring()
 
 void SVTKMesher::updating()
 {
-    ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(s_IMAGE_INPUT);
-    ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
+    data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(s_IMAGE_INPUT);
+    data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
 
     data::Object::DeepCopyCacheType cache;
-    modelSeries->::fwMedData::Series::cachedDeepCopy(imageSeries, cache);
+    modelSeries->data::Series::cachedDeepCopy(imageSeries, cache);
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
@@ -165,7 +164,7 @@ void SVTKMesher::updating()
     // Set Mesh
     reconstruction->setMesh(mesh);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
     recs.push_back(reconstruction);
     modelSeries->setReconstructionDB(recs);
     modelSeries->setDicomReference(imageSeries->getDicomReference());

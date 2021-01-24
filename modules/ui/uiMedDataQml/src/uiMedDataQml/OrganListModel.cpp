@@ -51,7 +51,7 @@ QHash<int, QByteArray> OrganListModel::roleNames() const
 
 //------------------------------------------------------------------------------
 
-void OrganListModel::updateModelSeries(const ::fwMedData::ModelSeries::sptr& modelSeries)
+void OrganListModel::updateModelSeries(const data::ModelSeries::sptr& modelSeries)
 {
     beginResetModel();
     m_modelSeries = modelSeries;

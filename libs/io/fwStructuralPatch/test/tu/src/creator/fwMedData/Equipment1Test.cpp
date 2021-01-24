@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "creator/fwMedData/Equipment1Test.hpp"
+#include "creator/data/Equipment1Test.hpp"
 
 #include "fwAtoms/String.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
 
-#include "fwStructuralPatch/creator/fwMedData/Equipment1.hpp"
+#include "fwStructuralPatch/creator/data/Equipment1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creator::fwMedData::Equipment1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creatordata::Equipment1Test );
 
 namespace fwStructuralPatch
 {
@@ -38,7 +38,7 @@ namespace ut
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 //------------------------------------------------------------------------------
@@ -64,14 +64,14 @@ void Equipment1Test::createTest()
 
     CPPUNIT_ASSERT(equipmentCreator);
     const std::string& classname = equipmentCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Equipment") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Equipment") == classname );
     const std::string& objectVersion = equipmentCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ::fwAtoms::Object::sptr equipment = equipmentCreator->create();
 
     const std::string& equipmentClassname = ::fwAtomsPatch::helper::getClassname(equipment);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Equipment") == equipmentClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Equipment") == equipmentClassname );
     const std::string& equipmentObjectVersion = ::fwAtomsPatch::helper::getVersion(equipment);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == equipmentObjectVersion );
 
@@ -86,7 +86,7 @@ void Equipment1Test::copyTest()
     Equipment1 equipmentCreator;
 
     const std::string& classname = equipmentCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Equipment") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Equipment") == classname );
     const std::string& objectVersion = equipmentCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -95,7 +95,7 @@ void Equipment1Test::copyTest()
     CPPUNIT_ASSERT(equipmentCreator2);
     const std::string& classnameEquipmentCreator2 = equipmentCreator2->getObjectClassname();
     CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string(
-                               "::fwMedData::Equipment") == classnameEquipmentCreator2 );
+                               "data::Equipment") == classnameEquipmentCreator2 );
 
     const std::string& objectVersionEquipmentCreator2 = equipmentCreator2->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionEquipmentCreator2 );
@@ -106,7 +106,7 @@ void Equipment1Test::copyTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace creator
 } //namespace ut
 } //namespace fwStructuralPatch

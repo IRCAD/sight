@@ -93,7 +93,7 @@ void V1ToFwMedDataStudyV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(originObj, targetObj, newVersions));
 
     CPPUNIT_ASSERT(targetObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("::fwMedData::Study"), ::fwAtomsPatch::helper::getClassname(targetObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("data::Study"), ::fwAtomsPatch::helper::getClassname(targetObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), ::fwAtomsPatch::helper::getVersion(targetObj));
 
     CPPUNIT_ASSERT(!targetObj->getAttribute("hospital"));

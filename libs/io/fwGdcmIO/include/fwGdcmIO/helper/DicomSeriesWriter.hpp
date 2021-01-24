@@ -36,7 +36,7 @@ class Observer;
 class IJob;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class DicomSeries;
 }
@@ -62,13 +62,13 @@ class DicomAnonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries >,
+class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< data::DicomSeries >,
                           public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(DicomSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries>,
+    fwCoreClassMacro(DicomSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< data::DicomSeries>,
                      ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
 
     fwCoreAllowSharedFromThis();

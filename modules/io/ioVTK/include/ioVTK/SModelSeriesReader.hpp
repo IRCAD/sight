@@ -40,7 +40,7 @@ namespace ioVTK
 {
 
 /**
- * @brief  Read VTK files and fill a ::fwMedData::ModelSeries
+ * @brief  Read VTK files and fill a data::ModelSeries
  * Accepted extensions: *.vtk *.vtp *.obj *.ply *.stl
  *
  * @section Signals Signals
@@ -58,7 +58,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::ModelSeries]: model series that will contain the loaded meshes.
+ * - \b data [data::ModelSeries]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

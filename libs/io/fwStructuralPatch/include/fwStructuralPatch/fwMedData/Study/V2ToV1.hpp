@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,18 +28,18 @@
 
 namespace fwStructuralPatch
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace Study
 {
 
-/// Structural patch to convert a fwMedData::Study from version '2' to version '1'.
+/// Structural patch to convert a data::Study from version '2' to version '1'.
 class FWSTRUCTURALPATCH_CLASS_API V2ToV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 
 public:
 
-    fwCoreClassMacro(V2ToV1, ::fwStructuralPatch::fwMedData::Study::V2ToV1, new V2ToV1)
+    fwCoreClassMacro(V2ToV1, ::fwStructuralPatchdata::Study::V2ToV1, new V2ToV1)
 
     /// Initialiaze members.
     FWSTRUCTURALPATCH_API V2ToV1();
@@ -66,5 +66,5 @@ public:
 };
 
 } // namespace Study
-} // namespace fwMedData
+} // namespace sight::data
 } // namespace fwStructuralPatch

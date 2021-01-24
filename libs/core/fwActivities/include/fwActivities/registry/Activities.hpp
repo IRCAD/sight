@@ -104,7 +104,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
     typedef std::vector< ActivityRequirementKey > KeyType;
 
     std::string name; /// parameter name
-    std::string type; /// parameter type (ie. ::fwMedData::ImageSeries)
+    std::string type; /// parameter type (ie. data::ImageSeries)
     std::string container; /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
     std::string description; /// parameter description
     std::string validator;  /// Implementation of data validator
@@ -164,8 +164,8 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
                 <key>Item3</key>
             </requirement>
             <requirement name="param3" type="data::Mesh" maxOccurs="*" container="vector" />
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="data::ImageSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="modelSeries" type="data::ModelSeries" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>

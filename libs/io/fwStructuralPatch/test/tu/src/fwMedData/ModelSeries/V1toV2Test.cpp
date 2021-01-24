@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/ModelSeries/V1ToV2Test.hpp"
+#include "data/ModelSeries/V1ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwMedData/ModelSeries/V1ToV2.hpp>
+#include <fwStructuralPatch/data/ModelSeries/V1ToV2.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
@@ -35,13 +35,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwMedData::ModelSeries::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::ModelSeries::V1ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwMedData
+namespace sight::data
 {
 namespace ModelSeries
 {
@@ -67,7 +67,7 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr modelSeriesV1 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr modelSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(modelSeriesV1, "::fwMedData::ModelSeries");
+    ::fwAtomsPatch::helper::setClassname(modelSeriesV1, "data::ModelSeries");
     ::fwAtomsPatch::helper::setVersion(modelSeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(modelSeriesV1);
@@ -91,8 +91,8 @@ void V1ToV2Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[modelSeriesV1] = modelSeriesV2;
 
-        ::fwStructuralPatch::fwMedData::ModelSeries::V1ToV2::sptr v1ToV2Patch;
-        v1ToV2Patch = ::fwStructuralPatch::fwMedData::ModelSeries::V1ToV2::New();
+        ::fwStructuralPatchdata::ModelSeries::V1ToV2::sptr v1ToV2Patch;
+        v1ToV2Patch = ::fwStructuralPatchdata::ModelSeries::V1ToV2::New();
         CPPUNIT_ASSERT_NO_THROW(v1ToV2Patch->apply(modelSeriesV1, modelSeriesV2, newVersions));
 
         CPPUNIT_ASSERT(modelSeriesV2);
@@ -104,6 +104,6 @@ void V1ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace ModelSeries
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

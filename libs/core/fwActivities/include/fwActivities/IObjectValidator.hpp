@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-#include <fwMedData/ActivitySeries.hpp>
+#include <data/ActivitySeries.hpp>
 
 namespace sight::data
 {

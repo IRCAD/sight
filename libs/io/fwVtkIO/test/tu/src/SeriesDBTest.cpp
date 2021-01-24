@@ -29,12 +29,11 @@
 
 #include <data/Array.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
+#include <data/Series.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -66,7 +65,7 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::testImportSeriesDB()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
     const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
@@ -86,13 +85,13 @@ void SeriesDBTest::testImportSeriesDB()
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
 
-    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->at(0));
+    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(seriesDB->at(0));
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
 
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(seriesDB->at(1));
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->at(1));
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(size_t(2), recVect.size());
 
     data::Reconstruction::sptr rec1 = recVect.at(0);
@@ -141,7 +140,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
         manager->setLoadingMode(core::memory::BufferManager::LAZY);
     }
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
     const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
@@ -163,7 +162,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     //check ImageSeries
     {
-        ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->at(0));
+        data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(seriesDB->at(0));
         CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
 
         core::memory::BufferObject::sptr bo = imgSeries->getImage()->getBufferObject();
@@ -176,10 +175,10 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     //check ModelSeries
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(seriesDB->at(1));
+        data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->at(1));
         CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
-        ::fwMedData::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
+        data::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL(size_t(1), recVect.size());
 
         data::Mesh::sptr mesh = recVect[0]->getMesh();

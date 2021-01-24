@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/SelectorModel.hpp"
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 
 #include <QModelIndex>
 #include <QPointer>
@@ -70,13 +70,13 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr _series);
+    UIMEDDATAQT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr _series);
+    UIMEDDATAQT_API void removeSeries(data::Series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
     UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
@@ -110,14 +110,14 @@ Q_SIGNALS:
      * @note selection and deselection contain only the change of selection. The series always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectSeries(QVector< ::fwMedData::Series::sptr > _selection,
-                      QVector< ::fwMedData::Series::sptr > _deselection);
+    void selectSeries(QVector< data::Series::sptr > _selection,
+                      QVector< data::Series::sptr > _deselection);
 
     /**
      * @brief Signal emitted when series are deleted.
      * @param _selection contains the deleted series.
      */
-    void removeSeries(QVector< ::fwMedData::Series::sptr > _selection);
+    void removeSeries(QVector< data::Series::sptr > _selection);
 
 protected Q_SLOTS:
     /**
@@ -146,7 +146,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
+    typedef QVector< data::Series::sptr > SeriesVectorType;
 
     /**
      * @brief Returns all the Series associated to the selection.

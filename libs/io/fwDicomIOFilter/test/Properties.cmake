@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwTest
     fwMath
     data
-    fwMedData
     fwGdcmIO
     fwLog
 )

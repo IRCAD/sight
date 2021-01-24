@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_UT_WRITERREADERTEST_HPP__
-#define __FWGDCMIO_UT_WRITERREADERTEST_HPP__
+#pragma once
 
-#include <fwMedData/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -55,12 +55,9 @@ private:
      * Create a series DB containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    ::fwMedData::SeriesDB::sptr createSeriesDB();
-
+    data::SeriesDB::sptr createSeriesDB();
 
 };
 
 } // namespace ut
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_UT_WRITERREADERTEST_HPP__

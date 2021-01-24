@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "creator/fwMedData/ActivitySeries1Test.hpp"
+#include "creator/data/ActivitySeries1Test.hpp"
 
 #include "fwAtoms/String.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
 
-#include "fwStructuralPatch/creator/fwMedData/ActivitySeries1.hpp"
+#include "fwStructuralPatch/creator/data/ActivitySeries1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creator::fwMedData::ActivitySeries1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::creatordata::ActivitySeries1Test );
 
 namespace fwStructuralPatch
 {
@@ -38,7 +38,7 @@ namespace ut
 {
 namespace creator
 {
-namespace fwMedData
+namespace sight::data
 {
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void ActivitySeries1Test::createTest()
 
     CPPUNIT_ASSERT(actSeriesCreator);
     const std::string& classname = actSeriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::ActivitySeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::ActivitySeries") == classname );
     const std::string& objectVersion = actSeriesCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -72,7 +72,7 @@ void ActivitySeries1Test::createTest()
 
     const std::string& actSeriesClassname = ::fwAtomsPatch::helper::getClassname(actSeries);
     CPPUNIT_ASSERT_MESSAGE(
-        "Classname must be equal", std::string("::fwMedData::ActivitySeries") == actSeriesClassname );
+        "Classname must be equal", std::string("data::ActivitySeries") == actSeriesClassname );
     const std::string& actSeriesObjectVersion = ::fwAtomsPatch::helper::getVersion(actSeries);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == actSeriesObjectVersion );
 
@@ -88,7 +88,7 @@ void ActivitySeries1Test::copyTest()
     ActivitySeries1 actSeriesCreator;
 
     const std::string& classname = actSeriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::ActivitySeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::ActivitySeries") == classname );
     const std::string& objectVersion = actSeriesCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -97,7 +97,7 @@ void ActivitySeries1Test::copyTest()
     CPPUNIT_ASSERT(actSeriesCreator2);
     const std::string& classnameActivitySeriesCreator2 = actSeriesCreator2->getObjectClassname();
     CPPUNIT_ASSERT_MESSAGE(
-        "Classname must be equal", std::string("::fwMedData::ActivitySeries") == classnameActivitySeriesCreator2 );
+        "Classname must be equal", std::string("data::ActivitySeries") == classnameActivitySeriesCreator2 );
 
     const std::string& objectVersionActivitySeriesCreator2 = actSeriesCreator2->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionActivitySeriesCreator2 );
@@ -107,7 +107,7 @@ void ActivitySeries1Test::copyTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace fwMedData
+} //namespace sight::data
 } //namespace creator
 } //namespace ut
 } //namespace fwStructuralPatch

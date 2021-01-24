@@ -76,7 +76,7 @@ std::string ImagePositionPatientSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
 const
 {
     DicomSeriesContainerType result;
@@ -88,7 +88,7 @@ const
     unsigned int instanceNumber = 0;
     double spacingBetweenSlices = 0.;
     const double epsilon        = 1e-2; // Value used to find a gap
-    ::fwMedData::DicomSeries::sptr currentSeries;
+    data::DicomSeries::sptr currentSeries;
     for(const auto& item :  series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
@@ -157,7 +157,7 @@ const
                 currentSeries->setNumberOfInstances(currentSeries->getDicomContainer().size());
             }
             instanceNumber = 0;
-            currentSeries  = ::fwMedData::DicomSeries::New();
+            currentSeries  = data::DicomSeries::New();
             currentSeries->shallowCopy(series);
             currentSeries->clearDicomContainer();
         }

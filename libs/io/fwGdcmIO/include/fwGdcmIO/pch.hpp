@@ -33,11 +33,11 @@
 
 #include <data/Image.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/Equipment.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Patient.hpp>
+#include <data/Study.hpp>
 
 #ifndef WIN32
 #include <gdcmSurfaceHelper.h>

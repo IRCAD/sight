@@ -32,6 +32,7 @@
 
 #include <data/location/Folder.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <fwGui/Cursor.hpp>
@@ -41,8 +42,6 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -57,7 +56,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -255,13 +254,13 @@ void SModelSeriesWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInput< const ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        const auto modelSeriesLockedPtr = this->getLockedInput< const data::ModelSeries >(::fwIO::s_DATA_KEY);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        const auto modelSeries                                         = modelSeriesLockedPtr.get_shared();
-        const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
+        const auto modelSeries                                  = modelSeriesLockedPtr.get_shared();
+        const data::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
         for(const data::Reconstruction::csptr& rec :  recs)
         {
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);

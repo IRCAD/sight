@@ -24,9 +24,9 @@
 
 #include "ioDicom/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <data/SeriesDB.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -48,7 +48,7 @@ namespace ioDicom
  * @subsection Input Input:
  * - \b selectedSeries [data::Vector]: Vector containing the selected series to merge.
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the series.
+ * - \b seriesDB [data::SeriesDB]: SeriesDB where to put the series.
  */
 class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {

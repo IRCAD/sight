@@ -9,7 +9,6 @@ set( DEPENDENCIES
         arData
         fwGui
         fwGuiQt
-        fwMedData
         fwDataTools
 )
 set( REQUIREMENTS )

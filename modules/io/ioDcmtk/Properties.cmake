@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwGui
     core
     data
-    fwMedData
     fwServices
     fwIO
     )

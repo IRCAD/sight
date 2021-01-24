@@ -24,19 +24,18 @@
 
 #include "ioGdcm/config.hpp"
 
+#include <data/DicomSeries.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Object.hpp>
+#include <data/Series.hpp>
 
 #include <fwGdcmIO/writer/Series.hpp>
 
 #include <fwIO/IWriter.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
-
 #include <filesystem>
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -56,7 +55,7 @@ namespace ioGdcm
  * @endcode
  *
  * @subsection Input Input
- * - \b data [::fwMedData::ModelSeries]: ModelSeries to save in Dicom.
+ * - \b data [data::ModelSeries]: ModelSeries to save in Dicom.
  */
 class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
 {
@@ -109,7 +108,7 @@ private:
      * @param[in] model ModelSeries that must be written
      */
     void saveSurfaceSegmentation( const std::filesystem::path filename,
-                                  const ::fwMedData::ModelSeries::csptr& model);
+                                  const data::ModelSeries::csptr& model);
 };
 
 } // namespace ioGdcm

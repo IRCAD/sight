@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <dcmtk/dcmdata/dctagkey.h>
 
@@ -51,7 +51,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const override;

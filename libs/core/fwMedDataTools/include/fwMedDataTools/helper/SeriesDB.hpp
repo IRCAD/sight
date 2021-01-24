@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATATOOLS_HELPER_SERIESDB_HPP__
-#define __FWMEDDATATOOLS_HELPER_SERIESDB_HPP__
+#pragma once
 
 #include "fwMedDataTools/config.hpp"
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 namespace fwMedDataTools
 {
@@ -34,7 +33,8 @@ namespace helper
 {
 
 /**
- * @brief Defines an helper to modify an ::fwMedData::SeriesDB and create in parallel the message to announce this modification.
+ * @brief Defines an helper to modify an data::SeriesDB and create in parallel the message to announce this
+ * modification.
  */
 class FWMEDDATATOOLS_CLASS_API SeriesDB
 {
@@ -42,7 +42,7 @@ class FWMEDDATATOOLS_CLASS_API SeriesDB
 public:
 
     /// Constructor. Initialize parameters.
-    FWMEDDATATOOLS_API SeriesDB( ::fwMedData::SeriesDB::wptr seriesDB );
+    FWMEDDATATOOLS_API SeriesDB( data::SeriesDB::wptr seriesDB );
 
     /// Destrucotr. Do nothing.
     FWMEDDATATOOLS_API ~SeriesDB();
@@ -53,7 +53,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    FWMEDDATATOOLS_API void add( ::fwMedData::Series::sptr newSeries );
+    FWMEDDATATOOLS_API void add( data::Series::sptr newSeries );
 
     /**
      * @brief Remove a Series in the SeriesDB.
@@ -61,7 +61,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    FWMEDDATATOOLS_API void remove( ::fwMedData::Series::sptr oldSeries );
+    FWMEDDATATOOLS_API void remove( data::Series::sptr oldSeries );
 
     /**
      * @brief Clear all series in the SeriesDB.
@@ -75,19 +75,17 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    FWMEDDATATOOLS_API void merge(::fwMedData::SeriesDB::sptr seriesDBIn);
+    FWMEDDATATOOLS_API void merge(data::SeriesDB::sptr seriesDBIn);
 
     /// Send the signal of modification
     FWMEDDATATOOLS_API void notify();
 
 private:
 
-    ::fwMedData::SeriesDB::ContainerType m_addedSeries;
-    ::fwMedData::SeriesDB::ContainerType m_removedSeries;
-    ::fwMedData::SeriesDB::wptr m_seriesDB;
+    data::SeriesDB::ContainerType m_addedSeries;
+    data::SeriesDB::ContainerType m_removedSeries;
+    data::SeriesDB::wptr m_seriesDB;
 };
 
 } // namespace helper
 } // namespace fwMedDataTools
-
-#endif // __FWMEDDATATOOLS_HELPER_SERIESDB_HPP__

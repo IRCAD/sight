@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
+#include <data/DicomSeries.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Series.hpp>
+#include <data/types.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -43,15 +43,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Series::Series(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+Series::Series(const data::DicomSeries::csptr& dicomSeries,
                const SPTR(::gdcm::Reader)& reader,
                const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-               const ::fwMedData::Series::sptr& series,
+               const data::Series::sptr& series,
                const ::fwLog::Logger::sptr& logger,
                ProgressCallback progress,
                CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >(dicomSeries, reader, instance, series,
-                                                                     logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< data::Series >(dicomSeries, reader, instance, series,
+                                                              logger, progress, cancel)
 {
 }
 
@@ -90,7 +90,7 @@ void Series::readGeneralSeriesModule()
         = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x1050 >(dataset);
     if(!performingPhysicianNamesStr.empty())
     {
-        ::fwMedData::DicomValuesType performingPhysicianNames;
+        data::DicomValuesType performingPhysicianNames;
         ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
         m_object->setPerformingPhysiciansName(performingPhysicianNames);
     }
@@ -139,7 +139,7 @@ void Series::readGeneralSeriesModule()
         = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0280>(dataset);
     m_object->setPerformedProcedureComments(performedProcedureComments);
 
-    const ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(m_object);
+    const data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(m_object);
     if(imageSeries)
     {
         const std::string& imageContrastAgent =

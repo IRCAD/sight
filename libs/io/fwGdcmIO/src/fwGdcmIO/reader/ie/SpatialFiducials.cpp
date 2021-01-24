@@ -25,13 +25,12 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
+#include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwMedData/DicomSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -42,7 +41,7 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-SpatialFiducials::SpatialFiducials(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+SpatialFiducials::SpatialFiducials(const data::DicomSeries::csptr& dicomSeries,
                                    const SPTR(::gdcm::Reader)& reader,
                                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                                    const data::Image::sptr& image,

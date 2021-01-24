@@ -290,9 +290,9 @@ void SShapeExtruder::enableTool(bool _enable)
 void SShapeExtruder::deleteLastMesh()
 {
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = this->getLockedInOut< data::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
     if (reconstructions.size() > 0)
     {
@@ -305,9 +305,9 @@ void SShapeExtruder::deleteLastMesh()
         notif->asyncEmit("Last extrusion deleted.");
 
         // Send the signal.
-        auto sig = extrudedMeshes->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
-            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
-        sig->asyncEmit(::fwMedData::ModelSeries::ReconstructionVectorType{reconstructions});
+        auto sig = extrudedMeshes->signal< data::ModelSeries::ReconstructionsRemovedSignalType >(
+            data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+        sig->asyncEmit(data::ModelSeries::ReconstructionVectorType{reconstructions});
     }
     else
     {
@@ -764,9 +764,9 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     }
 
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = this->getLockedInOut< data::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+    data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
     // Creates the reconstruction.
     const data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
@@ -778,9 +778,9 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     extrudedMeshes->setReconstructionDB(reconstructions);
 
     // Send the signal.
-    auto sig = extrudedMeshes->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
-        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG );
-    sig->asyncEmit(::fwMedData::ModelSeries::ReconstructionVectorType{reconstruction});
+    auto sig = extrudedMeshes->signal< data::ModelSeries::ReconstructionsAddedSignalType >(
+        data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG );
+    sig->asyncEmit(data::ModelSeries::ReconstructionVectorType{reconstruction});
 }
 
 //------------------------------------------------------------------------------

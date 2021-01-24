@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwGui
     fwServices
     fwJobs
-    fwMedData
     fwActivities
 )
 set( REQUIREMENTS

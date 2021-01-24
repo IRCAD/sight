@@ -24,10 +24,9 @@
 
 #include "fwActivities/validator/registry/macros.hpp"
 
+#include <data/Series.hpp>
+#include <data/Study.hpp>
 #include <data/Vector.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -64,8 +63,8 @@ IValidator::ValidationType RelatedStudy::validate(
         validation.first  = true;
         validation.second = "Selected series refers to the same study.";
 
-        ::fwMedData::Series::sptr seriesRef = ::fwMedData::Series::dynamicCast((*currentSelection)[0]);
-        ::fwMedData::Study::sptr studyRef   = seriesRef->getStudy();
+        data::Series::sptr seriesRef = data::Series::dynamicCast((*currentSelection)[0]);
+        data::Study::sptr studyRef   = seriesRef->getStudy();
 
         std::string instanceUIDRef = studyRef->getInstanceUID();
         ::boost::algorithm::trim(instanceUIDRef);
@@ -73,8 +72,8 @@ IValidator::ValidationType RelatedStudy::validate(
         data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
-            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(*it);
-            ::fwMedData::Study::sptr study   = series->getStudy();
+            data::Series::sptr series = data::Series::dynamicCast(*it);
+            data::Study::sptr study   = series->getStudy();
 
             std::string instanceUID = study->getInstanceUID();
             ::boost::algorithm::trim(instanceUID);

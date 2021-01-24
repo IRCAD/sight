@@ -44,7 +44,7 @@ V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
     m_originClassname = "data::Patient";
-    m_targetClassname = "::fwMedData::Patient";
+    m_targetClassname = "data::Patient";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }

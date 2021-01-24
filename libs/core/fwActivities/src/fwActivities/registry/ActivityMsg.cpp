@@ -39,7 +39,7 @@ namespace registry
 
 //-----------------------------------------------------------------------------
 
-ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
+ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
                          const ::fwActivities::registry::ActivityInfo& info,
                          const ParametersType& parameters)
 {

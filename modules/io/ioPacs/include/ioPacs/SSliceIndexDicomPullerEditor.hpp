@@ -53,7 +53,7 @@ namespace thread
 class Timer;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class SeriesDB;
 }
@@ -93,7 +93,7 @@ namespace ioPacs
  * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
- * - \b series [::fwMedData::DicomSeries]: DICOM Series where to extract the images.
+ * - \b series [data::DicomSeries]: DICOM Series where to extract the images.
  *
  * @subsection Output Output:
  * - \b image [data::Image]: downloaded image.
@@ -188,7 +188,7 @@ private:
     std::string m_imageKey;
 
     /// Contains the seriesDB where the DICOM reader sets its output.
-    SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
+    SPTR(data::SeriesDB) m_tempSeriesDB;
 
     /// Contains the worker that pulls series from the PACS.
     core::thread::Worker::sptr m_pullSeriesWorker;

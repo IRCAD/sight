@@ -106,7 +106,7 @@ void SActivityView::starting()
 
     if (!m_mainActivityId.empty())
     {
-        ::fwMedData::ActivitySeries::sptr activity = this->createMainActivity();
+        data::ActivitySeries::sptr activity = this->createMainActivity();
         if (activity)
         {
             this->launchActivity(activity);
@@ -139,7 +139,7 @@ void SActivityView::updating()
 
 //------------------------------------------------------------------------------
 
-void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
+void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
     if (this->validateActivity(activitySeries))
     {

@@ -12,7 +12,6 @@ set( REQUIREMENTS
     # Objects declaration
     data
     servicesReg             # fwService
-    fwMedData
 
     # UI declaration/Actions
     gui

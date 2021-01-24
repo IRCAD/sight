@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 #include "fwGdcmIO/reader/SeriesDB.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
+#include <data/DicomSeries.hpp>
 
 namespace fwJobs
 {
@@ -47,7 +47,7 @@ class FWGDCMIO_CLASS_API DicomSeriesAnonymizer
 {
 public:
 
-    fwCoreClassMacro(DicomSeriesAnonymizer);
+    fwCoreClassMacro(DicomSeriesAnonymizer)
 
     //------------------------------------------------------------------------------
 
@@ -63,11 +63,11 @@ public:
     FWGDCMIO_API virtual ~DicomSeriesAnonymizer();
 
     /// Anonymize the DicomSeries (modify the current object)
-    FWGDCMIO_API void anonymize(const ::fwMedData::DicomSeries::sptr& source);
+    FWGDCMIO_API void anonymize(const data::DicomSeries::sptr& source);
 
     /// Anonymize the DicomSeries (doesn't modify the current object)
-    FWGDCMIO_API void anonymize(const ::fwMedData::DicomSeries::sptr& source,
-                                const ::fwMedData::DicomSeries::sptr& destination);
+    FWGDCMIO_API void anonymize(const data::DicomSeries::sptr& source,
+                                const data::DicomSeries::sptr& destination);
 
     /// Get job observer
     FWGDCMIO_API SPTR(::fwJobs::Aggregator) getJob() const;

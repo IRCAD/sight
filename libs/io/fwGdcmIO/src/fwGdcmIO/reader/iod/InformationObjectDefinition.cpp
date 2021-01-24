@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-InformationObjectDefinition::InformationObjectDefinition(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+InformationObjectDefinition::InformationObjectDefinition(const data::DicomSeries::csptr& dicomSeries,
                                                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                          const ::fwLog::Logger::sptr& logger,
                                                          ProgressCallback progress,

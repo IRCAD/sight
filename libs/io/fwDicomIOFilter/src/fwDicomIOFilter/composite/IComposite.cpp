@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ IFilter::FilterType IComposite::getFilterType() const
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::apply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
@@ -56,7 +56,7 @@ IComposite::DicomSeriesContainerType IComposite::apply(
     {
         DicomSeriesContainerType filtered;
         // For every serie
-        for(const ::fwMedData::DicomSeries::sptr& s :  result)
+        for(const data::DicomSeries::sptr& s :  result)
         {
             DicomSeriesContainerType tempo = filter->apply(s, logger);
             filtered.reserve(filtered.size() + tempo.size());
@@ -70,7 +70,7 @@ IComposite::DicomSeriesContainerType IComposite::apply(
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::forcedApply(
-    const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
@@ -79,7 +79,7 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(
     {
         DicomSeriesContainerType filtered;
         // For every series
-        for(const ::fwMedData::DicomSeries::sptr& s :  result)
+        for(const data::DicomSeries::sptr& s :  result)
         {
             try
             {

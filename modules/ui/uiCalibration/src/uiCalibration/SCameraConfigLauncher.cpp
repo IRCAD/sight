@@ -32,6 +32,7 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -41,8 +42,6 @@
 
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -95,7 +94,7 @@ void SCameraConfigLauncher::starting()
     m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
     SLM_ASSERT("Missing cameraSeries.", m_cameraSeries);
 
-    m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
+    m_activitySeries = this->getInOut< data::ActivitySeries >("activitySeries");
     SLM_ASSERT("Missing activitySeries.", m_activitySeries);
 
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -223,7 +222,7 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto sdb = ::fwMedData::SeriesDB::New();
+    auto sdb = data::SeriesDB::New();
     ::fwServices::IService::sptr readerService = ::fwServices::add("::ioAtoms::SReader");
     readerService->registerInOut(sdb, ::fwIO::s_DATA_KEY);
 

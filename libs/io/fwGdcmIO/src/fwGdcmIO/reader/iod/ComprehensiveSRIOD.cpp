@@ -24,10 +24,9 @@
 
 #include "fwGdcmIO/reader/ie/Document.hpp"
 
+#include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -38,7 +37,7 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::ComprehensiveSRIOD(const ::fwMedData::DicomSeries::csptr& dicomSeries,
+ComprehensiveSRIOD::ComprehensiveSRIOD(const data::DicomSeries::csptr& dicomSeries,
                                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                        const ::fwLog::Logger::sptr& logger,
                                        ProgressCallback progress,
@@ -55,10 +54,10 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series)
+void ComprehensiveSRIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader

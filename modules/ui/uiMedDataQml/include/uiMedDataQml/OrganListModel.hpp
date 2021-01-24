@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMedDataQml/config.hpp"
 
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <QAbstractListModel>
 #include <QObject>
@@ -59,13 +59,13 @@ public:
     /// Return the data stored under the given role for the item referred to by the index.
     UIMEDDATAQML_API QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-    UIMEDDATAQML_API void updateModelSeries(const ::fwMedData::ModelSeries::sptr& modelSeries);
+    UIMEDDATAQML_API void updateModelSeries(const data::ModelSeries::sptr& modelSeries);
 
 protected:
     /// Expose the role names, so that they can be accessed via QML
     UIMEDDATAQML_API virtual QHash<int, QByteArray> roleNames() const;
 private:
-    ::fwMedData::ModelSeries::sptr m_modelSeries;
+    data::ModelSeries::sptr m_modelSeries;
 };
 
 } // uiMedDataQml

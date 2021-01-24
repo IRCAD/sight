@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/Series.hpp>
+#include <data/types.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -45,12 +45,12 @@ namespace ie
 
 Series::Series(const SPTR(::gdcm::Writer)& writer,
                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-               const ::fwMedData::Series::csptr& series,
+               const data::Series::csptr& series,
                const ::fwLog::Logger::sptr& logger,
                ProgressCallback progress,
                CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Series>(writer, instance, series,
-                                                                    logger, progress, cancel)
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Series>(writer, instance, series,
+                                                             logger, progress, cancel)
 {
 }
 
@@ -96,7 +96,7 @@ void Series::writeGeneralSeriesModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0031>(time, dataset);
 
     // Performing physicians name - Type 3
-    ::fwMedData::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
+    data::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
     if (!performingPhysicians.empty())
     {
         ::gdcm::String<>* physicians = new ::gdcm::String<>[performingPhysicians.size()];
@@ -132,7 +132,7 @@ void Series::writeGeneralSeriesModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0040, 0x0280>(
         m_object->getPerformedProcedureComments(), dataset);
 
-    const ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(m_object);
+    const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(m_object);
     if(imageSeries)
     {
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x0010>(imageSeries->getContrastAgent(), dataset);

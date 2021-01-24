@@ -25,7 +25,7 @@
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
-#include <fwMedData/ModelSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <gdcmSurfaceReader.h>
 
@@ -46,7 +46,7 @@ namespace ie
 /**
  * @brief Surface Information Entity class
  */
-class FWGDCMIO_CLASS_API Surface : public ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::ModelSeries >
+class FWGDCMIO_CLASS_API Surface : public ::fwGdcmIO::reader::ie::InformationEntity< data::ModelSeries >
 {
 
 public:
@@ -60,10 +60,10 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Surface(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
+    FWGDCMIO_API Surface(const CSPTR(data::DicomSeries)& dicomSeries,
                          const SPTR(::gdcm::Reader)& reader,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                         const ::fwMedData::ModelSeries::sptr& series,
+                         const data::ModelSeries::sptr& series,
                          const ::fwLog::Logger::sptr& logger = nullptr,
                          ProgressCallback progress           = nullptr,
                          CancelRequestedCallback cancel      = nullptr);

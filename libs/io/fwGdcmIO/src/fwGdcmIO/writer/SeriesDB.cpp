@@ -24,9 +24,9 @@
 
 #include <core/base.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <data/ModelSeries.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include <filesystem>
 
@@ -59,18 +59,18 @@ void SeriesDB::write()
 //    // Disable GDCM Warnings
 //    ::gdcm::Trace::SetWarning(false);
 
-    ::fwMedData::SeriesDB::csptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
     ::fwGdcmIO::writer::Series::sptr writer = ::fwGdcmIO::writer::Series::New();
     writer->setFiducialsExportMode(m_fiducialsExportMode);
 
     // Copy and sort container in order to write ImageSeries before ModelSeries
-    ::fwMedData::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
+    data::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
     std::sort(seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
-    for( ::fwMedData::Series::sptr series : seriesContainer)
+    for( data::Series::sptr series : seriesContainer)
     {
         // Create a new directory
         const std::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
@@ -97,11 +97,11 @@ std::string SeriesDB::extension()
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::seriesComparator(const ::fwMedData::Series::csptr& a,
-                                const ::fwMedData::Series::csptr& b)
+bool SeriesDB::seriesComparator(const data::Series::csptr& a,
+                                const data::Series::csptr& b)
 {
-    ::fwMedData::ModelSeries::csptr ma = ::fwMedData::ModelSeries::dynamicCast(a);
-    ::fwMedData::ModelSeries::csptr mb = ::fwMedData::ModelSeries::dynamicCast(b);
+    data::ModelSeries::csptr ma = data::ModelSeries::dynamicCast(a);
+    data::ModelSeries::csptr mb = data::ModelSeries::dynamicCast(b);
     return (mb && !ma);
 }
 

@@ -36,7 +36,7 @@ namespace sight::data
 class Image;
 }
 
-namespace fwMedData
+namespace sight::data
 {
 class Series;
 }
@@ -59,7 +59,7 @@ namespace ioITK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwMedData::SeriesDB]: store the loaded images.
+ * - \b data [data::SeriesDB]: store the loaded images.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.
@@ -114,7 +114,7 @@ protected:
 private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    void initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
+    void initSeries(SPTR(data::Series) series, const std::string& instanceUID);
 
     /// Reads specified inr file in image.
     bool createImage( const std::filesystem::path inrFile, SPTR(data::Image) image );

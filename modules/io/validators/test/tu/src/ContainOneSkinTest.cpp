@@ -23,13 +23,12 @@
 #include "ContainOneSkinTest.hpp"
 
 #include <data/Composite.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::ContainOneSkinTest );
@@ -66,11 +65,11 @@ void ContainOneSkinTest::testValidator()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec2 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec3 = data::Reconstruction::New();
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst;
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
+    data::Reconstruction::sptr rec1     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec2     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec3     = data::Reconstruction::New();
+    data::ModelSeries::ReconstructionVectorType vecReconst;
 
     {
         validation = objValidator->validate(rec1);
@@ -143,18 +142,18 @@ void ContainOneSkinTest::testValidatorWithVector()
 
     data::Vector::sptr vector = data::Vector::New();
 
-    ::fwMedData::ModelSeries::sptr modelSeries1 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    data::Reconstruction::sptr rec11 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec12 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec21 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec22 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec31 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec32 = data::Reconstruction::New();
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst1;
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst2;
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst3;
+    data::ModelSeries::sptr modelSeries1 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
+    data::Reconstruction::sptr rec11     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec12     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec21     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec22     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec31     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec32     = data::Reconstruction::New();
+    data::ModelSeries::ReconstructionVectorType vecReconst1;
+    data::ModelSeries::ReconstructionVectorType vecReconst2;
+    data::ModelSeries::ReconstructionVectorType vecReconst3;
 
     vecReconst1.push_back(rec11);
     vecReconst1.push_back(rec12);
@@ -245,18 +244,18 @@ void ContainOneSkinTest::testValidatorWithComposite()
 
     data::Composite::sptr composite = data::Composite::New();
 
-    ::fwMedData::ModelSeries::sptr modelSeries1 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    data::Reconstruction::sptr rec11 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec12 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec21 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec22 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec31 = data::Reconstruction::New();
-    data::Reconstruction::sptr rec32 = data::Reconstruction::New();
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst1;
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst2;
-    ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst3;
+    data::ModelSeries::sptr modelSeries1 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
+    data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
+    data::Reconstruction::sptr rec11     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec12     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec21     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec22     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec31     = data::Reconstruction::New();
+    data::Reconstruction::sptr rec32     = data::Reconstruction::New();
+    data::ModelSeries::ReconstructionVectorType vecReconst1;
+    data::ModelSeries::ReconstructionVectorType vecReconst2;
+    data::ModelSeries::ReconstructionVectorType vecReconst3;
 
     vecReconst1.push_back(rec11);
     vecReconst1.push_back(rec12);

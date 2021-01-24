@@ -7,7 +7,6 @@ set( DEPENDENCIES
     data
     fwDataIO
     fwMath
-    fwMedData
     fwJobs
 )
 set( REQUIREMENTS  )

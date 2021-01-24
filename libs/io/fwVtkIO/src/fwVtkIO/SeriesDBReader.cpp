@@ -32,20 +32,19 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Patient.hpp>
 #include <data/Reconstruction.hpp>
+#include <data/Study.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -80,7 +79,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-void initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
+void initSeries(data::Series::sptr series, const std::string& instanceUID)
 {
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
@@ -371,12 +370,12 @@ data::Image::sptr lazyRead( const std::filesystem::path& file, const ::fwJobs::O
 
 void SeriesDBReader::read()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    data::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     const data::location::ILocation::VectPathType files = this->getFiles();
     const std::string instanceUID                       = core::tools::UUID::generateUUID();
 
-    ::fwMedData::ModelSeries::ReconstructionVectorType recs;
+    data::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;
     for(const data::location::ILocation::VectPathType::value_type& file :  files)
     {
@@ -435,7 +434,7 @@ void SeriesDBReader::read()
         }
         if(img)
         {
-            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
+            data::ImageSeries::sptr imgSeries = data::ImageSeries::New();
             initSeries(imgSeries, instanceUID);
             imgSeries->setImage(img);
             seriesDB->getContainer().push_back(imgSeries);
@@ -458,7 +457,7 @@ void SeriesDBReader::read()
     // Adds loaded Reconstructions in SeriesDB
     if(!recs.empty())
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
+        data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
         initSeries(modelSeries, instanceUID);
         modelSeries->setReconstructionDB(recs);
         seriesDB->getContainer().push_back(modelSeries);

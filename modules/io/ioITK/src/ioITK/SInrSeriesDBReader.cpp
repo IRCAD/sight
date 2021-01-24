@@ -26,10 +26,15 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Equipment.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/MultiFiles.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/Patient.hpp>
+#include <data/SeriesDB.hpp>
+#include <data/Study.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -40,12 +45,6 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Study.hpp>
-
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
@@ -55,7 +54,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -165,10 +164,10 @@ void SInrSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
+        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
-        ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
+        data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -177,7 +176,7 @@ void SInrSeriesDBReader::updating()
 
         for(const std::filesystem::path& path :  this->getFiles())
         {
-            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
+            data::ImageSeries::sptr imgSeries = data::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);
 
             data::Image::sptr image = data::Image::New();
@@ -206,7 +205,7 @@ void SInrSeriesDBReader::updating()
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
+void SInrSeriesDBReader::initSeries(data::Series::sptr series, const std::string& instanceUID)
 {
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();

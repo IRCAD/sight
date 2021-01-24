@@ -26,15 +26,14 @@
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/location/ILocation.hpp>
 #include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -104,7 +103,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     readerSrvCfg->addConfigurationElement(file2Cfg);
     readerSrvCfg->addConfigurationElement(file2Cfg);
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
 
@@ -125,8 +124,8 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->getContainer()[0]);
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(seriesDB->getContainer()[1]);
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(seriesDB->getContainer()[0]);
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->getContainer()[1]);
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imageSeries);
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
@@ -179,8 +178,8 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     fileCfg->setValue(imageFile.string());
     readerSrvCfg->addConfigurationElement(fileCfg);
 
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
-    ::fwMedData::SeriesDB::sptr seriesDB       = ::fwMedData::SeriesDB::New();
+    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
+    data::SeriesDB::sptr seriesDB       = data::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
     ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
