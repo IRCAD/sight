@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Mesh/V4ToV3.hpp"
+#include "fwStructuralPatch/data/Mesh/V4ToV3.hpp"
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -35,7 +35,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Mesh
@@ -44,8 +44,8 @@ namespace Mesh
 V4ToV3::V4ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Mesh";
-    m_targetClassname = "::fwData::Mesh";
+    m_originClassname = "data::Mesh";
+    m_targetClassname = "data::Mesh";
     m_originVersion   = "4";
     m_targetVersion   = "3";
 }
@@ -134,6 +134,6 @@ void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Mesh
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

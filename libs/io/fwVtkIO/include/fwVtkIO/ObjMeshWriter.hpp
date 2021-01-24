@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -48,13 +48,13 @@ namespace fwVtkIO
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class ObjMeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                      public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class ObjMeshWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
+                      public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(ObjMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+    fwCoreClassMacro(ObjMeshWriter, ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
                      ::fwDataIO::writer::factory::New< ObjMeshWriter >)
     fwCoreAllowSharedFromThis()
 

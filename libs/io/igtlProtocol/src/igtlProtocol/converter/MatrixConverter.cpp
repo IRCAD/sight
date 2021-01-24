@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <igtlTransformMessage.h>
 
@@ -33,7 +33,7 @@ namespace igtlProtocol
 namespace converter
 {
 const std::string MatrixConverter::s_IGTL_TYPE          = "TRANSFORM";
-const std::string MatrixConverter::s_FWDATA_OBJECT_TYPE = ::fwData::TransformationMatrix3D::classname();
+const std::string MatrixConverter::s_FWDATA_OBJECT_TYPE = data::TransformationMatrix3D::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::MatrixConverter);
 
@@ -49,9 +49,9 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    ::fwData::TransformationMatrix3D::csptr srcMatrix = ::fwData::TransformationMatrix3D::dynamicConstCast(src);
+    data::TransformationMatrix3D::csptr srcMatrix = data::TransformationMatrix3D::dynamicConstCast(src);
     ::igtl::TransformMessage::Pointer msg;
     ::igtl::Matrix4x4 dest;
 
@@ -70,12 +70,12 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::Matrix4x4 matrix;
     ::igtl::TransformMessage* msg                  = dynamic_cast< ::igtl::TransformMessage* >(src.GetPointer());
     ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
-    ::fwData::TransformationMatrix3D::sptr dest    = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr dest = data::TransformationMatrix3D::New();
     srcTransform->GetMatrix(matrix);
     for (int i = 0; i < 4; ++i)
     {

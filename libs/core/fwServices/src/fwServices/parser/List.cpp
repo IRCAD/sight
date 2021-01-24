@@ -24,11 +24,11 @@
 
 #include "fwServices/macros.hpp"
 
-#include <fwData/List.hpp>
+#include <data/List.hpp>
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::List, ::fwData::List )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::List, data::List )
 
 namespace fwServices
 {
@@ -75,8 +75,8 @@ void List::createConfig( core::tools::Object::sptr _obj )
     const std::string BUILD_OBJECT      = "new";
     const std::string GET_OBJECT        = "ref";
 
-    ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a fwData::List", dataList);
+    data::List::sptr dataList = data::List::dynamicCast(_obj);
+    SLM_ASSERT("The passed object must be a data::List", dataList);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -103,10 +103,10 @@ void List::createConfig( core::tools::Object::sptr _obj )
 
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwData::Object::sptr localObj = ctm->getConfigRoot();
+                data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("A ::fwData::List can contain only ::fwData::Object", localObj );
+                SLM_ASSERT("A data::List can contain only data::Object", localObj );
                 dataList->getContainer().push_back( localObj );
 
             }

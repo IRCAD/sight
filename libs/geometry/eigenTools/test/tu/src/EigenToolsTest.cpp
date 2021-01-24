@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <eigenTools/helper.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <Eigen/Geometry>
 
@@ -57,7 +57,7 @@ void EigenToolsTest::eigenToF4s()
 
     Eigen::Matrix< double, 4, 4> mat;
 
-    ::fwData::TransformationMatrix3D::sptr f4sRes = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr f4sRes = data::TransformationMatrix3D::New();
 
     for(unsigned int r = 0; r < 3; ++r)
     {
@@ -94,7 +94,7 @@ void EigenToolsTest::f4sToEigen()
 {
     Eigen::Matrix< float, 4, 4> eigenRes;
 
-    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
 
     for(unsigned int r = 0; r < 3; ++r)
     {
@@ -115,7 +115,7 @@ void EigenToolsTest::f4sToEigen()
 
     eigenRes = ::eigenTools::helper::toEigen< float >(mat);
 
-    ::fwData::TransformationMatrix3D::sptr mat2 = ::eigenTools::helper::toF4s(eigenRes);
+    data::TransformationMatrix3D::sptr mat2 = ::eigenTools::helper::toF4s(eigenRes);
 
     for(unsigned int r = 0; r < 4; ++r)
     {
@@ -170,10 +170,10 @@ void EigenToolsTest::f4sMatToRvecTvec()
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
 
-    ::fwData::TransformationMatrix3D::sptr trf = ::eigenTools::helper::toF4s(m);
+    data::TransformationMatrix3D::sptr trf = ::eigenTools::helper::toF4s(m);
 
     ::eigenTools::helper::RvecTvecType actualRvecTvec =
-        ::eigenTools::helper::f4sMatToRvecTvec(::fwData::TransformationMatrix3D::constCast(trf));
+        ::eigenTools::helper::f4sMatToRvecTvec(data::TransformationMatrix3D::constCast(trf));
 
     for(unsigned int i = 0; i < 3; ++i)
     {

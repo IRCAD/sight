@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace uiMedDataQt
    </service>
    @endcode
  * @subsection Input Input
- * - \b series [::fwData::Vector]: vector containing the series to preview.
+ * - \b series [data::Vector]: vector containing the series to preview.
  * @subsection Configuration Configuration
  * - \b parentView: wid of the view where the config will install its windows.
  * - \b config: gives the available association between data type and associated config.
@@ -70,7 +70,7 @@ class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceMacro(SSeriesViewer, ::fwServices::IController);
+    fwCoreServiceMacro(SSeriesViewer, ::fwServices::IController)
 
     /// Constructor
     UIMEDDATAQT_API SSeriesViewer();

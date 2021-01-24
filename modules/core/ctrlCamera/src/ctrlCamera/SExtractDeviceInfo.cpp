@@ -26,8 +26,8 @@
 
 #include "ctrlCamera/SExtractDeviceInfo.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Composite.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 
@@ -40,7 +40,7 @@
 namespace ctrlCamera
 {
 
-fwServicesRegisterMacro(::fwServices::IController, ::ctrlCamera::SExtractDeviceInfo, ::fwData::Object)
+fwServicesRegisterMacro(::fwServices::IController, ::ctrlCamera::SExtractDeviceInfo, data::Object)
 
 //-----------------------------------------------------------------------------
 

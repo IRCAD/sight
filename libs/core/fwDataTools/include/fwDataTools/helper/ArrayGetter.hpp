@@ -27,7 +27,7 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 namespace fwDataTools
 {
@@ -38,7 +38,7 @@ namespace helper
 /**
  * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
  *
- * @deprecated will be removed in sight 22.0, please use ::fwData::Array.
+ * @deprecated will be removed in sight 22.0, please use data::Array.
  *
  */
 class FWDATATOOLS_DEPRECATED_CLASS_API ArrayGetter
@@ -57,12 +57,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(::fwData::Array::csptr array)
+    static sptr New(data::Array::csptr array)
     {
         return std::make_shared<ArrayGetter>(array);
     }
-    [[deprecated("deprecated and will be removed in sight 22.0, please use ::fwData::Array")]]
-    FWDATATOOLS_API ArrayGetter(const ::fwData::Array::csptr& array );
+    [[deprecated("deprecated and will be removed in sight 22.0, please use data::Array")]]
+    FWDATATOOLS_API ArrayGetter(const data::Array::csptr& array );
 
     FWDATATOOLS_API virtual ~ArrayGetter();
 
@@ -75,7 +75,7 @@ public:
      *
      * @return Pointer to the requested item in the buffer
      */
-    FWDATATOOLS_API virtual const void* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0) const;
+    FWDATATOOLS_API virtual const void* getItem(const data::Array::IndexType& id, const size_t component = 0) const;
 
     /**
      * @brief Typed version of getItem
@@ -86,7 +86,7 @@ public:
      *
      * @return Array buffer pointer casted to T
      */
-    template< typename T > const T* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0) const;
+    template< typename T > const T* getItem(const data::Array::IndexType& id, const size_t component = 0) const;
 
     /**
      * @brief Copies the data into the buffer pointed by <value>
@@ -94,8 +94,8 @@ public:
      * @param id Item id
      * @param[out] value Buffer to write into
      */
-    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, void* value) const;
-    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, const size_t component,
+    FWDATATOOLS_API virtual void getItem(const data::Array::IndexType& id, void* value) const;
+    FWDATATOOLS_API virtual void getItem(const data::Array::IndexType& id, const size_t component,
                                          void* value) const;
 
     /**
@@ -122,7 +122,7 @@ public:
      *
      * @return buffer item pointer
      */
-    FWDATATOOLS_API const char* getBufferPtr( const ::fwData::Array::IndexType& id, size_t component,
+    FWDATATOOLS_API const char* getBufferPtr( const data::Array::IndexType& id, size_t component,
                                               size_t sizeOfType ) const;
 
     /// Returns a copy of current lock on array
@@ -130,7 +130,7 @@ public:
 
 protected:
 
-    ::fwData::Array::csptr m_array;
+    data::Array::csptr m_array;
     core::memory::BufferObject::Lock m_lock;
 
 };
@@ -154,11 +154,11 @@ const T* ArrayGetter::end() const
 //------------------------------------------------------------------------------
 
 template< typename T >
-const T* ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const size_t component) const
+const T* ArrayGetter::getItem(const data::Array::IndexType& id, const size_t component) const
 {
     return static_cast<const T*> (this->getItem(id, component));
 }
 
 } // namespace helper
 
-} // namespace fwData
+} // namespace sight::data

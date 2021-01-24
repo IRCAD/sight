@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V10/V09ALA/fwData/Image.hpp"
+#include "fwMDSemanticPatch/V10/V09ALA/data/Image.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -43,13 +43,13 @@ namespace V10
 {
 namespace V09ALA
 {
-namespace fwData
+namespace sight::data
 {
 
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Image";
+    m_originClassname = "data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V10", "V09ALA");
 }
@@ -87,7 +87,7 @@ void Image::apply(
         // create new Landmarks structure
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
-        ::fwAtoms::Object::sptr currentPL = creators->create( "::fwData::PointList", "1");
+        ::fwAtoms::Object::sptr currentPL = creators->create( "data::PointList", "1");
         ::fwAtomsPatch::helper::Object helperPL( currentPL );
 
         ::fwAtoms::Map::sptr currentFieldMap = ::fwAtoms::Map::dynamicCast(current->getAttribute("fields"));
@@ -115,7 +115,7 @@ void Image::apply(
                 ::boost::split(res, coords, ::boost::is_any_of(";"));
 
                 ::fwAtoms::Object::sptr point = ::fwAtoms::Object::New();
-                ::fwAtomsPatch::helper::setClassname(point, "::fwData::Point");
+                ::fwAtomsPatch::helper::setClassname(point, "data::Point");
                 ::fwAtomsPatch::helper::setVersion(point, "1");
                 ::fwAtomsPatch::helper::generateID(point);
 
@@ -143,7 +143,7 @@ void Image::apply(
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V09ALA
 } // namespace V10
 } // namespace fwMDSemanticPatch

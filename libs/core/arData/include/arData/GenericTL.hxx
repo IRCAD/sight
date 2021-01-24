@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwData/Exception.hpp>
+#include <data/Exception.hpp>
 
 #include <boost/bind.hpp>
 #include <boost/pool/pool.hpp>
@@ -33,7 +33,7 @@ namespace arData
 //------------------------------------------------------------------------------
 
 template < class BUFFER_TYPE >
-GenericTL<BUFFER_TYPE>::GenericTL ( ::fwData::Object::Key key ) :
+GenericTL<BUFFER_TYPE>::GenericTL ( data::Object::Key key ) :
     BufferTL(key),
     m_maxElementNum(~0u)
 {
@@ -52,7 +52,7 @@ template < class BUFFER_TYPE >
 void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 

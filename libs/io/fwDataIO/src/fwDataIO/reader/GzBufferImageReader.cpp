@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <zlib.h>
 
@@ -42,7 +42,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::
+    data::location::
     enableSingleFile< IObjectReader >(
         this)
 {
@@ -58,12 +58,12 @@ GzBufferImageReader::~GzBufferImageReader()
 
 void GzBufferImageReader::read()
 {
-    assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
-    std::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
+    assert( data::location::SingleFile::dynamicCast(m_location) );
+    std::filesystem::path file = data::location::SingleFile::dynamicCast(m_location)->getPath();
 
     assert( file.empty() == false );
 
-    ::fwData::Image::sptr image = getConcreteObject();
+    data::Image::sptr image = getConcreteObject();
     size_t imageSizeInBytes = image->getSizeInBytes();
 
     image->resize();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ namespace adaptor
  * during resizing.
  *
  * Each change onto the shutter will cause this adaptor to update the managed
- * ::fwRenderQt::data::Viewport object.
+ * ::fwRenderQtdata::Viewport object.
  *
  * @section XML XML Configuration
  *
@@ -56,7 +56,7 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b viewport [::fwRenderQt::data::Viewport]: the viewport object that is updated by this adaptor.
+ * - \b viewport [::fwRenderQtdata::Viewport]: the viewport object that is updated by this adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration.
@@ -95,7 +95,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect ::fwRenderQtdata::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
      * ::scene2D::adaptor::SViewportRangeSelector::s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
@@ -110,7 +110,7 @@ private:
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    void processInteraction(::fwRenderQt::data::Event& _event ) override;
+    void processInteraction(::fwRenderQtdata::Event& _event ) override;
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
@@ -122,13 +122,13 @@ private:
     void updateViewportFromShutter(double x, double y, double width, double height);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
-    bool mouseOnShutterLeft(::fwRenderQt::data::Coord _coord);
+    bool mouseOnShutterLeft(::fwRenderQtdata::Coord _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border.
-    bool mouseOnShutterRight(::fwRenderQt::data::Coord _coord);
+    bool mouseOnShutterRight(::fwRenderQtdata::Coord _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part.
-    bool mouseOnShutterMiddle(::fwRenderQt::data::Coord _coord);
+    bool mouseOnShutterMiddle(::fwRenderQtdata::Coord _coord);
 
     /// Stores the graphic item that represents the shutter.
     QGraphicsRectItem* m_shutter;
@@ -143,10 +143,10 @@ private:
     bool m_isInteracting;
 
     /// Sets if there is a dragging interaction.
-    ::fwRenderQt::data::Coord m_dragStartPoint;
+    ::fwRenderQtdata::Coord m_dragStartPoint;
 
     ///  Defines the shutter position when dragging starts.
-    ::fwRenderQt::data::Coord m_dragStartShutterPos;
+    ::fwRenderQtdata::Coord m_dragStartShutterPos;
 
     /// Sets the spacing value for an easier picking onto shutter borders.
     const int m_clickCatchRange;

@@ -29,10 +29,10 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Histogram.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -82,15 +82,15 @@ void SComputeHistogram::starting()
 
 void SComputeHistogram::updating()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
+    data::Image::csptr image = this->getInput< data::Image>(s_IMAGE_INPUT);
 
-    ::fwData::mt::ObjectReadLock imgLock(image);
+    data::mt::ObjectReadLock imgLock(image);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        ::fwData::Histogram::sptr histogram = this->getInOut< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
+        data::Histogram::sptr histogram = this->getInOut< data::Histogram>(s_HISTOGRAM_INPUT);
 
-        ::fwData::mt::ObjectWriteLock lock(histogram);
+        data::mt::ObjectWriteLock lock(histogram);
 
         ComputeHistogramFunctor::Parameter param;
         param.image     = image;
@@ -101,7 +101,7 @@ void SComputeHistogram::updating()
         core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ComputeHistogramFunctor >::invoke( type,
                                                                                                            param );
 
-        auto sig = histogram->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = histogram->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -127,8 +127,8 @@ void SComputeHistogram::stopping()
 ::fwServices::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

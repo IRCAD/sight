@@ -26,16 +26,16 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/reflection/exception/NullPointer.hpp>
-#include <fwData/reflection/exception/ObjectNotFound.hpp>
-#include <fwData/reflection/getObject.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/reflection/exception/NullPointer.hpp>
+#include <data/reflection/exception/ObjectNotFound.hpp>
+#include <data/reflection/getObject.hpp>
 
 namespace ctrlCamp
 {
 
-fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, ::fwData::Object)
+fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, data::Object)
 
 const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
 const ::fwServices::IService::KeyType s_TARGET_INOUT  = "target";
@@ -137,7 +137,7 @@ void SCopy::copy()
     // Check if we use inout or output.
     bool create = false;
     {
-        const auto target     = this->getWeakInOut< ::fwData::Object >(s_TARGET_INOUT);
+        const auto target     = this->getWeakInOut< data::Object >(s_TARGET_INOUT);
         const auto targetLock = target.lock();
         if(!targetLock)
         {
@@ -146,21 +146,21 @@ void SCopy::copy()
     }
 
     // Extract the object.
-    const auto sourceObject = this->getLockedInput< ::fwData::Object >(s_SOURCE_INPUT);
+    const auto sourceObject = this->getLockedInput< data::Object >(s_SOURCE_INPUT);
 
-    ::fwData::Object::csptr source;
+    data::Object::csptr source;
     if(m_hasExtractTag)
     {
-        ::fwData::Object::sptr object;
+        data::Object::sptr object;
         try
         {
-            object = ::fwData::reflection::getObject(sourceObject.get_shared(), m_path, true );
+            object = data::reflection::getObject(sourceObject.get_shared(), m_path, true );
         }
-        catch(const ::fwData::reflection::exception::ObjectNotFound&)
+        catch(const data::reflection::exception::ObjectNotFound&)
         {
             SLM_WARN("Object from '" + m_path + "' not found");
         }
-        catch(const ::fwData::reflection::exception::NullPointer&)
+        catch(const data::reflection::exception::NullPointer&)
         {
             SLM_WARN("Can't get object from '" + m_path + "'");
         }
@@ -188,17 +188,17 @@ void SCopy::copy()
                 if(create)
                 {
                     // Set the data as output.
-                    ::fwData::Object::sptr target = ::fwData::Object::copy(source);
+                    data::Object::sptr target = data::Object::copy(source);
                     this->setOutput(s_TARGET_OUTPUT, target);
                 }
                 else
                 {
                     // Copy the object to the inout.
-                    const auto target = this->getLockedInOut< ::fwData::Object >(s_TARGET_INOUT);
+                    const auto target = this->getLockedInOut< data::Object >(s_TARGET_INOUT);
                     target->deepCopy(source);
 
-                    auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(
-                        ::fwData::Object::s_MODIFIED_SIG);
+                    auto sig = target->signal< data::Object::ModifiedSignalType >(
+                        data::Object::s_MODIFIED_SIG);
                     {
                         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                         sig->asyncEmit();
@@ -209,7 +209,7 @@ void SCopy::copy()
         if(source != sourceObject.get_shared())
         {
             // Lock the source before copy, but only if not already locked
-            ::fwData::mt::locked_ptr sourceLock(source);
+            data::mt::locked_ptr sourceLock(source);
 
             setOutputData();
         }

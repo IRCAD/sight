@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,11 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <filesystem>
 #include <gdcmSurfaceReader.h>
 
-namespace fwData
+#include <filesystem>
+
+namespace sight::data
 {
 class Reconstruction;
 }
@@ -92,7 +93,7 @@ protected:
      * @param[in] segmentItem GDCM segment item
      * @see PS 3.3 C.8.23.1
      */
-    virtual void readSurfaceSegmentationModule(const SPTR(::fwData::Reconstruction)& reconstruction,
+    virtual void readSurfaceSegmentationModule(const SPTR(data::Reconstruction)& reconstruction,
                                                const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
                                                const ::gdcm::Item& segmentItem);
     /**
@@ -101,7 +102,7 @@ protected:
      * @param[in] surface GDCM surface
      * @see PS 3.3 C.27.1
      */
-    FWGDCMIO_API virtual void readSurfaceMeshModule(const SPTR(::fwData::Reconstruction)& reconstruction, const ::gdcm::SmartPointer< ::gdcm::Surface >& surface
+    FWGDCMIO_API virtual void readSurfaceMeshModule(const SPTR(data::Reconstruction)& reconstruction, const ::gdcm::SmartPointer< ::gdcm::Surface >& surface
                                                     );
     /// Segment Property Registry
     ::fwGdcmIO::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;

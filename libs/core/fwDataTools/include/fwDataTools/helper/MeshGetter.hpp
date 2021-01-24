@@ -28,7 +28,7 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 namespace fwDataTools
 {
@@ -43,34 +43,34 @@ namespace helper
 class FWDATATOOLS_DEPRECATED_CLASS_API MeshGetter
 {
 public:
-    [[deprecated("will be removed in sight 22.0, please use ::fwData::Mesh")]]
-    FWDATATOOLS_API MeshGetter( ::fwData::Mesh::csptr mesh );
+    [[deprecated("will be removed in sight 22.0, please use data::Mesh")]]
+    FWDATATOOLS_API MeshGetter( data::Mesh::csptr mesh );
 
     FWDATATOOLS_API virtual ~MeshGetter();
 
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstPointsMultiArrayType          getPoints() const;
+    FWDATATOOLS_API data::Mesh::ConstPointsMultiArrayType          getPoints() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellTypesMultiArrayType       getCellTypes() const;
+    FWDATATOOLS_API data::Mesh::ConstCellTypesMultiArrayType       getCellTypes() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellDataMultiArrayType        getCellData() const;
+    FWDATATOOLS_API data::Mesh::ConstCellDataMultiArrayType        getCellData() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType getCellDataOffsets() const;
+    FWDATATOOLS_API data::Mesh::ConstCellDataOffsetsMultiArrayType getCellDataOffsets() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstPointColorsMultiArrayType     getPointColors() const;
+    FWDATATOOLS_API data::Mesh::ConstPointColorsMultiArrayType     getPointColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellColorsMultiArrayType      getCellColors() const;
+    FWDATATOOLS_API data::Mesh::ConstCellColorsMultiArrayType      getCellColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstPointNormalsMultiArrayType    getPointNormals() const;
+    FWDATATOOLS_API data::Mesh::ConstPointNormalsMultiArrayType    getPointNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellNormalsMultiArrayType     getCellNormals() const;
+    FWDATATOOLS_API data::Mesh::ConstCellNormalsMultiArrayType     getCellNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstPointTexCoordsMultiArrayType  getPointTexCoords() const;
+    FWDATATOOLS_API data::Mesh::ConstPointTexCoordsMultiArrayType  getPointTexCoords() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::ConstCellTexCoordsMultiArrayType   getCellTexCoords() const;
+    FWDATATOOLS_API data::Mesh::ConstCellTexCoordsMultiArrayType   getCellTexCoords() const;
 
-    /// Returns the internal ::fwData::Mesh
-    FWDATATOOLS_API ::fwData::Mesh::csptr getMesh() const;
+    /// Returns the internal data::Mesh
+    FWDATATOOLS_API data::Mesh::csptr getMesh() const;
 
     /*!
      * @brief Return true if the mesh is closed.
@@ -80,7 +80,7 @@ public:
 
 protected:
 
-    ::fwData::Mesh::csptr m_mesh;
+    data::Mesh::csptr m_mesh;
 
     ::fwDataTools::helper::ArrayGetter::uptr m_helperPoints;
     ::fwDataTools::helper::ArrayGetter::uptr m_helperCellTypes;
@@ -97,4 +97,4 @@ protected:
 
 } // namespace helper
 
-} // namespace fwData
+} // namespace sight::data

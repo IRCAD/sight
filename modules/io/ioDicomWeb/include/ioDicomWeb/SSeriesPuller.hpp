@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ namespace ioDicomWeb
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selectedSeries [::fwData::Vector]: List of DICOM series to pull from the PACS..
+ * - \b selectedSeries [data::Vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
@@ -73,7 +73,7 @@ class IODICOMWEB_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController );
+    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController )
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;

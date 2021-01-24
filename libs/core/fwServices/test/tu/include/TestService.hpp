@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwServices
 {
@@ -192,20 +192,20 @@ public:
     virtual void swapping(const KeyType& key) override
     {
         m_swappedObjectKey = key;
-        m_swappedObject    = this->getInput< ::fwData::Object>(key);
+        m_swappedObject    = this->getInput< data::Object>(key);
     }
 
     //-------------------------------------------------------------------------
     virtual KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
-        connections.push("data", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data4", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data5", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         return connections;
     }
 
@@ -224,7 +224,7 @@ public:
 
     //-------------------------------------------------------------------------
 
-    ::fwData::Object::csptr getSwappedObject() const
+    data::Object::csptr getSwappedObject() const
     {
         return m_swappedObject;
     }
@@ -233,7 +233,7 @@ public:
 
 private:
     std::string m_swappedObjectKey;
-    ::fwData::Object::csptr m_swappedObject;
+    data::Object::csptr m_swappedObject;
 };
 
 /**
@@ -318,11 +318,11 @@ public:
     virtual IService::KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
-        connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
-        connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
-        connections.push("dataGroup0", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup1", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("dataGroup0", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
         return connections;
     }

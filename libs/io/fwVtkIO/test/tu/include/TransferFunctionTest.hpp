@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__
-#define __FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__
+#pragma once
+
+#include <data/TransferFunction.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/TransferFunction.hpp>
 
 namespace fwVtkIO
 {
@@ -42,7 +41,6 @@ CPPUNIT_TEST( toVtkLookupTableTest );
 CPPUNIT_TEST( toBWVtkLookupTableTest );
 CPPUNIT_TEST_SUITE_END();
 
-
 public:
     // interface
     void setUp();
@@ -53,11 +51,9 @@ public:
 
 private:
 
-    ::fwData::TransferFunction::sptr createTFColor();
+    data::TransferFunction::sptr createTFColor();
 
 };
 
 } // end namespace ut
 } // end namespace fwVtkIO
-
-#endif //__FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__

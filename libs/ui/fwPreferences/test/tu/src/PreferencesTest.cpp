@@ -29,8 +29,8 @@
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <filesystem>
 
@@ -96,10 +96,10 @@ void PreferencesTest::helperTest()
     const std::string value = ::fwPreferences::getPreference(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
 
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefs = ::fwPreferences::getPreferences();
     CPPUNIT_ASSERT(prefs);
 
-    ::fwData::String::sptr prefStr = prefs->at< ::fwData::String >(preferenceKey);
+    data::String::sptr prefStr = prefs->at< data::String >(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, prefStr->value());
 
     //Check get value

@@ -28,7 +28,7 @@
 
 #include <core/reflection/macros.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
-fwCampDeclareAccessor((fwMedData)(ImageSeries), (fwData)(Image));
+fwCampDeclareAccessor((fwMedData)(ImageSeries), (sight)(data)(Image));
 fwCampDeclareAccessor((fwMedData)(ImageSeries), (fwMedData)(DicomSeries));

@@ -42,7 +42,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Composite;
 class Integer;
@@ -90,13 +90,13 @@ namespace ioPacs
    @endcode
  *
  * @subsection Input Input:
- * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
  * - \b series [::fwMedData::DicomSeries]: DICOM Series where to extract the images.
  *
  * @subsection Output Output:
- * - \b image [::fwData::Image]: downloaded image.
+ * - \b image [data::Image]: downloaded image.
  *
  * @subsection Configuration Configuration:
  * - \b dicomReader (mandatory, string): reader type to use.
@@ -176,7 +176,7 @@ private:
     std::string m_pacsConfigurationUID;
 
     /// Contains the PACS configuration.
-    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
+    ::fwPacsIOdata::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// Defines the DICOM reader implementation.
     std::string m_dicomReaderType;

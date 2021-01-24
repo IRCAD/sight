@@ -26,9 +26,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
 
@@ -46,7 +46,7 @@ namespace ioData
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::TransformationMatrix3DWriterService,
-                         ::fwData::TransformationMatrix3D )
+                         data::TransformationMatrix3D )
 
 //-----------------------------------------------------------------------------
 
@@ -91,16 +91,16 @@ void TransformationMatrix3DWriterService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save a transformation matrix" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files", "*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -123,8 +123,8 @@ void TransformationMatrix3DWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::TransformationMatrix3D::csptr matrix =
-            this->getInput< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
+        data::TransformationMatrix3D::csptr matrix =
+            this->getInput< data::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
 
         ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer =

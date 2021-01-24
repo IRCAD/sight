@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioGdcm/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwGdcmIO/writer/Series.hpp>
 

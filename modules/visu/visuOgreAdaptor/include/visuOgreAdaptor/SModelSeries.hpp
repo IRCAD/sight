@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Material.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }

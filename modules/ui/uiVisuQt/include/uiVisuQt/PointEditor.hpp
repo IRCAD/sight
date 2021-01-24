@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 

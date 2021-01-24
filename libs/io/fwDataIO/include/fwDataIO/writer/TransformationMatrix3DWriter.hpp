@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace fwDataIO
 {
@@ -38,19 +38,19 @@ namespace writer
  * @brief   Writer for transformation of 3D Matrix. Write file format .trf
  *
  *
- * Ircad writer to write a ::fwData::TransformationMatrix3D on filesystem which the file format
+ * Ircad writer to write a data::TransformationMatrix3D on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
  */
 class FWDATAIO_CLASS_API TransformationMatrix3DWriter :
-    public GenericObjectWriter< ::fwData::TransformationMatrix3D>,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public GenericObjectWriter< data::TransformationMatrix3D>,
+    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
     fwCoreClassMacro(
         TransformationMatrix3DWriter,
-        GenericObjectWriter< ::fwData::TransformationMatrix3D >,
+        GenericObjectWriter< data::TransformationMatrix3D >,
         ::fwDataIO::writer::factory::New< TransformationMatrix3DWriter >
         )
     /// Constructor. Do nothing.

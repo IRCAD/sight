@@ -81,7 +81,7 @@
     BOOST_PP_CAT(__FWCAMP_FUNC_SUFFIX(desc), Reg)
 
 #define __FWCAMP__USEROBJREG(desc) \
-    core::reflection::UserObjectRegistrar < __FWCAMP_NAMESPACE_NAME(desc) >
+    sight::core::reflection::UserObjectRegistrar < __FWCAMP_NAMESPACE_NAME(desc) >
 //----------------------------------------------------------------------------
 
 /**
@@ -154,8 +154,8 @@
 
 /**
  * @brief This macro is used when you want to set a smart pointer into an object
- * @param object the type of the main object ex: (fwData)(Mesh)
- * @param attribut the type of smart pointer attribut ex: (fwData)(Array)
+ * @param object the type of the main object ex: (sight)(data)(Mesh)
+ * @param attribut the type of smart pointer attribut ex: (sight)(data)(Array)
  */
 #define fwCampDeclareAccessor(object, attribut) \
     namespace camp { \

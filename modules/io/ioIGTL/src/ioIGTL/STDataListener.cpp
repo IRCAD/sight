@@ -27,8 +27,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Composite.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -106,7 +106,7 @@ void STDataListener::runClient()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    data::Composite::sptr composite = data::Composite::New();
 
     // 1. Connection
     try
@@ -151,8 +151,8 @@ void STDataListener::runClient()
         while (m_client.isConnected())
         {
             std::string deviceName;
-            double timestamp = 0;
-            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
+            double timestamp                 = 0;
+            data::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
             if (receiveObject)
             {
                 composite->shallowCopy(receiveObject);
@@ -200,16 +200,16 @@ void STDataListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double timestamp)
+void STDataListener::manageTimeline(const data::Composite::sptr& obj, double timestamp)
 {
     ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     SPTR(::arData::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
-    for(const ::fwData::Composite::ContainerType::value_type& elt : obj->getContainer())
+    for(const data::Composite::ContainerType::value_type& elt : obj->getContainer())
     {
-        ::fwData::TransformationMatrix3D::csptr transfoMatrix =
-            ::fwData::TransformationMatrix3D::dynamicConstCast(elt.second);
+        data::TransformationMatrix3D::csptr transfoMatrix =
+            data::TransformationMatrix3D::dynamicConstCast(elt.second);
 
         MatrixNameIndexType::const_iterator it = m_matrixNameIndex.find(elt.first);
 
@@ -217,7 +217,7 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj, double
         {
             unsigned long index = it->second;
 
-            ::fwData::TransformationMatrix3D::TMCoefArray values;
+            data::TransformationMatrix3D::TMCoefArray values;
             values = transfoMatrix->getCoefficients();
             float matrixValues[16];
             bool isZero = true;

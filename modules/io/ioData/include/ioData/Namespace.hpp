@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,18 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __IODATA_NAMESPACE_HPP__
-#define __IODATA_NAMESPACE_HPP__
-
 /**
- * @brief       The namespace ioData contains reader and writer services for basic ::fwData::Object which doesn't need external library.
- * @namespace   ioData
- *
- * @date        2009.
- *
+ * @brief       The namespace ioData contains reader and writer services for basic data::Object which doesn't need
+ * external library.
  */
+#pragma once
+
 namespace ioData
 {
 
 }
-#endif /* __IODATA_NAMESPACE_HPP__ */

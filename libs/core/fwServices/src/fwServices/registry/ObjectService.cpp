@@ -74,7 +74,7 @@ void registerService( ::fwServices::IService::sptr service )
 
 //------------------------------------------------------------------------------
 
-void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+void registerService( data::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                       ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerService(obj, objKey, access, service);
@@ -82,7 +82,7 @@ void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::
 
 //------------------------------------------------------------------------------
 
-void registerServiceInput( ::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
+void registerServiceInput( data::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
                            ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerServiceInput(obj, objKey, service);
@@ -90,7 +90,7 @@ void registerServiceInput( ::fwData::Object::csptr obj, const ::fwServices::ISer
 
 //------------------------------------------------------------------------------
 
-void registerServiceOutput( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+void registerServiceOutput( data::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                             ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerServiceOutput(obj, objKey, service);
@@ -128,8 +128,8 @@ bool isRegistered(const ::fwServices::IService::KeyType& objKey,
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
-                                      ::fwServices::IService::AccessType access, IService::sptr service)
+data::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                  ::fwServices::IService::AccessType access, IService::sptr service)
 {
     return ::fwServices::OSR::get()->getRegistered(objKey, access, service);
 }
@@ -160,7 +160,7 @@ ObjectService::ObjectService()
 std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
-    ::fwData::Object::csptr previousObj;
+    data::Object::csptr previousObj;
     core::mt::ReadLock lock(m_containerMutex);
 
     for (const auto& service : m_services )
@@ -169,7 +169,7 @@ std::string ObjectService::getRegistryInformation() const
              <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         for (const auto& obj : service->m_inputsMap)
         {
-            ::fwData::Object::csptr object = obj.second.lock().get_shared();
+            data::Object::csptr object = obj.second.lock().get_shared();
             if (object)
             {
                 info << "    input: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -177,7 +177,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_inOutsMap)
         {
-            ::fwData::Object::sptr object = obj.second.lock().get_shared();
+            data::Object::sptr object = obj.second.lock().get_shared();
             if (object)
             {
                 info << "    inout: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -185,7 +185,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_outputsMap)
         {
-            ::fwData::Object::sptr object = obj.second.get_shared();
+            data::Object::sptr object = obj.second.get_shared();
             if (object)
             {
                 info << "    output: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -205,7 +205,7 @@ void ObjectService::registerService( ::fwServices::IService::sptr service )
 
 //------------------------------------------------------------------------------
 
-void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
+void ObjectService::registerService( data::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                      ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service)
 {
     core::mt::WriteLock writeLock(m_containerMutex);
@@ -214,7 +214,7 @@ void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwSe
 
 //------------------------------------------------------------------------------
 
-void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
+void ObjectService::registerServiceInput( const data::Object::csptr& object,
                                           const ::fwServices::IService::KeyType& objKey,
                                           const ::fwServices::IService::sptr& service)
 {
@@ -224,7 +224,7 @@ void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
 
 //------------------------------------------------------------------------------
 
-void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
+void ObjectService::registerServiceOutput(data::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                           ::fwServices::IService::sptr service)
 {
 
@@ -258,7 +258,7 @@ void ObjectService::unregisterService( ::fwServices::IService::sptr service )
         std::string objectKeys;
         for (const auto& obj: service->m_outputsMap)
         {
-            const ::fwData::Object::wptr output = obj.second.get_shared();
+            const data::Object::wptr output = obj.second.get_shared();
             if (output.use_count() == 1)
             {
                 if (!objectKeys.empty())
@@ -308,7 +308,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 {
     core::mt::WriteLock writeLock(m_containerMutex);
 
-    ::fwData::Object::wptr obj = service->m_outputsMap[objKey].get_shared();
+    data::Object::wptr obj = service->m_outputsMap[objKey].get_shared();
 
     if (service->hasObjectId(objKey))
     {
@@ -342,9 +342,9 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::csptr ObjectService::getRegistered(const ::fwServices::IService::KeyType& objKey,
-                                                     ::fwServices::IService::AccessType access,
-                                                     IService::sptr service) const
+data::Object::csptr ObjectService::getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                                 ::fwServices::IService::AccessType access,
+                                                 IService::sptr service) const
 {
     core::mt::ReadLock readLock(m_containerMutex);
 
@@ -377,7 +377,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
 
 //------------------------------------------------------------------------------
 
-void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwServices::IService::sptr service,
+void ObjectService::internalRegisterService(data::Object::sptr object, ::fwServices::IService::sptr service,
                                             const ::fwServices::IService::KeyType& objKey,
                                             ::fwServices::IService::AccessType access)
 {
@@ -404,7 +404,7 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
 
 //------------------------------------------------------------------------------
 
-void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& object, const IService::sptr& service,
+void ObjectService::internalRegisterServiceInput(const data::Object::csptr& object, const IService::sptr& service,
                                                  const ::fwServices::IService::KeyType& objKey)
 {
     SLM_ASSERT("Can't register a null service in OSR.", service);

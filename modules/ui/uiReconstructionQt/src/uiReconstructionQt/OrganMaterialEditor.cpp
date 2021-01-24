@@ -26,9 +26,9 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -50,7 +50,7 @@ namespace uiReconstructionQt
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
-                         ::fwData::Reconstruction )
+                         data::Reconstruction )
 
 static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -137,13 +137,13 @@ void OrganMaterialEditor::updating()
 
 void OrganMaterialEditor::onColorButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    int red   = material->diffuse()->red()*255;
-    int green = material->diffuse()->green()*255;
-    int blue  = material->diffuse()->blue()*255;
+    data::Material::sptr material = reconstruction->getMaterial();
+    int red                       = material->diffuse()->red()*255;
+    int green                     = material->diffuse()->green()*255;
+    int blue                      = material->diffuse()->blue()*255;
 
     // Create Color choice dialog.
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -168,11 +168,11 @@ void OrganMaterialEditor::onColorButton()
 
 void OrganMaterialEditor::onOpacitySlider(int value )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha()      = value/100.0;
+    data::Material::sptr material = reconstruction->getMaterial();
+    material->diffuse()->alpha() = value/100.0;
     std::stringstream ss;
     ss << value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -184,7 +184,7 @@ void OrganMaterialEditor::onOpacitySlider(int value )
 
 void OrganMaterialEditor::refreshMaterial( )
 {
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -194,8 +194,8 @@ void OrganMaterialEditor::refreshMaterial( )
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 
-    ::fwData::Material::csptr material = reconstruction->getMaterial();
-    QColor materialColor = QColor(
+    data::Material::csptr material = reconstruction->getMaterial();
+    QColor materialColor           = QColor(
         material->diffuse()->red()*255,
         material->diffuse()->green()*255,
         material->diffuse()->blue()*255,
@@ -219,12 +219,12 @@ void OrganMaterialEditor::refreshMaterial( )
 
 void OrganMaterialEditor::materialNotification( )
 {
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
-        ::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
+        data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -233,7 +233,7 @@ void OrganMaterialEditor::materialNotification( )
 ::fwServices::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

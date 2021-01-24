@@ -26,9 +26,9 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Boolean.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <fwDataTools/Color.hpp>
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -152,9 +152,9 @@ void SNegato3D::starting()
     this->getRenderService()->makeCurrent();
 
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -226,12 +226,12 @@ void SNegato3D::starting()
 ::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_OPACITY_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_OPACITY_SLOT );
     return connections;
 }
 
@@ -248,9 +248,9 @@ void SNegato3D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -323,9 +323,9 @@ void SNegato3D::newImage()
     int frontalIdx  = 0;
     int sagittalIdx = 0;
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -341,19 +341,19 @@ void SNegato3D::newImage()
 
         // Update Slice
         const auto imgSize       = image->getSize2();
-        const auto axialIdxField = image->getField< ::fwData::Integer >(
+        const auto axialIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
         SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
         axialIdx = axialIdxField ?
                    static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
-        const auto frontalIdxField = image->getField< ::fwData::Integer >(
+        const auto frontalIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
         SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
         frontalIdx = frontalIdxField ?
                      static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
-        const auto sagittalIdxField = image->getField< ::fwData::Integer >(
+        const auto sagittalIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
         SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
         sagittalIdx = sagittalIdxField ?
@@ -390,7 +390,7 @@ void SNegato3D::changeSliceType(int, int)
 
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     auto imgSize = image->getSize2();
 
@@ -419,9 +419,9 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 void SNegato3D::updateTF()
 {
-    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
 
         for(const auto& plane : m_planes)
@@ -444,10 +444,10 @@ void SNegato3D::setPlanesOpacity()
 
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
-        const auto isVisible    = image->setDefaultField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(true));
+        const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, data::Integer::New(0));
+        const auto isVisible    = image->setDefaultField(s_VISIBILITY_FIELD, data::Boolean::New(true));
 
         const bool visible  = isVisible->getValue();
         const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
@@ -467,16 +467,16 @@ void SNegato3D::setPlanesOpacity()
 void SNegato3D::setVisible(bool _visible)
 {
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        image->setField(s_VISIBILITY_FIELD, data::Boolean::New(_visible));
     }
 
     this->setPlanesOpacity();
 
-    using VisModSigType = ::fwData::Image::VisibilityModifiedSignalType;
+    using VisModSigType = data::Image::VisibilityModifiedSignalType;
 
-    const auto image  = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
+    const auto image  = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    auto visUpdateSig = image->signal<VisModSigType>( data::Image::s_VISIBILITY_MODIFIED_SIG );
     {
         const core::com::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
         visUpdateSig->asyncEmit(_visible);
@@ -534,8 +534,8 @@ void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
     {
         if(this->getPickedSlices(_x, _y) != std::nullopt)
         {
-            const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-            const ::fwData::mt::locked_ptr lock(tf);
+            const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+            const data::mt::locked_ptr lock(tf);
 
             m_initialLevel  = tf->getLevel();
             m_initialWindow = tf->getWindow();
@@ -576,7 +576,7 @@ void SNegato3D::moveSlices(int _x, int _y)
 
     if(pickRes.has_value())
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
         auto pickedPt = pickRes.value();
 
@@ -592,8 +592,8 @@ void SNegato3D::moveSlices(int _x, int _y)
         pickedPt                     = (pickedPt - origin) / spacing;
 
         const ::Ogre::Vector3i pickedPtI(pickedPt);
-        const auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >
-                             (::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+        const auto sig = image->signal< data::Image::SliceIndexModifiedSignalType >
+                             (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
         sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
     }
 }
@@ -608,7 +608,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
         if(pickedPos.has_value())
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
             if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
             {
@@ -623,7 +623,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
             this->updatePickingCross(pickedPos.value(), origin);
 
             const auto& imgSize = image->getSize2();
-            ::fwData::Image::Size pickedVoxel;
+            data::Image::Size pickedVoxel;
             for(std::uint8_t i = 0; i < pickedVoxel.size(); ++i)
             {
                 pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t{0}, imgSize[i] - 1);
@@ -709,14 +709,14 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
     const double newWindow = m_initialWindow + _dw;
     const double newLevel  = m_initialLevel - _dl;
 
-    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::mt::locked_ptr lock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );
-        const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        const auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
             sig->asyncEmit(newWindow, newLevel);
         }

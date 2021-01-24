@@ -3,7 +3,7 @@ set( NAME igtlNetwork )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES   core
-                    fwData
+                    data
                     igtlProtocol
 )
 set( REQUIREMENTS )

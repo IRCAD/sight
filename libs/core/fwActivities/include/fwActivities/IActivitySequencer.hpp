@@ -25,8 +25,8 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/IActivityLauncher.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
+#include <data/Composite.hpp>
+#include <data/Object.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
@@ -49,7 +49,7 @@ public:
 protected:
 
     typedef std::vector< std::string > ActivitesType;
-    typedef std::map< std::string, ::fwData::Object::sptr > RequirementsType;
+    typedef std::map< std::string, data::Object::sptr > RequirementsType;
 
     /**
      * @brief parse the activities contained in seriesDB and store their data
@@ -62,7 +62,7 @@ protected:
 
     /// Store the data of the activity at the given index
     FWACTIVITIES_API void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
-                                            const ::fwData::Composite::csptr& overrides = nullptr);
+                                            const data::Composite::csptr& overrides = nullptr);
 
     /**
      * @brief Return the activity corresponding to the given index in the activity list. If the activity does not exist,
@@ -78,8 +78,8 @@ protected:
      */
     FWACTIVITIES_API ::fwMedData::ActivitySeries::sptr getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
                                                                    size_t index,
-                                                                   const core::com::SlotBase::sptr& slot       = nullptr,
-                                                                   const ::fwData::Composite::csptr& overrides = nullptr);
+                                                                   const core::com::SlotBase::sptr& slot   = nullptr,
+                                                                   const data::Composite::csptr& overrides = nullptr);
 
     /// List of the activity to create.
     ActivitesType m_activityIds;

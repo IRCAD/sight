@@ -27,7 +27,7 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/location/Folder.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -44,7 +44,7 @@ namespace writer
  * @brief   This class manages patient writing, in DICOM file format.
  */
 class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
-                 public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+                 public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                  public core::tools::ProgressAdviser
 {
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,13 +40,13 @@ namespace fwAtoms
  * For exemple, this metadata is used to bind :
  * \li std::map
  * \li ::boost::unordered_map
- * \li fwData::Graph (a part)
+ * \li data::Graph (a part)
  * \li boost graph
  */
 class FWATOMS_CLASS_API Map : public Base
 {
 public:
-    fwCoreClassMacro(Map, ::fwAtoms::Base, ::fwAtoms::factory::New< Map >);
+    fwCoreClassMacro(Map, ::fwAtoms::Base, ::fwAtoms::factory::New< Map >)
 
     typedef std::map<std::string, Base::sptr> MapType;
 

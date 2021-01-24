@@ -24,8 +24,8 @@
 
 #include "maths/config.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -73,11 +73,11 @@ namespace maths
    @endcode
  *
  * @subsection InOut InOut:
- * - \b matrices [::fwData::TransformationMatrix3D]: input matrix
- * - \b selectedMatrix [::fwData::TransformationMatrix3D]: selected matrix
+ * - \b matrices [data::TransformationMatrix3D]: input matrix
+ * - \b selectedMatrix [data::TransformationMatrix3D]: selected matrix
  *
  * @subsection Output Output:
- * - \b vector [::fwData::Vector]: vector containing matrices
+ * - \b vector [data::Vector]: vector containing matrices
  */
 class MATHS_CLASS_API SMatrixList final : public ::fwServices::IService
 {
@@ -116,13 +116,13 @@ private:
     void removeMatrix(int);
 
     /// Vector containing input matrices.
-    std::vector< ::fwData::TransformationMatrix3D::sptr > m_inputVector;
+    std::vector< data::TransformationMatrix3D::sptr > m_inputVector;
 
     /// Vector containing output vector.
-    std::vector< ::fwData::Vector::sptr > m_outputVector;
+    std::vector< data::Vector::sptr > m_outputVector;
 
     /// Vector containing selected vector.
-    std::vector< ::fwData::TransformationMatrix3D::sptr > m_selectedVector;
+    std::vector< data::TransformationMatrix3D::sptr > m_selectedVector;
 
     typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
     typedef core::com::Signal< void (int) > MatrixRemovedSignalType;

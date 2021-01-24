@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,10 +39,10 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , data::Mesh )
  */
 /**
- * @brief This service writes a ::fwData::Mesh (with only triangular cells) on filesystem in format .trian.
+ * @brief This service writes a data::Mesh (with only triangular cells) on filesystem in format .trian.
  *
  * This format is basic. This is an ascii file which contains :
  * 1) nb of points
@@ -58,7 +58,7 @@ namespace ioData
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwData::Mesh]: mesh to write.
+ * - \b data [data::Mesh]: mesh to write.
  */
 class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter
 {

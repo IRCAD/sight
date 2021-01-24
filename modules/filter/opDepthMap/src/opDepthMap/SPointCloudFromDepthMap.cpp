@@ -28,10 +28,10 @@
 #include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
-#include <depthMapOp/Projection.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <depthMapOp/Projection.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -85,17 +85,17 @@ void SPointCloudFromDepthMap::configuring()
 void SPointCloudFromDepthMap::updating()
 {
     auto calibration = this->getInput< ::arData::CameraSeries>("calibration");
-    auto depthMap    = this->getInput< ::fwData::Image>("depthMap");
-    auto pointCloud  = this->getInOut< ::fwData::Mesh >("pointCloud");
+    auto depthMap    = this->getInput< data::Image>("depthMap");
+    auto pointCloud  = this->getInOut< data::Mesh >("pointCloud");
     SLM_ASSERT("Missing 'pointCloud' inout", pointCloud);
     SLM_ASSERT("Missing 'calibration' input", calibration);
     SLM_ASSERT("Missing 'depthMap' input", depthMap);
 
     auto depthCalibration = calibration->getCamera(0);
 
-    auto rgbMap = this->getInput< ::fwData::Image>("rgbMap");
+    auto rgbMap = this->getInput< data::Image>("rgbMap");
     ::arData::Camera::csptr colorCalibration;
-    ::fwData::TransformationMatrix3D::csptr extrinsicMatrix;
+    data::TransformationMatrix3D::csptr extrinsicMatrix;
     if (rgbMap)
     {
         colorCalibration = calibration->getCamera(1);
@@ -111,29 +111,29 @@ void SPointCloudFromDepthMap::updating()
         const size_t height   = size[1];
         const size_t nbPoints = width * height;
 
-        ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
+        data::mt::ObjectWriteLock meshLock(pointCloud);
         // allocate mesh
-        ::fwData::Mesh::Attributes attribute = ::fwData::Mesh::Attributes::NONE;
+        data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
         if (rgbMap)
         {
-            attribute = ::fwData::Mesh::Attributes::POINT_COLORS;
+            attribute = data::Mesh::Attributes::POINT_COLORS;
         }
-        pointCloud->resize(nbPoints, nbPoints, ::fwData::Mesh::CellType::POINT, attribute);
+        pointCloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, attribute);
 
         const auto dumpLock = pointCloud->lock();
 
-        auto itr = pointCloud->begin< ::fwData::iterator::CellIterator >();
+        auto itr = pointCloud->begin< data::iterator::CellIterator >();
 
         // to display the mesh, we need to create cells with one point.
         for( size_t i = 0; i < nbPoints; ++i, ++itr )
         {
-            *itr->type       = ::fwData::Mesh::CellType::POINT;
+            *itr->type       = data::Mesh::CellType::POINT;
             *itr->offset     = i;
             *(itr+1)->offset = i+1; // to be able to iterate through point indices
             itr->pointIdx[0] = i;
         }
 
-        auto sig = pointCloud->signal< ::fwData::Mesh::ModifiedSignalType >(::fwData::Mesh::s_MODIFIED_SIG);
+        auto sig = pointCloud->signal< data::Mesh::ModifiedSignalType >(data::Mesh::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -143,18 +143,18 @@ void SPointCloudFromDepthMap::updating()
                                       pointCloud);
 
         auto sig =
-            pointCloud->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pointCloud->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
-            ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        auto sig2 = pointCloud->signal< data::Mesh::PointColorsModifiedSignalType >(
+            data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sig2->asyncEmit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap, pointCloud);
         auto sig =
-            pointCloud->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -198,8 +198,8 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
 
 void SPointCloudFromDepthMap::depthMapToPointCloud(
     const ::arData::Camera::csptr& depthCamera,
-    const ::fwData::Image::csptr& depthMap,
-    const ::fwData::Mesh::sptr& pointCloud)
+    const data::Image::csptr& depthMap,
+    const data::Mesh::sptr& pointCloud)
 {
     SLM_INFO("Input RGB map was empty, skipping colors");
 
@@ -214,7 +214,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const size_t width  = size[0];
     const size_t height = size[1];
 
-    ::fwData::mt::ObjectReadLock depthMapLock(depthMap);
+    data::mt::ObjectReadLock depthMapLock(depthMap);
 
     const auto depthDumpLock = depthMap->lock();
 
@@ -225,11 +225,11 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                  fx = depthCamera->getFx(),
                  fy = depthCamera->getFy();
 
-    ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
+    data::mt::ObjectWriteLock meshLock(pointCloud);
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin< ::fwData::iterator::PointIterator >();
+    auto pointsItr = pointCloud->begin< data::iterator::PointIterator >();
 
     size_t nbRealPoints = 0;
     for(size_t y = 0; y != height; ++y)
@@ -260,10 +260,10 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const ::arData::Camera::csptr& depthCamera,
     const ::arData::Camera::csptr& colorCamera,
-    const ::fwData::Image::csptr& depthMap,
-    const ::fwData::Image::csptr& colorMap,
-    const ::fwData::TransformationMatrix3D::csptr& extrinsic,
-    const ::fwData::Mesh::sptr& pointCloud)
+    const data::Image::csptr& depthMap,
+    const data::Image::csptr& colorMap,
+    const data::TransformationMatrix3D::csptr& extrinsic,
+    const data::Mesh::sptr& pointCloud)
 {
     SLM_INFO("Input RGB map was supplied, including colors");
 
@@ -301,15 +301,15 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    ::fwData::mt::ObjectReadLock depthMapLock(depthMap);
+    data::mt::ObjectReadLock depthMapLock(depthMap);
 
     const auto depthDumpLock = depthMap->lock();
     auto depthItr            = depthMap->begin< std::uint16_t >();
 
-    ::fwData::mt::ObjectReadLock rgbLock(colorMap);
+    data::mt::ObjectReadLock rgbLock(colorMap);
 
     const auto rgbDumpLock = colorMap->lock();
-    const auto rgbBegin    = colorMap->begin< ::fwData::iterator::RGBA >();
+    const auto rgbBegin    = colorMap->begin< data::iterator::RGBA >();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -321,13 +321,13 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                  rgbFx = colorCamera->getFx(),
                  rgbFy = colorCamera->getFy();
 
-    ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
+    data::mt::ObjectWriteLock meshLock(pointCloud);
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin< ::fwData::iterator::PointIterator >();
+    auto pointsItr = pointCloud->begin< data::iterator::PointIterator >();
 
-    const ::fwData::iterator::RGBA defaultColor = {255, 255, 255, 255};
+    const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
     size_t nbRealPoints     = 0;
     auto glmExtrinsicMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(extrinsic);

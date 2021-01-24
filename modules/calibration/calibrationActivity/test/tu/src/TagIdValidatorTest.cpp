@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "TagIdValidatorTest.hpp"
 
+#include <data/Composite.hpp>
+#include <data/Integer.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
+
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
 
 #include <cstdint>
 #include <vector>
@@ -70,33 +70,33 @@ void TagIdValidatorTest::testValidatorString()
     ::fwActivities::IValidator::ValidationType validation;
 
     {
-        ::fwData::String::csptr str = ::fwData::String::New();
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New();
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty String should not be valid", false, validation.first);
     }
     {
-        ::fwData::String::csptr str = ::fwData::String::New("101");
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New("101");
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("String with one tag should be valid", true, validation.first);
     }
     {
-        ::fwData::String::csptr str = ::fwData::String::New("101,102,103");
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New("101,102,103");
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("String with several tags should be valid", true, validation.first);
     }
     {
-        ::fwData::String::csptr str = ::fwData::String::New("bad");
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New("bad");
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("String with value not a number should not be valid", false, validation.first);
     }
     {
-        ::fwData::String::csptr str = ::fwData::String::New("1565");
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New("1565");
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("String with value > 1023 should not be valid", false, validation.first);
     }
     {
-        ::fwData::String::csptr str = ::fwData::String::New("101, bad, 103");
-        validation                  = objValidator->validate(str);
+        data::String::csptr str = data::String::New("101, bad, 103");
+        validation = objValidator->validate(str);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("String with a wrong id should not be valid", false, validation.first);
     }
 }
@@ -116,39 +116,39 @@ void TagIdValidatorTest::testValidatorVector()
     ::fwActivities::IValidator::ValidationType validation;
 
     {
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-        validation                    = objValidator->validate(vector);
+        data::Vector::sptr vector = data::Vector::New();
+        validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector should not be valid", false, validation.first);
     }
     {
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-        vector->getContainer().push_back(::fwData::String::New("101, 102"));
+        data::Vector::sptr vector = data::Vector::New();
+        vector->getContainer().push_back(data::String::New("101, 102"));
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one valid String should be valid", true, validation.first);
     }
     {
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-        vector->getContainer().push_back(::fwData::String::New("101, 102"));
-        vector->getContainer().push_back(::fwData::String::New("101, bad"));
+        data::Vector::sptr vector = data::Vector::New();
+        vector->getContainer().push_back(data::String::New("101, 102"));
+        vector->getContainer().push_back(data::String::New("101, bad"));
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one non valid String should not be valid",
                                      false, validation.first);
     }
     {
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-        vector->getContainer().push_back(::fwData::String::New("101, 102"));
-        vector->getContainer().push_back(::fwData::Integer::New(125));
+        data::Vector::sptr vector = data::Vector::New();
+        vector->getContainer().push_back(data::String::New("101, 102"));
+        vector->getContainer().push_back(data::Integer::New(125));
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one non valid Integer should not be valid",
                                      false, validation.first);
     }
     {
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-        vector->getContainer().push_back(::fwData::String::New("101, 102"));
-        vector->getContainer().push_back(::fwData::String::New("105, 1012"));
+        data::Vector::sptr vector = data::Vector::New();
+        vector->getContainer().push_back(data::String::New("101, 102"));
+        vector->getContainer().push_back(data::String::New("105, 1012"));
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with two valid String should be valid",
@@ -171,36 +171,36 @@ void TagIdValidatorTest::testValidatorComposite()
     ::fwActivities::IValidator::ValidationType validation;
 
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        validation                          = objValidator->validate(composite);
+        data::Composite::sptr composite = data::Composite::New();
+        validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector should not be valid", false, validation.first);
     }
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["key1"]                = ::fwData::String::New("101, 102");
-        validation                          = objValidator->validate(composite);
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["key1"] = data::String::New("101, 102");
+        validation           = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one valid String should be valid", true, validation.first);
     }
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["key1"]                = ::fwData::String::New("101, 102");
-        (*composite)["key2"]                = ::fwData::String::New("101, bad");
-        validation                          = objValidator->validate(composite);
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["key1"] = data::String::New("101, 102");
+        (*composite)["key2"] = data::String::New("101, bad");
+        validation           = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one non valid String should not be valid",
                                      false, validation.first);
     }
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["key1"]                = ::fwData::String::New("101, 102");
-        (*composite)["key2"]                = ::fwData::Integer::New(125);
-        validation                          = objValidator->validate(composite);
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["key1"] = data::String::New("101, 102");
+        (*composite)["key2"] = data::Integer::New(125);
+        validation           = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with one non valid Integer should not be valid",
                                      false, validation.first);
     }
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["key1"]                = ::fwData::String::New("101, 102");
-        (*composite)["key2"]                = ::fwData::String::New("105, 1012");
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["key1"] = data::String::New("101, 102");
+        (*composite)["key2"] = data::String::New("105, 1012");
 
         validation = objValidator->validate(composite);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector with two valid String should be valid",

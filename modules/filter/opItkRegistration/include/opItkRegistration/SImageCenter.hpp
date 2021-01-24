@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,10 +44,10 @@ namespace opItkRegistration
    @endcode
  *
  * @subsection Input Input
- * - \b image [::fwData::Image]: Input image on which the center will be computed.
+ * - \b image [data::Image]: Input image on which the center will be computed.
  *
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: Will be first reset to identity and then will contain translation
+ * - \b transform [data::TransformationMatrix3D]: Will be first reset to identity and then will contain translation
  * from world origin(0,0,0) to the image center (in mm).
  *
  */

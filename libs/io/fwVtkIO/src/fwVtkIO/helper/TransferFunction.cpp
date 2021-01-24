@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 void TransferFunction::toVtkLookupTable(
-    ::fwData::TransferFunction::csptr tf,
+    data::TransferFunction::csptr tf,
     vtkSmartPointer<vtkLookupTable> lt,
     bool allowTransparency,
     unsigned int size )
@@ -41,12 +41,12 @@ void TransferFunction::toVtkLookupTable(
     lt->SetNumberOfTableValues( size );
     lt->SetScaleToLinear();
 
-    ::fwData::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
+    data::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
 
     lt->SetTableRange( minMax.first, minMax.second );
 
     double delta = ( minMax.second - minMax.first ) / (double) (size - 1);
-    ::fwData::TransferFunction::TFColor interpolatedColor;
+    data::TransferFunction::TFColor interpolatedColor;
 
     if ( allowTransparency )
     {

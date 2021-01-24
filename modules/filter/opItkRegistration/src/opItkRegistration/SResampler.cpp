@@ -25,8 +25,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -35,7 +35,7 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SResampler, ::fwData::Image)
+fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SResampler, data::Image)
 
 static const ::fwServices::IService::KeyType s_IMAGE_IN = "imageIn";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "imageOut";
@@ -75,20 +75,20 @@ void SResampler::starting()
 
 void SResampler::updating()
 {
-    ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    data::Image::csptr inImg = this->getInput< data::Image >(s_IMAGE_IN);
 
-    ::fwData::mt::ObjectReadLock inImLock(inImg);
+    data::mt::ObjectReadLock inImLock(inImg);
 
-    ::fwData::Image::sptr outImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr outImg = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    ::fwData::mt::ObjectWriteLock outImLock(outImg);
+    data::mt::ObjectWriteLock outImLock(outImg);
 
-    ::fwData::Image::csptr target = this->getInput< ::fwData::Image >(s_TARGET_IN);
+    data::Image::csptr target = this->getInput< data::Image >(s_TARGET_IN);
 
-    ::fwData::mt::ObjectReadLock targetLock(target);
+    data::mt::ObjectReadLock targetLock(target);
 
-    ::fwData::TransformationMatrix3D::csptr transform =
-        this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_IN);
+    data::TransformationMatrix3D::csptr transform =
+        this->getInput< data::TransformationMatrix3D >(s_TRANSFORM_IN);
 
     SLM_ASSERT("No 'imageIn' found !", inImg);
     SLM_ASSERT("No 'imageOut' found !", outImg);
@@ -98,13 +98,13 @@ void SResampler::updating()
 
     m_sigComputed->asyncEmit();
 
-    auto imgBufModifSig = outImg->signal< ::fwData::Image::BufferModifiedSignalType >
-                              (::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto imgBufModifSig = outImg->signal< data::Image::BufferModifiedSignalType >
+                              (data::Image::s_BUFFER_MODIFIED_SIG);
 
     imgBufModifSig->asyncEmit();
 
-    auto imgModifSig = outImg->signal< ::fwData::Image::ModifiedSignalType >
-                           (::fwData::Image::s_MODIFIED_SIG);
+    auto imgModifSig = outImg->signal< data::Image::ModifiedSignalType >
+                           (data::Image::s_MODIFIED_SIG);
 
     imgModifSig->asyncEmit();
 }
@@ -121,10 +121,10 @@ void SResampler::stopping()
 ::fwServices::IService::KeyConnectionsMap SResampler::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TRANSFORM_IN, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TARGET_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_IN, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

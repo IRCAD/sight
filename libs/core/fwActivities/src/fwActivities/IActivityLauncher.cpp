@@ -30,10 +30,10 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/mt/locked_ptr.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/mt/locked_ptr.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
 
 namespace fwActivities
 {
@@ -71,7 +71,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 
         const auto it = inouts.find(key);
         SLM_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        ::fwData::Object::csptr obj = it->second.getShared();
+        data::Object::csptr obj = it->second.getShared();
         ParameterType param;
         param.replace = key;
         if(optional)
@@ -159,12 +159,12 @@ fwMedData::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
     if (info.requirements.size() > 0)
     {
-        ::fwData::Composite::sptr data = actSeries->getData();
+        data::Composite::sptr data = actSeries->getData();
         for (::fwActivities::registry::ActivityRequirement req : info.requirements)
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                (*data)[req.name] = ::fwData::factory::New(req.type);
+                (*data)[req.name] = data::factory::New(req.type);
             }
             else
             {
@@ -186,7 +186,7 @@ fwMedData::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
 
 //------------------------------------------------------------------------------
 
-void IActivityLauncher::translateParameters( const ::fwData::Object::csptr& sourceObj, const ParametersType& parameters,
+void IActivityLauncher::translateParameters( const data::Object::csptr& sourceObj, const ParametersType& parameters,
                                              ReplaceMapType& replaceMap )
 {
     for(const ParametersType::value_type& param :  parameters)
@@ -203,10 +203,10 @@ void IActivityLauncher::translateParameters( const ::fwData::Object::csptr& sour
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(sourceObj, parameterToReplace);
+            data::Object::sptr obj = data::reflection::getObject(sourceObj, parameterToReplace);
             SLM_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
 
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+            data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
             std::string parameterValue = obj->getID();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_UT_SERIESDBTEST_HPP__
-#define __FWVTKIO_UT_SERIESDBTEST_HPP__
+#pragma once
+
+#include <data/Array.hpp>
+#include <data/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/Mesh.hpp>
-#include <fwData/Array.hpp>
 
 namespace fwVtkIO
 {
@@ -55,5 +54,3 @@ public:
 
 } // namespace ut
 } // namespace fwVtkIO
-
-#endif //__FWVTKIO_UT_SERIESDBTEST_HPP__

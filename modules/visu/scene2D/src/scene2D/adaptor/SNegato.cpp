@@ -30,10 +30,10 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -136,17 +136,17 @@ void SNegato::updateBufferFromImage( QImage* qimg )
         return;
     }
     // Window min/max
-    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const ::fwData::mt::ObjectReadLock tfLock(tf);
+    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const data::mt::ObjectReadLock tfLock(tf);
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    const ::fwData::mt::ObjectReadLock imLock(image);
-    const auto dumpLock              = image->lock();
-    const ::fwData::Image::Size size = image->getSize2();
-    const short* imgBuff             = static_cast<const short*>(image->getBuffer());
-    const size_t imageZOffset        = size[0] * size[1];
+    data::Image::csptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
+    const data::mt::ObjectReadLock imLock(image);
+    const auto dumpLock          = image->lock();
+    const data::Image::Size size = image->getSize2();
+    const short* imgBuff         = static_cast<const short*>(image->getBuffer());
+    const size_t imageZOffset    = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
@@ -154,7 +154,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 
     std::uint8_t* pDest = qimg->bits();
 
-    ::fwData::Integer::sptr indexes[3];
+    data::Integer::sptr indexes[3];
     m_helperImg.getSliceIndex(indexes);
     // Fill image according to current slice type:
     if( m_helperImg.getOrientation() == MedicalImage::X_AXIS ) // sagittal
@@ -224,13 +224,13 @@ void SNegato::updateBufferFromImage( QImage* qimg )
 //-----------------------------------------------------------------------------
 
 QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
-                           const ::fwData::TransferFunction::csptr& tf)
+                           const data::TransferFunction::csptr& tf)
 {
     const short val16 = buffer[index];
 
     double value = (val16 - wlMin) * tfWin;
 
-    const ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+    const data::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
     return qRgb(static_cast<int>(color.r*255), static_cast<int>(color.g*255), static_cast<int>(color.b*255));
@@ -240,16 +240,16 @@ QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin
 
 QImage* SNegato::createQImage()
 {
-    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
     {
         return nullptr;
     }
 
-    const ::fwData::Image::Size size       = img->getSize2();
-    const ::fwData::Image::Spacing spacing = img->getSpacing2();
-    const ::fwData::Image::Origin origin   = img->getOrigin2();
+    const data::Image::Size size       = img->getSize2();
+    const data::Image::Spacing spacing = img->getSpacing2();
+    const data::Image::Origin origin   = img->getOrigin2();
 
     double qImageSpacing[2];
     double qImageOrigin[2];
@@ -313,9 +313,9 @@ QImage* SNegato::createQImage()
 void SNegato::starting()
 {
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     m_helperImg.updateImageInfos( image );
 
     m_helperTF.setOrCreateTF(tf, image);
@@ -350,10 +350,10 @@ void SNegato::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
 
         this->updating();
@@ -367,7 +367,7 @@ void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
     const int indexes[] = {sagittal, frontal, axial};
     m_helperImg.setSliceIndex(indexes);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     m_helperImg.updateImageInfos( image );
     this->updateBufferFromImage( m_qimg );
 }
@@ -444,10 +444,10 @@ void SNegato::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
+void SNegato::processInteraction( ::fwRenderQtdata::Event& _event )
 {
     // if a key is pressed
-    if(_event.getType() == ::fwRenderQt::data::Event::KeyRelease)
+    if(_event.getType() == ::fwRenderQtdata::Event::KeyRelease)
     {
         // if pressed key is 'R'
         if ( _event.getKey() == Qt::Key_R )
@@ -455,7 +455,7 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
             // get image origin
             QRectF recImage = m_pixmapItem->sceneBoundingRect();
 
-            ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            ::fwRenderQtdata::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
             float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
@@ -508,13 +508,13 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
         }
     }
 
-    ::fwRenderQt::data::Coord coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
+    ::fwRenderQtdata::Coord coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
     coord.setX( coord.getX() / m_layer->scale());
     coord.setY( coord.getY() / m_layer->scale());
 
-    if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress
-         && _event.getButton() == ::fwRenderQt::data::Event::RightButton
-         && _event.getModifier() == ::fwRenderQt::data::Event::NoModifier )
+    if ( _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress
+         && _event.getButton() == ::fwRenderQtdata::Event::RightButton
+         && _event.getModifier() == ::fwRenderQtdata::Event::NoModifier )
     {
         m_pointIsCaptured = true;
         m_oldCoord        = _event.getCoord();
@@ -522,15 +522,15 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
     }
     else if ( m_pointIsCaptured )
     {
-        if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+        if( _event.getType() == ::fwRenderQtdata::Event::MouseMove )
         {
-            ::fwRenderQt::data::Coord newCoord = _event.getCoord();
+            ::fwRenderQtdata::Coord newCoord = _event.getCoord();
             this->changeImageMinMaxFromCoord( m_oldCoord, newCoord );
             m_oldCoord = newCoord;
             _event.setAccepted(true);
         }
-        else if( _event.getButton() == ::fwRenderQt::data::Event::RightButton
-                 && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
+        else if( _event.getButton() == ::fwRenderQtdata::Event::RightButton
+                 && _event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease )
         {
             m_pointIsCaptured = false;
             _event.setAccepted(true);
@@ -540,12 +540,12 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord&, ::fwRenderQt::data::Coord& newCoord )
+void SNegato::changeImageMinMaxFromCoord( ::fwRenderQtdata::Coord&, ::fwRenderQtdata::Coord& newCoord )
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    ::fwData::mt::ObjectWriteLock tfLock(tf);
+    data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    data::mt::ObjectWriteLock tfLock(tf);
 
     const double min = tf->getWLMinMax().first;
     const double max = tf->getWLMinMax().second;
@@ -564,8 +564,8 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord&, ::fwRender
     // Send signal
     tf->setWindow(newImgWindow);
     tf->setLevel(newImgLevel);
-    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+        data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( newImgWindow, newImgLevel);
@@ -577,11 +577,11 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord&, ::fwRender
 ::fwServices::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
     return connections;
 }
 

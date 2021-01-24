@@ -30,9 +30,9 @@
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -108,7 +108,7 @@ void SImageSeriesReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an ImageSeries" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -116,12 +116,12 @@ void SImageSeriesReader::openLocationDialog()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -196,7 +196,7 @@ void SImageSeriesReader::updating()
 
         try
         {
-            ::fwData::Image::sptr image = ::fwData::Image::New();
+            data::Image::sptr image = data::Image::New();
 
             if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
@@ -220,7 +220,7 @@ void SImageSeriesReader::notificationOfDBUpdate()
     ::fwMedData::ImageSeries::sptr imageSeries = this->getInOut< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("imageSeries not instanced", imageSeries);
 
-    auto sig = imageSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

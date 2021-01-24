@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -113,7 +113,7 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // Get input data.
-    const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput     = this->getWeakInput< const data::String >(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
     if(stringInputLock)
@@ -128,7 +128,7 @@ void STextStatus::starting()
 ::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_STRING_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -138,7 +138,7 @@ void STextStatus::starting()
 void STextStatus::updating()
 {
     // Get input data.
-    const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput     = this->getWeakInput< const data::String >(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
     if(stringInputLock)

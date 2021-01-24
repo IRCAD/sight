@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(ActivitySeries))
 
-namespace fwData
+namespace sight::data
 {
 class Composite;
 }
@@ -46,7 +46,7 @@ class FWMEDDATA_CLASS_API ActivitySeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(ActivitySeries, ::fwMedData::Series, ::fwData::factory::New< ActivitySeries >)
+    fwCoreClassMacro(ActivitySeries, ::fwMedData::Series, data::factory::New< ActivitySeries >)
 
     fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries))
 
@@ -56,7 +56,7 @@ public:
      * @brief Creates the activity series.
      * @param _key private construction key.
      */
-    FWMEDDATA_API ActivitySeries(::fwData::Object::Key _key);
+    FWMEDDATA_API ActivitySeries(data::Object::Key _key);
 
     /// Destroys the activity series.
     FWMEDDATA_API virtual ~ActivitySeries();
@@ -65,20 +65,20 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the activity container.
-    SPTR(::fwData::Composite) getData() const;
+    SPTR(data::Composite) getData() const;
 
     /// Sets the activity container.
-    void setData(const SPTR(::fwData::Composite)& _val);
+    void setData(const SPTR(data::Composite)& _val);
 
     /// Gets the activity configuration ID.
     const ConfigIdType& getActivityConfigId () const;
@@ -92,20 +92,20 @@ protected:
     ConfigIdType m_activityConfigId;
 
     /// Stores the composite used to stores activities.
-    SPTR(::fwData::Composite) m_data;
+    SPTR(data::Composite) m_data;
 
 };
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(::fwData::Composite) ActivitySeries::getData() const
+inline SPTR(data::Composite) ActivitySeries::getData() const
 {
     return m_data;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ActivitySeries::setData(const SPTR(::fwData::Composite)& _val)
+inline void ActivitySeries::setData(const SPTR(data::Composite)& _val)
 {
     m_data = _val;
 }

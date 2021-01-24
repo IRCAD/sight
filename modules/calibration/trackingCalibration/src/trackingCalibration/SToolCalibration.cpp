@@ -24,9 +24,9 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -99,14 +99,14 @@ void SToolCalibration::updating()
 
 void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    ::fwData::Vector::csptr matricesVector = this->getInput< ::fwData::Vector >(s_MATRICES_VECTOR_INPUT);
+    data::Vector::csptr matricesVector = this->getInput< data::Vector >(s_MATRICES_VECTOR_INPUT);
 
-    ::fwData::mt::ObjectReadLock lock(matricesVector);
+    data::mt::ObjectReadLock lock(matricesVector);
 
-    ::fwData::TransformationMatrix3D::sptr calibrationMatrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr calibrationMatrix = data::TransformationMatrix3D::New();
     this->setOutput(s_MATRIX_CALIBRATION_OUTPUT, calibrationMatrix);
 
-    ::fwData::TransformationMatrix3D::sptr centerMatrixNoRot = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr centerMatrixNoRot = data::TransformationMatrix3D::New();
 
     ::calibration3d::helper::calibratePointingTool(matricesVector, calibrationMatrix, centerMatrixNoRot);
 

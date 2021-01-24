@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ class CompositorListener;
    @endcode
  *
  * @subsection InOut InOut:
- * - \b parameter [::fwData::Object]: parameter containing the data to upload.
+ * - \b parameter [data::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the compositor's layer.
@@ -105,7 +105,7 @@ protected:
 
 private:
 
-    /// Updates parameter according to the attached fwData::Object.
+    /// Updates parameter according to the attached data::Object.
     void updateValue(::Ogre::MaterialPtr& _mat);
 
     /// Defines the material name.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace maths
 /**
  * @brief   This service decomposes a matrix into a 3 by 3 rotation matrix, a 3 dimensional translation vector
  * and a 3 by 3 scaling matrix. The skew and the perspective are also decomposed. These information are not in
- * ::fwData::TransformationMatrix3D data for the moment but it is possible to do it later.
+ * data::TransformationMatrix3D data for the moment but it is possible to do it later.
  *
  * @section XML XML Configuration
  *
@@ -45,11 +45,11 @@ namespace maths
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D]: matrix to decompose.
+ * - \b matrix [data::TransformationMatrix3D]: matrix to decompose.
  * @subsection In-Out In-Out:
- * - \b translation [::fwData::TransformationMatrix3D] (optional): translation matrix.
- * - \b rotation [::fwData::TransformationMatrix3D] (optional): rotation matrix.
- * - \b scale [::fwData::TransformationMatrix3D] (optional): scaling matrix.
+ * - \b translation [data::TransformationMatrix3D] (optional): translation matrix.
+ * - \b rotation [data::TransformationMatrix3D] (optional): rotation matrix.
+ * - \b scale [data::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
 class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator

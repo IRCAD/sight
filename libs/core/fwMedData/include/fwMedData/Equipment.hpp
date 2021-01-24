@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(Equipment))
 
@@ -36,12 +36,12 @@ namespace fwMedData
 /**
  * @brief Holds an equipment information.
  */
-class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
+class FWMEDDATA_CLASS_API Equipment : public data::Object
 {
 
 public:
 
-    fwCoreClassMacro(Equipment, ::fwData::Object, ::fwData::factory::New< Equipment >)
+    fwCoreClassMacro(Equipment, data::Object, data::factory::New< Equipment >)
 
     fwCampMakeFriendDataMacro((fwMedData)(Equipment))
 
@@ -49,7 +49,7 @@ public:
      * @brief Creates the equipement.
      * @param _key private construction key.
      */
-    FWMEDDATA_API Equipment(::fwData::Object::Key _key);
+    FWMEDDATA_API Equipment(data::Object::Key _key);
 
     /// Destroys the equipement.
     FWMEDDATA_API virtual ~Equipment();
@@ -58,14 +58,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the institution where the equipment that produced the composite instances is located.
     const DicomValueType& getInstitutionName() const;

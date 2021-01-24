@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }
@@ -48,7 +48,7 @@ namespace ioITK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwData::Image]: image to save.
+ * - \b data [data::Image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
@@ -63,7 +63,7 @@ public:
 
     IOITK_API virtual ~InrImageWriterService() noexcept;
 
-    IOITK_API static void saveImage( const std::filesystem::path& inrFile, const CSPTR(::fwData::Image)& image );
+    IOITK_API static void saveImage( const std::filesystem::path& inrFile, const CSPTR(data::Image)& image );
 
 protected:
 

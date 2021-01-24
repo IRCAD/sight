@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwTest
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     gui
     ioPacs

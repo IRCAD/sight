@@ -27,8 +27,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::SeriesDB )
 
@@ -40,7 +40,7 @@ const core::com::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "remove
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(::fwData::Object::Key)
+SeriesDB::SeriesDB(data::Object::Key)
 {
     newSignal< AddedSeriesSignalType >(s_ADDED_SERIES_SIG);
     newSignal< RemovedSeriesSignalType >(s_REMOVED_SERIES_SIG);
@@ -54,10 +54,10 @@ SeriesDB::~SeriesDB()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::shallowCopy(const ::fwData::Object::csptr& _source)
+void SeriesDB::shallowCopy(const data::Object::csptr& _source)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -68,10 +68,10 @@ void SeriesDB::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void SeriesDB::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -80,7 +80,7 @@ void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCa
     m_container.reserve(other->m_container.size());
     for(const ValueType& series :  other->m_container)
     {
-        m_container.push_back(::fwData::Object::copy(series, cache));
+        m_container.push_back(data::Object::copy(series, cache));
     }
 }
 

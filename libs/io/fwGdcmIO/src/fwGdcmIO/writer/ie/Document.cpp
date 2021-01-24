@@ -28,9 +28,9 @@
 
 #include <core/tools/dateAndTime.hpp>
 
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
@@ -52,12 +52,12 @@ namespace ie
 
 Document::Document(const SPTR(::gdcm::Writer)& writer,
                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                   const ::fwData::Image::csptr& image,
+                   const data::Image::csptr& image,
                    bool use3DSR,
                    const ::fwLog::Logger::sptr& logger,
                    ProgressCallback progress,
                    CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image, logger, progress, cancel),
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Image >(writer, instance, image, logger, progress, cancel),
     m_use3DSR(use3DSR)
 {
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace ioData
 /**
  * @brief   Mesh reader service.
  *
- * Service reading a trian file into a fwData::Mesh object.
+ * Service reading a trian file into a data::Mesh object.
  * @li This service has no specified start and stop method.
  * @li Use setConfiguration(cfg) and configure() methods to configure the mesh filename.
  * @li Use update() to read the mesh and notify observers.
@@ -47,7 +47,7 @@ namespace ioData
    </service>
    @endcode
  * @subsection InOut InOut
- * - \b mesh [::fwData::Mesh]: mesh.
+ * - \b mesh [data::Mesh]: mesh.
  * @subsubsection Configuration Configuration
  * - \b file : .trian file to read
  */

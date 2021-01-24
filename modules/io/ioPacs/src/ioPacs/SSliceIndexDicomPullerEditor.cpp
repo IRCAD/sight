@@ -27,10 +27,10 @@
 #include <core/thread/Timer.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Array.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
@@ -133,7 +133,7 @@ void SSliceIndexDicomPullerEditor::starting()
     m_delayTimer2 = m_associatedWorker->createTimer();
 
     // Get pacs configuration
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>(s_PACS_INPUT);
+    m_pacsConfiguration = this->getInput< ::fwPacsIOdata::PacsConfiguration>(s_PACS_INPUT);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -337,12 +337,12 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
 
     if(imageSeries)
     {
-        ::fwData::Image::sptr newImage = imageSeries->getImage();
-        const ::fwData::Image::Size newSize = newImage->getSize2();
+        data::Image::sptr newImage      = imageSeries->getImage();
+        const data::Image::Size newSize = newImage->getSize2();
 
-        ::fwData::Integer::sptr axialIndex    = ::fwData::Integer::New(0);
-        ::fwData::Integer::sptr frontalIndex  = ::fwData::Integer::New(newSize[0]/2);
-        ::fwData::Integer::sptr sagittalIndex = ::fwData::Integer::New(newSize[1]/2);
+        data::Integer::sptr axialIndex    = data::Integer::New(0);
+        data::Integer::sptr frontalIndex  = data::Integer::New(newSize[0]/2);
+        data::Integer::sptr sagittalIndex = data::Integer::New(newSize[1]/2);
 
         newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
         newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);

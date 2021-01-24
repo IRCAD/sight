@@ -22,7 +22,7 @@
 
 #include "monitor/action/MemoryConsumption.hpp"
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -38,11 +38,11 @@ namespace action
 {
 
 /// Static variable shared by both actions
-static std::vector< ::fwData::Array::sptr > memoryConsumer;
+static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, data::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -50,11 +50,11 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
 {
     try
     {
-        ::fwData::Array::sptr buffer = ::fwData::Array::New();
-        ::fwData::Array::SizeType size(1, memorySizeInBytes);
+        data::Array::sptr buffer = data::Array::New();
+        data::Array::SizeType size(1, memorySizeInBytes);
         buffer->resize(size, core::tools::Type::s_UINT8_TYPENAME, true);
 
-        SLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
+        SLM_INFO("Creating a data::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 
         memoryConsumer.push_back( buffer );
     }
@@ -95,7 +95,7 @@ void MemoryConsumption::updating()
     {
         if( !memoryConsumer.empty() )
         {
-            SLM_INFO("Removing one fwData::Array");
+            SLM_INFO("Removing one data::Array");
             memoryConsumer.pop_back();
         }
     }

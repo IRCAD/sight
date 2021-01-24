@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "scene2D/adaptor/SCurvedHistogram.hpp"
 
-#include <fwData/Float.hpp>
-#include <fwData/Histogram.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/Point.hpp>
+#include <data/Float.hpp>
+#include <data/Histogram.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/bspline.hpp>
 #include <fwRenderQt/data/InitQtPen.hpp>
@@ -82,13 +82,13 @@ void SCurvedHistogram::configuring()
 
     if (config.count("borderColor"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(
+        ::fwRenderQtdata::InitQtPen::setPenColor(
             m_borderColor, config.get<std::string>("borderColor"), m_opacity );
     }
 
     if (config.count("innerColor"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(
+        ::fwRenderQtdata::InitQtPen::setPenColor(
             m_innerColor, config.get<std::string>("innerColor"), m_opacity );
     }
 
@@ -116,11 +116,11 @@ void SCurvedHistogram::starting()
 
 //----------------------------------------------------------------------------------------------------------
 
-SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const ::fwData::Histogram::csptr& _histogram) const
+SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const data::Histogram::csptr& _histogram) const
 {
-    ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
-    const float binsWidth    = _histogram->getBinsWidth();
-    const float histogramMin = _histogram->getMinValue();
+    data::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
+    const float binsWidth                              = _histogram->getBinsWidth();
+    const float histogramMin                           = _histogram->getMinValue();
 
     Point p;
     Points controlPoints;
@@ -247,9 +247,9 @@ void SCurvedHistogram::updating()
 {
     this->stopping();
 
-    const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
 
-    ::fwData::mt::ObjectReadLock lock(histogram);
+    data::mt::ObjectReadLock lock(histogram);
 
     m_layer = new QGraphicsItemGroup();
 
@@ -281,7 +281,7 @@ void SCurvedHistogram::updating()
 
 void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
 {
-    const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
 
     const bool useBorderColor = (m_borderColor.color() != Qt::transparent);
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
@@ -439,16 +439,16 @@ SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point )
+void SCurvedHistogram::updateCurrentPoint(const ::fwRenderQtdata::Event& _event, const data::Point::sptr& point )
 {
-    const ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
-    const ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
+    const data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::fwHistogramValues values = histogram->getValues();
 
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    const ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
+    const ::fwRenderQtdata::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     const int histIndex = static_cast<int>( sceneCoord.getX() );
     const int index     = static_cast<const int>(histIndex - histogramMinValue);
@@ -504,31 +504,31 @@ void SCurvedHistogram::stopping()
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
+void SCurvedHistogram::processInteraction( ::fwRenderQtdata::Event& _event)
 {
     bool updatePointedPos = false;
 
     // Vertical scaling
-    if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp )
+    if( _event.getType() == ::fwRenderQtdata::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, static_cast<qreal>(SCALE) ), true);
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, 1 / static_cast<qreal>(SCALE) ), true);
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseMove )
     {
         updatePointedPos = true;
     }
 
-    ::fwData::Point::sptr point = this->getInOut< ::fwData::Point>( s_POINT_INOUT );
+    data::Point::sptr point = this->getInOut< data::Point>( s_POINT_INOUT );
     if( point && updatePointedPos )
     {
         this->updateCurrentPoint( _event, point );
@@ -540,7 +540,7 @@ void SCurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 ::fwServices::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( "histogram", ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "histogram", data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

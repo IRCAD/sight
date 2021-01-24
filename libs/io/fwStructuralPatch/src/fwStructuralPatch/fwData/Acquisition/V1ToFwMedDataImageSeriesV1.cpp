@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
+#include "fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 
 #include <core/tools/dateAndTime.hpp>
 
@@ -40,7 +40,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Acquisition
@@ -49,7 +49,7 @@ namespace Acquisition
 V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Acquisition";
+    m_originClassname = "data::Acquisition";
     m_targetClassname = "::fwMedData::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "1";
@@ -148,6 +148,6 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Acquisition
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

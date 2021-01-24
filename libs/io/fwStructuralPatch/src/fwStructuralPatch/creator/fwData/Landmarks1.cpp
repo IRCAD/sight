@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/creator/fwData/Landmarks1.hpp"
+#include "fwStructuralPatch/creator/data/Landmarks1.hpp"
 
 #include <fwAtoms/Map.hpp>
 
@@ -30,14 +30,14 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwData
+namespace sight::data
 {
 
 // ----------------------------------------------------------------------------
 
 Landmarks1::Landmarks1()
 {
-    m_classname = "::fwData::Landmarks";
+    m_classname = "data::Landmarks";
     m_version   = "1";
 }
 

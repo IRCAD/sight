@@ -24,6 +24,11 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/Array.hpp>
+#include <data/Composite.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
@@ -33,11 +38,6 @@
 #include <fwAtomsFilter/IFilter.hpp>
 
 #include <fwAtomsPatch/PatchingManager.hpp>
-
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -64,7 +64,7 @@
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -214,7 +214,7 @@ void SReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
+        data::Object::sptr data = this->getInOut< data::Object >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", m_outputMode || data);
 
         ::fwGui::Cursor cursor;
@@ -329,7 +329,7 @@ void SReader::updating()
                     runningJob.done();
                 }, m_associatedWorker);
 
-            ::fwData::Object::sptr newData;
+            data::Object::sptr newData;
 
             // convert to fwData : job 3
             ::fwJobs::Job::sptr atomToDataJob = ::fwJobs::Job::New("Reading " + extension + " file",
@@ -390,12 +390,12 @@ void SReader::updating()
                                                 << "' where a '" << data->getClassname() << "' was expected",
                              newData->getClassname() != data->getClassname() );
 
-                // Workaround to read a fwData::Array.
-                // The shallowCopy of a fwData::Array is not allowed due to unknown buffer owner.
+                // Workaround to read a data::Array.
+                // The shallowCopy of a data::Array is not allowed due to unknown buffer owner.
                 // So in the case of reading an Array we swap buffers.
-                if(newData->getClassname() == ::fwData::Array::classname())
+                if(newData->getClassname() == data::Array::classname())
                 {
-                    ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
+                    data::Array::dynamicCast(data)->swap( data::Array::dynamicCast(newData) );
                 }
                 else
                 {
@@ -439,10 +439,10 @@ void SReader::updating()
 
 void SReader::notificationOfUpdate()
 {
-    ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(::fwIO::s_DATA_KEY);
+    data::Object::sptr object = this->getInOut< data::Object >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", object);
 
-    auto sig = object->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = object->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -464,7 +464,7 @@ void SReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
@@ -476,14 +476,14 @@ void SReader::openLocationDialog()
         dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
     }
 
-    ::fwData::location::SingleFile::sptr result
-        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result
+        = data::location::SingleFile::dynamicCast( dialogFile.show() );
 
     if (result)
     {
         _sDefaultPath = result->getPath();
         this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
     }
     else
     {

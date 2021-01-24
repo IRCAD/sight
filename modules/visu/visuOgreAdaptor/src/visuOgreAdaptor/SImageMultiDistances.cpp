@@ -24,10 +24,10 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Boolean.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Vector.hpp>
@@ -196,17 +196,17 @@ void SImageMultiDistances::starting()
     m_sphereMaterial = std::make_unique< ::fwRenderOgre::Material >(m_sphereMaterialName,
                                                                     ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_sphereMaterial->setHasVertexColor(true);
-    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_sphereMaterial->updateShadingMode(data::Material::PHONG, layer->getLightsNumber(), false, false);
 
     m_lineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_lineMaterialName,
                                                                   ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_lineMaterial->setHasVertexColor(true);
-    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_lineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
     m_dashedLineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_dashedLineMaterialName,
                                                                         ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_dashedLineMaterial->setHasVertexColor(true);
-    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_dashedLineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
     // Retrive the ogre material to change the depth check.
     const ::Ogre::MaterialPtr ogreSphereMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
@@ -239,10 +239,10 @@ void SImageMultiDistances::starting()
 ::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -252,9 +252,9 @@ void SImageMultiDistances::updating()
 {
     const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
 
-    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
-    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
-    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_sphereMaterial->updateShadingMode(data::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_lineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_dashedLineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
     while(m_distances.size() != 0)
     {
@@ -291,15 +291,15 @@ void SImageMultiDistances::addDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const ::fwData::Vector::sptr distanceField = image->getField< ::fwData::Vector >(
+    const data::Vector::sptr distanceField = image->getField< data::Vector >(
         ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     if(distanceField)
     {
-        for(const ::fwData::Object::sptr object : *distanceField)
+        for(const data::Object::sptr object : *distanceField)
         {
-            const ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
+            const data::PointList::sptr pointList = data::PointList::dynamicCast(object);
             SLM_ASSERT("The distance should be a point list", pointList);
             SLM_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
 
@@ -307,13 +307,13 @@ void SImageMultiDistances::addDistances()
             if(m_distances.find(id) == m_distances.end())
             {
                 this->createDistance(pointList);
-                const auto& sigModified = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-                    ::fwData::PointList::s_MODIFIED_SIG);
+                const auto& sigModified = pointList->signal< data::PointList::ModifiedSignalType >(
+                    data::PointList::s_MODIFIED_SIG);
                 sigModified->connect(m_slotUpdate);
             }
         }
     }
-    // The signal ::fwData::Image::s_DISTANCE_ADDED_SIG is send if all distances are removed.
+    // The signal data::Image::s_DISTANCE_ADDED_SIG is send if all distances are removed.
     // When all distances are removed, the field is removed in the image.
     else
     {
@@ -332,15 +332,15 @@ void SImageMultiDistances::removeDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const ::fwData::Vector::csptr distanceField
-        = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    const data::Vector::csptr distanceField
+        = image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     std::vector< core::tools::fwID::IDType > foundId;
     if(distanceField)
     {
-        for(const ::fwData::Object::csptr& object : *distanceField)
+        for(const data::Object::csptr& object : *distanceField)
         {
             foundId.push_back(object->getID());
         }
@@ -369,9 +369,9 @@ void SImageMultiDistances::updateVisibilityFromField()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
+    const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                                 true))->value();
     m_isVisible = visibility;
 
@@ -606,7 +606,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
+void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
 {
     const core::tools::fwID::IDType id = _pl->getID();
     SLM_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
@@ -730,12 +730,12 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
     SImageMultiDistances::generateDashedLine(dashedLine, _begin, _end, m_distanceSphereRadius);
 
     // Update the field data.
-    const ::fwData::mt::locked_ptr lock(_data->m_pointList);
+    const data::mt::locked_ptr lock(_data->m_pointList);
     _data->m_pointList->getPoints().front()->setCoord({_begin[0], _begin[1], _begin[2]});
     _data->m_pointList->getPoints().back()->setCoord({_end[0], _end[1], _end[2]});
 
-    const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
+    const auto& sigModified = _data->m_pointList->signal< data::PointList::ModifiedSignalType >(
+        data::PointList::s_MODIFIED_SIG);
 
     core::com::Connection::Blocker blocker(sigModified->getConnection(m_slotUpdate));
     sigModified->asyncEmit();
@@ -763,8 +763,8 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     sceneMgr->destroySceneNode(distanceData.m_labelNode);
     sceneMgr->destroyMovableObject(distanceData.m_label);
 
-    const auto& sigModified = distanceData.m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
+    const auto& sigModified = distanceData.m_pointList->signal< data::PointList::ModifiedSignalType >(
+        data::PointList::s_MODIFIED_SIG);
     sigModified->disconnect(m_slotUpdate);
 
     // Remove it from the map.

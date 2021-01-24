@@ -42,7 +42,7 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -58,7 +58,7 @@ struct ITKSaverFunctor
     struct Parameter
     {
         std::string m_filename;
-        ::fwData::Image::csptr m_dataImage;
+        data::Image::csptr m_dataImage;
         ::fwItkIO::ImageWriter::sptr m_fwWriter;
     };
 

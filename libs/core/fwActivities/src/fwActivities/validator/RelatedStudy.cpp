@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwActivities/validator/registry/macros.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
@@ -55,7 +55,7 @@ RelatedStudy::~RelatedStudy()
 
 IValidator::ValidationType RelatedStudy::validate(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    const ::fwData::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;
 
@@ -70,7 +70,7 @@ IValidator::ValidationType RelatedStudy::validate(
         std::string instanceUIDRef = studyRef->getInstanceUID();
         ::boost::algorithm::trim(instanceUIDRef);
 
-        ::fwData::Vector::ContainerType::const_iterator it;
+        data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(*it);

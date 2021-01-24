@@ -26,14 +26,14 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/Timer.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Array.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SIncrementArray, ::fwData::Array )
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SIncrementArray, data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -76,7 +76,7 @@ void SIncrementArray::starting()
 
 void SIncrementArray::updating()
 {
-    const auto array = this->getInOut< ::fwData::Array >(s_ARRAY_INOUT);
+    const auto array = this->getInOut< data::Array >(s_ARRAY_INOUT);
     SLM_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1 );
 
     const auto dumpLock = array->lock();
@@ -91,7 +91,7 @@ void SIncrementArray::updating()
     }
 
     // Notify that the array is modified.
-    const auto sig = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
+    const auto sig = array->signal< data::Object::ModifiedSignalType>( data::Object::s_MODIFIED_SIG );
     {
         core::com::Connection::Blocker blockUpdate(sig->getConnection(m_slotUpdate));
         core::com::Connection::Blocker blockTimer(sig->getConnection(this->slot(s_START_TIMER_SLOT)));

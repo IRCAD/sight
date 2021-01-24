@@ -31,7 +31,7 @@
 #include <istream>
 #include <type_traits>
 
-fwCampAutoDeclareMacro((fwMemory)(BufferObject), CORE_API);
+fwCampAutoDeclareMacro((sight)(core)(memory)(BufferObject), CORE_API);
 
 namespace sight::core::memory
 {
@@ -62,7 +62,7 @@ class IFactory;
  * NOT GARANTEE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
-class CORE_CLASS_API BufferObject : public core::BaseObject
+class CORE_CLASS_API BufferObject : public sight::core::BaseObject
 {
 
 public:

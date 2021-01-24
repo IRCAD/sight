@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -85,7 +85,7 @@ namespace uiReconstructionQml
  *
  * @section Objects Required objects
  * @subsection In-Out In-Out
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction that will be updated
+ * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQML_CLASS_API SRepresentationEditor : public ::fwQml::IQmlEditor
 {
@@ -142,7 +142,7 @@ protected Q_SLOTS:
 
 private:
 
-    ::fwData::Material::sptr m_material;
+    data::Material::sptr m_material;
 
 };
 

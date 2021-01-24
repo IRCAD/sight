@@ -24,12 +24,12 @@
 
 #include "fwRenderOgre/ogre.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Boolean.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
@@ -104,22 +104,22 @@ bool Shading::isDepthOnlyTechnique(const ::Ogre::Technique& _tech)
 }
 
 //-----------------------------------------------------------------------------
-std::string Shading::getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
+std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
 {
     std::string suffix;
 
     switch(_mode)
     {
-        case ::fwData::Material::AMBIENT:
+        case data::Material::AMBIENT:
             suffix = s_AMBIENT;
             break;
-        case ::fwData::Material::FLAT:
+        case data::Material::FLAT:
             suffix = s_FLAT;
             break;
-        case ::fwData::Material::GOURAUD:
+        case data::Material::GOURAUD:
             suffix = s_GOURAUD;
             break;
-        case ::fwData::Material::PHONG:
+        case data::Material::PHONG:
             suffix = s_PIXELLIGHTING;
             break;
     }
@@ -138,16 +138,16 @@ std::string Shading::getPermutation(::fwData::Material::ShadingType _mode, bool 
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _primitiveType, bool _diffuseTexture,
+std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primitiveType, bool _diffuseTexture,
                                                 bool _vertexColor, bool _hasPrimitiveColor)
 {
     std::string suffix;
 
-    if(_primitiveType == ::fwData::Mesh::QUAD)
+    if(_primitiveType == data::Mesh::QUAD)
     {
         suffix = "Quad";
     }
-    else if(_primitiveType == ::fwData::Mesh::TETRA)
+    else if(_primitiveType == data::Mesh::TETRA)
     {
         suffix = "Tetra";
     }
@@ -176,16 +176,16 @@ std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _p
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType _primitiveType, bool _diffuseTexture,
+std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellType _primitiveType, bool _diffuseTexture,
                                                 bool _vertexColor, bool _hasPrimitiveColor)
 {
     std::string suffix;
 
-    if(_primitiveType == ::fwData::Mesh::CellType::QUAD)
+    if(_primitiveType == data::Mesh::CellType::QUAD)
     {
         suffix = "Quad";
     }
-    else if(_primitiveType == ::fwData::Mesh::CellType::TETRA)
+    else if(_primitiveType == data::Mesh::CellType::TETRA)
     {
         suffix = "Tetra";
     }
@@ -252,7 +252,7 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
     ::Ogre::Pass* pass = _material.getTechnique(0)->getPass(0);
 
     // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
-    // with the given ::fwData::Object ID
+    // with the given data::Object ID
     if (pass->isProgrammable())
     {
         ::Ogre::GpuProgramParametersSharedPtr params;
@@ -354,22 +354,22 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType _type, ConstantValueType _value)
+data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType _type, ConstantValueType _value)
 {
-    ::fwData::Object::sptr object;
+    data::Object::sptr object;
 
     switch(_type)
     {
         case ::Ogre::GpuConstantType::GCT_FLOAT1:
         {
-            auto newObj = ::fwData::Float::New();
+            auto newObj = data::Float::New();
             newObj->setValue(_value.f[0]);
             object = newObj;
         }
         break;
         case ::Ogre::GpuConstantType::GCT_FLOAT2:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize( {2}, core::tools::Type::s_FLOAT);
 
@@ -383,7 +383,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_FLOAT3:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({3}, core::tools::Type::s_FLOAT);
 
@@ -398,24 +398,24 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_FLOAT4:
         {
-            auto newObj = ::fwData::Color::New();
+            auto newObj = data::Color::New();
             newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
             object = newObj;
         }
         break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
+            object = data::TransformationMatrix3D::New();
             break;
         case ::Ogre::GpuConstantType::GCT_INT1:
         {
-            auto newObj = ::fwData::Integer::New();
+            auto newObj = data::Integer::New();
             newObj->setValue(_value.i[0]);
             object = newObj;
         }
         break;
         case ::Ogre::GpuConstantType::GCT_INT2:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({2}, core::tools::Type::s_INT32);
 
@@ -429,7 +429,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_INT3:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({3}, core::tools::Type::s_INT32);
 
@@ -444,7 +444,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_INT4:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({4}, core::tools::Type::s_INT32);
 
@@ -460,14 +460,14 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE1:
         {
-            auto newObj = ::fwData::Float::New();
+            auto newObj = data::Float::New();
             newObj->setValue( static_cast<float>(_value.d[0]) );
             object = newObj;
         }
         break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE2:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
 
@@ -481,7 +481,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE3:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
 
@@ -496,7 +496,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE4:
         {
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            data::Array::sptr arrayObject = data::Array::New();
 
             arrayObject->resize({4}, core::tools::Type::s_DOUBLE);
 
@@ -511,7 +511,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         }
         break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
+            object = data::TransformationMatrix3D::New();
             break;
         default:
             std::string GpuConstantTypeNames[] =

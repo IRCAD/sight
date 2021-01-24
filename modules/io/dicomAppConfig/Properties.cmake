@@ -6,7 +6,7 @@ set( DEPENDENCIES )
 set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
-    fwData
+    data
     fwMedData
     gui
     guiQt

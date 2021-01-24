@@ -26,8 +26,8 @@
 
 #include <core/macros.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwRenderQt/IAdaptor.hpp>
 
@@ -63,15 +63,15 @@ namespace adaptor
    @endcode
  *
  * @subsection Input Input
- * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update the adaptor.
- * - \b currentTF [::fwData::TransferFunction](optional): current transfer function used to change editor selection. It
+ * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update the adaptor.
+ * - \b currentTF [data::TransferFunction](optional): current transfer function used to change editor selection. It
  *      should be the same TF as the output.
  *
  * * @subsection In-Out In-Out
- * - \b tfPool [::fwData::Composite]: composite containing all transfer function.
+ * - \b tfPool [data::Composite]: composite containing all transfer function.
  *
  * * @subsection Output Output
- * - \b tf [::fwData::TransferFunction]: selected transfer function.
+ * - \b tf [data::TransferFunction]: selected transfer function.
  *
  * @subsection Configuration Configuration
  * - \b config (mandatory): contains the adaptor configuration.
@@ -118,12 +118,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect ::fwRenderQtdata::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
      * ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
+     * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
      * ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
+     * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
      * ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
@@ -146,7 +146,7 @@ private:
     struct SubTF
     {
         /// Contains the TF data.
-        ::fwData::TransferFunction::sptr m_tf { nullptr };
+        data::TransferFunction::sptr m_tf { nullptr };
 
         /// Sets the z value in the local layer.
         int m_zIndex { 0 };
@@ -164,7 +164,7 @@ private:
     /**
      * @brief Creates subTF for each TF in the composite, fills basic data and create graphic points.
      *
-     * @see createSubTF(const ::fwData::TransferFunction::sptr _tf, int _zIndex)
+     * @see createSubTF(const data::TransferFunction::sptr _tf, int _zIndex)
      */
     void createTFPoints();
 
@@ -172,7 +172,7 @@ private:
     void destroyTFPoints();
 
     /// Creates a subTF from a TF, fills basic data and creates graphic points.
-    SubTF* createSubTF(const ::fwData::TransferFunction::sptr _tf, int _zIndex);
+    SubTF* createSubTF(const data::TransferFunction::sptr _tf, int _zIndex);
 
     /// Creates the gradient of each subTF and stores it in each element of @ref m_subTF.
     void createTFPolygons();
@@ -237,7 +237,7 @@ private:
      * @param _event the 2D scene event.
      * @return A list of subTF.
      */
-    std::vector< SubTF* > getMatchingSubTF(const ::fwRenderQt::data::Event& _event) const;
+    std::vector< SubTF* > getMatchingSubTF(const ::fwRenderQtdata::Event& _event) const;
 
     /**
      * @brief Filters the event to call the right methods from mouse informations.
@@ -253,7 +253,7 @@ private:
      *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
+    virtual void processInteraction(::fwRenderQtdata::Event& _event ) override;
 
     /**
      * @brief Finds the nearest subTF and set it a the current one.
@@ -261,7 +261,7 @@ private:
      *
      * @see setCurrentTF(SubTF* const)
      */
-    void leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event);
+    void leftButtonCLickEvent(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.
@@ -277,7 +277,7 @@ private:
      * @pre m_capturedTFPoint must be previously sets.
      * @see leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
      */
-    void mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt::data::Event& _event);
+    void mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
@@ -307,28 +307,28 @@ private:
      * @brief Adds a new TF point to the current subTF and update the related TF.
      * @param _event the 2D scene event.
      */
-    void leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _event);
+    void leftButtonDoubleClickEvent(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Sets @ref m_capturedTF if the clicked coord if over the current TF.
      * @param _event the 2D scene event.
      */
-    void midButtonClickEvent(::fwRenderQt::data::Event& _event);
+    void midButtonClickEvent(::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Update the window/level of the current TF relativly to the mouse movement.
      * @param _event the 2D scene event.
      *
      * @pre m_capturedTF must be previously sets.
-     * @see midButtonClickEvent(const ::fwRenderQt::data::Event&)
+     * @see midButtonClickEvent(const ::fwRenderQtdata::Event&)
      */
-    void mouseMoveOnSubTFEvent(const ::fwRenderQt::data::Event& _event);
+    void mouseMoveOnSubTFEvent(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Resets @ref m_capturedTF.
      *
      * @pre m_capturedTF must be previously sets.
-     * @see midButtonClickEvent(const ::fwRenderQt::data::Event&)
+     * @see midButtonClickEvent(const ::fwRenderQtdata::Event&)
      */
     void midButtonReleaseEvent();
 
@@ -336,13 +336,13 @@ private:
      * @brief Open a context menu to delete or create TF.
      * @param _event the 2D scene event.
      */
-    void rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event);
+    void rightButtonCLickEvent(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Updates the whole current TF opacity.
      * @param _event the 2D scene event.
      */
-    void midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event);
+    void midButtonWheelMoveEvent(::fwRenderQtdata::Event& _event);
 
     /// Deletes the current TF and change the current TF.
     void removeCurrenTF();
@@ -370,31 +370,31 @@ private:
      * @brief Adds a new TF to the composite and re draw the scene.
      * @param _tf the new TF to add.
      */
-    void addNewTF(const ::fwData::TransferFunction::sptr _tf);
+    void addNewTF(const data::TransferFunction::sptr _tf);
 
     /**
      * @brief Adds a left ramp subTF and update the composite.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const ::fwData::TransferFunction::sptr, const ::fwData::Composite::KeyType&)
+     * @see addNewTF(const data::TransferFunction::sptr, const data::Composite::KeyType&)
      */
-    void addLeftRamp(const ::fwRenderQt::data::Event& _event);
+    void addLeftRamp(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Adds a right ramp subTF and update the composite.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const ::fwData::TransferFunction::sptr, const ::fwData::Composite::KeyType&)
+     * @see addNewTF(const data::TransferFunction::sptr, const data::Composite::KeyType&)
      */
-    void addRightRamp(const ::fwRenderQt::data::Event& _event);
+    void addRightRamp(const ::fwRenderQtdata::Event& _event);
 
     /**
      * @brief Adds a trapeze subTF and update the composite.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const ::fwData::TransferFunction::sptr, const ::fwData::Composite::KeyType&)
+     * @see addNewTF(const data::TransferFunction::sptr, const data::Composite::KeyType&)
      */
-    void addTrapeze(const ::fwRenderQt::data::Event& _event);
+    void addTrapeze(const ::fwRenderQtdata::Event& _event);
 
     /// Defines the size of TF points in a ratio relative to the window.
     float m_pointSize { 0.03f };
@@ -430,7 +430,7 @@ private:
     QTimer* m_eventFilter { nullptr };
 
     /// Stores the current working TF.
-    ::fwData::TransferFunction::csptr m_currentTF { nullptr };
+    data::TransferFunction::csptr m_currentTF { nullptr };
 
     /// Stores the captured clicked point.
     std::pair< Point2DType, QGraphicsEllipseItem* >* m_capturedTFPoint { nullptr };
@@ -438,10 +438,10 @@ private:
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
+    std::pair< data::TransferFunction::sptr, ::fwRenderQtdata::Coord > m_capturedTF;
 
     /// Stores for each TF id, its unclamped alpha color value map.
-    std::map< core::tools::fwID::IDType, ::fwData::TransferFunction::TFDataType > m_unclampedTFData;
+    std::map< core::tools::fwID::IDType, data::TransferFunction::TFDataType > m_unclampedTFData;
 
 };
 

@@ -10,7 +10,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     guiQml
-    fwData
+    data
     ioVTK
     uiIO
     servicesReg

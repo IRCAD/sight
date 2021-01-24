@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -56,7 +56,7 @@ public:
 
 private:
 
-    ::fwData::Image::sptr m_image;
+    data::Image::sptr m_image;
 
     ::fwServices::IService::sptr m_frameSrv;
 

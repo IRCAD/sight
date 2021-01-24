@@ -28,11 +28,11 @@
 
 #include <core/tools/UUID.hpp>
 
+#include <data/Graph.hpp>
+
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwData/Graph.hpp>
 
 namespace fwAtomConversion
 {
@@ -41,11 +41,11 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Graph);
+fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, data::Graph);
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Graph::convert( ::fwData::Object::sptr object,
+::fwAtoms::Object::sptr Graph::convert( data::Object::sptr object,
                                         DataVisitor::AtomCacheType& cache )
 {
     const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
@@ -53,11 +53,11 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     metaclass.visit(visitor);
     ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
 
-    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(object);
+    data::Graph::sptr graph = data::Graph::dynamicCast(object);
 
     ::fwAtoms::Sequence::sptr sequence = ::fwAtoms::Sequence::New();
 
-    typedef ::fwData::Graph::ConnectionContainer GraphConnections;
+    typedef data::Graph::ConnectionContainer GraphConnections;
     ::fwAtoms::Object::sptr value;
     for( GraphConnections::value_type elem :  graph->getConnections() )
     {
@@ -79,15 +79,15 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Graph::convert(  ::fwAtoms::Object::sptr atom,
-                                        AtomVisitor::DataCacheType& cache,
-                                        const AtomVisitor::IReadPolicy& uuidPolicy
-                                        )
+data::Object::sptr Graph::convert(  ::fwAtoms::Object::sptr atom,
+                                    AtomVisitor::DataCacheType& cache,
+                                    const AtomVisitor::IReadPolicy& uuidPolicy
+                                    )
 {
     ::fwAtomConversion::AtomVisitor visitor( atom, cache, uuidPolicy );
     visitor.visit();
-    ::fwData::Object::sptr data = visitor.getDataObject();
-    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
+    data::Object::sptr data = visitor.getDataObject();
+    data::Graph::sptr graph = data::Graph::dynamicCast(data);
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
     for( ::fwAtoms::Base::sptr elemAtom  :  seqAtom->getValue() )
@@ -98,16 +98,16 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
         ::fwAtoms::Object::sptr edgeAtom   = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
-        ::fwData::Edge::sptr edge          =
-            ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
+        data::Edge::sptr edge =
+            data::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr srcAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("source") );
-        ::fwData::Node::sptr src        =
-            ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache, uuidPolicy ) );
+        data::Node::sptr src =
+            data::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr destAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("destination") );
-        ::fwData::Node::sptr dest        =
-            ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache, uuidPolicy ) );
+        data::Node::sptr dest =
+            data::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache, uuidPolicy ) );
 
         graph->addEdge( edge, src, dest );
     }

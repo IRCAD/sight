@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_UT_IMAGETEST_HPP__
-#define __FWDATATOOLS_UT_IMAGETEST_HPP__
+#pragma once
+
+#include <data/Image.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/Image.hpp>
-
 
 namespace fwDataTools
 {
@@ -47,12 +45,9 @@ public:
     void setUp();
     void tearDown();
 
-
     void roiApplyTest();
 
 };
 
 } //namespace ut
 } //namespace fwDataTools
-
-#endif //__FWDATATOOLS_UT_IMAGETEST_HPP__

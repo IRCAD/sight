@@ -27,8 +27,8 @@
 #include <core/spyLog.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
@@ -63,14 +63,14 @@ void CalibrationInfoTest::calibrationInfoTest()
 {
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    data::PointList::sptr pl = data::PointList::New();
 
-    ::fwData::Point::sptr pt1 = ::fwData::Point::New( 1.0, 2.0, 3.0 );
-    ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
-    ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
+    data::Point::sptr pt1 = data::Point::New( 1.0, 2.0, 3.0 );
+    data::Point::sptr pt2 = data::Point::New( 4.0, 5.0, 6.0 );
+    data::Point::sptr pt3 = data::Point::New( 7.0, 8.0, 9.0 );
 
     pl->getPoints().push_back(pt1);
     pl->getPoints().push_back(pt2);
@@ -90,19 +90,19 @@ void CalibrationInfoTest::calibrationInfoTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), plList.size());
     CPPUNIT_ASSERT_EQUAL(pl, plList.front());
 
-    ::fwData::PointList::sptr pl1 = calInfo->getPointList(imgList.front());
+    data::PointList::sptr pl1 = calInfo->getPointList(imgList.front());
     CPPUNIT_ASSERT_EQUAL(pl, pl1);
 
-    ::fwData::Image::sptr img1 = calInfo->getImage(plList.front());
+    data::Image::sptr img1 = calInfo->getImage(plList.front());
     CPPUNIT_ASSERT_EQUAL(img, img1);
 
     calInfo->removeRecord(0);
 
-    ::fwData::PointList::sptr pl2 = calInfo->getPointList(img);
-    CPPUNIT_ASSERT_EQUAL(::fwData::PointList::sptr(), pl2);
+    data::PointList::sptr pl2 = calInfo->getPointList(img);
+    CPPUNIT_ASSERT_EQUAL(data::PointList::sptr(), pl2);
 
-    ::fwData::Image::sptr img2 = calInfo->getImage(pl);
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::sptr(), img2);
+    data::Image::sptr img2 = calInfo->getImage(pl);
+    CPPUNIT_ASSERT_EQUAL(data::Image::sptr(), img2);
 
     CPPUNIT_ASSERT(calInfo->getImageContainer().empty());
     CPPUNIT_ASSERT(calInfo->getPointListContainer().empty());
@@ -114,14 +114,14 @@ void CalibrationInfoTest::shallowCopyTest()
 {
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    data::PointList::sptr pl = data::PointList::New();
 
-    ::fwData::Point::sptr pt1 = ::fwData::Point::New( 1.0, 2.0, 3.0 );
-    ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
-    ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
+    data::Point::sptr pt1 = data::Point::New( 1.0, 2.0, 3.0 );
+    data::Point::sptr pt2 = data::Point::New( 4.0, 5.0, 6.0 );
+    data::Point::sptr pt3 = data::Point::New( 7.0, 8.0, 9.0 );
 
     pl->getPoints().push_back(pt1);
     pl->getPoints().push_back(pt2);
@@ -142,14 +142,14 @@ void CalibrationInfoTest::deepCopyTest()
 {
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    data::PointList::sptr pl = data::PointList::New();
 
-    ::fwData::Point::sptr pt1 = ::fwData::Point::New( 1.0, 2.0, 3.0 );
-    ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
-    ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
+    data::Point::sptr pt1 = data::Point::New( 1.0, 2.0, 3.0 );
+    data::Point::sptr pt2 = data::Point::New( 4.0, 5.0, 6.0 );
+    data::Point::sptr pt3 = data::Point::New( 7.0, 8.0, 9.0 );
 
     pl->getPoints().push_back(pt1);
     pl->getPoints().push_back(pt2);

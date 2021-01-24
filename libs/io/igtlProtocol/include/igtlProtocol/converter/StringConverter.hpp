@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::String and igtl::StringMessage
+ * @brief class to manage conversion between data::String and igtl::StringMessage
  */
 class IGTLPROTOCOL_CLASS_API StringConverter :
     public IConverter
@@ -44,18 +44,18 @@ public:
     IGTLPROTOCOL_API ~StringConverter();
 
     /**
-     * @brief convert a igtl::StringMessage to a ::fwData::String
+     * @brief convert a igtl::StringMessage to a data::String
      *
-     * @return an fwData::String converted from an igtl::StringMessage
+     * @return an data::String converted from an igtl::StringMessage
      */
-    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    IGTLPROTOCOL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
-     * @brief convert a fwData::String to a igtl::StringMessage
+     * @brief convert a data::String to a igtl::StringMessage
      *
-     * @return an fwData::String converted from an igtl::StringMessage
+     * @return an data::String converted from an igtl::StringMessage
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
 
     /**
      * @brief create new StringConverter

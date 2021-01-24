@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace ioIGTL
 {
@@ -58,7 +58,7 @@ void INetworkSender::updating()
         // Grab the objects to send.
         for(size_t i = 0; i < numObjects; ++i)
         {
-            ::fwData::Object::csptr object = this->getInput< ::fwData::Object >(s_OBJECTS_INOUT, i);
+            data::Object::csptr object = this->getInput< data::Object >(s_OBJECTS_INOUT, i);
 
             if (object)
             {
@@ -73,7 +73,7 @@ void INetworkSender::updating()
 ::fwServices::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_OBJECTS_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_OBJECTS_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

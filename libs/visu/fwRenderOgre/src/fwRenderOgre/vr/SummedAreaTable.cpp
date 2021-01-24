@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwRenderOgre/vr/SummedAreaTable.hpp"
 
-#include <fwRenderOgre/ogre.hpp>
 #include "fwRenderOgre/Utils.hpp"
+#include <fwRenderOgre/ogre.hpp>
 
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
@@ -141,8 +141,9 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
         this->updateSatFromTexture(_imgTexture);
     }
 
-    ::Ogre::MaterialPtr initPassMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit", RESOURCE_GROUP);
-    ::Ogre::Pass* satInitPass       = initPassMtl->getTechnique(0)->getPass(0);
+    ::Ogre::MaterialPtr initPassMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit",
+                                                                                        RESOURCE_GROUP);
+    ::Ogre::Pass* satInitPass = initPassMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = satInitPass->getTextureUnitState("image");
     SLM_ASSERT("'image' texture unit is not found", tex3DState);
@@ -182,7 +183,8 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
         compositorManager.setCompositorEnabled(vp, "SummedAreaTable", true);
     }
 
-    ::Ogre::MaterialPtr satMtl            = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTable", RESOURCE_GROUP);
+    ::Ogre::MaterialPtr satMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTable",
+                                                                                   RESOURCE_GROUP);
     ::Ogre::Pass* satPass                 = satMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState* srcImgState = satPass->getTextureUnitState("source");
 
@@ -344,7 +346,7 @@ void SummedAreaTable::initializeSAT()
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::TransferFunction::sptr _tf)
+void SummedAreaTable::computeSequential(data::Image::sptr _image, data::TransferFunction::sptr _tf)
 {
     ::glm::vec4* satBuffer = new ::glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
 
@@ -392,17 +394,17 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
 
 //-----------------------------------------------------------------------------
 
-::glm::vec4 SummedAreaTable::applyTf(fwData::TransferFunction::sptr _tf, int16_t imgValue)
+::glm::vec4 SummedAreaTable::applyTf(data::TransferFunction::sptr _tf, int16_t imgValue)
 {
     double invWindow = 1. / _tf->getWindow();
 
-    const ::fwData::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
+    const data::TransferFunction::TFValuePairType intensityMinMax = _tf->getWLMinMax();
 
-    const ::fwData::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
+    const data::TransferFunction::TFValuePairType tfMinMax = _tf->getMinMaxTFValues();
 
     double value = (imgValue - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
 
-    ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+    data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
     return ::glm::vec4(interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
 }

@@ -24,8 +24,8 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <vtkSmartPointer.h>
 
@@ -53,61 +53,61 @@ struct TypeTranslator
 };
 
 /*!
- * @brief Convert ::fwData::Image PixelType to the VTK data type of pixels.
+ * @brief Convert data::Image PixelType to the VTK data type of pixels.
  *
- * @param[in] image ::fwData::Image::sptr.
+ * @param[in] image data::Image::sptr.
  * @return int : VTK data scalar type
  *
  */
-FWVTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
+FWVTKIO_API int getVtkScalarType(data::Image::sptr image);
 
 /**
- * @brief Allocate a new vtkImageData* from a ::fwData::Image::sptr.
+ * @brief Allocate a new vtkImageData* from a data::Image::sptr.
  *
- * @param[in] _data ::fwData::Image::sptr.
+ * @param[in] _data data::Image::sptr.
  * @param[out] dst the vtk image to fill if provided
  *
  * if dst is provided the new image will be imported into the dst image else
- * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
+ * allocate a new vtkImage from a data::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-FWVTKIO_API void toVTKImage( ::fwData::Image::csptr _data,  vtkImageData* dst);
+FWVTKIO_API void toVTKImage( data::Image::csptr _data,  vtkImageData* dst);
 
 /*!
- * @brief Convert a vtkImageData* to a ::fwData::Image::sptr.
+ * @brief Convert a vtkImageData* to a data::Image::sptr.
  *
  * @param[in] _source vtkImageData*.
- * @param[out] _destination ::fwData::Image::sptr.
+ * @param[out] _destination data::Image::sptr.
  *
  * Throw an exception if the conversion fails
  */
-FWVTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _destination );
+FWVTKIO_API void fromVTKImage( vtkImageData* _source, data::Image::sptr _destination );
 
 /*!
- * @brief Configure a vtkImageImport* from a ::fwData::Image::sptr.
+ * @brief Configure a vtkImageImport* from a data::Image::sptr.
  *
- * @param[in] _pDataImage ::fwData::Image::sptr.
+ * @param[in] _pDataImage data::Image::sptr.
  * @param[out] _pImageImport vtkImageImport*.
  */
-FWVTKIO_API void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage );
+FWVTKIO_API void configureVTKImageImport( ::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage );
 
 /*!
- * @brief Convert a ::fwData::TransformationMatrix3D::sptr to a vtkMatrix4x4*.
+ * @brief Convert a data::TransformationMatrix3D::sptr to a vtkMatrix4x4*.
  *
- * @param[in] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
+ * @param[in] _transfoMatrix data::TransformationMatrix3D::sptr.
  * @return vtkPolyData*.
  */
-FWVTKIO_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  ::fwData::TransformationMatrix3D::csptr _transfoMatrix );
+FWVTKIO_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  data::TransformationMatrix3D::csptr _transfoMatrix );
 
 /*!
- * @brief Convert a vtkMatrix4x4* to a ::fwData::TransformationMatrix3D::sptr.
+ * @brief Convert a vtkMatrix4x4* to a data::TransformationMatrix3D::sptr.
  *
  * @param[in] _matrix vtkMatrix4x4*.
- * @param[out] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
+ * @param[out] _transfoMatrix data::TransformationMatrix3D::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-FWVTKIO_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
+FWVTKIO_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  data::TransformationMatrix3D::sptr _transfoMatrix);
 
 }

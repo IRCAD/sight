@@ -29,7 +29,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
@@ -42,7 +42,7 @@ namespace uiCalibration
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, ::fwData::Object)
+fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, data::Object)
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
@@ -125,20 +125,20 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         // Prepare configuration
         ::fwServices::registry::FieldAdaptorType replaceMap;
 
-        ::fwData::Image::sptr img1           = calInfo1->getImage(idx);
-        replaceMap["imageId1"]               = img1->getID();
-        ::fwData::PointList::sptr pointList1 = calInfo1->getPointList(img1);
-        replaceMap["pointListId1"]           = pointList1->getID();
+        data::Image::sptr img1 = calInfo1->getImage(idx);
+        replaceMap["imageId1"] = img1->getID();
+        data::PointList::sptr pointList1 = calInfo1->getPointList(img1);
+        replaceMap["pointListId1"] = pointList1->getID();
 
         core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
             strConfig = "displayTwoImagesConfig";
 
-            ::fwData::Image::sptr img2           = calInfo2->getImage(idx);
-            replaceMap["imageId2"]               = img2->getID();
-            ::fwData::PointList::sptr pointList2 = calInfo2->getPointList(img2);
-            replaceMap["pointListId2"]           = pointList2->getID();
+            data::Image::sptr img2 = calInfo2->getImage(idx);
+            replaceMap["imageId2"] = img2->getID();
+            data::PointList::sptr pointList2 = calInfo2->getPointList(img2);
+            replaceMap["pointListId2"] = pointList2->getID();
         }
 
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;

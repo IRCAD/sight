@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/location/Folder.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Reconstruction;
 }
@@ -49,12 +49,12 @@ namespace fwVtkIO
 {
 
 /**
- * @brief   Write a ::fwData::Reconstruction.
+ * @brief   Write a data::Reconstruction.
  *
- * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
+ * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
  */
 class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
+                             public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:

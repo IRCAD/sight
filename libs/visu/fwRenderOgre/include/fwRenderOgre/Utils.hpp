@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwData/Color.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Color.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
@@ -88,28 +88,28 @@ public:
      * @param imageFw The Sight Image to convert
      * @return Ogre image
      */
-    FWRENDEROGRE_API static ::Ogre::Image convertToOgreImage( const ::fwData::Image::csptr imageFw);
+    FWRENDEROGRE_API static ::Ogre::Image convertToOgreImage( const data::Image::csptr imageFw);
 
     /**
      * @brief Convert an Ogre texture into a Sight image data
      */
     FWRENDEROGRE_API static void convertFromOgreTexture( ::Ogre::TexturePtr _texture,
-                                                         const ::fwData::Image::sptr _imageFw,
+                                                         const data::Image::sptr _imageFw,
                                                          bool flip = false);
 
     /**
      * @brief getPixelFormatOgre
      * @param imageFw The Sight Image
-     * @return Pixel format of a fwData::Image
+     * @return Pixel format of a data::Image
      */
-    FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( ::fwData::Image::csptr imageFw );
+    FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( data::Image::csptr imageFw );
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
      * @param _image The Sight Image
      * @param _format Pixel format of Ogre
      */
-    FWRENDEROGRE_API static void setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelFormat _format );
+    FWRENDEROGRE_API static void setPixelFormatFromOgre( data::Image::sptr _image, ::Ogre::PixelFormat _format );
 
     /**
      * @brief loadOgreTexture
@@ -118,7 +118,7 @@ public:
      * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
      * @param _dynamic
      */
-    FWRENDEROGRE_API static void loadOgreTexture(const fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
+    FWRENDEROGRE_API static void loadOgreTexture(const data::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                                                  ::Ogre::TextureType _texType, bool _dynamic);
 
     /**
@@ -127,7 +127,7 @@ public:
      * @param[in] _image The Sight Image to convert
      * @return
      */
-    FWRENDEROGRE_API static void convertImageForNegato(::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image );
+    FWRENDEROGRE_API static void convertImageForNegato(::Ogre::Texture* _texture, const data::Image::sptr& _image );
 
     /**
      * @brief allocateTexture
@@ -152,18 +152,18 @@ public:
      * @param[in] _ogreColor Color to convert into a Sight color
      * @return The converted Sight color
      */
-    FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
+    FWRENDEROGRE_API static data::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
     /// Creates an ogre matrix from a Sight matrix.
-    FWRENDEROGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const ::fwData::TransformationMatrix3D::csptr& _tm3d);
+    FWRENDEROGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const data::TransformationMatrix3D::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
     FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
-                                                  const ::fwData::TransformationMatrix3D::sptr& _tm3d);
+                                                  const data::TransformationMatrix3D::sptr& _tm3d);
 
     /// Copies the image's spacing and origin into Ogre vectors.
     FWRENDEROGRE_API static std::pair< ::Ogre::Vector3, ::Ogre::Vector3 >
-    convertSpacingAndOrigin(const ::fwData::Image::csptr& _img);
+    convertSpacingAndOrigin(const data::Image::csptr& _img);
 
 private:
 

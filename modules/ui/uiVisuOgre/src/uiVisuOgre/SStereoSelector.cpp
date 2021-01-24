@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::fwData::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, data::Composite)
 
 //------------------------------------------------------------------------------
 

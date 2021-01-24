@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,8 +82,8 @@ public:
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
     /// Function called when a new image is being rendered.
-    FWRENDEROGRE_API virtual void imageUpdate(const fwData::Image::sptr image,
-                                              const fwData::TransferFunction::sptr tf) override;
+    FWRENDEROGRE_API virtual void imageUpdate(const data::Image::sptr image,
+                                              const data::TransferFunction::sptr tf) override;
 
     /// Called when the transfer function is updated.
     FWRENDEROGRE_API virtual void updateVolumeTF() override;
@@ -193,7 +193,7 @@ private:
     ::fwRenderOgre::vr::GridProxyGeometry* m_proxyGeometry;
 
     /// Image dimensions.
-    ::fwData::Image::Size m_imageSize;
+    data::Image::Size m_imageSize;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;

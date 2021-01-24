@@ -33,7 +33,7 @@ fwCampImplementDataMacro((fwMedData)(Study))
     builder
     .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
-    .base< ::fwData::Object>()
+    .base< sight::data::Object>()
     .property("instance_uid", &::fwMedData::Study::m_instanceUID)
     .property("study_id", &::fwMedData::Study::m_studyID)
     .property("date", &::fwMedData::Study::m_date)

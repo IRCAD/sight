@@ -55,7 +55,7 @@ namespace editor
    @endcode
 
  * @subsection In-Out In-Out
- * -\b image [::fwData::Image]: Image in which we calculate the distance.
+ * -\b image [data::Image]: Image in which we calculate the distance.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
                                            public ::fwGui::editor::IEditor

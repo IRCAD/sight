@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,9 +34,9 @@
 #include "fwGdcmIO/writer/tid/Fiducial.hpp"
 #include "fwGdcmIO/writer/tid/Measurement.hpp"
 
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -60,8 +60,8 @@ namespace tid
 
 MeasurementReport::MeasurementReport(const SPTR(::gdcm::Writer)& writer,
                                      const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                     const ::fwData::Image::csptr& image) :
-    ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
+                                     const data::Image::csptr& image) :
+    ::fwGdcmIO::writer::tid::TemplateID< data::Image >(writer, instance, image)
 {
 }
 
@@ -110,7 +110,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId))
+    if(m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId))
     {
         // Create Fiducial Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) fiducialNode =
@@ -123,7 +123,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     }
 
     // Add distances
-    if(m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId))
+    if(m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId))
     {
         // Create Imaging Measurements Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) imagingMeasurementsNode =

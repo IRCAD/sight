@@ -24,8 +24,8 @@
 
 #include <fwMedDataTools/ModelSeries.hpp>
 
-#include <fwData/Color.hpp>
-#include <fwData/Material.hpp>
+#include <data/Color.hpp>
+#include <data/Material.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -55,21 +55,21 @@ void ModelSeriesTest::tearDown()
 void ModelSeriesTest::addReconstruction()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-    ::fwData::Reconstruction::sptr rec1        = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
 
     ::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec1);
 
     const ::fwMedData::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(rec1, recDB[0]);
 
-    ::fwData::Reconstruction::sptr rec2 = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec2 = data::Reconstruction::New();
 
     ::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec2);
 
     CPPUNIT_ASSERT_EQUAL(rec1, recDB[0]);
     CPPUNIT_ASSERT_EQUAL(rec2, recDB[1]);
 
-    ::fwData::Reconstruction::sptr rec3 = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec3 = data::Reconstruction::New();
     ::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec3);
 
     CPPUNIT_ASSERT_EQUAL(rec1, recDB[0]);
@@ -78,7 +78,7 @@ void ModelSeriesTest::addReconstruction()
 
     CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, rec1), core::Exception);
 
-    ::fwData::Reconstruction::sptr nullRec;
+    data::Reconstruction::sptr nullRec;
     CPPUNIT_ASSERT_THROW(::fwMedDataTools::ModelSeries::addReconstruction(modelSeries, nullRec), core::Exception);
 
 }
@@ -87,21 +87,21 @@ void ModelSeriesTest::addReconstruction()
 
 void ModelSeriesTest::createReconstructionFromMesh()
 {
-    ::fwData::Mesh::sptr mesh   = ::fwData::Mesh::New();
-    ::fwData::Color::sptr color = ::fwData::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
+    data::Mesh::sptr mesh   = data::Mesh::New();
+    data::Color::sptr color = data::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
 
     {
         const std::string organName     = "Liver1";
         const std::string structureType = "Liver";
 
         auto rec = ::fwMedDataTools::ModelSeries::createReconstructionFromMesh( mesh, organName, structureType, color,
-                                                                                ::fwData::Material::SURFACE);
+                                                                                data::Material::SURFACE);
 
         CPPUNIT_ASSERT_EQUAL(rec->getMesh(), mesh);
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::SURFACE);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  data::Material::SURFACE);
 
         auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
@@ -115,14 +115,14 @@ void ModelSeriesTest::createReconstructionFromMesh()
         const std::string structureType = "Foofoo";
 
         auto rec = ::fwMedDataTools::ModelSeries::createReconstructionFromMesh( mesh, organName, structureType, color,
-                                                                                ::fwData::Material::WIREFRAME,
+                                                                                data::Material::WIREFRAME,
                                                                                 false);
 
         CPPUNIT_ASSERT_EQUAL(rec->getMesh(), mesh);
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::WIREFRAME);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  data::Material::WIREFRAME);
 
         auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
@@ -140,13 +140,13 @@ void ModelSeriesTest::addMesh()
     const ::fwMedData::ModelSeries::ReconstructionVectorType& recDB = modelSeries->getReconstructionDB();
 
     {
-        ::fwData::Mesh::sptr mesh   = ::fwData::Mesh::New();
-        ::fwData::Color::sptr color = ::fwData::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
+        data::Mesh::sptr mesh           = data::Mesh::New();
+        data::Color::sptr color         = data::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
         const std::string organName     = "Liver1";
         const std::string structureType = "Liver";
 
         ::fwMedDataTools::ModelSeries::addMesh( modelSeries, mesh, organName, structureType, color,
-                                                ::fwData::Material::SURFACE);
+                                                data::Material::SURFACE);
 
         auto rec = recDB[0];
 
@@ -154,7 +154,7 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::SURFACE);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  data::Material::SURFACE);
 
         auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
@@ -165,13 +165,13 @@ void ModelSeriesTest::addMesh()
     }
 
     {
-        ::fwData::Mesh::sptr mesh   = ::fwData::Mesh::New();
-        ::fwData::Color::sptr color = ::fwData::Color::New(0.1f, 0.3f, 0.7f, 1.5f);
+        data::Mesh::sptr mesh           = data::Mesh::New();
+        data::Color::sptr color         = data::Color::New(0.1f, 0.3f, 0.7f, 1.5f);
         const std::string organName     = "Foo";
         const std::string structureType = "Foofoo";
 
         ::fwMedDataTools::ModelSeries::addMesh( modelSeries, mesh, organName, structureType, color,
-                                                ::fwData::Material::WIREFRAME,
+                                                data::Material::WIREFRAME,
                                                 false);
         auto rec = recDB[1];
 
@@ -179,7 +179,7 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::WIREFRAME);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  data::Material::WIREFRAME);
 
         auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 0.1f);

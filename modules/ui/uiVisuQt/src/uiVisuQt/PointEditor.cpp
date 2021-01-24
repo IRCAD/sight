@@ -28,8 +28,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -50,7 +50,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Point.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/Point.hpp>
 
 #include <gdcmImage.h>
 #include <gdcmSurface.h>
@@ -53,7 +53,7 @@ public:
      * @param[in] image Image of fwData
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    FWGDCMIO_API static const ::gdcm::PixelFormat getPixelType(const ::fwData::Image::csptr& image);
+    FWGDCMIO_API static const ::gdcm::PixelFormat getPixelType(const data::Image::csptr& image);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
@@ -61,7 +61,7 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     FWGDCMIO_API static const ::gdcm::PhotometricInterpretation getPhotometricInterpretation(
-        const ::fwData::Image::csptr& image);
+        const data::Image::csptr& image);
 
     /**
      * @brief Convert a surface representation mode (Sight) into recommended presentation type (DICOM).
@@ -70,14 +70,14 @@ public:
      * @return Corresponding recommended presentation type.
      */
     FWGDCMIO_API static ::gdcm::Surface::VIEWType convertToPresentationType(
-        ::fwData::Material::RepresentationType representationMode);
+        data::Material::RepresentationType representationMode);
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (Sight).
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */
-    FWGDCMIO_API static ::fwData::Material::RepresentationType convertToRepresentationMode(
+    FWGDCMIO_API static data::Material::RepresentationType convertToRepresentationMode(
         ::gdcm::Surface::VIEWType presentationType);
 
     /**
@@ -86,8 +86,8 @@ public:
      * @param[in] point 3D point
      * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API static std::size_t convertPointToFrameNumber(const ::fwData::Image::csptr& image,
-                                                              const ::fwData::Point::csptr& point);
+    FWGDCMIO_API static std::size_t convertPointToFrameNumber(const data::Image::csptr& image,
+                                                              const data::Point::csptr& point);
 
     /**
      * @brief Convert a frame number to a Z coordinate
@@ -95,7 +95,7 @@ public:
      * @param[in] frameNumber Frame number
      * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API static double convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
+    FWGDCMIO_API static double convertFrameNumberToZCoordinate(const data::Image::csptr& image,
                                                                const std::size_t frameNumber);
 
 };

@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -57,16 +57,16 @@ namespace uiTF
    @endcode
  *
  * @subsection Input Input
- * - \b currentTFPool [::fwData::Composite](optional): current transfer function pool used to change editor selection.
+ * - \b currentTFPool [data::Composite](optional): current transfer function pool used to change editor selection.
  *      It should be the same pool as the output.
  *      Don't forget to set 'optional="yes"' when you use this input, otherwise the service will not start if a
  *      pool is not previously defined.
  *
  * @subsection In-Out In-Out
- * - \b tfPools [::fwData::Composite]: composite containing transfer function pool.
+ * - \b tfPools [data::Composite]: composite containing transfer function pool.
  *
  * @subsection Output Output
- * - \b tfPool [::fwData::Composite]: selected transfer function pool.
+ * - \b tfPool [data::Composite]: selected transfer function pool.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
@@ -113,9 +113,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_CHANGED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_ADDED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_CHANGED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_REMOVED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
      */
     UITF_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -139,7 +139,7 @@ private:
      * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return True if the pool named _name is found.
      */
-    bool hasPoolName(const std::string& _name, ::fwData::Composite::csptr _tfPools) const;
+    bool hasPoolName(const std::string& _name, data::Composite::csptr _tfPools) const;
 
     /**
      * @brief Create a string that represents a TF pool name not already present in the composite.
@@ -150,7 +150,7 @@ private:
      * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return The new name of the TF pool.
      */
-    std::string createPoolName(const std::string& _basename, ::fwData::Composite::csptr _tfPools) const;
+    std::string createPoolName(const std::string& _basename, data::Composite::csptr _tfPools) const;
 
     /**
      * @brief Initializes the composite.
@@ -228,7 +228,7 @@ private:
     QPushButton* m_exportButton { nullptr };
 
     /// Contains the current selected TF pool.
-    ::fwData::Composite::sptr m_currentTFPool { nullptr };
+    data::Composite::sptr m_currentTFPool { nullptr };
 
     /// Defines the path of the delete button icon.
     std::filesystem::path m_deleteIcon;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlMemory/config.hpp"
 
-#include <fwData/ObjectLock.hpp>
+#include <data/ObjectLock.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -42,7 +42,7 @@ namespace ctrlMemory
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b target [::fwData::Object]: object to dump lock.
+ * - \b target [data::Object]: object to dump lock.
  */
 class CTRLMEMORY_CLASS_API LockDumpSrv : public ::fwServices::IController
 {
@@ -59,7 +59,7 @@ public:
 
 protected:
 
-    /// Uses ::fwData::ObjectLock to dump lock the associated data
+    /// Uses data::ObjectLock to dump lock the associated data
     CTRLMEMORY_API virtual void starting() override;
 
     /// Dump unlock the associated data
@@ -79,7 +79,7 @@ protected:
 
 private:
 
-    ::fwData::ObjectLock m_objLock;
+    data::ObjectLock m_objLock;
 
 };
 

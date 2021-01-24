@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRenderQt3D/techniques/Lighting.hpp"
 
-#include <fwData/Color.hpp>
+#include <data/Color.hpp>
 
 #include <QEffect>
 #include <QParameter>
@@ -197,11 +197,11 @@ void Material::updateShadingMode(int _shadingMode)
 
 //------------------------------------------------------------------------------
 
-void Material::updateRGBAMode(::fwData::Material::sptr _sightMaterial)
+void Material::updateRGBAMode(data::Material::sptr _sightMaterial)
 {
     //Sets up Material colors.
-    ::fwData::Color::csptr sightAmbient = _sightMaterial->ambient();
-    ::fwData::Color::csptr sightDiffuse = _sightMaterial->diffuse();
+    data::Color::csptr sightAmbient = _sightMaterial->ambient();
+    data::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 
     const QColor ambient(static_cast<int>(sightAmbient->red()*255), static_cast<int>(sightAmbient->green()*255),
                          static_cast<int>(sightAmbient->blue()*255), static_cast<int>(sightAmbient->alpha()*255));

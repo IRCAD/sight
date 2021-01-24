@@ -24,8 +24,8 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -66,10 +66,10 @@ namespace videoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b image [::fwData::Image]: images on which we run the detection.
+ * - \b image [data::Image]: images on which we run the detection.
  * @subsection In-Out In-Out:
  * - \b calInfo [::arData::CalibrationInfo]: calibration objects storing the detected images.
- * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
+ * - \b detection [data::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
@@ -143,10 +143,10 @@ private:
     float m_scale { 1.f };
 
     /// Last detected chessboard points in each image. Null if detection failed.
-    std::vector< ::fwData::PointList::sptr > m_pointLists;
+    std::vector< data::PointList::sptr > m_pointLists;
 
     /// Last images on which a chessboard was detected. Null if detection failed.
-    std::vector< ::fwData::Image::sptr > m_images;
+    std::vector< data::Image::sptr > m_images;
 };
 
 } //namespace videoCalibration

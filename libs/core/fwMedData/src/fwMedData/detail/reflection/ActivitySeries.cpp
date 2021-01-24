@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 //------------------------------------------------------------------------------
 

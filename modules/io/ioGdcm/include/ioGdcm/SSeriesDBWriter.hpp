@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ namespace ioGdcm
  * @endcode
  *
  * @subsection Input Input
- * - \b data [::fwData::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
+ * - \b data [data::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
 class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {

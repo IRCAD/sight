@@ -20,9 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Mesh/V3ToV4.hpp"
+#include "fwStructuralPatch/data/Mesh/V3ToV4.hpp"
 
 #include <core/memory/BufferObject.hpp>
+
+#include <data/Mesh.hpp>
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -34,12 +36,10 @@
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
-#include <fwData/Mesh.hpp>
-
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Mesh
@@ -48,8 +48,8 @@ namespace Mesh
 V3ToV4::V3ToV4() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Mesh";
-    m_targetClassname = "::fwData::Mesh";
+    m_originClassname = "data::Mesh";
+    m_targetClassname = "data::Mesh";
     m_originVersion   = "3";
     m_targetVersion   = "4";
 }
@@ -78,7 +78,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
     // Update object version
     this->updateVersion(current);
 
-    ::fwData::Mesh::Attributes meshAttributes = ::fwData::Mesh::Attributes::NONE;
+    data::Mesh::Attributes meshAttributes = data::Mesh::Attributes::NONE;
 
     // Convert cell_data array from std::uint64_t to std::uint32_t
     auto reformatBuffer
@@ -141,7 +141,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(pointCBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_COLORS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::POINT_COLORS;
         }
     }
 
@@ -152,7 +152,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(pointNBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_NORMALS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::POINT_NORMALS;
         }
     }
 
@@ -163,7 +163,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(pointTBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::POINT_TEX_COORDS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::POINT_TEX_COORDS;
         }
     }
 
@@ -174,7 +174,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(cellCBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_COLORS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::CELL_COLORS;
         }
     }
     ::fwAtoms::Object::sptr cellN = previous->getAttribute< ::fwAtoms::Object >("cell_normals");
@@ -184,7 +184,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(cellNBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_NORMALS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::CELL_NORMALS;
         }
     }
 
@@ -195,7 +195,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
         if(cellTBuffer->getBufferObject()->getBuffer())
         {
-            meshAttributes = meshAttributes | ::fwData::Mesh::Attributes::CELL_TEX_COORDS;
+            meshAttributes = meshAttributes | data::Mesh::Attributes::CELL_TEX_COORDS;
         }
     }
 
@@ -206,6 +206,6 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Mesh
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

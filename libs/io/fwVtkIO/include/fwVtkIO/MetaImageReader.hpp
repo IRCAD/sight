@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
@@ -45,13 +45,13 @@ namespace fwVtkIO
  *
  * Read a MetaImage using the VTK lib
  */
-class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-                        public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< data::Image >,
+                        public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MetaImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+    fwCoreClassMacro(MetaImageReader, ::fwDataIO::reader::GenericObjectReader< data::Image >,
                      ::fwDataIO::reader::factory::New< MetaImageReader >);
 
     fwCoreAllowSharedFromThis();

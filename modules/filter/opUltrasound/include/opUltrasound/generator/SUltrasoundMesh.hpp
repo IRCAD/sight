@@ -28,11 +28,11 @@
 
 #include <core/macros.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <boost/multi_array.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -62,7 +62,7 @@ namespace generator
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [::fwData::Mesh] : the generate US plane.
+ * - \b mesh [data::Mesh] : the generate US plane.
  *
  * @subsection Configuration Configuration:
  * - \b resolutionX (optional, default=25u) : resolution in X of the US plane.
@@ -109,13 +109,13 @@ private:
      * @brief Creates the mesh.
      * @param _mesh the data used to store information.
      */
-    void createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const;
+    void createQuadMesh(const data::Mesh::sptr& _mesh) const;
 
     /**
      * @brief Updates the mesh.
      * @param _mesh the data used to store information.
      */
-    void updateQuadMesh(const ::fwData::Mesh::sptr& _mesh);
+    void updateQuadMesh(const data::Mesh::sptr& _mesh);
 
     /**
      * @brief Sets an integer parameter.

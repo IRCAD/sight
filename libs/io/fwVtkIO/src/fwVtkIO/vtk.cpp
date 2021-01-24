@@ -21,8 +21,8 @@
  ***********************************************************************/
 #include "fwVtkIO/vtk.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/ObjectLock.hpp>
+#include <data/Image.hpp>
+#include <data/ObjectLock.hpp>
 
 #include <fwMath/MeshFunctions.hpp>
 
@@ -129,7 +129,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
 
 // -----------------------------------------------------------------------------
 
-void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
+void toVTKImage( data::Image::csptr data,  vtkImageData* dst)
 {
     vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
 
@@ -207,9 +207,9 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
 
 // -----------------------------------------------------------------------------
 
-void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
+void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
 {
-    SLM_ASSERT("vtkImageData source and/or ::fwData::Image destination are not correct", destination && source );
+    SLM_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source );
 
     // ensure image size correct
 //    source->UpdateInformation();
@@ -219,28 +219,28 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     if(dim == 2)
     {
-        const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                            static_cast<size_t>(source->GetDimensions()[1]), 0};
+        const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
+                                        static_cast<size_t>(source->GetDimensions()[1]), 0};
         destination->setSize2(size);
 
-        const ::fwData::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
+        const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
         destination->setSpacing2(spacing);
 
-        const ::fwData::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.};
+        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.};
         destination->setOrigin2(origin);
     }
     else
     {
-        const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                            static_cast<size_t>(source->GetDimensions()[1]),
-                                            static_cast<size_t>(source->GetDimensions()[2])};
+        const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
+                                        static_cast<size_t>(source->GetDimensions()[1]),
+                                        static_cast<size_t>(source->GetDimensions()[2])};
         destination->setSize2(size);
 
-        const ::fwData::Image::Spacing spacing =
+        const data::Image::Spacing spacing =
         {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]};
         destination->setSpacing2(spacing);
 
-        const ::fwData::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]};
+        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]};
         destination->setOrigin2(origin);
     }
 
@@ -261,15 +261,15 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
         if (nbComponents == 1)
         {
-            destination->setPixelFormat(::fwData::Image::PixelFormat::GRAY_SCALE);
+            destination->setPixelFormat(data::Image::PixelFormat::GRAY_SCALE);
         }
         else if (nbComponents == 3)
         {
-            destination->setPixelFormat(::fwData::Image::PixelFormat::RGB);
+            destination->setPixelFormat(data::Image::PixelFormat::RGB);
         }
         else if (nbComponents == 4)
         {
-            destination->setPixelFormat(::fwData::Image::PixelFormat::RGBA);
+            destination->setPixelFormat(data::Image::PixelFormat::RGBA);
         }
         destination->resize();
 
@@ -283,7 +283,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 // ------------------------------------------------------------------------------
 
-void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage )
+void configureVTKImageImport( ::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage )
 {
     const auto dumpLock = _pDataImage->lock();
 
@@ -334,7 +334,7 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
 
 // -----------------------------------------------------------------------------
 
-vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( ::fwData::TransformationMatrix3D::csptr _transfoMatrix )
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( data::TransformationMatrix3D::csptr _transfoMatrix )
 {
     auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(std::uint8_t l = 0; l < 4; l++)
@@ -349,7 +349,7 @@ vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( ::fwData::TransformationMatrix3D::csp
 
 // -----------------------------------------------------------------------------
 
-bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::sptr _transfoMatrix)
+bool fromVTKMatrix( vtkMatrix4x4* _matrix, data::TransformationMatrix3D::sptr _transfoMatrix)
 {
     bool res = true;
     for(std::uint8_t l = 0; l < 4; l++)

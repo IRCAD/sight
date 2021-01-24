@@ -31,7 +31,7 @@
 #include <core/runtime/Extension.hpp>
 #include <core/tools/Object.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <map>
 #include <unordered_set>
@@ -109,7 +109,7 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API core::runtime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
-                                                                                        ::fwData::Composite::csptr replaceFields,
+                                                                                        data::Composite::csptr replaceFields,
                                                                                         bool autoPrefixId )
     const;
 
@@ -161,7 +161,7 @@ private:
     typedef std::unordered_set< std::string > UidParameterReplaceType;
 
     /// Convert the composite into map <pattern, value>.
-    FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
+    FieldAdaptorType compositeToFieldAdaptor( data::Composite::csptr fieldAdaptors ) const;
 
     static void collectUIDForParameterReplace(core::runtime::ConfigurationElement::csptr _cfgElem,
                                               UidParameterReplaceType& replaceMap);

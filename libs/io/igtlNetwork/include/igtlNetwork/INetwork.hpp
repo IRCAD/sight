@@ -26,7 +26,7 @@
 
 #include <core/Exception.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlProtocol/DataConverter.hpp>
 
@@ -62,7 +62,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
+    IGTLNETWORK_API data::Object::sptr receiveObject(std::string& deviceName);
 
     /**
      * @brief generic method to receive object
@@ -72,7 +72,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName, double& timestamp);
+    IGTLNETWORK_API data::Object::sptr receiveObject(std::string& deviceName, double& timestamp);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -80,7 +80,7 @@ public:
      *        a sigpipe signal
      * @param[in] dest object to send
      */
-    IGTLNETWORK_API bool sendObject(const ::fwData::Object::csptr& dest);
+    IGTLNETWORK_API bool sendObject(const data::Object::csptr& dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is useful for redirect message
@@ -147,8 +147,8 @@ protected:
     /// client socket
     ::igtl::Socket::Pointer m_socket;
 
-    /// DataConverter instance to convert fwData::Object
-    /// to igtl::MessageBase and igtl::MessageBase to fwData::Object
+    /// DataConverter instance to convert data::Object
+    /// to igtl::MessageBase and igtl::MessageBase to data::Object
     ::igtlProtocol::DataConverter::sptr m_dataConverter;
 
     /// Filter the message by device name

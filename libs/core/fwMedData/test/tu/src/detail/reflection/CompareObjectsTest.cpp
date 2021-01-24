@@ -30,7 +30,7 @@
 #include <core/Exception.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
 
@@ -64,13 +64,13 @@ void CompareObjectsTest::tearDown()
 void CompareObjectsTest::compareSeriesDBTest()
 {
     ::fwMedData::SeriesDB::sptr seriesDBRef  = ::fwTest::generator::SeriesDB::createSeriesDB(1, 1, 1);
-    ::fwMedData::SeriesDB::sptr seriesDBComp = ::fwData::Object::copy< ::fwMedData::SeriesDB >(seriesDBRef);
+    ::fwMedData::SeriesDB::sptr seriesDBComp = data::Object::copy< ::fwMedData::SeriesDB >(seriesDBRef);
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDBRef, seriesDBComp);
 
-        SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(size_t(0), props->size());
     }
 
@@ -86,10 +86,10 @@ void CompareObjectsTest::compareSeriesDBTest()
         patient->setSex("M");
         patient->setPatientId("42");
 
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDBRef, seriesDBComp);
 
-        SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
         CPPUNIT_ASSERT(props->find("values.0.patient.name") != props->end());

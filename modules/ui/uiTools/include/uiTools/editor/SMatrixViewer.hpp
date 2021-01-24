@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace editor
 {
 
 /**
- * @brief  This class defines a viewer for a ::fwData::TransformationMatrix3D.
+ * @brief  This class defines a viewer for a data::TransformationMatrix3D.
  *
  * @section XML XML Configuration
  *
@@ -51,7 +51,7 @@ namespace editor
    @endcode
 
  * @subsection Input Input
- * - \b matrix [::fwData::TransformationMatrix3D]: matrix to display
+ * - \b matrix [data::TransformationMatrix3D]: matrix to display
  *
  * @subsection Configuration Configuration
  * - \b title (optional): defines the displayed title on top of the matrix viewer (default: matrix).
@@ -61,7 +61,7 @@ class UITOOLS_CLASS_API SMatrixViewer : public QObject,
                                         public ::fwGui::editor::IEditor
 {
 public:
-    fwCoreServiceMacro(SMatrixViewer, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SMatrixViewer, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SMatrixViewer() noexcept;

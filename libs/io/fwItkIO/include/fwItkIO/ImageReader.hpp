@@ -26,22 +26,22 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
 namespace fwItkIO
 {
 
-class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-                    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+class ImageReader : public ::fwDataIO::reader::GenericObjectReader< data::Image >,
+                    public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
                     public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(ImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image>,
+    fwCoreClassMacro(ImageReader, ::fwDataIO::reader::GenericObjectReader< data::Image>,
                      ::fwDataIO::reader::factory::New< ImageReader >);
     fwCoreAllowSharedFromThis();
 

@@ -26,22 +26,22 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Node.hpp>
-#include <fwData/Plane.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/Port.hpp>
-#include <fwData/ProcessObject.hpp>
-#include <fwData/ReconstructionTraits.hpp>
-#include <fwData/Resection.hpp>
-#include <fwData/ResectionDB.hpp>
-#include <fwData/ROITraits.hpp>
-#include <fwData/StructureTraits.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Array.hpp>
+#include <data/Color.hpp>
+#include <data/Composite.hpp>
+#include <data/Material.hpp>
+#include <data/Node.hpp>
+#include <data/Plane.hpp>
+#include <data/Point.hpp>
+#include <data/Port.hpp>
+#include <data/ProcessObject.hpp>
+#include <data/ReconstructionTraits.hpp>
+#include <data/Resection.hpp>
+#include <data/ResectionDB.hpp>
+#include <data/ROITraits.hpp>
+#include <data/StructureTraits.hpp>
+#include <data/StructureTraitsDictionary.hpp>
+#include <data/TransferFunction.hpp>
 
 namespace fwTest
 {
@@ -55,53 +55,53 @@ class Object
 public:
 
     /// Creates a color with random values
-    FWTEST_API static ::fwData::Color::sptr randomizeColor();
+    FWTEST_API static data::Color::sptr randomizeColor();
 
     /// Creates a TransferFunction with random values and specified nbPoints, window and level
-    FWTEST_API static ::fwData::TransferFunction::sptr createTFColor(unsigned char nbPoints,
-                                                                     double window,
-                                                                     double level );
+    FWTEST_API static data::TransferFunction::sptr createTFColor(unsigned char nbPoints,
+                                                                 double window,
+                                                                 double level );
 
     /// Creates a TransferFunction with few values
-    FWTEST_API static ::fwData::TransferFunction::sptr createTFColor();
+    FWTEST_API static data::TransferFunction::sptr createTFColor();
 
     /// Creates a StructureTraitsDictionary with many organs
-    FWTEST_API static ::fwData::StructureTraitsDictionary::sptr createStructureTraitsDictionary();
+    FWTEST_API static data::StructureTraitsDictionary::sptr createStructureTraitsDictionary();
 
     /// Creates a StructureTraits representing the liver
-    FWTEST_API static ::fwData::StructureTraits::sptr createStructureTraits();
+    FWTEST_API static data::StructureTraits::sptr createStructureTraits();
 
     /// Return a composite containing the ROITraits and a reference on its StructureTraits and mask node (because of
     // weak ptr)
-    FWTEST_API static ::fwData::Composite::sptr createROITraits();
+    FWTEST_API static data::Composite::sptr createROITraits();
 
     /// Return a composite containing the ReconstructionTraits and a reference on its StructureTraits and mask/mesh node
     // (because of weak ptr)
-    FWTEST_API static ::fwData::Composite::sptr createReconstructionTraits();
+    FWTEST_API static data::Composite::sptr createReconstructionTraits();
 
     /// Creates a Node with random ports
-    FWTEST_API static ::fwData::Node::sptr createNode();
+    FWTEST_API static data::Node::sptr createNode();
 
     /// Creates a Port with random identifier and type
-    FWTEST_API static ::fwData::Port::sptr createPort();
+    FWTEST_API static data::Port::sptr createPort();
 
     /// Creates a Material with ambient and diffuse color.
-    FWTEST_API static ::fwData::Material::sptr createMaterial( );
+    FWTEST_API static data::Material::sptr createMaterial( );
 
     /// Creates a ProcessObject with 3 inputs and 1 output
-    FWTEST_API static ::fwData::ProcessObject::sptr createProcessObject();
+    FWTEST_API static data::ProcessObject::sptr createProcessObject();
 
     /// Creates a ResectionDB containing one Resection.
-    FWTEST_API static ::fwData::ResectionDB::sptr generateResectionDB();
+    FWTEST_API static data::ResectionDB::sptr generateResectionDB();
 
     /// Creates a Resection with 2 planes, 1 input Reconstruction and 1 output Reconstruction.
-    FWTEST_API static ::fwData::Resection::sptr generateResection();
+    FWTEST_API static data::Resection::sptr generateResection();
 
     /// Creates a Point with random coordinates.
-    FWTEST_API static ::fwData::Point::sptr generatePoint();
+    FWTEST_API static data::Point::sptr generatePoint();
 
     /// Creates a Plane with random points.
-    FWTEST_API static ::fwData::Plane::sptr generatePlane();
+    FWTEST_API static data::Plane::sptr generatePlane();
 };
 
 } // namespace generator

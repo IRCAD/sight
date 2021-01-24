@@ -44,7 +44,7 @@ AlgoMeshDeformation::~AlgoMeshDeformation() noexcept
 //-----------------------------------------------------------------------------
 
 void AlgoMeshDeformation::setParam(
-    ::fwData::Mesh::sptr _mesh,
+    data::Mesh::sptr _mesh,
     const unsigned int _nbStep,
     const unsigned int _amplitude)
 {
@@ -59,7 +59,7 @@ void AlgoMeshDeformation::setParam(
 
 //-----------------------------------------------------------------------------
 
-void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
+void AlgoMeshDeformation::computeDeformation( data::Mesh::sptr _mesh,
                                               const unsigned int _nbStep,
                                               const unsigned int _amplitude )
 {
@@ -82,7 +82,7 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 void AlgoMeshDeformation::initSimu()
 {
     const auto mesh = m_mesh.lock();
-    m_originMesh = ::fwData::Object::copy(mesh);
+    m_originMesh = data::Object::copy(mesh);
     m_step       = 0;
 
     if ( !m_mesh.lock()->hasPointColors() )
@@ -95,8 +95,8 @@ void AlgoMeshDeformation::initSimu()
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    auto pointsItr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto pointsEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+    auto pointsItr       = mesh->begin< data::iterator::ConstPointIterator >();
+    const auto pointsEnd = mesh->end< data::iterator::ConstPointIterator >();
     float coord;
     for(; pointsItr != pointsEnd; ++pointsItr)
     {
@@ -134,9 +134,9 @@ void AlgoMeshDeformation::computeSimu()
     const auto dumpLock     = mesh->lock();
     const auto origDumpLock = m_originMesh->lock();
 
-    auto pointsItr       = mesh->begin< ::fwData::iterator::PointIterator >();
-    const auto pointsEnd = mesh->end< ::fwData::iterator::PointIterator >();
-    auto origPointsItr   = m_originMesh->begin< ::fwData::iterator::ConstPointIterator >();
+    auto pointsItr       = mesh->begin< data::iterator::PointIterator >();
+    const auto pointsEnd = mesh->end< data::iterator::PointIterator >();
+    auto origPointsItr   = m_originMesh->begin< data::iterator::ConstPointIterator >();
 
     for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
     {
@@ -144,7 +144,7 @@ void AlgoMeshDeformation::computeSimu()
         if(origPointsItr->point->y - m_yCenter > 0)
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
-            pointsItr->rgba->r  = core::tools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
+            pointsItr->rgba->r  = core::tools::numericRoundCast< data::Mesh::ColorValueType >(255 * scale);
         }
         else
         {

@@ -169,8 +169,8 @@ private:
     struct Light
     {
         ::fwRenderOgre::ILight::sptr m_light;
-        ::fwData::Color::sptr m_diffuse;
-        ::fwData::Color::sptr m_specular;
+        data::Color::sptr m_diffuse;
+        data::Color::sptr m_specular;
     };
 
     /// Stores adaptors managed by this editor.

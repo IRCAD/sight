@@ -14,5 +14,5 @@ set( REQUIREMENTS
     uiImageQt
     servicesReg
     fwMedData
-    fwData
+    data
 )

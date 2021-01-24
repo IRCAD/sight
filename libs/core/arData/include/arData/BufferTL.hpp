@@ -41,7 +41,7 @@ class ARDATA_CLASS_API BufferTL : public TimeLine
 {
 
 public:
-    fwCoreClassMacro(BufferTL, ::fwData::Object)
+    fwCoreClassMacro(BufferTL, data::Object)
 
     typedef core::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(::arData::timeline::Buffer) > TimelineType;
@@ -52,7 +52,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API BufferTL( ::fwData::Object::Key key );
+    ARDATA_API BufferTL( data::Object::Key key );
 
     /// Destructor
     ARDATA_API virtual ~BufferTL();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,9 +92,9 @@ private:
 
 //------------------------------------------------------------------------------
 
-void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
-                                          const ::fwData::Image::csptr& _reference,
-                                          const ::fwData::TransformationMatrix3D::sptr& _trf,
+void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
+                                          const data::Image::csptr& _reference,
+                                          const data::TransformationMatrix3D::sptr& _trf,
                                           MetricType _metric,
                                           const MultiResolutionParametersType& _multiResolutionParameters,
                                           RealType _samplingPercentage,
@@ -105,8 +105,8 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
                                           RealType >::Pointer metric;
 
-    ::fwData::Image::csptr ref = _reference;
-    ::fwData::Image::csptr tgt = _target;
+    data::Image::csptr ref = _reference;
+    data::Image::csptr tgt = _target;
 
     m_invert = computeVolume(tgt) < computeVolume(ref);
 
@@ -341,7 +341,7 @@ itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() c
 
 //------------------------------------------------------------------------------
 
-void AutomaticRegistration::getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const
+void AutomaticRegistration::getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const
 {
     SLM_ASSERT("No registration process running.", m_registrator);
     auto itkMatrix = m_registrator->GetTransform();
@@ -351,7 +351,7 @@ void AutomaticRegistration::getCurrentMatrix(const ::fwData::TransformationMatri
 //------------------------------------------------------------------------------
 
 void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::TransformType* _itkMat,
-                                               const fwData::TransformationMatrix3D::sptr& _f4sMat) const
+                                               const data::TransformationMatrix3D::sptr& _f4sMat) const
 {
     ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
     ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
@@ -375,7 +375,7 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
 
 //------------------------------------------------------------------------------
 
-double AutomaticRegistration::computeVolume(const fwData::Image::csptr& _img)
+double AutomaticRegistration::computeVolume(const data::Image::csptr& _img)
 {
     const auto& spacing = _img->getSpacing2();
     const auto& size    = _img->getSize2();

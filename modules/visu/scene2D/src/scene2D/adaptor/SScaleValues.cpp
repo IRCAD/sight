@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,11 +80,11 @@ void SScaleValues::configuring()
     // Color configuration
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
     }
     else
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, "white", m_opacity);
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_pen, "white", m_opacity);
     }
 
     // Font size configuratiion
@@ -228,8 +228,8 @@ void SScaleValues::updating()
 
 void SScaleValues::rescaleValues()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+    ::fwRenderQtdata::Viewport::csptr viewport =
+        this->getInput< ::fwRenderQtdata::Viewport>(s_VIEWPORT_INPUT);
 
     const double viewportX      = viewport->getX();
     const double viewportWidth  = viewport->getWidth();
@@ -399,9 +399,9 @@ void SScaleValues::showHideScaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void SScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
+void SScaleValues::processInteraction( ::fwRenderQtdata::Event& _event)
 {
-    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQtdata::Event::Resize)
     {
         this->updating();
     }
@@ -420,7 +420,7 @@ void SScaleValues::stopping()
 ::fwServices::IService::KeyConnectionsMap SScaleValues::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

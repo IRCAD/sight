@@ -27,10 +27,10 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
+#include <data/Vector.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
-
-#include <fwData/Vector.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -42,7 +42,7 @@ namespace action
 /**
  * @brief This action launchs an activity according to the selected data
  *
- * This action works on a ::fwData::Vector. It proposes all the available activity according to the selected data and
+ * This action works on a data::Vector. It proposes all the available activity according to the selected data and
  * the given configuration. And then, send a signal with all the activity information.
  *
  * This action should be followed by the service '::guiQt::editor::SDynamicView' : this service listens the action
@@ -95,7 +95,7 @@ namespace action
     </service>
         @endcode
  * @subsection Input Input
- * - \b series [::fwData::Vector]: vector containg series inherited from ::fwMedData::Series
+ * - \b series [data::Vector]: vector containg series inherited from ::fwMedData::Series
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
@@ -207,7 +207,7 @@ private:
      * @brief Launches activity series if only ActivitySeries are selected.
      * @return Returns true if only ActivitySeries are selected.
      */
-    bool launchAS(const ::fwData::Vector::csptr& selection);
+    bool launchAS(const data::Vector::csptr& selection);
 
     /**
      * @brief Slots to launch the given series.
@@ -239,7 +239,7 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const ::fwData::Vector::csptr& selection);
+    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const data::Vector::csptr& selection);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 

@@ -29,8 +29,8 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
 
@@ -69,10 +69,10 @@ SMaterial::SMaterial() noexcept
     newSlot(s_ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
     newSlot(s_REMOVE_TEXTURE_SLOT, &SMaterial::removeTextureAdaptor, this);
 
-    m_representationDict["SURFACE"]   = ::fwData::Material::SURFACE;
-    m_representationDict["POINT"]     = ::fwData::Material::POINT;
-    m_representationDict["WIREFRAME"] = ::fwData::Material::WIREFRAME;
-    m_representationDict["EDGE"]      = ::fwData::Material::EDGE;
+    m_representationDict["SURFACE"]   = data::Material::SURFACE;
+    m_representationDict["POINT"]     = data::Material::POINT;
+    m_representationDict["WIREFRAME"] = data::Material::WIREFRAME;
+    m_representationDict["EDGE"]      = data::Material::EDGE;
 
 }
 
@@ -113,22 +113,22 @@ void SMaterial::starting()
 {
     this->initialize();
     {
-        const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+        const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
         if(!m_shadingMode.empty())
         {
-            ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
+            data::Material::ShadingType shadingMode = data::Material::PHONG;
             if(m_shadingMode == "ambient")
             {
-                shadingMode = ::fwData::Material::AMBIENT;
+                shadingMode = data::Material::AMBIENT;
             }
             else if(m_shadingMode == "flat")
             {
-                shadingMode = ::fwData::Material::FLAT;
+                shadingMode = data::Material::FLAT;
             }
             else if(m_shadingMode == "gouraud")
             {
-                shadingMode = ::fwData::Material::GOURAUD;
+                shadingMode = data::Material::GOURAUD;
             }
 
             // Force the shading mode of the material if it has been set in the configuration of the adaptor
@@ -139,7 +139,7 @@ void SMaterial::starting()
 
         m_materialFw = std::make_unique< ::fwRenderOgre::Material>(m_materialName, m_materialTemplateName);
 
-        ::fwData::String::sptr string = ::fwData::String::New();
+        data::String::sptr string = data::String::New();
         string->setValue(m_materialTemplateName);
 
         ::fwDataTools::helper::Field helper(material.get_shared());
@@ -189,11 +189,11 @@ void SMaterial::starting()
 ::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);
-    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT);
     return connections;
 }
 
@@ -201,7 +201,7 @@ void SMaterial::starting()
 
 void SMaterial::updating()
 {
-    const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
     if(m_r2vbObject)
     {
@@ -227,7 +227,7 @@ void SMaterial::stopping()
 
     ::Ogre::MaterialManager::getSingleton().remove(m_materialName, ::fwRenderOgre::RESOURCE_GROUP);
 
-    const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
     if(material->getField("shaderParameters"))
     {
@@ -278,10 +278,10 @@ void SMaterial::createShaderParameterAdaptors()
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            const auto materialData = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+            const auto materialData = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
-            ::fwData::Composite::sptr composite = materialData->setDefaultField("shaderParameters",
-                                                                                ::fwData::Composite::New());
+            data::Composite::sptr composite = materialData->setDefaultField("shaderParameters",
+                                                                            data::Composite::New());
             (*composite)[constantName] = obj;
         }
     }
@@ -315,7 +315,7 @@ void SMaterial::setTextureName(const std::string& _textureName)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::updateField( ::fwData::Object::FieldsContainerType _fields)
+void SMaterial::updateField( data::Object::FieldsContainerType _fields)
 {
     for(auto elt : _fields)
     {
@@ -323,9 +323,9 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType _fields)
         {
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
             {
-                const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+                const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
-                ::fwData::String::csptr string = ::fwData::String::dynamicCast(elt.second);
+                data::String::csptr string = data::String::dynamicCast(elt.second);
                 this->setMaterialTemplateName(string->getValue());
 
                 m_materialFw->setTemplate(m_materialTemplateName);
@@ -353,7 +353,7 @@ void SMaterial::swapTexture()
     m_materialFw->setDiffuseTexture(currentTexture);
 
     // Update the shaders
-    const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), m_texAdaptor->getUseAlpha() );
@@ -367,7 +367,7 @@ void SMaterial::createTextureAdaptor()
 {
     SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
-    const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
     if(material->getDiffuseTexture())
@@ -407,7 +407,7 @@ void SMaterial::removeTextureAdaptor()
     m_texAdaptor.reset();
 
     // Update the shaders
-    const auto material = this->getLockedInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), false );

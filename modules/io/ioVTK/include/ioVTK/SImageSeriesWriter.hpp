@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }

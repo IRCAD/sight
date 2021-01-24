@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Mesh/V1ToV2.hpp"
 
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/String.hpp>
@@ -30,7 +30,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Mesh
@@ -39,8 +39,8 @@ namespace Mesh
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Mesh";
-    m_targetClassname = "::fwData::Mesh";
+    m_originClassname = "data::Mesh";
+    m_targetClassname = "data::Mesh";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -76,6 +76,6 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Mesh
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

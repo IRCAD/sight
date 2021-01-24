@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <fwTest/generator/SeriesDB.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -135,10 +135,10 @@ void SeriesDBTest::generationTest()
         {
             ++nbAS;
             CPPUNIT_ASSERT_EQUAL(std::string("IdOfTheConfig"), activitySeries->getActivityConfigId());
-            ::fwData::Composite::sptr composite = activitySeries->getData();
+            data::Composite::sptr composite = activitySeries->getData();
             CPPUNIT_ASSERT(composite);
             CPPUNIT_ASSERT(composite->find("key1") != composite->end());
-            ::fwData::String::sptr value = ::fwData::String::dynamicCast(composite->getContainer()["key1"]);
+            data::String::sptr value = data::String::dynamicCast(composite->getContainer()["key1"]);
             CPPUNIT_ASSERT(value);
             CPPUNIT_ASSERT_EQUAL(std::string("ValueOfKey1"), value->value());
         }

@@ -29,7 +29,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -67,7 +67,7 @@ void SCalibrationInfoEditor::updating()
 {
     ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
     SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
-    ::fwData::mt::ObjectReadLock calib1Lock(calInfo1);
+    data::mt::ObjectReadLock calib1Lock(calInfo1);
 
     ::arData::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
 
@@ -76,7 +76,7 @@ void SCalibrationInfoEditor::updating()
     ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
     if(calInfo2)
     {
-        ::fwData::mt::ObjectReadLock calib2Lock(calInfo2);
+        data::mt::ObjectReadLock calib2Lock(calInfo2);
         ::arData::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
 
         size_t captureIdx = 0;
@@ -280,8 +280,8 @@ void SCalibrationInfoEditor::getSelection()
 ::fwServices::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_CALIBRATION_INFO_1, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_CALIBRATION_INFO_2, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CALIBRATION_INFO_1, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_CALIBRATION_INFO_2, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

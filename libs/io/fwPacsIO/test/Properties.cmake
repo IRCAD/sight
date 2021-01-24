@@ -5,7 +5,7 @@ set( DEPENDENCIES
     fwPacsIO
     core
     fwTest
-    fwData
+    data
     fwMedData
     fwDcmtkIO
     )

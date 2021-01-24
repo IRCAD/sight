@@ -27,7 +27,7 @@
 #include <core/base.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwTest
 {
@@ -55,8 +55,8 @@ public:
      * @param origin    vector of image origin
      * @param type      image type
      */
-    [[deprecated("It will be removed in sight 22.0")]] FWTEST_API static void generateImage(::fwData::Image::sptr image,
-                                                                                            ::fwData::Image::SizeType size,
+    [[deprecated("It will be removed in sight 22.0")]] FWTEST_API static void generateImage(data::Image::sptr image,
+                                                                                            data::Image::SizeType size,
                                                                                             std::vector<double> spacing,
                                                                                             std::vector<double> origin,
                                                                                             core::tools::Type type);
@@ -70,29 +70,29 @@ public:
      * @param type      image type
      * @param format    image format
      */
-    FWTEST_API static void generateImage(::fwData::Image::sptr image,
-                                         fwData::Image::Size size,
-                                         fwData::Image::Spacing spacing,
-                                         fwData::Image::Origin origin,
+    FWTEST_API static void generateImage(data::Image::sptr image,
+                                         data::Image::Size size,
+                                         data::Image::Spacing spacing,
+                                         data::Image::Origin origin,
                                          core::tools::Type type,
-                                         fwData::Image::PixelFormat format);
+                                         data::Image::PixelFormat format);
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
-    FWTEST_API static void generateRandomImage(::fwData::Image::sptr image, core::tools::Type type);
+    FWTEST_API static void generateRandomImage(data::Image::sptr image, core::tools::Type type);
 
     /// Fill image array with random value
-    FWTEST_API static void randomizeImage(::fwData::Image::sptr image);
+    FWTEST_API static void randomizeImage(data::Image::sptr image);
 
     /// Fill array with random value
-    FWTEST_API static void randomizeArray(::fwData::Array::sptr array);
+    FWTEST_API static void randomizeArray(data::Array::sptr array);
 
     /// Creates an Array with the given type and size and fills buffer with random values.
-    FWTEST_API static ::fwData::Array::sptr createRandomizedArray(const std::string& type,
-                                                                  ::fwData::Array::SizeType sizes);
+    FWTEST_API static data::Array::sptr createRandomizedArray(const std::string& type,
+                                                              data::Array::SizeType sizes);
 
     /// Fill array with random value
     template<typename TYPE>
-    static void randomizeArray(const ::fwData::Array::sptr& array)
+    static void randomizeArray(const data::Array::sptr& array)
     {
         const auto dumpLock = array->lock();
         auto iter           = array->begin< TYPE >();
@@ -107,9 +107,9 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename TYPE>
-    static ::fwData::Array::sptr createRandomizedArray(::fwData::Array::SizeType sizes)
+    static data::Array::sptr createRandomizedArray(data::Array::SizeType sizes)
     {
-        ::fwData::Array::sptr array = ::fwData::Array::New();
+        data::Array::sptr array = data::Array::New();
 
         array->resize( core::tools::Type::create<TYPE>(), sizes, 1, true );
 

@@ -22,11 +22,8 @@
 
 #pragma once
 
-#include "core/macros.hpp"
 #include "core/config.hpp"
-
-//keep it first to prevent nasty warns in MSVC
-#include <boost/config.hpp>
+#include "core/macros.hpp"
 
 namespace sight::core
 {

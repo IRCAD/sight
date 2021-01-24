@@ -27,7 +27,7 @@
 #include <core/base.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -52,11 +52,11 @@ namespace maths
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D]: List of matrix keys to concatenate. For each input matrix, it is
+ * - \b matrix [data::TransformationMatrix3D]: List of matrix keys to concatenate. For each input matrix, it is
  * possible to invert it before multiplying with it by specifying \b inverse="true".
  * The autoConnect is connected to the update slot, thus is will trigger a new concatenation.
  * @subsection In-Out In-Out:
- * - \b output [::fwData::TransformationMatrix3D]: Output matrix.
+ * - \b output [data::TransformationMatrix3D]: Output matrix.
  */
 
 class MATHS_CLASS_API SConcatenateMatrices : public ::fwServices::IController

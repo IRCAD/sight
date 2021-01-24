@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace ut
 
 void ImageExtruderTest::setUp()
 {
-    m_image = ::fwData::Image::New();
+    m_image = data::Image::New();
     const auto dumpLock = m_image->lock();
     m_image->setSpacing2(m_spacing);
     m_image->setOrigin2(m_origin);
@@ -63,12 +63,12 @@ void ImageExtruderTest::tearDown()
 void ImageExtruderTest::extrudeTriangleMesh()
 {
     // Create a cube.
-    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock                 = mesh->lock();
-    mesh->resize(8, 12, ::fwData::Mesh::CellType::TRIANGLE);
+    const data::Mesh::sptr mesh = data::Mesh::New();
+    const auto lock             = mesh->lock();
+    mesh->resize(8, 12, data::Mesh::CellType::TRIANGLE);
 
     {
-        auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+        auto it = mesh->begin< data::iterator::PointIterator >();
 
         it->point->x = static_cast< float >(m_origin[0] + 1);
         it->point->y = static_cast< float >(m_origin[1] + 1);
@@ -107,14 +107,14 @@ void ImageExtruderTest::extrudeTriangleMesh()
     {
         std::array< size_t, 36 > indexes {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 1, 5, 4, 1, 4, 0,
                                           2, 3, 6, 3, 6, 7, 1, 2, 6, 1, 6, 5, 0, 3, 7, 0, 7, 4};
-        auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+        auto it              = mesh->begin< data::iterator::CellIterator >();
+        const auto itEnd     = mesh->end< data::iterator::CellIterator >();
         const auto itPrevEnd = itEnd-1;
 
         size_t pt = 0;
         for(size_t index = 0; index < 36; index += 3)
         {
-            *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
+            *it->type   = data::Mesh::CellType::TRIANGLE;
             *it->offset = index;
 
             if(it != itPrevEnd)
@@ -130,7 +130,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
         }
     }
 
-    const ::fwData::Image::sptr image = ::fwData::Image::New();
+    const data::Image::sptr image = data::Image::New();
     image->deepCopy(m_image);
 
     ::imageFilterOp::ImageExtruder::extrude(image, mesh);
@@ -164,13 +164,13 @@ void ImageExtruderTest::extrudeTriangleMesh()
 void ImageExtruderTest::extrudeQuadMesh()
 {
     // Create a cube.
-    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock                 = mesh->lock();
+    const data::Mesh::sptr mesh = data::Mesh::New();
+    const auto lock             = mesh->lock();
 
-    mesh->resize(8, 6, ::fwData::Mesh::CellType::QUAD);
+    mesh->resize(8, 6, data::Mesh::CellType::QUAD);
 
     {
-        auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+        auto it = mesh->begin< data::iterator::PointIterator >();
 
         it->point->x = static_cast< float >(m_origin[0] + 1);
         it->point->y = static_cast< float >(m_origin[1] + 1);
@@ -208,14 +208,14 @@ void ImageExtruderTest::extrudeQuadMesh()
 
     {
         std::array< size_t, 36 > indexes {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 5, 4, 2, 3, 7, 6, 1, 2, 6, 5, 0, 3, 7, 4};
-        auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+        auto it              = mesh->begin< data::iterator::CellIterator >();
+        const auto itEnd     = mesh->end< data::iterator::CellIterator >();
         const auto itPrevEnd = itEnd-1;
 
         size_t pt = 0;
         for(size_t index = 0; index < 24; index += 4)
         {
-            *it->type   = ::fwData::Mesh::CellType::QUAD;
+            *it->type   = data::Mesh::CellType::QUAD;
             *it->offset = index;
 
             if(it != itPrevEnd)
@@ -232,7 +232,7 @@ void ImageExtruderTest::extrudeQuadMesh()
         }
     }
 
-    const ::fwData::Image::sptr image = ::fwData::Image::New();
+    const data::Image::sptr image = data::Image::New();
     image->deepCopy(m_image);
 
     ::imageFilterOp::ImageExtruder::extrude(image, mesh);

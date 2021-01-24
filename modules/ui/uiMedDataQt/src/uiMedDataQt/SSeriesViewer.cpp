@@ -24,9 +24,9 @@
 
 #include <core/base.hpp>
 
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -38,7 +38,7 @@ namespace uiMedDataQt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector)
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, data::Vector)
 
 static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 
@@ -84,7 +84,7 @@ void SSeriesViewer::stopping()
 
 void SSeriesViewer::updating()
 {
-    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    data::Vector::csptr vector = this->getInput< data::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not defined.", vector);
 
     if(m_configTemplateManager)
@@ -95,7 +95,7 @@ void SSeriesViewer::updating()
 
     if(vector->size() == 1)
     {
-        ::fwData::Object::sptr obj = vector->front();
+        data::Object::sptr obj            = vector->front();
         std::string classname             = obj->getClassname();
         SeriesConfigMapType::iterator itr = m_seriesConfigs.find(classname);
 
@@ -113,7 +113,7 @@ void SSeriesViewer::updating()
 
             for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
             {
-                ::fwData::Object::sptr object = ::fwData::reflection::getObject( obj, elt.second );
+                data::Object::sptr object = data::reflection::getObject( obj, elt.second );
                 SLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
@@ -194,8 +194,8 @@ void SSeriesViewer::configuring()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES_INPUT, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES_INPUT, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -24,8 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Exception.hpp>
-#include <fwData/Object.hpp>
+#include <data/Exception.hpp>
+#include <data/Object.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -37,7 +37,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Field::Field( ::fwData::Object::sptr object ) :
+Field::Field( data::Object::sptr object ) :
     m_object( object )
 {
 }
@@ -54,38 +54,38 @@ Field::~Field()
 
 //-----------------------------------------------------------------------------
 
-void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::sptr obj)
+void Field::setField(const data::Object::FieldNameType& name, data::Object::sptr obj)
 {
     this->addOrSwap(name, obj);
 }
 
 //-----------------------------------------------------------------------------
 
-void Field::setFields( const fwData::Object::FieldMapType& newFields)
+void Field::setFields( const data::Object::FieldMapType& newFields)
 {
-    ::fwData::Object::sptr object = m_object.lock();
+    data::Object::sptr object = m_object.lock();
     SLM_ASSERT("Field helper need a non-null object pointer", object);
-    const ::fwData::Object::FieldMapType oldFields = object->getFields();
+    const data::Object::FieldMapType oldFields = object->getFields();
     this->buildMessage(oldFields, newFields);
     object->setFields(newFields);
 }
 
 //-----------------------------------------------------------------------------
 
-void Field::removeField(const fwData::Object::FieldNameType& name)
+void Field::removeField(const data::Object::FieldNameType& name)
 {
     this->remove(name);
 }
 
 //-----------------------------------------------------------------------------
 
-void Field::add(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+void Field::add(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
-    ::fwData::Object::sptr object = m_object.lock();
+    data::Object::sptr object = m_object.lock();
     SLM_ASSERT("Field helper need a non-null object pointer", object);
 
-    ::fwData::Object::sptr field = object->getField(_name);
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field already exists"), field);
+    data::Object::sptr field = object->getField(_name);
+    FW_RAISE_EXCEPTION_IF(data::Exception("Field already exists"), field);
 
     m_addedFields[_name] = _obj;
 
@@ -94,13 +94,13 @@ void Field::add(const fwData::Object::FieldNameType& _name, fwData::Object::sptr
 
 //-----------------------------------------------------------------------------
 
-void Field::swap(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+void Field::swap(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
+    data::Object::sptr object = m_object.lock();
 
-    ::fwData::Object::sptr field = object->getField(_name);
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field does not exist"), !field);
+    data::Object::sptr field = object->getField(_name);
+    FW_RAISE_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
 
     m_newChangedFields[_name] = _obj;
     m_oldChangedFields[_name] = field;
@@ -110,12 +110,12 @@ void Field::swap(const fwData::Object::FieldNameType& _name, fwData::Object::spt
 
 //-----------------------------------------------------------------------------
 
-void Field::addOrSwap(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+void Field::addOrSwap(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
+    data::Object::sptr object = m_object.lock();
 
-    ::fwData::Object::sptr field = object->getField(_name);
+    data::Object::sptr field = object->getField(_name);
 
     if (!field)
     {
@@ -131,13 +131,13 @@ void Field::addOrSwap(const fwData::Object::FieldNameType& _name, fwData::Object
 
 //-----------------------------------------------------------------------------
 
-void Field::remove(const fwData::Object::FieldNameType& _name)
+void Field::remove(const data::Object::FieldNameType& _name)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field  = object->getField(_name);
+    data::Object::sptr object = m_object.lock();
+    data::Object::sptr field  = object->getField(_name);
 
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field does not exist"), !field);
+    FW_RAISE_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
 
     m_removedFields[_name] = field;
     object->removeField(_name);
@@ -148,13 +148,13 @@ void Field::remove(const fwData::Object::FieldNameType& _name)
 void Field::clear()
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
+    data::Object::sptr object = m_object.lock();
 
     auto fieldNames = object->getFieldNames();
     for(const auto& name : fieldNames)
     {
-        ::fwData::Object::sptr field = object->getField(name);
-        m_removedFields[name]        = field;
+        data::Object::sptr field = object->getField(name);
+        m_removedFields[name] = field;
         object->removeField(name);
     }
 }
@@ -167,22 +167,22 @@ void Field::notify()
 
     if ( !m_removedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
-            ::fwData::Object::s_REMOVED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< data::Object::RemovedFieldsSignalType >(
+            data::Object::s_REMOVED_FIELDS_SIG);
 
         sig->asyncEmit(m_removedFields);
     }
     if ( !m_newChangedFields.empty() && !m_oldChangedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::ChangedFieldsSignalType >(
-            ::fwData::Object::s_CHANGED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< data::Object::ChangedFieldsSignalType >(
+            data::Object::s_CHANGED_FIELDS_SIG);
 
         sig->asyncEmit(m_newChangedFields, m_oldChangedFields);
     }
     if ( !m_addedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
-            ::fwData::Object::s_ADDED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< data::Object::AddedFieldsSignalType >(
+            data::Object::s_ADDED_FIELDS_SIG);
 
         sig->asyncEmit(m_addedFields);
     }
@@ -198,29 +198,29 @@ void Field::notify()
 
 //-----------------------------------------------------------------------------
 
-void Field::buildMessage(const ::fwData::Object::FieldMapType& oldFields,
-                         const ::fwData::Object::FieldMapType& newFields)
+void Field::buildMessage(const data::Object::FieldMapType& oldFields,
+                         const data::Object::FieldMapType& newFields)
 {
-    ::fwData::Object::FieldNameVectorType oldFieldNames;
-    ::fwData::Object::FieldNameVectorType newFieldNames;
+    data::Object::FieldNameVectorType oldFieldNames;
+    data::Object::FieldNameVectorType newFieldNames;
 
     std::transform(
         oldFields.begin(), oldFields.end(),
         std::back_inserter(oldFieldNames),
-        std::bind(&::fwData::Object::FieldMapType::value_type::first, std::placeholders::_1)
+        std::bind(&data::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
     std::transform(
         newFields.begin(), newFields.end(),
         std::back_inserter(newFieldNames),
-        std::bind(&::fwData::Object::FieldMapType::value_type::first, std::placeholders::_1)
+        std::bind(&data::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
 
     std::sort(oldFieldNames.begin(), oldFieldNames.end());
     std::sort(newFieldNames.begin(), newFieldNames.end());
 
-    ::fwData::Object::FieldNameVectorType added;   // new - old
-    ::fwData::Object::FieldNameVectorType changed; // old & new
-    ::fwData::Object::FieldNameVectorType removed; // old - new
+    data::Object::FieldNameVectorType added;   // new - old
+    data::Object::FieldNameVectorType changed; // old & new
+    data::Object::FieldNameVectorType removed; // old - new
 
     std::set_difference(
         newFieldNames.begin(), newFieldNames.end(),
@@ -240,18 +240,18 @@ void Field::buildMessage(const ::fwData::Object::FieldMapType& oldFields,
         std::back_inserter(removed)
         );
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : added)
+    for(const data::Object::FieldNameVectorType::value_type& fieldName : added)
     {
         m_addedFields[fieldName] = newFields.find(fieldName)->second;
     }
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : changed)
+    for(const data::Object::FieldNameVectorType::value_type& fieldName : changed)
     {
         m_newChangedFields[fieldName] = newFields.find(fieldName)->second;
         m_oldChangedFields[fieldName] = oldFields.find(fieldName)->second;
     }
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : removed)
+    for(const data::Object::FieldNameVectorType::value_type& fieldName : removed)
     {
         m_removedFields[fieldName] = oldFields.find(fieldName)->second;
     }

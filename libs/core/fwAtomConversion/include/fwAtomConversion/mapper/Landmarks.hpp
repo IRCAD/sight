@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_MAPPER_LANDMARKS_HPP__
-#define __FWATOMCONVERSION_MAPPER_LANDMARKS_HPP__
+#pragma once
 
 #include "fwAtomConversion/AtomVisitor.hpp"
 #include "fwAtomConversion/config.hpp"
@@ -32,7 +31,7 @@ namespace fwAtoms
 class Object;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -43,9 +42,9 @@ namespace mapper
 {
 
 /**
- * @brief Specific mapper used to convert a ::fwData::Landmarks.
+ * @brief Specific mapper used to convert a data::Landmarks.
  *
- * The attribute ::fwData::Landmarks::m_landmarks is represented in fwAtoms world like a fwAtoms::Map that contains
+ * The attribute data::Landmarks::m_landmarks is represented in fwAtoms world like a fwAtoms::Map that contains
  * fwAtoms::Object with five attributes "color", "size", "shape", "visibility" and "points". The points are store in a
  * ::fwAtoms::Sequence.
  */
@@ -54,27 +53,25 @@ class FWATOMCONVERSION_CLASS_API Landmarks : public Base
 public:
 
     /**
-     * @brief Convert a ::fwData::Object to a ::fwAtoms::Object.
-     * @param object data to convert. It must be a ::fwData::Landmarks.
+     * @brief Convert a data::Object to a ::fwAtoms::Object.
+     * @param object data to convert. It must be a data::Landmarks.
      * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert( SPTR(::fwData::Object) object,
-                                                                  DataVisitor::AtomCacheType & cache );
+    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert( SPTR(data::Object) object,
+                                                                  DataVisitor::AtomCacheType& cache );
 
     /**
-     * @brief Convert a ::fwAtoms::Object to a ::fwData::Object (which represent a ::fwData::Landmarks).
+     * @brief Convert a ::fwAtoms::Object to a data::Object (which represent a data::Landmarks).
      * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor policy
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwData::Object) convert( SPTR(::fwAtoms::Object) atom,
-                                                                 AtomVisitor::DataCacheType & cache,
-                                                                 const AtomVisitor::IReadPolicy &uuidPolicy
-                                                                 );
+    FWATOMCONVERSION_API virtual SPTR(data::Object) convert( SPTR(::fwAtoms::Object) atom,
+                                                             AtomVisitor::DataCacheType& cache,
+                                                             const AtomVisitor::IReadPolicy& uuidPolicy
+                                                             );
 
 };
 
 }
 }
-
-#endif /*  __FWATOMCONVERSION_MAPPER_LANDMARKS_HPP__*/

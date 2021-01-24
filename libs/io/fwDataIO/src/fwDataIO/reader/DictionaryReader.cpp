@@ -55,10 +55,10 @@ static std::stringstream spiritDebugStream;
 
 #include <core/exceptionmacros.hpp>
 
-#include <fwData/Color.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/StructureTraits.hpp>
-#include <fwData/StructureTraitsHelper.hpp>
+#include <data/Color.hpp>
+#include <data/StructureTraitsDictionary.hpp>
+#include <data/StructureTraits.hpp>
+#include <data/StructureTraitsHelper.hpp>
 
 #include <core/runtime/operations.hpp>
 
@@ -271,7 +271,7 @@ std::pair<bool, std::string> parse(std::string& buf, std::vector<fwDataIO::line>
 //------------------------------------------------------------------------------
 
 DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< IObjectReader >(this)
+    data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -285,8 +285,8 @@ DictionaryReader::~DictionaryReader()
 
 void DictionaryReader::read()
 {
-    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
+    std::filesystem::path path = std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
 
     SLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
     SLM_ASSERT("Empty path for dictionary file", !path.empty());
@@ -316,38 +316,40 @@ void DictionaryReader::read()
     FW_RAISE_IF(error, !result.first);
 
     // File the dictionary Structure
-    ::fwData::StructureTraitsDictionary::sptr structDico = getConcreteObject();
+    data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
     for(::fwDataIO::line line :  dicolines)
     {
-        ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
+        data::StructureTraits::sptr newOrgan = data::StructureTraits::New();
         newOrgan->setType(line.type);
 
-        std::string classReformated = reformatString(line.organClass);
-        ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter =
-            ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
-        std::string availableValues = getValues(::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
+        std::string classReformated = reformatString(
+            line.organClass);
+        data::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter =
+            data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
+        std::string availableValues = getValues(data::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
         error = "Organ class " + classReformated + " isn't available. Authorized type are " + availableValues;
-        FW_RAISE_IF(error, !(strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
+        FW_RAISE_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
-        newOrgan->setColor(::fwData::Color::New(static_cast<float>(line.red)/255.0f,
-                                                static_cast<float>(line.green)/255.0f,
-                                                static_cast<float>(line.blue)/255.0f,
-                                                static_cast<float>(line.alpha)/100.0f));
+        newOrgan->setColor(data::Color::New(static_cast<float>(line.red)/255.0f,
+                                            static_cast<float>(line.green)/255.0f,
+                                            static_cast<float>(line.blue)/255.0f,
+                                            static_cast<float>(line.alpha)/100.0f));
         std::vector<std::string> categorylist;
         ::boost::algorithm::split( categorylist, line.catgegory, ::boost::algorithm::is_any_of(",") );
-        ::fwData::StructureTraits::CategoryContainer categories;
+        data::StructureTraits::CategoryContainer categories;
         for(std::string category :  categorylist)
         {
-            std::string catReformated = reformatString(category);
-            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter =
-                ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
+            std::string catReformated = reformatString(
+                category);
+            data::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter =
+                data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
             availableValues = getValues(
-                ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
+                data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
             error =
                 "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
-            FW_RAISE_IF(error, !(strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
+            FW_RAISE_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }
         newOrgan->setCategories(categories);

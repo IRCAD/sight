@@ -25,7 +25,7 @@
 #include "fwRenderQt3D/config.hpp"
 #include "fwRenderQt3D/data/Material.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <QPointer>
 
@@ -74,22 +74,22 @@ public:
     FWRENDERQT3D_QT_API ~Mesh() override;
 
     /// @returns mesh material.
-    FWRENDERQT3D_QT_API ::fwRenderQt3D::data::Material* const getMaterial() const;
+    FWRENDERQT3D_QT_API ::fwRenderQt3Ddata::Material* const getMaterial() const;
 
     /// @returns the scene associated with the mesh.
     FWRENDERQT3D_QT_API ::fwRenderQt3Dcore::GenericScene* const getScene() const;
 
     /// Updates mesh material.
-    FWRENDERQT3D_QT_API void setMaterial(::fwRenderQt3D::data::Material* _material);
+    FWRENDERQT3D_QT_API void setMaterial(::fwRenderQt3Ddata::Material* _material);
 
     /// Updates the scene associated with the mesh.
     FWRENDERQT3D_QT_API void setScene(::fwRenderQt3Dcore::GenericScene* _scene);
 
     /// Constructs postion and normal buffers according to _mesh.
-    FWRENDERQT3D_QT_API void buildBuffers(::fwData::Mesh::sptr _mesh);
+    FWRENDERQT3D_QT_API void buildBuffers(data::Mesh::sptr _mesh);
 
     /// Updates the mesh according to _mesh.
-    FWRENDERQT3D_QT_API Q_INVOKABLE void setMesh(::fwData::Mesh::sptr _mesh);
+    FWRENDERQT3D_QT_API Q_INVOKABLE void setMesh(data::Mesh::sptr _mesh);
 
     /// Centers camera on mesh.
     FWRENDERQT3D_QT_API Q_INVOKABLE void centerCameraOnMesh();
@@ -111,7 +111,7 @@ private:
     QPointer< Qt3DRender::QGeometry > m_geometry;
 
     /// Contains mesh material.
-    QPointer< ::fwRenderQt3D::data::Material > m_material;
+    QPointer< ::fwRenderQt3Ddata::Material > m_material;
 
     /// Contains mesh position attribute.
     QPointer< Qt3DRender::QAttribute > m_posAttrib;

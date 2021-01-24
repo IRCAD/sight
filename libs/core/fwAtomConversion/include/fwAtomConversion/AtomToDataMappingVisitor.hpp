@@ -31,7 +31,7 @@ namespace fwAtoms
 {
 class Object;
 }
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -41,7 +41,7 @@ namespace fwAtomConversion
 
 /**
  * @brief This visitor visits data object to fill it with associated atom object attributes.
- * This class is used by AtomVisitor to convert an fwData::Object.
+ * This class is used by AtomVisitor to convert an data::Object.
  */
 class FWATOMCONVERSION_CLASS_API AtomToDataMappingVisitor : public ::camp::ExtendedClassVisitor
 {
@@ -50,7 +50,7 @@ public:
 
     /// Constructor. Initializes visitor.
     FWATOMCONVERSION_API AtomToDataMappingVisitor(
-        SPTR(::fwData::Object)dataObj,
+        SPTR(data::Object)dataObj,
         SPTR(::fwAtoms::Object)atomObj,
         AtomVisitor::DataCacheType& cache,
         const AtomVisitor::IReadPolicy& uuidPolicy
@@ -67,13 +67,13 @@ public:
 
     /**
      * @brief Visits data object user property and fill it with associated atom attribute.
-     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     * Manages null fwAtoms::Base::sptr by inserting a null data::Object::sptr.
      */
     FWATOMCONVERSION_API void visit(const camp::UserProperty& property);
 
     /**
      * @brief Visits data object array property and fill it with associated atom attribute.
-     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     * Manages null fwAtoms::Base::sptr by inserting a null data::Object::sptr.
      *
      * Only array that contains ::fwAtoms::Base::BOOLEAN, ::fwAtoms::Base::NUMERIC, ::fwAtoms::Base::STRING and
      * ::fwAtoms::Base::OBJECT are managed.
@@ -82,7 +82,7 @@ public:
 
     /**
      * @brief Visits data object map property and fill it with associated atom attribute.
-     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     * Manages null fwAtoms::Base::sptr by inserting a null data::Object::sptr.
      *
      * Only map that contains ::fwAtoms::Base::BOOLEAN, ::fwAtoms::Base::NUMERIC, ::fwAtoms::Base::STRING and
      * ::fwAtoms::Base::OBJECT are managed.
@@ -92,7 +92,7 @@ public:
 private:
 
     /// Converted data object
-    SPTR(::fwData::Object) m_dataObj;
+    SPTR(data::Object) m_dataObj;
 
     /// Reflection in camp world of m_dataObj
     ::camp::UserObject m_campDataObj;

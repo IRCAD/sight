@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "imageFilterOp/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace imageFilterOp
 {
@@ -43,8 +43,8 @@ public:
      * @param _outImage flipped image.
      * @param _flipAxis axes on which to flip the image.
      */
-    static IMAGEFILTEROP_API void flip(const ::fwData::Image::csptr& _inImage,
-                                       const ::fwData::Image::sptr& _outImage,
+    static IMAGEFILTEROP_API void flip(const data::Image::csptr& _inImage,
+                                       const data::Image::sptr& _outImage,
                                        const std::array<bool, 3>& _flipAxis);
 
 };

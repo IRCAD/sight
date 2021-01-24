@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/writer/tid/TemplateID.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Point;
 }
@@ -43,7 +43,7 @@ namespace tid
  * @brief Fiducial TID
  * @see TID t1tt3 FIXME: Set the final TID
  */
-class FWGDCMIO_CLASS_API Fiducial : public ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >
+class FWGDCMIO_CLASS_API Fiducial : public ::fwGdcmIO::writer::tid::TemplateID< data::Image >
 {
 
 public:
@@ -55,7 +55,7 @@ public:
      */
     FWGDCMIO_API Fiducial(const SPTR(::gdcm::Writer)& writer,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                          const ::fwData::Image::csptr& image);
+                          const data::Image::csptr& image);
 
     /// Destructor
     FWGDCMIO_API virtual ~Fiducial();
@@ -78,7 +78,7 @@ protected:
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
-                        const CSPTR(::fwData::Point)& point,
+                        const CSPTR(data::Point)& point,
                         unsigned int id,
                         bool useSCoord3D);
 

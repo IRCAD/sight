@@ -33,7 +33,7 @@ fwCampImplementDataMacro((arData)(CalibrationInfo))
     builder
     .tag("object_version", "1")
     .tag("lib_name", "arData")
-    .base< ::fwData::Object >()
+    .base< sight::data::Object >()
     .property("pointlist_container", &::arData::CalibrationInfo::m_pointListContainer)
     .property("image_container", &::arData::CalibrationInfo::m_imageContainer)
     ;

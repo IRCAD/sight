@@ -27,10 +27,10 @@
 #include <core/thread/Timer.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Array.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
@@ -170,9 +170,9 @@ void SSliceIndexDicomEditor::starting()
     m_dicomReader = dicomReader;
 
     // Image Indecies
-    m_axialIndex    = ::fwData::Integer::New(0);
-    m_frontalIndex  = ::fwData::Integer::New(0);
-    m_sagittalIndex = ::fwData::Integer::New(0);
+    m_axialIndex    = data::Integer::New(0);
+    m_frontalIndex  = data::Integer::New(0);
+    m_sagittalIndex = data::Integer::New(0);
 
     // Load a slice
     std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
@@ -330,8 +330,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        ::fwData::Image::sptr newImage = imageSeries->getImage();
-        const ::fwData::Image::Size newSize = newImage->getSize2();
+        data::Image::sptr newImage      = imageSeries->getImage();
+        const data::Image::Size newSize = newImage->getSize2();
 
         newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast< int >(newSize[0]/2));

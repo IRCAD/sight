@@ -55,7 +55,7 @@ namespace ioGdcm
    @endcode
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where the dicom series comes from.
- * - \b selectedSeries [::fwData::Vector]: List of DICOM series to be anonymized.
+ * - \b selectedSeries [data::Vector]: List of DICOM series to be anonymized.
  */
 class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
 {

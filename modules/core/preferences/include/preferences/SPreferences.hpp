@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace preferences
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b preferences [::fwData::Object]: object containing the preferences to load/save.
+ * - \b preferences [data::Object]: object containing the preferences to load/save.
  * @subsection Configuration Configuration
  * - \b filename : path to the preferences file
  */

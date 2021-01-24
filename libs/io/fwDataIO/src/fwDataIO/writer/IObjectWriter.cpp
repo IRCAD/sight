@@ -59,14 +59,14 @@ core::tools::Object::csptr IObjectWriter::getObject() const
 
 //------------------------------------------------------------------------------
 
-void IObjectWriter::setLocation( const ::fwData::location::ILocation::sptr _location )
+void IObjectWriter::setLocation( const data::location::ILocation::sptr _location )
 {
     m_location = _location;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::location::ILocation::sptr IObjectWriter::getLocation()
+data::location::ILocation::sptr IObjectWriter::getLocation()
 {
     return m_location;
 }

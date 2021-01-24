@@ -31,7 +31,7 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Vector;
 }
@@ -77,12 +77,12 @@ public:
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        const CSPTR(::fwData::Vector)& currentSelection ) const = 0;
+        const CSPTR(data::Vector)& currentSelection ) const = 0;
 
 protected:
 
-    FWACTIVITIES_API virtual SPTR(::fwData::Vector) getType( const CSPTR(::fwData::Vector)& currentSelection,
-                                                             const std::string& type ) const;
+    FWACTIVITIES_API virtual SPTR(data::Vector) getType( const CSPTR(data::Vector)& currentSelection,
+                                                         const std::string& type ) const;
 };
 
 } // namespace fwActivities

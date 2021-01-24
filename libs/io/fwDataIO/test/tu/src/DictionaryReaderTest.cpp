@@ -27,9 +27,9 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwData/StructureTraits.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/StructureTraitsHelper.hpp>
+#include <data/StructureTraits.hpp>
+#include <data/StructureTraitsDictionary.hpp>
+#include <data/StructureTraitsHelper.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -72,30 +72,30 @@ void DictionaryReaderTest::tearDown()
 void DictionaryReaderTest::test_1()
 {
     // Expected data
-    ::fwData::StructureTraits::sptr expectedSkin = ::fwData::StructureTraits::New();
+    data::StructureTraits::sptr expectedSkin = data::StructureTraits::New();
     expectedSkin->setType("Skin");
-    expectedSkin->setClass(::fwData::StructureTraits::ENVIRONMENT);
-    expectedSkin->setColor(::fwData::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 100.0/100.0f));
-    ::fwData::StructureTraits::CategoryContainer skinCat(1);
-    skinCat[0] = ::fwData::StructureTraits::BODY;
+    expectedSkin->setClass(data::StructureTraits::ENVIRONMENT);
+    expectedSkin->setColor(data::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 100.0/100.0f));
+    data::StructureTraits::CategoryContainer skinCat(1);
+    skinCat[0] = data::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);
     expectedSkin->setAnatomicRegion("Entire_Body");
     expectedSkin->setPropertyCategory("Anat_Struct");
     expectedSkin->setPropertyType("Entire_Body");
 
-    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
     dictionaryReader->read();
 
-    ::fwData::StructureTraits::sptr struct1 = structDico->getStructure("Skin");
+    data::StructureTraits::sptr struct1 = structDico->getStructure("Skin");
     CPPUNIT_ASSERT(struct1);
     CPPUNIT_ASSERT_EQUAL(struct1->getType(), expectedSkin->getType());
     CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expectedSkin->getClass());
 
-    ::fwData::Color::sptr color1 = struct1->getColor();
+    data::Color::sptr color1 = struct1->getColor();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expectedSkin->getColor()->red(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expectedSkin->getColor()->blue(), 0.001);
@@ -120,7 +120,7 @@ void DictionaryReaderTest::test_2()
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
@@ -135,7 +135,7 @@ void DictionaryReaderTest::test_3()
 {
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() /
                               "NoDictionary.dic";
-    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
@@ -152,7 +152,7 @@ void DictionaryReaderTest::test_4()
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
@@ -170,7 +170,7 @@ void DictionaryReaderTest::test_5()
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);

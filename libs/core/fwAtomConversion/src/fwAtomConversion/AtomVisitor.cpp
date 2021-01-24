@@ -28,16 +28,16 @@
 #include "fwAtomConversion/exception/DataFactoryNotFound.hpp"
 #include "fwAtomConversion/exception/DuplicatedDataUUID.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace fwAtomConversion
 {
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid, const std::string& classname) const
+data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid, const std::string& classname) const
 {
-    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::UUID::get(uuid));
+    data::Object::sptr obj = data::Object::dynamicCast(core::tools::UUID::get(uuid));
 
     FW_RAISE_EXCEPTION_IF(
         exception::ClassnameMismatch("Loaded object classname (" + classname
@@ -49,7 +49,7 @@ namespace fwAtomConversion
     {
         try
         {
-            obj = ::fwData::factory::New(classname);
+            obj = data::factory::New(classname);
         }
         catch(const core::Exception& e)
         {
@@ -71,13 +71,13 @@ namespace fwAtomConversion
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid,
-                                                             const std::string& classname) const
+data::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid,
+                                                         const std::string& classname) const
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     try
     {
-        obj = ::fwData::factory::New(classname);
+        obj = data::factory::New(classname);
         // uuid is set only if the given uuid is available
     }
     catch(const core::Exception& e)
@@ -96,13 +96,13 @@ namespace fwAtomConversion
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid,
-                                                             const std::string& classname) const
+data::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid,
+                                                         const std::string& classname) const
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     try
     {
-        obj = ::fwData::factory::New(classname);
+        obj = data::factory::New(classname);
     }
     catch(const core::Exception& e)
     {
@@ -166,7 +166,7 @@ void AtomVisitor::processAttributes( const ::fwAtoms::Object::AttributesType& at
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr AtomVisitor::getDataObject() const
+data::Object::sptr AtomVisitor::getDataObject() const
 {
     return m_dataObj;
 }

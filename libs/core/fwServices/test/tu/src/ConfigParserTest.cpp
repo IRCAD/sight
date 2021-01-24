@@ -32,9 +32,9 @@
 
 #include <core/runtime/Convert.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ConfigParserTest );
@@ -75,7 +75,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
-    auto image = ::fwData::Image::dynamicCast(configManager->getConfigRoot());
+    auto image = data::Image::dynamicCast(configManager->getConfigRoot());
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
@@ -113,7 +113,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Configuration on core::tools::Object which uid is objectUUID
     ::fwServices::IService::ConfigType objCfg;
     objCfg.add("<xmlattr>.uid", "objectUUID");
-    objCfg.add("<xmlattr>.type", "::fwData::Image");
+    objCfg.add("<xmlattr>.type", "data::Image");
     config.add_child("object", objCfg);
 
     // Object's service A

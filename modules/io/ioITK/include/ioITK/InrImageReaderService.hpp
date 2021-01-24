@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }
@@ -49,7 +49,7 @@ namespace ioITK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwData::Image]: loaded image.
+ * - \b data [data::Image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
@@ -102,7 +102,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    bool createImage( const std::filesystem::path& inrFileDir, const SPTR(::fwData::Image)& _pImg );
+    bool createImage( const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg );
 };
 
 } // namespace ioITK

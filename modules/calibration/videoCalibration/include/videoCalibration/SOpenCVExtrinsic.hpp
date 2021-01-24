@@ -52,7 +52,7 @@ namespace videoCalibration
  * @subsection In-Out In-Out:
  * - \b camera [::arData::CameraSeries]: Output calibration.
  *  * @subsection Output Output:
- * - \b matrix [::fwData::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
+ * - \b matrix [data::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
  * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).

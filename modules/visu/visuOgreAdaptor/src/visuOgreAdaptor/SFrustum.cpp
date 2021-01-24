@@ -29,7 +29,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -85,7 +85,7 @@ void SFrustum::starting()
     this->initialize();
 
     // Create material
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
     ::visuOgreAdaptor::SMaterial::sptr materialAdaptor =

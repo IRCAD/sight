@@ -24,8 +24,8 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 
@@ -125,9 +125,9 @@ void SNegato2DCamera::swapping(const KeyType& _key)
 {
     if(_key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -147,9 +147,9 @@ void SNegato2DCamera::stopping()
 ::fwServices::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
 
     return connections;
 }
@@ -241,8 +241,8 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
     {
         m_isInteracting = true;
 
-        const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+        const data::mt::locked_ptr lock(tf);
 
         m_initialLevel  = tf->getLevel();
         m_initialWindow = tf->getWindow();
@@ -275,9 +275,9 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
     const auto tf  = tfW.lock();
     m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -422,14 +422,14 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
     const double newWindow = m_initialWindow + _dw;
     const double newLevel  = m_initialLevel - _dl;
 
-    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::mt::locked_ptr lock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );
-        const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        const auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
             sig->asyncEmit(newWindow, newLevel);
         }

@@ -25,7 +25,7 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -64,7 +64,7 @@ bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr&
     ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
     // Study, Acquisition
-    ::fwData::Image::sptr img = series->getImage();
+    data::Image::sptr img = series->getImage();
 
     //# Dicom-File-Format
     //
@@ -258,7 +258,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries
     ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
     // Study, Acquisition
-    ::fwData::Image::sptr img = series->getImage();
+    data::Image::sptr img = series->getImage();
 
     //# Dicom-File-Format
     //

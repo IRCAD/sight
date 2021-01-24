@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "scene2D/config.hpp"
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Point.hpp>
+#include <data/Histogram.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/IAdaptor.hpp>
 
@@ -50,10 +50,10 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [::fwData::Histogram]: histogram to display.
+ * - \b histogram [data::Histogram]: histogram to display.
  *
  * @subsection In-Out In-Out
- * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * - \b point [data::Point]: histogram point, used to show information at the current histogram index pointed by the
  * mouse.
  *
  * @subsection Configuration Configuration:
@@ -70,7 +70,7 @@ namespace adaptor
 class SCENE2D_CLASS_API SCurvedHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceMacro(SCurvedHistogram,  ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SCurvedHistogram,  ::fwRenderQt::IAdaptor)
 
     typedef ::fwRenderQt::IAdaptor::Point2DType Point;
     typedef std::vector< Point > Points;
@@ -84,7 +84,7 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -102,7 +102,7 @@ protected:
 
 private:
 
-    Points getControlPoints(const ::fwData::Histogram::csptr& _histogram ) const;
+    Points getControlPoints(const data::Histogram::csptr& _histogram ) const;
 
     Points getBSplinePoints( const Points& _controlPoints ) const;
 
@@ -113,7 +113,7 @@ private:
     void computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints );
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point );
+    void updateCurrentPoint(const ::fwRenderQtdata::Event& _event, const data::Point::sptr& point );
 
     /// Build and add a part of histogram's border, according to the given path.
     void addBorderItem( const QPainterPath& _path );

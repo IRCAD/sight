@@ -33,7 +33,7 @@
 namespace memory
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object )
+fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, data::Object )
 
 SDumpPolicy::SDumpPolicy()
 {

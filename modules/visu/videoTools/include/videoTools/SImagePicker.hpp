@@ -28,8 +28,8 @@
 #include <core/HiResClock.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
@@ -51,8 +51,8 @@ namespace videoTools
    </service>
    @endcode
  * @section InOut InOut
- * - \b pointList [::fwData::PointList] : Pointlist of clicked points, real coordinates given by picker.
- * - \b pixelPointList [::fwData::PointList] : PointList of clicked points, transformed in pixel world.
+ * - \b pointList [data::PointList] : Pointlist of clicked points, real coordinates given by picker.
+ * - \b pixelPointList [data::PointList] : PointList of clicked points, transformed in pixel world.
  *
  * @section Configuration Configuration
  * - \b videoReference: specifies where is the reference system of picker interactor

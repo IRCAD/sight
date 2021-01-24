@@ -207,7 +207,7 @@ void NavigationSeriesTest::navigationTest()
 
     ::fwAtoms::Object::sptr atom2 = readNavigation(path/jsonzFile);
 
-    ::fwData::Object::sptr object;
+    data::Object::sptr object;
     ::fwMedData::NavigationSeries::sptr navigationSeries;
 
     object           = ::fwAtomConversion::convert(atom2, ::fwAtomConversion::AtomVisitor::ChangePolicy());

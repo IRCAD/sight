@@ -279,14 +279,14 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Image Utils::convertToOgreImage( const ::fwData::Image::csptr imageFw)
+::Ogre::Image Utils::convertToOgreImage( const data::Image::csptr imageFw)
 {
     SLM_ASSERT("Image is null", imageFw);
 
     ::Ogre::Image imageOgre;
 
     // If image is flipped, try to switch image
-    const ::fwData::Image::Size imageSize = imageFw->getSize2();
+    const data::Image::Size imageSize = imageFw->getSize2();
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
     uint32_t height = 1, depth = 1;
@@ -313,12 +313,12 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData::Image::sptr _imageFw, bool flip)
+void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const data::Image::sptr _imageFw, bool flip)
 {
     SLM_ASSERT("Texture is null", _texture);
     SLM_ASSERT("Image is null", _imageFw);
 
-    ::fwData::Image::Size imageSize = {_texture->getWidth(), 0, 0};
+    data::Image::Size imageSize = {_texture->getWidth(), 0, 0};
 
     if(_texture->getHeight() > 1)
     {
@@ -332,8 +332,8 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
     _imageFw->setSize2(imageSize);
 
     Utils::setPixelFormatFromOgre(_imageFw, _texture->getFormat());
-    ::fwData::Image::Spacing spacing = {1., 1., 1.};
-    ::fwData::Image::Origin origin   = {0., 0., 0.};
+    data::Image::Spacing spacing = {1., 1., 1.};
+    data::Image::Origin origin   = {0., 0., 0.};
 
     _imageFw->setSpacing2(spacing);
     _imageFw->setOrigin2(origin);
@@ -383,7 +383,7 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
 
 //------------------------------------------------------------------------------
 
-::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
+::Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 {
     const core::tools::Type pixelType = imageFw->getType();
     const size_t numberOfComponent    = imageFw->getNumberOfComponents();
@@ -483,11 +483,11 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
 
 //------------------------------------------------------------------------------
 
-void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelFormat _format )
+void Utils::setPixelFormatFromOgre( data::Image::sptr _image, ::Ogre::PixelFormat _format )
 {
     // Set the number of components;
     size_t numComponents;
-    ::fwData::Image::PixelFormat pixelFormat = ::fwData::Image::PixelFormat::UNDEFINED;
+    data::Image::PixelFormat pixelFormat = data::Image::PixelFormat::UNDEFINED;
 
     switch(_format)
     {
@@ -497,7 +497,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R32_SINT:
         case ::Ogre::PF_FLOAT32_R:
             numComponents = 1;
-            pixelFormat   = ::fwData::Image::PixelFormat::GRAY_SCALE;
+            pixelFormat   = data::Image::PixelFormat::GRAY_SCALE;
             break;
 
         case ::Ogre::PF_RG8:
@@ -513,7 +513,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_SHORT_RGB:
         case ::Ogre::PF_FLOAT32_RGB:
             numComponents = 3;
-            pixelFormat   = ::fwData::Image::PixelFormat::RGB;
+            pixelFormat   = data::Image::PixelFormat::RGB;
             break;
 
         case ::Ogre::PF_BYTE_RGBA:
@@ -530,7 +530,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_SHORT_RGBA:
         case ::Ogre::PF_FLOAT32_RGBA:
             numComponents = 4;
-            pixelFormat   = ::fwData::Image::PixelFormat::RGBA;
+            pixelFormat   = data::Image::PixelFormat::RGBA;
             break;
 
         default:
@@ -590,7 +590,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
 
 //------------------------------------------------------------------------------
 
-void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
+void Utils::loadOgreTexture(const data::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
@@ -599,7 +599,7 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
     {
         const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
 
-        // Conversion from fwData::Image to ::Ogre::Image
+        // Conversion from data::Image to ::Ogre::Image
         ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertToOgreImage(_image);
 
         if( _texture->getWidth() != ogreImage.getWidth() ||
@@ -624,7 +624,7 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
 //------------------------------------------------------------------------------
 
 template <typename SRC_TYPE, typename DST_TYPE>
-void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
+void copyNegatoImage( ::Ogre::Texture* _texture, const data::Image::sptr& _image )
 {
     // Get the pixel buffer
     ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
@@ -662,7 +662,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
 //------------------------------------------------------------------------------
 
-void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
+void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const data::Image::sptr& _image )
 {
     // Allocate texture memory.
     if( _texture->getWidth() != _image->getSize2()[0] ||
@@ -721,9 +721,9 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
 
 //------------------------------------------------------------------------------
 
-::fwData::Color::sptr Utils::convertOgreColorToFwColor(const ::Ogre::ColourValue& _ogreColor)
+data::Color::sptr Utils::convertOgreColorToFwColor(const ::Ogre::ColourValue& _ogreColor)
 {
-    ::fwData::Color::sptr fwColor = ::fwData::Color::New();
+    data::Color::sptr fwColor = data::Color::New();
     fwColor->setRGBA(_ogreColor.r, _ogreColor.g, _ogreColor.b, _ogreColor.a);
 
     return fwColor;
@@ -731,7 +731,7 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
 
 //------------------------------------------------------------------------------
 
-Ogre::Matrix4 Utils::convertTM3DToOgreMx(const fwData::TransformationMatrix3D::csptr& _tm3d)
+Ogre::Matrix4 Utils::convertTM3DToOgreMx(const data::TransformationMatrix3D::csptr& _tm3d)
 {
     const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
 
@@ -743,7 +743,7 @@ Ogre::Matrix4 Utils::convertTM3DToOgreMx(const fwData::TransformationMatrix3D::c
 
 //------------------------------------------------------------------------------
 
-void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const fwData::TransformationMatrix3D::sptr& _tm3d)
+void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::TransformationMatrix3D::sptr& _tm3d)
 {
     for(std::uint8_t l = 0; l < 4; ++l)
     {
@@ -756,7 +756,7 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const fwData::Transformat
 
 //------------------------------------------------------------------------------
 
-std::pair< ::Ogre::Vector3, ::Ogre::Vector3 > Utils::convertSpacingAndOrigin(const ::fwData::Image::csptr& _img)
+std::pair< ::Ogre::Vector3, ::Ogre::Vector3 > Utils::convertSpacingAndOrigin(const data::Image::csptr& _img)
 {
     const auto& imgOrigin = _img->getOrigin2();
     const ::Ogre::Vector3 origin(static_cast< float >(imgOrigin[0]),

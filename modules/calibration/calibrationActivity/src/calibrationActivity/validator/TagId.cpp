@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "calibrationActivity/validator/TagId.hpp"
 
-#include <fwActivities/validator/registry/macros.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <fwActivities/validator/registry/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
@@ -54,16 +54,16 @@ TagId::~TagId()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType TagId::validate(const CSPTR(::fwData::Object)& currentData ) const
+::fwActivities::IValidator::ValidationType TagId::validate(const CSPTR(data::Object)& currentData ) const
 {
     IValidator::ValidationType validation;
 
     validation.first  = true;
     validation.second = "";
 
-    ::fwData::Vector::csptr vector       = ::fwData::Vector::dynamicConstCast(currentData);
-    ::fwData::Composite::csptr composite = ::fwData::Composite::dynamicConstCast(currentData);
-    ::fwData::String::csptr str          = ::fwData::String::dynamicConstCast(currentData);
+    data::Vector::csptr vector       = data::Vector::dynamicConstCast(currentData);
+    data::Composite::csptr composite = data::Composite::dynamicConstCast(currentData);
+    data::String::csptr str          = data::String::dynamicConstCast(currentData);
 
     std::vector< std::string > tagList;
 
@@ -75,7 +75,7 @@ TagId::~TagId()
     {
         for (const auto& obj : vector->getContainer())
         {
-            ::fwData::String::csptr str = ::fwData::String::dynamicConstCast(obj);
+            data::String::csptr str = data::String::dynamicConstCast(obj);
             if (!str)
             {
                 validation.first  = false;
@@ -89,7 +89,7 @@ TagId::~TagId()
     {
         for (const auto& obj : composite->getContainer())
         {
-            ::fwData::String::csptr str = ::fwData::String::dynamicConstCast(obj.second);
+            data::String::csptr str = data::String::dynamicConstCast(obj.second);
             if (!str)
             {
                 validation.first  = false;

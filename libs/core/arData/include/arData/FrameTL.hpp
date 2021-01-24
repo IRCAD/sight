@@ -29,7 +29,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 fwCampAutoDeclareDataMacro((arData)(FrameTL));
 
@@ -42,7 +42,7 @@ class ARDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassMacro(FrameTL, ::arData::TimeLine, ::fwData::factory::New< FrameTL >)
+    fwCoreClassMacro(FrameTL, ::arData::TimeLine, data::factory::New< FrameTL >)
     fwCampMakeFriendDataMacro((arData)(FrameTL))
 
     /// Frame format
@@ -60,7 +60,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API FrameTL( ::fwData::Object::Key key );
+    ARDATA_API FrameTL( data::Object::Key key );
 
     /// Destructor
     ARDATA_API virtual ~FrameTL();

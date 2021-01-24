@@ -29,7 +29,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::FieldHelperTest );
@@ -61,11 +61,11 @@ void FieldHelperTest::testHelper()
     const std::string FIELD_ID2 = "FIELD_ID2";
     const std::string FIELD_ID3 = "FIELD_ID3";
 
-    ::fwData::Object::sptr nullobj;
-    ::fwData::Object::sptr obj       = ::fwData::String::New();
-    ::fwData::Object::sptr fieldObj1 = ::fwData::String::New();
-    ::fwData::Object::sptr fieldObj2 = ::fwData::String::New();
-    ::fwData::Object::sptr fieldObj3 = ::fwData::String::New();
+    data::Object::sptr nullobj;
+    data::Object::sptr obj       = data::String::New();
+    data::Object::sptr fieldObj1 = data::String::New();
+    data::Object::sptr fieldObj2 = data::String::New();
+    data::Object::sptr fieldObj3 = data::String::New();
 
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
@@ -74,9 +74,9 @@ void FieldHelperTest::testHelper()
     std::mutex mutex;
     std::condition_variable condition;
 
-    ::fwData::Object::FieldsContainerType addedFields;
-    std::function<void ( ::fwData::Object::FieldsContainerType)> fnAdd =
-        [&](::fwData::Object::FieldsContainerType f)
+    data::Object::FieldsContainerType addedFields;
+    std::function<void ( data::Object::FieldsContainerType)> fnAdd =
+        [&](data::Object::FieldsContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -88,14 +88,14 @@ void FieldHelperTest::testHelper()
 
     auto slotAdded = core::com::newSlot( fnAdd );
     slotAdded->setWorker(worker);
-    auto sigAdded = obj->signal< ::fwData::Object::AddedFieldsSignalType>(::fwData::Object::s_ADDED_FIELDS_SIG);
+    auto sigAdded = obj->signal< data::Object::AddedFieldsSignalType>(data::Object::s_ADDED_FIELDS_SIG);
     sigAdded->connect(slotAdded);
 
     unsigned int numRemovedNotif = 0;
-    ::fwData::Object::FieldsContainerType removedFields;
+    data::Object::FieldsContainerType removedFields;
 
-    std::function<void ( ::fwData::Object::FieldsContainerType)> fnRemove =
-        [&](::fwData::Object::FieldsContainerType f)
+    std::function<void ( data::Object::FieldsContainerType)> fnRemove =
+        [&](data::Object::FieldsContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -106,15 +106,15 @@ void FieldHelperTest::testHelper()
         };
     auto slotRemoved = core::com::newSlot( fnRemove );
     slotRemoved->setWorker(worker);
-    auto sigRemoved = obj->signal< ::fwData::Object::RemovedFieldsSignalType>(::fwData::Object::s_REMOVED_FIELDS_SIG);
+    auto sigRemoved = obj->signal< data::Object::RemovedFieldsSignalType>(data::Object::s_REMOVED_FIELDS_SIG);
     sigRemoved->connect(slotRemoved);
 
     unsigned int numChangedNotif = 0;
-    ::fwData::Object::FieldsContainerType newFields;
-    ::fwData::Object::FieldsContainerType oldFields;
+    data::Object::FieldsContainerType newFields;
+    data::Object::FieldsContainerType oldFields;
 
-    std::function<void ( ::fwData::Object::FieldsContainerType, ::fwData::Object::FieldsContainerType)> fnChange =
-        [&](::fwData::Object::FieldsContainerType newF, ::fwData::Object::FieldsContainerType oldF)
+    std::function<void ( data::Object::FieldsContainerType, data::Object::FieldsContainerType)> fnChange =
+        [&](data::Object::FieldsContainerType newF, data::Object::FieldsContainerType oldF)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -126,7 +126,7 @@ void FieldHelperTest::testHelper()
         };
     auto slotChanged = core::com::newSlot( fnChange );
     slotChanged->setWorker(worker);
-    auto sigChanged = obj->signal< ::fwData::Object::ChangedFieldsSignalType>(::fwData::Object::s_CHANGED_FIELDS_SIG);
+    auto sigChanged = obj->signal< data::Object::ChangedFieldsSignalType>(data::Object::s_CHANGED_FIELDS_SIG);
     sigChanged->connect(slotChanged);
 
     auto clearArrays = [&]() { addedFields.clear(); removedFields.clear(); newFields.clear(); oldFields.clear(); };
@@ -157,7 +157,7 @@ void FieldHelperTest::testHelper()
 
     {
         // Test setFields()
-        ::fwData::Object::FieldMapType fieldsWithObj1 = { { FIELD_ID1, fieldObj3} };
+        data::Object::FieldMapType fieldsWithObj1 = { { FIELD_ID1, fieldObj3} };
         ::fwDataTools::helper::Field fieldHelper(obj);
         fieldHelper.setFields(fieldsWithObj1);
         CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());

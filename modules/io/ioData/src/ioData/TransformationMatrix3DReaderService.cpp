@@ -25,9 +25,9 @@
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 
@@ -47,7 +47,7 @@ namespace ioData
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::TransformationMatrix3DReaderService,
-                         ::fwData::TransformationMatrix3D )
+                         data::TransformationMatrix3D )
 
 //------------------------------------------------------------------------------
 
@@ -101,16 +101,16 @@ void TransformationMatrix3DReaderService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files", "*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -132,8 +132,8 @@ void TransformationMatrix3DReaderService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::TransformationMatrix3D::sptr matrix =
-            this->getInOut< ::fwData::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
+        data::TransformationMatrix3D::sptr matrix =
+            this->getInOut< data::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
 
         ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
@@ -143,8 +143,8 @@ void TransformationMatrix3DReaderService::updating()
         reader->read();
 
         // Notify reading
-        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
-            ::fwData::Object::s_MODIFIED_SIG);
+        auto sig = matrix->signal< data::Object::ModifiedSignalType >(
+            data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();

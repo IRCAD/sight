@@ -32,7 +32,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace videoTools
 {

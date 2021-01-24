@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace V1
 {
 namespace V2
 {
-namespace fwData
+namespace sight::data
 {
 
 /// Patch the composite describing a 'Medical workspace' from version 'V1' to 'V2' within 'MedicalData' context.
@@ -64,7 +64,7 @@ public:
 
 };
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch

@@ -27,8 +27,8 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <regex>
 
@@ -211,7 +211,7 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
 //-----------------------------------------------------------------------------
 
 core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string& configId,
-                                                                                ::fwData::Composite::csptr replaceFields,
+                                                                                data::Composite::csptr replaceFields,
                                                                                 bool autoPrefixId )
 const
 {
@@ -264,12 +264,12 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string& gro
 
 //-----------------------------------------------------------------------------
 
-FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
+FieldAdaptorType AppConfig::compositeToFieldAdaptor( data::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-    for(const ::fwData::Composite::value_type& elem :  *fieldAdaptors )
+    for(const data::Composite::value_type& elem :  *fieldAdaptors )
     {
-        fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
+        fields[elem.first] = data::String::dynamicCast( elem.second )->value();
     }
 
     return fields;

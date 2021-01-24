@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <Ogre.h>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }
@@ -89,7 +89,7 @@ protected:
     /// Creates a mesh in the Default Ogre resource group
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Checks if the fwData::Mesh has changed, and updates it if it has.
+    /// Checks if the data::Mesh has changed, and updates it if it has.
     VISUOGREADAPTOR_API void updating() override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
@@ -125,7 +125,7 @@ private:
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material { nullptr };
 
     /// Contains the manual object of the line.
     ::Ogre::ManualObject* m_line { nullptr };

@@ -120,9 +120,9 @@ inline SPTR(DATATYPE) IService::getOutput(const KeyType& keybase, size_t index) 
 //------------------------------------------------------------------------------
 
 template< class DATATYPE, typename CONST_DATATYPE >
-inline ::fwData::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType& key) const
+inline data::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType& key) const
 {
-    ::fwData::mt::weak_ptr< CONST_DATATYPE > input;
+    data::mt::weak_ptr< CONST_DATATYPE > input;
 
     // Search the weak_ptr in the inputs map
     auto iterator = m_inputsMap.find(key);
@@ -140,9 +140,9 @@ inline ::fwData::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const Key
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& key) const
+inline data::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& key) const
 {
-    ::fwData::mt::weak_ptr< DATATYPE > inout;
+    data::mt::weak_ptr< DATATYPE > inout;
 
     // Search the weak_ptr in the inOuts map
     auto iterator = m_inOutsMap.find(key);
@@ -160,9 +160,9 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& 
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& key) const
+inline data::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& key) const
 {
-    ::fwData::mt::weak_ptr< DATATYPE > output;
+    data::mt::weak_ptr< DATATYPE > output;
 
     // Search the weak_ptr in the inOuts map
     auto iterator = m_outputsMap.find(key);
@@ -180,7 +180,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType&
 //------------------------------------------------------------------------------
 
 template< class DATATYPE, typename CONST_DATATYPE >
-inline ::fwData::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType& keybase, size_t index) const
+inline data::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType& keybase, size_t index) const
 {
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
@@ -194,7 +194,7 @@ inline ::fwData::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const Key
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& keybase, size_t index) const
+inline data::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& keybase, size_t index) const
 {
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
@@ -208,7 +208,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& 
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& keybase, size_t index) const
+inline data::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& keybase, size_t index) const
 {
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
@@ -222,12 +222,12 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType&
 //------------------------------------------------------------------------------
 
 template< class DATATYPE, typename CONST_DATATYPE >
-inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& key) const
+inline data::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& key) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(key).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked input with key '" + key + "'."
             ),
         !lockedInput
@@ -239,12 +239,12 @@ inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& key) const
+inline data::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& key) const
 {
     auto lockedInOut = getWeakInOut< DATATYPE >(key).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked inout with key '" + key + "'."
             ),
         !lockedInOut
@@ -256,12 +256,12 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyTy
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType& key) const
+inline data::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType& key) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(key).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked output with key '" + key + "'."
             ),
         !lockedOutput
@@ -273,13 +273,13 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyT
 //------------------------------------------------------------------------------
 
 template< class DATATYPE, typename CONST_DATATYPE >
-inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& keybase,
-                                                                           size_t index) const
+inline data::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& keybase,
+                                                                       size_t index) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(keybase, index).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '"
             + this->getID()
             + "' cannot acquire a locked input with '"
@@ -297,12 +297,12 @@ inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& keybase, size_t index) const
+inline data::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& keybase, size_t index) const
 {
     auto lockedInOut = this->getWeakInOut< DATATYPE >(keybase, index).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '"
             + this->getID()
             + "' cannot acquire a locked inout with '"
@@ -320,12 +320,12 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyTy
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline ::fwData::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& keybase, size_t index) const
+inline data::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& keybase, size_t index) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(keybase, index).lock();
 
     FW_RAISE_EXCEPTION_IF(
-        ::fwData::Exception(
+        data::Exception(
             "Service with ID '"
             + this->getID()
             + "' cannot acquire a locked output with '"

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "fwData/Image.hpp"
-#include "fwData/TransferFunction.hpp"
+#include "data/Image.hpp"
+#include "data/TransferFunction.hpp"
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/TransferFunction.hpp"
@@ -93,7 +93,7 @@ public:
     FWRENDEROGRE_API virtual ~IVolumeRenderer();
 
     /// Called when the image being rendered is modified.
-    FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf) = 0;
+    FWRENDEROGRE_API virtual void imageUpdate(data::Image::sptr image, data::TransferFunction::sptr tf) = 0;
 
     /// Called when the transfer function is updated.
     FWRENDEROGRE_API virtual void updateVolumeTF();
@@ -116,15 +116,15 @@ public:
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    /// @deprecated Use scaleTranslateCube(const ::fwData::Image::Spacing&, const ::fwData::Image::Origin&). It will be
+    /// @deprecated Use scaleTranslateCube(const data::Image::Spacing&, const data::Image::Origin&). It will be
     /// removed in sight 22.0
     [[deprecated("It will be remove in sight 22.0")]]
-    FWRENDEROGRE_API void scaleTranslateCube(const ::fwData::Image::SpacingType& spacing,
-                                             const ::fwData::Image::OriginType& origin);
+    FWRENDEROGRE_API void scaleTranslateCube(const data::Image::SpacingType& spacing,
+                                             const data::Image::OriginType& origin);
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    FWRENDEROGRE_API void scaleTranslateCube(const ::fwData::Image::Spacing& spacing,
-                                             const ::fwData::Image::Origin& origin);
+    FWRENDEROGRE_API void scaleTranslateCube(const data::Image::Spacing& spacing,
+                                             const data::Image::Origin& origin);
 
     /// Computes the camera's plane.
     FWRENDEROGRE_API ::Ogre::Plane getCameraPlane() const;

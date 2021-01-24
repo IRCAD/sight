@@ -29,7 +29,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -120,8 +120,8 @@ void SActivitySequencer::updating()
     if (m_currentActivity >= 0)
     {
         // launch the last series
-        const size_t index = static_cast<size_t>(m_currentActivity);
-        ::fwData::Composite::csptr overrides           = this->getInput< ::fwData::Composite >(s_OVERRIDES_INPUT);
+        const size_t index               = static_cast<size_t>(m_currentActivity);
+        data::Composite::csptr overrides = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
         ::fwMedData::ActivitySeries::sptr lastActivity = this->getActivity(seriesDB, index, m_slotUpdate, overrides);
 
         if (this->checkValidity(lastActivity, false))
@@ -173,7 +173,7 @@ void SActivitySequencer::goTo(int index)
 
     const size_t newIdx = static_cast<size_t>(index);
 
-    ::fwData::Composite::csptr overrides       = this->getInput< ::fwData::Composite >(s_OVERRIDES_INPUT);
+    data::Composite::csptr overrides = this->getInput< data::Composite >(s_OVERRIDES_INPUT);
     ::fwMedData::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate, overrides);
 
     if(this->checkValidity(activity, true))

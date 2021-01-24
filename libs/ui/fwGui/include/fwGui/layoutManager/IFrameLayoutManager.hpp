@@ -28,7 +28,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -180,7 +180,7 @@ protected:
 
     FWGUI_API void writeConfig();
 
-    FWGUI_API ::fwData::Composite::sptr getPreferenceUI();
+    FWGUI_API data::Composite::sptr getPreferenceUI();
 
 private:
 

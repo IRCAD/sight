@@ -28,11 +28,11 @@ namespace fwDataTools
 namespace helper
 {
 
-ArrayGetter::ArrayGetter(const ::fwData::Array::csptr& array ) :
+ArrayGetter::ArrayGetter(const data::Array::csptr& array ) :
     m_array(array)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::ArrayGetter is no longer supported, the methods have been moved to "
-                      "::fwData::Array", "22.0")
+                      "data::Array", "22.0")
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
@@ -67,7 +67,7 @@ const char* ArrayGetter::end() const
 
 //-----------------------------------------------------------------------------
 
-const char* ArrayGetter::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t ) const
+const char* ArrayGetter::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t ) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);
@@ -77,7 +77,7 @@ const char* ArrayGetter::getBufferPtr( const ::fwData::Array::IndexType& id, siz
 
 //------------------------------------------------------------------------------
 
-const void* ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const size_t component) const
+const void* ArrayGetter::getItem(const data::Array::IndexType& id, const size_t component) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, component, sizeOf);
@@ -86,7 +86,7 @@ const void* ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const siz
 
 //------------------------------------------------------------------------------
 
-void ArrayGetter::getItem(const ::fwData::Array::IndexType& id, void* value) const
+void ArrayGetter::getItem(const data::Array::IndexType& id, void* value) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, 0, sizeOf);
@@ -96,7 +96,7 @@ void ArrayGetter::getItem(const ::fwData::Array::IndexType& id, void* value) con
 
 //------------------------------------------------------------------------------
 
-void ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const size_t component, void* value) const
+void ArrayGetter::getItem(const data::Array::IndexType& id, const size_t component, void* value) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, component, sizeOf);

@@ -28,7 +28,7 @@
 
 #include <arServices/IRGBDGrabber.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -44,7 +44,7 @@ namespace videoRealSense
  *
  * This service grabs the depth, the color frame, and the poincloud from a compatible device (Realsense D400 cameras).
  * The frames are pushed into timelines.
- * The pointloud is pushed into a ::fwData::Mesh and updated each time.
+ * The pointloud is pushed into a data::Mesh and updated each time.
  *
  * A Complete documentation about RealSense camera can be found here:
  * https://github.com/IntelRealSense/librealsense/blob/master/doc/readme.md
@@ -120,8 +120,8 @@ namespace videoRealSense
  * - \b cameraSeries [::arData::CameraSeries]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
- *- \b pointcloud [::fwData::Mesh]: pointcloud computed from depth map. (optional)
- * -\b distance [::fwData::Float]: distance (in mm) at center pixel. (optional)
+ *- \b pointcloud [data::Mesh]: pointcloud computed from depth map. (optional)
+ * -\b distance [data::Float]: distance (in mm) at center pixel. (optional)
  *
  * @subsection Configuration Configuration
  * - \b fps: desired framerate (value can be [6-15-25-30-60-90]), note that fps is correlated to resolution (default
@@ -425,8 +425,8 @@ private:
     /// Handle on which frame the pointcloud is mapped.
     PointcloudColormapEnumType m_pointcloudColorMap = PointcloudColormap::COLOR;
 
-    /// Pointer to the (optional) ::fwData::Mesh output.
-    ::fwData::Mesh::sptr m_pointcloud = nullptr;
+    /// Pointer to the (optional) data::Mesh output.
+    data::Mesh::sptr m_pointcloud = nullptr;
 
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     CameraSettings m_cameraSettings;

@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( PRIORITY 2)
 set( DEPENDENCIES
     core
-    fwData
+    data
     fwDataTools
     fwGuiQt
     fwRender

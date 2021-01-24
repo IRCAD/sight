@@ -51,7 +51,7 @@ namespace uiImageQt
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image on which the slice index will be changed
+ * - \b image [data::Image]: image on which the slice index will be changed
  *
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".

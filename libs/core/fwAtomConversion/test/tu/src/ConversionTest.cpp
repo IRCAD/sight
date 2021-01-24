@@ -34,29 +34,29 @@
 #include <core/reflection/UserObject.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Array.hpp>
+#include <data/Boolean.hpp>
+#include <data/Color.hpp>
+#include <data/Composite.hpp>
+#include <data/Float.hpp>
+#include <data/Graph.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/Landmarks.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/String.hpp>
+#include <data/TransferFunction.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
+
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
-
-#include <fwData/Array.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Graph.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Landmarks.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
@@ -88,12 +88,12 @@ void ConversionTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+void compare(data::Object::sptr objRef, data::Object::sptr objComp)
 {
-    ::fwData::reflection::visitor::CompareObjects visitor;
+    data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
@@ -104,29 +104,29 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 
 void ConversionTest::dataToAtomTest()
 {
-    const ::fwData::Object::sptr VALUES[] = {
-        ::fwData::Integer::New(1337),
-        ::fwData::Float::New(),
-        ::fwData::String::New(),
-        ::fwData::Boolean::New(),
-        ::fwData::Vector::New(),
-        ::fwData::Color::New(1.4f, 0.9f, 1.1f, 1.67f),
-        ::fwData::Array::New(),
-        ::fwData::Image::New(),
-        ::fwData::Mesh::New(),
-        ::fwData::Material::New(),
-        ::fwData::Reconstruction::New(),
-        ::fwData::Composite::New(),
-        ::fwData::Point::New(),
-        ::fwData::PointList::New(),
-        ::fwData::TransformationMatrix3D::New(),
-        ::fwData::TransferFunction::New(),
-        ::fwData::Graph::New(),
+    const data::Object::sptr VALUES[] = {
+        data::Integer::New(1337),
+        data::Float::New(),
+        data::String::New(),
+        data::Boolean::New(),
+        data::Vector::New(),
+        data::Color::New(1.4f, 0.9f, 1.1f, 1.67f),
+        data::Array::New(),
+        data::Image::New(),
+        data::Mesh::New(),
+        data::Material::New(),
+        data::Reconstruction::New(),
+        data::Composite::New(),
+        data::Point::New(),
+        data::PointList::New(),
+        data::TransformationMatrix3D::New(),
+        data::TransferFunction::New(),
+        data::Graph::New(),
     };
 
     ::fwAtoms::Object::sptr atom;
 
-    for ( fwData::Object::sptr object : VALUES )
+    for ( data::Object::sptr object : VALUES )
     {
         atom = ::fwAtomConversion::convert(object);
 
@@ -141,8 +141,8 @@ void ConversionTest::dataToAtomTest()
         {
             std::string classname = atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
             // Drop attributes from fwAtomConversion::mappers.
-            if( ( classname == "::fwData::Mesh" && elem.first == "attributes" ) ||
-                ( classname == "::fwData::Graph" && elem.first == "connections" ) )
+            if( ( classname == "data::Mesh" && elem.first == "attributes" ) ||
+                ( classname == "data::Graph" && elem.first == "connections" ) )
             {
                 continue;
             }
@@ -165,9 +165,9 @@ void ConversionTest::dataToAtomTest()
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::userType:
-                    if( ( ( classname == "::fwData::Material" ) && ( attribute == "diffuse_texture" ) ) ||
-                        ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
-                        ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
+                    if( ( ( classname == "data::Material" ) && ( attribute == "diffuse_texture" ) ) ||
+                        ( ( classname == "data::Reconstruction" ) && ( attribute == "image" ) ) ||
+                        ( ( classname == "data::Reconstruction" ) && ( attribute == "mesh" ) ) )
                     {
                         CPPUNIT_ASSERT_MESSAGE("classname: " + classname + ", attribute: " + attribute,
                                                !elem.second);
@@ -196,19 +196,19 @@ void ConversionTest::dataToAtomTest()
 
 void ConversionTest::materialConversionTest()
 {
-    ::fwData::Color::sptr color       = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
-    ::fwData::Material::sptr material = ::fwData::Material::New();
+    data::Color::sptr color       = data::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
+    data::Material::sptr material = data::Material::New();
     material->setDiffuse(color);
 
     // Create Atom
-    ::fwData::Material::sptr materialTmp;
-    materialTmp                  = ::fwData::Object::copy( material );
+    data::Material::sptr materialTmp;
+    materialTmp                  = data::Object::copy( material );
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( materialTmp );
     materialTmp.reset();
 
     // Create Data from Atom
-    ::fwData::Object::sptr materialRes        = ::fwAtomConversion::convert(atom);
-    ::fwData::Material::sptr materialResultat = ::fwData::Material::dynamicCast(materialRes);
+    data::Object::sptr materialRes        = ::fwAtomConversion::convert(atom);
+    data::Material::sptr materialResultat = data::Material::dynamicCast(materialRes);
 
     compare(material, materialResultat);
 }
@@ -217,18 +217,18 @@ void ConversionTest::materialConversionTest()
 
 void ConversionTest::meshConversionTest()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock = mesh->lock();
+    data::Mesh::sptr mesh = data::Mesh::New();
+    const auto lock       = mesh->lock();
 
-    mesh->reserve(90, 30, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_COLORS
-                  | ::fwData::Mesh::Attributes::POINT_NORMALS
-                  | ::fwData::Mesh::Attributes::POINT_TEX_COORDS);
+    mesh->reserve(90, 30, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS
+                  | data::Mesh::Attributes::POINT_NORMALS
+                  | data::Mesh::Attributes::POINT_TEX_COORDS);
 
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( mesh );
 
     // Create Data from Atom
-    ::fwData::Object::sptr convertedMesh = ::fwAtomConversion::convert(atom);
-    ::fwData::Mesh::sptr mesh2           = ::fwData::Mesh::dynamicCast(convertedMesh);
+    data::Object::sptr convertedMesh = ::fwAtomConversion::convert(atom);
+    data::Mesh::sptr mesh2           = data::Mesh::dynamicCast(convertedMesh);
 
     compare(mesh, mesh2);
 
@@ -241,28 +241,28 @@ void ConversionTest::graphConversionTest()
     ::fwAtoms::Object::sptr atom;
     core::tools::UUID::UUIDType gID, n1ID, n2ID, n3ID, e12ID, e23ID;
     {
-        ::fwData::Graph::sptr g  = ::fwData::Graph::New();
-        gID                      = core::tools::UUID::get(g);
-        ::fwData::Node::sptr n1  = ::fwData::Node::New();
-        n1ID                     = core::tools::UUID::get(n1);
-        ::fwData::Node::sptr n2  = ::fwData::Node::New();
-        n2ID                     = core::tools::UUID::get(n2);
-        ::fwData::Node::sptr n3  = ::fwData::Node::New();
-        n3ID                     = core::tools::UUID::get(n3);
-        ::fwData::Edge::sptr e12 = ::fwData::Edge::New();
-        e12ID                    = core::tools::UUID::get(e12);
-        ::fwData::Edge::sptr e23 = ::fwData::Edge::New();
-        e23ID                    = core::tools::UUID::get(e23);
+        data::Graph::sptr g = data::Graph::New();
+        gID = core::tools::UUID::get(g);
+        data::Node::sptr n1 = data::Node::New();
+        n1ID = core::tools::UUID::get(n1);
+        data::Node::sptr n2 = data::Node::New();
+        n2ID = core::tools::UUID::get(n2);
+        data::Node::sptr n3 = data::Node::New();
+        n3ID = core::tools::UUID::get(n3);
+        data::Edge::sptr e12 = data::Edge::New();
+        e12ID = core::tools::UUID::get(e12);
+        data::Edge::sptr e23 = data::Edge::New();
+        e23ID = core::tools::UUID::get(e23);
 
         // build graph
         g->addNode(n1);
         g->addNode(n2);
         g->addNode(n3);
 
-        n1->addOutputPort( ::fwData::Port::New() );
-        n2->addInputPort( ::fwData::Port::New() );
-        n2->addOutputPort( ::fwData::Port::New() );
-        n3->addInputPort( ::fwData::Port::New() );
+        n1->addOutputPort( data::Port::New() );
+        n2->addInputPort( data::Port::New() );
+        n2->addOutputPort( data::Port::New() );
+        n3->addInputPort( data::Port::New() );
 
         e12->setIdentifiers("IDNOTdefined", "IDNOTdefined");
         e23->setIdentifiers("IDNOTdefined", "IDNOTdefined");
@@ -271,22 +271,22 @@ void ConversionTest::graphConversionTest()
         g->addEdge(e23, n2, n3);
 
         // Test field on edge
-        e12->setField("infoTest", ::fwData::String::New("valueInfoTest"));
+        e12->setField("infoTest", data::String::New("valueInfoTest"));
 
         // Create Atom
         atom = ::fwAtomConversion::convert( g );
     }
 
     // Create Data from Atom
-    ::fwData::Graph::sptr newGraph = ::fwData::Graph::dynamicCast( ::fwAtomConversion::convert(atom) );
+    data::Graph::sptr newGraph = data::Graph::dynamicCast( ::fwAtomConversion::convert(atom) );
 
     // nodes
-    ::fwData::Node::sptr n1, n2, n3;
+    data::Node::sptr n1, n2, n3;
 
     // Test nodes
-    const ::fwData::Graph::NodeContainer& nodes = newGraph->getNodes();
+    const data::Graph::NodeContainer& nodes = newGraph->getNodes();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size", (size_t)3, nodes.size() );
-    for( ::fwData::Node::sptr node :  nodes )
+    for( data::Node::sptr node :  nodes )
     {
         core::tools::UUID::UUIDType nodeID = core::tools::UUID::get(node);
         CPPUNIT_ASSERT_MESSAGE("Test node uuid", nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
@@ -309,9 +309,9 @@ void ConversionTest::graphConversionTest()
     CPPUNIT_ASSERT_MESSAGE("Test node n3", n3 );
 
     // Test edges
-    const ::fwData::Graph::ConnectionContainer& connections = newGraph->getConnections();
+    const data::Graph::ConnectionContainer& connections = newGraph->getConnections();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size", (size_t)2, connections.size() );
-    for( ::fwData::Graph::ConnectionContainer::value_type elem  :  connections )
+    for( data::Graph::ConnectionContainer::value_type elem  :  connections )
     {
         core::tools::UUID::UUIDType edgeID = core::tools::UUID::get(elem.first);
         CPPUNIT_ASSERT_MESSAGE("Test edge uuid", edgeID == e12ID || edgeID == e23ID );
@@ -322,7 +322,7 @@ void ConversionTest::graphConversionTest()
 
             // test field
             CPPUNIT_ASSERT( elem.first->getField("infoTest") );
-            CPPUNIT_ASSERT( elem.first->getField< ::fwData::String >("infoTest")->value() == "valueInfoTest" );
+            CPPUNIT_ASSERT( elem.first->getField< data::String >("infoTest")->value() == "valueInfoTest" );
         }
         else
         {
@@ -338,13 +338,13 @@ void ConversionTest::tfConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
 
-    ::fwData::TransferFunction::sptr tf = ::fwTest::generator::Object::createTFColor(15, 120, 50);
+    data::TransferFunction::sptr tf = ::fwTest::generator::Object::createTFColor(15, 120, 50);
 
     // Create Atom
     atom = ::fwAtomConversion::convert( tf );
 
-    ::fwData::TransferFunction::sptr newTF =
-        ::fwData::TransferFunction::dynamicCast( ::fwAtomConversion::convert(atom) );
+    data::TransferFunction::sptr newTF =
+        data::TransferFunction::dynamicCast( ::fwAtomConversion::convert(atom) );
 
     compare(tf, newTF);
 }
@@ -374,40 +374,40 @@ void ConversionTest::landmarksConversionTest()
         // Basic test with empty structure
         ::fwAtoms::Object::sptr atom;
 
-        ::fwData::Landmarks::sptr landmarks = ::fwData::Landmarks::New();
+        data::Landmarks::sptr landmarks = data::Landmarks::New();
 
         // Create Atom
         atom = ::fwAtomConversion::convert( landmarks );
 
-        ::fwData::Landmarks::sptr newLandmarks =
-            ::fwData::Landmarks::dynamicCast( ::fwAtomConversion::convert(atom) );
+        data::Landmarks::sptr newLandmarks =
+            data::Landmarks::dynamicCast( ::fwAtomConversion::convert(atom) );
 
         compare(landmarks, newLandmarks);
     }
 
     {
-        const std::string GROUP1                    = "group_1";
-        const std::string GROUP2                    = "group_2";
-        const std::string GROUP3                    = "group_3";
-        const ::fwData::Landmarks::ColorType COLOR1 = {{1.f, 0.0f, 0.0f, 1.0f}};
-        const ::fwData::Landmarks::ColorType COLOR2 = {{0.f, 1.0f, 0.0f, 1.0f}};
-        const ::fwData::Landmarks::ColorType COLOR3 = {{0.f, 0.0f, 1.0f, 1.0f}};
-        const ::fwData::Landmarks::SizeType SIZE1   = 3.45f;
-        const ::fwData::Landmarks::SizeType SIZE2   = 7.5f;
-        const ::fwData::Landmarks::SizeType SIZE3   = 1.3f;
-        const ::fwData::Landmarks::Shape SHAPE1     = ::fwData::Landmarks::Shape::SPHERE;
-        const ::fwData::Landmarks::Shape SHAPE2     = ::fwData::Landmarks::Shape::CUBE;
-        const ::fwData::Landmarks::Shape SHAPE3     = ::fwData::Landmarks::Shape::SPHERE;
-        const bool VISIBILITY1                      = true;
-        const bool VISIBILITY2                      = false;
-        const bool VISIBILITY3                      = true;
+        const std::string GROUP1                = "group_1";
+        const std::string GROUP2                = "group_2";
+        const std::string GROUP3                = "group_3";
+        const data::Landmarks::ColorType COLOR1 = {{1.f, 0.0f, 0.0f, 1.0f}};
+        const data::Landmarks::ColorType COLOR2 = {{0.f, 1.0f, 0.0f, 1.0f}};
+        const data::Landmarks::ColorType COLOR3 = {{0.f, 0.0f, 1.0f, 1.0f}};
+        const data::Landmarks::SizeType SIZE1   = 3.45f;
+        const data::Landmarks::SizeType SIZE2   = 7.5f;
+        const data::Landmarks::SizeType SIZE3   = 1.3f;
+        const data::Landmarks::Shape SHAPE1     = data::Landmarks::Shape::SPHERE;
+        const data::Landmarks::Shape SHAPE2     = data::Landmarks::Shape::CUBE;
+        const data::Landmarks::Shape SHAPE3     = data::Landmarks::Shape::SPHERE;
+        const bool VISIBILITY1                  = true;
+        const bool VISIBILITY2                  = false;
+        const bool VISIBILITY3                  = true;
 
-        const ::fwData::Landmarks::PointType POINT1 = {{3.5, 5.8, 2.56}};
-        const ::fwData::Landmarks::PointType POINT2 = {{8.25, 56.0, 45.4}};
-        const ::fwData::Landmarks::PointType POINT3 = {{0.0, 0.0, 0.0}};
-        const ::fwData::Landmarks::PointType POINT4 = {{0.5, 0.6, 0.7}};
+        const data::Landmarks::PointType POINT1 = {{3.5, 5.8, 2.56}};
+        const data::Landmarks::PointType POINT2 = {{8.25, 56.0, 45.4}};
+        const data::Landmarks::PointType POINT3 = {{0.0, 0.0, 0.0}};
+        const data::Landmarks::PointType POINT4 = {{0.5, 0.6, 0.7}};
 
-        ::fwData::Landmarks::sptr landmarks = ::fwData::Landmarks::New();
+        data::Landmarks::sptr landmarks = data::Landmarks::New();
 
         landmarks->addGroup(GROUP1, COLOR1, SIZE1, SHAPE1, VISIBILITY1);
         landmarks->addGroup(GROUP2, COLOR2, SIZE2, SHAPE2, VISIBILITY2);
@@ -420,22 +420,22 @@ void ConversionTest::landmarksConversionTest()
         // Create Atom
         ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( landmarks );
 
-        ::fwData::Landmarks::sptr newLandmarks =
-            ::fwData::Landmarks::dynamicCast( ::fwAtomConversion::convert(atom) );
+        data::Landmarks::sptr newLandmarks =
+            data::Landmarks::dynamicCast( ::fwAtomConversion::convert(atom) );
 
         CPPUNIT_ASSERT(newLandmarks);
 
         CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfGroups(), newLandmarks->getNumberOfGroups());
         CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfPoints(), newLandmarks->getNumberOfPoints());
 
-        const ::fwData::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
+        const data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
 
         for (const auto& name : names)
         {
             CPPUNIT_ASSERT_NO_THROW(newLandmarks->getGroup(name));
 
-            const ::fwData::Landmarks::LandmarksGroup& group    = landmarks->getGroup(name);
-            const ::fwData::Landmarks::LandmarksGroup& newGroup = newLandmarks->getGroup(name);
+            const data::Landmarks::LandmarksGroup& group    = landmarks->getGroup(name);
+            const data::Landmarks::LandmarksGroup& newGroup = newLandmarks->getGroup(name);
 
             CPPUNIT_ASSERT(group.m_color == newGroup.m_color);
             CPPUNIT_ASSERT_EQUAL(group.m_points.size(), newGroup.m_points.size());
@@ -462,19 +462,19 @@ void ConversionTest::objectMultiReferencedTest()
 {
     ::fwAtoms::Object::sptr atom;
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        ::fwData::String::sptr data         = ::fwData::String::New();
-        composite->getContainer()["key1"]   = data;
-        composite->getContainer()["key2"]   = data;
+        data::Composite::sptr composite = data::Composite::New();
+        data::String::sptr data         = data::String::New();
+        composite->getContainer()["key1"] = data;
+        composite->getContainer()["key2"] = data;
 
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
     }
 
     // Create Data from Atom
-    ::fwData::Composite::sptr newComposite =
-        ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
-    ::fwData::Composite::ContainerType& dataMap = newComposite->getContainer();
+    data::Composite::sptr newComposite =
+        data::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    data::Composite::ContainerType& dataMap = newComposite->getContainer();
     CPPUNIT_ASSERT( dataMap.find("key1") != dataMap.end() );
     CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
     CPPUNIT_ASSERT( dataMap["key1"] );
@@ -489,9 +489,9 @@ void ConversionTest::recursiveObjectTest()
     ::fwAtoms::Object::sptr atom;
     core::tools::UUID::UUIDType compositeID;
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        compositeID                         = core::tools::UUID::get( composite );
-        composite->getContainer()["key"]    = composite;
+        data::Composite::sptr composite = data::Composite::New();
+        compositeID                      = core::tools::UUID::get( composite );
+        composite->getContainer()["key"] = composite;
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
 
@@ -502,9 +502,9 @@ void ConversionTest::recursiveObjectTest()
     CPPUNIT_ASSERT( !core::tools::UUID::exist( compositeID ) );
 
     // Create Data from Atom
-    ::fwData::Composite::sptr newComposite =
-        ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
-    ::fwData::Composite::ContainerType& dataMap = newComposite->getContainer();
+    data::Composite::sptr newComposite =
+        data::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    data::Composite::ContainerType& dataMap = newComposite->getContainer();
     CPPUNIT_ASSERT( dataMap.find("key") != dataMap.end() );
     CPPUNIT_ASSERT( newComposite == dataMap["key"] );
 
@@ -520,9 +520,9 @@ void ConversionTest::dataFactoryNotFoundExceptionTest()
 {
     ::fwAtoms::Object::sptr atom;
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        ::fwData::String::sptr data         = ::fwData::String::New();
-        composite->getContainer()["key"]    = data;
+        data::Composite::sptr composite = data::Composite::New();
+        data::String::sptr data         = data::String::New();
+        composite->getContainer()["key"] = data;
 
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
@@ -545,9 +545,9 @@ void ConversionTest::dataFactoryNotFoundExceptionTest()
 void ConversionTest::uuidExceptionTest()
 {
     // Create data
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data         = ::fwData::String::New();
-    composite->getContainer()["key"]    = data;
+    data::Composite::sptr composite = data::Composite::New();
+    data::String::sptr data         = data::String::New();
+    composite->getContainer()["key"] = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
@@ -561,20 +561,20 @@ void ConversionTest::uuidExceptionTest()
 void ConversionTest::uuidChangeTest()
 {
     // Create data
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data         = ::fwData::String::New();
-    composite->getContainer()["key"]    = data;
+    data::Composite::sptr composite = data::Composite::New();
+    data::String::sptr data         = data::String::New();
+    composite->getContainer()["key"] = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
 
-    ::fwData::Composite::sptr compositeReloaded;
-    ::fwData::String::sptr dataReloaded;
+    data::Composite::sptr compositeReloaded;
+    data::String::sptr dataReloaded;
 
-    compositeReloaded = ::fwData::Composite::dynamicCast(
+    compositeReloaded = data::Composite::dynamicCast(
         ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy())
         );
-    dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
+    dataReloaded = data::String::dynamicCast((*compositeReloaded)["key"]);
 
     CPPUNIT_ASSERT( core::tools::UUID::get(composite) != core::tools::UUID::get(compositeReloaded) );
     CPPUNIT_ASSERT( core::tools::UUID::get(data) != core::tools::UUID::get(dataReloaded) );
@@ -586,20 +586,20 @@ void ConversionTest::uuidChangeTest()
 void ConversionTest::uuidReuseTest()
 {
     // Create data
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data         = ::fwData::String::New();
-    composite->getContainer()["key"]    = data;
+    data::Composite::sptr composite = data::Composite::New();
+    data::String::sptr data         = data::String::New();
+    composite->getContainer()["key"] = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
 
-    ::fwData::Composite::sptr compositeReloaded;
-    ::fwData::String::sptr dataReloaded;
+    data::Composite::sptr compositeReloaded;
+    data::String::sptr dataReloaded;
 
-    compositeReloaded = ::fwData::Composite::dynamicCast(
+    compositeReloaded = data::Composite::dynamicCast(
         ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy())
         );
-    dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
+    dataReloaded = data::String::dynamicCast((*compositeReloaded)["key"]);
 
     CPPUNIT_ASSERT_EQUAL( composite, compositeReloaded );
     CPPUNIT_ASSERT_EQUAL( data, dataReloaded );
@@ -607,13 +607,13 @@ void ConversionTest::uuidReuseTest()
 
 //-----------------------------------------------------------------------------
 
-class ClassNotCamped : public ::fwData::Object
+class ClassNotCamped : public data::Object
 {
 public:
 
-    fwCoreClassMacro(ClassNotCamped, ::fwData::Object, ::fwData::factory::New< ClassNotCamped >)
+    fwCoreClassMacro(ClassNotCamped, data::Object, data::factory::New< ClassNotCamped >)
 
-    ClassNotCamped(::fwData::Object::Key)
+    ClassNotCamped(data::Object::Key)
     {
     }
     //------------------------------------------------------------------------------
@@ -641,7 +641,7 @@ void ConversionTest::nullPtrManagmentTest()
     {
         ::fwAtoms::Object::sptr atom;
         {
-            ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+            data::Mesh::sptr mesh = data::Mesh::New();
             CPPUNIT_ASSERT( !mesh->hasPointColors() );
 
             // Create Atom
@@ -651,7 +651,7 @@ void ConversionTest::nullPtrManagmentTest()
         // null ptr must be also in atom
         CPPUNIT_ASSERT( atom->getAttributes().find("point_colors") != atom->getAttributes().end() );
 
-        ::fwData::Mesh::sptr newMesh = ::fwData::Mesh::dynamicCast( ::fwAtomConversion::convert(atom) );
+        data::Mesh::sptr newMesh = data::Mesh::dynamicCast( ::fwAtomConversion::convert(atom) );
         CPPUNIT_ASSERT( newMesh );
         CPPUNIT_ASSERT( !newMesh->hasPointColors() );
     }
@@ -660,9 +660,9 @@ void ConversionTest::nullPtrManagmentTest()
     {
         ::fwAtoms::Object::sptr atom;
         {
-            ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-            composite->getContainer()["key1"]   = ::fwData::String::New();
-            composite->getContainer()["key2"]   = ::fwData::Object::sptr();
+            data::Composite::sptr composite = data::Composite::New();
+            composite->getContainer()["key1"] = data::String::New();
+            composite->getContainer()["key2"] = data::Object::sptr();
 
             // Create Atom
             atom = ::fwAtomConversion::convert( composite );
@@ -675,9 +675,9 @@ void ConversionTest::nullPtrManagmentTest()
             CPPUNIT_ASSERT( !(*map)["key2"] );
         }
 
-        ::fwData::Composite::sptr newComposite =
-            ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
-        ::fwData::Composite::ContainerType& dataMap = newComposite->getContainer();
+        data::Composite::sptr newComposite =
+            data::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+        data::Composite::ContainerType& dataMap = newComposite->getContainer();
         CPPUNIT_ASSERT( newComposite );
         CPPUNIT_ASSERT_EQUAL( (size_t)2, dataMap.size() );
         CPPUNIT_ASSERT( dataMap["key1"] );
@@ -689,9 +689,9 @@ void ConversionTest::nullPtrManagmentTest()
     {
         ::fwAtoms::Object::sptr atom;
         {
-            ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-            vector->getContainer().push_back( ::fwData::String::New() );
-            vector->getContainer().push_back( ::fwData::Object::sptr() );
+            data::Vector::sptr vector = data::Vector::New();
+            vector->getContainer().push_back( data::String::New() );
+            vector->getContainer().push_back( data::Object::sptr() );
 
             // Create Atom
             atom = ::fwAtomConversion::convert( vector );
@@ -703,8 +703,8 @@ void ConversionTest::nullPtrManagmentTest()
             CPPUNIT_ASSERT( !(*seq)[1] );
         }
 
-        ::fwData::Vector::sptr newVector         = ::fwData::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
-        ::fwData::Vector::ContainerType& dataVec = newVector->getContainer();
+        data::Vector::sptr newVector         = data::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
+        data::Vector::ContainerType& dataVec = newVector->getContainer();
         CPPUNIT_ASSERT( newVector );
         CPPUNIT_ASSERT_EQUAL( (size_t)2, dataVec.size() );
         CPPUNIT_ASSERT( dataVec[0] );
@@ -724,18 +724,18 @@ namespace fwAtomConversion
 namespace ut
 {
 
-class ClassNotManaged : public ::fwData::Object
+class ClassNotManaged : public data::Object
 {
 
 public:
 
-    fwCoreClassMacro(ClassNotManaged, ::fwData::Object, ::fwData::factory::New< ClassNotManaged >)
+    fwCoreClassMacro(ClassNotManaged, data::Object, data::factory::New< ClassNotManaged >)
 
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 
-    ClassNotManaged(::fwData::Object::Key)
+    ClassNotManaged(data::Object::Key)
     {
-        m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
+        m_values.insert( std::make_pair( data::String::New(), 0.2 ) );
     }
 
     //------------------------------------------------------------------------------
@@ -744,7 +744,7 @@ public:
     {
     }
 
-    std::map< ::fwData::String::sptr, double > m_values;
+    std::map< data::String::sptr, double > m_values;
 
 };
 
@@ -756,7 +756,7 @@ fwCampImplementDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
     builder
     .tag("object_version", "1")
     .tag("lib_name", "fwAtomConversion")
-    .base< ::fwData::Object>()
+    .base< sight::data::Object>()
     .property("values", &::fwAtomConversion::ut::ClassNotManaged::m_values);
 }
 
@@ -782,7 +782,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector" );
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "data::Vector" );
         atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID() );
 
         CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( atomObj ),
@@ -792,7 +792,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector");
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "data::Vector");
         atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
 
         ::fwAtoms::Map::sptr atomFields = ::fwAtoms::Map::New();

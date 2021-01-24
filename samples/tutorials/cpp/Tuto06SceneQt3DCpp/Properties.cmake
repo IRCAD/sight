@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
-    fwData
+    data
     fwServices
 )
 set( REQUIREMENTS
@@ -14,7 +14,7 @@ set( REQUIREMENTS
     visuQt3DQt              # Enable Qt3D to render things in Qt window
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
 
     # UI declaration/Actions

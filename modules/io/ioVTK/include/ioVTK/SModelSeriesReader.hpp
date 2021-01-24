@@ -24,7 +24,7 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -142,9 +142,9 @@ private:
     /**
      * @brief loadMesh: read _file to load _mesh data.
      * @param[in] _file path to the file to read.
-     * @param[out] _mesh ::fwData::Mesh::sptr, the loaded mesh.
+     * @param[out] _mesh data::Mesh::sptr, the loaded mesh.
      */
-    void loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh);
+    void loadMesh( const std::filesystem::path& _file, data::Mesh::sptr _mesh);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

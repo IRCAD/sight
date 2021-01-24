@@ -143,7 +143,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
-    m_imageSize(::fwData::Image::Size({ 1, 1, 1 })),
+    m_imageSize(data::Image::Size({ 1, 1, 1 })),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
@@ -243,7 +243,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, const ::fwData::TransferFunction::sptr tf)
+void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const data::TransferFunction::sptr tf)
 {
     if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
@@ -252,7 +252,7 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 
     this->scaleTranslateCube(image->getSpacing2(), image->getOrigin2());
 
-    const ::fwData::Image::Size& newSize = image->getSize2();
+    const data::Image::Size& newSize = image->getSize2();
 
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)

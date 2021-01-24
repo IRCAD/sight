@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,9 +51,9 @@ namespace action
        </service>
    @endcode
  * @subsection Input Input:
- * - \b image [::fwData::Image]: source image.
+ * - \b image [data::Image]: source image.
  * @subsection In-Out In-Out:
- * - \b mesh [::fwData::Mesh]: target mesh.
+ * - \b mesh [data::Mesh]: target mesh.
  * @subsection Configuration Configuration:
  * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..

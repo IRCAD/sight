@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     core
-    fwData
+    data
     fwDataIO
     fwGui
     fwMedData
@@ -15,6 +15,6 @@ set( DEPENDENCIES
     fwIO
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )

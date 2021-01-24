@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     core
     fwTest
-    fwData
+    data
     arData    
 )
 set( REQUIREMENTS  )

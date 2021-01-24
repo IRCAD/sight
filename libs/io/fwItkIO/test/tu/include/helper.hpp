@@ -24,7 +24,7 @@
 
 #include <core/macros.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }
@@ -36,7 +36,7 @@ namespace ut
 namespace helper
 {
 
-void roundSpacing( SPTR(::fwData::Image) image);
+void roundSpacing( SPTR(data::Image) image);
 
 } //namespace helper
 } //namespace ut

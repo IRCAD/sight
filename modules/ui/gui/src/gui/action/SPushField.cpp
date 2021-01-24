@@ -92,10 +92,10 @@ void SPushField::stopping()
 
 void SPushField::updating()
 {
-    ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
+    data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
-    ::fwData::Object::sptr obj = objectSrc->getField(m_field);
+    data::Object::sptr obj = objectSrc->getField(m_field);
 
     SLM_WARN_IF("'" + m_field + "' not found in object '" + objectSrc->getID() + "'", obj == nullptr);
     if (obj)
@@ -108,7 +108,7 @@ void SPushField::updating()
 
 void SPushField::updateObjects()
 {
-    ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
+    data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
@@ -121,8 +121,8 @@ void SPushField::updateObjects()
 ::fwServices::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SOURCE_KEY, ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
-    connections.push( s_SOURCE_KEY, ::fwData::Object::s_REMOVED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
+    connections.push( s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
+    connections.push( s_SOURCE_KEY, data::Object::s_REMOVED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
 
     return connections;
 }

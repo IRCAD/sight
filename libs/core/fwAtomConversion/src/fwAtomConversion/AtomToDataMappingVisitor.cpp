@@ -31,14 +31,14 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/reflection/factory/new.hpp>
 
+#include <data/Object.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Sequence.hpp>
-
-#include <fwData/Object.hpp>
 
 namespace fwAtomConversion
 {
@@ -198,7 +198,7 @@ public:
 //-----------------------------------------------------------------------------
 
 AtomToDataMappingVisitor::AtomToDataMappingVisitor(
-    ::fwData::Object::sptr dataObj,
+    data::Object::sptr dataObj,
     ::fwAtoms::Object::sptr atomObj,
     AtomVisitor::DataCacheType& cache,
     const AtomVisitor::IReadPolicy& uuidPolicy) :
@@ -281,7 +281,7 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
             case ::fwAtoms::Base::OBJECT:
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(atom);
-                ::fwData::Object::sptr objectData  = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy );
+                data::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy );
                 property.set( m_campDataObj, objectData );
                 break;
             }
@@ -337,7 +337,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom sequence." ),
                                    property.elementType() != ::camp::userType );
 
-            ::fwData::Object::sptr objectData;
+            data::Object::sptr objectData;
             if( property.dynamic() )
             {
                 property.insert( m_campDataObj, index, objectData );
@@ -377,7 +377,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
                 case ::fwAtoms::Base::OBJECT:
                 {
                     ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
-                    ::fwData::Object::sptr objectData  =
+                    data::Object::sptr objectData =
                         ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
 
                     if( property.dynamic() )
@@ -438,7 +438,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
             FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom map." ),
                                    property.elementType() != ::camp::userType );
 
-            ::fwData::Object::sptr objectData;
+            data::Object::sptr objectData;
             property.set( m_campDataObj, elemAtom.first, objectData );
         }
         else
@@ -463,7 +463,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
                 case ::fwAtoms::Base::OBJECT:
                 {
                     ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
-                    ::fwData::Object::sptr objectData  =
+                    data::Object::sptr objectData =
                         ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
                     property.set( m_campDataObj, elemAtom.first, objectData );
                     break;

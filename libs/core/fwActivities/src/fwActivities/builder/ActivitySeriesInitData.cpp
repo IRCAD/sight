@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwActivities/builder/registry/macros.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Vector.hpp>
 
 namespace fwActivities
 {
@@ -52,10 +52,10 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
 
 ::fwMedData::ActivitySeries::sptr ActivitySeriesInitData::buildData(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    const ::fwData::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection ) const
 {
     ::fwMedData::ActivitySeries::sptr actSeries = this->ActivitySeries::buildData(activityInfo, currentSelection);
-    ::fwData::Composite::sptr data              = actSeries->getData();
+    data::Composite::sptr data = actSeries->getData();
 
     namespace ActReg = ::fwActivities::registry;
 
@@ -64,7 +64,7 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
     {
         if(req.maxOccurs == 0 && req.minOccurs == 0)
         {
-            (*data)[req.name] = ::fwData::factory::New(req.type);
+            (*data)[req.name] = data::factory::New(req.type);
         }
     }
 

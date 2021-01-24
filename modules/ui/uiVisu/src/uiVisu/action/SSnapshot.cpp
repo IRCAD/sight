@@ -28,7 +28,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, data::Object )
 
 SSnapshot::SSnapshot() noexcept
 {
@@ -116,8 +116,8 @@ std::string SSnapshot::requestFileName()
     dialogFile.addFilter("all", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         fileName = result->getPath().string();

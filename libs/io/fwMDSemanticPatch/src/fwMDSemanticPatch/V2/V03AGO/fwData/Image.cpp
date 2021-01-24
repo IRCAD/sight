@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V2/V03AGO/fwData/Image.hpp"
+#include "fwMDSemanticPatch/V2/V03AGO/data/Image.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -37,13 +37,13 @@ namespace V2
 {
 namespace V03AGO
 {
-namespace fwData
+namespace sight::data
 {
 
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Image";
+    m_originClassname = "data::Image";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V2", "V03AGO");
 }
@@ -80,7 +80,7 @@ void Image::apply(
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V03AGO
 } // namespace V2
 } // namespace fwMDSemanticPatch

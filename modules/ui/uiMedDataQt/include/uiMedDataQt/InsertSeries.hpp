@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -40,22 +40,22 @@ class UIMEDDATAQT_CLASS_API InsertSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(InsertSeries, ::fwData::Object, ::fwData::factory::New< InsertSeries >);
+    fwCoreClassMacro(InsertSeries, data::Object, data::factory::New< InsertSeries >)
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    UIMEDDATAQT_API InsertSeries(::fwData::Object::Key key);
+    UIMEDDATAQT_API InsertSeries(data::Object::Key key);
 
     /// Destructor
     UIMEDDATAQT_API virtual ~InsertSeries();
 
     /// Defines shallow copy
-    UIMEDDATAQT_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    UIMEDDATAQT_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    UIMEDDATAQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    UIMEDDATAQT_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_FIELD_HPP__
-#define __FWDATATOOLS_HELPER_FIELD_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace fwDataTools
 {
@@ -33,7 +32,7 @@ namespace helper
 {
 
 /**
- * @brief   Defines a helper to modify field on a ::fwData::Object and create a message notifying this modification.
+ * @brief   Defines a helper to modify field on a data::Object and create a message notifying this modification.
  */
 class FWDATATOOLS_CLASS_API Field
 {
@@ -41,7 +40,7 @@ class FWDATATOOLS_CLASS_API Field
 public:
 
     /// Constructor. Initialize parameters.
-    FWDATATOOLS_API Field( ::fwData::Object::sptr object );
+    FWDATATOOLS_API Field( data::Object::sptr object );
 
     /// Destructor. Call notify if changes has been made.
     FWDATATOOLS_API ~Field();
@@ -54,45 +53,45 @@ public:
      * @return pointer to corresponding field.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) setDefaultField( const ::fwData::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
+    SPTR(DATA_TYPE) setDefaultField( const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * * @deprecated use addOrSwap() instead
      */
-    FWDATATOOLS_API void setField( const ::fwData::Object::FieldNameType& name, ::fwData::Object::sptr obj );
+    FWDATATOOLS_API void setField( const data::Object::FieldNameType& name, data::Object::sptr obj );
 
     /**
      * @brief Replace the field map content.
      */
-    FWDATATOOLS_API void setFields( const ::fwData::Object::FieldMapType& newFields );
+    FWDATATOOLS_API void setFields( const data::Object::FieldMapType& newFields );
 
     /**
      * @brief Removes field with specified name.
      * @deprecated use remove() instead
      */
-    FWDATATOOLS_API void removeField( const ::fwData::Object::FieldNameType& name );
+    FWDATATOOLS_API void removeField( const data::Object::FieldNameType& name );
 
     /**
      * @brief Add a field in the object.
      * @param[in] _name key of the field.
      * @param[in] _obj object to add as a field
      *
-     * @throw ::fwData::Exception if the field already exists
+     * @throw data::Exception if the field already exists
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void add( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+    FWDATATOOLS_API void add( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
 
     /**
      * @brief Replace a field in the object.
      * @param[in] _name key of the field.
      * @param[in] _obj object to add  as a field
      *
-     * @throw ::fwData::Exception if the field does not exist.
+     * @throw data::Exception if the field does not exist.
      *
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void swap( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+    FWDATATOOLS_API void swap( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
 
     /**
      * @brief Add or replace a field in the object.
@@ -101,17 +100,17 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void addOrSwap( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+    FWDATATOOLS_API void addOrSwap( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
 
     /**
      * @brief Remove a field from the object.
      * @param[in] _name  key of the field.
      *
-     * @throw ::fwData::Exception if the field does not exist.
+     * @throw data::Exception if the field does not exist.
      *
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void remove(  const ::fwData::Object::FieldNameType& _name );
+    FWDATATOOLS_API void remove(  const data::Object::FieldNameType& _name );
 
     /**
      * @brief Clear all fields in the object.
@@ -125,29 +124,29 @@ public:
 
 protected:
     FWDATATOOLS_API void buildMessage(
-        const ::fwData::Object::FieldMapType& oldFields,
-        const ::fwData::Object::FieldMapType& newFields
+        const data::Object::FieldMapType& oldFields,
+        const data::Object::FieldMapType& newFields
         );
 
     /// Map of added objects, send on notify
-    ::fwData::Object::FieldsContainerType m_addedFields;
+    data::Object::FieldsContainerType m_addedFields;
     /// Map of new changed objects, send on notify
-    ::fwData::Object::FieldsContainerType m_newChangedFields;
+    data::Object::FieldsContainerType m_newChangedFields;
     /// Map of old changed objects, send on notify
-    ::fwData::Object::FieldsContainerType m_oldChangedFields;
+    data::Object::FieldsContainerType m_oldChangedFields;
     /// Map of removed objects, send on notify
-    ::fwData::Object::FieldsContainerType m_removedFields;
+    data::Object::FieldsContainerType m_removedFields;
     /// Composite to add/remove/change objects
 
-    ::fwData::Object::wptr m_object;
+    data::Object::wptr m_object;
 };
 
 template<typename DATA_TYPE>
-inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
+inline SPTR(DATA_TYPE) Field::setDefaultField(const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field  = object->getField(name);
+    data::Object::sptr object = m_object.lock();
+    data::Object::sptr field  = object->getField(name);
     if (!field)
     {
         m_addedFields[name] = defaultValue;
@@ -157,5 +156,3 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 
 } // namespace helper
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_FIELD_HPP__

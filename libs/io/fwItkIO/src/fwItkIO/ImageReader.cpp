@@ -32,7 +32,7 @@
 #include <core/tools/IntrinsicTypes.hpp>
 #include <core/tools/TypeInfoKeyTypeMapping.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
@@ -49,7 +49,7 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key )  :
-    ::fwData::location::enableSingleFile<
+    data::location::enableSingleFile<
         IObjectReader >(this)
 {
 }
@@ -66,7 +66,7 @@ struct ITKLoaderFunctor
 {
     struct Parameter
     {
-        ::fwData::Image::sptr m_dataImage;
+        data::Image::sptr m_dataImage;
         std::string m_filename;
         ::fwItkIO::ImageReader::sptr m_fwReader;
     };
@@ -144,8 +144,8 @@ void ImageReader::read()
 
     core::tools::Dispatcher< core::tools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
-    SLM_ASSERT("::fwData::Image is not well produced", m_object.lock() ); // verify that ::fwData::Image is well
-                                                                          // produced
+    SLM_ASSERT("data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
+    // produced
     // Post Condition image with a pixel type
     SLM_ASSERT("Image has an unspecified type",
                getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );

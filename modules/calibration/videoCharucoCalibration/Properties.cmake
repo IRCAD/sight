@@ -7,11 +7,11 @@ set( DEPENDENCIES
     arServices
     calibration3d
     core
-    fwData
+    data
     fwDataTools
     fwGui
     fwServices
     fwPreferences
     cvIO
 )
-set( REQUIREMENTS fwData servicesReg )
+set( REQUIREMENTS data servicesReg )

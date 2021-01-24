@@ -26,14 +26,14 @@
 #include <core/com/Signal.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, ::fwData::TransformationMatrix3D)
+fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, data::TransformationMatrix3D)
 
 static const ::fwServices::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
 static const ::fwServices::IService::KeyType s_OUTPUT = "output";
@@ -87,20 +87,20 @@ void SConcatenateMatrices::stopping()
 
 void SConcatenateMatrices::updating()
 {
-    auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_OUTPUT);
+    auto outputMatrix = this->getInOut< data::TransformationMatrix3D>(s_OUTPUT);
     SLM_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
     {
-        ::fwData::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
+        data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 
         ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
 
-        auto inverse = ::fwData::TransformationMatrix3D::New();
+        auto inverse = data::TransformationMatrix3D::New();
 
         size_t index = 0;
         for (const bool invertCurrentMatrix : m_invertVector)
         {
-            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D>(s_MATRIX_GROUP_INOUT, index++);
-            ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
+            auto inputMatrix = this->getInput< data::TransformationMatrix3D>(s_MATRIX_GROUP_INOUT, index++);
+            data::mt::ObjectReadLock inputMatrixLock(inputMatrix);
 
             if (invertCurrentMatrix)
             {
@@ -114,7 +114,7 @@ void SConcatenateMatrices::updating()
         }
     }
 
-    auto sig = outputMatrix->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = outputMatrix->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -127,7 +127,7 @@ void SConcatenateMatrices::updating()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MATRIX_GROUP_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_GROUP_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

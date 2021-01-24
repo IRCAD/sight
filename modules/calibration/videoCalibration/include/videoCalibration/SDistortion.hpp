@@ -25,7 +25,7 @@
 #include "videoCalibration/config.hpp"
 
 #include <arData/Camera.hpp>
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -67,10 +67,10 @@ namespace videoCalibration
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera containing calibration information.
- * - \b input [::fwData::Image]: input image to distort.
+ * - \b input [data::Image]: input image to distort.
  * @subsection In-Out In-Out
- * - \b output [::fwData::Image]: output image.
- * - \b map [::fwData::Image]: distortion map. Useful mainly if you want to perform the distortion directly with the
+ * - \b output [data::Image]: output image.
+ * - \b map [data::Image]: distortion map. Useful mainly if you want to perform the distortion directly with the
  * renderer.
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
@@ -96,8 +96,8 @@ public:
     VIDEOCALIBRATION_API virtual ~SDistortion() noexcept;
 
     /**
-     * @brief Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
-     * and ::fwData::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
+     * @brief Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * and data::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VIDEOCALIBRATION_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -136,7 +136,7 @@ private:
     bool m_calibrationMismatch { false };
 
     /// This is used to reset m_calibrationMismatch when the image resolution changes
-    ::fwData::Image::Size m_prevImageSize{0, 0, 0};
+    data::Image::Size m_prevImageSize{0, 0, 0};
 
 #if OPENCV_CUDA_SUPPORT
     ::cv::cuda::GpuMat m_mapx;

@@ -26,7 +26,7 @@
 
 #include <core/memory/BufferObject.hpp>
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 namespace fwDataTools
 {
@@ -54,13 +54,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(::fwData::Array::sptr array)
+    static sptr New(data::Array::sptr array)
     {
         return std::make_shared< ::fwDataTools::helper::Array >(array);
     }
 
-    [[deprecated("deprecated in sight 22.0, please use ::fwData::Array")]]
-    FWDATATOOLS_API Array(const ::fwData::Array::sptr& array );
+    [[deprecated("deprecated in sight 22.0, please use data::Array")]]
+    FWDATATOOLS_API Array(const data::Array::sptr& array );
 
     FWDATATOOLS_API virtual ~Array();
 
@@ -71,7 +71,7 @@ public:
      * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
      * to array 'id'
      */
-    FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const void* value);
+    FWDATATOOLS_API virtual void setItem(const data::Array::IndexType& id, const void* value);
 
     /**
      * @brief Setter for one item component of the array
@@ -82,7 +82,7 @@ public:
      * to array 'id', component index 'component'
      *
      */
-    FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const size_t component,
+    FWDATATOOLS_API virtual void setItem(const data::Array::IndexType& id, const size_t component,
                                          const void* value);
 
     ///
@@ -94,7 +94,7 @@ public:
      *
      * @return Pointer to the requested item in the buffer
      */
-    FWDATATOOLS_API virtual void* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0);
+    FWDATATOOLS_API virtual void* getItem(const data::Array::IndexType& id, const size_t component = 0);
 
     /**
      * @brief Typed version of getItem
@@ -105,7 +105,7 @@ public:
      *
      * @return Array buffer pointer casted to T
      */
-    template< typename T > T* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0);
+    template< typename T > T* getItem(const data::Array::IndexType& id, const size_t component = 0);
 
     /**
      * @brief Copies the data into the buffer pointed by <value>
@@ -113,8 +113,8 @@ public:
      * @param id Item id
      * @param[out] value Buffer to write into
      */
-    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, void* value) const;
-    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, const size_t component,
+    FWDATATOOLS_API virtual void getItem(const data::Array::IndexType& id, void* value) const;
+    FWDATATOOLS_API virtual void getItem(const data::Array::IndexType& id, const size_t component,
                                          void* value) const;
 
     /**
@@ -143,7 +143,7 @@ public:
         void* buf,
         bool takeOwnership,
         const core::tools::Type& type,
-        const ::fwData::Array::SizeType& size,
+        const data::Array::SizeType& size,
         size_t nbOfComponents,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
@@ -168,8 +168,8 @@ public:
      * @return buffer item pointer
      * @{
      */
-    FWDATATOOLS_API char* getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType );
-    FWDATATOOLS_API const char* getBufferPtr( const ::fwData::Array::IndexType& id, size_t component,
+    FWDATATOOLS_API char* getBufferPtr( const data::Array::IndexType& id, size_t component, size_t sizeOfType );
+    FWDATATOOLS_API const char* getBufferPtr( const data::Array::IndexType& id, size_t component,
                                               size_t sizeOfType ) const;
     ///@}
 
@@ -192,7 +192,7 @@ protected:
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
         );
 
-    ::fwData::Array::sptr m_array;
+    data::Array::sptr m_array;
     core::memory::BufferObject::Lock m_lock;
 
 };
@@ -216,11 +216,11 @@ T* Array::end()
 //------------------------------------------------------------------------------
 
 template< typename T >
-T* Array::getItem(const ::fwData::Array::IndexType& id, const size_t component)
+T* Array::getItem(const data::Array::IndexType& id, const size_t component)
 {
     return static_cast<T*> (this->getItem(id, component));
 }
 
 } // namespace helper
 
-} // namespace fwData
+} // namespace sight::data

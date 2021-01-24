@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiTF/config.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -61,17 +61,17 @@ namespace uiTF
    @endcode
  *
  * @subsection Input Input
- * - \b currentTF [::fwData::TransferFunction](optional): current transfer function used to change editor selection. It
+ * - \b currentTF [data::TransferFunction](optional): current transfer function used to change editor selection. It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
  *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
  *
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
- * - \b tfPool [::fwData::Composite]: composite containing the transfer function.
+ * - \b tfPool [data::Composite]: composite containing the transfer function.
  *
  * @subsection Output Output
- * - \b tf [::fwData::TransferFunction]: selected transfer function.
+ * - \b tf [data::TransferFunction]: selected transfer function.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
@@ -147,7 +147,7 @@ private:
      * @param _name the name used to search the TF.
      * @return True if the TF named _sName is found.
      */
-    bool hasTransferFunctionName(const std::string& _name, const ::fwData::Composite::csptr _poolTF = nullptr) const;
+    bool hasTransferFunctionName(const std::string& _name, const data::Composite::csptr _poolTF = nullptr) const;
 
     /**
      * @brief Create a string that represents a TF name not already present in the composite.
@@ -212,7 +212,7 @@ private:
     QPushButton* m_exportButton { nullptr };
 
     /// Contains the current selected TF.
-    ::fwData::TransferFunction::sptr m_selectedTF { nullptr };
+    data::TransferFunction::sptr m_selectedTF { nullptr };
 
     /// Stores path were looking for TF presets.
     typedef std::vector< std::filesystem::path > PathContainerType;

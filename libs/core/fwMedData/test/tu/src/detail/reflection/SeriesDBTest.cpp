@@ -28,11 +28,11 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
+#include <data/reflection/getObject.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtoms/Sequence.hpp>
-
-#include <fwData/reflection/getObject.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::SeriesDBTest );

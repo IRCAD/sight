@@ -43,7 +43,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Meta image reader"))
 {
 }
@@ -62,7 +62,7 @@ void MetaImageReader::read()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Image::sptr pImage = this->getConcreteObject();
+    data::Image::sptr pImage = this->getConcreteObject();
 
     vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -97,7 +97,7 @@ void MetaImageReader::read()
     }
     catch( std::exception& e)
     {
-        FW_RAISE("MetaImage to fwData::Image failed : "<<e.what());
+        FW_RAISE("MetaImage to data::Image failed : "<<e.what());
     }
 }
 

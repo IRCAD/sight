@@ -38,7 +38,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Composite;
 class Integer;
@@ -85,7 +85,7 @@ namespace ioDicom
  * @subsection Input Input:
  * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
  * @subsection Output Output:
- * - \b image [::fwData::Image]: Downloaded image.
+ * - \b image [data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
  * - \b dicomReader Reader type to use.
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
@@ -178,11 +178,11 @@ private:
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
     /// Axial slice index
-    SPTR(fwData::Integer) m_axialIndex;
+    SPTR(data::Integer) m_axialIndex;
     /// Frontal slice index
-    SPTR(::fwData::Integer) m_frontalIndex;
+    SPTR(data::Integer) m_frontalIndex;
     /// Sagittal slice index
-    SPTR(::fwData::Integer) m_sagittalIndex;
+    SPTR(data::Integer) m_sagittalIndex;
 
     /// Timer used to generate the new slice selection delay
     SPTR(core::thread::Timer) m_delayTimer2;

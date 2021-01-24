@@ -32,14 +32,14 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -283,7 +283,7 @@ SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities
 
 void SActivityLauncher::updating()
 {
-    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     const bool launchAS = this->launchAS(selection);
@@ -322,7 +322,7 @@ void SActivityLauncher::updating()
 
 void SActivityLauncher::updateState()
 {
-    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     bool isExecutable = false;
@@ -360,7 +360,7 @@ void SActivityLauncher::updateState()
         dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
-            ::fwData::Object::sptr obj = selection->front();
+            data::Object::sptr obj = selection->front();
             if (::fwMedData::ActivitySeries::dynamicCast(obj))
             {
                 isExecutable = true;
@@ -379,9 +379,9 @@ void SActivityLauncher::updateState()
 //------------------------------------------------------------------------------
 
 void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo& info,
-                                      const ::fwData::Vector::csptr& selection)
+                                      const data::Vector::csptr& selection)
 {
-    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
+    data::Composite::sptr replaceMap = data::Composite::New();
     ::fwActivities::IBuilder::sptr builder;
     builder = ::fwActivities::builder::factory::New(info.builderImpl);
     SLM_ASSERT(info.builderImpl << " instantiation failed", builder);
@@ -463,7 +463,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         module->start();
     }
 
-    ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
+    data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     ::fwActivities::IValidator::ValidationType validation;
@@ -498,14 +498,14 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 
 //------------------------------------------------------------------------------
 
-bool SActivityLauncher::launchAS(const ::fwData::Vector::csptr& selection)
+bool SActivityLauncher::launchAS(const data::Vector::csptr& selection)
 {
     bool launchAS = false;
     ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
     dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
     if(dataCount.size() == 1)
     {
-        for(::fwData::Object::sptr obj :  *selection)
+        for(data::Object::sptr obj :  *selection)
         {
             ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(obj);
             if (!as)
@@ -534,7 +534,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
     }
     else
     {
-        ::fwData::Vector::sptr selection = ::fwData::Vector::New();
+        data::Vector::sptr selection = data::Vector::New();
         selection->getContainer().push_back(series);
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
 
@@ -602,8 +602,8 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
 
 SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const ParametersType& parameters )
 {
-    ParametersType transParams = parameters;
-    ::fwData::Object::csptr workingObj = this->getInput< ::fwData::Object >(s_SERIES_INPUT);
+    ParametersType transParams     = parameters;
+    data::Object::csptr workingObj = this->getInput< data::Object >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", workingObj);
 
     for(ParametersType::value_type& param :  transParams)
@@ -616,10 +616,10 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(workingObj, parameterToReplace);
+            data::Object::sptr obj = data::reflection::getObject(workingObj, parameterToReplace);
             SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+            data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
             std::string parameterValue = obj->getID();
 
@@ -639,8 +639,8 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
-    connections.push(s_SERIES_INPUT, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
+    connections.push(s_SERIES_INPUT, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
+    connections.push(s_SERIES_INPUT, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT );
 
     return connections;
 }

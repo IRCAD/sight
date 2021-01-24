@@ -22,7 +22,7 @@
 
 #include "uiMedDataQt/widget/Selector.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>

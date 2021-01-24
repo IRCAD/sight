@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Array.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Array.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace fwDataTools
 {
@@ -34,7 +34,7 @@ namespace helper
 {
 
 /**
- * @brief Defines a helper to modify a ::fwData::PointList.
+ * @brief Defines a helper to modify a data::PointList.
  */
 class FWDATATOOLS_CLASS_API PointList
 {
@@ -53,16 +53,16 @@ public:
      * @param[in] _pointList2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
-    FWDATATOOLS_API static ::fwData::Array::sptr
-    computeDistance(::fwData::PointList::sptr _pointList1, ::fwData::PointList::sptr _pointList2);
+    FWDATATOOLS_API static data::Array::sptr
+    computeDistance(data::PointList::sptr _pointList1, data::PointList::sptr _pointList2);
 
     /**
      * @brief Transform a pointList with a transformation matrix
      * @param[in] _pointList pointlist to be transformed
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
-    FWDATATOOLS_API static void transform(::fwData::PointList::sptr& _pointList,
-                                          const ::fwData::TransformationMatrix3D::csptr& _matrix);
+    FWDATATOOLS_API static void transform(data::PointList::sptr& _pointList,
+                                          const data::TransformationMatrix3D::csptr& _matrix);
 
     /**
      * @brief Associate 2 pointLists:
@@ -71,8 +71,8 @@ public:
      * @param[in] _pointList1 first pointlist
      * @param[in] _pointList2 pointlist that will be re-ordered
      */
-    FWDATATOOLS_API static void associate(const ::fwData::PointList::csptr& _pointList1,
-                                          ::fwData::PointList::sptr _pointList2);
+    FWDATATOOLS_API static void associate(const data::PointList::csptr& _pointList1,
+                                          data::PointList::sptr _pointList2);
 
     /**
      * @brief removeClosestPoint: removes the closest point from a reference point
@@ -81,9 +81,9 @@ public:
      * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(const ::fwData::PointList::sptr& _pointList,
-                                                                          const ::fwData::Point::csptr& _point,
-                                                                          float _delta);
+    FWDATATOOLS_API static const data::Point::sptr removeClosestPoint(const data::PointList::sptr& _pointList,
+                                                                      const data::Point::csptr& _point,
+                                                                      float _delta);
 
 };
 

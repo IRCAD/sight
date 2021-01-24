@@ -31,7 +31,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }
@@ -117,7 +117,7 @@ private:
     void initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
 
     /// Reads specified inr file in image.
-    bool createImage( const std::filesystem::path inrFile, SPTR(::fwData::Image) image );
+    bool createImage( const std::filesystem::path inrFile, SPTR(data::Image) image );
 };
 
 } // namespace ioITK

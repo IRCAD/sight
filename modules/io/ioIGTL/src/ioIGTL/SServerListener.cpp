@@ -133,7 +133,7 @@ void SServerListener::receiveObject()
         while (m_server->isStarted())
         {
             std::vector<std::string> deviceNamesReceive;
-            std::vector< ::fwData::Object::sptr > receiveObjects = m_server->receiveObjects(deviceNamesReceive);
+            std::vector< data::Object::sptr > receiveObjects = m_server->receiveObjects(deviceNamesReceive);
 
             size_t client = 0;
             for(const auto& receiveObject : receiveObjects)
@@ -146,13 +146,13 @@ void SServerListener::receiveObject()
                     if(iter != m_deviceNames.end())
                     {
                         const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        ::fwData::Object::sptr obj =
-                            this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+                        data::Object::sptr obj        =
+                            this->getInOut< data::Object >(s_OBJECTS_GROUP, indexReceiveObject);
 
                         obj->shallowCopy(receiveObject);
 
-                        ::fwData::Object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                        data::Object::ModifiedSignalType::sptr sig;
+                        sig = obj->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                         sig->asyncEmit();
                     }
                 }

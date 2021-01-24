@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwPacsIO/config.hpp"
 #include "fwPacsIO/data/PacsConfiguration.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 

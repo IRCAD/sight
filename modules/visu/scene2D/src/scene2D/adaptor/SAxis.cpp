@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,7 +82,7 @@ void SAxis::configuring()
     // 'color'
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
     // 'align' attribute configuration
@@ -163,7 +163,7 @@ void SAxis::updating()
 
     const Scene2DRatio ratio = this->getRatio();
 
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQtdata::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
@@ -264,9 +264,9 @@ void SAxis::updating()
 
 //---------------------------------------------------------------------------------------
 
-void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
+void SAxis::processInteraction( ::fwRenderQtdata::Event& _event)
 {
-    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQtdata::Event::Resize)
     {
         this->updating();
     }
@@ -277,7 +277,7 @@ void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
 ::fwServices::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

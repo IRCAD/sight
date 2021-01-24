@@ -63,7 +63,7 @@ void ImageReaderWriterTest::tearDown()
 void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
@@ -109,7 +109,7 @@ void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nb
 {
     for (int nb = 0; nb < nbTest; ++nb)
     {
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, type);
         this->checkSaveLoadInr(image);
     }
@@ -117,10 +117,10 @@ void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nb
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
+void ImageReaderWriterTest::checkSaveLoadInr( data::Image::sptr image )
 {
     // inr only support image origin (0,0,0)
-    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
 
     // save image in inr
@@ -132,7 +132,7 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     myWriter->write();
 
     // load Image
-    ::fwData::Image::sptr image2          = ::fwData::Image::New();
+    data::Image::sptr image2 = data::Image::New();
     ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);

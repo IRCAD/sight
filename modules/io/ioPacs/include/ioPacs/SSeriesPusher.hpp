@@ -59,8 +59,8 @@ namespace ioPacs
        </service>
    @endcode
  * @subsection Input Input:
- * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
- * - \b selectedSeries [::fwData::Vector]: List of DICOM series to push to the PACS.
+ * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
+ * - \b selectedSeries [data::Vector]: List of DICOM series to push to the PACS.
  */
 class IOPACS_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
@@ -161,7 +161,7 @@ protected:
     ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
 
     /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
+    ::fwPacsIOdata::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// Push Worker
     core::thread::Worker::sptr m_pushSeriesWorker;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,17 +29,17 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace TransformationMatrix3D
 {
 
-/// Structural patch to convert a fwData::Mesh from version '1' to version '2'.
+/// Structural patch to convert a data::Mesh from version '1' to version '2'.
 class FWSTRUCTURALPATCH_CLASS_API V1ToV2 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToV2, ::fwStructuralPatch::fwData::TransformationMatrix3D::V1ToV2, new V1ToV2)
+    fwCoreClassMacro(V1ToV2, ::fwStructuralPatchdata::TransformationMatrix3D::V1ToV2, new V1ToV2)
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToV2();
@@ -64,6 +64,6 @@ public:
 
 } // namespace TransformationMatrix3D
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

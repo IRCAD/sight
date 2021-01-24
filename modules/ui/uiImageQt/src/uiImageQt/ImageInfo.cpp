@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -46,7 +46,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, data::Image )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -102,7 +102,7 @@ void ImageInfo::configuring()
 
 void ImageInfo::updating()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+    data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
     SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
@@ -114,15 +114,15 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 {
     if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
     {
-        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
+        data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
         SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
 
         const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            const double* point              = info.m_worldPos;
-            const ::fwData::Image::Size size = image->getSize2();
+            const double* point          = info.m_worldPos;
+            const data::Image::Size size = image->getSize2();
 
             if (point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
@@ -131,10 +131,10 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
                 return;
             }
 
-            const ::fwData::Image::Size coords =
-            {{ static_cast< ::fwData::Image::Size::value_type >(point[0]),
-               static_cast< ::fwData::Image::Size::value_type >(point[1]),
-               static_cast< ::fwData::Image::Size::value_type >(point[2])}};
+            const data::Image::Size coords =
+            {{ static_cast< data::Image::Size::value_type >(point[0]),
+               static_cast< data::Image::Size::value_type >(point[1]),
+               static_cast< data::Image::Size::value_type >(point[2])}};
 
             bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
             if (image->getNumberOfDimensions() < 3)
@@ -174,8 +174,8 @@ void ImageInfo::info( std::ostream& _sstream )
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

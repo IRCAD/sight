@@ -75,9 +75,9 @@ namespace ioAtoms
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwData::Object]: object to read. If an 'out' data is set it will be ignored.
+ * - \b data [data::Object]: object to read. If an 'out' data is set it will be ignored.
  * @subsection Output Output
- * - \b data [::fwData::Object]: object to read.
+ * - \b data [data::Object]: object to read.
  * @subsection Configuration Configuration
  * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' changes the
  *      object uuid only if it already exists in the application. 'StrictPolicy' keeps the object uuid and throws an
@@ -147,7 +147,7 @@ protected:
     IOATOMS_API void configuring() override;
 
     /**
-     * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
+     * @brief Tests file extension, applies the good atom reader, and converts atom in data::Composite
      */
     IOATOMS_API void updating() override;
 

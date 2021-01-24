@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace DataCampHelper
 {
@@ -30,11 +30,11 @@ typedef std::vector<std::string> PropertiesNameType;
 
 void visitProperties(const std::string& className, const PropertiesNameType& vecProp);
 
-void compareSimplePropertyValue(::fwData::Object::sptr obj,
+void compareSimplePropertyValue(data::Object::sptr obj,
                                 const std::string& propertyPath,
                                 const std::string& value);
 
-void compareObjectPropertyValue(::fwData::Object::sptr obj,
+void compareObjectPropertyValue(data::Object::sptr obj,
                                 const std::string& propertyPath,
-                                ::fwData::Object::sptr value);
+                                data::Object::sptr value);
 }

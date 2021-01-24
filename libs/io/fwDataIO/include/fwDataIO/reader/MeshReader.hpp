@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -45,16 +45,16 @@ namespace reader
  * @brief   Mesh reader. Read file format .trian
  *
  *
- * Load trian file into fwData::Mesh
+ * Load trian file into data::Mesh
  */
 class FWDATAIO_CLASS_API MeshReader :
-    public GenericObjectReader< ::fwData::Mesh>,
-    public ::fwData::location::enableSingleFile< IObjectReader >
+    public GenericObjectReader< data::Mesh>,
+    public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MeshReader, GenericObjectReader< ::fwData::Mesh >, ::fwDataIO::reader::factory::New< MeshReader >)
+    fwCoreClassMacro(MeshReader, GenericObjectReader< data::Mesh >, ::fwDataIO::reader::factory::New< MeshReader >)
 
     /// Constructor. Do nothing.
     FWDATAIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);

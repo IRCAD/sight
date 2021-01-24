@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     arData
     core
-    fwData
+    data
     fwDataTools
     fwServices
 )

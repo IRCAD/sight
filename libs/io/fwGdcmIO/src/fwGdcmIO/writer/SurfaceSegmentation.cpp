@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
@@ -51,7 +51,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 SurfaceSegmentation::SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_logger(::fwLog::Logger::New()),
     m_writerJob(::fwJobs::Observer::New("Writing DICOM file"))
 {

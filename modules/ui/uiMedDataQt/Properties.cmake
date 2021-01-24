@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwActivities
     core
-    fwData
+    data
     fwGui
     fwGuiQt
     fwMedData

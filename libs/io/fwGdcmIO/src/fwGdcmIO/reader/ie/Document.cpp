@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,12 +39,12 @@ namespace ie
 Document::Document(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                    const SPTR(::gdcm::Reader)& reader,
                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                   const ::fwData::Image::sptr& image,
+                   const data::Image::sptr& image,
                    const ::fwLog::Logger::sptr& logger,
                    ProgressCallback progress,
                    CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
-                                                                 logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< data::Image >(dicomSeries, reader, instance, image,
+                                                             logger, progress, cancel)
 {
 }
 

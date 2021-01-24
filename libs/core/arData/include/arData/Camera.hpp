@@ -27,8 +27,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 #include <array>
 #include <filesystem>
@@ -42,11 +42,11 @@ namespace arData
 /**
  * @brief   This class defines a camera object.
  */
-class ARDATA_CLASS_API Camera : public ::fwData::Object
+class ARDATA_CLASS_API Camera : public data::Object
 {
 public:
     fwCampMakeFriendDataMacro((arData)(Camera));
-    fwCoreClassMacro(Camera, ::fwData::Object, ::fwData::factory::New< Camera >)
+    fwCoreClassMacro(Camera, data::Object, data::factory::New< Camera >)
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;
@@ -107,7 +107,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API Camera( ::fwData::Object::Key key );
+    ARDATA_API Camera( data::Object::Key key );
 
     /// Destructor
     ARDATA_API virtual ~Camera() noexcept;
@@ -117,7 +117,7 @@ public:
     ARDATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
-    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    ARDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /// Defines deep copy
     ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

@@ -24,9 +24,9 @@
 
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -67,10 +67,10 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
 
             submatch.replace(0, 1, "@");
 
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(series->getData(), submatch);
+            data::Object::sptr obj = data::reflection::getObject(series->getData(), submatch);
             SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+            data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
             std::string tabInfoSeshat;
 
@@ -80,7 +80,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
             }
             else
             {
-                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
             }
 
             submatch.replace(0, 1, "!");
@@ -115,10 +115,10 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(series->getData(), parameterToReplace);
+            data::Object::sptr obj = data::reflection::getObject(series->getData(), parameterToReplace);
             SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+            data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
             std::string parameterValue = obj->getID();
 

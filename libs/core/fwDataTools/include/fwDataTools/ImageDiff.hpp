@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwDataTools
 {
@@ -38,9 +38,9 @@ public:
 
     struct ElementType
     {
-        ::fwData::Image::IndexType m_index;
-        ::fwData::Image::BufferType* m_oldValue;
-        ::fwData::Image::BufferType* m_newValue;
+        data::Image::IndexType m_index;
+        data::Image::BufferType* m_oldValue;
+        data::Image::BufferType* m_newValue;
     };
 
     /// Constructor.
@@ -65,14 +65,14 @@ public:
     FWDATATOOLS_API void addDiff(const ImageDiff& diff);
 
     /// Append a new pixel diff.
-    FWDATATOOLS_API void addDiff(const ::fwData::Image::IndexType index, const ::fwData::Image::BufferType* oldValue,
-                                 const ::fwData::Image::BufferType* newValue);
+    FWDATATOOLS_API void addDiff(const data::Image::IndexType index, const data::Image::BufferType* oldValue,
+                                 const data::Image::BufferType* newValue);
 
     /// Write the new values in the image.
-    FWDATATOOLS_API void applyDiff(const ::fwData::Image::sptr& img) const;
+    FWDATATOOLS_API void applyDiff(const data::Image::sptr& img) const;
 
     /// Write the old value back in the image.
-    FWDATATOOLS_API void revertDiff(const ::fwData::Image::sptr& img) const;
+    FWDATATOOLS_API void revertDiff(const data::Image::sptr& img) const;
 
     /// Return the amount of memory actually used by the elements.
     FWDATATOOLS_API size_t getSize() const;
@@ -90,15 +90,15 @@ public:
     FWDATATOOLS_API ElementType getElement(size_t index) const;
 
     /// Returns the image index from the element at the given index
-    inline ::fwData::Image::IndexType getElementDiffIndex(size_t eltIndex) const;
+    inline data::Image::IndexType getElementDiffIndex(size_t eltIndex) const;
 
 private:
 
     /// Write the new value in the image from one element.
-    void applyDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const;
+    void applyDiffElt(const data::Image::sptr& img, size_t eltIndex) const;
 
     /// Write the old value back in the image from one element.
-    void revertDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const;
+    void revertDiffElt(const data::Image::sptr& img, size_t eltIndex) const;
 
     /// The size of a single pixel diff.
     size_t m_imgEltSize;
@@ -118,10 +118,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-fwData::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
+data::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
 {
     std::uint8_t* eltPtr = m_buffer + eltIndex * m_eltSize;
-    return *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
+    return *reinterpret_cast< data::Image::IndexType* >(eltPtr);
 }
 
 } // namespace fwDataTools

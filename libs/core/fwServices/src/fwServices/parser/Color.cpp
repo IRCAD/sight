@@ -26,10 +26,10 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/Color.hpp>
+#include <data/Color.hpp>
 
 fwServicesRegisterMacro(::fwServices::IXMLParser, ::fwServices::parser::Color)
-fwServicesRegisterObjectMacro(::fwServices::parser::Color, ::fwData::Color)
+fwServicesRegisterObjectMacro(::fwServices::parser::Color, data::Color)
 
 namespace fwServices
 {
@@ -42,7 +42,7 @@ static const std::string s_VALUE_CONFIG = "value";
 
 void Color::createConfig(core::tools::Object::sptr _obj)
 {
-    const ::fwData::Color::sptr color = ::fwData::Color::dynamicCast(_obj);
+    const data::Color::sptr color = data::Color::dynamicCast(_obj);
     SLM_ASSERT("Color does not exist.", color);
 
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement(s_VALUE_CONFIG);

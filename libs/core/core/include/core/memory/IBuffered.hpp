@@ -25,7 +25,7 @@
 #include "core/config.hpp"
 #include "core/memory/BufferObject.hpp"
 
-namespace fwData
+namespace sight::data
 {
 namespace mt
 {
@@ -45,7 +45,7 @@ class CORE_CLASS_API IBuffered
 protected:
 
     template< class DATATYPE >
-    friend class ::fwData::mt::locked_ptr;
+    friend class data::mt::locked_ptr;
 
     /**
      * @brief Must allocate a core::memory::BufferObject::Lock and store it into the vector parameter

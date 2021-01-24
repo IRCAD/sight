@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 namespace fwDataTools
 {
@@ -95,7 +95,7 @@ public:
     FWDATATOOLS_API void getCurrentSliceCenter(double center[3]);
 
     /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
+    FWDATATOOLS_API data::Image::sptr getImage() const;
 
     /**
      * @brief Get the image spacing.
@@ -121,7 +121,7 @@ public:
     FWDATATOOLS_API void getPlane( double points[4][3], int sliceNumber );
 
     /// Get the slice index
-    FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
+    FWDATATOOLS_API void getSliceIndex(data::Integer::sptr index[3]);
 
     /// Set the slice index
     FWDATATOOLS_API bool setSliceIndex(const int index[3]);
@@ -136,7 +136,7 @@ public:
     FWDATATOOLS_API virtual void setOrientation( Orientation orientation );
 
     /// Update the image information (slice index, min/max,...)
-    FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
+    FWDATATOOLS_API void updateImageInfos( data::Image::sptr image  );
 
     /**
      * @brief Convert world coordinates to slice index coordinates
@@ -181,16 +181,16 @@ protected:
     Orientation m_orientation;
 
     /// Axial slice index
-    ::fwData::Integer::sptr m_axialIndex;
+    data::Integer::sptr m_axialIndex;
 
     /// Frontal slice index
-    ::fwData::Integer::sptr m_frontalIndex;
+    data::Integer::sptr m_frontalIndex;
 
     /// Sagittal slice index
-    ::fwData::Integer::sptr m_sagittalIndex;
+    data::Integer::sptr m_sagittalIndex;
 
     /// Current image
-    ::fwData::Image::wptr m_weakImage;
+    data::Image::wptr m_weakImage;
 
 };
 
@@ -199,9 +199,9 @@ protected:
 template< typename FLOAT_ARRAY_3 >
 void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::Spacing imSpacing = image->getSpacing2();
+    const data::Image::Spacing imSpacing = image->getSpacing2();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -210,9 +210,9 @@ void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 template< typename INT_INDEX >
 void MedicalImage::getImageDataSize(INT_INDEX size)
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::Size imSize = image->getSize2();
+    const data::Image::Size imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 

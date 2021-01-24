@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace V2
 {
 namespace V03AGO
 {
-namespace fwData
+namespace sight::data
 {
 
 /// Patch an image from version 'V2' to 'V03AGO' within 'MedicalData' context.
@@ -62,7 +62,7 @@ public:
 
 };
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V03AGO
 } // namespace V2
 } // namespace fwMDSemanticPatch

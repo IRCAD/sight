@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/location/MultiFiles.hpp>
+#include <data/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
@@ -48,7 +48,7 @@ namespace fwVtkIO
  */
 class FWVTKIO_CLASS_API SeriesDBReader :
     public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-    public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
+    public data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:

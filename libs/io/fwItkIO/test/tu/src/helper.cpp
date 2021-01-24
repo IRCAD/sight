@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "helper.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwItkIO
 {
@@ -40,9 +40,9 @@ double tolerance(double num)
 
 //------------------------------------------------------------------------------
 
-void roundSpacing(::fwData::Image::sptr image)
+void roundSpacing(data::Image::sptr image)
 {
-    ::fwData::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image->setSpacing2(spacing);
 }

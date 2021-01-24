@@ -27,12 +27,12 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/String.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -184,7 +184,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
     SeriesDB::generateSeriesInformation(imgSeries);
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     imgSeries->setImage(image);
@@ -203,7 +203,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB;
     for (unsigned char nb = 0; nb < nbReconstruction; ++nb)
     {
-        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+        data::Reconstruction::sptr rec = data::Reconstruction::New();
         // Generates reconstruction with a prefixed index in organName "0_Liver", "1_Liver", ...
         SeriesDB::generateReconstruction(rec, static_cast<int>(nb));
 
@@ -225,8 +225,8 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     const std::string CONFIG_ID = "IdOfTheConfig";
     activitySeries->setActivityConfigId(CONFIG_ID);
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
-    data->getContainer()["key1"]   = ::fwData::String::New("ValueOfKey1");
+    data::Composite::sptr data = data::Composite::New();
+    data->getContainer()["key1"] = data::String::New("ValueOfKey1");
     activitySeries->setData(data);
 
     return activitySeries;
@@ -234,7 +234,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec, int index)
+void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
 {
     rec->setIsVisible(true);
     const std::string name = "Liver";
@@ -252,22 +252,22 @@ void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec, int in
     rec->setOrganName(organName);
     rec->setStructureType("Liver");
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     Image::generateRandomImage(img, core::tools::Type::create("uint16"));
     rec->setImage(img);
 
-    ::fwData::Material::sptr material = ::fwData::Material::New();
-    material->ambient()->red()        = 0.75f;
-    material->ambient()->green()      = 0.10f;
-    material->ambient()->blue()       = 0.56f;
-    material->ambient()->alpha()      = 0.8f;
-    material->diffuse()->red()        = 0.85f;
-    material->diffuse()->green()      = 0.20f;
-    material->diffuse()->blue()       = 0.66f;
-    material->diffuse()->alpha()      = 0.9f;
+    data::Material::sptr material = data::Material::New();
+    material->ambient()->red()   = 0.75f;
+    material->ambient()->green() = 0.10f;
+    material->ambient()->blue()  = 0.56f;
+    material->ambient()->alpha() = 0.8f;
+    material->diffuse()->red()   = 0.85f;
+    material->diffuse()->green() = 0.20f;
+    material->diffuse()->blue()  = 0.66f;
+    material->diffuse()->alpha() = 0.9f;
     rec->setMaterial(material);
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh = data::Mesh::New();
     Mesh::generateMesh( mesh );
 
     rec->setMesh(mesh);

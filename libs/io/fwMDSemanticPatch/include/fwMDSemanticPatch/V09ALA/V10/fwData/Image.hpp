@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace V09ALA
 {
 namespace V10
 {
-namespace fwData
+namespace sight::data
 {
 
 /// Patch the 'landmarks' field of an image from version 'V9ALA' to 'V10' within 'MedicalData' context.
@@ -53,7 +53,7 @@ public:
     /**
      * @brief Applies patch.
      *
-     * Converts the "m_imageLandmarksId" field from a ::fwData::PointList to a ::fwData::Landmarks in "m_landmarksId" .
+     * Converts the "m_imageLandmarksId" field from a data::PointList to a data::Landmarks in "m_landmarksId" .
      */
     FWMDSEMANTICPATCH_API virtual void apply(
         const ::fwAtoms::Object::sptr& previous,
@@ -62,7 +62,7 @@ public:
 
 };
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V10
 } // namespace V09ALA
 } // namespace fwMDSemanticPatch

@@ -43,9 +43,9 @@ struct Resampling
     struct Parameters
     {
         ::itk::AffineTransform<double, 3>::Pointer i_trf;
-        ::fwData::Image::csptr i_image;
-        ::fwData::Image::sptr o_image;
-        ::fwData::Image::csptr i_targetImage;
+        data::Image::csptr i_image;
+        data::Image::sptr o_image;
+        data::Image::csptr i_targetImage;
     };
 
     //------------------------------------------------------------------------------
@@ -105,10 +105,10 @@ struct Resampling
 
 //-----------------------------------------------------------------------------
 
-void Resampler::resample(const ::fwData::Image::csptr& _inImage,
-                         const ::fwData::Image::sptr& _outImage,
-                         const ::fwData::TransformationMatrix3D::csptr& _trf,
-                         const ::fwData::Image::csptr& _targetImg)
+void Resampler::resample(const data::Image::csptr& _inImage,
+                         const data::Image::sptr& _outImage,
+                         const data::TransformationMatrix3D::csptr& _trf,
+                         const data::Image::csptr& _targetImg)
 {
     const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
 
@@ -146,19 +146,19 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
 
 //-----------------------------------------------------------------------------
 
-fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
-                                        const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                        const ::fwData::Image::SpacingType& _outputSpacing)
+data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
+                                      const data::TransformationMatrix3D::csptr& _trf,
+                                      const data::Image::SpacingType& _outputSpacing)
 {
-    ::fwData::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
+    data::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
     return Resampler::resample(_img, _trf, spacing);
 }
 
 //-----------------------------------------------------------------------------
 
-fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
-                                        const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                        const ::fwData::Image::Spacing& _outputSpacing)
+data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
+                                      const data::TransformationMatrix3D::csptr& _trf,
+                                      const data::Image::Spacing& _outputSpacing)
 {
     using PointType           = ::itk::Point<double, 3>;
     using VectorContainerType = ::itk::VectorContainer<int, PointType>;
@@ -203,9 +203,9 @@ fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
     outputBB->ComputeBoundingBox();
 
     // Compute output size and origin.
-    ::fwData::Image::sptr output = ::fwData::Image::New();
-    ::fwData::Image::Origin outputOrigin;
-    ::fwData::Image::Size outputSize;
+    data::Image::sptr output = data::Image::New();
+    data::Image::Origin outputOrigin;
+    data::Image::Size outputSize;
 
     for(std::uint8_t i = 0; i < 3; ++i)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 GzArrayWriter::GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -55,7 +55,7 @@ void GzArrayWriter::write()
 {
     assert( getFile().empty() == false );
 
-    ::fwData::Array::csptr array = this->getConcreteObject();
+    data::Array::csptr array = this->getConcreteObject();
 
     /// test if can open archive
     gzFile rawFile = gzopen( this->getFile().string().c_str(), "wb1");

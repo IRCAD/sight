@@ -24,8 +24,8 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Image.hpp>
+#include <data/Histogram.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
@@ -75,11 +75,11 @@ void ProcessingTest::histogramTest()
     std::string implementation = "::scene2D::processing::SComputeHistogram";
 
     // Configure data hirearchy
-    ::fwData::Image::sptr image         = ::fwData::Image::New();
-    ::fwData::Histogram::sptr histogram = ::fwData::Histogram::New();
+    data::Image::sptr image         = data::Image::New();
+    data::Histogram::sptr histogram = data::Histogram::New();
 
     // Create image.
-    image->resize(sizeX, sizeY,  sizeZ, core::tools::Type::s_INT16, ::fwData::Image::GRAY_SCALE);
+    image->resize(sizeX, sizeY,  sizeZ, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
     auto itr            = image->begin< ImageType >();
@@ -122,7 +122,7 @@ void ProcessingTest::histogramTest()
     srv->stop().wait();
     ::fwServices::OSR::unregisterService(srv);
 
-    ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
+    data::Histogram::fwHistogramValues values = histogram->getValues();
     CPPUNIT_ASSERT_EQUAL((size_t) 40-10+1, values.size());
 
     CPPUNIT_ASSERT_EQUAL((float) 10, histogram->getMinValue());

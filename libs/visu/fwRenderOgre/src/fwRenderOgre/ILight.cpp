@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,8 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 
-::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(::fwData::Color::sptr _diffuse,
-                                                        ::fwData::Color::sptr _specular)
+::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(data::Color::sptr _diffuse,
+                                                        data::Color::sptr _specular)
 {
     ::fwRenderOgre::ILight::sptr light = ::fwRenderOgre::lightFactory::New(::fwRenderOgre::ILight::REGISTRY_KEY );
     SLM_ASSERT("The factory process to create an ILight failed.", light);

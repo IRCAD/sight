@@ -32,7 +32,7 @@
 namespace videoTools
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, ::fwData::PointList)
+fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, data::PointList)
 
 //-----------------------------------------------------------------------------
 
@@ -126,14 +126,14 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 {
     // Set z to 0 as it is an image.
 
-    auto pointList      = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    auto pixelPointList = this->getLockedInOut< ::fwData::PointList >(s_PIXEL_POINTLIST_INOUT);
+    auto pointList      = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
+    auto pixelPointList = this->getLockedInOut< data::PointList >(s_PIXEL_POINTLIST_INOUT);
 
-    ::fwData::Point::sptr point = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+    data::Point::sptr point = data::Point::New(currentPoint[0], currentPoint[1], 0.);
 
     const auto camera = this->getLockedInput< ::arData::Camera >(s_CAMERA_INOUT);
 
-    ::fwData::Point::sptr pixel;
+    data::Point::sptr pixel;
 
     switch (m_videoRef)
     {
@@ -143,13 +143,13 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
                                       static_cast<float>(camera->getHeight()) / 2.f };
 
             // Shift point to set reference at top_left corner & inverse y axis.
-            pixel = ::fwData::Point::New(currentPoint[0] + offset[0],
-                                         offset[1] - currentPoint[1], 0.);
+            pixel = data::Point::New(currentPoint[0] + offset[0],
+                                     offset[1] - currentPoint[1], 0.);
         }
         break;
         case VideoReference::TOP_LEFT:
         {
-            pixel = ::fwData::Point::New(currentPoint[0], currentPoint[1], 0.);
+            pixel = data::Point::New(currentPoint[0], currentPoint[1], 0.);
         }
         break;
         default:
@@ -160,24 +160,24 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
     // "World" points.
     {
         pointList->getPoints().push_back(point);
-        auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-            ::fwData::PointList::s_MODIFIED_SIG);
+        auto sig = pointList->signal< data::PointList::ModifiedSignalType >(
+            data::PointList::s_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
-            ::fwData::PointList::s_POINT_ADDED_SIG);
+        auto sig2 = pointList->signal< data::PointList::PointAddedSignalType >(
+            data::PointList::s_POINT_ADDED_SIG);
         sig2->asyncEmit(point);
     }
 
     // Pixel points.
     {
         pixelPointList->getPoints().push_back(pixel);
-        auto sig = pixelPointList->signal< ::fwData::PointList::ModifiedSignalType >(
-            ::fwData::PointList::s_MODIFIED_SIG);
+        auto sig = pixelPointList->signal< data::PointList::ModifiedSignalType >(
+            data::PointList::s_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pixelPointList->signal< ::fwData::PointList::PointAddedSignalType >(
-            ::fwData::PointList::s_POINT_ADDED_SIG);
+        auto sig2 = pixelPointList->signal< data::PointList::PointAddedSignalType >(
+            data::PointList::s_POINT_ADDED_SIG);
         sig2->asyncEmit(point);
     }
 }
@@ -186,9 +186,9 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 
 void SImagePicker::removeLastPoint()
 {
-    auto pointList      = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
-    auto pixelPointList = this->getLockedInOut< ::fwData::PointList >(s_PIXEL_POINTLIST_INOUT);
-    ::fwData::Point::sptr point;
+    auto pointList      = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
+    auto pixelPointList = this->getLockedInOut< data::PointList >(s_PIXEL_POINTLIST_INOUT);
+    data::Point::sptr point;
 
     if (!pointList->getPoints().empty() && !pixelPointList->getPoints().empty())
     {
@@ -196,12 +196,12 @@ void SImagePicker::removeLastPoint()
             point = pointList->getPoints().back();
             pointList->getPoints().pop_back();
 
-            auto sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-                ::fwData::PointList::s_MODIFIED_SIG);
+            auto sig = pointList->signal< data::PointList::ModifiedSignalType >(
+                data::PointList::s_MODIFIED_SIG);
             sig->asyncEmit();
 
-            auto sig2 = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            auto sig2 = pointList->signal< data::PointList::PointRemovedSignalType >(
+                data::PointList::s_POINT_REMOVED_SIG);
             sig2->asyncEmit(point);
         }
 
@@ -209,12 +209,12 @@ void SImagePicker::removeLastPoint()
             point = pixelPointList->getPoints().back();
             pixelPointList->getPoints().pop_back();
 
-            auto sig = pixelPointList->signal< ::fwData::PointList::ModifiedSignalType >(
-                ::fwData::PointList::s_MODIFIED_SIG);
+            auto sig = pixelPointList->signal< data::PointList::ModifiedSignalType >(
+                data::PointList::s_MODIFIED_SIG);
             sig->asyncEmit();
 
-            auto sig2 = pixelPointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            auto sig2 = pixelPointList->signal< data::PointList::PointRemovedSignalType >(
+                data::PointList::s_POINT_REMOVED_SIG);
             sig2->asyncEmit(point);
         }
     }

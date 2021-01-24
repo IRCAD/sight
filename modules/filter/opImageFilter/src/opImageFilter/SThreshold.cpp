@@ -28,7 +28,7 @@
 #include <core/tools/fwID.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -97,8 +97,8 @@ struct ThresholdFilter
     struct Parameter
     {
         double thresholdValue; ///< threshold value.
-        ::fwData::Image::csptr imageIn; ///< image source
-        ::fwData::Image::sptr imageOut; ///< image target: contains the result of the filter
+        data::Image::csptr imageIn; ///< image source
+        data::Image::sptr imageOut; ///< image target: contains the result of the filter
     };
 
     /**
@@ -109,8 +109,8 @@ struct ThresholdFilter
     void operator()(Parameter& param)
     {
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
-        ::fwData::Image::csptr imageIn = param.imageIn;
-        ::fwData::Image::sptr imageOut = param.imageOut;
+        data::Image::csptr imageIn     = param.imageIn;
+        data::Image::sptr imageOut     = param.imageOut;
         SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
@@ -139,12 +139,12 @@ void SThreshold::updating()
     ThresholdFilter::Parameter param; // filter parameters: threshold value, image source, image target
 
     // retrieve the input object
-    auto input = this->getLockedInput< ::fwData::Object >(s_IMAGE_INPUT);
+    auto input = this->getLockedInput< data::Object >(s_IMAGE_INPUT);
 
     // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
     ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input.get_shared());
-    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input.get_shared());
-    ::fwData::Object::sptr output;
+    data::Image::csptr imageSrc = data::Image::dynamicConstCast(input.get_shared());
+    data::Object::sptr output;
 
     // Get source/target image
     if(imageSeriesSrc)
@@ -155,7 +155,7 @@ void SThreshold::updating()
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 
         // create the output image
-        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+        data::Image::sptr imageOut = data::Image::New();
         imageSeriesDest->setImage(imageOut);
         param.imageOut = imageOut;
         output         = imageSeriesDest;
@@ -164,9 +164,9 @@ void SThreshold::updating()
     {
         param.imageIn = imageSrc;
         // create the output image
-        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
-        param.imageOut                 = imageOut;
-        output                         = imageOut;
+        data::Image::sptr imageOut = data::Image::New();
+        param.imageOut = imageOut;
+        output         = imageOut;
     }
     else
     {

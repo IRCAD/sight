@@ -32,9 +32,9 @@
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Array.hpp>
+#include <data/Composite.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -156,7 +156,7 @@ void SCharucoBoardDetector::checkPoints( core::HiResClock::HiResClockType timest
         {
             auto tl = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
 
-            ::fwData::PointList::sptr charucoBoardPoints;
+            data::PointList::sptr charucoBoardPoints;
             if(detection)
             {
                 auto tlDetection = this->getInOut< ::arData::FrameTL >(s_DETECTION_INOUT, i);
@@ -203,11 +203,11 @@ void SCharucoBoardDetector::detectPoints()
         const size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
         for(size_t i = 0; i < numInfo; ++i)
         {
-            auto calInfo                      = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
-            const auto frameTL                = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-            const ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
+            auto calInfo                  = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
+            const auto frameTL            = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
+            const data::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
 
-            ::fwData::mt::ObjectWriteLock lock(calInfo);
+            data::mt::ObjectWriteLock lock(calInfo);
             calInfo->addRecord(image, m_cornerAndIdLists[i]);
 
             // Notify
@@ -274,40 +274,40 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 
 // ----------------------------------------------------------------------------
 
-::fwData::Image::sptr SCharucoBoardDetector::createImage( ::arData::FrameTL::csptr tl,
-                                                          core::HiResClock::HiResClockType timestamp)
+data::Image::sptr SCharucoBoardDetector::createImage( ::arData::FrameTL::csptr tl,
+                                                      core::HiResClock::HiResClockType timestamp)
 {
-    ::fwData::Image::sptr image;
+    data::Image::sptr image;
 
     const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
     if (buffer)
     {
-        image = ::fwData::Image::New();
+        image = data::Image::New();
 
-        ::fwData::Image::PixelFormat format = ::fwData::Image::PixelFormat::UNDEFINED;
+        data::Image::PixelFormat format = data::Image::PixelFormat::UNDEFINED;
 
         // FIXME: Currently, FrameTL does not comntains Pixel format, so we assume that format is GrayScale, RGB or
         // RGBA.
         switch (tl->getNumberOfComponents())
         {
             case 1:
-                format = ::fwData::Image::PixelFormat::GRAY_SCALE;
+                format = data::Image::PixelFormat::GRAY_SCALE;
                 break;
             case 3:
-                format = ::fwData::Image::PixelFormat::RGB;
+                format = data::Image::PixelFormat::RGB;
                 break;
             case 4:
-                format = ::fwData::Image::PixelFormat::RGBA;
+                format = data::Image::PixelFormat::RGBA;
                 break;
             default:
-                format = ::fwData::Image::PixelFormat::UNDEFINED;
+                format = data::Image::PixelFormat::UNDEFINED;
         }
 
-        const ::fwData::Image::Size size = {tl->getWidth(), tl->getHeight(), 1};
+        const data::Image::Size size = {tl->getWidth(), tl->getHeight(), 1};
         image->resize(size, tl->getType(), format);
-        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        const data::Image::Origin origin = {0., 0., 0.};
         image->setOrigin2(origin);
-        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        const data::Image::Spacing spacing = {1., 1., 1.};
         image->setSpacing2(spacing);
         image->setWindowWidth(1);
         image->setWindowCenter(0);
@@ -325,12 +325,12 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 
 // ----------------------------------------------------------------------------
 
-::fwData::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const ::arData::FrameTL::csptr tl,
-                                                                    const core::HiResClock::HiResClockType timestamp,
-                                                                    ::arData::FrameTL::sptr tlDetection)
+data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+                                                                const core::HiResClock::HiResClockType timestamp,
+                                                                ::arData::FrameTL::sptr tlDetection)
 {
 
-    ::fwData::PointList::sptr pointlist;
+    data::PointList::sptr pointlist;
 
     const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
 
@@ -371,17 +371,17 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
             ::cv::aruco::interpolateCornersCharuco(arucoCorners, arucoIds, grayImg, m_board, chessBoardCorners,
                                                    chessBoardIds);
 
-            pointlist                                       = ::fwData::PointList::New();
-            ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
+            pointlist = data::PointList::New();
+            data::PointList::PointListContainer& points = pointlist->getPoints();
             points.reserve(static_cast< size_t >(chessBoardCorners.size[0]));
 
             for(int i = 0; i < chessBoardCorners.size[0]; ++i)
             {
 
-                ::fwData::Point::sptr point =
-                    ::fwData::Point::New((chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i) )).x,
-                                         (chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i) )).y,
-                                         (static_cast<float>(chessBoardIds.at<int>( ::cv::Point(0, i)))));
+                data::Point::sptr point =
+                    data::Point::New((chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i) )).x,
+                                     (chessBoardCorners.at< ::cv::Point2f>( ::cv::Point(0, i) )).y,
+                                     (static_cast<float>(chessBoardIds.at<int>( ::cv::Point(0, i)))));
                 points.push_back(point);
             }
 

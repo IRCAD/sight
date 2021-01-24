@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwDataTools
 {
@@ -51,9 +51,9 @@ MedicalImage::~MedicalImage()
 
 void MedicalImage::getImageSpacing(double spacing[3]) const
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::Spacing& imSpacing = image->getSpacing2();
+    const data::Image::Spacing& imSpacing = image->getSpacing2();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -61,7 +61,7 @@ void MedicalImage::getImageSpacing(double spacing[3]) const
 
 void MedicalImage::getImageOrigin(double origin[3]) const
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
 
     std::copy(image->getOrigin2().begin(), image->getOrigin2().end(), origin);
 }
@@ -70,9 +70,9 @@ void MedicalImage::getImageOrigin(double origin[3]) const
 
 void MedicalImage::getImageDataSize(int size[3]) const
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::Size& imSize = image->getSize2();
+    const data::Image::Size& imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 
@@ -80,10 +80,10 @@ void MedicalImage::getImageDataSize(int size[3]) const
 
 void MedicalImage::getImageSize(double size[3]) const
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
     double spacing[3];
 
-    const ::fwData::Image::Size& imSize = image->getSize2();
+    const data::Image::Size& imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
     this->getImageSpacing(spacing);
 
@@ -96,13 +96,13 @@ void MedicalImage::getImageSize(double size[3]) const
 
 void MedicalImage::getCurrentSliceCenter(double center[3])
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
     double imageSize[3];
     this->getImageSize(imageSize);
     double origin[3];
     this->getImageOrigin(origin);
 
-    ::fwData::Integer::sptr sliceIndex[3];
+    data::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
     double index[3] = {
         static_cast<double>(sliceIndex[0]->value()),
@@ -145,7 +145,7 @@ static const int* indexSet[3] = { indexX, indexY, indexZ  };
 
 void MedicalImage::getPlane( double points[4][3], int sliceNumber)
 {
-    ::fwData::Image::sptr image = this->getImage();
+    data::Image::sptr image = this->getImage();
     double extent[6];
     for (unsigned char i = 0; i < 3; ++i )
     {
@@ -222,7 +222,7 @@ void MedicalImage::worldToImageSliceIndex(const double world[3], int index[3] )
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::getSliceIndex(::fwData::Integer::sptr index[3])
+void MedicalImage::getSliceIndex(data::Integer::sptr index[3])
 {
     index[0] = m_sagittalIndex;
     index[1] = m_frontalIndex;
@@ -235,7 +235,7 @@ bool MedicalImage::setSliceIndex(const int index[3])
 {
     bool isModified = false;
 
-    ::fwData::Integer::sptr sliceIndex[3];
+    data::Integer::sptr sliceIndex[3];
 
     this->getSliceIndex(sliceIndex);
 
@@ -253,20 +253,20 @@ bool MedicalImage::setSliceIndex(const int index[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::updateImageInfos( ::fwData::Image::sptr image )
+void MedicalImage::updateImageInfos( data::Image::sptr image )
 {
     m_weakImage  = image;
     m_axialIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId,
-                                          ::fwData::Integer::New(0));
+                                          data::Integer::New(0));
     m_frontalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId,
-                                            ::fwData::Integer::New(0));
+                                            data::Integer::New(0));
     m_sagittalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId,
-                                             ::fwData::Integer::New(0));
+                                             data::Integer::New(0));
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr MedicalImage::getImage() const
+data::Image::sptr MedicalImage::getImage() const
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();

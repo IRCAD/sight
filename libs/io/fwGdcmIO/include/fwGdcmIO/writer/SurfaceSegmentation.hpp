@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -56,7 +56,7 @@ namespace writer
  */
 class FWGDCMIO_CLASS_API SurfaceSegmentation :
     public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:

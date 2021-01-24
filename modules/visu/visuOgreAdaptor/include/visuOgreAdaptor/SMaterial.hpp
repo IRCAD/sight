@@ -28,9 +28,9 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Material.hpp>
@@ -43,7 +43,7 @@
 
 #include <regex>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }
@@ -52,13 +52,13 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor adapts a ::fwData::Material, allowing to tweak material parameters.
+ * @brief This adaptor adapts a data::Material, allowing to tweak material parameters.
  *
  * @section Slots Slots
- * - \b updateField(::fwData::Object::FieldsContainerType): listen to the fields in the ::fwData::Material.
+ * - \b updateField(data::Object::FieldsContainerType): listen to the fields in the data::Material.
  * - \b swapTexture(): listen to the ::visuOgreAdaptor::STexture changes.
- * - \b addTexture(): called when a texture is added in the ::fwData::Material.
- * - \b removeTexture(): called when a texture is removed in the ::fwData::Material.
+ * - \b addTexture(): called when a texture is added in the data::Material.
+ * - \b removeTexture(): called when a texture is removed in the data::Material.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,7 +70,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b material [::fwData::Material]: adapted material. The material may be modified to comply to the configuration
+ * - \b material [data::Material]: adapted material. The material may be modified to comply to the configuration
  *      of the adaptor.
  *
  * @subsection Configuration Configuration:
@@ -84,7 +84,7 @@ namespace visuOgreAdaptor
  *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong): name of the used shading mode.
  *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
- *      representation mode as in ::fwData::Material.
+ *      representation mode as in data::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial final : public ::fwRenderOgre::IAdaptor
 {
@@ -159,11 +159,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to s_UPDATE_SLOT
-     * Connect ::fwData::Material::s_ADDED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
-     * Connect ::fwData::Material::s_CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
-     * Connect ::fwData::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
-     * Connect ::fwData::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
+     * Connect data::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to s_UPDATE_SLOT
+     * Connect data::Material::s_ADDED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
+     * Connect data::Material::s_CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
+     * Connect data::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
+     * Connect data::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -179,7 +179,7 @@ private:
      * @brief SLOT: updates the material from the input data fields.
      * @param _fields fields to update, only "ogreMaterial" is taken into account.
      */
-    void updateField(::fwData::Object::FieldsContainerType _fields);
+    void updateField(data::Object::FieldsContainerType _fields);
 
     /// SLOT: swaps the texture of the material.
     void swapTexture();
@@ -220,8 +220,8 @@ private:
     /// Defines the configured representation mode.
     std::string m_representationMode { "SURFACE" };
 
-    /// Stores a map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
-    std::map< std::string, ::fwData::Material::RepresentationType > m_representationDict;
+    /// Stores a map to convert from string to data::Material::RepresentationType (ex: "SURFACE" = SURFACE).
+    std::map< std::string, data::Material::RepresentationType > m_representationDict;
 
     /// Contains the Ogre material.
     ::fwRenderOgre::Material::uptr m_materialFw;

@@ -164,7 +164,7 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        const auto mask    = this->getLockedInput< ::fwData::Image >(s_MASK_KEY);
+        const auto mask    = this->getLockedInput< data::Image >(s_MASK_KEY);
         const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL   = this->getLockedInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
@@ -245,7 +245,7 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    const auto mask    = this->getLockedInput< ::fwData::Image >(s_MASK_KEY);
+    const auto mask    = this->getLockedInput< data::Image >(s_MASK_KEY);
     const auto videoTL = this->getLockedInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
@@ -260,7 +260,7 @@ void SColourImageMasking::setBackground()
     //convert the ::arData::FrameTL videoTL to an OpenCV image
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
-    // convert the ::fwData::Image mask to an OpenCV image
+    // convert the data::Image mask to an OpenCV image
     ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask.get_shared());
 
     // Convert color mask to grayscale value

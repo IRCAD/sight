@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwActivities/validator/registry/macros.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMath/Compare.hpp>
 
@@ -56,7 +56,7 @@ ImageProperties::~ImageProperties()
 
 IValidator::ValidationType ImageProperties::validate(
     const ::fwActivities::registry::ActivityInfo&,
-    const ::fwData::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;
 
@@ -67,24 +67,24 @@ IValidator::ValidationType ImageProperties::validate(
 
         ::fwMedData::ImageSeries::sptr imgSeries0 = ::fwMedData::ImageSeries::dynamicCast((*currentSelection)[0]);
         SLM_ASSERT("Failed to retrieve an image series", imgSeries0);
-        ::fwData::Image::sptr img0 = imgSeries0->getImage();
+        data::Image::sptr img0 = imgSeries0->getImage();
         SLM_ASSERT("Failed to retrieve image from image series", img0);
 
-        ::fwData::Image::Size size       = img0->getSize2();
-        ::fwData::Image::Spacing spacing = img0->getSpacing2();
-        ::fwData::Image::Origin origin   = img0->getOrigin2();
+        data::Image::Size size       = img0->getSize2();
+        data::Image::Spacing spacing = img0->getSpacing2();
+        data::Image::Origin origin   = img0->getOrigin2();
 
-        ::fwData::Vector::ContainerType::const_iterator it;
+        data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(*it);
             SLM_ASSERT("Failed to retrieve an image series", imgSeries);
-            ::fwData::Image::sptr img = imgSeries->getImage();
+            data::Image::sptr img = imgSeries->getImage();
             SLM_ASSERT("Failed to retrieve an image data", img);
 
             if (  size != img->getSize2() ||
-                  !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(spacing, img->getSpacing2()) ||
-                  !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(origin, img->getOrigin2()) )
+                  !::fwMath::isContainerEqual< const data::Image::Spacing >(spacing, img->getSpacing2()) ||
+                  !::fwMath::isContainerEqual< const data::Image::Origin >(origin, img->getOrigin2()) )
             {
                 std::string errorMsg = "Images in selection have not the same properties :\n";
                 errorMsg += (size != img->getSize2()) ? "- size\n" : "";
@@ -109,24 +109,24 @@ IValidator::ValidationType ImageProperties::validate(
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csptr& currentData ) const
+IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 
-    ::fwData::Vector::csptr vector       = ::fwData::Vector::dynamicConstCast(currentData);
-    ::fwData::Composite::csptr composite = ::fwData::Composite::dynamicConstCast(currentData);
+    data::Vector::csptr vector       = data::Vector::dynamicConstCast(currentData);
+    data::Composite::csptr composite = data::Composite::dynamicConstCast(currentData);
 
     validation.first  = true;
     validation.second = "Input images have the same properties.";
 
-    ::fwData::Image::csptr img0;
+    data::Image::csptr img0;
 
     if (vector)
     {
-        for (::fwData::Object::sptr obj : *vector)
+        for (data::Object::sptr obj : *vector)
         {
             ::fwMedData::ImageSeries::csptr imgSeries = ::fwMedData::ImageSeries::dynamicConstCast(obj);
-            ::fwData::Image::csptr img                = ::fwData::Image::dynamicConstCast(obj);
+            data::Image::csptr img = data::Image::dynamicConstCast(obj);
             if (imgSeries)
             {
                 img = imgSeries->getImage();
@@ -141,10 +141,10 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
                 else
                 {
                     if (  img0->getSize2() != img->getSize2() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(img0->getSpacing2(),
-                                                                                        img->getSpacing2()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(img0->getOrigin2(),
-                                                                                       img->getOrigin2()) )
+                          !::fwMath::isContainerEqual< const data::Image::Spacing >(img0->getSpacing2(),
+                                                                                    img->getSpacing2()) ||
+                          !::fwMath::isContainerEqual< const data::Image::Origin >(img0->getOrigin2(),
+                                                                                   img->getOrigin2()) )
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
                         errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
@@ -170,7 +170,7 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
         for (auto elt : *composite)
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(elt.second);
-            ::fwData::Image::sptr img                = ::fwData::Image::dynamicCast(elt.second);
+            data::Image::sptr img = data::Image::dynamicCast(elt.second);
             if (imgSeries)
             {
                 img = imgSeries->getImage();
@@ -185,10 +185,10 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
                 else
                 {
                     if (  img0->getSize2() != img->getSize2() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(img0->getSpacing2(),
-                                                                                        img->getSpacing2()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(img0->getOrigin2(),
-                                                                                       img->getOrigin2()) )
+                          !::fwMath::isContainerEqual< const data::Image::Spacing >(img0->getSpacing2(),
+                                                                                    img->getSpacing2()) ||
+                          !::fwMath::isContainerEqual< const data::Image::Origin >(img0->getOrigin2(),
+                                                                                   img->getOrigin2()) )
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
                         errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";

@@ -25,8 +25,8 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 
-#include <fwData/PointList.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -63,8 +63,8 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
     // Retrieve images
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     SLM_ASSERT("ImageSeries should not be null.", imageSeries);
-    ::fwData::Image::sptr image = imageSeries->getImage();
-    SLM_ASSERT("::fwData::Image not instanced", image);
+    data::Image::sptr image = imageSeries->getImage();
+    SLM_ASSERT("data::Image not instanced", image);
 
     // Create GDCM Reader
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );

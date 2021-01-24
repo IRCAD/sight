@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Material/V3ToV4Test.hpp"
+#include "data/Material/V3ToV4Test.hpp"
 
-#include <fwStructuralPatch/fwData/Material/V3ToV4.hpp>
+#include <fwStructuralPatch/data/Material/V3ToV4.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -38,13 +38,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Material::V3ToV4Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Material::V3ToV4Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Material
 {
@@ -70,7 +70,7 @@ void V3ToV4Test::applyPatchTest()
     ::fwAtoms::Object::sptr matObjV3 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr matObjV4;
 
-    ::fwAtomsPatch::helper::setClassname(matObjV3, "::fwData::Material");
+    ::fwAtomsPatch::helper::setClassname(matObjV3, "data::Material");
     ::fwAtomsPatch::helper::setVersion(matObjV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(matObjV3);
@@ -109,8 +109,8 @@ void V3ToV4Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[matObjV3] = matObjV4;
 
-        ::fwStructuralPatch::fwData::Material::V3ToV4::sptr mat2ToMat3Patch;
-        mat2ToMat3Patch = ::fwStructuralPatch::fwData::Material::V3ToV4::New();
+        ::fwStructuralPatchdata::Material::V3ToV4::sptr mat2ToMat3Patch;
+        mat2ToMat3Patch = ::fwStructuralPatchdata::Material::V3ToV4::New();
         CPPUNIT_ASSERT_NO_THROW(mat2ToMat3Patch->apply(matObjV3, matObjV4, newVersions));
 
         CPPUNIT_ASSERT(matObjV4);
@@ -156,8 +156,8 @@ void V3ToV4Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[matObjV3] = matObjV4;
 
-        ::fwStructuralPatch::fwData::Material::V3ToV4::sptr mat2ToMat3Patch;
-        mat2ToMat3Patch = ::fwStructuralPatch::fwData::Material::V3ToV4::New();
+        ::fwStructuralPatchdata::Material::V3ToV4::sptr mat2ToMat3Patch;
+        mat2ToMat3Patch = ::fwStructuralPatchdata::Material::V3ToV4::New();
         CPPUNIT_ASSERT_NO_THROW(mat2ToMat3Patch->apply(matObjV3, matObjV4, newVersions));
 
         CPPUNIT_ASSERT(matObjV4);
@@ -170,6 +170,6 @@ void V3ToV4Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Material
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

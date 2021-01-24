@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Reconstruction;
 }
@@ -100,7 +100,7 @@ public:
      * this can be helpful in tests to ensure taht readers will load reconstruction in the same order than the
      * reconstructionDB.
      */
-    FWTEST_API static void generateReconstruction(SPTR(::fwData::Reconstruction) rec, int index = -1);
+    FWTEST_API static void generateReconstruction(SPTR(data::Reconstruction) rec, int index = -1);
 
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,10 +47,10 @@ namespace basicRegistration
    </service>
    @endcode
  * @subsection In In
- * - \b image1 [::fwData::Image]: first image.
- * - \b image2 [::fwData::Image]: second image.
+ * - \b image1 [data::Image]: first image.
+ * - \b image2 [data::Image]: second image.
  * @subsection InOut InOut
- * - \b result [::fwData::Image]: substract image.
+ * - \b result [data::Image]: substract image.
  */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,

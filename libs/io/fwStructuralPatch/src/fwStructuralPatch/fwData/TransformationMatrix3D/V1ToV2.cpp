@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/TransformationMatrix3D/V1ToV2.hpp"
+#include "fwStructuralPatch/data/TransformationMatrix3D/V1ToV2.hpp"
 
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -33,7 +33,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace TransformationMatrix3D
@@ -42,8 +42,8 @@ namespace TransformationMatrix3D
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::TransformationMatrix3D";
-    m_targetClassname = "::fwData::TransformationMatrix3D";
+    m_originClassname = "data::TransformationMatrix3D";
+    m_targetClassname = "data::TransformationMatrix3D";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -89,6 +89,6 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
 
 } // namespace TransformationMatrix3D
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

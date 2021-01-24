@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/writer/tid/TemplateID.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -38,7 +38,7 @@ namespace tid
  * @brief Measurement Report TID - This a root template
  * @see TID t1tt1 FIXME: Set the final TID
  */
-class FWGDCMIO_CLASS_API MeasurementReport : public ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >
+class FWGDCMIO_CLASS_API MeasurementReport : public ::fwGdcmIO::writer::tid::TemplateID< data::Image >
 {
 
 public:
@@ -50,7 +50,7 @@ public:
      */
     FWGDCMIO_API MeasurementReport(const SPTR(::gdcm::Writer)& writer,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                   const ::fwData::Image::csptr& image);
+                                   const data::Image::csptr& image);
 
     /// Destructor
     FWGDCMIO_API virtual ~MeasurementReport();

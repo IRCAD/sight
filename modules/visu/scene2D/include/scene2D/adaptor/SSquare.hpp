@@ -78,21 +78,21 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     SCENE2D_API void setColor(const std::string& _color );
-    SCENE2D_API bool coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item );
-    SCENE2D_API ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord,
-                                                                QGraphicsItem* item );
+    SCENE2D_API bool coordViewIsInItem( const ::fwRenderQtdata::Coord& coord, QGraphicsItem* item );
+    SCENE2D_API ::fwRenderQtdata::Coord coordViewToCoordItem( const ::fwRenderQtdata::Coord& coord,
+                                                              QGraphicsItem* item );
 
 private:
 
-    ::fwRenderQt::data::Coord m_coord;
+    ::fwRenderQtdata::Coord m_coord;
     std::uint32_t m_size{0};
     QColor m_color;
     QGraphicsItemGroup* m_layer{nullptr};
     QGraphicsRectItem* m_rec{nullptr};
-    ::fwRenderQt::data::Coord m_oldCoord;
+    ::fwRenderQtdata::Coord m_oldCoord;
 
     bool m_pointIsCaptured{false};
     bool m_autoRefresh{true};

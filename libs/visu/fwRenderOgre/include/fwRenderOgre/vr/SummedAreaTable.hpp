@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwRenderOgre/config.hpp"
 #include <fwRenderOgre/TransferFunction.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <glm/glm.hpp>
 
@@ -54,7 +54,7 @@ public:
     FWRENDEROGRE_API ~SummedAreaTable();
 
     /// Computes the SAT sequentially on the CPU based on the given image and TF.
-    FWRENDEROGRE_API void computeSequential(::fwData::Image::sptr _image, fwData::TransferFunction::sptr _tf);
+    FWRENDEROGRE_API void computeSequential(data::Image::sptr _image, data::TransferFunction::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
     FWRENDEROGRE_API void computeParallel(::Ogre::TexturePtr _imgTexture,
@@ -82,10 +82,10 @@ private:
     float m_satSizeRatio;
 
     /// SAT resolution. It's computed thanks to the configured ratio and the associated image size.
-    ::fwData::Image::Size m_satSize;
+    data::Image::Size m_satSize;
 
     /// Current image size used to resize the SAT in case of a ratio change.
-    ::fwData::Image::Size m_currentImageSize;
+    data::Image::Size m_currentImageSize;
 
     /// Texture used as source during SAT GPU computation, holds the result at the end.
     ::Ogre::TexturePtr m_sourceBuffer;
@@ -120,7 +120,7 @@ private:
     const int m_nbTextReads = 32;
 
     /// Returns the voxel colour after TF application.
-    ::glm::vec4 applyTf(fwData::TransferFunction::sptr _tf, int16_t imgValue);
+    ::glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
 
     /// Returns the SAT value at position (x, y, z).
     ::glm::vec4 getSatValue(glm::vec4* satBuffer, int x, int y, int z);

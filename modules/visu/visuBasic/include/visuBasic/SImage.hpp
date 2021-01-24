@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace visuBasic
    </service>
  *
  * @subsection Input Input
- * - \b image [::fwData::Image]: image to display.
+ * - \b image [data::Image]: image to display.
  */
 class VISUBASIC_CLASS_API SImage : public ::fwGui::IGuiContainerSrv
 {
@@ -69,7 +69,7 @@ protected:
      * @note This is actually useless since the sub-service already listens to the data,
      * but this prevents a warning in fwServices from being raised.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VISUBASIC_API KeyConnectionsMap getAutoConnections() const override;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace Tuto05MultithreadConsoleCpp
    @endcode
  *
  * @subsection Input Input:
- * - \b array [::fwData::Array]: array which values should be incremented.
+ * - \b array [data::Array]: array which values should be incremented.
  */
 class TUTO05MULTITHREADCONSOLECPP_CLASS_API SShowArray final : public ::fwServices::IController
 {

@@ -43,7 +43,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ObjMeshReader::ObjMeshReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("OBJ Mesh reader"))
 {
 }
@@ -64,7 +64,7 @@ void ObjMeshReader::read()
 
     SLM_ASSERT("Object Lock null.", objectLock );
 
-    const ::fwData::Mesh::sptr pMesh = getConcreteObject();
+    const data::Mesh::sptr pMesh = getConcreteObject();
 
     using namespace fwVtkIO::helper;
 

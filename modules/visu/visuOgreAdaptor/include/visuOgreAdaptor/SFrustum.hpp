@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -118,7 +118,7 @@ private:
     ::Ogre::Camera* m_ogreCamera { nullptr };
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material { nullptr };
 
     /// Defines the near clipping distance.
     float m_near { 1.f };

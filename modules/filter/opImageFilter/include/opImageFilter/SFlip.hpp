@@ -49,9 +49,9 @@ namespace opImageFilter
        </service>
    @endcode
  * @subsection Input Input
- * - \b source [::fwData::Image]: Image to flip.
+ * - \b source [data::Image]: Image to flip.
  * @subsection Output Output:
- * - \b target [::fwData::Image]: New flipped image.
+ * - \b target [data::Image]: New flipped image.
  */
 class OPIMAGEFILTER_CLASS_API SFlip : public ::fwServices::IOperator
 {

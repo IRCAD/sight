@@ -24,8 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Material.hpp>
-#include <fwData/String.hpp>
+#include <data/Material.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
 
@@ -51,7 +51,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
@@ -150,12 +150,12 @@ void SMaterialSelector::swapping()
 
 void SMaterialSelector::updateMaterial()
 {
-    ::fwData::Reconstruction::sptr reconst = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    ::fwData::Material::sptr material      = reconst->getMaterial();
-    ::fwData::Object::sptr fieldObj        = material->getField("ogreMaterial");
+    data::Reconstruction::sptr reconst = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Material::sptr material      = reconst->getMaterial();
+    data::Object::sptr fieldObj        = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
     {
-        ::fwData::String::sptr field = ::fwData::String::dynamicCast(fieldObj);
+        data::String::sptr field = data::String::dynamicCast(fieldObj);
         m_materialBox->setCurrentText(field->value().c_str());
     }
 }
@@ -164,9 +164,9 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    ::fwData::Reconstruction::sptr reconst = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    ::fwData::Material::sptr material      = reconst->getMaterial();
-    ::fwData::String::sptr string          = ::fwData::String::New();
+    data::Reconstruction::sptr reconst = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Material::sptr material      = reconst->getMaterial();
+    data::String::sptr string          = data::String::New();
     string->setValue(text.toStdString());
 
     ::fwDataTools::helper::Field helper(material);

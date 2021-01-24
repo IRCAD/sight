@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_COMPOSITE_HPP__
-#define __FWDATATOOLS_HELPER_COMPOSITE_HPP__
+#pragma once
+
+#include "data/Composite.hpp"
 
 #include "fwDataTools/config.hpp"
-
-#include "fwData/Composite.hpp"
 
 namespace fwDataTools
 {
@@ -33,7 +32,8 @@ namespace helper
 {
 
 /**
- * @brief   Defines an helper to modify an ::fwData::Composite and create in parallel the message to announce this modification.
+ * @brief   Defines an helper to modify an data::Composite and create in parallel the message to announce this
+ * modification.
  */
 class FWDATATOOLS_CLASS_API Composite
 {
@@ -41,7 +41,7 @@ class FWDATATOOLS_CLASS_API Composite
 public:
 
     /// Constructor. Initialize parameters.
-    FWDATATOOLS_API Composite( ::fwData::Composite::wptr _composite );
+    FWDATATOOLS_API Composite( data::Composite::wptr _composite );
 
     /// Destrucotr. Do nothing.
     FWDATATOOLS_API ~Composite();
@@ -53,7 +53,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void add( std::string _compositeKey, ::fwData::Object::sptr _newObject );
+    FWDATATOOLS_API void add( std::string _compositeKey, data::Object::sptr _newObject );
 
     /**
      * @brief Remove an object in the composite.
@@ -77,7 +77,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    FWDATATOOLS_API void swap( std::string _compositeKey, ::fwData::Object::sptr _newObject );
+    FWDATATOOLS_API void swap( std::string _compositeKey, data::Object::sptr _newObject );
 
     /**
      * @brief Send the message of modification
@@ -89,18 +89,16 @@ public:
 private:
 
     /// Map of added objects, send on notify
-    ::fwData::Composite::ContainerType m_addedObjects;
+    data::Composite::ContainerType m_addedObjects;
     /// Map of new changed objects, send on notify
-    ::fwData::Composite::ContainerType m_newChangedObjects;
+    data::Composite::ContainerType m_newChangedObjects;
     /// Map of old changed objects, send on notify
-    ::fwData::Composite::ContainerType m_oldChangedObjects;
+    data::Composite::ContainerType m_oldChangedObjects;
     /// Map of removed objects, send on notify
-    ::fwData::Composite::ContainerType m_removedObjects;
+    data::Composite::ContainerType m_removedObjects;
     /// Composite to add/remove/change objects
-    ::fwData::Composite::wptr m_composite;
+    data::Composite::wptr m_composite;
 };
 
 } // namespace helper
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_COMPOSITE_HPP__

@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Color.hpp>
+#include <data/Color.hpp>
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
@@ -116,7 +116,7 @@ void SAxis::starting()
     m_zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
 
     // set the material
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     const ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");
@@ -146,7 +146,7 @@ void SAxis::starting()
     // origin
     if(m_originVisibility)
     {
-        const ::fwData::Color::sptr originColor = ::fwData::Color::New();
+        const data::Color::sptr originColor = data::Color::New();
         originColor->setRGBA(m_originColor);
         ::fwRenderOgre::helper::ManualObject::createSphere(m_origin, materialAdaptor->getMaterialName(),
                                                            ::Ogre::ColourValue(originColor->red(), originColor->green(),

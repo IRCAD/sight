@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V2/V03AGO/fwData/Image.hpp"
+#include "fwMDSemanticPatch/V2/V03AGO/data/Image.hpp"
 
 #include <fwAtomsPatch/SemanticPatchDB.hpp>
 
@@ -30,7 +30,7 @@ namespace V2
 {
 namespace V03AGO
 {
-namespace fwData
+namespace sight::data
 {
 
 /// Registers contextual patches dedicated to conversions from version 'V2' to version 'V03AGO'.
@@ -39,7 +39,7 @@ struct runner
     runner()
     {
         ::fwAtomsPatch::SemanticPatchDB::sptr contextPatchDB = ::fwAtomsPatch::SemanticPatchDB::getDefault();
-        contextPatchDB->registerPatch(::fwMDSemanticPatch::V2::V03AGO::fwData::Image::New());
+        contextPatchDB->registerPatch(::fwMDSemanticPatch::V2::V03AGOdata::Image::New());
     }
 
     static runner r;
@@ -47,7 +47,7 @@ struct runner
 
 runner runner::r;
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V03AGO
 } // namespace V2
 } // namespace fwMDSemanticPatch

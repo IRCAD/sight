@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,11 +53,11 @@ namespace opItkRegistration
    </service>
    @endcode
  * @subsection Input Input
- * - \b target [::fwData::Image]: Fixed image.
- * - \b reference [::fwData::Image]: Image that will be deformed to match the target.
+ * - \b target [data::Image]: Fixed image.
+ * - \b reference [data::Image]: Image that will be deformed to match the target.
  *
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: The initial transform used during registration, will be updated
+ * - \b transform [data::TransformationMatrix3D]: The initial transform used during registration, will be updated
  * with the new value after registration.
  *
  * @subsection Configuration Configuration

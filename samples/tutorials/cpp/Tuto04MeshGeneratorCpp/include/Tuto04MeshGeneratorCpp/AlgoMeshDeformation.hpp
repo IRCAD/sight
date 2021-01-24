@@ -26,8 +26,8 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Array.hpp>
+#include <data/Mesh.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
@@ -44,7 +44,7 @@ public:
     TUTO04MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
-    TUTO04MESHGENERATORCPP_API void computeDeformation( ::fwData::Mesh::sptr _mesh,
+    TUTO04MESHGENERATORCPP_API void computeDeformation( data::Mesh::sptr _mesh,
                                                         const unsigned int _nbStep,
                                                         const unsigned int _amplitude );
 
@@ -56,7 +56,7 @@ private:
      * @param _nbStep the number of simulated acquisitions to compute between inspiration and expiration.
      * @param _amplitude
      */
-    void setParam(::fwData::Mesh::sptr _mesh,
+    void setParam(data::Mesh::sptr _mesh,
                   const unsigned int _nbStep,
                   const unsigned int _amplitude);
 
@@ -81,9 +81,9 @@ private:
 
     float m_yCenter { 0 };
 
-    ::fwData::Mesh::wptr m_mesh;
+    data::Mesh::wptr m_mesh;
 
-    ::fwData::Mesh::sptr m_originMesh;
+    data::Mesh::sptr m_originMesh;
 
 };
 

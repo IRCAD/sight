@@ -32,8 +32,8 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Material.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -58,7 +58,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ObjMeshWriter::ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("OBJ Mesh writer"))
 {
 
@@ -85,7 +85,7 @@ void ObjMeshWriter::write()
 
     SLM_ASSERT("Object Lock null.", objectLock );
 
-    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    const data::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkOBJWriter > writer = vtkSmartPointer< vtkOBJWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
@@ -126,7 +126,7 @@ void ObjMeshWriter::write()
 
     SLM_ASSERT("Object Lock null.", objectLock );
 
-    const ::fwData::Mesh::csptr pMesh      = getConcreteObject();
+    const data::Mesh::csptr pMesh          = getConcreteObject();
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
 

@@ -27,7 +27,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -110,9 +110,9 @@ SVolumeRender::~SVolumeRender() noexcept
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
-    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
+    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
+    connections.push( s_CLIPPING_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG,
                       s_UPDATE_CLIPPING_BOX_SLOT );
 
     return connections;
@@ -163,9 +163,9 @@ void SVolumeRender::starting()
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -219,7 +219,7 @@ void SVolumeRender::starting()
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
         isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
     if(isValid)
@@ -246,9 +246,9 @@ void SVolumeRender::swapping(const KeyType& _key)
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-            const auto tfW = this->getWeakInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+            const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
             const auto tf  = tfW.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
         }
@@ -303,9 +303,9 @@ void SVolumeRender::updateVolumeTF()
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    const ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
+    const data::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::mt::locked_ptr lock(tf);
 
         m_gpuVolumeTF->updateTexture(tf);
 
@@ -342,9 +342,9 @@ void SVolumeRender::newImage()
 
         renderService->makeCurrent();
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-            const auto tfW = this->getWeakInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+            const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
             const auto tf  = tfW.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -364,7 +364,7 @@ void SVolumeRender::bufferImage()
     {
         auto bufferingFn = [this]()
                            {
-                               const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+                               const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
                                ::fwRenderOgre::Utils::convertImageForNegato(m_bufferingTexture.get(),
                                                                             image.get_shared());
@@ -386,7 +386,7 @@ void SVolumeRender::bufferImage()
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
             ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
         }
         this->updateImage();
@@ -397,16 +397,16 @@ void SVolumeRender::bufferImage()
 
 void SVolumeRender::updateImage()
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     this->getRenderService()->makeCurrent();
 
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
     m_volumeRenderer->set3DTexture(m_3DOgreTexture);
 
-    const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+    const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        ::fwData::mt::locked_ptr lock(volumeTF);
+        data::mt::locked_ptr lock(volumeTF);
 
         if(m_preIntegratedRendering)
         {
@@ -465,8 +465,8 @@ void SVolumeRender::updateSampling(int _nbSamples)
 
     if(m_preIntegratedRendering)
     {
-        const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        const ::fwData::mt::locked_ptr lock(volumeTF);
+        const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        const data::mt::locked_ptr lock(volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
@@ -525,10 +525,10 @@ void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-            const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            const ::fwData::mt::locked_ptr lock(volumeTF);
+            const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            const data::mt::locked_ptr lock(volumeTF);
             m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
         }
 
@@ -620,10 +620,10 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 
     if(m_preIntegratedRendering)
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        const ::fwData::mt::locked_ptr lock(volumeTF);
+        const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        const data::mt::locked_ptr lock(volumeTF);
 
         m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
@@ -772,7 +772,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 
 void SVolumeRender::createWidget()
 {
-    const auto clippingMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
     auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
 
@@ -829,7 +829,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
         isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
 
@@ -885,10 +885,10 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-            const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            const ::fwData::mt::locked_ptr lock(volumeTF);
+            const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            const data::mt::locked_ptr lock(volumeTF);
             m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
         }
 
@@ -907,7 +907,7 @@ void SVolumeRender::updateClippingBox()
         ::Ogre::Matrix4 clippingMx;
         {
             const auto clippingMatrix =
-                this->getLockedInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+                this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
             clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
         }
 
@@ -919,14 +919,14 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    const auto clippingMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
     if(clippingMatrix)
     {
         ::fwRenderOgre::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());
 
         const auto sig =
-            clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            clippingMatrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
 
         core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
 

@@ -25,7 +25,7 @@
 #include "arData/config.hpp"
 #include "arData/timeline/Object.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace arData
 {
@@ -34,11 +34,11 @@ namespace arData
  *          associated with a timestamp. It is intended to store lightweight objects.
  */
 
-class ARDATA_CLASS_API TimeLine : public ::fwData::Object
+class ARDATA_CLASS_API TimeLine : public data::Object
 {
 
 public:
-    fwCoreClassMacro(TimeLine, ::fwData::Object)
+    fwCoreClassMacro(TimeLine, data::Object)
 
     typedef enum
     {
@@ -59,7 +59,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API TimeLine( ::fwData::Object::Key key );
+    ARDATA_API TimeLine( data::Object::Key key );
 
     /// Destructor
     ARDATA_API virtual ~TimeLine();

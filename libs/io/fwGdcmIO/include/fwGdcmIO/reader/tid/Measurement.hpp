@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 #include "fwGdcmIO/reader/tid/TemplateID.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Point;
 }
@@ -45,7 +45,7 @@ namespace tid
  * @brief Measurement TID
  * @see TID 300
  */
-class FWGDCMIO_CLASS_API Measurement : public ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >
+class FWGDCMIO_CLASS_API Measurement : public ::fwGdcmIO::reader::tid::TemplateID< data::Image >
 {
 
 public:
@@ -60,7 +60,7 @@ public:
     FWGDCMIO_API Measurement(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                              const SPTR(::gdcm::Reader)& reader,
                              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                             const ::fwData::Image::sptr& image,
+                             const data::Image::sptr& image,
                              const ::fwLog::Logger::sptr& logger);
 
     /// Destructor
@@ -79,8 +79,8 @@ protected:
      * @param point1 First point
      * @param point2 Second point
      */
-    void addDistance(const SPTR(::fwData::Point)& point1,
-                     const SPTR(::fwData::Point)& point2);
+    void addDistance(const SPTR(data::Point)& point1,
+                     const SPTR(data::Point)& point2);
 
 };
 

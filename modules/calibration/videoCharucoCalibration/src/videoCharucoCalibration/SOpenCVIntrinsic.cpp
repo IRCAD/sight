@@ -35,11 +35,11 @@
 
 #include <cvIO/Matrix.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -124,7 +124,7 @@ void SOpenCVIntrinsic::updating()
 {
     ::arData::CalibrationInfo::csptr calInfo = this->getInput< ::arData::CalibrationInfo>("calibrationInfo");
     ::arData::Camera::sptr cam               = this->getInOut< ::arData::Camera >("camera");
-    ::fwData::Vector::sptr poseCamera        = this->getInOut< ::fwData::Vector >("poseVector");
+    data::Vector::sptr poseCamera = this->getInOut< data::Vector >("poseVector");
 
     SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SLM_ASSERT("'camera' should not be null", cam);
@@ -136,13 +136,13 @@ void SOpenCVIntrinsic::updating()
         std::vector<std::vector< int > > ids;
 
         {
-            ::fwData::mt::ObjectReadLock calInfoLock(calInfo);
-            for(::fwData::PointList::sptr capture : calInfo->getPointListContainer())
+            data::mt::ObjectReadLock calInfoLock(calInfo);
+            for(data::PointList::sptr capture : calInfo->getPointListContainer())
             {
                 std::vector< ::cv::Point2f > cdst;
                 std::vector< int > idst;
 
-                for(::fwData::Point::csptr point : capture->getPoints())
+                for(data::Point::csptr point : capture->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     cdst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
@@ -155,7 +155,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        ::fwData::Image::sptr img = calInfo->getImageContainer().front();
+        data::Image::sptr img = calInfo->getImageContainer().front();
 
         ::cv::Mat cameraMatrix;
         std::vector<double> distCoeffs;
@@ -170,26 +170,26 @@ void SOpenCVIntrinsic::updating()
 
         if(poseCamera)
         {
-            ::fwData::mt::ObjectWriteLock lock(poseCamera);
+            data::mt::ObjectWriteLock lock(poseCamera);
             poseCamera->getContainer().clear();
 
             for(size_t index = 0; index < rvecs.size(); ++index)
             {
-                ::fwData::TransformationMatrix3D::sptr mat3D = ::fwData::TransformationMatrix3D::New();
+                data::TransformationMatrix3D::sptr mat3D = data::TransformationMatrix3D::New();
 
                 // Convert from cv to sight.
                 ::cvIO::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->getContainer().push_back(mat3D);
-                auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
-                    ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+                auto sig = poseCamera->signal< data::Vector::AddedObjectsSignalType >(
+                    data::Vector::s_ADDED_OBJECTS_SIG);
                 sig->asyncEmit(poseCamera->getContainer());
             }
         }
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
-        ::fwData::mt::ObjectWriteLock camLock(cam);
+        data::mt::ObjectWriteLock camLock(cam);
 
         cam->setCx(cameraMatrix.at<double>(0, 2));
         cam->setCy(cameraMatrix.at<double>(1, 2));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace Tuto04MeshGeneratorCpp
      </service>
    @endcode
  * @subsection InOut InOut
- * - \b mesh [::fwData::Mesh]: mesh to modify.
+ * - \b mesh [data::Mesh]: mesh to modify.
  *
  * @subsection Configuration Configuration
  * - \b functor (mandatory, string): the functor name used to generate mesh.

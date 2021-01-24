@@ -24,8 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
 namespace Tuto02GenericSceneCpp
 {
@@ -52,10 +52,10 @@ void Plugin::initialize()
     m_appManager->create();
 
     // Objects declaration.
-    ::fwData::Image::sptr image    = ::fwData::Image::New();
-    ::fwData::Image::sptr texture  = ::fwData::Image::New();
-    ::fwData::Mesh::sptr mesh      = ::fwData::Mesh::New();
-    ::fwData::Image::sptr snapshot = ::fwData::Image::New();
+    data::Image::sptr image    = data::Image::New();
+    data::Image::sptr texture  = data::Image::New();
+    data::Mesh::sptr mesh      = data::Mesh::New();
+    data::Image::sptr snapshot = data::Image::New();
 
     m_appManager->addObject(image, image->getID());
     m_appManager->addObject(mesh, mesh->getID());

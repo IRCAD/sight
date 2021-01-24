@@ -25,8 +25,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -70,7 +70,7 @@ void SDecomposeMatrix::stopping()
 fwServices::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_SOURCE_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -78,9 +78,9 @@ fwServices::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() c
 
 void SDecomposeMatrix::updating()
 {
-    auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_SOURCE_INPUT);
+    auto matrix = this->getInput< data::TransformationMatrix3D >(s_SOURCE_INPUT);
     SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
-    ::fwData::mt::ObjectReadLock srcLock(matrix);
+    data::mt::ObjectReadLock srcLock(matrix);
 
     ::glm::dmat4 glmMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
     ::glm::dvec3 scale;
@@ -93,36 +93,36 @@ void SDecomposeMatrix::updating()
     ::glm::decompose(glmMatrix, scale, orientation, translation, skew, perspective);
     ::glm::dmat4 orientationMat = ::glm::toMat4(orientation);
 
-    auto rotation       = this->getInOut< ::fwData::TransformationMatrix3D >(s_ROTATION_INOUT);
-    auto translationMat = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSLATION_INOUT);
-    auto scaleMat       = this->getInOut< ::fwData::TransformationMatrix3D >(s_SCALE_INOUT);
+    auto rotation       = this->getInOut< data::TransformationMatrix3D >(s_ROTATION_INOUT);
+    auto translationMat = this->getInOut< data::TransformationMatrix3D >(s_TRANSLATION_INOUT);
+    auto scaleMat       = this->getInOut< data::TransformationMatrix3D >(s_SCALE_INOUT);
 
     if( rotation)
     {
-        ::fwData::mt::ObjectWriteLock rotLock(rotation);
+        data::mt::ObjectWriteLock rotLock(rotation);
         ::fwDataTools::TransformationMatrix3D::identity(rotation);
         ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(rotation, orientationMat);
 
-        auto rotSig = rotation->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto rotSig = rotation->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         rotSig->asyncEmit();
     }
 
     if( translationMat)
     {
-        ::fwData::mt::ObjectWriteLock transLock(translationMat);
+        data::mt::ObjectWriteLock transLock(translationMat);
         ::fwDataTools::TransformationMatrix3D::identity(translationMat);
         for (size_t i = 0; i < 3; ++i)
         {
             translationMat->setCoefficient(i, 3, translation[i]);
         }
         auto transSig =
-            translationMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            translationMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         transSig->asyncEmit();
     }
 
     if( scaleMat)
     {
-        ::fwData::mt::ObjectWriteLock scaleLock(scaleMat);
+        data::mt::ObjectWriteLock scaleLock(scaleMat);
         ::fwDataTools::TransformationMatrix3D::identity(scaleMat);
         for (size_t i = 0; i < 3; ++i)
         {
@@ -134,7 +134,7 @@ void SDecomposeMatrix::updating()
                 }
             }
         }
-        auto scaleSig = scaleMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto scaleSig = scaleMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         scaleSig->asyncEmit();
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "opImageFilter/config.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -59,10 +59,10 @@ namespace opImageFilter
  *
  * @subsection Input Input
  * - \b meshes [::fwMedData::ModelSeries]: model series where all meshes used for extrusion are stored.
- * - \b image [::fwData::Image]: image to extrude, must be in 3 dimensions.
+ * - \b image [data::Image]: image to extrude, must be in 3 dimensions.
  *
  * @subsection In-Out In-Out
- * - \b extrudedImage [::fwData::Image]: extruded image.
+ * - \b extrudedImage [data::Image]: extruded image.
  */
 class OPIMAGEFILTER_CLASS_API SImageExtruder final : public ::fwServices::IOperator
 {
@@ -92,8 +92,8 @@ private:
      * Connect ::fwMedData::ModelSeries::s_MODIFIED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
      * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to s_ADD_RECONSTRUCTIONS_SLOT.
      * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to s_UPDATE_SLOT.
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -107,7 +107,7 @@ private:
     void addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const;
 
     /// Extrudes one mesh from the image.
-    void extrudeMesh(const ::fwData::Mesh::csptr _mesh, const ::fwData::Image::sptr _image) const;
+    void extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const;
 
 };
 

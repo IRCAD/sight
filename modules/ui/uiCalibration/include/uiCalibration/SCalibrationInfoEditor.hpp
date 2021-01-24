@@ -24,8 +24,8 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <fwData/List.hpp>
-#include <fwData/PointList.hpp>
+#include <data/List.hpp>
+#include <data/PointList.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 

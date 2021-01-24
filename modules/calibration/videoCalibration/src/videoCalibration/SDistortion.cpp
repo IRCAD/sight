@@ -33,9 +33,9 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Array.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -77,8 +77,8 @@ fwServices::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
     ::fwServices::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
@@ -119,10 +119,10 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
-    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
+    data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
     if(inputImage && m_calibrationMismatch)
     {
-        const ::fwData::mt::ObjectReadLock inputLock(inputImage);
+        const data::mt::ObjectReadLock inputLock(inputImage);
         const auto inputSize = inputImage->getSize2();
         if(inputSize != m_prevImageSize)
         {
@@ -148,13 +148,13 @@ void SDistortion::updating()
     else
     {
         // Simple copy of the input image
-        ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
-        ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
+        data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
+        data::Image::sptr outputImage = this->getInOut< data::Image >( s_IMAGE_INOUT);
 
         if(inputImage && outputImage )
         {
-            ::fwData::mt::ObjectReadLock inputLock(inputImage);
-            ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+            data::mt::ObjectReadLock inputLock(inputImage);
+            data::mt::ObjectWriteLock outputLock(outputImage);
 
             // Since we shallow copy the input image when no remap is done,
             // we have to notify the output image pointer has changed if it was not shared yet before
@@ -172,15 +172,15 @@ void SDistortion::updating()
             if(reallocated)
             {
                 auto sig =
-                    outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                    outputImage->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
 
-            auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(
-                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+            auto sig = outputImage->signal< data::Image::BufferModifiedSignalType >(
+                data::Image::s_BUFFER_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -193,8 +193,8 @@ void SDistortion::updating()
 
 void SDistortion::remap()
 {
-    ::fwData::Image::csptr inputImage = this->getInput< ::fwData::Image> ( s_IMAGE_INPUT);
-    ::fwData::Image::sptr outputImage = this->getInOut< ::fwData::Image >( s_IMAGE_INOUT);
+    data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
+    data::Image::sptr outputImage = this->getInOut< data::Image >( s_IMAGE_INOUT);
 
     if(!inputImage || !outputImage || m_calibrationMismatch)
     {
@@ -202,11 +202,11 @@ void SDistortion::remap()
     }
     FW_PROFILE_AVG("distort", 5);
 
-    auto sig = inputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto sig = inputImage->signal< data::Object::ModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
-    ::fwData::mt::ObjectReadLock inputLock(inputImage);
+    data::mt::ObjectReadLock inputLock(inputImage);
 
     const auto inputSize = inputImage->getSize2();
 
@@ -244,19 +244,19 @@ void SDistortion::remap()
     }
     if(prevSize != inputSize || realloc)
     {
-        ::fwData::mt::ObjectWriteLock outputLock(outputImage);
-        ::fwData::Image::Size size = {inputSize[0], inputSize[1], 0};
+        data::mt::ObjectWriteLock outputLock(outputImage);
+        data::Image::Size size = {inputSize[0], inputSize[1], 0};
 
-        // Since we may have shared the pointer on the input image, we can't use ::fwData::Image::allocate
+        // Since we may have shared the pointer on the input image, we can't use data::Image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
-        ::fwData::Image::sptr tmpImage = ::fwData::Image::New();
+        data::Image::sptr tmpImage = data::Image::New();
         outputImage->shallowCopy(tmpImage);
         outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
 
-        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        const data::Image::Origin origin = {0., 0., 0.};
         outputImage->setOrigin2(origin);
 
-        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        const data::Image::Spacing spacing = {1., 1., 1.};
         outputImage->setSpacing2(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
@@ -269,14 +269,14 @@ void SDistortion::remap()
     }
     const auto newSize = outputImage->getSize2();
 
-    // Get ::cv::Mat from fwData::Image
-    auto inImage = std::const_pointer_cast< ::fwData::Image>(inputImage);
+    // Get ::cv::Mat from data::Image
+    auto inImage = std::const_pointer_cast< data::Image>(inputImage);
     ::cv::Mat img = ::cvIO::Image::moveToCv(inImage);
 
     ::cv::Mat undistortedImage;
 
 #ifndef OPENCV_CUDA_SUPPORT
-    ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+    data::mt::ObjectWriteLock outputLock(outputImage);
     if(outputImage != inputImage)
     {
         undistortedImage = ::cvIO::Image::moveToCv(outputImage);
@@ -292,7 +292,7 @@ void SDistortion::remap()
         ::cv::cuda::remap(image_gpu, image_gpu_rect, m_mapx, m_mapy, ::cv::INTER_LINEAR, ::cv::BORDER_CONSTANT);
         undistortedImage = ::cv::Mat(image_gpu_rect);
 
-        ::fwData::mt::ObjectWriteLock outputLock(outputImage);
+        data::mt::ObjectWriteLock outputLock(outputImage);
         ::cvIO::Image::copyFromCv(outputImage, undistortedImage);
 
 #else
@@ -320,14 +320,14 @@ void SDistortion::remap()
 
     if(prevSize != newSize)
     {
-        auto sigModified = outputImage->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+        auto sigModified = outputImage->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
             sigModified->asyncEmit();
         }
     }
 
-    auto sigOut = outputImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto sigOut = outputImage->signal< data::Object::ModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
     sigOut->asyncEmit();
 }
 
@@ -403,16 +403,16 @@ void SDistortion::calibrate()
                                       xyMaps[0], xyMaps[1]);
     }
 
-    ::fwData::Image::sptr map = this->getInOut< ::fwData::Image >( s_MAP_INOUT);
+    data::Image::sptr map = this->getInOut< data::Image >( s_MAP_INOUT);
     if(map)
     {
         ::cv::Mat cvMap;
         ::cv::merge(xyMaps, cvMap);
 
-        ::fwData::mt::ObjectWriteLock outputLock(map);
+        data::mt::ObjectWriteLock outputLock(map);
         ::cvIO::Image::copyFromCv(map, cvMap);
 
-        auto sigModified = map->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+        auto sigModified = map->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
         sigModified->asyncEmit();
     }
     else

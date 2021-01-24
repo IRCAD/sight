@@ -214,7 +214,7 @@ void CameraTest::deepCopyTest()
 {
     ::arData::Camera::sptr camera = initCamera();
     ::arData::Camera::sptr camera2;
-    camera2 = ::fwData::Object::copy(camera);
+    camera2 = data::Object::copy(camera);
     CPPUNIT_ASSERT(::fwTest::helper::compare(camera, camera2));
 }
 

@@ -86,7 +86,7 @@ void SMesh::starting()
     const auto genericSceneId = this->getID() + "-genericScene";
     ::fwGui::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
-    auto mesh = this->getLockedInput< ::fwData::Object>(s_MESH_INPUT);
+    auto mesh = this->getLockedInput< data::Object>(s_MESH_INPUT);
 
     // create and register the render service
     // create the frame configuration
@@ -122,12 +122,12 @@ void SMesh::starting()
     meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = ::fwServices::add("::visuOgreAdaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
-    m_meshSrv->registerInOut(std::const_pointer_cast< ::fwData::Object>(mesh->getConstSptr()), "mesh", true);
+    m_meshSrv->registerInOut(std::const_pointer_cast< data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
 
-    m_cameraTransform = ::fwData::TransformationMatrix3D::New();
-    m_connections.connect(m_cameraTransform, ::fwData::Object::s_MODIFIED_SIG,
+    m_cameraTransform = data::TransformationMatrix3D::New();
+    m_connections.connect(m_cameraTransform, data::Object::s_MODIFIED_SIG,
                           this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
 
     ::fwServices::IService::ConfigType cameraConfig;
@@ -151,7 +151,7 @@ void SMesh::starting()
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
     KeyConnectionsMap connections;
-    connections.push(s_MESH_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -191,7 +191,7 @@ void SMesh::stopping()
 
 //------------------------------------------------------------------------------
 
-void SMesh::updateCamPosition(::fwData::TransformationMatrix3D::sptr _transform)
+void SMesh::updateCamPosition(data::TransformationMatrix3D::sptr _transform)
 {
     m_cameraTransform->shallowCopy(_transform);
     m_cameraSrv->update().wait();

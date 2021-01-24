@@ -34,14 +34,14 @@
 #include <core/tools/fwID.hpp>
 #include <core/tools/Object.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
-                        ::fwData::TransformationMatrix3D)
+                        data::TransformationMatrix3D)
 
 // ----------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ void SMatrixSynchronizer::stopping()
 
 void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
-    ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
-    ::arData::MatrixTL::csptr matrixTL              = this->getInput< ::arData::MatrixTL >("TL");
+    data::TransformationMatrix3D::sptr matrix3D = this->getInOut< data::TransformationMatrix3D >("matrix");
+    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >("TL");
 
     if (timestamp > m_lastTimestamp)
     {
@@ -104,7 +104,7 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
             }
         }
 
-        auto sig = matrix3D->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = matrix3D->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }

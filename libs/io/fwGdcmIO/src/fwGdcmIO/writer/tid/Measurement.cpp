@@ -34,9 +34,9 @@
 
 #include <core/tools/Stringizer.hpp>
 
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -58,8 +58,8 @@ namespace tid
 
 Measurement::Measurement(const SPTR(::gdcm::Writer)& writer,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                         const ::fwData::Image::csptr& image) :
-    ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
+                         const data::Image::csptr& image) :
+    ::fwGdcmIO::writer::tid::TemplateID< data::Image >(writer, instance, image)
 {
 }
 
@@ -74,14 +74,14 @@ Measurement::~Measurement()
 void Measurement::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
                               bool useSCoord3D)
 {
-    ::fwData::Vector::sptr distanceVector =
-        m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector =
+        m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;
-        for(::fwData::Object::sptr object : distanceVector->getContainer())
+        for(data::Object::sptr object : distanceVector->getContainer())
         {
-            ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
+            data::PointList::sptr pointList = data::PointList::dynamicCast(object);
             if(pointList)
             {
                 this->createMeasurement(parent, pointList, id++, useSCoord3D);
@@ -93,12 +93,12 @@ void Measurement::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
 //------------------------------------------------------------------------------
 
 void Measurement::createMeasurement(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
-                                    const ::fwData::PointList::csptr& pointList,
+                                    const data::PointList::csptr& pointList,
                                     unsigned int id,
                                     bool useSCoord3D)
 {
-    const ::fwData::Point::sptr point1 = pointList->getPoints()[0];
-    const ::fwData::Point::sptr point2 = pointList->getPoints()[1];
+    const data::Point::sptr point1 = pointList->getPoints()[0];
+    const data::Point::sptr point2 = pointList->getPoints()[1];
 
     double coordinates[6];
     coordinates[0] = point1->getCoord()[0];

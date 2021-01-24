@@ -29,12 +29,12 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
+#include <data/Composite.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
+
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>

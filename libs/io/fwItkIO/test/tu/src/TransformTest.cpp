@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwItkIO/helper/Transform.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <itkMatrix.h>
 
@@ -55,7 +55,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    ::fwData::TransformationMatrix3D::sptr sightMat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr sightMat = data::TransformationMatrix3D::New();
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {
@@ -75,7 +75,7 @@ void TransformTest::testConversion()
         }
     }
 
-    ::fwData::TransformationMatrix3D::csptr sightMat2 = sightMat;
+    data::TransformationMatrix3D::csptr sightMat2 = sightMat;
 
     ::itk::Matrix<double, 4, 4> mat2 = ::fwItkIO::helper::Transform::convertToITK(sightMat2);
 

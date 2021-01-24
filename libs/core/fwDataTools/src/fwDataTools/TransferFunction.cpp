@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,20 +29,20 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::generateDrawingTF(::fwData::TransferFunction::sptr tf)
+void TransferFunction::generateDrawingTF(data::TransferFunction::sptr tf)
 {
     tf->setTFData(TransferFunction::getDrawingTFColors());
-    tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(0, 255));
-    tf->setInterpolationMode(::fwData::TransferFunction::NEAREST);
+    tf->setWLMinMax(data::TransferFunction::TFValuePairType(0, 255));
+    tf->setInterpolationMode(data::TransferFunction::NEAREST);
     tf->setName("Drawing");
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::TFDataType TransferFunction::getDrawingTFColors()
+data::TransferFunction::TFDataType TransferFunction::getDrawingTFColors()
 {
-    typedef ::fwData::TransferFunction::TFColor TFColorType;
-    static const ::fwData::TransferFunction::TFDataType dataType = {
+    typedef data::TransferFunction::TFColor TFColorType;
+    static const data::TransferFunction::TFDataType dataType = {
         { 0.0, TFColorType(0/255.0, 0/255.0, 0/255.0, 0/255.0 ) },
         { 1.0, TFColorType(255/255.0, 0/255.0, 0/255.0, 255/255.0 ) },
         { 2.0, TFColorType(0/255.0, 0/255.0, 150/255.0, 255/255.0 ) },

@@ -26,9 +26,9 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -89,7 +89,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& _conf
         const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
         const bool optional           = strOptional == "yes" ? true : false;
 
-        auto obj = _service->getInOut< ::fwData::Object>(key);
+        auto obj = _service->getInOut< data::Object>(key);
         if(optional)
         {
             m_optionalInputs[key] = uid;
@@ -167,7 +167,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr _srv,
     // Whitout that, the data is considered as null.
     for(const auto& [key, uid] : m_optionalInputs)
     {
-        auto obj = _srv->getInOut< ::fwData::Object >(key);
+        auto obj = _srv->getInOut< data::Object >(key);
         if(obj)
         {
             m_appConfigManager->addExistingDeferredObject(obj, uid);

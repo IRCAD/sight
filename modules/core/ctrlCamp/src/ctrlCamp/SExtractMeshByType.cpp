@@ -24,10 +24,10 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -105,7 +105,7 @@ void SExtractMeshByType::updating()
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries>("source");
     SLM_ASSERT("ModelSeries not found", modelSeries);
 
-    ::fwData::mt::ObjectReadLock lock(modelSeries);
+    data::mt::ObjectReadLock lock(modelSeries);
 
     size_t index = 0;
     for(const auto& elt : m_extract)
@@ -115,7 +115,7 @@ void SExtractMeshByType::updating()
 
         bool found                                                    = false;
         const ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
-        for(const ::fwData::Reconstruction::csptr element : recs)
+        for(const data::Reconstruction::csptr element : recs)
         {
             if(element->getStructureType() == type)
             {
@@ -125,7 +125,7 @@ void SExtractMeshByType::updating()
 
                 if(regex.empty() || std::regex_match(name, match, regSurface))
                 {
-                    ::fwData::Mesh::sptr obj = element->getMesh();
+                    data::Mesh::sptr obj = element->getMesh();
 
                     this->setOutput("target", obj, index);
                     found = true;

@@ -53,7 +53,7 @@ public:
     FWGUIQML_API LocationDialog(::fwGui::GuiBaseObject::Key key);
 
     /// show the locationDialog to the user and wait selection from the user
-    FWGUIQML_API ::fwData::location::ILocation::sptr show() override;
+    FWGUIQML_API data::location::ILocation::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
     FWGUIQML_API void setType( ::fwGui::dialog::ILocationDialog::Types type ) override;
@@ -78,7 +78,7 @@ private:
     const QStringList fileFilters();
 
     std::string m_wildcard;
-    ::fwData::location::ILocation::sptr m_location;
+    data::location::ILocation::sptr m_location;
 
     /// the filter list and the current filter selected
     QString m_filterSelected;

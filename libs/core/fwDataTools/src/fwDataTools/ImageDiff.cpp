@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace fwDataTools
 
 ImageDiff::ImageDiff(const size_t imageElementSize, const size_t reservedElements) :
     m_imgEltSize(imageElementSize),
-    m_eltSize(imageElementSize * 2 + sizeof(::fwData::Image::IndexType)),
+    m_eltSize(imageElementSize * 2 + sizeof(data::Image::IndexType)),
     m_nbElts(0),
     m_reservedSize(reservedElements * imageElementSize),
     m_buffer(nullptr)
@@ -120,8 +120,8 @@ void ImageDiff::addDiff(const ImageDiff& diff)
 
 //-----------------------------------------------------------------------------
 
-void ImageDiff::addDiff(const ::fwData::Image::IndexType index, const ::fwData::Image::BufferType* oldValue,
-                        const ::fwData::Image::BufferType* newValue)
+void ImageDiff::addDiff(const data::Image::IndexType index, const data::Image::BufferType* oldValue,
+                        const data::Image::BufferType* newValue)
 {
     const size_t oldSize = this->getSize();
     const size_t newSize = oldSize + m_eltSize;
@@ -148,7 +148,7 @@ void ImageDiff::addDiff(const ::fwData::Image::IndexType index, const ::fwData::
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::applyDiff(const ::fwData::Image::sptr& img) const
+void ImageDiff::applyDiff(const data::Image::sptr& img) const
 {
     const auto dumpLock = img->lock();
 
@@ -160,7 +160,7 @@ void ImageDiff::applyDiff(const ::fwData::Image::sptr& img) const
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::revertDiff(const ::fwData::Image::sptr& img) const
+void ImageDiff::revertDiff(const data::Image::sptr& img) const
 {
     const auto dumpLock = img->lock();
 
@@ -207,43 +207,43 @@ ImageDiff::ElementType ImageDiff::getElement(size_t index) const
 {
     std::uint8_t* eltPtr = m_buffer + index * m_eltSize;
     ElementType elt;
-    elt.m_index = *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
+    elt.m_index = *reinterpret_cast< data::Image::IndexType* >(eltPtr);
 
-    size_t offset = sizeof(::fwData::Image::IndexType);
+    size_t offset = sizeof(data::Image::IndexType);
 
-    elt.m_oldValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
+    elt.m_oldValue = reinterpret_cast< data::Image::BufferType* >(eltPtr + offset);
 
     offset += m_imgEltSize;
 
-    elt.m_newValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
+    elt.m_newValue = reinterpret_cast< data::Image::BufferType* >(eltPtr + offset);
 
     return elt;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::applyDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const
+void ImageDiff::applyDiffElt(const data::Image::sptr& img, size_t eltIndex) const
 {
-    std::uint8_t* eltPtr                   = m_buffer + eltIndex * m_eltSize;
-    const ::fwData::Image::IndexType index = *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
+    std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
+    const data::Image::IndexType index = *reinterpret_cast< data::Image::IndexType* >(eltPtr);
 
     const size_t offset = sizeof(index) + m_imgEltSize;
 
-    ::fwData::Image::BufferType* newValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
+    data::Image::BufferType* newValue = reinterpret_cast< data::Image::BufferType* >(eltPtr + offset);
 
     img->setPixelBuffer(index, newValue);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::revertDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const
+void ImageDiff::revertDiffElt(const data::Image::sptr& img, size_t eltIndex) const
 {
-    std::uint8_t* eltPtr                   = m_buffer + eltIndex * m_eltSize;
-    const ::fwData::Image::IndexType index = *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
+    std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
+    const data::Image::IndexType index = *reinterpret_cast< data::Image::IndexType* >(eltPtr);
 
     const size_t offset = sizeof(index);
 
-    ::fwData::Image::BufferType* oldValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
+    data::Image::BufferType* oldValue = reinterpret_cast< data::Image::BufferType* >(eltPtr + offset);
 
     img->setPixelBuffer(index, oldValue);
 }

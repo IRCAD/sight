@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
 
 #include <OGRE/OgreTechnique.h>
 
@@ -81,7 +81,7 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _diffuseTexture is diffuse texture bound ?
      */
-    FWRENDEROGRE_API static std::string getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
+    FWRENDEROGRE_API static std::string getPermutation(data::Material::ShadingType _mode, bool _diffuseTexture,
                                                        bool _vertexColor);
 
     /**
@@ -90,11 +90,11 @@ public:
      * @param[in] _diffuseTexture is diffuse texture bound ?
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
-     * @deprecated Use '::fwData::Mesh::CellType' intead of '::fwData::Mesh::CellTypesEnum'. It will be removed in
+     * @deprecated Use 'data::Mesh::CellType' intead of 'data::Mesh::CellTypesEnum'. It will be removed in
      * sight 22.0
      */
-    [[deprecated("Use '::fwData::Mesh::CellType' intead of '::fwData::Mesh::CellTypesEnum'(sight 22.0)")]]
-    FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _primitiveType,
+    [[deprecated("Use 'data::Mesh::CellType' intead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
+    FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primitiveType,
                                                                    bool _diffuseTexture, bool _vertexColor,
                                                                    bool _hasPrimitiveColor);
     /**
@@ -104,7 +104,7 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
      */
-    FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(::fwData::Mesh::CellType _primitiveType,
+    FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(data::Mesh::CellType _primitiveType,
                                                                    bool _diffuseTexture, bool _vertexColor,
                                                                    bool _hasPrimitiveColor);
 
@@ -157,8 +157,8 @@ public:
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
      */
-    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
-                                                                                   ConstantValueType _value);
+    FWRENDEROGRE_API static SPTR(data::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
+                                                                               ConstantValueType _value);
 
     /**
      * @brief Create a gpu program variant based from an existing gpu program.

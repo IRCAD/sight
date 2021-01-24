@@ -27,7 +27,7 @@
 
 #include <core/tools/Object.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 namespace fwServices
 {
@@ -77,10 +77,10 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const ::fwData::Composite::csptr& replaceFields) = 0;
+                                          const data::Composite::csptr& replaceFields) = 0;
 
     /// Get config root
-    FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const = 0;
+    FWSERVICES_API virtual data::Object::sptr getConfigRoot() const = 0;
 
     /// Calls methods : create, start then update.
     FWSERVICES_API virtual void launch() = 0;

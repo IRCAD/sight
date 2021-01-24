@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(Study))
 
@@ -36,12 +36,12 @@ namespace fwMedData
 /**
  * @brief Holds a study information.
  */
-class FWMEDDATA_CLASS_API Study : public ::fwData::Object
+class FWMEDDATA_CLASS_API Study : public data::Object
 {
 
 public:
 
-    fwCoreClassMacro(Study, ::fwData::Object, ::fwData::factory::New< Study >)
+    fwCoreClassMacro(Study, data::Object, data::factory::New< Study >)
 
     fwCampMakeFriendDataMacro((fwMedData)(Study))
 
@@ -49,7 +49,7 @@ public:
      * @brief Creates the study.
      * @param _key private construction key.
      */
-    FWMEDDATA_API Study(::fwData::Object::Key _key);
+    FWMEDDATA_API Study(data::Object::Key _key);
 
     /// Destroys the study.
     FWMEDDATA_API virtual ~Study();
@@ -58,14 +58,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object where find data.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object where find data.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the unique identifier of the study.
     const DicomValueType& getInstanceUID() const;

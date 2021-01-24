@@ -26,9 +26,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Boolean.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -122,11 +122,11 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
             if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
             {
                 /// Filter object types
-                const ::fwData::Object::csptr shaderObj =
-                    adaptor->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+                const data::Object::csptr shaderObj =
+                    adaptor->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
                 const auto& objType = shaderObj->getClassname();
 
-                if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
+                if(objType == "data::Boolean" || objType == "data::Float" || objType == "data::Integer")
                 {
                     found = true;
                     break;

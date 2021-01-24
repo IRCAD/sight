@@ -94,7 +94,7 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
 //------------------------------------------------------------------------------
 
 void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
-                                           const ::fwData::Composite::csptr& overrides)
+                                           const data::Composite::csptr& overrides)
 {
     // Retrives the current activity data
     const size_t currentIdx = static_cast<size_t>(index);
@@ -102,7 +102,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
     ::fwMedData::Series::sptr series           = seriesDB->getContainer()[currentIdx];
     ::fwMedData::ActivitySeries::sptr activity = ::fwMedData::ActivitySeries::dynamicCast(series);
     SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
-    ::fwData::Composite::sptr composite = activity->getData();
+    data::Composite::sptr composite = activity->getData();
 
     if(overrides)
     {
@@ -129,7 +129,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
 
 ::fwMedData::ActivitySeries::sptr IActivitySequencer::getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
                                                                   size_t index, const core::com::SlotBase::sptr& slot,
-                                                                  const ::fwData::Composite::csptr& overrides)
+                                                                  const data::Composite::csptr& overrides)
 {
     ::fwMedData::ActivitySeries::sptr activity;
     if (seriesDB->size() > index) // The activity already exists, update the data
@@ -137,7 +137,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         ::fwMedData::Series::sptr series = seriesDB->getContainer()[index];
         activity                         = ::fwMedData::ActivitySeries::dynamicCast(series);
         SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
-        ::fwData::Composite::sptr composite = activity->getData();
+        data::Composite::sptr composite = activity->getData();
 
         // FIXME: update all the data or only the requirement ?
         if(overrides)
@@ -197,7 +197,7 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         activity->setActivityConfigId(info.id);
         activity->setDescription(info.description);
 
-        ::fwData::Composite::sptr composite = activity->getData();
+        data::Composite::sptr composite = activity->getData();
 
         for (const auto& req : info.requirements)
         {
@@ -216,16 +216,16 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
             else if (req.create == true || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // create the new data
-                ::fwData::Object::sptr newObj       = ::fwData::factory::New(req.type);
+                data::Object::sptr newObj = data::factory::New(req.type);
                 composite->getContainer()[req.name] = newObj;
                 m_requirements[req.name]            = newObj;
             }
             else if (req.minOccurs == 0)
             {
                 // create empty composite for optional data
-                ::fwData::Composite::sptr optionalDataComposite = ::fwData::Composite::New();
-                composite->getContainer()[req.name]             = optionalDataComposite;
-                m_requirements[req.name]                        = optionalDataComposite;
+                data::Composite::sptr optionalDataComposite = data::Composite::New();
+                composite->getContainer()[req.name] = optionalDataComposite;
+                m_requirements[req.name]            = optionalDataComposite;
             }
         }
 

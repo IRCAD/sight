@@ -26,8 +26,8 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -36,14 +36,14 @@
 namespace fwItkIO
 {
 
-class JpgImageWriter :  public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                        public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+class JpgImageWriter :  public ::fwDataIO::writer::GenericObjectWriter< data::Image >,
+                        public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                         public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(JpgImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>,
+    fwCoreClassMacro(JpgImageWriter, ::fwDataIO::writer::GenericObjectWriter< data::Image>,
                      ::fwDataIO::writer::factory::New< JpgImageWriter >);
     fwCoreAllowSharedFromThis();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ namespace visuOgreAdaptor
  *
  * @subsection Input Input:
  * - \b camera [::arData::Camera]: ::arData::Camera that handles calibration parameters
- * - \b transform [::fwData::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
+ * - \b transform [data::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer
@@ -95,7 +95,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
+     * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -141,7 +141,7 @@ private:
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material {nullptr};
+    data::Material::sptr m_material {nullptr};
 
     /// Contains the scene node where all frustums are attached.
     ::Ogre::SceneNode* m_sceneNode { nullptr };

@@ -36,7 +36,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, data::Object )
 
 //------------------------------------------------------------------------------
 

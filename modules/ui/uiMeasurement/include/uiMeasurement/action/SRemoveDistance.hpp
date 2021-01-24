@@ -26,8 +26,8 @@
 
 #include <core/macros.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -66,7 +66,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: Image containing the distance field.
+ * - \b image [data::Image]: Image containing the distance field.
  */
 class UIMEASUREMENT_CLASS_API SRemoveDistance final : public ::fwGui::IActionSrv
 {
@@ -108,14 +108,14 @@ private:
      * @return The distance to removed only if a specific distance is chosen, if all distances need to be removed, a
      * nullptr is return.
      */
-    static ::fwData::PointList::sptr getDistanceToRemove(const ::fwData::Image::csptr _image, bool& _removeAll);
+    static data::PointList::sptr getDistanceToRemove(const data::Image::csptr _image, bool& _removeAll);
 
     /**
      * @brief Sends a signal when a distance is removed.
      * @param _image The image where the distance has been added.
      * @param _distance The distance value.
      */
-    void notifyDeleteDistance(const ::fwData::Image::csptr& _image, const ::fwData::PointList::csptr& _distance) const;
+    void notifyDeleteDistance(const data::Image::csptr& _image, const data::PointList::csptr& _distance) const;
 
     /// Removes the last added distance.
     void removeLastDistance();

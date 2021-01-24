@@ -24,8 +24,8 @@
 
 #include <core/memory/stream/in/Raw.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <filesystem>
 
@@ -34,7 +34,7 @@ fwDataRegisterMacro( ::fwMedData::DicomSeries )
 namespace fwMedData
 {
 
-DicomSeries::DicomSeries(::fwData::Object::Key _key) :
+DicomSeries::DicomSeries(data::Object::Key _key) :
     Series(_key),
     m_numberOfInstances(0),
     m_firstInstanceNumber(0)
@@ -49,10 +49,10 @@ DicomSeries::~DicomSeries()
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::shallowCopy(const ::fwData::Object::csptr& _source)
+void DicomSeries::shallowCopy(const data::Object::csptr& _source)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -67,10 +67,10 @@ void DicomSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 

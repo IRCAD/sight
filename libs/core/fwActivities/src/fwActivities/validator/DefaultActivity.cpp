@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,13 +21,13 @@
  ***********************************************************************/
 
 #include "fwActivities/validator/DefaultActivity.hpp"
+
 #include "fwActivities/validator/registry/macros.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
 
 namespace fwActivities
 {
@@ -51,7 +51,7 @@ DefaultActivity::~DefaultActivity()
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType DefaultActivity::validate(const ::fwMedData::ActivitySeries::csptr &activitySeries ) const
+IValidator::ValidationType DefaultActivity::validate(const ::fwMedData::ActivitySeries::csptr& activitySeries ) const
 {
     IValidator::ValidationType validation;
 
@@ -69,5 +69,3 @@ IValidator::ValidationType DefaultActivity::validate(const ::fwMedData::Activity
 
 } // namespace validator
 } // namespace fwActivities
-
-

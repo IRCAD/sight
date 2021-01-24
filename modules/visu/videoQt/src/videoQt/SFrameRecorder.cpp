@@ -24,9 +24,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Point.hpp>
 
 #include <fwDataTools/helper/Vector.hpp>
 

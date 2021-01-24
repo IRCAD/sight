@@ -12,12 +12,12 @@ set( DEPENDENCIES
     fwLog
     fwServices
     fwIO
-    fwData
+    data
     fwDataTools
     fwMedData
     fwMedDataTools
     )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )

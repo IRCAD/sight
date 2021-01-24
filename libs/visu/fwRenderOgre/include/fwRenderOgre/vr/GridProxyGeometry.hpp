@@ -27,7 +27,7 @@
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/TransferFunction.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>

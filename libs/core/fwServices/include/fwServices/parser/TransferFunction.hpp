@@ -53,7 +53,7 @@ public:
 
     /**
      * @code{.xml}
-       <object type="::fwData::TransferFunction">
+       <object type="data::TransferFunction">
            <name>Bones</name>
            <colors isClamped="true">
                <step color="#ffffff" value="0" />
@@ -74,7 +74,7 @@ public:
      * You can also define a default TF this way:
      *
      * @code{.xml}
-       <object type="::fwData::TransferFunction">
+       <object type="data::TransferFunction">
            <colors default="true" />
        </object>
        @endcode

@@ -27,7 +27,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -109,7 +109,7 @@ void SSeriesPusher::updating()
         m_serverPort = std::stoi(port);
     }
 
-    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >(s_SERIES_IN);
+    data::Vector::csptr selectedSeries = this->getInput< data::Vector >(s_SERIES_IN);
 
     if(m_isPushing)
     {
@@ -145,7 +145,7 @@ void SSeriesPusher::pushSeries()
 {
     m_isPushing = true;
 
-    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >(s_SERIES_IN);
+    data::Vector::csptr seriesVector = this->getInput< data::Vector >(s_SERIES_IN);
 
     const std::vector< ::fwMedData::DicomSeries::sptr > dataVector =
         seriesVector->getDataContainer< ::fwMedData::DicomSeries >();

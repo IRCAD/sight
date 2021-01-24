@@ -30,14 +30,14 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/Float.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -91,7 +91,7 @@ void DefaultActivityTest::requirementsTest()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
     ::fwMedData::ImageSeries::sptr imageSeries  = ::fwMedData::ImageSeries::New();
@@ -99,7 +99,7 @@ void DefaultActivityTest::requirementsTest()
     ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    ::fwData::Composite::sptr modelCompo        = ::fwData::Composite::New();
+    data::Composite::sptr modelCompo = data::Composite::New();
 
     {
         // Empty data should NOT be valid
@@ -189,17 +189,17 @@ void DefaultActivityTest::parametersTest()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
-    ::fwData::Image::sptr img                  = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
     ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
-    ::fwData::Composite::sptr modelCompo        = ::fwData::Composite::New();
+    data::Composite::sptr modelCompo = data::Composite::New();
 
     {
         // Empty data should NOT be valid
@@ -260,20 +260,20 @@ void DefaultActivityTest::objectTest()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Image::sptr img1 = ::fwData::Image::New();
-    ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    ::fwData::Image::sptr img3 = ::fwData::Image::New();
+    data::Image::sptr img1 = data::Image::New();
+    data::Image::sptr img2 = data::Image::New();
+    data::Image::sptr img3 = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
                                               img1->getOrigin2(), img1->getType(),
-                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                              data::Image::PixelFormat::GRAY_SCALE);
     ::fwTest::generator::Image::generateRandomImage(img3, core::tools::Type::create<std::uint8_t>());
 
-    ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+    data::Vector::sptr vector = data::Vector::New();
     vector->getContainer().push_back(img1);
     vector->getContainer().push_back(img2);
 
-    ::fwData::Vector::sptr vector2 = ::fwData::Vector::New();
+    data::Vector::sptr vector2 = data::Vector::New();
     vector2->getContainer().push_back(img1);
     vector2->getContainer().push_back(img3);
 
@@ -319,7 +319,7 @@ void DefaultActivityTest::validatorTest()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
     ::fwMedData::ImageSeries::sptr imageSeries  = ::fwMedData::ImageSeries::New();
@@ -327,9 +327,9 @@ void DefaultActivityTest::validatorTest()
     ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    ::fwData::Composite::sptr modelCompo        = ::fwData::Composite::New();
+    data::Composite::sptr modelCompo = data::Composite::New();
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
@@ -421,7 +421,7 @@ void DefaultActivityTest::bigActivityTest()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
     activitySeries->setData(data);
 
     ::fwMedData::ImageSeries::sptr imageSeries1 = ::fwMedData::ImageSeries::New();
@@ -431,29 +431,29 @@ void DefaultActivityTest::bigActivityTest()
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
 
-    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 
-    ::fwData::Float::sptr floatObj  = ::fwData::Float::New();
-    ::fwData::Integer::sptr intObj  = ::fwData::Integer::New();
-    ::fwData::Boolean::sptr boolObj = ::fwData::Boolean::New();
+    data::Float::sptr floatObj  = data::Float::New();
+    data::Integer::sptr intObj  = data::Integer::New();
+    data::Boolean::sptr boolObj = data::Boolean::New();
 
-    ::fwData::Composite::sptr compoStr = ::fwData::Composite::New();
+    data::Composite::sptr compoStr = data::Composite::New();
 
-    (*compoStr)["Item1"] = ::fwData::String::New("myItem1");
-    (*compoStr)["Item2"] = ::fwData::String::New("myItem3");
-    (*compoStr)["Item3"] = ::fwData::String::New("myItem3");
+    (*compoStr)["Item1"] = data::String::New("myItem1");
+    (*compoStr)["Item2"] = data::String::New("myItem3");
+    (*compoStr)["Item3"] = data::String::New("myItem3");
 
-    ::fwData::Vector::sptr modelVector = ::fwData::Vector::New();
-    ::fwData::Vector::sptr imageVector = ::fwData::Vector::New();
+    data::Vector::sptr modelVector = data::Vector::New();
+    data::Vector::sptr imageVector = data::Vector::New();
 
-    ::fwData::Image::sptr img1 = ::fwData::Image::New();
-    ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    ::fwData::Image::sptr img3 = ::fwData::Image::New();
+    data::Image::sptr img1 = data::Image::New();
+    data::Image::sptr img2 = data::Image::New();
+    data::Image::sptr img3 = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateImage(img3, img2->getSize2(), img2->getSpacing2(),
                                               img2->getOrigin2(), img2->getType(),
-                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                              data::Image::PixelFormat::GRAY_SCALE);
     imageSeries1->setImage(img1);
     imageSeries2->setImage(img2);
     imageSeries3->setImage(img3);
@@ -496,7 +496,7 @@ void DefaultActivityTest::bigActivityTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with correct data should be valid", true, validation.first);
     }
     {
-        const ::fwData::Image::Spacing spacing = {45., 45., 45.};
+        const data::Image::Spacing spacing = {45., 45., 45.};
         img3->setSpacing2(spacing);
         validation = activityValidator->validate(activitySeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with different image properties data should NOT be valid",

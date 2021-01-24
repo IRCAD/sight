@@ -28,8 +28,8 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -73,15 +73,15 @@ SHandEyeEditor::SHandEyeEditor() noexcept
 
 void SHandEyeEditor::updating()
 {
-    ::fwData::Vector::sptr matrixVector1 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR1_INOUT);
-    ::fwData::Vector::sptr matrixVector2 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR2_INOUT);
+    data::Vector::sptr matrixVector1 = this->getInOut< data::Vector>(s_MATRIXVECTOR1_INOUT);
+    data::Vector::sptr matrixVector2 = this->getInOut< data::Vector>(s_MATRIXVECTOR2_INOUT);
 
     m_capturesListWidget->clear();
 
     const size_t size1 = matrixVector1->getContainer().size();
     const size_t size2 = matrixVector1->getContainer().size();
 
-    SLM_ASSERT("The two ::fwData::Vector have not the same size", size1 == size2);
+    SLM_ASSERT("The two data::Vector have not the same size", size1 == size2);
 
     for(size_t i = 0; i < size1; ++i )
     {
@@ -146,8 +146,8 @@ void SHandEyeEditor::stopping()
 
 void SHandEyeEditor::add()
 {
-    ::fwData::Vector::sptr matrixVector1 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR1_INOUT);
-    ::fwData::Vector::sptr matrixVector2 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR2_INOUT);
+    data::Vector::sptr matrixVector1 = this->getInOut< data::Vector>(s_MATRIXVECTOR1_INOUT);
+    data::Vector::sptr matrixVector2 = this->getInOut< data::Vector>(s_MATRIXVECTOR2_INOUT);
 
     if(this->isStarted())
     {
@@ -172,8 +172,8 @@ void SHandEyeEditor::add()
                 const float* matBuffer1 = buffer1->getElement(0);
                 const float* matBuffer2 = buffer2->getElement(0);
 
-                ::fwData::TransformationMatrix3D::sptr matrix1 = ::fwData::TransformationMatrix3D::New();
-                ::fwData::TransformationMatrix3D::sptr matrix2 = ::fwData::TransformationMatrix3D::New();
+                data::TransformationMatrix3D::sptr matrix1 = data::TransformationMatrix3D::New();
+                data::TransformationMatrix3D::sptr matrix2 = data::TransformationMatrix3D::New();
 
                 for(unsigned int i = 0; i < 4; ++i)
                 {
@@ -189,15 +189,15 @@ void SHandEyeEditor::add()
 
                 // send data modified signals
                 {
-                    auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >(
-                        ::fwData::Vector::s_MODIFIED_SIG);
+                    auto sig1 = matrixVector1->signal< data::Vector::ModifiedSignalType >(
+                        data::Vector::s_MODIFIED_SIG);
                     core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
                     sig1->asyncEmit();
                 }
 
                 {
-                    auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >(
-                        ::fwData::Vector::s_MODIFIED_SIG);
+                    auto sig2 = matrixVector2->signal< data::Vector::ModifiedSignalType >(
+                        data::Vector::s_MODIFIED_SIG);
                     core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
                     sig2->asyncEmit();
                 }
@@ -216,11 +216,11 @@ void SHandEyeEditor::remove()
 
     if(idx >= 0)
     {
-        ::fwData::Vector::sptr matrixVector1 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR1_INOUT);
-        ::fwData::Vector::sptr matrixVector2 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR2_INOUT);
+        data::Vector::sptr matrixVector1 = this->getInOut< data::Vector>(s_MATRIXVECTOR1_INOUT);
+        data::Vector::sptr matrixVector2 = this->getInOut< data::Vector>(s_MATRIXVECTOR2_INOUT);
 
-        ::fwData::Vector::IteratorType it1 = matrixVector1->begin();
-        ::fwData::Vector::IteratorType it2 = matrixVector2->begin();
+        data::Vector::IteratorType it1 = matrixVector1->begin();
+        data::Vector::IteratorType it2 = matrixVector2->begin();
 
         std::advance(it1, idx);
         std::advance(it2, idx);
@@ -234,15 +234,15 @@ void SHandEyeEditor::remove()
             // send data modified signals
 
             {
-                auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >(
-                    ::fwData::Vector::s_MODIFIED_SIG);
+                auto sig1 = matrixVector1->signal< data::Vector::ModifiedSignalType >(
+                    data::Vector::s_MODIFIED_SIG);
                 core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
                 sig1->asyncEmit();
             }
 
             {
-                auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >(
-                    ::fwData::Vector::s_MODIFIED_SIG);
+                auto sig2 = matrixVector2->signal< data::Vector::ModifiedSignalType >(
+                    data::Vector::s_MODIFIED_SIG);
                 core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
                 sig2->asyncEmit();
             }
@@ -256,21 +256,21 @@ void SHandEyeEditor::remove()
 
 void SHandEyeEditor::reset()
 {
-    ::fwData::Vector::sptr matrixVector1 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR1_INOUT);
-    ::fwData::Vector::sptr matrixVector2 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR2_INOUT);
+    data::Vector::sptr matrixVector1 = this->getInOut< data::Vector>(s_MATRIXVECTOR1_INOUT);
+    data::Vector::sptr matrixVector2 = this->getInOut< data::Vector>(s_MATRIXVECTOR2_INOUT);
 
     matrixVector1->getContainer().clear();
     matrixVector2->getContainer().clear();
 
     // send data modified signals
     {
-        auto sig1 = matrixVector1->signal< ::fwData::Vector::ModifiedSignalType >( ::fwData::Vector::s_MODIFIED_SIG);
+        auto sig1 = matrixVector1->signal< data::Vector::ModifiedSignalType >( data::Vector::s_MODIFIED_SIG);
         core::com::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
         sig1->asyncEmit();
     }
 
     {
-        auto sig2 = matrixVector2->signal< ::fwData::Vector::ModifiedSignalType >( ::fwData::Vector::s_MODIFIED_SIG);
+        auto sig2 = matrixVector2->signal< data::Vector::ModifiedSignalType >( data::Vector::s_MODIFIED_SIG);
         core::com::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
         sig2->asyncEmit();
     }
@@ -286,19 +286,19 @@ void SHandEyeEditor::getSelection()
 
     if(idx >= 0)
     {
-        ::fwData::Vector::sptr matrixVector1 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR1_INOUT);
-        ::fwData::Vector::sptr matrixVector2 = this->getInOut< ::fwData::Vector>(s_MATRIXVECTOR2_INOUT);
+        data::Vector::sptr matrixVector1 = this->getInOut< data::Vector>(s_MATRIXVECTOR1_INOUT);
+        data::Vector::sptr matrixVector2 = this->getInOut< data::Vector>(s_MATRIXVECTOR2_INOUT);
 
-        ::fwData::Vector::IteratorType it1 = matrixVector1->begin();
-        ::fwData::Vector::IteratorType it2 = matrixVector2->begin();
+        data::Vector::IteratorType it1 = matrixVector1->begin();
+        data::Vector::IteratorType it2 = matrixVector2->begin();
         std::advance(it1, idx);
         std::advance(it2, idx);
 
-        auto matrix1 = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
+        auto matrix1 = data::TransformationMatrix3D::dynamicCast(*it1);
 
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix1);
 
-        auto matrix2 = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
+        auto matrix2 = data::TransformationMatrix3D::dynamicCast(*it2);
 
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix2);
 

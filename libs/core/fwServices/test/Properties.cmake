@@ -1,6 +1,6 @@
 set( NAME fwServicesTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES core fwTest fwData fwServices )
-set( REQUIREMENTS fwData servicesReg )
+set( DEPENDENCIES core fwTest data fwServices )
+set( REQUIREMENTS data servicesReg )
 set( WARNINGS_AS_ERRORS ON )

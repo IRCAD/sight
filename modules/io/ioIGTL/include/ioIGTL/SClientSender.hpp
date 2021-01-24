@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ namespace ioIGTL
  * </service>
  * @endcode
  * @subsection Input Input:
- * - \b objects [::fwData::Object]: specified objects to send to the connected server.
+ * - \b objects [data::Object]: specified objects to send to the connected server.
  * They must have an attribute 'deviceName' to known the device-name used for this specific data.
  * @subsection Configuration Configuration:
  * - \b deviceName : filter by device Name in Message
@@ -88,7 +88,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
+    void sendObject(const data::Object::csptr& obj, const size_t index) override;
 
     /// client socket
     ::igtlNetwork::Client m_client;

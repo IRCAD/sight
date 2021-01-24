@@ -28,15 +28,15 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Boolean.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/PointList.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -71,9 +71,9 @@ double tolerance(double num)
 
 //------------------------------------------------------------------------------
 
-void roundSpacing(::fwData::Image::sptr image)
+void roundSpacing(data::Image::sptr image)
 {
-    ::fwData::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image->setSpacing2(spacing);
 }
@@ -136,7 +136,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
 
     ::fwMedData::Series::sptr series         = sdb->getContainer().front();
     ::fwMedData::ImageSeries::sptr imgseries = ::fwMedData::ImageSeries::dynamicCast(series);
-    ::fwData::Image::sptr image              = imgseries->getImage();
+    data::Image::sptr image = imgseries->getImage();
     roundSpacing(image);
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
@@ -189,63 +189,63 @@ void WriterReaderTest::writeReadSeriesDBTest()
     sdb->getContainer().push_back(imgSeries);
     sdb->getContainer().push_back(modelSeries);
 
-    ::fwData::Image::sptr image = imgSeries->getImage();
+    data::Image::sptr image = imgSeries->getImage();
 
     // Add landmarks
     ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
-    ::fwData::PointList::sptr landmarks =
-        image->getField< ::fwData::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
-    const ::fwData::Image::Origin origin   = image->getOrigin2();
-    const ::fwData::Point::sptr point      = ::fwData::Point::New(2.6 + origin[0],
-                                                                  1.2 + origin[1],
-                                                                  4.5 + origin[2]);
-    point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label1") );
+    data::PointList::sptr landmarks =
+        image->getField< data::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Origin origin   = image->getOrigin2();
+    const data::Point::sptr point      = data::Point::New(2.6 + origin[0],
+                                                          1.2 + origin[1],
+                                                          4.5 + origin[2]);
+    point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label1") );
     landmarks->getPoints().push_back(point);
-    ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2 + origin[0],
-                                                        2.4 + origin[1],
-                                                        0.3 + origin[2]);
-    point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label2") );
+    data::Point::sptr point2 = data::Point::New(1.2 + origin[0],
+                                                2.4 + origin[1],
+                                                0.3 + origin[2]);
+    point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label2") );
     landmarks->getPoints().push_back(point2);
-    const ::fwData::Image::Size size   = image->getSize2();
-    const ::fwData::Point::sptr point3 = ::fwData::Point::New(1.2 + origin[0],
-                                                              2.4 + origin[1],
-                                                              static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
-    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label3") );
+    const data::Image::Size size   = image->getSize2();
+    const data::Point::sptr point3 = data::Point::New(1.2 + origin[0],
+                                                      2.4 + origin[1],
+                                                      static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
+    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label3") );
     landmarks->getPoints().push_back(point3);
 
     // Add distance
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
-    const ::fwData::Point::sptr pt1 = ::fwData::Point::New(0., 0., 0.);
-    const ::fwData::Point::sptr pt2 = ::fwData::Point::New(static_cast<double>(size[0]-1) * spacing[0],
-                                                           static_cast<double>(size[1]-1) * spacing[1],
-                                                           static_cast<double>(size[2]-1) * spacing[2]);
+    data::PointList::sptr pl    = data::PointList::New();
+    const data::Point::sptr pt1 = data::Point::New(0., 0., 0.);
+    const data::Point::sptr pt2 = data::Point::New(static_cast<double>(size[0]-1) * spacing[0],
+                                                   static_cast<double>(size[1]-1) * spacing[1],
+                                                   static_cast<double>(size[2]-1) * spacing[2]);
     pl->getPoints().push_back( pt1 );
     pl->getPoints().push_back( pt2 );
 
-    ::fwData::Vector::sptr vectDist;
-    vectDist = image->setDefaultField< ::fwData::Vector >(
-        ::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());
+    data::Vector::sptr vectDist;
+    vectDist = image->setDefaultField< data::Vector >(
+        ::fwDataTools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
     vectDist->getContainer().push_back(pl);
 
-    image->setField("ShowLandmarks", ::fwData::Boolean::New(true));
-    image->setField("ShowDistances", ::fwData::Boolean::New(true));
+    image->setField("ShowLandmarks", data::Boolean::New(true));
+    image->setField("ShowDistances", data::Boolean::New(true));
 
     // Update Reconstruction
-    ::fwData::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
-    ::fwData::Mesh::sptr mesh          = rec->getMesh();
+    data::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
+    data::Mesh::sptr mesh          = rec->getMesh();
     mesh->clearCellColors();
     mesh->clearPointColors();
     mesh->clearCellNormals();
 
     // gdcm only manage ambient color in reconstruction
-    ::fwData::Material::sptr material = ::fwData::Material::New();
-    ::fwData::Color::sptr color       = ::fwTest::generator::Object::randomizeColor();
+    data::Material::sptr material = data::Material::New();
+    data::Color::sptr color       = ::fwTest::generator::Object::randomizeColor();
     material->setDiffuse(color);
     rec->setMaterial(material);
-    rec->setImage(::fwData::Image::sptr()); // not managed
+    rec->setImage(data::Image::sptr()); // not managed
 
-    modelSeries->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+    modelSeries->setField("ShowReconstructions", data::Boolean::New(true));
 
     return sdb;
 }

@@ -27,9 +27,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -49,7 +49,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, ::fwData::Mesh )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -82,7 +82,7 @@ void SMeshWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
     dialogFile.addFilter("PLY File(.ply)", "*.ply");
     dialogFile.addFilter("STL File(.stl)", "*.stl");
@@ -90,13 +90,13 @@ void SMeshWriter::openLocationDialog()
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         m_selectedExtension = dialogFile.getCurrentSelection();
         _sDefaultPath       = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -148,7 +148,7 @@ void SMeshWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto meshlockedPtr = this->getLockedInput< const ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(::fwIO::s_DATA_KEY);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

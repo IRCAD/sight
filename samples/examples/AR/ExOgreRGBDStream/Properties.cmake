@@ -14,7 +14,7 @@ set( REQUIREMENTS
     scene2D                 # Start the module, allow to use fwRenderQt
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
     arData
 

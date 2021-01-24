@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "uiMedDataQt/InsertSeries.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::uiMedDataQt::InsertSeries );
 
 namespace uiMedDataQt
 {
 
-InsertSeries::InsertSeries(::fwData::Object::Key key) :
+InsertSeries::InsertSeries(data::Object::Key key) :
     Series(key)
 {
 }
@@ -43,10 +43,10 @@ InsertSeries::~InsertSeries()
 
 //------------------------------------------------------------------------------
 
-void InsertSeries::shallowCopy(const ::fwData::Object::csptr& _source)
+void InsertSeries::shallowCopy(const data::Object::csptr& _source)
 {
     InsertSeries::csptr other = InsertSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -55,10 +55,10 @@ void InsertSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void InsertSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void InsertSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     InsertSeries::csptr other = InsertSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -68,4 +68,3 @@ void InsertSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCo
 //------------------------------------------------------------------------------
 
 } // namespace uiMedDataQt
-

@@ -27,9 +27,9 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Exception.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Exception.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 #include <fwDataTools/helper/Field.hpp>
@@ -126,13 +126,13 @@ void SManage::addOrSwap()
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(s_OBJECT_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object >(s_OBJECT_INOUT);
     SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
 
-    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    ::fwData::Object::sptr fieldHolder   = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -193,11 +193,11 @@ void SManage::swap()
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(s_OBJECT_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object >(s_OBJECT_INOUT);
     SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
 
-    ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Object::sptr fieldHolder  = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Object::sptr fieldHolder  = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("'swap' slot is only managed for 'composite' or 'fieldHolder'",
                composite || fieldHolder);
@@ -223,12 +223,12 @@ void SManage::remove()
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(s_OBJECT_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object >(s_OBJECT_INOUT);
 
-    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    ::fwData::Object::sptr fieldHolder   = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -273,12 +273,12 @@ void SManage::removeIfPresent()
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(s_OBJECT_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object >(s_OBJECT_INOUT);
 
-    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    ::fwData::Object::sptr fieldHolder   = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -330,7 +330,7 @@ void SManage::removeIfPresent()
             helper.remove(m_fieldName);
             helper.notify();
         }
-        catch(::fwData::Exception&)
+        catch(data::Exception&)
         {
             // Silently ignore the exception which means the field was not present
         }
@@ -343,10 +343,10 @@ void SManage::clear()
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    ::fwData::Object::sptr fieldHolder   = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);
@@ -385,18 +385,18 @@ void SManage::internalAdd(bool _copy)
 {
     SLM_ASSERT("Service is not started", this->isStarted());
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(s_OBJECT_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object >(s_OBJECT_INOUT);
     SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
 
     if(_copy)
     {
-        obj = ::fwData::Object::copy(obj);
+        obj = data::Object::copy(obj);
     }
 
-    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite >(s_COMPOSITE_INOUT);
+    data::Vector::sptr vector       = this->getInOut< data::Vector >(s_VECTOR_INOUT);
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
-    ::fwData::Object::sptr fieldHolder   = this->getInOut< ::fwData::Object >(s_FIELD_HOLDER_INOUT);
+    data::Object::sptr fieldHolder = this->getInOut< data::Object >(s_FIELD_HOLDER_INOUT);
 
     SLM_ASSERT("Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
                vector || composite || seriesDB || fieldHolder);

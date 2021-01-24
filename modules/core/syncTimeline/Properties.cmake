@@ -6,7 +6,7 @@ set( DEPENDENCIES
     arData
     arServices
     core
-    fwData
+    data
     fwDataTools
     fwMath
     fwServices

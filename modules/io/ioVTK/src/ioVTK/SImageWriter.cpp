@@ -25,9 +25,9 @@
 #include <core/base.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
 
@@ -53,7 +53,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, ::fwData::Image )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -86,19 +86,19 @@ void SImageWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.addFilter("Bitmap images", "*.bmp *.jpeg *.jpg *.png *.pnm *.tiff");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -137,7 +137,7 @@ void SImageWriter::info(std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
-                              const CSPTR(::fwData::Image)& image,
+                              const CSPTR(data::Image)& image,
                               const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
     bool bValue = true;
@@ -269,7 +269,7 @@ void SImageWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::csptr pImage = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        data::Image::csptr pImage = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pImage);
 
         ::fwGui::Cursor cursor;

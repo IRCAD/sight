@@ -24,8 +24,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Image.hpp>
+#include <data/Array.hpp>
+#include <data/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -66,13 +66,13 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const Type MAX   = 345;
         const Type RANGE = MAX - MIN;
 
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
 
-        const ::fwData::Image::Size size       = {125, 110, 45};
-        const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
-        const ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const data::Image::Size size       = {125, 110, 45};
+        const data::Image::Spacing spacing = { 1., 1., 1.};
+        const data::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                                  data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
@@ -101,13 +101,13 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const Type MAX  = 18.2f;
         const int RANGE = static_cast<int>(MAX - MIN);
 
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
 
-        const ::fwData::Image::Size size       = {42, 34, 75};
-        const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
-        const ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const data::Image::Size size       = {42, 34, 75};
+        const data::Image::Spacing spacing = { 1., 1., 1.};
+        const data::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                                  data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
@@ -140,13 +140,13 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const Type MAX   = 245;
         const Type RANGE = MAX - MIN;
 
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
 
-        const ::fwData::Image::Size size       = {156, 208, 0};
-        const ::fwData::Image::Spacing spacing = { 1., 1., 0.};
-        const ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const data::Image::Size size       = {156, 208, 0};
+        const data::Image::Spacing spacing = { 1., 1., 0.};
+        const data::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                                  data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
@@ -172,7 +172,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 // ------------------------------------------------------------------------------
 
 template <class P>
-::fwData::Image::sptr createImageFromPixelBuffer()
+data::Image::sptr createImageFromPixelBuffer()
 {
     constexpr size_t IMG_DIMENSIONS = 100;
     constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
@@ -181,8 +181,8 @@ template <class P>
     static_assert(N_COMPONENTS != 0, "Cannot test 0-dimensional pixel types");
 
     // Create a new image
-    auto image = ::fwData::Image::New();
-    ::fwData::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
+    auto image             = data::Image::New();
+    data::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
     image->setSize2(size);
     image->setType(core::tools::Type::create<SubPixel>());
     image->setNumberOfComponents(N_COMPONENTS);
@@ -204,8 +204,8 @@ void getPixelBufferTestHelper(const P& pixelValue)
 {
     using SubPixel = typename P::value_type;
     constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
-    ::fwData::Image::sptr image = createImageFromPixelBuffer<P>();
-    const auto size = image->getSize2();
+    data::Image::sptr image       = createImageFromPixelBuffer<P>();
+    const auto size               = image->getSize2();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
@@ -284,8 +284,8 @@ void setPixelBufferTestHelper(P& pixelValue)
     image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
-    ::fwData::Image::csptr constImage = image;
-    const P value = constImage->at<P>(coords[0], coords[1], coords[2]);
+    data::Image::csptr constImage = image;
+    const P value                 = constImage->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
@@ -342,9 +342,9 @@ void fwDataTools::ut::MedicalImageHelpersTest::isBufNull()
     auto image = createImageFromPixelBuffer<std::array<uint8_t, 3> >();
 
     {
-        const auto dumpLock                       = image->lock();
-        const ::fwData::Image::BufferType* pixBuf =
-            static_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(0));
+        const auto dumpLock                   = image->lock();
+        const data::Image::BufferType* pixBuf =
+            static_cast< data::Image::BufferType* >(image->getPixelBuffer(0));
 
         bool isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
@@ -359,8 +359,8 @@ void fwDataTools::ut::MedicalImageHelpersTest::isBufNull()
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
-            const ::fwData::Image::BufferType* pixBuf =
-                static_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(10));
+            const data::Image::BufferType* pixBuf =
+                static_cast< data::Image::BufferType* >(image->getPixelBuffer(10));
 
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);

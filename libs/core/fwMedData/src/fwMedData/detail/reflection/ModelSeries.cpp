@@ -27,7 +27,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 //------------------------------------------------------------------------------
 

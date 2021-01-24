@@ -26,10 +26,10 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectReadToWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -88,19 +88,19 @@ bool SOpenCVReader::defineLocationGUI()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
 
-    ::fwData::location::SingleFile::sptr result
-        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result
+        = data::location::SingleFile::dynamicCast( dialogFile.show() );
 
     if (result)
     {
         _sDefaultPath = result->getPath();
         this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
         ok = true;
     }
     else
@@ -153,7 +153,7 @@ void SOpenCVReader::updating()
 
     //Remove all CameraSeries
     // lock cameraSeries
-    ::fwData::mt::ObjectReadToWriteLock lock(camSeries);
+    data::mt::ObjectReadToWriteLock lock(camSeries);
     const size_t cams = camSeries->getNumberOfCameras();
 
     for(size_t c = 0; c < cams; ++c)
@@ -221,7 +221,7 @@ void SOpenCVReader::updating()
         cam->setScale(scale);
         cam->setIsCalibrated(true);
 
-        ::fwData::mt::ObjectWriteLock writeLock(camSeries);
+        data::mt::ObjectWriteLock writeLock(camSeries);
         camSeries->addCamera(cam);
         writeLock.unlock();
 
@@ -234,7 +234,7 @@ void SOpenCVReader::updating()
 
         if(!extrinsic.empty())
         {
-            ::fwData::TransformationMatrix3D::sptr extMat = ::fwData::TransformationMatrix3D::New();
+            data::TransformationMatrix3D::sptr extMat = data::TransformationMatrix3D::New();
 
             for(size_t i = 0; i < 4; ++i)
             {

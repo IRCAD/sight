@@ -8,7 +8,7 @@ set( REQUIREMENTS
     dicomAppConfig
     ctrlMemory
     ctrlSelection
-    fwData
+    data
     fwMedData
     gui
     guiQt

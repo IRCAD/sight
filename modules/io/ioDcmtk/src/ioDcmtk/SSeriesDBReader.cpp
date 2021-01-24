@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
@@ -76,17 +76,17 @@ void SSeriesDBReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
 
     // Select filter
@@ -102,8 +102,8 @@ void SSeriesDBReader::openLocationDialog()
 
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
-        ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        data::String::sptr key = data::String::New();
+        filterSelectorSrv = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();

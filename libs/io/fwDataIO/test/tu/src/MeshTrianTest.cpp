@@ -63,8 +63,8 @@ void MeshTrianTest::testSimpleMesh()
 {
     std::filesystem::path trianPath = core::tools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
-    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh  = data::Mesh::New();
+    data::Mesh::sptr mesh2 = data::Mesh::New();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
 
@@ -93,8 +93,8 @@ void MeshTrianTest::testMeshWithCellNormals()
 {
     std::filesystem::path trianPath = core::tools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
-    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh  = data::Mesh::New();
+    data::Mesh::sptr mesh2 = data::Mesh::New();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
     ::fwDataTools::Mesh::generateCellNormals(mesh);
@@ -120,7 +120,7 @@ void MeshTrianTest::testMeshWithCellNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2)
+void MeshTrianTest::compareMesh(data::Mesh::sptr mesh1, data::Mesh::sptr mesh2)
 {
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), mesh2->getNumberOfCells());
@@ -130,9 +130,9 @@ void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr
     const auto dumpLock1 = mesh1->lock();
     const auto dumpLock2 = mesh2->lock();
 
-    auto pointItr1      = mesh1->begin< ::fwData::iterator::ConstPointIterator >();
-    auto pointItr2      = mesh2->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto pointEnd = mesh1->end< ::fwData::iterator::ConstPointIterator >();
+    auto pointItr1      = mesh1->begin< data::iterator::ConstPointIterator >();
+    auto pointItr2      = mesh2->begin< data::iterator::ConstPointIterator >();
+    const auto pointEnd = mesh1->end< data::iterator::ConstPointIterator >();
 
     for (; pointItr1 != pointEnd; ++pointItr1, ++pointItr2)
     {
@@ -141,9 +141,9 @@ void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr
         CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr1->point->z, pointItr2->point->z, 0.00001);
     }
 
-    auto cellItr1      = mesh1->begin< ::fwData::iterator::ConstCellIterator >();
-    auto cellItr2      = mesh2->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto cellEnd = mesh1->end< ::fwData::iterator::ConstCellIterator >();
+    auto cellItr1      = mesh1->begin< data::iterator::ConstCellIterator >();
+    auto cellItr2      = mesh2->begin< data::iterator::ConstCellIterator >();
+    const auto cellEnd = mesh1->end< data::iterator::ConstCellIterator >();
 
     for(; cellItr1 != cellEnd; ++cellItr1, ++cellItr2)
     {

@@ -29,8 +29,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::VectorHelperTest );
@@ -58,11 +58,11 @@ void VectorHelperTest::tearDown()
 
 void VectorHelperTest::testHelper()
 {
-    ::fwData::Object::sptr nullobj;
-    ::fwData::Vector::sptr vector     = ::fwData::Vector::New();
-    ::fwData::Object::sptr vectorObj1 = ::fwData::String::New();
-    ::fwData::Object::sptr vectorObj2 = ::fwData::String::New();
-    ::fwData::Object::sptr vectorObj3 = ::fwData::String::New();
+    data::Object::sptr nullobj;
+    data::Vector::sptr vector     = data::Vector::New();
+    data::Object::sptr vectorObj1 = data::String::New();
+    data::Object::sptr vectorObj2 = data::String::New();
+    data::Object::sptr vectorObj3 = data::String::New();
 
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
@@ -71,9 +71,9 @@ void VectorHelperTest::testHelper()
     std::mutex mutex;
     std::condition_variable condition;
 
-    ::fwData::Vector::ContainerType addedVectors;
-    std::function<void ( ::fwData::Vector::ContainerType)> fnAdd =
-        [&](::fwData::Vector::ContainerType f)
+    data::Vector::ContainerType addedVectors;
+    std::function<void ( data::Vector::ContainerType)> fnAdd =
+        [&](data::Vector::ContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -85,14 +85,14 @@ void VectorHelperTest::testHelper()
 
     auto slotAdded = core::com::newSlot( fnAdd );
     slotAdded->setWorker(worker);
-    auto sigAdded = vector->signal< ::fwData::Vector::AddedObjectsSignalType>(::fwData::Vector::s_ADDED_OBJECTS_SIG);
+    auto sigAdded = vector->signal< data::Vector::AddedObjectsSignalType>(data::Vector::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
 
     unsigned int numRemovedNotif = 0;
-    ::fwData::Vector::ContainerType removedVectors;
+    data::Vector::ContainerType removedVectors;
 
-    std::function<void ( ::fwData::Vector::ContainerType)> fnRemove =
-        [&](::fwData::Vector::ContainerType f)
+    std::function<void ( data::Vector::ContainerType)> fnRemove =
+        [&](data::Vector::ContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -103,8 +103,8 @@ void VectorHelperTest::testHelper()
         };
     auto slotRemoved = core::com::newSlot( fnRemove );
     slotRemoved->setWorker(worker);
-    auto sigRemoved = vector->signal< ::fwData::Vector::RemovedObjectsSignalType>(
-        ::fwData::Vector::s_REMOVED_OBJECTS_SIG);
+    auto sigRemoved = vector->signal< data::Vector::RemovedObjectsSignalType>(
+        data::Vector::s_REMOVED_OBJECTS_SIG);
     sigRemoved->connect(slotRemoved);
 
     auto clearArrays = [&]() { addedVectors.clear(); removedVectors.clear(); };

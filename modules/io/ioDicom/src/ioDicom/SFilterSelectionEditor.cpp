@@ -24,7 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDicomIOFilter/composite/IComposite.hpp>
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
@@ -49,7 +49,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::fwData::Vector )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ void SFilterSelectionEditor::starting()
     m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
     SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
 
-    ::fwData::Vector::csptr dataVector = this->getInput< ::fwData::Vector >("selection");
+    data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", dataVector);
 
     ::fwGui::IGuiContainerSrv::create();
@@ -397,7 +397,7 @@ void SFilterSelectionEditor::applyFilters()
     typedef std::vector< ::fwDicomIOFilter::IFilter::sptr > FilterContainertype;
 
     // Get selected DicomSeries
-    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >("selection");
+    data::Vector::csptr vector = this->getInput< data::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", vector);
 
     // Display the informations
@@ -426,7 +426,7 @@ void SFilterSelectionEditor::applyFilters()
         FilterContainertype filterContainer;
 
         // Copy selected DicomSeries
-        for(const ::fwData::Object::sptr& obj: vector->getContainer())
+        for(const data::Object::sptr& obj: vector->getContainer())
         {
             ::fwMedData::DicomSeries::sptr srcDicomSeries = ::fwMedData::DicomSeries::dynamicCast(obj);
             SLM_ASSERT("The series should be a DicomSeries.", srcDicomSeries);

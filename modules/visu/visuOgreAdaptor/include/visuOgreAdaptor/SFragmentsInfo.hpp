@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor takes a snapshot of layer fragments information and output it as a ::fwData::Image.
+ * @brief This adaptor takes a snapshot of layer fragments information and output it as a data::Image.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -45,9 +45,9 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection InOut InOut:
- * - \b image [::fwData::Image] (optional): image containing the snapshot of the layer color buffer.
- * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
- * - \b primitiveID [::fwData::Image] (optional): image containing the primitive ID of the layer.
+ * - \b image [data::Image] (optional): image containing the snapshot of the layer color buffer.
+ * - \b depth [data::Image] (optional): image containing the snapshot of the layer depth buffer.
+ * - \b primitiveID [data::Image] (optional): image containing the primitive ID of the layer.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the mesh's layer.
@@ -94,7 +94,7 @@ protected:
     /// Intializes adaptor and connection to layer signals.
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Updates the service. Convert render target texture to ::fwData::Image.
+    /// Updates the service. Convert render target texture to data::Image.
     VISUOGREADAPTOR_API void updating() noexcept override;
 
     /// Destroys adaptor, only calls ::visuOgreAdaptor::destroyCompositor().

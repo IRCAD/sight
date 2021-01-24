@@ -29,8 +29,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/location/Folder.hpp>
+#include <data/Composite.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -114,16 +114,16 @@ void SFrameWriter::openLocationDialog()
     static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
     }
     else

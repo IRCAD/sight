@@ -27,7 +27,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <dcmtk/dcmdata/dcdatset.h>
 
@@ -66,7 +66,7 @@ protected:
      * @param[in] pixelRepresentation Pixel representation
      * @param[in] imageType Image Type
      */
-    FWDCMTKIO_API void directRead(const ::fwData::Image::sptr& image,
+    FWDCMTKIO_API void directRead(const data::Image::sptr& image,
                                   DicomContainerType instances,
                                   unsigned short rows, unsigned short columns,
                                   int depth, double rescaleSlope,
@@ -84,7 +84,7 @@ protected:
      * @param[in] depth Depth
      * @param[in] bitsAllocated Number of bits allocated
      */
-    FWDCMTKIO_API void directRGBLookupRead(const ::fwData::Image::sptr& image,
+    FWDCMTKIO_API void directRGBLookupRead(const data::Image::sptr& image,
                                            DcmDataset& dataset,
                                            DicomContainerType instances,
                                            unsigned short rows,
@@ -103,7 +103,7 @@ protected:
      * @param[in] pixelRepresentation Pixel Representation
      * @param[in] imageType Image Type
      */
-    FWDCMTKIO_API void lazyRead(const ::fwData::Image::sptr& image,
+    FWDCMTKIO_API void lazyRead(const data::Image::sptr& image,
                                 const ::fwMedData::DicomSeries::csptr& series,
                                 unsigned short rows, unsigned short columns,
                                 int depth, double rescaleSlope,
@@ -123,7 +123,7 @@ protected:
      * @param[in] bitsAllocated Bits allocated
      * @param[in] imageType Image type
      */
-    FWDCMTKIO_API void lazyRGBLookupRead(const ::fwData::Image::sptr& image,
+    FWDCMTKIO_API void lazyRGBLookupRead(const data::Image::sptr& image,
                                          const ::fwMedData::DicomSeries::csptr& series,
                                          DcmDataset& dataset,
                                          DicomContainerType instances, unsigned short rows,

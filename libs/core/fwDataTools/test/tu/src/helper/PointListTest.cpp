@@ -26,7 +26,7 @@
 
 #include <core/Exception.hpp>
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
@@ -61,41 +61,41 @@ void PointListTest::computeDistance()
 {
     const size_t nbPoints = 42;
 
-    ::fwData::PointList::sptr pl1;
-    ::fwData::PointList::sptr pl2;
+    data::PointList::sptr pl1;
+    data::PointList::sptr pl2;
 
-    ::fwData::Point::sptr p;
+    data::Point::sptr p;
 
     // Simple test with empty point lists
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        pl1 = data::PointList::New();
+        pl2 = data::PointList::New();
 
         // Compare the point lists
-        ::fwData::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
+        data::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
 
         CPPUNIT_ASSERT(outputArray->getNumberOfElements() == 0);
     }
 
     // Simple test with parallel point lists
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        pl1 = data::PointList::New();
+        pl2 = data::PointList::New();
 
         // Build 2 pointlists:
         // The first one with increasing x values
         // And the second one with inscreasing x values but shifted in y
         for(size_t i = 0; i < nbPoints; i++)
         {
-            p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
             pl1->pushBack(p);
 
-            p = ::fwData::Point::New(static_cast<float>(i), 1.0f, 0.0f);
+            p = data::Point::New(static_cast<float>(i), 1.0f, 0.0f);
             pl2->pushBack(p);
         }
 
         // Compare the point lists
-        ::fwData::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
+        data::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
 
         const auto dumpLock   = outputArray->lock();
         auto distanceArrayItr = outputArray->begin<double>();
@@ -108,24 +108,24 @@ void PointListTest::computeDistance()
 
     // Simple test with diverging point lists
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        pl1 = data::PointList::New();
+        pl2 = data::PointList::New();
 
         // Build 2 point lists:
         // The first one with increasing x values
         // And the second one with increasing x values but shifted in y
         for(size_t i = 0; i < nbPoints; i++)
         {
-            p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
             pl1->pushBack(p);
 
-            p = ::fwData::Point::New(static_cast<float>(i), static_cast<float>(i), 0.0f);
+            p = data::Point::New(static_cast<float>(i), static_cast<float>(i), 0.0f);
             pl2->pushBack(p);
         }
 
         // Compare the point lists
-        ::fwData::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
-        const auto dumpLock = outputArray->lock();
+        data::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
+        const auto dumpLock           = outputArray->lock();
 
         auto distanceArrayItr = outputArray->begin<double>();
 
@@ -143,36 +143,36 @@ void PointListTest::transform()
     // Simple test with identity
     {
         // Test sample
-        ::fwData::PointList::sptr pl1 = ::fwData::PointList::New();
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 0.0f));
+        data::PointList::sptr pl1 = data::PointList::New();
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 0.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 0.0f));
 
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 1.0f));
 
         // Reference list
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
-        const size_t size                                     = points1.size();
+        const data::PointList::PointListContainer points1 = pl1->getPoints();
+        const size_t size                                 = points1.size();
 
-        ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
+        data::PointList::sptr pl2 = data::PointList::New();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCoord();
-            pl2->pushBack(::fwData::Point::New(tmp[0], tmp[1], tmp[2]));
+            const data::Point::PointCoordArrayType tmp = points1[i]->getCoord();
+            pl2->pushBack(data::Point::New(tmp[0], tmp[1], tmp[2]));
         }
 
-        const ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        const data::TransformationMatrix3D::sptr tf1 = data::TransformationMatrix3D::New();
         ::fwDataTools::helper::PointList::transform(pl1, tf1);
 
-        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+        const data::PointList::PointListContainer points2 = pl2->getPoints();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -189,40 +189,40 @@ void PointListTest::transform()
         translation[2] = 32.0;
 
         // Test sample
-        ::fwData::PointList::sptr pl1 = ::fwData::PointList::New();
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 0.0f));
+        data::PointList::sptr pl1 = data::PointList::New();
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 0.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 0.0f));
 
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 1.0f));
 
         // Reference list
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
-        const size_t size                                     = points1.size();
+        const data::PointList::PointListContainer points1 = pl1->getPoints();
+        const size_t size                                 = points1.size();
 
-        ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
+        data::PointList::sptr pl2 = data::PointList::New();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp = points1[i]->getCoord();
-            pl2->pushBack(::fwData::Point::New(tmp[0] + translation[0], tmp[1] + translation[1],
-                                               tmp[2] + translation[2]));
+            const data::Point::PointCoordArrayType tmp = points1[i]->getCoord();
+            pl2->pushBack(data::Point::New(tmp[0] + translation[0], tmp[1] + translation[1],
+                                           tmp[2] + translation[2]));
         }
 
-        const ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        const data::TransformationMatrix3D::sptr tf1 = data::TransformationMatrix3D::New();
         tf1->setCoefficient(0, 3, translation[0]);
         tf1->setCoefficient(1, 3, translation[1]);
         tf1->setCoefficient(2, 3, translation[2]);
         ::fwDataTools::helper::PointList::transform(pl1, tf1);
 
-        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+        const data::PointList::PointListContainer points2 = pl2->getPoints();
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -232,30 +232,30 @@ void PointListTest::transform()
 
     // Simple test with rotation
     {
-        ::fwData::PointList::sptr pl1 = ::fwData::PointList::New();
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 0.0f));
+        data::PointList::sptr pl1 = data::PointList::New();
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 0.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 0.0f));
 
-        pl1->pushBack(::fwData::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(1.0f, 1.0f, 1.0f));
+        pl1->pushBack(data::Point::New(0.0f, 1.0f, 1.0f));
 
-        ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
-        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 0.0f));
-        pl2->pushBack(::fwData::Point::New(-1.0f, 0.0f, 0.0f));
-        pl2->pushBack(::fwData::Point::New(-1.0f, -1.0f, 0.0f));
-        pl2->pushBack(::fwData::Point::New(0.0f, -1.0f, 0.0f));
+        data::PointList::sptr pl2 = data::PointList::New();
+        pl2->pushBack(data::Point::New(0.0f, 0.0f, 0.0f));
+        pl2->pushBack(data::Point::New(-1.0f, 0.0f, 0.0f));
+        pl2->pushBack(data::Point::New(-1.0f, -1.0f, 0.0f));
+        pl2->pushBack(data::Point::New(0.0f, -1.0f, 0.0f));
 
-        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 1.0f));
-        pl2->pushBack(::fwData::Point::New(-1.0f, 0.0f, 1.0f));
-        pl2->pushBack(::fwData::Point::New(-1.0f, -1.0f, 1.0f));
-        pl2->pushBack(::fwData::Point::New(0.0f, -1.0f, 1.0f));
+        pl2->pushBack(data::Point::New(0.0f, 0.0f, 1.0f));
+        pl2->pushBack(data::Point::New(-1.0f, 0.0f, 1.0f));
+        pl2->pushBack(data::Point::New(-1.0f, -1.0f, 1.0f));
+        pl2->pushBack(data::Point::New(0.0f, -1.0f, 1.0f));
 
         // Perform a 180 degrees rotation around Z
-        const ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        const data::TransformationMatrix3D::sptr tf1 = data::TransformationMatrix3D::New();
         tf1->setCoefficient(0, 0, -1.0f);
         tf1->setCoefficient(0, 1, 0.0f);
         tf1->setCoefficient(1, 0, 0.0f);
@@ -263,14 +263,14 @@ void PointListTest::transform()
 
         ::fwDataTools::helper::PointList::transform(pl1, tf1);
 
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
-        size_t size                                           = points1.size();
-        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+        const data::PointList::PointListContainer points1 = pl1->getPoints();
+        size_t size                                       = points1.size();
+        const data::PointList::PointListContainer points2 = pl2->getPoints();
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -285,15 +285,15 @@ void PointListTest::associate()
 {
     const size_t nbPoints = 42;
 
-    ::fwData::PointList::sptr pl1;
-    ::fwData::PointList::sptr pl2;
+    data::PointList::sptr pl1;
+    data::PointList::sptr pl2;
 
-    ::fwData::Point::sptr p;
+    data::Point::sptr p;
 
     // Simple test with empty point lists
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        pl1 = data::PointList::New();
+        pl2 = data::PointList::New();
 
         // Associate empty point lists
         ::fwDataTools::helper::PointList::associate(pl1, pl2);
@@ -305,23 +305,23 @@ void PointListTest::associate()
     // Create two lists with the same sets of points and shift them with transformation matrices
     // Associating them should make the x components match
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        pl1 = data::PointList::New();
+        pl2 = data::PointList::New();
 
         // Build 2 point lists with the same points, the point are in the inverse order in the second list
         for(size_t i = 0; i <= nbPoints; i++)
         {
-            p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
             pl1->pushBack(p);
 
-            p = ::fwData::Point::New(static_cast<float>(nbPoints - i), 0.0f, 0.0f);
+            p = data::Point::New(static_cast<float>(nbPoints - i), 0.0f, 0.0f);
             pl2->pushBack(p);
         }
 
         // Transform the point lists, shift the points in y
-        ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr tf1 = data::TransformationMatrix3D::New();
         tf1->setCoefficient(1, 3, 42.0);
-        ::fwData::TransformationMatrix3D::sptr tf2 = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr tf2 = data::TransformationMatrix3D::New();
         tf2->setCoefficient(1, 3, -42.0);
 
         ::fwDataTools::helper::PointList::transform(pl1, tf1);
@@ -333,15 +333,15 @@ void PointListTest::associate()
         // Check that the two list are equal (re-ordered)
         // Only the last component should differ, as there is a (0,0,42) translation
         // on the first one and a (0,0,-42) translation on the second one
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
-        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+        const data::PointList::PointListContainer points1 = pl1->getPoints();
+        const data::PointList::PointListContainer points2 = pl2->getPoints();
 
         const size_t size = points1.size();
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Check that the last component is equal to i
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
@@ -362,25 +362,25 @@ void PointListTest::associate()
     // Check that the matched points are really the closest
     {
         // Create an initial octahedron with points
-        ::fwData::PointList::sptr pl1 = ::fwData::PointList::New();
-        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(2.0f, 0.0f, 1.0f));
-        pl1->pushBack(::fwData::Point::New(2.0f, 0.8f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(2.0f, 0.0f, -1.0f));
-        pl1->pushBack(::fwData::Point::New(2.0f, -0.8f, 0.0f));
-        pl1->pushBack(::fwData::Point::New(3.0f, 0.0f, 0.0f));
+        data::PointList::sptr pl1 = data::PointList::New();
+        pl1->pushBack(data::Point::New(1.0f, 0.0f, 0.0f));
+        pl1->pushBack(data::Point::New(2.0f, 0.0f, 1.0f));
+        pl1->pushBack(data::Point::New(2.0f, 0.8f, 0.0f));
+        pl1->pushBack(data::Point::New(2.0f, 0.0f, -1.0f));
+        pl1->pushBack(data::Point::New(2.0f, -0.8f, 0.0f));
+        pl1->pushBack(data::Point::New(3.0f, 0.0f, 0.0f));
 
         // Reference final octahedron
-        ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
-        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 5.2f));
-        pl2->pushBack(::fwData::Point::New(1.0f, 0.0f, 6.2f));
-        pl2->pushBack(::fwData::Point::New(0.0f, 0.8f, 6.2f));
-        pl2->pushBack(::fwData::Point::New(-1.0f, 0.0f, 6.2f));
-        pl2->pushBack(::fwData::Point::New(0.0f, -0.8f, 6.2f));
-        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 7.2f));
+        data::PointList::sptr pl2 = data::PointList::New();
+        pl2->pushBack(data::Point::New(0.0f, 0.0f, 5.2f));
+        pl2->pushBack(data::Point::New(1.0f, 0.0f, 6.2f));
+        pl2->pushBack(data::Point::New(0.0f, 0.8f, 6.2f));
+        pl2->pushBack(data::Point::New(-1.0f, 0.0f, 6.2f));
+        pl2->pushBack(data::Point::New(0.0f, -0.8f, 6.2f));
+        pl2->pushBack(data::Point::New(0.0f, 0.0f, 7.2f));
 
         // Transform the point list
-        ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr tf1 = data::TransformationMatrix3D::New();
         // Shift the points in Z
         tf1->setCoefficient(2, 3, 4.2);
 
@@ -397,16 +397,16 @@ void PointListTest::associate()
 
         // Check that the two lists are equal
         // The second one corresponds to a Z translation + a 90 degrees Y translation of the first one
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
-        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+        const data::PointList::PointListContainer points1 = pl1->getPoints();
+        const data::PointList::PointListContainer points2 = pl2->getPoints();
 
         const size_t size      = points1.size();
         const int nbComponents = 3;
 
         for(size_t i = 0; i < size; i++)
         {
-            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Compare the components
             for(int j = 0; j < nbComponents; j++)
@@ -422,13 +422,13 @@ void PointListTest::associate()
 
 void PointListTest::removeClosestPointNominal()
 {
-    const size_t nbPoints = 42;
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    const size_t nbPoints    = 42;
+    data::PointList::sptr pl = data::PointList::New();
 
     // Remove points in an empty list
     for(size_t i = 0; i < nbPoints; ++i)
     {
-        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto p = data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         CPPUNIT_ASSERT( ::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
                                                                              std::numeric_limits<float>::min()) ==
                         nullptr );
@@ -437,15 +437,15 @@ void PointListTest::removeClosestPointNominal()
     // Build a list
     for(size_t i = 0; i < nbPoints; ++i)
     {
-        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto p = data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         pl->pushBack(p);
     }
 
     // Remove points with an unmatched delta
     for(size_t i = 0; i < nbPoints; ++i)
     {
-        const auto p = ::fwData::Point::New(static_cast< float >(nbPoints+1), static_cast< float >(nbPoints+1),
-                                            static_cast< float >(nbPoints+1));
+        const auto p = data::Point::New(static_cast< float >(nbPoints+1), static_cast< float >(nbPoints+1),
+                                        static_cast< float >(nbPoints+1));
         CPPUNIT_ASSERT( ::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
                                                                              std::numeric_limits<float>::min()) ==
                         nullptr );
@@ -455,7 +455,7 @@ void PointListTest::removeClosestPointNominal()
     for(size_t i = 0; i < nbPoints; ++i)
     {
         const auto p =
-            ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+            data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         const auto pRes =
             ::fwDataTools::helper::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
@@ -469,20 +469,20 @@ void PointListTest::removeClosestPointNominal()
 
 void PointListTest::removeClosestPointExtreme()
 {
-    const size_t nbPoints = 42;
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    const size_t nbPoints    = 42;
+    data::PointList::sptr pl = data::PointList::New();
 
     // Build a list
     for(size_t i = 0; i < nbPoints; ++i)
     {
-        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto p = data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         pl->pushBack(p);
     }
 
     // Remove points with negative delta
     for(size_t i = 0; i < nbPoints; ++i)
     {
-        const auto p = ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+        const auto p = data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         CPPUNIT_ASSERT(::fwDataTools::helper::PointList::removeClosestPoint(pl, p,
                                                                             -std::numeric_limits<float>::max()) ==
                        nullptr);
@@ -492,7 +492,7 @@ void PointListTest::removeClosestPointExtreme()
     for(size_t i = 0; i < nbPoints; ++i)
     {
         const auto p =
-            ::fwData::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
+            data::Point::New(static_cast< float >(i), static_cast< float >(i), static_cast< float >(i));
         const auto pRes =
             ::fwDataTools::helper::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);

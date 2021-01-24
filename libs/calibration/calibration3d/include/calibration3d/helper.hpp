@@ -24,9 +24,9 @@
 
 #include "calibration3d/config.hpp"
 
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
@@ -99,15 +99,15 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3
 /**
  * @brief calibrateTool compute a transformation matrix from tracked device attached to a passive pointing tool and its
  * tip
- * @param _matricesVector: vector containing a set of ::fwData::TransformationMatrix3D from the tracked device
+ * @param _matricesVector: vector containing a set of data::TransformationMatrix3D from the tracked device
  * @param _calibrationMatrix corresponding to the transformation matrix from the tracked device to the
  * tip of the attached passive pointing device
  * @param _centerMatrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
 CALIBRATION3D_API void calibratePointingTool(
-    const ::fwData::Vector::csptr _matricesVector,
-    ::fwData::TransformationMatrix3D::sptr _calibrationMatrix,
-    ::fwData::TransformationMatrix3D::sptr _centerMatrix);
+    const data::Vector::csptr _matricesVector,
+    data::TransformationMatrix3D::sptr _calibrationMatrix,
+    data::TransformationMatrix3D::sptr _centerMatrix);
 
 /**
  * @brief generateArucoDictionary generates an Aruco Dictionary regarding the number of marker wanted
@@ -134,9 +134,9 @@ CALIBRATION3D_API ::cv::Ptr< ::cv::aruco::Dictionary > generateArucoDictionary(c
  *
  * @return List of detected chessboard points. nullptr if detection failed.
  */
-CALIBRATION3D_API ::fwData::PointList::sptr detectChessboard(const ::cv::Mat& _img,
-                                                             size_t _xDim, size_t _yDim,
-                                                             float _scale);
+CALIBRATION3D_API data::PointList::sptr detectChessboard(const ::cv::Mat& _img,
+                                                         size_t _xDim, size_t _yDim,
+                                                         float _scale);
 
 }
 

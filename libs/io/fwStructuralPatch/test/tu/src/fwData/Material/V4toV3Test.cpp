@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Material/V4ToV3Test.hpp"
+#include "data/Material/V4ToV3Test.hpp"
 
-#include <fwStructuralPatch/fwData/Material/V4ToV3.hpp>
+#include <fwStructuralPatch/data/Material/V4ToV3.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -38,13 +38,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Material::V4ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Material::V4ToV3Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Material
 {
@@ -70,7 +70,7 @@ void V4ToV3Test::applyPatchTest()
     ::fwAtoms::Object::sptr origObj = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr targetObj;
 
-    ::fwAtomsPatch::helper::setClassname(origObj, "::fwData::Material");
+    ::fwAtomsPatch::helper::setClassname(origObj, "data::Material");
     ::fwAtomsPatch::helper::setVersion(origObj, "4");
 
     ::fwAtomsPatch::helper::Object helper(origObj);
@@ -109,8 +109,8 @@ void V4ToV3Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[origObj] = targetObj;
 
-        ::fwStructuralPatch::fwData::Material::V4ToV3::sptr patch;
-        patch = ::fwStructuralPatch::fwData::Material::V4ToV3::New();
+        ::fwStructuralPatchdata::Material::V4ToV3::sptr patch;
+        patch = ::fwStructuralPatchdata::Material::V4ToV3::New();
         CPPUNIT_ASSERT_NO_THROW(patch->apply(origObj, targetObj, newVersions));
 
         CPPUNIT_ASSERT(targetObj);
@@ -166,8 +166,8 @@ void V4ToV3Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[origObj] = targetObj;
 
-        ::fwStructuralPatch::fwData::Material::V4ToV3::sptr patch;
-        patch = ::fwStructuralPatch::fwData::Material::V4ToV3::New();
+        ::fwStructuralPatchdata::Material::V4ToV3::sptr patch;
+        patch = ::fwStructuralPatchdata::Material::V4ToV3::New();
         CPPUNIT_ASSERT_NO_THROW(patch->apply(origObj, targetObj, newVersions));
 
         CPPUNIT_ASSERT(targetObj);
@@ -181,6 +181,6 @@ void V4ToV3Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Material
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

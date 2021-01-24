@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,24 +20,24 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
-#include "fwStructuralPatch/fwData/Image/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Image/V2ToV3.hpp"
-#include "fwStructuralPatch/fwData/Image/V3ToV2.hpp"
-#include "fwStructuralPatch/fwData/Material/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Material/V2ToV3.hpp"
-#include "fwStructuralPatch/fwData/Material/V3ToV4.hpp"
-#include "fwStructuralPatch/fwData/Material/V4ToV3.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V1ToV3.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V2ToV3.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V3ToV4.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V4ToV3.hpp"
-#include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
-#include "fwStructuralPatch/fwData/Reconstruction/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Reconstruction/V2ToV3.hpp"
-#include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
-#include "fwStructuralPatch/fwData/TransformationMatrix3D/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
+#include "fwStructuralPatch/data/Image/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Image/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Image/V3ToV2.hpp"
+#include "fwStructuralPatch/data/Material/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Material/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Material/V3ToV4.hpp"
+#include "fwStructuralPatch/data/Material/V4ToV3.hpp"
+#include "fwStructuralPatch/data/Mesh/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Mesh/V1ToV3.hpp"
+#include "fwStructuralPatch/data/Mesh/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Mesh/V3ToV4.hpp"
+#include "fwStructuralPatch/data/Mesh/V4ToV3.hpp"
+#include "fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp"
+#include "fwStructuralPatch/data/Reconstruction/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Reconstruction/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Study/V1ToFwMedDataStudyV1.hpp"
+#include "fwStructuralPatch/data/TransformationMatrix3D/V1ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/ActivitySeries/V1ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/ActivitySeries/V2ToV1.hpp"
 #include "fwStructuralPatch/fwMedData/AttachmentSeries/V1ToV2.hpp"
@@ -68,24 +68,24 @@ struct runner
     runner()
     {
         ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Reconstruction::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Reconstruction::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V3ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V3ToV4::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V4ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V2ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V3ToV4::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V4ToV3::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::TransformationMatrix3D::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Reconstruction::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Reconstruction::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Patient::V1ToFwMedDataPatientV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Study::V1ToFwMedDataStudyV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Acquisition::V1ToFwMedDataImageSeriesV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Image::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Image::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Image::V3ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Material::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Material::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Material::V3ToV4::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Material::V4ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V1ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V3ToV4::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::Mesh::V4ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatchdata::TransformationMatrix3D::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V2ToV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::AttachmentSeries::V1ToV2::New());

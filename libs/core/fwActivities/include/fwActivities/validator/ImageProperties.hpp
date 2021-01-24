@@ -53,14 +53,14 @@ public:
      */
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        const CSPTR(::fwData::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection ) const override;
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see ::fwActivities::IValidator::validate
      */
-    FWACTIVITIES_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object)& currentObject ) const
+    FWACTIVITIES_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
     override;
 };
 

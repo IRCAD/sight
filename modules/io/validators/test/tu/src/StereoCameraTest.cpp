@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
+#include <data/TransformationMatrix3D.hpp>
+
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/TransformationMatrix3D.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::StereoCameraTest );
@@ -65,8 +65,8 @@ void StereoCameraTest::testValidator()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::arData::CameraSeries::sptr cameraSeries     = ::arData::CameraSeries::New();
-    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+    ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::New();
+    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 
     ::arData::Camera::sptr camera1 = ::arData::Camera::New();
     ::arData::Camera::sptr camera2 = ::arData::Camera::New();

@@ -63,7 +63,7 @@ static const std::string s_QUERY_CONFIG             = "queryFlags";
 
 SMesh::SMesh() noexcept
 {
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     newSlot(s_MODIFY_COLORS_SLOT, &SMesh::modifyPointColors, this);
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
@@ -172,10 +172,10 @@ void SMesh::starting()
 
         SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
                    result != mtlAdaptors.end());
-        m_material = m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared();
+        m_material = m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared();
     }
 
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     this->updateMesh(mesh.get_shared());
 }
@@ -185,11 +185,11 @@ void SMesh::starting()
 ::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -201,7 +201,7 @@ void SMesh::updating()
     {
         return;
     }
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -252,7 +252,7 @@ void visuOgreAdaptor::SMesh::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
+void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
@@ -369,7 +369,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const ::fwData::Mesh::sptr& _mesh,
+::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const data::Mesh::sptr& _mesh,
                                                                 const std::string& _materialSuffix)
 {
     auto materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
@@ -396,7 +396,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
+void SMesh::updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh)
 {
     if(!m_materialAdaptor)
     {
@@ -411,7 +411,7 @@ void SMesh::updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh)
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), ::fwRenderOgre::RESOURCE_GROUP);
         }
     }
-    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+    else if(m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
             m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
@@ -432,7 +432,7 @@ void SMesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            const auto mesh      = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+            const auto mesh      = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
             std::string meshName = mesh->getID();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
@@ -445,7 +445,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+    else if(m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
             m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
@@ -464,7 +464,7 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     m_meshGeometry->updateVertices(mesh.get_shared());
 
@@ -495,7 +495,7 @@ void SMesh::modifyPointColors()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -524,7 +524,7 @@ void SMesh::modifyTexCoords()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     m_meshGeometry->updateTexCoords(mesh.get_shared());
 

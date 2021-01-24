@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRenderQt3D/config.hpp"
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <QColor>
 #include <QMaterial>
@@ -111,7 +111,7 @@ public:
     FWRENDERQT3D_QT_API Q_INVOKABLE void updateShadingMode(int _shadingMode);
 
     /// Updates material color.
-    FWRENDERQT3D_QT_API Q_INVOKABLE void updateRGBAMode(::fwData::Material::sptr _sightMaterial);
+    FWRENDERQT3D_QT_API Q_INVOKABLE void updateRGBAMode(data::Material::sptr _sightMaterial);
 
 Q_SIGNALS:
 

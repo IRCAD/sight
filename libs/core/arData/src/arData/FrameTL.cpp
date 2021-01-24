@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <boost/pool/pool.hpp>
 
@@ -36,7 +36,7 @@ namespace arData
 
 //------------------------------------------------------------------------------
 
-FrameTL::FrameTL ( ::fwData::Object::Key key ) :
+FrameTL::FrameTL ( data::Object::Key key ) :
     GenericTL< uint8_t >(key),
     m_width(0),
     m_height(0),
@@ -58,7 +58,7 @@ FrameTL::~FrameTL ()
 void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );

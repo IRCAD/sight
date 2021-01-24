@@ -5,7 +5,7 @@ set( DEPENDENCIES
     fwNetworkIO
     core
     fwTest
-    fwData
+    data
     fwQt
     fwMedData
     )

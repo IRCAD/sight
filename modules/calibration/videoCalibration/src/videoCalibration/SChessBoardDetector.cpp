@@ -31,8 +31,8 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -149,8 +149,8 @@ void SChessBoardDetector::stopping()
 fwServices::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -169,7 +169,7 @@ void SChessBoardDetector::recordPoints()
         {
             auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
             SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
-            ::fwData::mt::ObjectWriteLock calInfoLock(calInfo);
+            data::mt::ObjectWriteLock calInfoLock(calInfo);
 
             if(m_pointLists[i])
             {
@@ -184,7 +184,7 @@ void SChessBoardDetector::recordPoints()
             }
             else
             {
-                calInfo->addRecord(m_images[i], ::fwData::PointList::New());
+                calInfo->addRecord(m_images[i], data::PointList::New());
             }
         }
     }
@@ -223,10 +223,10 @@ void SChessBoardDetector::updateChessboardSize()
 
 void SChessBoardDetector::doDetection(size_t _imageIndex)
 {
-    const auto img = this->getInput< ::fwData::Image >(s_IMAGE_INPUT, _imageIndex);
+    const auto img = this->getInput< data::Image >(s_IMAGE_INPUT, _imageIndex);
     SLM_ASSERT("Missing 'image' input.", img);
 
-    ::fwData::mt::ObjectReadLock imgLock(img);
+    data::mt::ObjectReadLock imgLock(img);
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 
     if(isValid)
@@ -237,7 +237,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
         if (m_pointLists[_imageIndex] != nullptr)
         {
-            m_images[_imageIndex] = ::fwData::Image::New();
+            m_images[_imageIndex] = data::Image::New();
             m_images[_imageIndex]->deepCopy(img);
         }
         else
@@ -248,8 +248,8 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         const bool outputDetection = (this->getKeyGroupSize(s_DETECTION_INOUT) == this->getKeyGroupSize(s_IMAGE_INPUT));
         if(outputDetection)
         {
-            auto outPl = this->getInOut< ::fwData::PointList >(s_DETECTION_INOUT, _imageIndex);
-            ::fwData::mt::ObjectWriteLock writeLockOutPl(outPl);
+            auto outPl = this->getInOut< data::PointList >(s_DETECTION_INOUT, _imageIndex);
+            data::mt::ObjectWriteLock writeLockOutPl(outPl);
             if (m_pointLists[_imageIndex] != nullptr)
             {
                 outPl->deepCopy(m_pointLists[_imageIndex]);
@@ -259,7 +259,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
                 outPl->getPoints().clear();
             }
 
-            auto sig = outPl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
+            auto sig = outPl->signal< data::PointList::ModifiedSignalType >(data::PointList::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
     }

@@ -24,7 +24,7 @@
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwDataTools
 {
@@ -32,20 +32,20 @@ namespace helper
 {
 
 /**
- * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
+ * @brief   Defines an helper to modify an data::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
  *
- * @deprecated will be removed in sight 22.0, please use ::fwData::Image.
+ * @deprecated will be removed in sight 22.0, please use data::Image.
  */
 class FWDATATOOLS_DEPRECATED_CLASS_API Image
 {
 
 public:
 
-    typedef ::fwData::Image::SizeType SizeType;
-    typedef ::fwData::Image::IndexType IndexType;
-    typedef ::fwData::Image::BufferType BufferType;
-    typedef ::fwData::Image::BufferIndexType BufferIndexType;
+    typedef data::Image::SizeType SizeType;
+    typedef data::Image::IndexType IndexType;
+    typedef data::Image::BufferType BufferType;
+    typedef data::Image::BufferIndexType BufferIndexType;
 
     /// Shared pointer type
     typedef std::shared_ptr < ::fwDataTools::helper::Image > sptr;
@@ -58,14 +58,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(::fwData::Image::sptr image)
+    static sptr New(data::Image::sptr image)
     {
         return std::make_shared< ::fwDataTools::helper::Image >(image);
     }
 
     /// Constructor. Initialize parameters.
-    [[deprecated("will be removed in sight 22.0, please use ::fwData::Image")]]
-    FWDATATOOLS_API Image( ::fwData::Image::sptr image );
+    [[deprecated("will be removed in sight 22.0, please use data::Image")]]
+    FWDATATOOLS_API Image( data::Image::sptr image );
 
     /// Destrucotr. Do nothing.
     FWDATATOOLS_API virtual ~Image();
@@ -133,7 +133,7 @@ public:
 
 private:
 
-    ::fwData::Image::sptr m_image;
+    data::Image::sptr m_image;
 
     core::memory::BufferObject::Lock m_lock;
 

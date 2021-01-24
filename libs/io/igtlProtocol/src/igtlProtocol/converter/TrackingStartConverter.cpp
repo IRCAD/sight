@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/Integer.hpp>
+#include <data/String.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -37,7 +37,7 @@ namespace converter
 {
 
 const std::string TrackingStartConverter::s_IGTL_TYPE          = "STT_TDATA";
-const std::string TrackingStartConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Composite::classname();
+const std::string TrackingStartConverter::s_FWDATA_OBJECT_TYPE = data::Composite::classname();
 const std::string s_statusKey                                  = "Status";
 const std::string s_resolutionKey                              = "Resolution";
 const std::string s_coordinateNameKey                          = "CoordinateName";
@@ -56,7 +56,7 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr src) const
 {
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::New();
 
@@ -68,28 +68,28 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage* >(src.GetPointer());
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    data::Composite::sptr composite = data::Composite::New();
     {
-        ::fwData::Boolean::sptr status = ::fwData::Boolean::New();
-        (*composite)[s_statusKey]      = status;
+        data::Boolean::sptr status = data::Boolean::New();
+        (*composite)[s_statusKey] = status;
 
         status->setValue(true);
     }
     {
-        ::fwData::Integer::sptr resolution = ::fwData::Integer::New();
-        (*composite)[s_resolutionKey]      = resolution;
+        data::Integer::sptr resolution = data::Integer::New();
+        (*composite)[s_resolutionKey] = resolution;
 
         resolution->setValue(trackingMsg->GetResolution());
     }
     {
-        ::fwData::String::sptr coordinateName = ::fwData::String::New();
-        (*composite)[s_coordinateNameKey]     = coordinateName;
+        data::String::sptr coordinateName = data::String::New();
+        (*composite)[s_coordinateNameKey] = coordinateName;
 
         coordinateName->setValue(trackingMsg->GetCoordinateName());
     }

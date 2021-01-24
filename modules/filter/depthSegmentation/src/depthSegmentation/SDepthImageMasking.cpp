@@ -27,8 +27,8 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -85,7 +85,7 @@ void SDepthImageMasking::stopping()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_DEPTH_IMAGE_KEY, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DEPTH_IMAGE_KEY, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -96,13 +96,13 @@ void SDepthImageMasking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        const ::fwData::Image::csptr videoImage = this->getInput< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
-        const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+        const data::Image::csptr videoImage = this->getInput< data::Image >(s_VIDEO_IMAGE_KEY);
+        const data::Image::csptr depthImage = this->getInput< data::Image >(s_DEPTH_IMAGE_KEY);
 
         if(videoImage && depthImage)
         {
-            ::fwData::mt::ObjectReadLock lockVideoImage(videoImage);
-            ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
+            data::mt::ObjectReadLock lockVideoImage(videoImage);
+            data::mt::ObjectReadLock lockDepthImage(depthImage);
 
             const ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
             const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
@@ -119,14 +119,14 @@ void SDepthImageMasking::updating()
             ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
             cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
-            ::fwData::Image::sptr foregroundImage = this->getInOut< ::fwData::Image >(s_FOREGROUND_IMAGE_KEY);
+            data::Image::sptr foregroundImage = this->getInOut< data::Image >(s_FOREGROUND_IMAGE_KEY);
 
-            ::fwData::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
+            data::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
 
             ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
 
-            const auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
-                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+            const auto sig = foregroundImage->signal< data::Image::BufferModifiedSignalType >(
+                data::Image::s_BUFFER_MODIFIED_SIG);
             sig->asyncEmit();
 
             m_sigComputed->asyncEmit();
@@ -138,13 +138,13 @@ void SDepthImageMasking::updating()
 
 void SDepthImageMasking::setBackground()
 {
-    const ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
-    const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+    const data::Image::csptr maskImage  = this->getInput< data::Image >(s_MASK_IMAGE_KEY);
+    const data::Image::csptr depthImage = this->getInput< data::Image >(s_DEPTH_IMAGE_KEY);
     if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE) &&
        (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
     {
-        ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
-        ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
+        data::mt::ObjectReadLock lockMaskImage(maskImage);
+        data::mt::ObjectReadLock lockDepthImage(depthImage);
 
         const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
         m_cvMaskImage = ::cvIO::Image::moveToCv(maskImage);

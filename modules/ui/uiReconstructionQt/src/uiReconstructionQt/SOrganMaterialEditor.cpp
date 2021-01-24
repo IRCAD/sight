@@ -26,11 +26,11 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -51,7 +51,7 @@
 namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiReconstructionQt::SOrganMaterialEditor, ::fwData::Reconstruction )
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiReconstructionQt::SOrganMaterialEditor, data::Reconstruction )
 
 static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -71,7 +71,7 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
 ::fwServices::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -154,11 +154,11 @@ void SOrganMaterialEditor::stopping()
 
 void SOrganMaterialEditor::onDiffuseColorButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::mt::ObjectWriteLock lock(material);
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::mt::ObjectWriteLock lock(material);
 
     int red   = static_cast<int>(material->diffuse()->red()*255);
     int green = static_cast<int>(material->diffuse()->green()*255);
@@ -187,11 +187,11 @@ void SOrganMaterialEditor::onDiffuseColorButton()
 
 void SOrganMaterialEditor::onAmbientColorButton()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::mt::ObjectWriteLock lock(material);
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::mt::ObjectWriteLock lock(material);
 
     const int red   = static_cast<int>(material->ambient()->red()*255.f);
     const int green = static_cast<int>(material->ambient()->green()*255.f);
@@ -220,11 +220,11 @@ void SOrganMaterialEditor::onAmbientColorButton()
 
 void SOrganMaterialEditor::onOpacitySlider(int _value)
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::mt::ObjectWriteLock lock(material);
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::mt::ObjectWriteLock lock(material);
 
     material->diffuse()->alpha() = static_cast<float>(_value)/100.f;
     std::stringstream ss;
@@ -238,7 +238,7 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 
 void SOrganMaterialEditor::refreshMaterial()
 {
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -248,8 +248,8 @@ void SOrganMaterialEditor::refreshMaterial()
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 
-    ::fwData::Material::csptr material = reconstruction->getMaterial();
-    ::fwData::mt::ObjectReadLock lock(material);
+    data::Material::csptr material = reconstruction->getMaterial();
+    data::mt::ObjectReadLock lock(material);
 
     {
         const QColor materialDiffuseColor = QColor(
@@ -291,12 +291,12 @@ void SOrganMaterialEditor::refreshMaterial()
 
 void SOrganMaterialEditor::materialNotification()
 {
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig
-        = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
-              ::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig
+        = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
+              data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

@@ -32,8 +32,8 @@
 
 #include <core/spyLog.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -77,9 +77,9 @@ void SpatialFiducialsIOD::write(const ::fwMedData::Series::csptr& series)
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
-    ::fwData::Image::csptr image = imageSeries->getImage();
+    data::Image::csptr image = imageSeries->getImage();
 
-    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(
+    data::Vector::sptr distances = image->getField< data::Vector >(
         ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 

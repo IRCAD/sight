@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ void AppManager::initialize()
 {
     this->create();
 
-    m_string = ::fwData::String::New("Edit this line...");
+    m_string = data::String::New("Edit this line...");
 
     this->addObject(m_string, s_EDITED_STRING);
 

@@ -438,8 +438,8 @@ void Plugin::initialize()
 
     auto proxy = ::fwServices::registry::Proxy::getDefault();
 
-    std::function<void(::fwData::Object::sptr)>  recSelectedFct =
-        [ = ] (::fwData::Object::sptr rec)
+    std::function<void(data::Object::sptr)>  recSelectedFct =
+        [ = ] (data::Object::sptr rec)
         {
             m_appManager->addObject(rec, s_RECONSTRUCTION_ID);
         };

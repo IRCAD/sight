@@ -31,7 +31,7 @@ namespace fwAtomConversion
 namespace exception
 {
 
-/// Throw this exception when an object classname is not found exception in ::fwData::factory.
+/// Throw this exception when an object classname is not found exception in data::factory.
 struct FWATOMCONVERSION_CLASS_API DataFactoryNotFound : core::Exception
 {
     FWATOMCONVERSION_API DataFactoryNotFound( const std::string& err ) :

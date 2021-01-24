@@ -31,10 +31,10 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/Matrix.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace registrationCV
 {
@@ -69,11 +69,11 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
     std::vector< ::cv::Point2f > points2d;
     std::vector< ::cv::Point3f > points3d;
 
-    const auto fwPoints2d = this->getLockedInput< ::fwData::PointList >(s_POINTLIST2D_INPUT);
+    const auto fwPoints2d = this->getLockedInput< data::PointList >(s_POINTLIST2D_INPUT);
 
-    const auto fwPoints3d = this->getLockedInput< ::fwData::PointList >(s_POINTLIST3D_INPUT);
+    const auto fwPoints3d = this->getLockedInput< data::PointList >(s_POINTLIST3D_INPUT);
 
-    auto fwMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    auto fwMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
 
     //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
@@ -93,7 +93,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
     for(size_t i = 0; i < numberOfPoints; ++i)
     {
         // 2d
-        ::fwData::Point::csptr p2d = fwPoints2d->getPoints()[i];
+        data::Point::csptr p2d = fwPoints2d->getPoints()[i];
         ::cv::Point2f cvP2d;
 
         cvP2d.x = static_cast<float>(p2d->getCoord()[0]) - cxcyShift[0];
@@ -102,7 +102,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         points2d.push_back(cvP2d);
 
         // 3d
-        ::fwData::Point::csptr p3d = fwPoints3d->getPoints()[i];
+        data::Point::csptr p3d = fwPoints3d->getPoints()[i];
         ::cv::Point3f cvP3d;
 
         cvP3d.x = static_cast<float>(p3d->getCoord()[0]);
@@ -122,13 +122,13 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         cvMat = cvMat.inv();
     }
 
-    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
     ::cvIO::Matrix::copyFromCv(cvMat, matrix);
 
     fwMatrix->deepCopy(matrix);
 
-    const auto sig = fwMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
-                         ( ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+    const auto sig = fwMatrix->signal< data::TransformationMatrix3D::ModifiedSignalType >
+                         ( data::TransformationMatrix3D::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

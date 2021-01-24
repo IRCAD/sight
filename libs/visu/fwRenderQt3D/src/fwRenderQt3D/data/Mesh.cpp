@@ -45,7 +45,7 @@ namespace data
 Mesh::Mesh(Qt3DCore::QNode* _parent) :
     QEntity(_parent)
 {
-    ::fwRenderQt3D::data::Material* defaultMaterial = new ::fwRenderQt3D::data::Material();
+    ::fwRenderQt3Ddata::Material* defaultMaterial = new ::fwRenderQt3Ddata::Material();
 
     m_material = defaultMaterial;
     m_scene    = qobject_cast< ::fwRenderQt3Dcore::GenericScene* >(_parent);
@@ -73,7 +73,7 @@ Mesh::~Mesh()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::data::Material* const Mesh::getMaterial() const
+::fwRenderQt3Ddata::Material* const Mesh::getMaterial() const
 {
     return m_material;
 }
@@ -87,7 +87,7 @@ Mesh::~Mesh()
 
 //------------------------------------------------------------------------------
 
-void Mesh::setMaterial(::fwRenderQt3D::data::Material* _material)
+void Mesh::setMaterial(::fwRenderQt3Ddata::Material* _material)
 {
     SLM_ASSERT("Material can't be set to null value.", _material);
     this->removeComponent(m_material);
@@ -105,9 +105,9 @@ void Mesh::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 
 //------------------------------------------------------------------------------
 
-void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
+void Mesh::setMesh(data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
+    SLM_ASSERT("data::Mesh pointer does not exist.", _mesh);
 
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
@@ -171,9 +171,9 @@ void Mesh::centerCameraOnMesh()
 
 //------------------------------------------------------------------------------
 
-void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
+void Mesh::buildBuffers(data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
+    SLM_ASSERT("data::Mesh pointer does not exist.", _mesh);
 
     // Returns if _mesh is empty.
     if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)
@@ -204,8 +204,8 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
     bool minMaxSet = false;
 
     // Iterates over points and registers each point in position and normal buffers.
-    auto itrPt          = _mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto endItrPt = _mesh->end< ::fwData::iterator::ConstPointIterator >();
+    auto itrPt          = _mesh->begin< data::iterator::ConstPointIterator >();
+    const auto endItrPt = _mesh->end< data::iterator::ConstPointIterator >();
 
     unsigned int countPts = 0;
     for(; itrPt != endItrPt; ++itrPt)
@@ -268,8 +268,8 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
                   (m_minExtent.z()+m_maxExtent.z())/2);
 
     // Iterates over cells and registers points index in index buffer.
-    auto itrCell      = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto endItr = _mesh->end< ::fwData::iterator::ConstCellIterator >();
+    auto itrCell      = _mesh->begin< data::iterator::ConstCellIterator >();
+    const auto endItr = _mesh->end< data::iterator::ConstCellIterator >();
 
     unsigned int countIndex = 0;
     for(; itrCell != endItr; ++itrCell)

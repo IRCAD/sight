@@ -28,7 +28,7 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -48,7 +48,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -94,10 +94,10 @@ void SPushObject::stopping()
 
 void SPushObject::updating()
 {
-    ::fwData::Composite::sptr compositeSrc = this->getInOut< ::fwData::Composite >(s_SOURCE_KEY);
+    data::Composite::sptr compositeSrc = this->getInOut< data::Composite >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
-    ::fwData::Object::sptr obj = compositeSrc->at< ::fwData::Object>(m_srcKey);
+    data::Object::sptr obj = compositeSrc->at< data::Object>(m_srcKey);
 
     SLM_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
     if (::fwServices::OSR::isRegistered(s_DESTINATION_KEY, ::fwServices::IService::AccessType::OUTPUT,
@@ -115,7 +115,7 @@ void SPushObject::updating()
 
 void SPushObject::updateObjects()
 {
-    ::fwData::Composite::sptr compositeSrc = this->getInOut< ::fwData::Composite >(s_SOURCE_KEY);
+    data::Composite::sptr compositeSrc = this->getInOut< data::Composite >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
@@ -133,8 +133,8 @@ void SPushObject::updateObjects()
 ::fwServices::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SOURCE_KEY, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
-    connections.push( s_SOURCE_KEY, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
+    connections.push( s_SOURCE_KEY, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
+    connections.push( s_SOURCE_KEY, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
 
     return connections;
 }

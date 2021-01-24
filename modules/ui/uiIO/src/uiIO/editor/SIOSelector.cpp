@@ -28,7 +28,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -55,7 +55,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
@@ -158,8 +158,8 @@ void SIOSelector::stopping()
 
 void SIOSelector::updating()
 {
-    bool createOutput = false;
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(::fwIO::s_DATA_KEY);
+    bool createOutput      = false;
+    data::Object::sptr obj = this->getInOut< data::Object>(::fwIO::s_DATA_KEY);
 
     // Retrieve implementation of type ::fwIO::IReader for this object
     std::vector< std::string > availableExtensionsId;
@@ -299,7 +299,7 @@ void SIOSelector::updating()
             {
                 if(createOutput)
                 {
-                    obj = ::fwData::factory::New(m_dataClassname);
+                    obj = data::factory::New(m_dataClassname);
                     SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 

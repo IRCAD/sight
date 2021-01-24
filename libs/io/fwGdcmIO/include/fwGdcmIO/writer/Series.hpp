@@ -28,7 +28,7 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/location/Folder.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -45,7 +45,7 @@ namespace writer
  * It manages all related data of one patient.
  */
 class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
-                                  public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+                                  public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                                   public core::tools::ProgressAdviser
 {
 

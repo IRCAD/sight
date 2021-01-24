@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,9 +48,9 @@ namespace opDepthMap
    @endcode
  * @subsection Input Input
  * - \b cameraSeries [::arData::CameraSeries]: camera series containing the scale of the depth map.
- * - \b originDepth [::fwData::Image]: original depth map.
+ * - \b originDepth [data::Image]: original depth map.
  * @subsection In-Out In-Out
- * - \b scaledDepth [::fwData::Image]: scaled depth map.
+ * - \b scaledDepth [data::Image]: scaled depth map.
  */
 class OPDEPTHMAP_CLASS_API STransformDepthMap2mm : public ::fwServices::IOperator
 {

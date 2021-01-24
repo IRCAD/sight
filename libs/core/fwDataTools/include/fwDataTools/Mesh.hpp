@@ -27,8 +27,8 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Mesh.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace fwDataTools
 {
@@ -41,7 +41,7 @@ class Mesh
 
 public:
 
-    typedef std::map<Point, ::fwData::Mesh::PointId> PointsMapType;
+    typedef std::map<Point, data::Mesh::PointId> PointsMapType;
     typedef std::array<double, 3> PositionType;
     typedef std::array<size_t, 3> OrganizationType;
 
@@ -53,16 +53,16 @@ public:
     /**
      * @brief Generate cell normals for the mesh.
      *
-     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
+     * @param[out]  mesh data::Mesh structure to fill with cell normals.
      */
-    FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void generateCellNormals(data::Mesh::sptr mesh);
 
     /**
      * @brief Generate point normals for the mesh.
      *
-     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
+     * @param[out]  mesh data::Mesh structure to fill with cell normals.
      */
-    FWDATATOOLS_API static void generatePointNormals(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void generatePointNormals(data::Mesh::sptr mesh);
 
     /**
      * @brief Shake Array of Normals.
@@ -74,72 +74,72 @@ public:
      * @deprecated This method will be removed because mesh arrays can no longer be accessed.
      */
     [[deprecated("will be removed in sight 22.0")]] FWDATATOOLS_API static void shakeNormals(
-        ::fwData::Array::sptr array);
+        data::Array::sptr array);
 
     /**
      * @brief Shake point Normals.
      *
-     * @param[out]  mesh fwData::Mesh structure to shake normals.
+     * @param[out]  mesh data::Mesh structure to shake normals.
      */
-    FWDATATOOLS_API static void shakePointNormals(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void shakePointNormals(data::Mesh::sptr mesh);
 
     /**
      * @brief Shake cell Normals.
      *
-     * @param[out]  mesh fwData::Mesh structure to shake normals.
+     * @param[out]  mesh data::Mesh structure to shake normals.
      */
-    FWDATATOOLS_API static void shakeCellNormals(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void shakeCellNormals(data::Mesh::sptr mesh);
 
     /**
      * @brief Shake points of the mesh.
      *
-     * @param[out]  mesh fwData::Mesh structure to shake.
+     * @param[out]  mesh data::Mesh structure to shake.
      */
-    FWDATATOOLS_API static void shakePoint(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void shakePoint(data::Mesh::sptr mesh);
 
     /**
      * @brief Colorize mesh (vertex point color).
      *
-     * @param[in]  mesh fwData::Mesh mesh structure to colorize.
+     * @param[in]  mesh data::Mesh mesh structure to colorize.
      */
-    FWDATATOOLS_API static void colorizeMeshPoints(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void colorizeMeshPoints(data::Mesh::sptr mesh);
 
     /**
      * @brief Colorize mesh (cell color).
      *
-     * @param[in]  mesh fwData::Mesh mesh structure to colorize.
+     * @param[in]  mesh data::Mesh mesh structure to colorize.
      */
-    FWDATATOOLS_API static void colorizeMeshCells(::fwData::Mesh::sptr mesh);
+    FWDATATOOLS_API static void colorizeMeshCells(data::Mesh::sptr mesh);
 
     /**
      * @brief
      *
-     * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
+     * @param[in]  mesh data::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(data::Mesh::csptr mesh, data::Mesh::CellTypes cell);
 
     /**
      * @brief
      *
-     * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
+     * @param[in]  mesh data::Mesh mesh structure to find cell type.
      * @param[in]  cell CellType to find in mesh (POINT, EDGE, TRAINGLE, ...).
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(data::Mesh::csptr mesh, data::Mesh::CellType cell);
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
-    FWDATATOOLS_API static void transform(fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
-                                          ::fwData::TransformationMatrix3D::csptr t );
+    FWDATATOOLS_API static void transform(data::Mesh::csptr inMesh, data::Mesh::sptr outMesh,
+                                          data::TransformationMatrix3D::csptr t );
 
     /// Apply a transformation 4x4 on a mesh
-    FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t );
+    FWDATATOOLS_API static void transform( data::Mesh::sptr mesh, data::TransformationMatrix3D::csptr t );
 
     /**
      * @brief Colorize the mesh points with the given color
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshPoints(const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
+    FWDATATOOLS_API static void colorizeMeshPoints(const data::Mesh::sptr& mesh, const std::uint8_t colorR,
                                                    const std::uint8_t colorG, const std::uint8_t colorB,
                                                    const std::uint8_t colorA = 255);
 
@@ -148,7 +148,7 @@ public:
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshPoints(const ::fwData::Mesh::sptr& _mesh,
+    FWDATATOOLS_API static void colorizeMeshPoints(const data::Mesh::sptr& _mesh,
                                                    const std::vector<size_t>& _vectorNumTriangle,
                                                    const std::uint8_t _colorR, const std::uint8_t colorG,
                                                    const std::uint8_t colorB, const std::uint8_t _colorA = 255);
@@ -158,7 +158,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshCells(const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
+    FWDATATOOLS_API static void colorizeMeshCells(const data::Mesh::sptr& mesh, const std::uint8_t colorR,
                                                   const std::uint8_t colorG, const std::uint8_t colorB,
                                                   const std::uint8_t _colorA = 255);
     /**
@@ -166,7 +166,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    FWDATATOOLS_API static void colorizeMeshCells(const ::fwData::Mesh::sptr& mesh,
+    FWDATATOOLS_API static void colorizeMeshCells(const data::Mesh::sptr& mesh,
                                                   const std::vector<size_t>& triangleIndexVector,
                                                   const std::uint8_t colorR,
                                                   const std::uint8_t colorG, const std::uint8_t colorB,
@@ -175,7 +175,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    FWDATATOOLS_API static bool isClosed(const ::fwData::Mesh::csptr& mesh);
+    FWDATATOOLS_API static bool isClosed(const data::Mesh::csptr& mesh);
 };
 
 } // namespace fwDataTools

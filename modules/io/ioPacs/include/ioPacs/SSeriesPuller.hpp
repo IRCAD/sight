@@ -58,8 +58,8 @@ namespace ioPacs
    @endcode
  *
  * @subsection Input Input:
- * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
- * - \b selectedSeries [::fwData::Vector]: list of DICOM series to pull from the PACS.
+ * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
+ * - \b selectedSeries [data::Vector]: list of DICOM series to pull from the PACS.
  *
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwMedData::SeriesDB]: series DB where to put the retrieved dicom series.

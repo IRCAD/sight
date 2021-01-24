@@ -5,5 +5,5 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwServices
 )
-set( REQUIREMENTS fwData )
+set( REQUIREMENTS data )
 

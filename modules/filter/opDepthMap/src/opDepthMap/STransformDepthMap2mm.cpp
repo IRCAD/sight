@@ -27,9 +27,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/ArrayGetter.hpp>
@@ -87,10 +87,10 @@ void STransformDepthMap2mm::updating()
 
     const double scale = depthCamera->getScale();
 
-    auto originFrame = this->getInput< ::fwData::Image >(s_ORIGIN_FRAME_INPUT);
+    auto originFrame = this->getInput< data::Image >(s_ORIGIN_FRAME_INPUT);
     SLM_ASSERT("missing '" + s_ORIGIN_FRAME_INPUT + "' image", originFrame);
 
-    ::fwData::mt::ObjectReadLock originLock(originFrame);
+    data::mt::ObjectReadLock originLock(originFrame);
 
     const auto type = originFrame->getType();
     if(type != core::tools::Type::s_UINT16)
@@ -101,10 +101,10 @@ void STransformDepthMap2mm::updating()
 
     const auto size = originFrame->getSize2();
 
-    auto scaledFrame = this->getInOut< ::fwData::Image >(s_SCALED_FRAME_INOUT);
+    auto scaledFrame = this->getInOut< data::Image >(s_SCALED_FRAME_INOUT);
     SLM_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
 
-    ::fwData::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
+    data::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
 
     if(size != scaledFrame->getSize2())
     {
@@ -117,9 +117,9 @@ void STransformDepthMap2mm::updating()
             scaledFrame->resize();
         }
 
-        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        const data::Image::Origin origin = {0., 0., 0.};
         scaledFrame->setOrigin2(origin);
-        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        const data::Image::Spacing spacing = {1., 1., 1.};
         scaledFrame->setSpacing2(spacing);
         scaledFrame->setWindowWidth(1);
         scaledFrame->setWindowCenter(0);
@@ -137,7 +137,7 @@ void STransformDepthMap2mm::updating()
         *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr)*scale);
     }
 
-    auto sig = scaledFrame->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG );
+    auto sig = scaledFrame->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG );
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

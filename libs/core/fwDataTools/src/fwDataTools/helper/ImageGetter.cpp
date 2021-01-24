@@ -26,9 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/PointList.hpp>
+#include <data/TransferFunction.hpp>
 
 namespace fwDataTools
 {
@@ -37,11 +37,11 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-ImageGetter::ImageGetter( ::fwData::Image::csptr ImageGetter ) :
+ImageGetter::ImageGetter( data::Image::csptr ImageGetter ) :
     m_image(ImageGetter)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::ImageGetter is no longer supported, the methods have been moved to "
-                      "::fwData::Image", "22.0")
+                      "data::Image", "22.0")
     if ( ImageGetter )
     {
         m_lock = ImageGetter->getDataArray()->getBufferObject()->lock();

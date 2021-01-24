@@ -24,8 +24,8 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
@@ -51,28 +51,28 @@ PointList::~PointList()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Array::sptr
-PointList::computeDistance(::fwData::PointList::sptr _pointList1,
-                           ::fwData::PointList::sptr _pointList2)
+data::Array::sptr
+PointList::computeDistance(data::PointList::sptr _pointList1,
+                           data::PointList::sptr _pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
                _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
-    const ::fwData::PointList::PointListContainer points1 = _pointList1->getPoints();
-    const ::fwData::PointList::PointListContainer points2 = _pointList2->getPoints();
-    const size_t size                                     = points1.size();
+    const data::PointList::PointListContainer points1 = _pointList1->getPoints();
+    const data::PointList::PointListContainer points2 = _pointList2->getPoints();
+    const size_t size                                 = points1.size();
 
-    ::fwData::Array::sptr outputArray = ::fwData::Array::New();
+    data::Array::sptr outputArray = data::Array::New();
     outputArray->resize({size}, core::tools::Type::s_DOUBLE);
     const auto dumpLock   = outputArray->lock();
     auto distanceArrayItr = outputArray->begin<double>();
 
     for (size_t i = 0; i < size; ++i)
     {
-        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
-        const ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
-        const ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+        const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const ::glm::dvec3 pt1                      = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
+        const ::glm::dvec3 pt2                      = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         *distanceArrayItr = ::glm::distance(pt1, pt2);
         ++distanceArrayItr;
     }
@@ -82,15 +82,15 @@ PointList::computeDistance(::fwData::PointList::sptr _pointList1,
 
 //------------------------------------------------------------------------------
 
-void PointList::transform(::fwData::PointList::sptr& _pointList,
-                          const ::fwData::TransformationMatrix3D::csptr& _matrix)
+void PointList::transform(data::PointList::sptr& _pointList,
+                          const data::TransformationMatrix3D::csptr& _matrix)
 {
-    ::fwData::PointList::PointListContainer points = _pointList->getPoints();
-    const size_t size = points.size();
+    data::PointList::PointListContainer points = _pointList->getPoints();
+    const size_t size                          = points.size();
 
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::sptr& pt = points[i];
+        data::Point::sptr& pt = points[i];
 
         // Transform the current point with the input matrix
         ::fwDataTools::TransformationMatrix3D::multiply(_matrix, pt, pt);
@@ -99,14 +99,14 @@ void PointList::transform(::fwData::PointList::sptr& _pointList,
 
 //------------------------------------------------------------------------------
 
-void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
-                          ::fwData::PointList::sptr _pointList2)
+void PointList::associate(const data::PointList::csptr& _pointList1,
+                          data::PointList::sptr _pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
                _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
-    ::fwData::PointList::PointListContainer points1 = _pointList1->getPoints();
-    ::fwData::PointList::PointListContainer points2 = _pointList2->getPoints();
+    data::PointList::PointListContainer points1 = _pointList1->getPoints();
+    data::PointList::PointListContainer points2 = _pointList2->getPoints();
 
     const size_t size = points1.size();
 
@@ -118,8 +118,8 @@ void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
 
     for(size_t i = 0; i < size; ++i)
     {
-        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
         // Add the point to vector/list
         vec1.push_back(::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
@@ -145,12 +145,12 @@ void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
             }
         }
 
-        ::fwData::Point::PointCoordArrayType pointCoord;
+        data::Point::PointCoordArrayType pointCoord;
         pointCoord[0] = itClosestPoint->x;
         pointCoord[1] = itClosestPoint->y;
         pointCoord[2] = itClosestPoint->z;
 
-        ::fwData::Point::sptr pt = points2[index];
+        data::Point::sptr pt = points2[index];
         pt->setCoord(pointCoord);
         ++index;
 
@@ -161,8 +161,8 @@ void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
 
 //------------------------------------------------------------------------------
 
-const ::fwData::Point::sptr PointList::removeClosestPoint(const ::fwData::PointList::sptr& _pointList,
-                                                          const ::fwData::Point::csptr& _point, float _delta)
+const data::Point::sptr PointList::removeClosestPoint(const data::PointList::sptr& _pointList,
+                                                      const data::Point::csptr& _point, float _delta)
 {
     // Initial data
     const auto& list = _pointList->getPoints();
@@ -172,10 +172,10 @@ const ::fwData::Point::sptr PointList::removeClosestPoint(const ::fwData::PointL
         const ::glm::vec3 p1{coord1[0], coord1[1], coord1[2]};
 
         // Data to find the closest point
-        float closest = std::numeric_limits<float>::max();
-        ::fwData::Point::sptr point = nullptr;
-        size_t index      = 0;
-        bool pointIsFound = false;
+        float closest           = std::numeric_limits<float>::max();
+        data::Point::sptr point = nullptr;
+        size_t index            = 0;
+        bool pointIsFound       = false;
 
         // Find the closest one
         for(size_t i = 0; i < list.size(); ++i)

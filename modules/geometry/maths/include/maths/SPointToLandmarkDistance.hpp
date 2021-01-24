@@ -62,12 +62,12 @@ namespace maths
    @endcode
  *
  * @subsection In In
- * - \b pointMatrix [::fwData::TransformationMatrix3D]: point transformation matrix.
- * - \b landmark [::fwData::Landmarks]: landmark.
+ * - \b pointMatrix [data::TransformationMatrix3D]: point transformation matrix.
+ * - \b landmark [data::Landmarks]: landmark.
  *
  * @subsection In-Out In-Out
- * - \b pointToLandmarkMatrix [::fwData::TransformationMatrix3D]: point to landmark transformation matrix
- * - \b distanceText [::fwData::String]: string containing the distance
+ * - \b pointToLandmarkMatrix [data::TransformationMatrix3D]: point to landmark transformation matrix
+ * - \b distanceText [data::String]: string containing the distance
  *
  * @subsection Configuration Configuration
  * - \b config(optional): contains the service configuration

@@ -22,8 +22,8 @@
 
 #include "arPreferences/preferences.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -40,15 +40,15 @@ std::string getVideoDir()
 {
     std::string videoDirectory;
 
-    ::fwData::Composite::sptr prefComposite = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefComposite = ::fwPreferences::getPreferences();
 
     if(prefComposite)
     {
-        ::fwData::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
-        const bool videoFound = (iterVideoDir != prefComposite->end());
+        data::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
+        const bool videoFound                      = (iterVideoDir != prefComposite->end());
         if (videoFound)
         {
-            ::fwData::String::sptr videoDir = ::fwData::String::dynamicCast(iterVideoDir->second);
+            data::String::sptr videoDir = data::String::dynamicCast(iterVideoDir->second);
             SLM_ERROR_IF("Wrong type of preference : '" + s_VIDEO_DIR_PREF + "' parameter must be a string",
                          !videoDir);
             videoDirectory = videoDir->value();

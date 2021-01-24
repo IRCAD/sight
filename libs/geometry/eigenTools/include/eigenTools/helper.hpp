@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "eigenTools/config.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <Eigen/Core>
 
@@ -40,18 +40,18 @@ namespace helper
 typedef std::pair< ::Eigen::Vector3d, ::Eigen::Vector3d> RvecTvecType;
 typedef ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> EigenMatrix;
 /**
- * @brief Convert from an Eigen float 4x4 Matrix to a fwData::TransformationMatrix3D
+ * @brief Convert from an Eigen float 4x4 Matrix to a data::TransformationMatrix3D
  * @param _mat : the eigen matrix
- * @return a pointer to a ::fwData::TransformationMatrix3D
+ * @return a pointer to a data::TransformationMatrix3D
  */
-EIGENTOOLS_API ::fwData::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat);
+EIGENTOOLS_API data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat);
 
 /**
- * @brief Convert from an Eigen double 4x4 Matrix to a fwData::TransformationMatrix3D
+ * @brief Convert from an Eigen double 4x4 Matrix to a data::TransformationMatrix3D
  * @param _mat : the eigen matrix
- * @return a pointer to a ::fwData::TransformationMatrix3D
+ * @return a pointer to a data::TransformationMatrix3D
  */
-EIGENTOOLS_API ::fwData::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4d& _mat);
+EIGENTOOLS_API data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform a eigen 4x4 matrix to a rvec tvec representation
@@ -62,10 +62,10 @@ EIGENTOOLS_API RvecTvecType eigenMatToRvecTvec( const ::Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
- * @param _mat : input ::fwData::TransformationMatrix3D
+ * @param _mat : input data::TransformationMatrix3D
  * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
  */
-EIGENTOOLS_API RvecTvecType f4sMatToRvecTvec( const ::fwData::TransformationMatrix3D::csptr _mat);
+EIGENTOOLS_API RvecTvecType f4sMatToRvecTvec( const data::TransformationMatrix3D::csptr _mat);
 /**
  * @brief toEigen
  * @param array of float (16 values)
@@ -88,12 +88,12 @@ EIGENTOOLS_API EigenMatrix toEigen(const std::array<double, 16>& _farray);
 EIGENTOOLS_API RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _farray);
 
 /**
- * @brief Transform a ::fwData::TransformationMatrix3D::sptr to a eigen 4x4 matrix
+ * @brief Transform a data::TransformationMatrix3D::sptr to a eigen 4x4 matrix
  * @param _tvec : input translation vector
  * @param _mat : output matrix
  */
 template< class T>
-::Eigen::Matrix<T, 4, 4, ::Eigen::RowMajor> toEigen( const ::fwData::TransformationMatrix3D::csptr _trf)
+::Eigen::Matrix<T, 4, 4, ::Eigen::RowMajor> toEigen( const data::TransformationMatrix3D::csptr _trf)
 {
     ::Eigen::Matrix<T, 4, 4> mat;
     for(unsigned int r = 0; r < 4; ++r)

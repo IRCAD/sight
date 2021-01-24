@@ -32,7 +32,7 @@
 #include <core/com/Slots.hxx>
 #endif // _WIN32
 
-#include <fwData/Image.hpp>
-#include <fwData/Object.hpp>
+#include <data/Image.hpp>
+#include <data/Object.hpp>
 
 #endif // __PCHDATA_PCH_HPP__

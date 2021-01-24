@@ -26,9 +26,9 @@
 
 #include <arData/MatrixTL.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -63,16 +63,16 @@ namespace uiHandEye
    @endcode
 
  * @subsection InOut InOut
- * - \b matrixVector1 [::fwData::Vector]: first vector filled with {Ai, Aj, ...} matrix
- *[::fwData::TransformationMatrix3D] when 'addSlot' is called
- * - \b matrixVector2 [::fwData::Vector]: second vector filled with {Bi, Bj, ...} matrix
- *[::fwData::TransformationMatrix3D] when 'addSlot' is called
+ * - \b matrixVector1 [data::Vector]: first vector filled with {Ai, Aj, ...} matrix
+ *[data::TransformationMatrix3D] when 'addSlot' is called
+ * - \b matrixVector2 [data::Vector]: second vector filled with {Bi, Bj, ...} matrix
+ *[data::TransformationMatrix3D] when 'addSlot' is called
  *
  * @subsection Input Input
  * - \b matrixTL1 [::arData::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
- *[::fwData::TransformationMatrix3D]
+ *[data::TransformationMatrix3D]
  * - \b matrixTL2 [::arData::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
- *[::fwData::TransformationMatrix3D]
+ *[data::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,
                                            public ::fwGui::editor::IEditor

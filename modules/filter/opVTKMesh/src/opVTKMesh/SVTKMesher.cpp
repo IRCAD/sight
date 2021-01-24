@@ -27,8 +27,8 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -104,7 +104,7 @@ void SVTKMesher::updating()
     ::fwMedData::ImageSeries::csptr imageSeries = this->getInput< ::fwMedData::ImageSeries >(s_IMAGE_INPUT);
     ::fwMedData::ModelSeries::sptr modelSeries  = ::fwMedData::ModelSeries::New();
 
-    ::fwData::Object::DeepCopyCacheType cache;
+    data::Object::DeepCopyCacheType cache;
     modelSeries->::fwMedData::Series::cachedDeepCopy(imageSeries, cache);
 
     // vtk img
@@ -133,7 +133,7 @@ void SVTKMesher::updating()
 
     // Get polyData
     vtkSmartPointer< vtkPolyData > polyData;
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh = data::Mesh::New();
 
     // decimate filter
     if( m_reduction > 0 )
@@ -155,7 +155,7 @@ void SVTKMesher::updating()
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
 
-    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
 
     static unsigned int organNumber = 0;
     ++organNumber;

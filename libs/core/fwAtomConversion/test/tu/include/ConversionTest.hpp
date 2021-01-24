@@ -59,22 +59,22 @@ public:
     /// Test conversion from fwData to fwAtoms
     void dataToAtomTest();
 
-    /// Test the conversion fwData::Material -> fwAtoms::Object -> fwData::Material
+    /// Test the conversion data::Material -> fwAtoms::Object -> data::Material
     void materialConversionTest();
 
-    /// Test the conversion fwData::Mesh -> fwAtoms::Object -> fwData::Mesh
+    /// Test the conversion data::Mesh -> fwAtoms::Object -> data::Mesh
     void meshConversionTest();
 
-    //// Test fwData::Graph conversion, UUID management, and object field conversion
+    //// Test data::Graph conversion, UUID management, and object field conversion
     void graphConversionTest();
 
-    //// Test fwData::TransferFunction conversion
+    //// Test data::TransferFunction conversion
     void tfConversionTest();
 
     /// Test fwMedData::SeriesDB conversion
     void seriesDBConversionTest();
 
-    /// Test using an object multi referenced in different structures, test also fwData::Composite conversion
+    /// Test using an object multi referenced in different structures, test also data::Composite conversion
     void objectMultiReferencedTest();
 
     /// Test recursive data conversion
@@ -101,7 +101,7 @@ public:
     /// Test null ptr management (null ptr attribut, null ptr in vector, null ptr in map)
     void nullPtrManagmentTest();
 
-    //// Test fwData::Landmarks conversion
+    //// Test data::Landmarks conversion
     void landmarksConversionTest();
 };
 

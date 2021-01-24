@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "ioIGTL/config.hpp"
 #include "ioIGTL/INetworkListener.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlNetwork/Client.hpp>
 
@@ -49,7 +49,7 @@ namespace ioIGTL
  * </service>
  * @endcode
  * @subsection In-Out In-Out:
- * - \b object [::fwData::Object]:
+ * - \b object [data::Object]:
  *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL):
  *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
@@ -95,7 +95,7 @@ private:
      * @brief method called when the current object is a timeline
      * @note Currently only arData::MatrixTL and arData::FrameTL are managed
      */
-    void manageTimeline(::fwData::Object::sptr obj, size_t index);
+    void manageTimeline(data::Object::sptr obj, size_t index);
 
     /// client socket
     ::igtlNetwork::Client m_client;

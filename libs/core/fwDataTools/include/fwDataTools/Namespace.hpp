@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_NAMESPACE_HPP__
-#define __FWDATATOOLS_NAMESPACE_HPP__
-
 /**
- * @brief       The namespace fwDataTools contains classes which provide helpers to manipulate fwData::Object. *
+ * @brief       The namespace fwDataTools contains classes which provide helpers to manipulate data::Object. *
  */
+#pragma once
+
 namespace fwDataTools
 {
 }
-#endif /* __FWDATATOOLS_NAMESPACE_HPP__ */

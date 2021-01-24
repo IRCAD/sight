@@ -24,12 +24,12 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Array.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Array.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SReadArray, ::fwData::Array )
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SReadArray, data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -65,11 +65,11 @@ void SReadArray::starting()
 
 void SReadArray::updating()
 {
-    const auto array = this->getInOut< ::fwData::Array >(s_ARRAY_INOUT);
+    const auto array = this->getInOut< data::Array >(s_ARRAY_INOUT);
 
     // Initialize the array size and type.
     const int arraySize = 10;
-    ::fwData::Array::SizeType size(1, arraySize);
+    data::Array::SizeType size(1, arraySize);
     array->resize(size, core::tools::Type::s_UINT32);
 
     // Fill the array values.
@@ -83,7 +83,7 @@ void SReadArray::updating()
     }
 
     // Notify that the array is modified.
-    const auto sig = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
+    const auto sig = array->signal< data::Object::ModifiedSignalType>( data::Object::s_MODIFIED_SIG );
     sig->asyncEmit();
 }
 

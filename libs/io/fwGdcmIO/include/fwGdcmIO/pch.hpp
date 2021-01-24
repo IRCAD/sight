@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <gdcmUIDGenerator.h>
 #endif // WIN32
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Equipment.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,9 +32,9 @@ namespace helper
 
 //-------------------------------------------------------------------------------------------------
 
-::fwData::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat)
+data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat)
 {
-    ::fwData::TransformationMatrix3D::sptr trf = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::New();
 
     for(unsigned int r = 0; r < 4; ++r)
     {
@@ -49,9 +49,9 @@ namespace helper
 
 //-------------------------------------------------------------------------------------------------
 
-::fwData::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4d& _mat)
+data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4d& _mat)
 {
-    ::fwData::TransformationMatrix3D::sptr trf = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::New();
 
     for(unsigned int r = 0; r < 4; ++r)
     {
@@ -90,7 +90,7 @@ RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-RvecTvecType f4sMatToRvecTvec(const fwData::TransformationMatrix3D::csptr _mat)
+RvecTvecType f4sMatToRvecTvec(const data::TransformationMatrix3D::csptr _mat)
 {
     ::Eigen::Matrix4d eigenMat = toEigen< double >(_mat);
     return eigenMatToRvecTvec(eigenMat);

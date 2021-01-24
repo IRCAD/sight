@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataTools/Color.hpp>
 #include <fwDataTools/Mesh.hpp>
@@ -215,7 +215,7 @@ void SShapeExtruder::starting()
     m_lassoNode->attachObject(m_lastLassoLine);
 
     // Create the material.
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
     m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
@@ -705,18 +705,18 @@ void SShapeExtruder::triangulatePoints() const
 void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triangulation) const
 {
     // Creates the mesh from a list a 3D triangles.
-    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const data::Mesh::sptr mesh = data::Mesh::New();
     {
         const auto lock = mesh->lock();
 
         // 3 points per triangle and one cell per triangle.
-        mesh->resize(static_cast< ::fwData::Mesh::Size >( _triangulation.size() * 3 ),
-                     static_cast< ::fwData::Mesh::Size >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
-                     ::fwData::Mesh::Attributes::POINT_NORMALS);
+        mesh->resize(static_cast< data::Mesh::Size >( _triangulation.size() * 3 ),
+                     static_cast< data::Mesh::Size >( _triangulation.size() ), data::Mesh::CellType::TRIANGLE,
+                     data::Mesh::Attributes::POINT_NORMALS);
 
         // Fill points.
         {
-            auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+            auto it = mesh->begin< data::iterator::PointIterator >();
 
             for(const Triangle3D& triangle : _triangulation)
             {
@@ -737,13 +737,13 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
         // Fill cell coordinates.
         {
-            auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
-            const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+            auto it              = mesh->begin< data::iterator::CellIterator >();
+            const auto itEnd     = mesh->end< data::iterator::CellIterator >();
             const auto itPrevEnd = itEnd-1;
 
-            for(::fwData::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
+            for(data::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
             {
-                *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
+                *it->type   = data::Mesh::CellType::TRIANGLE;
                 *it->offset = index;
 
                 if(it != itPrevEnd)
@@ -769,7 +769,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
     // Creates the reconstruction.
-    const ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+    const data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
     reconstruction->setMesh(mesh);
     reconstruction->setOrganName("ExtrudedMesh_" + std::to_string(reconstructions.size()));
 

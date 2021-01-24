@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ class SCENE2D_CLASS_API SViewportInteractor : public ::fwRenderQt::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SViewportInteractor, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SViewportInteractor, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SViewportInteractor() noexcept;
 
@@ -63,14 +63,14 @@ protected:
 
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     SCENE2D_API void zoom( bool zoomIn );
 
 private:
 
     bool m_viewportIsTranslated;
-    ::fwRenderQt::data::Coord m_lastCoordEvent;
+    ::fwRenderQtdata::Coord m_lastCoordEvent;
 };
 
 }   // namespace adaptor

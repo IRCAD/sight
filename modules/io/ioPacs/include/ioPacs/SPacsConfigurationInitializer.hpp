@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ namespace ioPacs
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b config [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b config [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection Configuration Configuration:
  * - \b localApplicationTitle (mandatory, string): Name of your local application, it must be known by the PACS.
@@ -93,7 +93,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwPacsIO::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
+     * Connect ::fwPacsIOdata::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
      *::ioPacs::SPacsConfigurationInitializer::s_UPDATE_SLOT.
      */
     IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
@@ -123,7 +123,7 @@ private:
     unsigned short m_SCPPort {0};
 
     /// Defines the request mode, GET or MOVE. Usually, most SCU use the C-MOVE method.
-    ::fwPacsIO::data::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod;
+    ::fwPacsIOdata::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod;
 
     /**
      * @brief Defines the move AET. This AET is used to receive C-MOVE responses.

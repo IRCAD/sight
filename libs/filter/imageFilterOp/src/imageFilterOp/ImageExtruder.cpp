@@ -33,7 +33,7 @@ namespace imageFilterOp
 
 //------------------------------------------------------------------------------
 
-void ImageExtruder::extrude(const ::fwData::Image::sptr& _image, const ::fwData::Mesh::csptr& _mesh)
+void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh)
 {
     SLM_ASSERT("The image must be in 3 dimensions", _image->getNumberOfDimensions() == 3);
 
@@ -52,9 +52,9 @@ template<typename IMAGE_TYPE>
 void ImageExtruder::operator()(Parameters& _param)
 {
     // Creates triangles and bounding box of the mesh.
-    const auto itPoint   = _param.m_mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto itCellEnd = _param.m_mesh->end< ::fwData::iterator::ConstCellIterator >();
-    auto itCell          = _param.m_mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto itPoint   = _param.m_mesh->begin< data::iterator::ConstPointIterator >();
+    const auto itCellEnd = _param.m_mesh->end< data::iterator::ConstCellIterator >();
+    auto itCell          = _param.m_mesh->begin< data::iterator::ConstCellIterator >();
     const float min      = std::numeric_limits< float >::lowest();
     const float max      = std::numeric_limits< float >::max();
 
@@ -63,9 +63,9 @@ void ImageExtruder::operator()(Parameters& _param)
     ::glm::vec3 maxBound(min, min, min);
 
     const auto addTriangle =
-        [&](const ::fwData::iterator::ConstPointIterator& _pa,
-            const ::fwData::iterator::ConstPointIterator& _pb,
-            const ::fwData::iterator::ConstPointIterator& _pc)
+        [&](const data::iterator::ConstPointIterator& _pa,
+            const data::iterator::ConstPointIterator& _pb,
+            const data::iterator::ConstPointIterator& _pc)
         {
             const float ax = _pa->point->x;
             const float ay = _pa->point->y;
@@ -102,18 +102,18 @@ void ImageExtruder::operator()(Parameters& _param)
         }
         else if(itCell->nbPoints == 3)
         {
-            const auto pointA = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
-            const auto pointB = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
-            const auto pointC = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
+            const auto pointA = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
+            const auto pointB = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
+            const auto pointC = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
 
             addTriangle(pointA, pointB, pointC);
         }
         else if(itCell->nbPoints == 4)
         {
-            const auto pointA = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
-            const auto pointB = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
-            const auto pointC = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
-            const auto pointD = ::fwData::iterator::ConstPointIterator(itPoint + itCell->pointIdx[3]);
+            const auto pointA = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
+            const auto pointB = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
+            const auto pointC = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
+            const auto pointD = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[3]);
 
             addTriangle(pointA, pointB, pointC);
             addTriangle(pointC, pointD, pointA);
@@ -128,9 +128,9 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto dumpLock = _param.m_image->lock();
 
     // Get image informations.
-    const ::fwData::Image::Origin& origin   = _param.m_image->getOrigin2();
-    const ::fwData::Image::Size& size       = _param.m_image->getSize2();
-    const ::fwData::Image::Spacing& spacing = _param.m_image->getSpacing2();
+    const data::Image::Origin& origin   = _param.m_image->getOrigin2();
+    const data::Image::Size& size       = _param.m_image->getSize2();
+    const data::Image::Spacing& spacing = _param.m_image->getSpacing2();
 
     // Loop over the bounding box intersection of the mesh and the image to increase perfomance.
     std::int64_t indexXBeg = 0;

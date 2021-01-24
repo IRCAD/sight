@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -53,7 +53,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [::fwData::Object]: .
+ * - \b reconstruction [data::Object]: .
  */
 
 /**

@@ -88,7 +88,7 @@ void Server::runServer()
 
 //------------------------------------------------------------------------------
 
-void Server::broadcast(const ::fwData::Object::csptr& obj)
+void Server::broadcast(const data::Object::csptr& obj)
 {
     std::vector<Client::sptr>::iterator it;
 
@@ -283,9 +283,9 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwData::Object::sptr > Server::receiveObjects(std::vector<std::string>& deviceNames)
+std::vector< data::Object::sptr > Server::receiveObjects(std::vector<std::string>& deviceNames)
 {
-    std::vector< ::fwData::Object::sptr > objVect;
+    std::vector< data::Object::sptr > objVect;
     std::vector< ::igtl::MessageHeader::Pointer > headerMsgVect = this->receiveHeaders();
     size_t client                                               = 0;
     for(const auto& headerMsg : headerMsgVect)

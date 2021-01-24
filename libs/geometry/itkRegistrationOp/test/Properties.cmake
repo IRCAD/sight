@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwTest
     core
-    fwData
+    data
     fwDataTools
     fwVtkIO
     itkRegistrationOp

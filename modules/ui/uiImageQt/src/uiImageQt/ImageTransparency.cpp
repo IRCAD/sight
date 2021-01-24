@@ -27,8 +27,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
+#include <data/Boolean.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -46,7 +46,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, data::Image )
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -129,7 +129,7 @@ void ImageTransparency::configuring()
 
 void ImageTransparency::updating()
 {
-    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
@@ -143,23 +143,23 @@ void ImageTransparency::updating()
 
         if(img->getField( "TRANSPARENCY" ) )
         {
-            ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
+            data::Integer::sptr transparency = img->getField< data::Integer >( "TRANSPARENCY" );
             m_valueSlider->setValue( static_cast<int>(*transparency) );
         }
         else
         {
-            img->setField( "TRANSPARENCY", ::fwData::Integer::New(0) );
+            img->setField( "TRANSPARENCY", data::Integer::New(0) );
             m_valueSlider->setValue( 0 );
         }
         if(img->getField( "VISIBILITY" ) )
         {
-            ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
+            data::Boolean::sptr visible = img->getField< data::Boolean >( "VISIBILITY" );
             m_valueCheckBox->setChecked( *visible );
             m_action->setChecked(*visible);
         }
         else
         {
-            img->setField( "VISIBILITY", ::fwData::Boolean::New(true) );
+            img->setField( "VISIBILITY", data::Boolean::New(true) );
             m_valueCheckBox->setChecked( true );
             m_action->setChecked(true);
         }
@@ -187,13 +187,13 @@ void ImageTransparency::info( std::ostream& _sstream )
 
 void ImageTransparency::onModifyTransparency(int value)
 {
-    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
-    img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
+    img->setField( "TRANSPARENCY",  data::Integer::New(value) );
 
-    auto sig = img->signal< ::fwData::Image::TransparencyModifiedSignalType >(
-        ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG);
+    auto sig = img->signal< data::Image::TransparencyModifiedSignalType >(
+        data::Image::s_TRANSPARENCY_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -221,12 +221,12 @@ void ImageTransparency::onModifyVisibility(int value)
 
 void ImageTransparency::notifyVisibility(bool isVisible)
 {
-    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
-    img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
+    img->setField( "VISIBILITY",  data::Boolean::New(isVisible) );
 
-    auto sig = img->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
+    auto sig = img->signal< data::Image::VisibilityModifiedSignalType >(data::Image::s_VISIBILITY_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(isVisible);
@@ -239,10 +239,10 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

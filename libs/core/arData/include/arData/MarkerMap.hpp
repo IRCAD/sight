@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "arData/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <array>
 
@@ -38,10 +38,10 @@ namespace arData
  * coherency checks between the markers, so you could have one marker with one point, another one with four points,
  * etc...
  */
-class ARDATA_CLASS_API MarkerMap : public ::fwData::Object
+class ARDATA_CLASS_API MarkerMap : public data::Object
 {
 public:
-    fwCoreClassMacro(MarkerMap, ::fwData::Object, ::fwData::factory::New< MarkerMap >);
+    fwCoreClassMacro(MarkerMap, data::Object, data::factory::New< MarkerMap >)
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;
@@ -51,7 +51,7 @@ public:
      * @brief Constructor
      * @param[in] _key Private construction key
      */
-    ARDATA_API MarkerMap(::fwData::Object::Key _key);
+    ARDATA_API MarkerMap(data::Object::Key _key);
     /**
      * @brief Destructor
      */

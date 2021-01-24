@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRenderQt3D/data/Material.hpp"
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
@@ -70,8 +70,8 @@ void MaterialTest::tearDown()
 
 void MaterialTest::initializeMaterial()
 {
-    auto sightMaterial = ::fwData::Material::New();
-    auto qt3dMaterial = new ::fwRenderQt3D::data::Material();
+    auto sightMaterial = data::Material::New();
+    auto qt3dMaterial = new ::fwRenderQt3Ddata::Material();
 
     // Initializes qt3dMaterial according to sightMaterial.
     qt3dMaterial->updatePolygonMode(sightMaterial->getRepresentationMode());

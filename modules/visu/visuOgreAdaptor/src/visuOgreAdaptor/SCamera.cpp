@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -115,7 +115,7 @@ void SCamera::starting()
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
@@ -129,7 +129,7 @@ void SCamera::updating()
 {
     ::Ogre::Affine3 ogreMatrix;
     {
-        const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+        const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
         // Received input line and column data from Sight transformation matrix
         for (size_t lt = 0; lt < 4; lt++)
@@ -233,7 +233,7 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
-    const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     // Received input line and column data from Sight transformation matrix
     for (size_t lt = 0; lt < 4; lt++)
@@ -244,7 +244,7 @@ void SCamera::updateTF3D()
         }
     }
 
-    auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = transform->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker blocker(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -376,7 +376,7 @@ void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
             // first camera to the current one.
             if(i < nbCams - 1)
             {
-                const ::fwData::TransformationMatrix3D::csptr extrinsic = _cs->getExtrinsicMatrix(i + 1);
+                const data::TransformationMatrix3D::csptr extrinsic = _cs->getExtrinsicMatrix(i + 1);
                 extrinsicMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(extrinsic) * extrinsicMx;
             }
         }

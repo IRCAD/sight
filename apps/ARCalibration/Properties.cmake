@@ -13,7 +13,6 @@ set( REQUIREMENTS
 
     # Objects declaration
     servicesReg             # fwService
-    fwData
     arData
 
     # UI declaration/Actions

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
-#define __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/TransferFunction.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <vtkLogLookupTable.h>
 #include <vtkSmartPointer.h>
@@ -37,7 +36,7 @@ namespace helper
 {
 
 /**
- * @brief   Helper to manage vtk data from ::fwData::TransferFunction.
+ * @brief   Helper to manage vtk data from data::TransferFunction.
  */
 class FWVTKIO_CLASS_API TransferFunction
 {
@@ -45,17 +44,17 @@ class FWVTKIO_CLASS_API TransferFunction
 public:
 
     /*!
-     * @brief Convert a ::fwData::TransferFunction to a vtkLookupTable.
+     * @brief Convert a data::TransferFunction to a vtkLookupTable.
      *
-     * @param[in] tf ::fwData::TransferFunction
-     * @param[in] allowTransparency Enable conversion of ::fwData::TransferFunction alpha channel
+     * @param[in] tf data::TransferFunction
+     * @param[in] allowTransparency Enable conversion of data::TransferFunction alpha channel
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */
-    FWVTKIO_API static void toVtkLookupTable(fwData::TransferFunction::csptr tf,
+    FWVTKIO_API static void toVtkLookupTable(data::TransferFunction::csptr tf,
                                              vtkSmartPointer<vtkLookupTable>  lt,
                                              bool allowTransparency = false,
-                                             unsigned int size = 256 );
+                                             unsigned int size      = 256 );
 
     /*!
      * @brief Convert the range of an Image or a TransferFunction to a black and white vtkLookupTable.
@@ -74,5 +73,3 @@ public:
 
 } // namespace helper
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__

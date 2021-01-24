@@ -49,7 +49,7 @@ namespace editor
 const core::com::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
 const core::com::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, data::Vector )
 
 //-----------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ void SShowVectorSize::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::addObjects(::fwData::Vector::ContainerType objects)
+void SShowVectorSize::addObjects(data::Vector::ContainerType objects)
 {
     m_vectorSize += objects.size();
     QString text = m_textToShow + QString::number(m_vectorSize);
@@ -135,7 +135,7 @@ void SShowVectorSize::addObjects(::fwData::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::removeObjects(::fwData::Vector::ContainerType objects)
+void SShowVectorSize::removeObjects(data::Vector::ContainerType objects)
 {
     m_vectorSize -= objects.size();
     QString text = m_textToShow + QString::number(m_vectorSize);
@@ -147,8 +147,8 @@ void SShowVectorSize::removeObjects(::fwData::Vector::ContainerType objects)
 ::fwServices::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push("vector", ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
-    connections.push("vector", ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
+    connections.push("vector", data::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
+    connections.push("vector", data::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
 
     return connections;
 }

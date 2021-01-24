@@ -35,7 +35,7 @@ namespace Tuto05MultithreadConsoleCpp
 {
 
 /**
- * @brief This service increments all the values of a ::fwData::Array.
+ * @brief This service increments all the values of a data::Array.
  *
  * @section Slots Slots
  * - \b startTimer(): starts the internal timer and thus the periodic increment of the array values.
@@ -48,7 +48,7 @@ namespace Tuto05MultithreadConsoleCpp
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b array [::fwData::Array]: array which values should be incremented.
+ * - \b array [data::Array]: array which values should be incremented.
  */
 class TUTO05MULTITHREADCONSOLECPP_CLASS_API SIncrementArray final : public ::fwServices::IController
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Tag.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/Tag.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
@@ -45,7 +45,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< IObjectReader >(this)
+    data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -59,14 +59,14 @@ TagReader::~TagReader()
 
 void TagReader::read()
 {
-    assert( ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    assert( ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
     std::filesystem::path path =
-        ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+        ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
 
     SLM_INFO( "[TagReader::read] Tag file: " << path);
     assert( path.empty() == false );
 
-    ::std::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
+    ::std::shared_ptr< data::Tag > tag = getConcreteObject();
 
     std::fstream file;
     file.open(path.string().c_str(), std::fstream::in);
@@ -97,7 +97,7 @@ void TagReader::read()
             tag->setType(type);
             for(int i = 0; i < nbPts; i++)
             {
-                ::fwData::Point::sptr p;
+                data::Point::sptr p;
                 fwVec3d vPoint;
                 file>>vPoint[0]>>vPoint[1]>>vPoint[2]>>radius;
                 p->setCoord(vPoint);

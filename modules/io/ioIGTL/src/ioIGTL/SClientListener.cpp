@@ -27,9 +27,9 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/Object.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/Object.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -133,7 +133,7 @@ void SClientListener::runClient()
         while (m_client.isConnected())
         {
             std::string deviceName;
-            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            data::Object::sptr receiveObject = m_client.receiveObject(deviceName);
             if (receiveObject)
             {
                 const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
@@ -141,8 +141,8 @@ void SClientListener::runClient()
                 if(iter != m_deviceNames.end())
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    ::fwData::Object::sptr obj =
-                        this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+                    data::Object::sptr obj        =
+                        this->getInOut< data::Object >(s_OBJECTS_GROUP, indexReceiveObject);
 
                     const bool isATimeline = obj->isA("::arData::MatrixTL") || obj->isA("::arData::FrameTL");
                     if(isATimeline)
@@ -153,8 +153,8 @@ void SClientListener::runClient()
                     {
                         obj->shallowCopy(receiveObject);
 
-                        ::fwData::Object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                        data::Object::ModifiedSignalType::sptr sig;
+                        sig = obj->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                         sig->asyncEmit();
                     }
                 }
@@ -209,7 +209,7 @@ void SClientListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
+void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     ::arData::MatrixTL::sptr matTL  = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
@@ -227,9 +227,9 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 
         SPTR(::arData::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
-        ::fwData::TransformationMatrix3D::TMCoefArray values;
-        ::fwData::TransformationMatrix3D::sptr t = ::fwData::TransformationMatrix3D::dynamicCast(obj);
-        values                                   = t->getCoefficients();
+        data::TransformationMatrix3D::TMCoefArray values;
+        data::TransformationMatrix3D::sptr t = data::TransformationMatrix3D::dynamicCast(obj);
+        values = t->getCoefficients();
         float matrixValues[16];
 
         for(unsigned int i = 0; i < 16; ++i)
@@ -247,7 +247,7 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
     //FrameTL
     else if(frameTL)
     {
-        ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
+        data::Image::sptr im = data::Image::dynamicCast(obj);
         if(!m_tlInitialized)
         {
             frameTL->setMaximumSize(10);

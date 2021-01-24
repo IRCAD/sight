@@ -53,7 +53,7 @@ public:
      * @brief Display the dialog
      * @return the ILocation selected or null sptr if user cancel the operation
      */
-    FWGUI_API ::fwData::location::ILocation::sptr show() override;
+    FWGUI_API data::location::ILocation::sptr show() override;
 
     /// allow to set option to the file dialog mode=READ/WRITE, check=FILE_MUST_EXIST
     FWGUI_API ::fwGui::dialog::ILocationDialog& setOption( ::fwGui::dialog::ILocationDialog::Options option) override;
@@ -76,13 +76,13 @@ public:
     FWGUI_API const std::string& getTitle() override;
 
     /// Set the initial location for the dialog
-    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::sptr loc) override;
+    FWGUI_API virtual void setDefaultLocation( data::location::ILocation::sptr loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
     FWGUI_API const std::filesystem::path getDefaultLocation() override;
 
     /// Save the specified default location for the dialog in preferences (if available)
-    FWGUI_API void saveDefaultLocation(::fwData::location::ILocation::sptr loc) override;
+    FWGUI_API void saveDefaultLocation(data::location::ILocation::sptr loc) override;
 
     /// Gets the current extension file selection
     FWGUI_API std::string getCurrentSelection() const override;

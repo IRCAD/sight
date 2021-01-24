@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "itkRegistrationOp/config.hpp"
 #include "itkRegistrationOp/Metric.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <itkEuler3DTransform.h>
 #include <itkImageRegistrationMethodv4.h>
@@ -67,9 +67,9 @@ public:
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
      */
-    ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
-                                             const ::fwData::Image::csptr& _reference,
-                                             const ::fwData::TransformationMatrix3D::sptr& _trf,
+    ITKREGISTRATIONOP_API void registerImage(const data::Image::csptr& _target,
+                                             const data::Image::csptr& _reference,
+                                             const data::TransformationMatrix3D::sptr& _trf,
                                              MetricType _metric,
                                              const MultiResolutionParametersType& _multiResolutionParameters,
                                              RealType _samplingPercentage    = 1.0,
@@ -101,7 +101,7 @@ public:
     ITKREGISTRATIONOP_API ::itk::SizeValueType getCurrentLevel() const;
 
     /// Current registration result.
-    ITKREGISTRATIONOP_API void getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const;
+    ITKREGISTRATIONOP_API void getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const;
 
 private:
     typedef typename ::itk::Euler3DTransform< RealType > TransformType;
@@ -115,9 +115,9 @@ private:
 
     bool m_invert { false };
 
-    void convertToF4sMatrix(const TransformType* _itkMat, const ::fwData::TransformationMatrix3D::sptr& _f4sMat) const;
+    void convertToF4sMatrix(const TransformType* _itkMat, const data::TransformationMatrix3D::sptr& _f4sMat) const;
 
-    static double computeVolume(const fwData::Image::csptr& _img);
+    static double computeVolume(const data::Image::csptr& _img);
 };
 
 } // itkRegistrationOp

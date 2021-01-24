@@ -52,7 +52,7 @@ public:
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(
         const ::fwActivities::registry::ActivityInfo&,
-        const CSPTR(::fwData::Vector)& ) const override
+        const CSPTR(data::Vector)& ) const override
     {
         ValidationType validation;
         validation.first  = true;
@@ -89,7 +89,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see ::fwActivities::IObjectValidator
      */
-    FWACTIVITIES_API ValidationType checkObject(const CSPTR(::fwData::Object)& object,
+    FWACTIVITIES_API ValidationType checkObject(const CSPTR(data::Object)& object,
                                                 const std::string& validatorImpl) const;
 };
 

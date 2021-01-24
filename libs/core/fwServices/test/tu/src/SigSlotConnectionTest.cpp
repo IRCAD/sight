@@ -68,8 +68,8 @@ void SigSlotConnectionTest::basicTest()
     showTestSrv->registerInOut(buffer, "buffer", true);
     showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
 
-    ::fwData::Object::ModifiedSignalType::sptr sig =
-        buffer->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+    data::Object::ModifiedSignalType::sptr sig =
+        buffer->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
     sig->asyncEmit();
     CPPUNIT_ASSERT_EQUAL(0, showTestSrv->m_receiveCount);
 

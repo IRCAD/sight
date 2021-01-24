@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
-    fwData
+    data
     fwServices
 )
 set( REQUIREMENTS

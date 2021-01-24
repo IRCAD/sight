@@ -48,7 +48,7 @@ INetwork::~INetwork()
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendObject(const ::fwData::Object::csptr& obj)
+bool INetwork::sendObject(const data::Object::csptr& obj)
 {
     igtl::MessageBase::Pointer msg;
 
@@ -69,9 +69,9 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr INetwork::receiveObject(std::string& deviceName)
+data::Object::sptr INetwork::receiveObject(std::string& deviceName)
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
     if (headerMsg.IsNotNull())
     {
@@ -87,9 +87,9 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr INetwork::receiveObject(std::string& deviceName, double& timestamp)
+data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& timestamp)
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
     if (headerMsg.IsNotNull())
     {

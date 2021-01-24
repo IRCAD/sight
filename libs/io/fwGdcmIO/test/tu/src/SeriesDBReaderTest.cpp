@@ -26,14 +26,14 @@
 
 #include <core/memory/BufferManager.hpp>
 
-#include <fwData/Color.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Color.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/PointList.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -160,7 +160,7 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(getValue(root, "InstitutionName", mf), equipment->getInstitutionName());
 
         // Image
-        ::fwData::Image::sptr image = series->getImage();
+        data::Image::sptr image = series->getImage();
 
         // PixelSpacing - Not checked as the image could be rotated
 
@@ -467,26 +467,26 @@ void SeriesDBReaderTest::readCTSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    const ::fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), size[2]);
 
     // Check spacing
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1.6 ), spacing[2], delta);
 
     // Check origin
-    const ::fwData::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);
@@ -531,27 +531,27 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    const ::fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[2]);
 
     // Check spacing
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 6 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[2], delta);
 
     // Check origin
-    const ::fwData::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin2();
     SLM_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -112.828 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -180.058 ), origin[1], delta);
@@ -598,27 +598,27 @@ void SeriesDBReaderTest::readOTSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    ::fwData::Image::Size size = image->getSize2();
+    data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[2]);
 
     // Check spacing
-    ::fwData::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[2], delta);
 
     // Check origin
-    ::fwData::Image::Origin origin = image->getOrigin2();
+    data::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);
@@ -669,18 +669,18 @@ void SeriesDBReaderTest::readSEGSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), reconstructionDB.size());
 
     // Check reconstruction
-    ::fwData::Reconstruction::sptr reconstruction = reconstructionDB[0];
+    data::Reconstruction::sptr reconstruction = reconstructionDB[0];
     CPPUNIT_ASSERT_EQUAL( std::string("Liver"), reconstruction->getOrganName());
 
     // Check mesh
-    ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 2498 ), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 5000 ), mesh->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::Size( 15000 ), mesh->getCellDataSize());
+    data::Mesh::sptr mesh = reconstruction->getMesh();
+    CPPUNIT_ASSERT_EQUAL( data::Mesh::Size( 2498 ), mesh->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL( data::Mesh::Size( 5000 ), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL( data::Mesh::Size( 15000 ), mesh->getCellDataSize());
 
     // Check material
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::Color::sptr color       = material->diffuse();
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::Color::sptr color       = material->diffuse();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.8 ), color->red(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), color->green(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), color->blue(), delta);
@@ -713,26 +713,26 @@ void SeriesDBReaderTest::readSFSeries()
 
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Retrieve landmarks
-    ::fwData::PointList::sptr pointList =
-        image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList =
+        image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
 
     // Verify first landmark
-    const ::fwData::Point::sptr& pointA = pointList->getPoints()[0];
-    const std::string labelA            =
-        pointA->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointA = pointList->getPoints()[0];
+    const std::string labelA        =
+        pointA->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 80.89 ), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 102.16 ), pointA->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 153 ), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const ::fwData::Point::sptr& pointB = pointList->getPoints()[1];
-    const std::string labelB            =
-        pointB->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointB = pointList->getPoints()[1];
+    const std::string labelB        =
+        pointB->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 281.63 ), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 326.52 ), pointB->getCoord()[1], delta);
@@ -766,42 +766,42 @@ void SeriesDBReaderTest::readSRSeries()
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     CPPUNIT_ASSERT(series);
-    ::fwData::Image::sptr image = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Retrieve landmarks
-    ::fwData::PointList::sptr landmarkPointList =
-        image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr landmarkPointList =
+        image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
 
     // Verify first landmark
-    const ::fwData::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA            =
-        pointA->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
+    const std::string labelA        =
+        pointA->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 80.89 ), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 102.16 ), pointA->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 153 ), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const ::fwData::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB            =
-        pointB->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
+    const std::string labelB        =
+        pointB->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 281.63 ), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 326.52 ), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    ::fwData::Vector::sptr distanceVector =
-        image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector =
+        image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     // Verify first distance
-    ::fwData::PointList::sptr distancePointList = ::fwData::PointList::dynamicCast(distanceVector->getContainer()[0]);
-    const ::fwData::Point::sptr& pointC = distancePointList->getPoints()[0];
+    data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
+    const data::Point::sptr& pointC         = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 38.34 ), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 116.67 ), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointC->getCoord()[2], delta);
-    const ::fwData::Point::sptr& pointD = distancePointList->getPoints()[1];
+    const data::Point::sptr& pointD = distancePointList->getPoints()[1];
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 329.41 ), pointD->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 302.33 ), pointD->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointD->getCoord()[2], delta);
@@ -833,42 +833,42 @@ void SeriesDBReaderTest::read3DSRSeries()
 
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Retrieve landmarks
-    ::fwData::PointList::sptr landmarkPointList =
-        image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr landmarkPointList =
+        image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
 
     // Verify first landmark
-    const ::fwData::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA            =
-        pointA->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
+    const std::string labelA        =
+        pointA->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 80.89 ), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 102.16 ), pointA->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 153 ), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const ::fwData::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB            =
-        pointB->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+    const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
+    const std::string labelB        =
+        pointB->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 281.63 ), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 326.52 ), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    ::fwData::Vector::sptr distanceVector =
-        image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector =
+        image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     // Verify first distance
-    ::fwData::PointList::sptr distancePointList = ::fwData::PointList::dynamicCast(distanceVector->getContainer()[0]);
-    const ::fwData::Point::sptr& pointC = distancePointList->getPoints()[0];
+    data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
+    const data::Point::sptr& pointC         = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 281.63 ), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 99.30 ), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 87.26 ), pointC->getCoord()[2], delta);
-    const ::fwData::Point::sptr& pointD = distancePointList->getPoints()[1];
+    const data::Point::sptr& pointD = distancePointList->getPoints()[1];
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 329.41 ), pointD->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 302.33 ), pointD->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 276 ), pointD->getCoord()[2], delta);
@@ -952,8 +952,8 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     // Retrieve ImageSeries
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Get internal buffer
     auto buffer = image->getBuffer();

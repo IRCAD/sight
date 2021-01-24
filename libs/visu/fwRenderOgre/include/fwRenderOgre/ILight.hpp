@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,8 @@
 #include "fwRenderOgre/registry/detail.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
-#include <fwData/Color.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Color.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 
@@ -93,8 +93,8 @@ public:
      * @param _specular specular color of the light.
      * @return A new ligh adaptor with registered inputs.
      */
-    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::Color::sptr _diffuse,
-                                                            ::fwData::Color::sptr _specular);
+    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(data::Color::sptr _diffuse,
+                                                            data::Color::sptr _specular);
 
     /**
      * @brief Destroys a light adaptor.

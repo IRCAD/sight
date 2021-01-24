@@ -37,7 +37,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }

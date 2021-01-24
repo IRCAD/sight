@@ -30,7 +30,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
@@ -292,7 +292,7 @@ void writeSegmentIdentification(const std::string& structureType,
 
 //------------------------------------------------------------------------------
 
-void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
+void writePrivateTags(const data::Reconstruction::csptr& reconstruction,
                       ::gdcm::DataSet& dataset)
 {
     // Private group
@@ -328,7 +328,7 @@ void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
 
 //------------------------------------------------------------------------------
 
-void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& reconstruction,
+void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruction,
                                    ::gdcm::Item& segmentItem,
                                    const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
                                    unsigned short segmentNumber)
@@ -431,7 +431,7 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
 
 //------------------------------------------------------------------------------
 
-void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& reconstruction,
+void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruction,
                                    ::gdcm::Item& surfaceItem,
                                    const ::gdcm::SmartPointer< ::gdcm::Surface >& surface,
                                    unsigned short segmentNumber)
@@ -440,7 +440,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
     ::gdcm::DataSet& surfaceItemDataset = surfaceItem.GetNestedDataSet();
 
     // Retrieve material
-    ::fwData::Material::csptr material = reconstruction->getMaterial();
+    data::Material::csptr material = reconstruction->getMaterial();
 
     // Set DicomSurface data - NOTE: must be called before points and primitives writing
     ::fwGdcmIO::container::DicomSurface surfaceContainer(reconstruction);

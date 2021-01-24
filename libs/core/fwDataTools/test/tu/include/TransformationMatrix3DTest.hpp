@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
-#define __FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
+#pragma once
+
+#include <data/TransformationMatrix3D.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/TransformationMatrix3D.hpp>
-
 
 namespace fwDataTools
 {
@@ -49,7 +47,6 @@ public:
     void setUp();
     void tearDown();
 
-
     void identityMatrixTest();
     void matrixTest();
     void glmGetterSetterTest();
@@ -58,5 +55,3 @@ public:
 
 } //namespace ut
 } //namespace fwDataTools
-
-#endif //__FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include <arData/CameraSeries.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -83,20 +83,20 @@ bool SOpenCVWriter::defineLocationGUI()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML file", "*.xml");
     dialogFile.addFilter("YAML file", "*.yaml *.yml");
 
-    ::fwData::location::SingleFile::sptr result
-        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result
+        = data::location::SingleFile::dynamicCast( dialogFile.show() );
 
     if (result)
     {
         _sDefaultPath = result->getPath();
         this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
         ok = true;
     }
     else
@@ -146,7 +146,7 @@ void SOpenCVWriter::updating()
         }
     }
 
-    ::fwData::mt::ObjectReadLock lock(camSeries);
+    data::mt::ObjectReadLock lock(camSeries);
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
     std::vector< ::arData::Camera::sptr > cameras;
@@ -154,10 +154,10 @@ void SOpenCVWriter::updating()
     std::vector< ::cv::Mat > cameraDistCoefs;
 
     // Set the cameras
-    ::fwData::TransformationMatrix3D::sptr extrinsicMatrix;
+    data::TransformationMatrix3D::sptr extrinsicMatrix;
     ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
 
-    ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);
+    data::mt::ObjectReadLock camSeriesLock(camSeries);
 
     for(size_t i = 0; i < numberOfCameras; ++i)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -57,7 +57,7 @@ namespace editor
    @endcode
  * @subsection InOut InOut
  * - \b modelSeries [::fwMedData::ModelSeries]: modelSeries to modify.
- * - \b composite [::fwData::Composite]: composite.
+ * - \b composite [data::Composite]: composite.
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
                                                    public ::fwGui::editor::IEditor
@@ -65,7 +65,7 @@ class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOrganTransformation, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SOrganTransformation, ::fwGui::editor::IEditor)
 
     /// constructor
     UIMEDDATAQT_API SOrganTransformation() noexcept;
@@ -107,14 +107,14 @@ private Q_SLOTS:
 private:
 
     void refresh();
-    void notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
+    void notitfyTransformationMatrix(data::TransformationMatrix3D::sptr aTransMat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();
 
     // ReconstructionMapType
-    typedef ::std::map< ::std::string, ::fwData::Reconstruction::sptr > ReconstructionMapType;
-    typedef ::std::map< ::std::string, ::fwData::TransformationMatrix3D::sptr> InnerMatMappingType;
+    typedef ::std::map< ::std::string, data::Reconstruction::sptr > ReconstructionMapType;
+    typedef ::std::map< ::std::string, data::TransformationMatrix3D::sptr> InnerMatMappingType;
     typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;

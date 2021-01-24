@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include <uiVisuOgre/helper/ParameterEditor.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Boolean.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/GuiRegistry.hpp>
 
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -62,9 +62,9 @@ SShaderParameterEditor::~SShaderParameterEditor() noexcept
 
 void SShaderParameterEditor::starting()
 {
-    ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, ::fwData::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    data::Reconstruction::sptr rec = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Material::sptr material  = rec->getMaterial();
+    m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
     this->create();
 
@@ -92,10 +92,10 @@ void SShaderParameterEditor::stopping()
 void SShaderParameterEditor::swapping()
 {
     m_connections.disconnect();
-    ::fwData::Reconstruction::sptr rec = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    ::fwData::Material::sptr material  = rec->getMaterial();
+    data::Reconstruction::sptr rec = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Material::sptr material  = rec->getMaterial();
 
-    m_connections.connect(material, ::fwData::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
     this->updating();
 }
@@ -142,7 +142,7 @@ void SShaderParameterEditor::clear()
 void SShaderParameterEditor::updateGuiInfo()
 {
     /// Getting all Material adaptors
-    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
     ::fwServices::registry::ObjectService::ServiceVectorType srvVec = ::fwServices::OSR::getServices(
         "::visuOgreAdaptor::SMaterial");
@@ -154,12 +154,12 @@ void SShaderParameterEditor::updateGuiInfo()
         return;
     }
 
-    /// Try to find the material adaptor working with the same ::fwData::Material
+    /// Try to find the material adaptor working with the same data::Material
     /// as the one contained by the current reconstruction
     ::fwRenderOgre::IAdaptor::sptr matService;
     for (auto srv : srvVec)
     {
-        if (srv->getInOut< ::fwData::Object>("material")->getID() == reconstruction->getMaterial()->getID())
+        if (srv->getInOut< data::Object>("material")->getID() == reconstruction->getMaterial()->getID())
         {
             matService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
             break;
@@ -177,11 +177,11 @@ void SShaderParameterEditor::updateGuiInfo()
         if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
             /// Filter object types
-            const ::fwData::Object::csptr shaderObj =
-                paramSrv->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+            const data::Object::csptr shaderObj =
+                paramSrv->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
             const ObjectClassnameType objType = shaderObj->getClassname();
 
-            if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
+            if(objType == "data::Boolean" || objType == "data::Float" || objType == "data::Integer")
             {
                 found = true;
                 break;

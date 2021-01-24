@@ -28,7 +28,7 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/tools/Os.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -47,7 +47,7 @@ static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar
 
 void Plugin::start()
 {
-    m_preferences = ::fwData::Composite::New();
+    m_preferences = data::Composite::New();
 
     ::fwServices::IService::sptr prefSrv;
     prefSrv = ::fwServices::add("::preferences::SPreferences", s_PREF_SERVICE_UID);
@@ -65,7 +65,7 @@ void Plugin::start()
 
         if ( m_preferences->find( "PREFERENCES_VERSION" ) == m_preferences->end() )
         {
-            ::fwData::String::sptr version            = ::fwData::String::New( PREFERENCES_VER );
+            data::String::sptr version = data::String::New( PREFERENCES_VER );
             (*m_preferences)[ "PREFERENCES_VERSION" ] = version;
         }
     }

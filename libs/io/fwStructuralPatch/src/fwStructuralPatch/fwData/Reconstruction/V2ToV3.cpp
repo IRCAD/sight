@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Reconstruction/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Reconstruction/V2ToV3.hpp"
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
@@ -29,7 +29,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Reconstruction
@@ -38,8 +38,8 @@ namespace Reconstruction
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Reconstruction";
-    m_targetClassname = "::fwData::Reconstruction";
+    m_originClassname = "data::Reconstruction";
+    m_targetClassname = "data::Reconstruction";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 
@@ -73,12 +73,12 @@ void V2ToV3::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    // Set to -1 to inform that no mask has been computed yet (::fwData::Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
+    // Set to -1 to inform that no mask has been computed yet (data::Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
     helper.addAttribute("volume", ::fwAtoms::Numeric::New<double>(-1.));
 }
 
 } // namespace Reconstruction
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

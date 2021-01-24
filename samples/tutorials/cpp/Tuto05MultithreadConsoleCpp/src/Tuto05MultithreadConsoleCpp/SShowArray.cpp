@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #include "Tuto05MultithreadConsoleCpp/SShowArray.hpp"
 
-#include <fwData/Array.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/Array.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SShowArray, ::fwData::Array )
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SShowArray, data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -64,7 +64,7 @@ void SShowArray::starting()
 
 void SShowArray::updating()
 {
-    const auto array = this->getInput< ::fwData::Array >(s_ARRAY_INPUT);
+    const auto array = this->getInput< data::Array >(s_ARRAY_INPUT);
 
     const auto dumpLock = array->lock();
 

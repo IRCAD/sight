@@ -52,7 +52,7 @@ public:
      */
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        const CSPTR(::fwData::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection ) const override;
 };
 
 } // namespace validator

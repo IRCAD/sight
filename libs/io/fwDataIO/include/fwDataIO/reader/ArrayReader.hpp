@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/Array.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Array.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
@@ -39,15 +39,15 @@ namespace reader
  * @brief   Array Reader. Read file format .raw
  *
  *
- * Ircad reader to read a ::fwData::Array on filesystem in a raw format.
+ * Ircad reader to read a data::Array on filesystem in a raw format.
  */
-class FWDATAIO_CLASS_API ArrayReader :  public GenericObjectReader< ::fwData::Array >,
-                                        public ::fwData::location::enableSingleFile< IObjectReader >
+class FWDATAIO_CLASS_API ArrayReader :  public GenericObjectReader< data::Array >,
+                                        public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(ArrayReader, GenericObjectReader< ::fwData::Array>, ::fwDataIO::reader::factory::New<ArrayReader>)
+    fwCoreClassMacro(ArrayReader, GenericObjectReader< data::Array>, ::fwDataIO::reader::factory::New<ArrayReader>)
 
     /// Constructor. Do nothing.
     FWDATAIO_API ArrayReader(::fwDataIO::reader::IObjectReader::Key key);

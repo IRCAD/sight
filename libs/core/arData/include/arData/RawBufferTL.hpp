@@ -26,7 +26,7 @@
 #include "arData/config.hpp"
 #include "arData/timeline/RawBuffer.hpp"
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 fwCampAutoDeclareDataMacro((arData)(RawBufferTL));
 
@@ -40,14 +40,14 @@ class ARDATA_CLASS_API RawBufferTL : public BufferTL
 {
 
 public:
-    fwCoreClassMacro(RawBufferTL, ::arData::TimeLine, ::fwData::factory::New< RawBufferTL >)
+    fwCoreClassMacro(RawBufferTL, ::arData::TimeLine, data::factory::New< RawBufferTL >)
     fwCampMakeFriendDataMacro((arData)(RawBufferTL));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API RawBufferTL( ::fwData::Object::Key key );
+    ARDATA_API RawBufferTL( data::Object::Key key );
 
     /// Destructor
     ARDATA_API virtual ~RawBufferTL();

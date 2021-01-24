@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,9 +50,9 @@ LocationDialog::~LocationDialog()
 
 //-----------------------------------------------------------------------------
 
-::fwData::location::ILocation::sptr LocationDialog::show()
+data::location::ILocation::sptr LocationDialog::show()
 {
-    typedef SPTR (::fwData::location::ILocation) R;
+    typedef SPTR (data::location::ILocation) R;
 
     std::function< R() > func = std::bind(&ILocationDialog::show, m_implementation);
     std::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
@@ -98,7 +98,7 @@ const std::string& LocationDialog::getTitle()
 
 //-----------------------------------------------------------------------------
 
-void LocationDialog::setDefaultLocation(::fwData::location::ILocation::sptr loc)
+void LocationDialog::setDefaultLocation(data::location::ILocation::sptr loc)
 {
     m_implementation->setDefaultLocation(loc);
 }
@@ -112,7 +112,7 @@ const std::filesystem::path LocationDialog::getDefaultLocation()
 
 //-----------------------------------------------------------------------------
 
-void LocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr loc)
+void LocationDialog::saveDefaultLocation(data::location::ILocation::sptr loc)
 {
     m_implementation->saveDefaultLocation(loc);
 }

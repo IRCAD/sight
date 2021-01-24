@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMeasurement/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -47,7 +47,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image containing the distances.
+ * - \b image [data::Image]: image containing the distances.
  */
 class UIMEASUREMENT_CLASS_API SShowDistance final : public ::fwGui::IActionSrv
 {
@@ -73,7 +73,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG of s_IMAGE_INOUT to s_SHOW_DISTANCE_SLOT
+     * Connect data::Image::s_DISTANCE_DISPLAYED_SIG of s_IMAGE_INOUT to s_SHOW_DISTANCE_SLOT
      */
     UIMEASUREMENT_API KeyConnectionsMap getAutoConnections() const override;
 

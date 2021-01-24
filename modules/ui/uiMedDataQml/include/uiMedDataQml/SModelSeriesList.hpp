@@ -36,7 +36,7 @@ namespace uiMedDataQml
  * @brief   SModelSeriesList service allows to manage the ModelSeries organs.
  *
  * @section Signals Signals
- * - \b reconstructionSelected(::fwData::Object::sptr): this signal emits the selected reconstruction
+ * - \b reconstructionSelected(data::Object::sptr): this signal emits the selected reconstruction
  * - \b emptiedSelection(): this signal is emitted when no reconstruction is selected
  *
  * @section QSlots Qt Slots
@@ -106,7 +106,7 @@ protected:
     virtual KeyConnectionsMap getAutoConnections() const override;
 
     static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
-    typedef core::com::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    typedef core::com::Signal< void (data::Object::sptr) > ReconstructionSelectedSignalType;
 
     static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
     typedef core::com::Signal< void () > EmptiedSelectionSignalType;

@@ -30,7 +30,7 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -63,7 +63,7 @@ class ValueView;
  * ::uiReconstructionQt::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
- * - \b reconstructionSelected(::fwData::Object::sptr): this signal emits the selected reconstruction
+ * - \b reconstructionSelected(data::Object::sptr): this signal emits the selected reconstruction
  * - \b emptiedSelection(): this signal is emitted when no reconstruction is selected
  *
  * @section Slots Slots
@@ -90,7 +90,7 @@ class ValueView;
  * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
  *      displayed in UI.
  * - \b column (optional, string, default=""): defines colums to be shown in reconstruction list. XML child element
- *      names follow ::fwData::Reconstruction serialization attribute names.
+ *      names follow data::Reconstruction serialization attribute names.
  *      The name of the tag will be used as the column name.
  *      The attribute 'view' is optional and has the following values:
  *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
@@ -147,7 +147,7 @@ private:
     void updateReconstructions();
 
     /// Fills the editor tree.
-    void fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries);
+    void fillTree(const data::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries);
 
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);
@@ -220,7 +220,7 @@ private:
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef core::com::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    typedef core::com::Signal< void (data::Object::sptr) > ReconstructionSelectedSignalType;
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 
     /// Contains the signal emitted when we clean the list.

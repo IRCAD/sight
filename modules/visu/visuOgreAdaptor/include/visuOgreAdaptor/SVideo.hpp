@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
@@ -54,9 +54,9 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [::fwData::Image]: frame displayed.
- * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
- * - \b pointList [::fwData::PointList] (optional): point list to display (coordinates must be in the image space).
+ * - \b image [data::Image]: frame displayed.
+ * - \b tf [data::TransferFunction] (optional): a transfer function that can be applied to the video.
+ * - \b pointList [data::PointList] (optional): point list to display (coordinates must be in the image space).
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the video's layer
@@ -100,11 +100,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
-     * Connect ::fwData::TransferFunction::s_MODIFIED_SIG of s_TF_INPUT to :s_UPDATE_TF_SLOT
-     * Connect ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
-     * Connect ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::TransferFunction::s_MODIFIED_SIG of s_TF_INPUT to :s_UPDATE_TF_SLOT
+     * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
+     * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -162,7 +162,7 @@ private:
     core::tools::Type m_previousType;
 
     /// Contains the pointlist in the video space coordinates.
-    ::fwData::PointList::sptr m_pointList { nullptr };
+    data::PointList::sptr m_pointList { nullptr };
 
     /// Contains the adaptor used to display the 2D pointlist.
     ::fwRenderOgre::IAdaptor::sptr m_pointListAdaptor { nullptr };

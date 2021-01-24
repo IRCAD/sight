@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace fwAtoms
 class Object;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -42,9 +42,9 @@ namespace mapper
 {
 
 /**
- * @brief Specific mapper used to convert a ::fwData::Mesh
+ * @brief Specific mapper used to convert a data::Mesh
  *
- * The attribute ::fwData::Mesh::m_attributes ( of type ::fwData::Mesh::Attributes ) is
+ * The attribute data::Mesh::m_attributes ( of type data::Mesh::Attributes ) is
  * represented in fwAtoms as a UINT Numeric value.
  */
 class FWATOMCONVERSION_CLASS_API Mesh : public Base
@@ -52,23 +52,23 @@ class FWATOMCONVERSION_CLASS_API Mesh : public Base
 public:
 
     /**
-     * @brief Convert a ::fwData::Object to a ::fwAtoms::Object.
-     * @param object data to convert. It must be a ::fwData::Mesh.
+     * @brief Convert a data::Object to a ::fwAtoms::Object.
+     * @param object data to convert. It must be a data::Mesh.
      * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert( SPTR(::fwData::Object) object,
+    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert( SPTR(data::Object) object,
                                                                   DataVisitor::AtomCacheType& cache );
 
     /**
-     * @brief Convert a ::fwAtoms::Object to a ::fwData::Object (which represent a ::fwData::Mesh).
+     * @brief Convert a ::fwAtoms::Object to a data::Object (which represent a data::Mesh).
      * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor policy
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwData::Object) convert( SPTR(::fwAtoms::Object) atom,
-                                                                 AtomVisitor::DataCacheType& cache,
-                                                                 const AtomVisitor::IReadPolicy& uuidPolicy
-                                                                 );
+    FWATOMCONVERSION_API virtual SPTR(data::Object) convert( SPTR(::fwAtoms::Object) atom,
+                                                             AtomVisitor::DataCacheType& cache,
+                                                             const AtomVisitor::IReadPolicy& uuidPolicy
+                                                             );
 
 };
 

@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwActivities
-    fwData
+    data
     fwGui
     fwGuiQt
     fwMedData
@@ -14,7 +14,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     guiQt
-    fwData
+    data
     servicesReg
 )
 set( PLUGINS

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/Line.hpp>
+#include <data/Line.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -37,7 +37,7 @@ namespace igtlProtocol
 namespace converter
 {
 const std::string LineConverter::s_IGTL_TYPE          = "POSITION";
-const std::string LineConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Line::classname();
+const std::string LineConverter::s_FWDATA_OBJECT_TYPE = data::Line::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::LineConverter);
 
@@ -53,13 +53,13 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(data::Object::csptr src) const
 {
     float pos[3];
     float direction[4];
 
     ::igtl::PositionMessage::Pointer dest;
-    ::fwData::Line::csptr srcLine = ::fwData::Line::dynamicConstCast(src);
+    data::Line::csptr srcLine = data::Line::dynamicConstCast(src);
 
     dest = ::igtl::PositionMessage::New();
     std::transform(srcLine->getPosition()->getCoord().begin(),
@@ -75,16 +75,16 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     float igtlPos[3];
     float igtlDirection[4];
 
-    ::fwData::Line::sptr dest                = ::fwData::Line::New();
+    data::Line::sptr dest = data::Line::New();
     ::igtl::PositionMessage*  msg            = dynamic_cast< ::igtl::PositionMessage* >(src.GetPointer());
     ::igtl::PositionMessage::Pointer srcLine = ::igtl::PositionMessage::Pointer(msg);
-    dest->setPosition(::fwData::Point::New());
-    dest->setDirection(::fwData::Point::New());
+    dest->setPosition(data::Point::New());
+    dest->setDirection(data::Point::New());
     srcLine->GetPosition(igtlPos);
     srcLine->GetQuaternion(igtlDirection);
     std::transform(&igtlPos[0], &igtlPos[3], dest->getPosition()->getCoord().begin(),

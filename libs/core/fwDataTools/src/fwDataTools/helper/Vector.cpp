@@ -26,7 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 namespace fwDataTools
 {
@@ -35,7 +35,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Vector::Vector( ::fwData::Vector::wptr _vector ) :
+Vector::Vector( data::Vector::wptr _vector ) :
     m_vector( _vector )
 {
 }
@@ -52,9 +52,9 @@ Vector::~Vector()
 
 //-----------------------------------------------------------------------------
 
-void Vector::add( ::fwData::Object::sptr _newObject )
+void Vector::add( data::Object::sptr _newObject )
 {
-    ::fwData::Vector::sptr vector = m_vector.lock();
+    data::Vector::sptr vector = m_vector.lock();
     SLM_ASSERT( "The object " << _newObject->getID() << " must not exist in vector.",
                 std::find(vector->begin(), vector->end(), _newObject) == vector->end());
 
@@ -66,10 +66,10 @@ void Vector::add( ::fwData::Object::sptr _newObject )
 
 //-----------------------------------------------------------------------------
 
-void Vector::remove( ::fwData::Object::sptr _oldObject )
+void Vector::remove( data::Object::sptr _oldObject )
 {
-    ::fwData::Vector::sptr vector   = m_vector.lock();
-    ::fwData::Vector::iterator iter = std::find(vector->begin(), vector->end(), _oldObject);
+    data::Vector::sptr vector   = m_vector.lock();
+    data::Vector::iterator iter = std::find(vector->begin(), vector->end(), _oldObject);
     SLM_ASSERT( "The object " << _oldObject->getID() << " must exist in vector.",
                 iter != vector->end());
 
@@ -84,7 +84,7 @@ void Vector::remove( ::fwData::Object::sptr _oldObject )
 
 void Vector::clear()
 {
-    ::fwData::Vector::sptr vector = m_vector.lock();
+    data::Vector::sptr vector = m_vector.lock();
 
     while (!vector->empty())
     {
@@ -98,14 +98,14 @@ void Vector::notify()
 {
     if ( !m_removedObjects.empty() )
     {
-        auto sig = m_vector.lock()->signal< ::fwData::Vector::RemovedObjectsSignalType >(
-            ::fwData::Vector::s_REMOVED_OBJECTS_SIG);
+        auto sig = m_vector.lock()->signal< data::Vector::RemovedObjectsSignalType >(
+            data::Vector::s_REMOVED_OBJECTS_SIG);
         sig->asyncEmit(m_removedObjects);
     }
     if ( !m_addedObjects.empty() )
     {
-        auto sig = m_vector.lock()->signal< ::fwData::Vector::AddedObjectsSignalType >(
-            ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+        auto sig = m_vector.lock()->signal< data::Vector::AddedObjectsSignalType >(
+            data::Vector::s_ADDED_OBJECTS_SIG);
         sig->asyncEmit(m_addedObjects);
     }
     SLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",

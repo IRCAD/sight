@@ -5,14 +5,14 @@ set( TYPE TEST )
 set( DEPENDENCIES
     core
     fwTest
-    fwData
+    data
     fwServices
     fwMedData
     fwGui
     fwIO
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     gui
     ioAtoms

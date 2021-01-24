@@ -59,7 +59,7 @@ public:
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        const CSPTR(::fwData::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection ) const override;
 };
 
 } // namespace builder

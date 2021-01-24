@@ -25,8 +25,8 @@
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IWrapperSrv.hpp"
 
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -52,8 +52,8 @@ namespace wrapper
    </service>
    @endcode
  * @subsection Input Input
- * - \b target [::fwData::Image]: image to forward signal.
- * - \b source [::fwData::Image]: the source image signals are forwarded to the target image.
+ * - \b target [data::Image]: image to forward signal.
+ * - \b source [data::Image]: the source image signals are forwarded to the target image.
  * @subsection Configuration Configuration
  * - \b forward : key of the image signal to forward
  */
@@ -100,20 +100,20 @@ private:
      */
     void forwardModified();
     void forwardBufferModified();
-    void forwardLandmarkAdded(SPTR(::fwData::Point) point);
-    void forwardLandmarkRemoved(SPTR(::fwData::Point) point);
+    void forwardLandmarkAdded(SPTR(data::Point) point);
+    void forwardLandmarkRemoved(SPTR(data::Point) point);
     void forwardLandmarkDisplayed(bool display);
-    void forwardDistanceAdded(SPTR(::fwData::PointList) pointList);
-    void forwardDistanceRemoved(CSPTR(::fwData::PointList) pointList);
+    void forwardDistanceAdded(SPTR(data::PointList) pointList);
+    void forwardDistanceRemoved(CSPTR(data::PointList) pointList);
     void forwardDistanceDisplayed(bool display);
     void forwardSliceIndexModified(int axial, int frontal, int sagittal);
     void forwardSliceTypeModified(int from, int to);
     void forwardVisibilityModified(bool visibility);
     void forwardTransparencyModified();
-    void forwardAddedFields(::fwData::Object::FieldsContainerType objects);
-    void forwardChangedFields(::fwData::Object::FieldsContainerType newObjects,
-                              ::fwData::Object::FieldsContainerType oldObjects);
-    void forwardRemovedFields(::fwData::Object::FieldsContainerType objects);
+    void forwardAddedFields(data::Object::FieldsContainerType objects);
+    void forwardChangedFields(data::Object::FieldsContainerType newObjects,
+                              data::Object::FieldsContainerType oldObjects);
+    void forwardRemovedFields(data::Object::FieldsContainerType objects);
     /**
      * @}
      */

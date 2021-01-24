@@ -22,8 +22,8 @@
 
 #include "fwTest/helper/compare.hpp"
 
-#include <fwData/Object.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Object.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -35,22 +35,22 @@ namespace helper
 //------------------------------------------------------------------------------
 
 bool compare(
-    ::fwData::Object::sptr objRef,
-    ::fwData::Object::sptr objComp,
+    data::Object::sptr objRef,
+    data::Object::sptr objComp,
     ExcludeSetType excludeCompare,
     ExcludeSetType excludeByPrefix)
 {
-    ::fwData::reflection::visitor::CompareObjects visitor;
+    data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
 
     for(const ExcludeSetType::value_type& key: excludeCompare)
     {
         props->erase(key);
     }
 
-    std::set< ::fwData::reflection::visitor::CompareObjects::PropsMapType::key_type > propsKey;
-    for(const ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type& prop: *props)
+    std::set< data::reflection::visitor::CompareObjects::PropsMapType::key_type > propsKey;
+    for(const data::reflection::visitor::CompareObjects::PropsMapType::value_type& prop: *props)
     {
         bool erased = false;
         for(const ExcludeSetType::value_type& key: excludeByPrefix)
@@ -65,7 +65,7 @@ bool compare(
         SLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
 
-    for(const ::fwData::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)
+    for(const data::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)
     {
         props->erase(key);
     }

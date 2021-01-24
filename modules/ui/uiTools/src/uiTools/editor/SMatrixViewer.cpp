@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiTools/editor/SMatrixViewer.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -43,7 +43,7 @@ namespace editor
 
 static const ::fwServices::IService::KeyType s_MATRIX_INPUT = "matrix";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SMatrixViewer);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SMatrixViewer)
 
 // ------------------------------------------------------------------------------
 
@@ -118,7 +118,7 @@ void SMatrixViewer::updating()
 
 void SMatrixViewer::updateFromMatrix()
 {
-    auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT);
+    auto matrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT);
     for(unsigned int i = 0; i < 4; ++i)
     {
         for(unsigned int j = 0; j < 4; ++j)
@@ -146,7 +146,7 @@ void SMatrixViewer::clearLabels()
 ::fwServices::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_MATRIX_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push( s_MATRIX_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

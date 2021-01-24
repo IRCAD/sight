@@ -28,13 +28,13 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Object.hpp>
+#include <data/Composite.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/Object.hpp>
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, data::Composite )
 
 namespace videoTools
 {
@@ -86,7 +86,7 @@ void SFrameUpdater::starting()
     m_imageInitialized = false;
 
     m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
-    m_image   = this->getInOut< ::fwData::Image>("frame");
+    m_image   = this->getInOut< data::Image>("frame");
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::fwData::Image::Size size;
+        data::Image::Size size;
         size[0] = m_frameTL->getWidth();
         size[1] = m_frameTL->getHeight();
         size[2] = 0;
@@ -126,20 +126,20 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
 
         if(!m_imageInitialized)
         {
-            ::fwData::mt::ObjectWriteLock destLock(m_image);
+            data::mt::ObjectWriteLock destLock(m_image);
 
-            ::fwData::Image::PixelFormat format;
+            data::Image::PixelFormat format;
             // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or RGBA
             switch (m_frameTL->getNumberOfComponents())
             {
                 case 1:
-                    format = ::fwData::Image::GRAY_SCALE;
+                    format = data::Image::GRAY_SCALE;
                     break;
                 case 3:
-                    format = ::fwData::Image::RGB;
+                    format = data::Image::RGB;
                     break;
                 case 4:
-                    format = ::fwData::Image::RGBA;
+                    format = data::Image::RGBA;
                     break;
                 default:
                     SLM_ERROR("Number of compenent not managed")
@@ -147,9 +147,9 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
             }
 
             m_image->resize(size, m_frameTL->getType(), format);
-            const ::fwData::Image::Origin origin = {0., 0., 0.};
+            const data::Image::Origin origin = {0., 0., 0.};
             m_image->setOrigin2(origin);
-            const ::fwData::Image::Spacing spacing = {1., 1., 0.};
+            const data::Image::Spacing spacing = {1., 1., 0.};
             m_image->setSpacing2(spacing);
             m_image->setWindowWidth(1);
             m_image->setWindowCenter(0);
@@ -157,7 +157,7 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
 
             //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
             auto sig =
-                m_image->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+                m_image->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
 
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -175,7 +175,7 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
 void SFrameUpdater::updateImage()
 {
     //Lock image & copy buffer
-    ::fwData::mt::ObjectWriteLock destLock(m_image);
+    data::mt::ObjectWriteLock destLock(m_image);
     const auto dumpLock = m_image->lock();
 
     const core::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
@@ -193,7 +193,7 @@ void SFrameUpdater::updateImage()
 
         //Notify
         auto sig =
-            m_image->signal< ::fwData::Image::BufferModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG );
+            m_image->signal< data::Image::BufferModifiedSignalType >( data::Image::s_BUFFER_MODIFIED_SIG );
         sig->asyncEmit();
     }
 }

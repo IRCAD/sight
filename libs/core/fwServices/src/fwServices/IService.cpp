@@ -87,7 +87,7 @@ IService::~IService()
         std::string objectKeys;
         for (const auto& obj: m_outputsMap)
         {
-            const ::fwData::Object::wptr output = obj.second.get_shared();
+            const data::Object::wptr output = obj.second.get_shared();
             if (output.use_count() == 1)
             {
                 if (!objectKeys.empty())
@@ -112,7 +112,7 @@ void IService::info( std::ostream& )
 
 //-----------------------------------------------------------------------------
 
-void IService::setOutput(const IService::KeyType& key, const fwData::Object::sptr& object, size_t index)
+void IService::setOutput(const IService::KeyType& key, const data::Object::sptr& object, size_t index)
 {
     std::string outKey = key;
 
@@ -133,7 +133,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 //------------------------------------------------------------------------------
 
-void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect,
+void IService::registerInput(const data::Object::csptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
     this->registerObject(obj->getID(), key, AccessType::INPUT, autoConnect, optional);
@@ -150,7 +150,7 @@ void IService::unregisterInput(const std::string& key)
 
 //------------------------------------------------------------------------------
 
-void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect,
+void IService::registerInOut(const data::Object::sptr& obj, const std::string& key, const bool autoConnect,
                              const bool optional)
 {
     this->registerObject(obj, key, AccessType::INOUT, autoConnect, optional);
@@ -165,7 +165,7 @@ void IService::unregisterInOut(const std::string& key)
 
 //------------------------------------------------------------------------------
 
-void IService::registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
+void IService::registerObject(const data::Object::sptr& obj, const std::string& key,
                               AccessType access, const bool autoConnect, const bool optional)
 {
     this->registerObject(key, access, autoConnect, optional);
@@ -471,7 +471,7 @@ IService::SharedFutureType IService::update()
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwData::Object::sptr _obj)
+IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, data::Object::sptr _obj)
 {
     if( !m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
@@ -653,14 +653,14 @@ IService::SharedFutureType IService::internalStop(bool _async)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swapKeySlot(const KeyType& _key, ::fwData::Object::sptr _obj)
+IService::SharedFutureType IService::swapKeySlot(const KeyType& _key, data::Object::sptr _obj)
 {
     return this->internalSwapKey(_key, _obj, true);
 }
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, ::fwData::Object::sptr _obj, bool _async)
+IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, data::Object::sptr _obj, bool _async)
 {
     SLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
                  (_obj ? _obj->getID() : "nullptr"),
@@ -850,7 +850,7 @@ void IService::autoConnect()
                           ") is set to 'autoConnect=\"yes\"' but there is no connection available.");
             }
 
-            ::fwData::Object::csptr obj;
+            data::Object::csptr obj;
 
             switch(objectCfg.m_access)
             {
@@ -978,7 +978,7 @@ bool IService::hasAllRequiredObjects() const
         {
             if (objectCfg.m_access == ::fwServices::IService::AccessType::INPUT)
             {
-                if (nullptr == this->getInput< ::fwData::Object >(objectCfg.m_key))
+                if (nullptr == this->getInput< data::Object >(objectCfg.m_key))
                 {
                     SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
                               + "'");
@@ -988,7 +988,7 @@ bool IService::hasAllRequiredObjects() const
             }
             else if (objectCfg.m_access == ::fwServices::IService::AccessType::INOUT)
             {
-                if (nullptr == this->getInOut< ::fwData::Object >(objectCfg.m_key))
+                if (nullptr == this->getInOut< data::Object >(objectCfg.m_key))
                 {
                     SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
                               + "'");

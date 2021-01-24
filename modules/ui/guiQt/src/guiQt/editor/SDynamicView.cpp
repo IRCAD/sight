@@ -29,13 +29,13 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
@@ -415,10 +415,10 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
 
             submatch.replace(0, 1, "@");
 
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(activitySeries->getData(), submatch);
+            data::Object::sptr obj = data::reflection::getObject(activitySeries->getData(), submatch);
             SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+            data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
             std::string tabInfoSeshat;
 
@@ -428,7 +428,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
             }
             else
             {
-                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
             }
 
             submatch.replace(0, 1, "!");

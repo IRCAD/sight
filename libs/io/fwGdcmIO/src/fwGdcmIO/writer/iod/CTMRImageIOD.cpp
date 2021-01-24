@@ -32,7 +32,7 @@
 
 #include <core/spyLog.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -75,7 +75,7 @@ void CTMRImageIOD::write(const ::fwMedData::Series::csptr& series)
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
-    ::fwData::Image::sptr image = imageSeries->getImage();
+    data::Image::sptr image = imageSeries->getImage();
 
     // Create writer
     SPTR(::gdcm::ImageWriter) writer = std::make_shared< ::gdcm::ImageWriter >();

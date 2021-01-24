@@ -26,8 +26,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/location/Folder.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -81,7 +81,7 @@ void SSeriesDBReader::openLocationDialog()
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
@@ -96,15 +96,15 @@ void SSeriesDBReader::openLocationDialog()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr result;
-    result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
+    data::location::MultiFiles::sptr result;
+    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
-        const ::fwData::location::ILocation::VectPathType paths = result->getPaths();
+        const data::location::ILocation::VectPathType paths = result->getPaths();
         if(!paths.empty())
         {
             _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         }
         this->setFiles(paths);
     }
@@ -142,7 +142,7 @@ void SSeriesDBReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
+void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathType& vtkFiles,
                                     const ::fwMedData::SeriesDB::sptr& seriesDB )
 {
     ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();

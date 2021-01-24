@@ -40,7 +40,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile<
+    data::location::enableSingleFile<
         IObjectReader >(this)
 {
 }
@@ -55,10 +55,10 @@ ArrayReader::~ArrayReader()
 
 void ArrayReader::read()
 {
-    assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
-    std::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
+    assert( data::location::SingleFile::dynamicCast(m_location) );
+    std::filesystem::path file = data::location::SingleFile::dynamicCast(m_location)->getPath();
 
-    ::fwData::Array::sptr array = this->getConcreteObject();
+    data::Array::sptr array = this->getConcreteObject();
 
     const auto dumpLock = array->lock();
 

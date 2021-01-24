@@ -54,7 +54,7 @@ namespace fwServices
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b object [::fwData::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
+ * - \b object [data::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
  * identifies the object whose uid is passed as value of the parameter.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of

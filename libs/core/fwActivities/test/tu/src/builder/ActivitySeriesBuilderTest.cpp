@@ -29,8 +29,8 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -71,7 +71,7 @@ void ActivitySeriesBuilderTest::tearDown()
 
 void ActivitySeriesBuilderTest::buildDataTest()
 {
-    ::fwData::Vector::sptr selection                   = ::fwData::Vector::New();
+    data::Vector::sptr selection = data::Vector::New();
     ::fwMedData::ImageSeries::sptr imgSeriesSelected   = ::fwMedData::ImageSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeriesSelected = ::fwMedData::ModelSeries::New();
     selection->getContainer().push_back(imgSeriesSelected);
@@ -92,7 +92,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
 
     CPPUNIT_ASSERT_EQUAL(activityInfo.id, actSeries->getActivityConfigId());
 
-    ::fwData::Composite::sptr dataActivity = actSeries->getData();
+    data::Composite::sptr dataActivity = actSeries->getData();
     CPPUNIT_ASSERT_EQUAL(size_t(2), dataActivity->size());
 
     const std::string imageKey = "imageSeries";
@@ -101,13 +101,13 @@ void ActivitySeriesBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_MESSAGE(modelKey + " key is missing", dataActivity->find(modelKey) != dataActivity->end());
 
     //single param [1;1]
-    ::fwData::Object::sptr obj = (*dataActivity)[imageKey];
+    data::Object::sptr obj = (*dataActivity)[imageKey];
     CPPUNIT_ASSERT(obj == imgSeriesSelected);
 
     //set of param [0;2]
-    obj                                 = (*dataActivity)[modelKey];
-    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(obj);
-    CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to fwData::Composite failed", composite);
+    obj = (*dataActivity)[modelKey];
+    data::Composite::sptr composite = data::Composite::dynamicCast(obj);
+    CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to data::Composite failed", composite);
     CPPUNIT_ASSERT_EQUAL(size_t(1), composite->size());
     CPPUNIT_ASSERT(modelSeriesSelected == (*composite)["key1"]);
 }

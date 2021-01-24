@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

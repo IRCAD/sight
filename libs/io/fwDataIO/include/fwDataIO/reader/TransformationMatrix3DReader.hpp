@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace fwDataIO
 {
@@ -38,17 +38,17 @@ namespace reader
  * @brief   Reader for transformation of 3D Matrix. Read file format .trf
  *
  *
- * Ircad reader to read a ::fwData::TransformationMatrix3D on filesystem which the file format
+ * Ircad reader to read a data::TransformationMatrix3D on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
  */
 class FWDATAIO_CLASS_API TransformationMatrix3DReader :
-    public GenericObjectReader< ::fwData::TransformationMatrix3D >,
-    public ::fwData::location::enableSingleFile< IObjectReader >
+    public GenericObjectReader< data::TransformationMatrix3D >,
+    public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(TransformationMatrix3DReader, GenericObjectReader< ::fwData::TransformationMatrix3D >,
+    fwCoreClassMacro(TransformationMatrix3DReader, GenericObjectReader< data::TransformationMatrix3D >,
                      ::fwDataIO::reader::factory::New< TransformationMatrix3DReader >)
 
     /// Constructor. Do nothing.

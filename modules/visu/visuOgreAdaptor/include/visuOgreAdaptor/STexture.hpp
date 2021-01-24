@@ -28,8 +28,8 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
@@ -52,7 +52,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [::fwData::Image]: the image to map as a texture.
+ * - \b image [data::Image]: the image to map as a texture.
  *
  * @subsection Configuration Configuration:
  *  - \b layer (mandatory, string): defines the texture's layer
@@ -106,8 +106,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

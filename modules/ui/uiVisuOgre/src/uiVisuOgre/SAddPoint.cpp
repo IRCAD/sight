@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/PointList.hpp>
 
@@ -41,7 +41,7 @@ const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoint
 
 const std::string s_POINTLIST_KEY = "pointList";
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, ::fwData::PointList)
+fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, data::PointList)
 
 //------------------------------------------------------------------------------
 
@@ -85,17 +85,17 @@ void SAddPoint::updating()
 
 //------------------------------------------------------------------------------
 
-void SAddPoint::addPoint(const ::fwData::Point::sptr _point)
+void SAddPoint::addPoint(const data::Point::sptr _point)
 {
-    auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    SLM_ASSERT("Missing data::PointList data", pointList);
 
     {
-        ::fwData::mt::ObjectWriteLock lock(pointList);
+        data::mt::ObjectWriteLock lock(pointList);
         pointList->pushBack(_point);
     }
 
-    auto sig = pointList->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+    auto sig = pointList->signal< data::PointList::PointAddedSignalType >(data::PointList::s_POINT_ADDED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(_point);
@@ -104,19 +104,19 @@ void SAddPoint::addPoint(const ::fwData::Point::sptr _point)
 
 //------------------------------------------------------------------------------
 
-void SAddPoint::removePoint(const ::fwData::Point::csptr _point)
+void SAddPoint::removePoint(const data::Point::csptr _point)
 {
-    auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    SLM_ASSERT("Missing data::PointList data", pointList);
 
-    ::fwData::mt::ObjectWriteLock lock(pointList);
+    data::mt::ObjectWriteLock lock(pointList);
 
-    const ::fwData::Point::sptr pointRes = ::fwDataTools::helper::PointList::removeClosestPoint(pointList, _point, 10);
+    const data::Point::sptr pointRes = ::fwDataTools::helper::PointList::removeClosestPoint(pointList, _point, 10);
 
     if(pointRes != nullptr)
     {
-        const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        const auto& sig = pointList->signal< data::PointList::PointRemovedSignalType >(
+            data::PointList::s_POINT_REMOVED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(pointRes);
@@ -128,8 +128,8 @@ void SAddPoint::removePoint(const ::fwData::Point::csptr _point)
 
 void SAddPoint::pick(::fwDataTools::PickingInfo _info)
 {
-    ::fwData::Point::sptr point                = ::fwData::Point::New();
-    ::fwData::Point::PointCoordArrayType cords = {{_info.m_worldPos[0], _info.m_worldPos[1], _info.m_worldPos[2]}};
+    data::Point::sptr point                = data::Point::New();
+    data::Point::PointCoordArrayType cords = {{_info.m_worldPos[0], _info.m_worldPos[1], _info.m_worldPos[2]}};
     point->setCoord(cords);
 
     if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
@@ -149,14 +149,14 @@ void SAddPoint::pick(::fwDataTools::PickingInfo _info)
 
 void SAddPoint::clearPoints()
 {
-    auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing ::fwData::PointList data", pointList);
+    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    SLM_ASSERT("Missing data::PointList data", pointList);
 
-    ::fwData::mt::ObjectWriteLock lock(pointList);
+    data::mt::ObjectWriteLock lock(pointList);
 
     pointList->clear();
-    const auto& sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
+    const auto& sig = pointList->signal< data::PointList::ModifiedSignalType >(
+        data::PointList::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

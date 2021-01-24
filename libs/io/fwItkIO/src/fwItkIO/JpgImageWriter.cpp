@@ -29,10 +29,10 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
@@ -54,7 +54,7 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -76,7 +76,7 @@ struct JpgITKSaverFunctor
     struct Parameter
     {
         std::string m_filename;
-        ::fwData::Image::csptr m_dataImage;
+        data::Image::csptr m_dataImage;
         ::fwItkIO::JpgImageWriter::sptr m_fwWriter;
     };
 
@@ -87,7 +87,7 @@ struct JpgITKSaverFunctor
     {
         SLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
 
-        ::fwData::Image::csptr image = param.m_dataImage;
+        data::Image::csptr image = param.m_dataImage;
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -118,16 +118,16 @@ struct JpgITKSaverFunctor
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
         double min, max;
-        ::fwData::Composite::sptr poolTF;
+        data::Composite::sptr poolTF;
         poolTF =
-            image->getField< ::fwData::Composite>( ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId );
+            image->getField< data::Composite>( ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId );
         if(poolTF)
         {
-            ::fwData::Composite::iterator iter = poolTF->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+            data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
             if(iter != poolTF->end())
             {
-                ::fwData::TransferFunction::sptr tf;
-                tf  = ::fwData::TransferFunction::dynamicCast(iter->second);
+                data::TransferFunction::sptr tf;
+                tf  = data::TransferFunction::dynamicCast(iter->second);
                 min = tf->getWLMinMax().first;
                 max = tf->getWLMinMax().second;
             }

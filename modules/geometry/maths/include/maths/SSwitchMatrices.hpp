@@ -28,7 +28,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -56,9 +56,9 @@ namespace maths
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D]: List of two matrices keys to switch.
+ * - \b matrix [data::TransformationMatrix3D]: List of two matrices keys to switch.
  * @subsection In-Out In-Out:
- * - \b output [::fwData::TransformationMatrix3D]: Output matrix.
+ * - \b output [data::TransformationMatrix3D]: Output matrix.
  *
  */
 class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController

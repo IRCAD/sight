@@ -158,7 +158,7 @@ void SFragmentsInfo::starting()
 
 void SFragmentsInfo::updating() noexcept
 {
-    const auto imageW = this->getWeakInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto imageW = this->getWeakInOut< data::Image >(s_IMAGE_INOUT);
     {
         const auto image = imageW.lock();
         if(image)
@@ -167,12 +167,12 @@ void SFragmentsInfo::updating() noexcept
             ::fwRenderOgre::Utils::convertFromOgreTexture(text, image.get_shared(), m_flipImage);
 
             const auto sig =
-                image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
     }
 
-    const auto depthW = this->getWeakInOut< ::fwData::Image >(s_DEPTH_INOUT);
+    const auto depthW = this->getWeakInOut< data::Image >(s_DEPTH_INOUT);
     {
         const auto depth = depthW.lock();
         if(depth)
@@ -181,12 +181,12 @@ void SFragmentsInfo::updating() noexcept
             ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth.get_shared(), m_flipImage);
 
             const auto depthSig =
-                depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                depth->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             depthSig->asyncEmit();
         }
     }
 
-    const auto primitiveIDW = this->getWeakInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT);
+    const auto primitiveIDW = this->getWeakInOut< data::Image>(s_PRIMITIVE_ID_INOUT);
     {
         const auto primitiveID = primitiveIDW.lock();
         if(primitiveID)
@@ -195,7 +195,7 @@ void SFragmentsInfo::updating() noexcept
             ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID.get_shared(), m_flipImage);
 
             const auto primitiveIDSig =
-                primitiveID->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                primitiveID->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             primitiveIDSig->asyncEmit();
         }
     }
@@ -265,10 +265,10 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
        }*/
 
     const bool retrieveDepth =
-        this->getWeakInOut< ::fwData::Image >(s_DEPTH_INOUT).lock().operator bool();
+        this->getWeakInOut< data::Image >(s_DEPTH_INOUT).lock().operator bool();
 
     const bool retrievePrimitiveID =
-        this->getWeakInOut< ::fwData::Image >(s_PRIMITIVE_ID_INOUT).lock().operator bool();
+        this->getWeakInOut< data::Image >(s_PRIMITIVE_ID_INOUT).lock().operator bool();
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 

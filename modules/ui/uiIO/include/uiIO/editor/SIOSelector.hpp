@@ -65,16 +65,16 @@ namespace editor
  * @code{.xml}
           <service uid="..." type="::uiIO::editor::SIOSelector">
               <out key="data" uid="image" />
-              <type mode="reader" class="::fwData::Image" />
+              <type mode="reader" class="data::Image" />
               <selection mode="include" />
               <addSelection service="::ioAtoms::SReader" />
           </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [::fwData::Object]: the read or saved object.
+ * - \b data [data::Object]: the read or saved object.
  * @subsection Output Output
- * - \b data [::fwData::Object]: the loaded object (not used if an inout data is defined).
+ * - \b data [data::Object]: the loaded object (not used if an inout data is defined).
  * @subsection Configuration Configuration
  * - \b type
  *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).

@@ -24,9 +24,9 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 namespace uiReconstructionQml
 {
@@ -70,7 +70,7 @@ void SRepresentationEditor::stopping()
 
 void SRepresentationEditor::updating()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
     m_material = reconstruction->getMaterial();
 
@@ -85,32 +85,32 @@ void SRepresentationEditor::updating()
 void SRepresentationEditor::onChangeRepresentation( int id )
 {
 
-    ::fwData::Material::RepresentationType selectedMode = ::fwData::Material::SURFACE;
+    data::Material::RepresentationType selectedMode = data::Material::SURFACE;
 
     switch(id)
     {
         case 1:
         {
-            selectedMode = ::fwData::Material::SURFACE;
+            selectedMode = data::Material::SURFACE;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::POINT;
+            selectedMode = data::Material::POINT;
             break;
         }
         case 3:
         {
-            selectedMode = ::fwData::Material::WIREFRAME;
+            selectedMode = data::Material::WIREFRAME;
             break;
         }
         case 4:
         {
-            selectedMode = ::fwData::Material::EDGE;
+            selectedMode = data::Material::EDGE;
             break;
         }
         default:
-            selectedMode = ::fwData::Material::SURFACE;
+            selectedMode = data::Material::SURFACE;
     }
 
     m_material->setRepresentationMode( selectedMode );
@@ -121,32 +121,32 @@ void SRepresentationEditor::onChangeRepresentation( int id )
 
 void SRepresentationEditor::onChangeShading(  int id )
 {
-    ::fwData::Material::ShadingType selectedMode = ::fwData::Material::PHONG;
+    data::Material::ShadingType selectedMode = data::Material::PHONG;
 
     switch(id)
     {
         case 0:
         {
-            selectedMode = ::fwData::Material::AMBIENT;
+            selectedMode = data::Material::AMBIENT;
             break;
         }
         case 1:
         {
-            selectedMode = ::fwData::Material::FLAT;
+            selectedMode = data::Material::FLAT;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::GOURAUD;
+            selectedMode = data::Material::GOURAUD;
             break;
         }
         case 3:
         {
-            selectedMode = ::fwData::Material::PHONG;
+            selectedMode = data::Material::PHONG;
             break;
         }
         default:
-            selectedMode = ::fwData::Material::PHONG;
+            selectedMode = data::Material::PHONG;
     }
 
     m_material->setShadingMode( selectedMode );
@@ -157,29 +157,29 @@ void SRepresentationEditor::onChangeShading(  int id )
 
 void SRepresentationEditor::onShowNormals(int state )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     switch(state)
     {
         case 1:
-            m_material->setOptionsMode( ::fwData::Material::STANDARD );
+            m_material->setOptionsMode( data::Material::STANDARD );
             break;
         case 2:
-            m_material->setOptionsMode( ::fwData::Material::NORMALS );
+            m_material->setOptionsMode( data::Material::NORMALS );
             break;
         case 3:
-            m_material->setOptionsMode( ::fwData::Material::CELLS_NORMALS );
+            m_material->setOptionsMode( data::Material::CELLS_NORMALS );
             break;
         default:
-            m_material->setOptionsMode( ::fwData::Material::STANDARD );
+            m_material->setOptionsMode( data::Material::STANDARD );
     }
 
     this->notifyMaterial();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal< ::fwData::Reconstruction::MeshChangedSignalType >(
-        ::fwData::Reconstruction::s_MESH_CHANGED_SIG);
+    auto sig = reconstruction->signal< data::Reconstruction::MeshChangedSignalType >(
+        data::Reconstruction::s_MESH_CHANGED_SIG);
     sig->asyncEmit(reconstruction->getMesh());
 }
 
@@ -187,12 +187,12 @@ void SRepresentationEditor::onShowNormals(int state )
 
 void SRepresentationEditor::notifyMaterial()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
-        ::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
+        data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -202,7 +202,7 @@ void SRepresentationEditor::notifyMaterial()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

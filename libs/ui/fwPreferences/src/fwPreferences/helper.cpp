@@ -25,8 +25,8 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -104,7 +104,7 @@ void setPassword(const std::string& password)
         s_password = password;
 
         // Remove the password hash
-        ::fwData::Composite::sptr prefs = getPreferences();
+        data::Composite::sptr prefs = getPreferences();
         if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end() )
         {
             setPreference(s_PASSWORD_HASH_KEY, password);
@@ -182,18 +182,18 @@ bool setPreference(const std::string& key, const std::string& value)
     bool isModified = false;
     // Check preferences
 
-    ::fwData::Composite::sptr prefs = getPreferences();
+    data::Composite::sptr prefs = getPreferences();
     if(prefs)
     {
-        ::fwData::Composite::IteratorType iterPref = prefs->find(key);
+        data::Composite::IteratorType iterPref = prefs->find(key);
         if ( iterPref != prefs->end() )
         {
-            ::fwData::String::sptr preferences = ::fwData::String::dynamicCast(iterPref->second);
-            preferences->value()               = value;
+            data::String::sptr preferences = data::String::dynamicCast(iterPref->second);
+            preferences->value() = value;
         }
         else
         {
-            (*prefs)[key] = ::fwData::String::New(value);
+            (*prefs)[key] = data::String::New(value);
         }
         isModified = true;
     }
@@ -206,14 +206,14 @@ std::string getPreference(const std::string& preferenceKey)
 {
     std::string value;
     // Check preferences
-    ::fwData::Composite::sptr prefs = getPreferences();
+    data::Composite::sptr prefs = getPreferences();
     if(prefs)
     {
-        ::fwData::Composite::IteratorType iterPref = prefs->find( preferenceKey );
+        data::Composite::IteratorType iterPref = prefs->find( preferenceKey );
         if ( iterPref != prefs->end() )
         {
-            ::fwData::String::sptr prefString = ::fwData::String::dynamicCast(iterPref->second);
-            value                             = prefString->value();
+            data::String::sptr prefString = data::String::dynamicCast(iterPref->second);
+            value = prefString->value();
         }
     }
     return value;
@@ -265,15 +265,15 @@ std::filesystem::path getPreferencesFile()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr getPreferences()
+data::Composite::sptr getPreferences()
 {
-    ::fwData::Composite::sptr prefs;
+    data::Composite::sptr prefs;
 
     const auto prefService = getPreferencesSrv();
 
     if(prefService)
     {
-        prefs = prefService->getInOut< ::fwData::Composite >(s_PREFERENCES_KEY);
+        prefs = prefService->getInOut< data::Composite >(s_PREFERENCES_KEY);
     }
     SLM_DEBUG_IF("The preferences are not found", !prefs);
 

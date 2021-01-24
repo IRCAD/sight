@@ -16,7 +16,7 @@ set( REQUIREMENTS
     activities
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
     fwMedData
 

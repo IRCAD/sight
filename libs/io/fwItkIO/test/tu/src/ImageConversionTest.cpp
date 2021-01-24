@@ -28,7 +28,7 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -61,13 +61,13 @@ void ImageConversionTest::tearDown()
 void ImageConversionTest::testConversion()
 {
     // create Image
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     typedef itk::Image< std::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    data::Image::sptr image2    = data::Image::New();
     bool image2ManagesHisBuffer = false;
     ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
 
@@ -82,7 +82,7 @@ void ImageConversionTest::testConversion()
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    data::Image::sptr image3    = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
 
@@ -111,20 +111,20 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    ::fwData::Image::sptr image      = ::fwData::Image::New();
-    ::fwData::Image::Size size       = { static_cast<size_t>(rand()%100 + 2), static_cast<size_t>(rand()%100 + 2), 0};
-    ::fwData::Image::Spacing spacing = { (rand()%200 +1) / 100., (rand()%200 +1) / 100., 0.};
-    ::fwData::Image::Origin origin   = {( rand()%200 - 100) / 3., (rand()%200 - 100) / 3., 0.};
-    core::tools::Type type = core::tools::Type::s_INT16;
+    data::Image::sptr image      = data::Image::New();
+    data::Image::Size size       = { static_cast<size_t>(rand()%100 + 2), static_cast<size_t>(rand()%100 + 2), 0};
+    data::Image::Spacing spacing = { (rand()%200 +1) / 100., (rand()%200 +1) / 100., 0.};
+    data::Image::Origin origin   = {( rand()%200 - 100) / 3., (rand()%200 - 100) / 3., 0.};
+    core::tools::Type type       = core::tools::Type::s_INT16;
 
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);
     ::fwTest::generator::Image::randomizeImage(image);
 
     typedef itk::Image< std::int16_t, 2 > ImageType;
 
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    data::Image::sptr image2    = data::Image::New();
     bool image2ManagesHisBuffer = false;
     ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
 
@@ -139,7 +139,7 @@ void ImageConversionTest::testConversion2D()
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    data::Image::sptr image3    = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
 

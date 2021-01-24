@@ -25,10 +25,10 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -77,8 +77,8 @@ void SImageCenter::starting()
 void SImageCenter::updating()
 {
 
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
-    ::fwData::mt::ObjectReadLock imLock(image);
+    data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_IN);
+    data::mt::ObjectReadLock imLock(image);
 
     SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
 
@@ -90,19 +90,19 @@ void SImageCenter::updating()
         return;
     }
 
-    ::fwData::TransformationMatrix3D::sptr matrix =
-        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    data::TransformationMatrix3D::sptr matrix =
+        this->getInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     SLM_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
 
-    ::fwData::mt::ObjectWriteLock matLock(matrix);
+    data::mt::ObjectWriteLock matLock(matrix);
 
     ::fwDataTools::TransformationMatrix3D::identity(matrix);
 
     //compute the center
-    const ::fwData::Image::Size size       = image->getSize2();
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
-    const ::fwData::Image::Origin origin   = image->getOrigin2();
+    const data::Image::Size size       = image->getSize2();
+    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Origin origin   = image->getOrigin2();
 
     SLM_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
 
@@ -124,8 +124,8 @@ void SImageCenter::updating()
 
     // output the translation matrix
 
-    auto sig = matrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
-                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::TransformationMatrix3D::ModifiedSignalType >
+                   (data::TransformationMatrix3D::s_MODIFIED_SIG);
 
     sig->asyncEmit();
 
@@ -144,7 +144,7 @@ void SImageCenter::stopping()
 ::fwServices::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

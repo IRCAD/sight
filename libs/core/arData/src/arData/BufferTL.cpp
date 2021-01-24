@@ -35,7 +35,7 @@ const size_t BufferTL::s_DEFAULT_TIMELINE_MAX_SIZE = 1000;
 
 //------------------------------------------------------------------------------
 
-BufferTL::BufferTL ( ::fwData::Object::Key key ) :
+BufferTL::BufferTL ( data::Object::Key key ) :
     TimeLine(key),
     m_maximumSize(s_DEFAULT_TIMELINE_MAX_SIZE)
 {

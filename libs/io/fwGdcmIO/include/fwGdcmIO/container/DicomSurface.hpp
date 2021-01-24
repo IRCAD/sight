@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <cstdint>
 
@@ -44,7 +44,7 @@ public:
 
     /**
      * Typedef for cell index in DICOM world (32 bits see VR OL).
-     * Sight uses uint64_t (see ::fwData::Mesh::CellId).
+     * Sight uses uint64_t (see data::Mesh::CellId).
      */
     typedef std::uint32_t DicomCellValueType;
 
@@ -60,7 +60,7 @@ public:
      * @brief Constructor
      * @param[in] reconstruction Source reconstruction
      */
-    FWGDCMIO_API DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction);
+    FWGDCMIO_API DicomSurface(const data::Reconstruction::csptr& reconstruction);
 
     /**
      * @brief Constructor
@@ -70,17 +70,17 @@ public:
      * @param[in] cellBufferSize Cells buffer size
      * @param[in] normalBuffer Normals buffer
      */
-    FWGDCMIO_API DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
-                              const ::fwData::Mesh::Size pointBufferSize,
+    FWGDCMIO_API DicomSurface(const data::Mesh::PointValueType* pointBuffer,
+                              const data::Mesh::Size pointBufferSize,
                               const DicomCellValueType* cellBuffer,
-                              const ::fwData::Mesh::Size cellBufferSize,
-                              const ::fwData::Mesh::NormalValueType* normalBuffer);
+                              const data::Mesh::Size cellBufferSize,
+                              const data::Mesh::NormalValueType* normalBuffer);
 
     /// Destructor
     FWGDCMIO_API ~DicomSurface();
 
     /// Convert DicomSurface container to Sight Mesh
-    FWGDCMIO_API ::fwData::Mesh::sptr convertToData();
+    FWGDCMIO_API data::Mesh::sptr convertToData();
 
     /// Return point coordinates buffer
     FWGDCMIO_API const DicomPointBufferType& getPointBuffer() const;

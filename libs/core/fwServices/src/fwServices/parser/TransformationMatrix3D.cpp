@@ -24,10 +24,10 @@
 
 #include "fwServices/macros.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransformationMatrix3D,
-                         ::fwData::TransformationMatrix3D )
+                         data::TransformationMatrix3D )
 
 namespace fwServices
 {
@@ -45,7 +45,7 @@ void TransformationMatrix3D::updating( )
 
 void TransformationMatrix3D::createConfig( core::tools::Object::sptr _obj )
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast( _obj );
+    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::dynamicCast( _obj );
     SLM_ASSERT("matrix not instanced", matrix);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )

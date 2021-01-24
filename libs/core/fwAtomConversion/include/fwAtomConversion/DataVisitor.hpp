@@ -34,7 +34,7 @@ namespace fwAtoms
 class Object;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -67,7 +67,7 @@ public:
      * Creates a new ::fwAtoms::Object. Sets : ID from dataObj UUID, meta info
      * CLASSNAME_METAINFO from dataObj classname() and add tag information from camp data
      */
-    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object)dataObj, AtomCacheType& cache );
+    FWATOMCONVERSION_API DataVisitor( SPTR(data::Object)dataObj, AtomCacheType& cache );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~DataVisitor();
@@ -81,14 +81,14 @@ public:
     /// Visit enum property. Uses fwAtoms::String to store enum name (and not enum value)
     FWATOMCONVERSION_API void visit(const camp::EnumProperty& property);
 
-    /// Visit user property. Null fwData::Object::sptr attribute is converted to null fwAtoms::Base::sptr attributes
+    /// Visit user property. Null data::Object::sptr attribute is converted to null fwAtoms::Base::sptr attributes
     FWATOMCONVERSION_API void visit(const camp::UserProperty& property);
 
-    /// Visit array property. Null fwData::Object::sptr attribute is converted to null fwAtoms::Base::sptr attributes
+    /// Visit array property. Null data::Object::sptr attribute is converted to null fwAtoms::Base::sptr attributes
     FWATOMCONVERSION_API void visit(const camp::ArrayProperty& property);
 
     /**
-     * @brief Visit map property. Null fwData::Object::sptr attribute is converted to
+     * @brief Visit map property. Null data::Object::sptr attribute is converted to
      * null fwAtoms::Base::sptr attributes
      *
      * Only map with key of type enum, string, real or int are managed ( real and int are

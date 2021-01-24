@@ -30,7 +30,7 @@
 #include <core/HiResClock.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -40,7 +40,7 @@ class FrameTL;
 class MatrixTL;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 class TransformationMatrix3D;
@@ -73,7 +73,7 @@ namespace syncTimeline
  * @subsection Input Input
  * - \b matrixTL [::arData::MatrixTL]: matrix timeline used to extract matrices.
  * @subsection In-Out In-Out
- * - \b matrices [::fwData::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
+ * - \b matrices [data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
 class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public ::arServices::ISynchronizer
 {

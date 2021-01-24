@@ -40,7 +40,7 @@ class FrameTL;
 class MatrixTL;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 class TransformationMatrix3D;
@@ -108,9 +108,9 @@ namespace videoTools
  * the number of \b matricesX group.
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: defines the images where to extract the image. The number of \b image keys must match
+ * - \b image [data::Image]: defines the images where to extract the image. The number of \b image keys must match
  * the number of \b frameTL keys.
- * - \b matricesX [::fwData::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
+ * - \b matricesX [data::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
  * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
@@ -213,13 +213,13 @@ private:
     bool m_imagesInitialized;
 
     /// Contains the input video timelines.
-    std::vector< ::fwData::mt::weak_ptr<const ::arData::FrameTL> > m_frameTLs;
+    std::vector< data::mt::weak_ptr<const ::arData::FrameTL> > m_frameTLs;
     /// Contains the input matrix timelines.
-    std::vector< ::fwData::mt::weak_ptr<const ::arData::MatrixTL> > m_matrixTLs;
+    std::vector< data::mt::weak_ptr<const ::arData::MatrixTL> > m_matrixTLs;
     /// Contains the output images.
-    std::vector< ::fwData::mt::weak_ptr< ::fwData::Image > > m_images;
+    std::vector< data::mt::weak_ptr< data::Image > > m_images;
     /// registers matrices with associated timeline key
-    std::vector<std::vector< ::fwData::mt::weak_ptr< ::fwData::TransformationMatrix3D> > > m_matrices;
+    std::vector<std::vector< data::mt::weak_ptr< data::TransformationMatrix3D> > > m_matrices;
     /// registers index of matrices that need to send their status through signals
     std::vector<std::vector<int> > m_sendMatricesStatus;
 

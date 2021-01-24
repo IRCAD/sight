@@ -57,10 +57,10 @@ namespace ioPacs
    @endcode
  *
  * @subsection Input Input:
- * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
- * - \b seriesDB [::fwData::Object]: seriesDB where to push the queried data.
+ * - \b seriesDB [data::Object]: seriesDB where to push the queried data.
  *
  * @subsection Configuration Configuration:
  * - \b advanced (optional, bool, default=true): define if advanced fields are displayed.

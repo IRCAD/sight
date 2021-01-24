@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Exception.hpp>
-#include <fwData/Landmarks.hpp>
+#include <data/Exception.hpp>
+#include <data/Landmarks.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -71,7 +71,7 @@ STransformLandmark::~STransformLandmark() noexcept
 
 void STransformLandmark::starting()
 {
-    const auto transformLocked = this->getLockedInput< ::fwData::TransformationMatrix3D>(s_TRANSFORM_INPUT);
+    const auto transformLocked = this->getLockedInput< data::TransformationMatrix3D>(s_TRANSFORM_INPUT);
     m_transform = transformLocked.get_shared();
 }
 
@@ -100,21 +100,21 @@ void STransformLandmark::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto landmark = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARK_INOUT);
+        const auto landmark = this->getLockedInOut< data::Landmarks >(s_LANDMARK_INOUT);
         try
         {
-            ::fwData::Landmarks::PointType& point               = landmark->getPoint(m_label, m_index);
-            ::fwData::TransformationMatrix3D::TMCoefArray array = m_transform->getCoefficients();
-            point[0]                                            = array[3];
-            point[1]                                            = array[7];
-            point[2]                                            = array[11];
+            data::Landmarks::PointType& point               = landmark->getPoint(m_label, m_index);
+            data::TransformationMatrix3D::TMCoefArray array = m_transform->getCoefficients();
+            point[0] = array[3];
+            point[1] = array[7];
+            point[2] = array[11];
 
             //notify point is modified
-            auto sig = landmark->signal< ::fwData::Landmarks::PointModifiedSigType >(
-                ::fwData::Landmarks::s_POINT_MODIFIED_SIG);
+            auto sig = landmark->signal< data::Landmarks::PointModifiedSigType >(
+                data::Landmarks::s_POINT_MODIFIED_SIG);
             sig->asyncEmit(m_label, m_index);
         }
-        catch (::fwData::Exception& e )
+        catch (data::Exception& e )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
                                                               "It is impossible to modify landmarks: "
@@ -129,7 +129,7 @@ void STransformLandmark::updating()
 ::fwServices::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -147,7 +147,7 @@ void STransformLandmark::updateSelectedPoint(std::string name, size_t index)
 void STransformLandmark::updatePoint(std::string name)
 {
     m_landmarkSelected = true;
-    const auto landmark = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARK_INOUT);
+    const auto landmark = this->getLockedInOut< data::Landmarks >(s_LANDMARK_INOUT);
     const size_t size   = landmark->getGroup(name).m_points.size();
     m_index = size -1;
     this->update();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace container
 
 struct CellDataOffsetGenerator
 {
-    ::fwData::Mesh::CellId current;
+    data::Mesh::CellId current;
     CellDataOffsetGenerator() :
         current(0)
     {
@@ -43,23 +43,23 @@ struct CellDataOffsetGenerator
 
     //------------------------------------------------------------------------------
 
-    ::fwData::Mesh::CellId operator()()
+    data::Mesh::CellId operator()()
     {
-        ::fwData::Mesh::CellId res = current;
+        data::Mesh::CellId res = current;
         current += 3;
         return res;
     }
 };
 
 //------------------------------------------------------------------------------
-DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction)
+DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
 {
     // Get mesh
-    ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
+    data::Mesh::csptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::CellType::TRIANGLE));
-    auto itr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto end = mesh->end< ::fwData::iterator::ConstPointIterator >();
+                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
+    auto itr       = mesh->begin< data::iterator::ConstPointIterator >();
+    const auto end = mesh->end< data::iterator::ConstPointIterator >();
     // Coordinates
     {
         // Retrieve & copy data
@@ -71,8 +71,8 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
     {
         // Retrieve & copy data
         m_cellBuffer.resize(mesh->getNumberOfCells() * 3);
-        auto cellIt        = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto cellEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto cellIt        = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto cellEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         std::size_t index = 0;
         for(; cellIt != cellEnd; ++cellIt)
@@ -96,11 +96,11 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
 
 //------------------------------------------------------------------------------
 
-DicomSurface::DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
-                           const ::fwData::Mesh::Size pointBufferSize,
+DicomSurface::DicomSurface(const data::Mesh::PointValueType* pointBuffer,
+                           const data::Mesh::Size pointBufferSize,
                            const DicomCellValueType* cellBuffer,
-                           const ::fwData::Mesh::Size cellBufferSize,
-                           const ::fwData::Mesh::NormalValueType* normalBuffer)
+                           const data::Mesh::Size cellBufferSize,
+                           const data::Mesh::NormalValueType* normalBuffer)
 {
     // Coordinates
     m_pointBuffer.reserve(pointBufferSize);
@@ -126,23 +126,23 @@ DicomSurface::~DicomSurface()
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::sptr DicomSurface::convertToData()
+data::Mesh::sptr DicomSurface::convertToData()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock = mesh->lock();
+    data::Mesh::sptr mesh = data::Mesh::New();
+    const auto lock       = mesh->lock();
 
     // Initialize number of points
-    ::fwData::Mesh::Attributes attribute = ::fwData::Mesh::Attributes::NONE;
+    data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
     if( !m_normalBuffer.empty())
     {
-        attribute = ::fwData::Mesh::Attributes::POINT_NORMALS;
+        attribute = data::Mesh::Attributes::POINT_NORMALS;
     }
 
-    mesh->resize(m_pointBuffer.size() / 3, m_cellBuffer.size() / 3, ::fwData::Mesh::CellType::TRIANGLE, attribute);
+    mesh->resize(m_pointBuffer.size() / 3, m_cellBuffer.size() / 3, data::Mesh::CellType::TRIANGLE, attribute);
 
     // Coordinates
     {
-        auto itr = mesh->begin< ::fwData::iterator::PointIterator >();
+        auto itr = mesh->begin< data::iterator::PointIterator >();
 
         std::copy(m_pointBuffer.begin(),
                   m_pointBuffer.end(),
@@ -151,13 +151,13 @@ DicomSurface::~DicomSurface()
 
     // Cells
     {
-        auto itr       = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto end = mesh->end< ::fwData::iterator::CellIterator >();
+        auto itr       = mesh->begin< data::iterator::CellIterator >();
+        const auto end = mesh->end< data::iterator::CellIterator >();
 
         // Cells types
         std::fill(itr->type,
                   end->type,
-                  ::fwData::Mesh::CellType::TRIANGLE);
+                  data::Mesh::CellType::TRIANGLE);
 
         // Cell data offset
         CellDataOffsetGenerator cellDataOffsetGenerator;
@@ -168,14 +168,14 @@ DicomSurface::~DicomSurface()
         for(size_t index = 0; index != m_cellBuffer.size(); ++index)
         {
             // Index shall start at 0 in Sight
-            itr->pointIdx[index] = static_cast< ::fwData::Mesh::PointId >(m_cellBuffer[index]) - 1;
+            itr->pointIdx[index] = static_cast< data::Mesh::PointId >(m_cellBuffer[index]) - 1;
         }
     }
 
     // Normals
     if(!m_normalBuffer.empty())
     {
-        auto itr = mesh->begin< ::fwData::iterator::PointIterator >();
+        auto itr = mesh->begin< data::iterator::PointIterator >();
 
         std::copy(m_normalBuffer.begin(),
                   m_normalBuffer.end(),

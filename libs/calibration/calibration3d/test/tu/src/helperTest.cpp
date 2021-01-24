@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace calibration3d
 namespace ut
 {
 
-using ExpectedChessboardType = std::vector< ::fwData::Point::PointCoordArrayType >;
+using ExpectedChessboardType = std::vector< data::Point::PointCoordArrayType >;
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ static inline const ::cv::Mat readRGBImage(const std::string _fname)
 //------------------------------------------------------------------------------
 
 static inline void compareChessboards(const ExpectedChessboardType& _expected,
-                                      const ::fwData::PointList::csptr& _detected)
+                                      const data::PointList::csptr& _detected)
 {
     CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->getPoints().size());
 
@@ -288,11 +288,11 @@ void helperTest::reprojectionRealDatasetTest2()
 
 void helperTest::toolCalibrationBasic()
 {
-    const std::uint8_t nbMatrices = 34;
-    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+    const std::uint8_t nbMatrices     = 34;
+    data::Vector::sptr matricesVector = data::Vector::New();
 
-    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr resCenterMatrix    = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr resTransformMatrix = data::TransformationMatrix3D::New();
 
     const ::glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
@@ -317,7 +317,7 @@ void helperTest::toolCalibrationBasic()
 
         matrix = ::glm::translate(matrix, translation);
 
-        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
         ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
@@ -346,11 +346,11 @@ void helperTest::toolCalibrationBasic()
 
 void helperTest::toolCalibration()
 {
-    const std::uint8_t nbMatrices = 46;
-    ::fwData::Vector::sptr matricesVector = ::fwData::Vector::New();
+    const std::uint8_t nbMatrices     = 46;
+    data::Vector::sptr matricesVector = data::Vector::New();
 
-    ::fwData::TransformationMatrix3D::sptr resCenterMatrix    = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr resTransformMatrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr resCenterMatrix    = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr resTransformMatrix = data::TransformationMatrix3D::New();
 
     const ::glm::dvec3 center(36., 52., -530.);
     const ::glm::dvec3 translation(-459.45, 46.6, -88.54);
@@ -372,7 +372,7 @@ void helperTest::toolCalibration()
         matrix              = ::glm::rotate(matrix, angle, axis);
         matrix              = ::glm::translate(matrix, translation);
 
-        ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
         ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
@@ -453,8 +453,8 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb0.elemSize1());
 
-        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb0,
-                                                                                                   9, 6, 0.25f);
+        const data::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb0,
+                                                                                               9, 6, 0.25f);
 
         const ExpectedChessboardType expectedChessboard {
             {743.776, 429.954, 0.0},
@@ -509,8 +509,8 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb1.elemSize1());
 
-        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb1,
-                                                                                                   9, 6, 0.25f);
+        const data::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb1,
+                                                                                               9, 6, 0.25f);
 
         const ExpectedChessboardType expectedChessboard {
             {739.341, 394.44, 0.0},
@@ -566,8 +566,8 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessGray.elemSize1());
 
-        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessGray,
-                                                                                                   9, 6, 0.25f);
+        const data::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessGray,
+                                                                                               9, 6, 0.25f);
 
         const ExpectedChessboardType expectedChessboard {
             {933.376, 504.662, 0.0},
@@ -614,8 +614,8 @@ void helperTest::chessboardDetectionTest()
 
         compareChessboards(expectedChessboard, detectedChess);
 
-        const ::fwData::PointList::csptr detectedChess2 = ::calibration3d::helper::detectChessboard(chessGray,
-                                                                                                    8, 5, 0.25f);
+        const data::PointList::csptr detectedChess2 = ::calibration3d::helper::detectChessboard(chessGray,
+                                                                                                8, 5, 0.25f);
         CPPUNIT_ASSERT(!detectedChess2);
     }
 }
@@ -628,10 +628,10 @@ void helperTest::chessboardDetectionScaleTest()
 
     const ::cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
-    const ::fwData::PointList::csptr detectedChessFullScale =
+    const data::PointList::csptr detectedChessFullScale =
         ::calibration3d::helper::detectChessboard(chessRgb0, 9, 6, 1.f);
 
-    const ::fwData::PointList::csptr detectedChessQuarterScale =
+    const data::PointList::csptr detectedChessQuarterScale =
         ::calibration3d::helper::detectChessboard(chessRgb0, 9, 6, 0.25f);
 
     CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());

@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/macros.hpp>
 

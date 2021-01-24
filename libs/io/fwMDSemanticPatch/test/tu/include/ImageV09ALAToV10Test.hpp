@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,8 @@ namespace fwMDSemanticPatch
 namespace ut
 {
 /**
- * @brief Test patch to convert 'm_imageLandmarksId' field  of '::fwData::Image' from '::fwData::PointList' to
- *        `::fwData::Landmarks`.
+ * @brief Test patch to convert 'm_imageLandmarksId' field  of 'data::Image' from 'data::PointList' to
+ *        `data::Landmarks`.
  */
 class ImageV09ALAToV10Test : public CPPUNIT_NS::TestFixture
 {

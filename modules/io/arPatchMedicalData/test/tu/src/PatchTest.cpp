@@ -29,7 +29,7 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>

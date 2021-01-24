@@ -25,8 +25,8 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
+#include <data/Integer.hpp>
+#include <data/String.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -155,41 +155,41 @@ void IFrameLayoutManager::defaultCloseCallback()
 
 void IFrameLayoutManager::readConfig()
 {
-    ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
+    data::Composite::sptr prefUI = this->getPreferenceUI();
     if(prefUI)
     {
         if ( prefUI->find( IFrameLayoutManager::FRAME_STATE_UI ) != prefUI->end() )
         {
-            ::fwData::Integer::sptr state =
-                ::fwData::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] );
+            data::Integer::sptr state =
+                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] );
             SLM_ASSERT("UI state not correct", state);
             m_frameInfo.m_state = (FrameState) state->value();
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_W_UI ) != prefUI->end() )
         {
-            ::fwData::Integer::sptr sizew =
-                ::fwData::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] );
+            data::Integer::sptr sizew =
+                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] );
             SLM_ASSERT("UI sizeW not correct", sizew);
             m_frameInfo.m_size.first = *sizew;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_H_UI ) != prefUI->end() )
         {
-            ::fwData::Integer::sptr sizeh =
-                ::fwData::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] );
+            data::Integer::sptr sizeh =
+                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] );
             SLM_ASSERT("UI sizeH not correct", sizeh);
             m_frameInfo.m_size.second = *sizeh;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_X_UI ) != prefUI->end() )
         {
-            ::fwData::Integer::sptr posx =
-                ::fwData::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] );
+            data::Integer::sptr posx =
+                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] );
             SLM_ASSERT("UI posX not correct", posx);
             m_frameInfo.m_position.first = *posx;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_Y_UI ) != prefUI->end() )
         {
-            ::fwData::Integer::sptr posy =
-                ::fwData::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] );
+            data::Integer::sptr posy =
+                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] );
             SLM_ASSERT("UI posY not correct", posy);
             m_frameInfo.m_position.second = *posy;
         }
@@ -200,58 +200,58 @@ void IFrameLayoutManager::readConfig()
 
 void IFrameLayoutManager::writeConfig()
 {
-    ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
+    data::Composite::sptr prefUI = this->getPreferenceUI();
     if(prefUI)
     {
         if(m_frameInfo.m_state != ICONIZED)
         {
-            ::fwData::Integer::sptr state                    = ::fwData::Integer::New(m_frameInfo.m_state);
+            data::Integer::sptr state = data::Integer::New(m_frameInfo.m_state);
             (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] = state;
         }
 
-        ::fwData::Integer::sptr sizew                     = ::fwData::Integer::New(m_frameInfo.m_size.first);
+        data::Integer::sptr sizew = data::Integer::New(m_frameInfo.m_size.first);
         (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] = sizew;
 
-        ::fwData::Integer::sptr sizeh                     = ::fwData::Integer::New(m_frameInfo.m_size.second);
+        data::Integer::sptr sizeh = data::Integer::New(m_frameInfo.m_size.second);
         (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] = sizeh;
 
-        ::fwData::Integer::sptr posx                          = ::fwData::Integer::New(m_frameInfo.m_position.first);
+        data::Integer::sptr posx = data::Integer::New(m_frameInfo.m_position.first);
         (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] = posx;
 
-        ::fwData::Integer::sptr posy                          = ::fwData::Integer::New(m_frameInfo.m_position.second);
+        data::Integer::sptr posy = data::Integer::New(m_frameInfo.m_position.second);
         (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] = posy;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr IFrameLayoutManager::getPreferenceUI()
+data::Composite::sptr IFrameLayoutManager::getPreferenceUI()
 {
-    ::fwData::Composite::sptr prefUI;
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefUI;
+    data::Composite::sptr prefs = ::fwPreferences::getPreferences();
 
     // Get preferences
     if(prefs)
     {
-        ::fwData::Composite::sptr framesUI;
+        data::Composite::sptr framesUI;
         // Retreives software UI pref
         if ( prefs->find( IFrameLayoutManager::SOFTWARE_UI ) == prefs->end() )
         {
-            framesUI                                     = ::fwData::Composite::New();
+            framesUI                                     = data::Composite::New();
             (*prefs)[ IFrameLayoutManager::SOFTWARE_UI ] = framesUI;
         }
         else
         {
-            framesUI = ::fwData::Composite::dynamicCast( (*prefs)[ IFrameLayoutManager::SOFTWARE_UI ]);
+            framesUI = data::Composite::dynamicCast( (*prefs)[ IFrameLayoutManager::SOFTWARE_UI ]);
         }
         // Retreives frame UI pref
         if ( framesUI->find( this->m_frameInfo.m_name ) != framesUI->end() )
         {
-            prefUI = ::fwData::Composite::dynamicCast( (*framesUI)[ this->m_frameInfo.m_name ] );
+            prefUI = data::Composite::dynamicCast( (*framesUI)[ this->m_frameInfo.m_name ] );
         }
         else
         {
-            prefUI                                   = ::fwData::Composite::New();
+            prefUI                                   = data::Composite::New();
             (*framesUI)[ this->m_frameInfo.m_name  ] = prefUI;
         }
     }

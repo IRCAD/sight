@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
-    fwData
+    data
     arData
     ctrlCamp
     gui

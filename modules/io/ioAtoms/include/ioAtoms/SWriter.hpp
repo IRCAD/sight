@@ -69,7 +69,7 @@ namespace ioAtoms
    @endcode
  *
  * @subsection Input Input
- * - \b data [::fwData::Object]: object to write.
+ * - \b data [data::Object]: object to write.
  *
  * @subsection Configuration Configuration
  * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)

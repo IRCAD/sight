@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__
-#define __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <glm/glm.hpp>
 
@@ -59,11 +58,11 @@ public:
     FWRENDEROGRE_API void removeTexture();
 
     /// Sets the table resolution based on the new image and recomputes it.
-    FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf,
+    FWRENDEROGRE_API void imageUpdate(const data::Image::sptr& _img, const data::TransferFunction::sptr& _tf,
                                       float _samplingRate);
 
     /// Computes the table based on the given TF and slice distance.
-    FWRENDEROGRE_API void tfUpdate(const ::fwData::TransferFunction::sptr& _tf, float _sampleDistance);
+    FWRENDEROGRE_API void tfUpdate(const data::TransferFunction::sptr& _tf, float _sampleDistance);
 
     /// Get the texture holding the pre-integration table.
     FWRENDEROGRE_API inline ::Ogre::TexturePtr getTexture() const;
@@ -121,5 +120,3 @@ std::pair<int, int> PreIntegrationTable::getMinMax() const
 } // namespace vr
 
 } // namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__

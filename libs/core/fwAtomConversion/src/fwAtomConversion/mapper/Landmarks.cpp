@@ -28,14 +28,14 @@
 
 #include <core/tools/UUID.hpp>
 
+#include <data/Landmarks.hpp>
+
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwData/Landmarks.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -46,11 +46,11 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::Landmarks);
+fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, data::Landmarks);
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Landmarks::convert( ::fwData::Object::sptr object,
+::fwAtoms::Object::sptr Landmarks::convert( data::Object::sptr object,
                                             DataVisitor::AtomCacheType& cache )
 {
     const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
@@ -58,14 +58,14 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
     metaclass.visit(visitor);
     ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
 
-    ::fwData::Landmarks::csptr landmarks = ::fwData::Landmarks::dynamicCast(object);
+    data::Landmarks::csptr landmarks = data::Landmarks::dynamicCast(object);
 
     ::fwAtoms::Map::sptr map = ::fwAtoms::Map::New();
 
-    ::fwData::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
+    data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
     for (const auto& name: names)
     {
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
+        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
         ::fwAtoms::Object::sptr atomGroup = ::fwAtoms::Object::New();
         atomGroup->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
@@ -75,7 +75,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
                                      std::to_string(group.m_color[3]);
         atomGroup->setAttribute("color", ::fwAtoms::String::New(colorStr));
         atomGroup->setAttribute("size", ::fwAtoms::Numeric::New(group.m_size));
-        const std::string shapeStr = (group.m_shape == ::fwData::Landmarks::Shape::SPHERE) ? "SPHERE" : "CUBE";
+        const std::string shapeStr = (group.m_shape == data::Landmarks::Shape::SPHERE) ? "SPHERE" : "CUBE";
         atomGroup->setAttribute("shape", ::fwAtoms::String::New(shapeStr));
         atomGroup->setAttribute("visibility", ::fwAtoms::Boolean::New(group.m_visibility));
 
@@ -98,15 +98,15 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Landmarks::convert(  ::fwAtoms::Object::sptr atom,
-                                            AtomVisitor::DataCacheType& cache,
-                                            const AtomVisitor::IReadPolicy& uuidPolicy
-                                            )
+data::Object::sptr Landmarks::convert(  ::fwAtoms::Object::sptr atom,
+                                        AtomVisitor::DataCacheType& cache,
+                                        const AtomVisitor::IReadPolicy& uuidPolicy
+                                        )
 {
     ::fwAtomConversion::AtomVisitor visitor( atom, cache, uuidPolicy );
     visitor.visit();
-    ::fwData::Object::sptr data         = visitor.getDataObject();
-    ::fwData::Landmarks::sptr landmarks = ::fwData::Landmarks::dynamicCast(data);
+    data::Object::sptr data         = visitor.getDataObject();
+    data::Landmarks::sptr landmarks = data::Landmarks::dynamicCast(data);
 
     ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast(atom->getAttribute("landmarks"));
 
@@ -131,17 +131,17 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
 
         FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged("'color' atom must be of type rgba"),
                                result.size() != 4 );
-        const ::fwData::Landmarks::ColorType color = {{
-                                                          std::stof(result[0]), std::stof(result[1]),
-                                                          std::stof(result[2]), std::stof(result[3])
-                                                      }};
+        const data::Landmarks::ColorType color = {{
+                                                      std::stof(result[0]), std::stof(result[1]),
+                                                      std::stof(result[2]), std::stof(result[3])
+                                                  }};
 
         // get size
         ::fwAtoms::Numeric::csptr sizeObj = ::fwAtoms::Numeric::dynamicCast(obj->getAttribute("size"));
         FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
                                    "sub atom 'size' stored in fwAtom::Object 'landmarks' must be ::fwAtoms::Numeric"),
                                !sizeObj );
-        const ::fwData::Landmarks::SizeType size = sizeObj->getValue< ::fwData::Landmarks::SizeType >();
+        const data::Landmarks::SizeType size = sizeObj->getValue< data::Landmarks::SizeType >();
 
         // get shape
         ::fwAtoms::String::csptr shapeObj = ::fwAtoms::String::dynamicCast(obj->getAttribute("shape"));
@@ -150,14 +150,14 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
                                !shapeObj );
 
         const std::string& shapeStr = shapeObj->getValue();
-        ::fwData::Landmarks::Shape shape;
+        data::Landmarks::Shape shape;
         if (shapeStr == "SPHERE")
         {
-            shape = ::fwData::Landmarks::Shape::SPHERE;
+            shape = data::Landmarks::Shape::SPHERE;
         }
         else if (shapeStr == "CUBE")
         {
-            shape = ::fwData::Landmarks::Shape::CUBE;
+            shape = data::Landmarks::Shape::CUBE;
         }
         else
         {
@@ -190,10 +190,10 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
             FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged("point atom must be of type x;y;z"),
                                    resultPt.size() != 3 );
 
-            ::fwData::Landmarks::PointType pt = {{
-                                                     std::stod(resultPt[0]), std::stod(resultPt[1]),
-                                                     std::stod(resultPt[2])
-                                                 }};
+            data::Landmarks::PointType pt = {{
+                                                 std::stod(resultPt[0]), std::stod(resultPt[1]),
+                                                 std::stod(resultPt[2])
+                                             }};
             landmarks->addPoint(name, pt);
         }
     }

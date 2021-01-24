@@ -27,7 +27,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
 
@@ -71,18 +71,18 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t B = 33;
         const std::uint8_t A = 63;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::POINT_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::POINT_COLORS);
 
         ::fwDataTools::Mesh::colorizeMeshPoints(mesh, R, G, B, A);
 
         const auto dumpLock = mesh->lock();
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstPointIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstPointIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr, ++count)
@@ -101,11 +101,11 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t B = 34;
         const std::uint8_t A = 124;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::POINT_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::POINT_COLORS);
 
         std::vector< size_t >vectorNumTriangle = {{ 0, 12, 1, 3, 21 }};
 
@@ -116,7 +116,7 @@ void MeshTest::colorizePointsTest()
 
         const auto dumpLock = mesh->lock();
 
-        const auto cellIterBegin = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto cellIterBegin = mesh->begin< data::iterator::ConstCellIterator >();
 
         // get the 3 points of each triangles
         std::set< size_t > vertexIndices;
@@ -128,8 +128,8 @@ void MeshTest::colorizePointsTest()
             vertexIndices.insert(cell->pointIdx[2]);
         }
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstPointIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstPointIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr)
@@ -164,18 +164,18 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t G = 55;
         const std::uint8_t B = 3;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, R, G, B);
 
         const auto dumpLock = mesh->lock();
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr, ++count)
@@ -194,18 +194,18 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 33;
         const std::uint8_t A = 63;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, R, G, B, A);
 
         const auto dumpLock = mesh->lock();
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr, ++count)
@@ -223,11 +223,11 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t G = 55;
         const std::uint8_t B = 3;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
 
         std::vector< size_t >vectorNumTriangle = {{ 2, 3, 18, 23, 6 }};
 
@@ -238,8 +238,8 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr, ++count)
@@ -269,11 +269,11 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 75;
         const std::uint8_t A = 55;
 
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
 
         std::vector< size_t >vectorNumTriangle = {{ 2, 3, 18, 23, 6, 5 }};
 
@@ -284,8 +284,8 @@ void MeshTest::colorizeCellsTest()
 
         const auto dumpLock = mesh->lock();
 
-        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         size_t count = 0;
         for (; itr != itrEnd; ++itr, ++count)
@@ -313,21 +313,21 @@ void MeshTest::colorizeCellsTest()
 
 void MeshTest::transformTest()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock = mesh->lock();
+    data::Mesh::sptr mesh = data::Mesh::New();
+    const auto lock       = mesh->lock();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::generatePointNormals(mesh);
     ::fwDataTools::Mesh::generateCellNormals(mesh);
 
-    ::fwData::Mesh::sptr meshOrig = ::fwData::Mesh::copy(mesh);
-    const auto origLock = meshOrig->lock();
+    data::Mesh::sptr meshOrig = data::Mesh::copy(mesh);
+    const auto origLock       = meshOrig->lock();
 
     ::glm::dmat4x4 matrix(1.);
     matrix = ::glm::rotate(matrix, ::glm::radians(90.), ::glm::dvec3(0., 0., 1.));
     matrix = ::glm::translate(matrix, ::glm::dvec3(10., 20., 30.));
     matrix = ::glm::scale(matrix, ::glm::dvec3(2., 2., 2.));
 
-    ::fwData::TransformationMatrix3D::sptr trans = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr trans = data::TransformationMatrix3D::New();
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(trans, matrix);
 
     ::fwDataTools::Mesh::transform(meshOrig, mesh, trans);
@@ -335,9 +335,9 @@ void MeshTest::transformTest()
     const auto dumpLock = mesh->lock();
     {
 
-        auto origItr      = meshOrig->begin< ::fwData::iterator::ConstPointIterator >();
-        auto itr          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+        auto origItr      = meshOrig->begin< data::iterator::ConstPointIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstPointIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstPointIterator >();
 
         for (; itr != itrEnd; ++itr, ++origItr)
         {
@@ -362,9 +362,9 @@ void MeshTest::transformTest()
 
     // Test cells normals transform
     {
-        auto origItr      = meshOrig->begin< ::fwData::iterator::ConstCellIterator >();
-        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto origItr      = meshOrig->begin< data::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
         for (; itr != itrEnd; ++itr, ++origItr)
         {
@@ -384,7 +384,7 @@ void MeshTest::transformTest()
 void MeshTest::isClosedTest()
 {
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
@@ -393,7 +393,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateQuadMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
@@ -402,7 +402,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        data::Mesh::sptr mesh = data::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
@@ -411,8 +411,8 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-        const auto dumpLock = mesh->lock();
+        data::Mesh::sptr mesh = data::Mesh::New();
+        const auto dumpLock   = mesh->lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -436,8 +436,8 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-        const auto dumpLock = mesh->lock();
+        data::Mesh::sptr mesh = data::Mesh::New();
+        const auto dumpLock   = mesh->lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -462,8 +462,8 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-        const auto dumpLock = mesh->lock();
+        data::Mesh::sptr mesh = data::Mesh::New();
+        const auto dumpLock   = mesh->lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -493,8 +493,8 @@ void MeshTest::isClosedTest()
     }
 
     {
-        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-        const auto dumpLock = mesh->lock();
+        data::Mesh::sptr mesh = data::Mesh::New();
+        const auto dumpLock   = mesh->lock();
 
         mesh->pushPoint(0.f, 0.f, 0.f);
         mesh->pushPoint(1.f, 0.f, 0.f);
@@ -528,8 +528,8 @@ void MeshTest::isClosedTest()
 
 void MeshTest::cellNormalTest()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto dumpLock = mesh->lock();
+    data::Mesh::sptr mesh = data::Mesh::New();
+    const auto dumpLock   = mesh->lock();
 
     mesh->pushPoint(0.f, 0.f, 0.f);
     mesh->pushPoint(1.f, 0.f, 0.f);
@@ -549,7 +549,7 @@ void MeshTest::cellNormalTest()
 
     CPPUNIT_ASSERT_NO_THROW(::fwDataTools::Mesh::generateCellNormals(mesh));
 
-    auto cellIter = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    auto cellIter = mesh->begin< data::iterator::ConstCellIterator >();
 
     // check first cell normal = {0, 0, -1}
     std::array<float, 3> n = {0.f, 0.f, -1.f};
@@ -597,8 +597,8 @@ void MeshTest::cellNormalTest()
 
 void MeshTest::pointNormalTest()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto dumpLock = mesh->lock();
+    data::Mesh::sptr mesh = data::Mesh::New();
+    const auto dumpLock   = mesh->lock();
 
     mesh->pushPoint(0.f, 0.f, 0.f);
     mesh->pushPoint(1.f, 0.f, 0.f);
@@ -618,8 +618,8 @@ void MeshTest::pointNormalTest()
 
     CPPUNIT_ASSERT_NO_THROW(::fwDataTools::Mesh::generatePointNormals(mesh));
 
-    auto pointIter          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto pointIterEnd = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    auto pointIter          = mesh->begin< data::iterator::ConstPointIterator >();
+    const auto pointIterEnd = mesh->begin< data::iterator::ConstPointIterator >();
 
     // check first point normal = {-0.57735, 0.57735, -0.57735}
     std::array<float, 3> n = {-0.57735f, 0.57735f, -0.57735f};

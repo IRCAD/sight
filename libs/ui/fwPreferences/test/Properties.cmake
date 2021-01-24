@@ -4,12 +4,12 @@ set( TYPE TEST )
 set( DEPENDENCIES
     core
     fwTest
-    fwData
+    data
     fwServices
     fwPreferences
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     preferences
 )

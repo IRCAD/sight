@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     fwAtoms
     core
-    fwData
+    data
     fwMedData    
 )
 set( REQUIREMENTS  )

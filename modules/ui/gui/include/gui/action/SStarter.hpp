@@ -38,7 +38,7 @@ namespace action
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
  *
- * This action works on a ::fwData::Object. It does the action specify by the specify config.
+ * This action works on a data::Object. It does the action specify by the specify config.
  * This action can be :
  *   - Start a service :
  * @code{.xml}

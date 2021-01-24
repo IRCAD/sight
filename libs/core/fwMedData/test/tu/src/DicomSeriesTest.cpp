@@ -25,7 +25,7 @@
 #include <core/tools/System.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 #include <filesystem>
 #include <fstream>

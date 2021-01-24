@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "arData/MarkerTL.hpp"
 
-#include <fwData/registry/macros.hpp>
+#include <data/registry/macros.hpp>
 
 namespace arData
 {

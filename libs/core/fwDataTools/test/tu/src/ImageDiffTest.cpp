@@ -28,7 +28,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -87,15 +87,15 @@ void ImageDiffTest::storeDiffsTest()
 
     ::fwDataTools::ImageDiff diff(sizeof(OLDVALUE));
 
-    const ::fwData::Image::BufferType* oldBufferValue = reinterpret_cast<const ::fwData::Image::BufferType*>(&OLDVALUE);
-    const ::fwData::Image::BufferType* newBufferValue = reinterpret_cast<const ::fwData::Image::BufferType*>(&NEWVALUE);
+    const data::Image::BufferType* oldBufferValue = reinterpret_cast<const data::Image::BufferType*>(&OLDVALUE);
+    const data::Image::BufferType* newBufferValue = reinterpret_cast<const data::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< ::fwData::Image::IndexType > indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector< data::Image::IndexType > indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
 
     // Add 8 elements to the diff.
     for(int i = 0; i < 8; ++i)
     {
-        const ::fwData::Image::IndexType index = indices[i];
+        const data::Image::IndexType index = indices[i];
 
         diff.addDiff(index, oldBufferValue, newBufferValue);
 
@@ -118,12 +118,12 @@ void ImageDiffTest::storeDiffsTest()
     }
 
     // Create a second diff with 3 elements.
-    const std::vector< ::fwData::Image::IndexType> indices2 = {{ 66, 42, 8888 }};
+    const std::vector< data::Image::IndexType> indices2 = {{ 66, 42, 8888 }};
     ::fwDataTools::ImageDiff diff2(sizeof(OLDVALUE));
 
     for(int i = 0; i < 3; ++i)
     {
-        const ::fwData::Image::IndexType index = indices2[i];
+        const data::Image::IndexType index = indices2[i];
 
         diff2.addDiff(index, oldBufferValue, newBufferValue);
 
@@ -139,7 +139,7 @@ void ImageDiffTest::storeDiffsTest()
     diff.shrink();
     CPPUNIT_ASSERT_EQUAL(size_t(11), diff.getNumberOfElements());
 
-    std::vector< ::fwData::Image::IndexType> mergedIndices;
+    std::vector< data::Image::IndexType> mergedIndices;
     mergedIndices.insert(mergedIndices.end(), indices.begin(), indices.end());
     mergedIndices.insert(mergedIndices.end(), indices2.begin(), indices2.end());
 
@@ -180,13 +180,13 @@ void ImageDiffTest::storeDiffsTest()
 
 void ImageDiffTest::undoRedoTest()
 {
-    const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
-    const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
-    const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
-    const core::tools::Type TYPE              = core::tools::Type::s_UINT8;
-    const ::fwData::Image::PixelFormat FORMAT = ::fwData::Image::PixelFormat::GRAY_SCALE;
+    const data::Image::Size SIZE          = {{ 32, 32, 32 }};
+    const data::Image::Spacing SPACING    = {{ 1., 1., 1. }};
+    const data::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
+    const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
+    const data::Image::PixelFormat FORMAT = data::Image::PixelFormat::GRAY_SCALE;
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
 
     ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, FORMAT);
 
@@ -196,17 +196,17 @@ void ImageDiffTest::undoRedoTest()
 
     std::uint8_t NEWVALUE = 1;
 
-    ::fwData::Image::BufferType* newBufferValue = reinterpret_cast< ::fwData::Image::BufferType*>(&NEWVALUE);
+    data::Image::BufferType* newBufferValue = reinterpret_cast< data::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< ::fwData::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector< data::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(int i = 0; i < 8; ++i)
     {
-        const ::fwData::Image::IndexType index = indices[i];
+        const data::Image::IndexType index = indices[i];
 
-        const ::fwData::Image::BufferType* pixBuf =
-            reinterpret_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(index));
+        const data::Image::BufferType* pixBuf =
+            reinterpret_cast< data::Image::BufferType* >(image->getPixelBuffer(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixelBuffer(index, newBufferValue);

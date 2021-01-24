@@ -26,16 +26,16 @@
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/mapper/Base.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <data/Object.hpp>
 
-#include <fwData/Object.hpp>
+#include <fwAtoms/Object.hpp>
 
 namespace fwAtomConversion
 {
 
 //------------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr& data )
+::fwAtoms::Object::sptr convert(const data::Object::sptr& data )
 {
     DataVisitor::AtomCacheType cache;
     return convert( data, cache );
@@ -43,7 +43,7 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr convert(const ::fwData::Object::sptr& dataObj, DataVisitor::AtomCacheType& cache )
+::fwAtoms::Object::sptr convert(const data::Object::sptr& dataObj, DataVisitor::AtomCacheType& cache )
 {
     ::fwAtoms::Object::sptr atom;
 
@@ -74,9 +74,9 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr& atom,
-                                const AtomVisitor::IReadPolicy& uuidPolicy
-                                )
+data::Object::sptr convert( const ::fwAtoms::Object::sptr& atom,
+                            const AtomVisitor::IReadPolicy& uuidPolicy
+                            )
 {
     AtomVisitor::DataCacheType cache;
     return convert( atom, cache, uuidPolicy );
@@ -84,11 +84,11 @@ namespace fwAtomConversion
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr convert( const ::fwAtoms::Object::sptr& atomObj, AtomVisitor::DataCacheType& cache,
-                                const AtomVisitor::IReadPolicy& uuidPolicy
-                                )
+data::Object::sptr convert( const ::fwAtoms::Object::sptr& atomObj, AtomVisitor::DataCacheType& cache,
+                            const AtomVisitor::IReadPolicy& uuidPolicy
+                            )
 {
-    ::fwData::Object::sptr data;
+    data::Object::sptr data;
 
     AtomVisitor::DataCacheType::iterator elem = cache.find( atomObj->getMetaInfo( DataVisitor::ID_METAINFO ) );
 

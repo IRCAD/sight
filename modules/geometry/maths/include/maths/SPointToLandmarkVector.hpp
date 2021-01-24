@@ -24,7 +24,7 @@
 
 #include "maths/config.hpp"
 
-#include <fwData/Landmarks.hpp>
+#include <data/Landmarks.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -54,13 +54,13 @@ namespace maths
        </service>
    @endcode
  * @subsection Input Input:
- * - \b landmark [::fwData::Landmarks]: landmarks representing a point and target
+ * - \b landmark [data::Landmarks]: landmarks representing a point and target
  *
  * @subsection InOut InOut:
- * - \b transform [::fwData::TransformationMatrix3D]: transform containing the computed vector (in the
+ * - \b transform [data::TransformationMatrix3D]: transform containing the computed vector (in the
  * translation part)
- * - \b computedLandmark [::fwData::Landmarks]: computed landmark
- * - \b translationMatrix [::fwData::TransformationMatrix3D]: translation matrix
+ * - \b computedLandmark [data::Landmarks]: computed landmark
+ * - \b translationMatrix [data::TransformationMatrix3D]: translation matrix
  *
  * @subsection Configuration Configuration:
  * - \b originLabel: (std::string) label of the landmark group corresponding to the origin of the vector
@@ -103,7 +103,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARK_INPUT to s_UPDATE_SLOT
+     * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARK_INPUT to s_UPDATE_SLOT
      */
     MATHS_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -120,7 +120,7 @@ private:
     std::string m_endLabel{""};
 
     /// Landmark containing the target point.
-    ::fwData::Landmarks::sptr m_computedLandmark;
+    data::Landmarks::sptr m_computedLandmark;
 
     /// Computed landmark group name.
     std::string m_groupLabel{""};

@@ -32,7 +32,7 @@ namespace sight::core::reflection
 {
 
 /**
- * @brief Helper to register and manage the conversion between an fwData::Object and a camp::userObject
+ * @brief Helper to register and manage the conversion between an data::Object and a camp::userObject
  */
 template<typename T>
 struct UserObjectRegistrar

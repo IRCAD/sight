@@ -66,7 +66,7 @@ namespace uiReconstructionQml
  * @section Objects Required objects
  *
  * @subsection In-Out In-Out
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction containing the material to update.
+ * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQML_CLASS_API SOrganMaterialEditor : public ::fwQml::IQmlEditor
 {

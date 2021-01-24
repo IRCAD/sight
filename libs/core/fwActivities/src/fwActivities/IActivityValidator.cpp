@@ -24,9 +24,9 @@
 
 #include "fwActivities/IObjectValidator.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -45,7 +45,7 @@ const
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activity->getActivityConfigId());
 
-    ::fwData::Composite::sptr composite = activity->getData();
+    data::Composite::sptr composite = activity->getData();
 
     for (::fwActivities::registry::ActivityRequirement req: info.requirements)
     {
@@ -53,7 +53,7 @@ const
             (req.minOccurs == 0 && req.maxOccurs == 0) ||
             req.create)          // One object is required
         {
-            ::fwData::Object::sptr obj = composite->at< ::fwData::Object >(req.name);
+            data::Object::sptr obj = composite->at< data::Object >(req.name);
             if (!obj)
             {
                 validation.first   = false;
@@ -76,7 +76,7 @@ const
         }
         else if (req.container == "vector")
         {
-            ::fwData::Vector::sptr vector = composite->at< ::fwData::Vector >(req.name);
+            data::Vector::sptr vector = composite->at< data::Vector >(req.name);
             if (!vector)
             {
                 validation.first   = false;
@@ -100,7 +100,7 @@ const
                 else
                 {
                     bool isValid = true;
-                    for (::fwData::Object::sptr obj : *vector)
+                    for (data::Object::sptr obj : *vector)
                     {
                         if (!obj)
                         {
@@ -131,7 +131,7 @@ const
         }
         else // container == composite
         {
-            ::fwData::Composite::sptr currentComposite = composite->at< ::fwData::Composite >(req.name);
+            data::Composite::sptr currentComposite = composite->at< data::Composite >(req.name);
             if (!currentComposite)
             {
                 validation.first   = false;
@@ -159,8 +159,8 @@ const
 
                     for (auto elt : *currentComposite)
                     {
-                        std::string key = elt.first;
-                        ::fwData::Object::sptr obj = elt.second;
+                        std::string key        = elt.first;
+                        data::Object::sptr obj = elt.second;
                         ::fwActivities::registry::ActivityRequirementKey reqKey;
                         bool keyIsFound = false;
                         for (::fwActivities::registry::ActivityRequirementKey keyElt: req.keys)
@@ -225,7 +225,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activity->getActivityConfigId());
 
-    ::fwData::Composite::sptr composite = activity->getData();
+    data::Composite::sptr composite = activity->getData();
 
     // Check if all the activity config parameters are present
     ::fwActivities::registry::ActivityAppConfig appConfigInfo = info.appConfig;
@@ -238,7 +238,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData
             {
                 path.replace(0, 1, "@");
             }
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(composite, path);
+            data::Object::sptr obj = data::reflection::getObject(composite, path);
             if (!obj)
             {
                 validation.first   = false;
@@ -252,7 +252,7 @@ IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkObject(const ::fwData::Object::csptr& object,
+IValidator::ValidationType IActivityValidator::checkObject(const data::Object::csptr& object,
                                                            const std::string& validatorImpl) const
 {
     ::fwActivities::IValidator::ValidationType validation;

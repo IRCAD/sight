@@ -24,11 +24,11 @@
 
 #include "fwServices/macros.hpp"
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Composite, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Composite, data::Composite )
 
 namespace fwServices
 {
@@ -75,8 +75,8 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
     const std::string BUILD_OBJECT      = "new";
     const std::string GET_OBJECT        = "ref";
 
-    ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a fwData::Composite", dataComposite);
+    data::Composite::sptr dataComposite = data::Composite::dynamicCast(_obj);
+    SLM_ASSERT("The passed object must be a data::Composite", dataComposite);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -114,10 +114,10 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
 
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwData::Object::sptr localObj = ctm->getConfigRoot();
+                data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("A ::fwData::Composite can contain only ::fwData::Object", localObj );
+                SLM_ASSERT("A data::Composite can contain only data::Object", localObj );
                 (*dataComposite)[ key ] = localObj;
 
             }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,17 @@
 
 #include "fwPacsIO/data/PacsConfiguration.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::fwPacsIO::data::PacsConfiguration );
+fwDataRegisterMacro( ::fwPacsIOdata::PacsConfiguration );
 
 namespace fwPacsIO
 {
 namespace data
 {
 
-PacsConfiguration::PacsConfiguration(::fwData::Object::Key key) :
+PacsConfiguration::PacsConfiguration(data::Object::Key key) :
     m_localApplicationTitle(""),
     m_pacsHostName(""),
     m_pacsApplicationTitle(""),
@@ -54,7 +54,7 @@ PacsConfiguration::~PacsConfiguration()
 void PacsConfiguration::shallowCopy(const Object::csptr& _source )
 {
     PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
@@ -73,7 +73,7 @@ void PacsConfiguration::shallowCopy(const Object::csptr& _source )
 void PacsConfiguration::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );

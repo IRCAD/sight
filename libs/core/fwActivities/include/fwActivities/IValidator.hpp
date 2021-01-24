@@ -31,7 +31,7 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Vector;
 }
@@ -85,7 +85,7 @@ public:
      */
     FWACTIVITIES_API virtual ValidationType validate(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        const CSPTR(::fwData::Vector)& currentSelection ) const = 0;
+        const CSPTR(data::Vector)& currentSelection ) const = 0;
 
 };
 

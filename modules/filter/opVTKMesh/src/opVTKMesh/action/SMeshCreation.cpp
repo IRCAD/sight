@@ -27,8 +27,8 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -104,9 +104,9 @@ void SMeshCreation::updating()
 {
 
     /// Retrieve objects
-    auto pImage = this->getInput< ::fwData::Image >("image");
+    auto pImage = this->getInput< data::Image >("image");
     SLM_ASSERT("'image' key not found", pImage);
-    auto pMesh = this->getInOut< ::fwData::Mesh >("mesh");
+    auto pMesh = this->getInOut< data::Mesh >("mesh");
     SLM_ASSERT("'mesh' key not found", pMesh);
 
     ///VTK Mesher
@@ -160,8 +160,8 @@ void SMeshCreation::updating()
     }
 
     /// Notification
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = pMesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

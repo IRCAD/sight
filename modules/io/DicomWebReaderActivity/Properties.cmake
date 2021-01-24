@@ -8,7 +8,7 @@ set( REQUIREMENTS
     activities
     ctrlMemory
     ctrlSelection
-    fwData
+    data
     fwMedData
     gui
     guiQt

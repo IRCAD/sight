@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "fwMedData/Study.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::Study )
 
 namespace fwMedData
 {
 
-Study::Study(::fwData::Object::Key)
+Study::Study(data::Object::Key)
 {
 }
 
@@ -42,10 +42,10 @@ Study::~Study()
 
 //------------------------------------------------------------------------------
 
-void Study::shallowCopy(const ::fwData::Object::csptr& _source)
+void Study::shallowCopy(const data::Object::csptr& _source)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -64,10 +64,10 @@ void Study::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void Study::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void Study::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 

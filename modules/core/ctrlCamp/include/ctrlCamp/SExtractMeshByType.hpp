@@ -58,7 +58,7 @@ namespace ctrlCamp
  * - \b source [::fwMedData::ModelSeries]: define the source models where meshes are extracted from.
  *
  * @subsection Output Output
- * - \b target [::fwData::Mesh]: define the target meshes. The number of \b target keys must match
+ * - \b target [data::Mesh]: define the target meshes. The number of \b target keys must match
  * the number of \b from tags.
  *
  * @subsection Configuration Configuration

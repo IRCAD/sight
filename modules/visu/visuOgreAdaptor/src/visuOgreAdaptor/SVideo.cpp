@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/TransferFunction.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
@@ -114,11 +114,11 @@ void SVideo::starting()
 {
     this->initialize();
 
-    const auto plW = this->getWeakInput< ::fwData::PointList >(s_PL_INPUT);
+    const auto plW = this->getWeakInput< data::PointList >(s_PL_INPUT);
 
     if(plW.lock())
     {
-        m_pointList = ::fwData::PointList::New();
+        m_pointList = data::PointList::New();
 
         updatePL();
 
@@ -186,16 +186,16 @@ void SVideo::starting()
 ::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
-    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
 
-    connections.push(s_PL_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_PL_SLOT);
 
     return connections;
 }
@@ -207,7 +207,7 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     // Getting Sight Image
-    const auto imageSight = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
     auto type = imageSight->getType();
 
@@ -226,7 +226,7 @@ void SVideo::updating()
         }
 
         auto& mtlMgr   = ::Ogre::MaterialManager::getSingleton();
-        const auto tfW = this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
+        const auto tfW = this->getWeakInput< data::TransferFunction >(s_TF_INPUT);
         const auto tf  = tfW.lock();
 
         ::Ogre::MaterialPtr defaultMat;
@@ -270,7 +270,7 @@ void SVideo::updating()
         m_previousType = type;
     }
 
-    const ::fwData::Image::Size size = imageSight->getSize2();
+    const data::Image::Size size = imageSight->getSize2();
     ::fwRenderOgre::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, true);
 
     if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
@@ -357,7 +357,7 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const auto tfW = this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
+    const auto tfW = this->getWeakInput< data::TransferFunction >(s_TF_INPUT);
     const auto tf  = tfW.lock();
 
     m_gpuTF->updateTexture(tf.get_shared());
@@ -372,26 +372,26 @@ void SVideo::updateTF()
 
 void SVideo::updatePL()
 {
-    const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
-    const auto pl = this->getLockedInput< ::fwData::PointList >(s_PL_INPUT);
+    const auto pl = this->getLockedInput< data::PointList >(s_PL_INPUT);
 
-    const ::fwData::PointList::PointListContainer& inPoints = pl->getPoints();
+    const data::PointList::PointListContainer& inPoints = pl->getPoints();
 
-    ::fwData::PointList::PointListContainer& outPoints = m_pointList->getPoints();
+    data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
     for (size_t i = 0; i < inPoints.size(); ++i)
     {
-        const ::fwData::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
-        outPoints.push_back(::fwData::Point::New(point[0] - static_cast< double >(image->getSize2()[0]) * 0.5,
-                                                 -(point[1] - static_cast< double >(image->getSize2()[1]) * 0.5),
-                                                 point[2]));
+        const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
+        outPoints.push_back(data::Point::New(point[0] - static_cast< double >(image->getSize2()[0]) * 0.5,
+                                             -(point[1] - static_cast< double >(image->getSize2()[1]) * 0.5),
+                                             point[2]));
     }
 
     // Send the signal:
-    auto modifiedSig = m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG );
+    auto modifiedSig = m_pointList->signal< data::PointList::ModifiedSignalType >(
+        data::PointList::s_MODIFIED_SIG );
     modifiedSig->asyncEmit();
 }
 

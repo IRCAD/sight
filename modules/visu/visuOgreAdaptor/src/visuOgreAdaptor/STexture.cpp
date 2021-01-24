@@ -26,8 +26,8 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
 
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
@@ -107,8 +107,8 @@ void STexture::starting()
 ::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TEXTURE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TEXTURE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -117,7 +117,7 @@ void STexture::starting()
 void STexture::updating()
 {
     // Retrieves associated Sight image
-    const auto image = this->getLockedInput< ::fwData::Image>(s_TEXTURE_INOUT);
+    const auto image = this->getLockedInput< data::Image>(s_TEXTURE_INOUT);
 
     if(image->getAllocatedSizeInBytes() != 0)
     {

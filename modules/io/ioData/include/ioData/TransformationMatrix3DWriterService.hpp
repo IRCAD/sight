@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 namespace ioData
 {
 /**
- * @brief This service write a ::fwData::TransformationMatrix3D into a .trf file.
+ * @brief This service write a data::TransformationMatrix3D into a .trf file.
  *
  * This format is basic: an ascii file which contains matrix 4x4 values.
  *
@@ -43,7 +43,7 @@ namespace ioData
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwData::TransformationMatrix3D]: matrix to save.
+ * - \b data [data::TransformationMatrix3D]: matrix to save.
  */
 class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::fwIO::IWriter
 {

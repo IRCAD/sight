@@ -6,12 +6,12 @@ set( DEPENDENCIES
     fwDcmtkIO
     fwGui
     core
-    fwData
+    data
     fwMedData
     fwServices
     fwIO
     )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     )

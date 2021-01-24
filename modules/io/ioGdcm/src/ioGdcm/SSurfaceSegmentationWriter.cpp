@@ -24,8 +24,8 @@
 
 #include <core/tools/ProgressToLogger.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/Vector.hpp>
+#include <data/location/Folder.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
 #include <fwGdcmIO/writer/Series.hpp>
@@ -78,17 +78,17 @@ void SSurfaceSegmentationWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -179,7 +179,7 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
 
     writer->setObject(model);
 
-    ::fwData::location::SingleFile::sptr location = ::fwData::location::SingleFile::New();
+    data::location::SingleFile::sptr location = data::location::SingleFile::New();
     location->setPath(filename);
     writer->setLocation(location);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "uiTF/config.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -63,15 +63,15 @@ namespace uiTF
    @endcode
  *
  * @subsection Input Input
- * - \b currentTF [::fwData::TransferFunction](optional) : current transfer function used to change editor selection. It
+ * - \b currentTF [data::TransferFunction](optional) : current transfer function used to change editor selection. It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
  *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
- * - \b tfPool [::fwData::Composite]: composite containing the transfer function.
+ * - \b tfPool [data::Composite]: composite containing the transfer function.
  * @subsection Output Output
- * - \b tf [::fwData::TransferFunction]: selected transfer function.
+ * - \b tf [data::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
@@ -161,7 +161,7 @@ private:
     QPushButton* m_importButton;
     QPushButton* m_exportButton;
 
-    ::fwData::TransferFunction::sptr m_selectedTF;
+    data::TransferFunction::sptr m_selectedTF;
 
     /// Paths of the tf files to load.
     PathContainerType m_paths;

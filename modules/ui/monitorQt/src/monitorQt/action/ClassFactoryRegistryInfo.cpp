@@ -34,7 +34,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, data::Object )
 
 //------------------------------------------------------------------------------
 

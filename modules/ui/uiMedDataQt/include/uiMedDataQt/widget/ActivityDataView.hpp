@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <data/Composite.hpp>
 
-#include <fwData/Composite.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -139,7 +139,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    UIMEDDATAQT_API ::fwData::Object::sptr checkData(size_t _index, std::string& _errorMsg);
+    UIMEDDATAQT_API data::Object::sptr checkData(size_t _index, std::string& _errorMsg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -178,7 +178,7 @@ protected:
 
 private:
 
-    typedef std::vector< ::fwData::Object::csptr > ImportedObjectType;
+    typedef std::vector< data::Object::csptr > ImportedObjectType;
     typedef std::vector<QPointer<QTreeWidget> > TreeContainerType;
 
     /// Imports an object required for the selected tab.
@@ -187,7 +187,7 @@ private:
     /// Imports a SeriesDB and then extract the object required for the selected tab.
     void importObjectFromSDB();
 
-    /// Creates a new object for the selected tab (just use ::fwData::factory::New(type)).
+    /// Creates a new object for the selected tab (just use data::factory::New(type)).
     void createNewObject();
 
     /**
@@ -197,7 +197,7 @@ private:
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
-    fwData::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
+    data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
 
     /// Removes the selected object in the current tree.
     void removeSelectedObjects();
@@ -207,7 +207,7 @@ private:
 
     /**
      * @brief Allows to edit the current data.
-     * @note Currently it is only available for simple types (@see ::fwData::String).
+     * @note Currently it is only available for simple types (@see data::String).
      */
     void onTreeItemDoubleClicked(QTreeWidgetItem* _item, int _column);
 
@@ -216,7 +216,7 @@ private:
      * @param index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
-    void addObjectItem(size_t index, const ::fwData::Object::csptr& _obj);
+    void addObjectItem(size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
     ::fwActivities::registry::ActivityInfo m_activityInfo;

@@ -29,7 +29,7 @@
 #include <set>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -49,8 +49,8 @@ typedef std::set<std::string> ExcludeSetType;
  * @param exclude Attributes omitted from comparison
  * @param excludeByPrefix Attributes beginning with these prefixes are omitted from comparison
  */
-FWTEST_API bool compare(SPTR(::fwData::Object) objRef,
-                        SPTR(::fwData::Object) objComp,
+FWTEST_API bool compare(SPTR(data::Object) objRef,
+                        SPTR(data::Object) objComp,
                         ExcludeSetType exclude         = ExcludeSetType(),
                         ExcludeSetType excludeByPrefix = ExcludeSetType());
 

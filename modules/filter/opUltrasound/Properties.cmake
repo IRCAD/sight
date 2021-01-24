@@ -3,13 +3,13 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
         arServices
-        fwData
+        data
         fwDataTools
         core
         fwServices
         fwMath
         )
-set( REQUIREMENTS fwData servicesReg)
+set( REQUIREMENTS data servicesReg)
 set( CONAN_DEPS
         ${CONAN_VTK}
         )

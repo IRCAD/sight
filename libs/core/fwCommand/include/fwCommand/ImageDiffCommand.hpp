@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOMMAND_IMAGEDIFFCOMMAND_HPP__
-#define __FWCOMMAND_IMAGEDIFFCOMMAND_HPP__
+#pragma once
 
 #include "fwCommand/config.hpp"
 #include "fwCommand/ICommand.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/ImageDiff.hpp>
@@ -39,7 +38,7 @@ class FWCOMMAND_CLASS_API ImageDiffCommand : public ICommand
 public:
 
     /// Constructor, uses an image and a change list for that image.
-    FWCOMMAND_API ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiff diff);
+    FWCOMMAND_API ImageDiffCommand(const data::Image::sptr& img, ::fwDataTools::ImageDiff diff);
 
     /// The diff size.
     FWCOMMAND_API virtual size_t getSize() const;
@@ -55,14 +54,12 @@ public:
 
 private:
 
-    ::fwData::Image::sptr m_img;
+    data::Image::sptr m_img;
 
-    ::fwData::Image::BufferModifiedSignalType::sptr m_modifSig;
+    data::Image::BufferModifiedSignalType::sptr m_modifSig;
 
     ::fwDataTools::ImageDiff m_diff;
 
 };
 
 } // namespace fwCommand
-
-#endif // __FWCOMMAND_IMAGEDIFFCOMMAND_HPP__

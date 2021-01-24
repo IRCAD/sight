@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V1/V2/fwData/Acquisition.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Acquisition.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -36,13 +36,13 @@ namespace V1
 {
 namespace V2
 {
-namespace fwData
+namespace sight::data
 {
 
 Acquisition::Acquisition() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Acquisition";
+    m_originClassname = "data::Acquisition";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -91,7 +91,7 @@ void Acquisition::apply(
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch

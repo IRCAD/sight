@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ namespace ioDicom
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selectedSeries [::fwData::Vector]: Vector containing the selected series to merge.
+ * - \b selectedSeries [data::Vector]: Vector containing the selected series to merge.
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the series.
  */

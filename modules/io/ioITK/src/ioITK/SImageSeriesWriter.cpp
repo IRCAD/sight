@@ -26,9 +26,9 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -89,17 +89,17 @@ void SImageSeriesWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
         this->setFile( result->getPath() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -138,7 +138,7 @@ void SImageSeriesWriter::updating()
         ::fwMedData::ImageSeries::csptr iseries = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", iseries);
 
-        const ::fwData::Image::csptr& associatedImage = iseries->getImage();
+        const data::Image::csptr& associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);
 
         ::fwGui::Cursor cursor;

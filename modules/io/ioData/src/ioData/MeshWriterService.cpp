@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "ioData/MeshWriterService.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwDataIO/writer/MeshWriter.hpp>
 
@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, data::Mesh )
 
 namespace ioData
 {
@@ -87,16 +87,16 @@ void MeshWriterService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a TrianMesh file" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TrianMesh", "*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -112,7 +112,7 @@ void MeshWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        data::Mesh::csptr mesh = this->getInput< data::Mesh >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", mesh);
 
         ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();

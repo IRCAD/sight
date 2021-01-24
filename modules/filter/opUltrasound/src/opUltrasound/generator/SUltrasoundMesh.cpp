@@ -99,7 +99,7 @@ void SUltrasoundMesh::starting()
     const long y = static_cast<long>(m_resolutionY);
     m_meshPositionArray.resize(::boost::extents[x][y][3]);
 
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     // Create mesh and notify
     this->updateMeshPosition();
@@ -116,7 +116,7 @@ void SUltrasoundMesh::stopping()
 
 void SUltrasoundMesh::updating()
 {
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     this->updateMeshPosition();
     this->updateQuadMesh(mesh.get_shared());
@@ -172,7 +172,7 @@ void SUltrasoundMesh::updateMeshPosition()
 
 // -----------------------------------------------------------------------------
 
-void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
+void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
 {
     const size_t width  = m_meshPositionArray.shape()[0];
     const size_t height = m_meshPositionArray.shape()[1];
@@ -180,19 +180,19 @@ void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
     const size_t numPointsTotal = width * height;
     const size_t numQuads       = (width - 1) * (height - 1);
 
-    _mesh->resize(numPointsTotal, numQuads, ::fwData::Mesh::CellType::QUAD,
-                  ::fwData::Mesh::Attributes::POINT_TEX_COORDS |
-                  ::fwData::Mesh::Attributes::POINT_NORMALS);
+    _mesh->resize(numPointsTotal, numQuads, data::Mesh::CellType::QUAD,
+                  data::Mesh::Attributes::POINT_TEX_COORDS |
+                  data::Mesh::Attributes::POINT_NORMALS);
 
     // pointer on the positions buffer
     const float* pointsIn = static_cast<const float*>( m_meshPositionArray.data() );
 
     // points position
-    auto pointsItr = _mesh->begin< ::fwData::iterator::PointIterator >();
+    auto pointsItr = _mesh->begin< data::iterator::PointIterator >();
 
     // cells index (4 in a row)
-    auto cellsItr       = _mesh->begin< ::fwData::iterator::CellIterator >();
-    const auto cellsEnd = _mesh->end< ::fwData::iterator::CellIterator >() - 1;
+    auto cellsItr       = _mesh->begin< data::iterator::CellIterator >();
+    const auto cellsEnd = _mesh->end< data::iterator::CellIterator >() - 1;
 
     for (size_t i = 0;
          i < width;
@@ -206,14 +206,14 @@ void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
             pointsItr->point->y = *pointsIn++;
             pointsItr->point->z = *pointsIn++;
 
-            pointsItr->tex->u = i / static_cast< ::fwData::Mesh::TexCoordValueType> (width - 1);
-            pointsItr->tex->v = j / static_cast< ::fwData::Mesh::TexCoordValueType >(height - 1);
+            pointsItr->tex->u = i / static_cast< data::Mesh::TexCoordValueType> (width - 1);
+            pointsItr->tex->v = j / static_cast< data::Mesh::TexCoordValueType >(height - 1);
             ++pointsItr;
         }
     }
 
     // index for each cell
-    ::fwData::Mesh::CellId idCell = 0;
+    data::Mesh::CellId idCell = 0;
 
     for (size_t i = 0;
          i < width - 1;
@@ -223,12 +223,12 @@ void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
              j < height - 1;
              ++j)
         {
-            const ::fwData::Mesh::CellId idx1 = j + i * height;
-            const ::fwData::Mesh::CellId idx2 = idx1 + 1;
-            const ::fwData::Mesh::CellId idx4 = idx1 + height;
-            const ::fwData::Mesh::CellId idx3 = idx4 + 1;
+            const data::Mesh::CellId idx1 = j + i * height;
+            const data::Mesh::CellId idx2 = idx1 + 1;
+            const data::Mesh::CellId idx4 = idx1 + height;
+            const data::Mesh::CellId idx3 = idx4 + 1;
 
-            *cellsItr->type   = ::fwData::Mesh::CellType::QUAD;
+            *cellsItr->type   = data::Mesh::CellType::QUAD;
             *cellsItr->offset = idCell;         // offset 0, 4, 8, etc... for triangles
             if (cellsItr != cellsEnd)
             {
@@ -247,14 +247,14 @@ void SUltrasoundMesh::createQuadMesh(const ::fwData::Mesh::sptr& _mesh) const
 
     ::fwDataTools::Mesh::generatePointNormals(_mesh);
 
-    const auto sig = _mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    const auto sig = _mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
     sig->asyncEmit();
 }
 
 // -----------------------------------------------------------------------------
 
-void SUltrasoundMesh::updateQuadMesh(const ::fwData::Mesh::sptr& _mesh)
+void SUltrasoundMesh::updateQuadMesh(const data::Mesh::sptr& _mesh)
 {
     const int width  = static_cast<int>(m_meshPositionArray.shape()[0]);
     const int height = static_cast<int>(m_meshPositionArray.shape()[1]);
@@ -263,7 +263,7 @@ void SUltrasoundMesh::updateQuadMesh(const ::fwData::Mesh::sptr& _mesh)
     SLM_ASSERT("At least 2*2 points are needed", width > 1 && height > 2);
 
     // Copy new positions inside the mesh
-    auto pointsItr = _mesh->begin< ::fwData::iterator::PointIterator >();
+    auto pointsItr = _mesh->begin< data::iterator::PointIterator >();
 
     for (int i = 0;
          i < width;
@@ -280,8 +280,8 @@ void SUltrasoundMesh::updateQuadMesh(const ::fwData::Mesh::sptr& _mesh)
         }
     }
 
-    const auto sig = _mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >(
-        ::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+    const auto sig = _mesh->signal< data::Mesh::VertexModifiedSignalType >(
+        data::Mesh::s_VERTEX_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

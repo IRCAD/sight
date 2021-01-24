@@ -25,7 +25,7 @@
 #include "ioIGTL/config.hpp"
 #include "ioIGTL/INetworkListener.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlNetwork/Client.hpp>
 
@@ -34,7 +34,7 @@
 #include <map>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Composite;
 }
@@ -97,7 +97,7 @@ private:
     typedef std::map< std::string, unsigned long > MatrixNameIndexType;
 
     ///Push received matrices in timeline
-    void manageTimeline(const SPTR(fwData::Composite)& obj, double timestamp = 0);
+    void manageTimeline(const SPTR(data::Composite)& obj, double timestamp = 0);
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject

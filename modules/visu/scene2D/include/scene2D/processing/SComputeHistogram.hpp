@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "scene2D/config.hpp"
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Image.hpp>
+#include <data/Histogram.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -49,10 +49,10 @@ namespace processing
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b histogram [::fwData::Histogram]: histogram to compute.
+ * - \b histogram [data::Histogram]: histogram to compute.
  *
  * @subsection In In
- * - \b image [::fwData::Image]: image used to compute histogram.
+ * - \b image [data::Image]: image used to compute histogram.
  *
  * @subsection Configuration Configuration:
  * - \b binsWidth (mandatory): desired bins width used to classified pixel.
@@ -62,7 +62,7 @@ class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceMacro(SComputeHistogram, ::fwServices::IController);
+    fwCoreServiceMacro(SComputeHistogram, ::fwServices::IController)
 
     /// Constructor. Does nothing.
     SCENE2D_API SComputeHistogram() noexcept;

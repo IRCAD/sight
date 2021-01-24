@@ -127,14 +127,14 @@ bool AppManager::checkInputs()
         {
             case InputType::OBJECT:
             {
-                const auto obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(input.value));
+                const auto obj = data::Object::dynamicCast(core::tools::fwID::getObject(input.value));
                 if (obj)
                 {
                     this->addObject(obj, input.value);
                 }
                 else if(!input.isOptional)
                 {
-                    const ::fwData::Object::sptr newObj = ::fwData::factory::New(input.defaultValue);
+                    const data::Object::sptr newObj = data::factory::New(input.defaultValue);
                     if (newObj)
                     {
                         this->addObject(obj, this->getInputID(input.key));
@@ -335,7 +335,7 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 
 //------------------------------------------------------------------------------
 
-void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
+void AppManager::addObject(data::Object::sptr obj, const std::string& id)
 {
     std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
 
@@ -403,7 +403,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
                 if (objCfg.m_optional && srv->isStarted())
                 {
                     // Call the swapping callback of the service and wait for it
-                    srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                    srv->swapKey(objCfg.m_key, data::Object::constCast(registeredObj)).wait();
                 }
             }
 
@@ -442,7 +442,7 @@ void AppManager::addObject(::fwData::Object::sptr obj, const std::string& id)
 
 //------------------------------------------------------------------------------
 
-void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
+void AppManager::removeObject(data::Object::sptr obj, const std::string& id)
 {
     std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
 
@@ -500,11 +500,11 @@ void AppManager::removeObject(::fwData::Object::sptr obj, const std::string& id)
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr AppManager::getObject(const std::string& id) const
+data::Object::sptr AppManager::getObject(const std::string& id) const
 {
     std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
 
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
 
     auto itr = m_registeredObject.find(id);
     if (itr != m_registeredObject.end())

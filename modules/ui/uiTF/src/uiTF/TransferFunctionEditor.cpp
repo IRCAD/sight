@@ -26,8 +26,8 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -216,7 +216,7 @@ void TransferFunctionEditor::presetChoice(int index)
     this->updateTransferFunction();
 
     std::string tfName = m_pTransferFunctionPreset->currentText().toStdString();
-    bool isEnabled     = (tfName != ::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+    bool isEnabled     = (tfName != data::TransferFunction::s_DEFAULT_TF_NAME);
 
     m_renameButton->setEnabled(isEnabled);
     m_deleteButton->setEnabled(isEnabled);
@@ -236,7 +236,7 @@ void TransferFunctionEditor::deleteTF()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
         if( poolTF->size() > 1 )
@@ -249,14 +249,14 @@ void TransferFunctionEditor::deleteTF()
             compositeHelper.remove(selectedTFKey);
 
             {
-                auto sig = poolTF->signal< ::fwData::Composite::RemovedObjectsSignalType >(
-                    ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+                auto sig = poolTF->signal< data::Composite::RemovedObjectsSignalType >(
+                    data::Composite::s_REMOVED_OBJECTS_SIG);
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 compositeHelper.notify();
             }
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
-            std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+            std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
 
             int index = m_pTransferFunctionPreset->findText(QString::fromStdString(defaultTFName));
             index = std::max(index, 0);
@@ -292,12 +292,12 @@ void TransferFunctionEditor::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransferFunction::sptr pNewTransferFunction;
+            data::TransferFunction::sptr pNewTransferFunction;
 
-            pNewTransferFunction = ::fwData::Object::copy(m_selectedTF);
+            pNewTransferFunction = data::Object::copy(m_selectedTF);
             pNewTransferFunction->setName(newName);
 
-            ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+            data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
             ::fwDataTools::helper::Composite compositeHelper(poolTF);
@@ -333,7 +333,7 @@ void TransferFunctionEditor::reinitializeTFPool()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
         ::fwDataTools::helper::Composite compositeHelper(poolTF);
@@ -363,11 +363,11 @@ void TransferFunctionEditor::renameTF()
     {
         if( !this->hasTransferFunctionName(newName) )
         {
-            ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+            data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-            ::fwData::TransferFunction::sptr pTF;
-            pTF = ::fwData::TransferFunction::dynamicCast((*poolTF)[str]);
+            data::TransferFunction::sptr pTF;
+            pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
             ::fwDataTools::helper::Composite compositeHelper(poolTF);
@@ -405,13 +405,13 @@ void TransferFunctionEditor::renameTF()
 
 void TransferFunctionEditor::importTF()
 {
-    ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
-    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-    ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    data::TransferFunction::sptr tf = data::TransferFunction::New();
+    ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
@@ -456,15 +456,15 @@ void TransferFunctionEditor::exportTF()
 void TransferFunctionEditor::initTransferFunctions()
 {
     // Get transfer function composite (pool TF)
-    ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasTransferFunctionName(defaultTFName))
     {
-        ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+        data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
         compositeHelper.add(defaultTFName, defaultTf);
     }
 
@@ -488,8 +488,8 @@ void TransferFunctionEditor::initTransferFunctions()
             }
         }
 
-        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-        ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+        data::TransferFunction::sptr tf = data::TransferFunction::New();
+        ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
         reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
@@ -507,7 +507,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
             if (!tf->getName().empty())
             {
-                ::fwData::TransferFunction::sptr newTF = ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
+                data::TransferFunction::sptr newTF = data::Object::copy< data::TransferFunction >(tf);
                 if( this->hasTransferFunctionName( newTF->getName() ) )
                 {
                     newTF->setName( this->createTransferFunctionName( newTF->getName() ) );
@@ -528,19 +528,19 @@ void TransferFunctionEditor::initTransferFunctions()
 
 void TransferFunctionEditor::updateTransferFunctionPreset()
 {
-    ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
-    for(::fwData::Composite::value_type elt :  *poolTF)
+    for(data::Composite::value_type elt :  *poolTF)
     {
         m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }
 
-    std::string currentTFName = defaultTFName;
-    ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction >(s_CURRENT_TF_INPUT);
+    std::string currentTFName        = defaultTFName;
+    data::TransferFunction::csptr tf = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
 
     if (tf)
     {
@@ -561,7 +561,7 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
 
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName) const
 {
-    ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
     return poolTF->find(_sName) != poolTF->end();
 }
@@ -589,7 +589,7 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
 
 void TransferFunctionEditor::updateTransferFunction()
 {
-    ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     std::string newSelectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
@@ -597,12 +597,12 @@ void TransferFunctionEditor::updateTransferFunction()
 
     SLM_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
-    ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
+    data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 
     if(newSelectedTF && m_selectedTF != newSelectedTF)
     {
         this->setOutput(s_TF_OUTPUT, newSelectedTF);
-        m_selectedTF = ::fwData::TransferFunction::dynamicCast(newSelectedTF);
+        m_selectedTF = data::TransferFunction::dynamicCast(newSelectedTF);
     }
 }
 
@@ -611,9 +611,9 @@ void TransferFunctionEditor::updateTransferFunction()
 ::fwServices::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

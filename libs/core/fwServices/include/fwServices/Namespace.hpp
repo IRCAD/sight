@@ -51,7 +51,7 @@ namespace fwServices
          <desc>Image Viewer</desc>
          <config>
 
-             <object type="::fwData::Composite">
+             <object type="data::Composite">
 
                  <!--
                      Description service of the GUI:
@@ -74,7 +74,7 @@ namespace fwServices
                  </service>
 
                  <item key="myImage">
-                     <object uid="myImageUid" type="::fwData::Image">
+                     <object uid="myImageUid" type="data::Image">
                          <!--
                              Reading service:
                              The <file> tag defines the path of the image to load. Here, it is a relative
@@ -125,12 +125,12 @@ namespace fwServices
  * - \b desc (optional): it is the description of the application
  * - \b config: it defines the services and objects to launch
  *
- * - \b object: it defines an object of the AppConfig. We usually use a ::fwData::Composite in order to add
+ * - \b object: it defines an object of the AppConfig. We usually use a data::Composite in order to add
  *   sub-objects. An object can defines a list of services. Some object object can have a specific configuration :
- *   ::fwData::TransformationMatrix3D, ::fwData::Float, ::fwData::List, ...
+ *   data::TransformationMatrix3D, data::Float, data::List, ...
  *    - \b uid (optional): unique identifier of the object (core::tools::fwID). If it is not defined, it will be
  *      automatically generated.
- *    - \b type: object type (ex: ::fwData::Image, ::fwData::Composite)
+ *    - \b type: object type (ex: data::Image, data::Composite)
  *    - \b src (optional, "new" by default): defines if the object should be created ("new") or if it already
  *      exists in the application ("ref"). In the last case, the uid must be the same as the first declaration of
  *      this object (with "new").
@@ -143,11 +143,11 @@ namespace fwServices
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working object
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
- * - \b matrix (optional): it works only for ::fwData::TransformationMatrix3D objects. It defines the value of the
+ * - \b matrix (optional): it works only for data::TransformationMatrix3D objects. It defines the value of the
  *   matrix.
  *
  * @code{.xml}
-    <object uid="matrix" type="::fwData::TransformationMatrix3D">
+    <object uid="matrix" type="data::TransformationMatrix3D">
         <matrix>
          <![CDATA[
          1  0  0  0
@@ -159,30 +159,30 @@ namespace fwServices
     </object>
    @endcode
  *
- * - \b value (optional): it works only for ::fwData::Boolean, ::fwData::Integer, ::fwData::Float and
- *   ::fwData::String. It allows to define the value of the object.
+ * - \b value (optional): it works only for data::Boolean, data::Integer, data::Float and
+ *   data::String. It allows to define the value of the object.
  *
  * @code{.xml}
-    <object type="::fwData::Integer">
+    <object type="data::Integer">
         <value>42</value>
     </object>
    @endcode
  *
  * - \b item (optional): it defines a sub-object of a composite. It can only be used if the parent object is a
- *   ::fwData::Composite.
+ *   data::Composite.
  *    - \b key: key of the object in the composite
  *    - \b object: the 'item' tag can only contain 'object' tags that represents the composite sub-object
  *
  * @code{.xml}
     <item key="myImage">
-        <object uid="myImageUid" type="::fwData::Image" />
+        <object uid="myImageUid" type="data::Image" />
     </item>
    @endcode
  *
- * - \b colors (optional): it works only for ::fwData::TransferFunction. It allows to fill the transfer function values.
+ * - \b colors (optional): it works only for data::TransferFunction. It allows to fill the transfer function values.
  *
  * @code{.xml}
-     <object type="::fwData::TransferFunction">
+     <object type="data::TransferFunction">
          <colors>
              <step color="#ff0000ff" value="1" />
              <step color="#ffff00ff" value="500" />
@@ -247,7 +247,7 @@ namespace fwServices
          <desc>Image Viewer</desc>
          <config>
 
-             <object uid="myImage" type="::fwData::Image" />
+             <object uid="myImage" type="data::Image" />
 
              <!--
                  Description service of the GUI:
@@ -324,7 +324,7 @@ namespace fwServices
  * - \b object: it defines an object of the AppConfig.
  *    - \b uid (optional): unique identifier of the object (core::tools::fwID). If it is not defined, it will be
  *      automatically generated.
- *    - \b type: object type (ex: ::fwData::Image, ::fwData::Mesh)
+ *    - \b type: object type (ex: data::Image, data::Mesh)
  *    - \b src (optional, "new" by default, values: "new", "ref", "deferred"):
  *        - "new" : defines that the object should be created
  *        - "ref" : defines that the object already exists in the application. The uid must be the same as the first
@@ -332,11 +332,11 @@ namespace fwServices
  *        - "deferred" : defines that the object will be created later (by a service).
  *
  * Some objects can have a specific configuration :
- * - \b matrix (optional): it works only for ::fwData::TransformationMatrix3D objects. It defines the value of the
+ * - \b matrix (optional): it works only for data::TransformationMatrix3D objects. It defines the value of the
  *   matrix.
  *
  * @code{.xml}
-    <object uid="matrix" type="::fwData::TransformationMatrix3D">
+    <object uid="matrix" type="data::TransformationMatrix3D">
         <matrix>
          <![CDATA[
          1  0  0  0
@@ -348,19 +348,19 @@ namespace fwServices
     </object>
    @endcode
  *
- * - \b value (optional): it works only for ::fwData::Boolean, ::fwData::Integer, ::fwData::Float and
- *   ::fwData::String. It allows to define the value of the object.
+ * - \b value (optional): it works only for data::Boolean, data::Integer, data::Float and
+ *   data::String. It allows to define the value of the object.
  *
  * @code{.xml}
-    <object type="::fwData::Integer">
+    <object type="data::Integer">
         <value>42</value>
     </object>
    @endcode
  *
- * - \b colors (optional): it works only for ::fwData::TransferFunction. It allows to fill the transfer function values.
+ * - \b colors (optional): it works only for data::TransferFunction. It allows to fill the transfer function values.
  *
  * @code{.xml}
-     <object type="::fwData::TransferFunction">
+     <object type="data::TransferFunction">
          <colors>
              <step color="#ff0000ff" value="1" />
              <step color="#ffff00ff" value="500" />
@@ -378,7 +378,7 @@ namespace fwServices
  *
  * @code{.xml}
     <item key="myImage">
-        <object uid="myImageUid" type="::fwData::Image" />
+        <object uid="myImageUid" type="data::Image" />
     </item>
    @endcode
  *
@@ -408,8 +408,8 @@ namespace fwServices
  *        object is not present. The output objects are always optional.
  *
  * @code{.cpp}
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >("image");
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    data::Image::csptr image = this->getInput< data::Image >("image");
+    data::Mesh::sptr mesh = data::Mesh::New();
     // mesher .....
     this->setOutput("mesh", mesh);
    @endcode

@@ -31,7 +31,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::maths::SSwitchMatrices, ::fwData::TransformationMatrix3D)
+fwServicesRegisterMacro(::fwServices::IController, ::maths::SSwitchMatrices, data::TransformationMatrix3D)
 
 namespace maths
 {
@@ -75,7 +75,7 @@ void SSwitchMatrices::stopping()
 fwServices::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -83,13 +83,13 @@ fwServices::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() co
 
 void SSwitchMatrices::updating()
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_OUTPUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_OUTPUT);
 
-    auto desiredMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT, m_indexOfDesiredMatrix);
+    auto desiredMatrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT, m_indexOfDesiredMatrix);
 
     matrix->shallowCopy(desiredMatrix);
 
-    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

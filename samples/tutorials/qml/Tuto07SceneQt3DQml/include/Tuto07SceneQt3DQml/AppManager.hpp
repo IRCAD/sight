@@ -45,7 +45,7 @@ class TUTO07SCENEQT3DQML_CLASS_API AppManager : public QObject,
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
-Q_PROPERTY(::fwRenderQt3D::data::Mesh* mesh READ getMesh WRITE setMesh NOTIFY meshChanged)
+Q_PROPERTY(::fwRenderQt3Ddata::Mesh* mesh READ getMesh WRITE setMesh NOTIFY meshChanged)
 Q_PROPERTY(::fwRenderQt3Dcore::GenericScene* scene READ getScene WRITE setScene NOTIFY sceneChanged)
 
 public:
@@ -57,13 +57,13 @@ public:
     TUTO07SCENEQT3DQML_API ~AppManager() override;
 
     /// @returns the mesh converted by the mesh adaptor. Needed for QML property.
-    TUTO07SCENEQT3DQML_API ::fwRenderQt3D::data::Mesh* getMesh();
+    TUTO07SCENEQT3DQML_API ::fwRenderQt3Ddata::Mesh* getMesh();
 
     /// @returns the scene created by SRender service. Needed for QML property.
     TUTO07SCENEQT3DQML_API ::fwRenderQt3Dcore::GenericScene* getScene();
 
     /// Updates the mesh associated to the app manager. Needed for QML property.
-    TUTO07SCENEQT3DQML_API void setMesh(::fwRenderQt3D::data::Mesh* _mesh);
+    TUTO07SCENEQT3DQML_API void setMesh(::fwRenderQt3Ddata::Mesh* _mesh);
 
     /// Updates the scene associated to the app manager. Needed for QML property.
     TUTO07SCENEQT3DQML_API void setScene(::fwRenderQt3Dcore::GenericScene* _mesh);
@@ -90,7 +90,7 @@ public Q_SLOTS:
 private:
 
     /// Contains the mesh associated to the app manager.
-    QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
+    QPointer< ::fwRenderQt3Ddata::Mesh > m_mesh;
 
     /// Contains the scene associated to the app manager.
     QPointer< ::fwRenderQt3Dcore::GenericScene > m_scene;

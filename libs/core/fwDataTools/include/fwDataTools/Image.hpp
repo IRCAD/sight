@@ -27,7 +27,7 @@
 #include <core/base.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMath/Compare.hpp>
 
@@ -47,29 +47,29 @@ public:
      *
      * set input image voxel to zero where roi voxel value is zero
      */
-    FWDATATOOLS_API static void applyRoi( ::fwData::Image::sptr image,
-                                          ::fwData::Image::sptr roi );
+    FWDATATOOLS_API static void applyRoi( data::Image::sptr image,
+                                          data::Image::sptr roi );
 
     /**
      * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
      *
      */
-    FWDATATOOLS_API static bool isRoiApplyed( ::fwData::Image::sptr image,
-                                              ::fwData::Image::sptr imgRoiApplyed,
-                                              ::fwData::Image::sptr roi );
+    FWDATATOOLS_API static bool isRoiApplyed( data::Image::sptr image,
+                                              data::Image::sptr imgRoiApplyed,
+                                              data::Image::sptr roi );
 
     /**
      * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0
      */
     template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-    void mergeMask(const ::fwData::Image::sptr& imgDest, const ::fwData::Image::csptr& mask, IMG_DEST_TYPE val );
+    void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask, IMG_DEST_TYPE val );
 
 };
 
 //------------------------------------------------------------------------------
 
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-void Image::mergeMask(const ::fwData::Image::sptr& imgDest, const ::fwData::Image::csptr& mask, IMG_DEST_TYPE val )
+void Image::mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask, IMG_DEST_TYPE val )
 {
     typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;

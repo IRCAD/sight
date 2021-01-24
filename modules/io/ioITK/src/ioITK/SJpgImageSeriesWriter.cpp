@@ -26,8 +26,8 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -86,13 +86,13 @@ void SJpgImageSeriesWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
-    dialog.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
+    data::location::Folder::sptr result;
 
-    while (result = ::fwData::location::Folder::dynamicCast( dialog.show() ))
+    while (result = data::location::Folder::dynamicCast( dialog.show() ))
     {
         if( std::filesystem::is_empty(result->getFolder()) )
         {
@@ -114,7 +114,7 @@ void SJpgImageSeriesWriter::openLocationDialog()
     if (result)
     {
         _sDefaultPath = result->getFolder().parent_path();
-        dialog.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialog.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
     }
     else

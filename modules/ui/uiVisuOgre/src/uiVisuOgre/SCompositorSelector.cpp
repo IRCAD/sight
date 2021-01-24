@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::fwData::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, data::Composite)
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 

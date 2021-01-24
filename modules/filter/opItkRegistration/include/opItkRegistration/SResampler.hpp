@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,11 +46,11 @@ namespace opItkRegistration
    </service>
    @endcode
  * @subsection Input Input
- * - \b imageIn [::fwData::Image]: Image to resample.
- * - \b transform [::fwData::TransformationMatrix3D]: Transform to apply.
- * - \b target [::fwData::Image] (optional): target image defining the size, spacing and origin of the output.
+ * - \b imageIn [data::Image]: Image to resample.
+ * - \b transform [data::TransformationMatrix3D]: Transform to apply.
+ * - \b target [data::Image] (optional): target image defining the size, spacing and origin of the output.
  * @subsection In-Out In-Out
- * - \b imageOut [::fwData::Image]: New resampled image.
+ * - \b imageOut [data::Image]: New resampled image.
  */
 class OPITKREGISTRATION_CLASS_API SResampler : public ::fwServices::IOperator
 {

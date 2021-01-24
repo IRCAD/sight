@@ -30,7 +30,7 @@
 
 #include <map>
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -52,32 +52,32 @@ public:
      */
     struct IReadPolicy
     {
-        virtual SPTR(::fwData::Object) operator()(const std::string& uuid, const std::string& classname) const = 0;
+        virtual SPTR(data::Object) operator()(const std::string& uuid, const std::string& classname) const = 0;
     };
 
     /**
      * @brief This policy reuses the data associated with an existing uuid
      */
     struct ReusePolicy : IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator()(const std::string& uuid,
-                                                                     const std::string& classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(data::Object) operator()(const std::string& uuid,
+                                                                 const std::string& classname) const; };
 
     /**
      * @brief This policy changes data's uuid if it already exists
      */
     struct ChangePolicy : IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator()(const std::string& uuid,
-                                                                     const std::string& classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(data::Object) operator()(const std::string& uuid,
+                                                                 const std::string& classname) const; };
 
     /**
      * @brief This policy throws an exception if the loaded uuid is not available
      */
     struct StrictPolicy : IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator()(const std::string& uuid,
-                                                                     const std::string& classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(data::Object) operator()(const std::string& uuid,
+                                                                 const std::string& classname) const; };
     /** @} */
 
-    typedef std::map< core::tools::UUID::UUIDType, SPTR(::fwData::Object) > DataCacheType;
+    typedef std::map< core::tools::UUID::UUIDType, SPTR(data::Object) > DataCacheType;
 
     /// Constructors. Initializes parameters.
     FWATOMCONVERSION_API AtomVisitor( const ::fwAtoms::Object::sptr& atomObj, DataCacheType& cache,
@@ -89,16 +89,16 @@ public:
     /**
      * @brief Visits the atom information to create the data object and store it in the cache.
      *
-     * Creates a new ::fwData::Object from classname store in meta info CLASSNAME_METAINFO.
+     * Creates a new data::Object from classname store in meta info CLASSNAME_METAINFO.
      * Creates this new object with UUID store in fwAtoms::Object ID.
      *
-     * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
+     * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in data::factory
      * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
      */
     FWATOMCONVERSION_API void visit();
 
     /// Returns the data object. Calls this method after visit().
-    FWATOMCONVERSION_API SPTR(::fwData::Object) getDataObject() const;
+    FWATOMCONVERSION_API SPTR(data::Object) getDataObject() const;
 
 private:
 
@@ -112,7 +112,7 @@ private:
     ::fwAtoms::Object::sptr m_atomObj;
 
     /// Converted data object
-    SPTR(::fwData::Object) m_dataObj;
+    SPTR(data::Object) m_dataObj;
 
     /// Cache to register the atoms already converted, used when an atom is referenced multiple times.
     DataCacheType& m_cache;

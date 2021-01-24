@@ -85,12 +85,12 @@ namespace registrationCV
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
  * - \b markerMap [::arData::MarkerMap]: markers map list.
  * - \b camera [::arData::Camera]: calibrated cameras.
- * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
+ * - \b extrinsic [data::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
- * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * - \b matrix [data::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
- * - \b pointList [::fwData::PointList] (optional): list of points corresponding to the model.
+ * - \b pointList [data::PointList] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */

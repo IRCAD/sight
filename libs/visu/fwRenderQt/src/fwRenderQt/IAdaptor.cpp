@@ -86,7 +86,7 @@ IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio() const
 
 IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
 {
-    const ::fwRenderQt::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
+    const ::fwRenderQtdata::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
     return ViewportSizeRatio(
         (float) ( m_viewportInitialSize.first / viewport->getWidth() ),
         (float) ( m_viewportInitialSize.second / viewport->getHeight() ) );
@@ -106,12 +106,12 @@ IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 //-----------------------------------------------------------------------------
 
 IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
-                                                  const ::fwRenderQt::data::Axis::sptr& _xAxis,
-                                                  const ::fwRenderQt::data::Axis::sptr& _yAxis ) const
+                                                  const ::fwRenderQtdata::Axis::sptr& _xAxis,
+                                                  const ::fwRenderQtdata::Axis::sptr& _yAxis ) const
 {
     double x, y;
 
-    if (_xAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_xAxis->getScaleType() == ::fwRenderQtdata::Axis::LOG)
     {
         // Logarithme 10 cannot get negative values
         if (_xy.first <= 0.)
@@ -130,7 +130,7 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
         x = _xAxis->getScale() * _xy.first;
     }
 
-    if (_yAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_yAxis->getScaleType() == ::fwRenderQtdata::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if (_xy.second <= 0.)
@@ -155,12 +155,12 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
 //-----------------------------------------------------------------------------
 
 IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
-                                                  const ::fwRenderQt::data::Axis::sptr& _xAxis,
-                                                  const ::fwRenderQt::data::Axis::sptr& _yAxis ) const
+                                                  const ::fwRenderQtdata::Axis::sptr& _xAxis,
+                                                  const ::fwRenderQtdata::Axis::sptr& _yAxis ) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
-    if (_xAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_xAxis->getScaleType() == ::fwRenderQtdata::Axis::LOG)
     {
         x = 10. * exp( _xy.first ) / _xAxis->getScale();
     }
@@ -169,7 +169,7 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
         x = ( _xy.first ) / _xAxis->getScale();
     }
 
-    if (_yAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_yAxis->getScaleType() == ::fwRenderQtdata::Axis::LOG)
     {
         y = 10. * ( _xy.second ) / _yAxis->getScale();
     }
@@ -201,7 +201,7 @@ void IAdaptor::configureParams()
     }
     else
     {
-        m_xAxis = std::make_shared< ::fwRenderQt::data::Axis >();
+        m_xAxis = std::make_shared< ::fwRenderQtdata::Axis >();
     }
 
     if( config.count("yAxis") )
@@ -211,7 +211,7 @@ void IAdaptor::configureParams()
     }
     else
     {
-        m_yAxis = std::make_shared< ::fwRenderQt::data::Axis >();
+        m_yAxis = std::make_shared< ::fwRenderQtdata::Axis >();
     }
 
     if( config.count("zValue") )
@@ -246,7 +246,7 @@ void IAdaptor::initializeViewSize()
 
 void IAdaptor::initializeViewportSize()
 {
-    const ::fwRenderQt::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
+    const ::fwRenderQtdata::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
     // Initialize the initial width of the viewport
     if(m_viewportInitialSize.first == -1.0f)
     {
@@ -262,7 +262,7 @@ void IAdaptor::initializeViewportSize()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::processInteraction(::fwRenderQt::data::Event& _event )
+void IAdaptor::processInteraction(::fwRenderQtdata::Event& _event )
 {
 }
 

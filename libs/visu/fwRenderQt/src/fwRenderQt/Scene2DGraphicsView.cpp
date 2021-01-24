@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,9 +71,9 @@ void Scene2DGraphicsView::setSceneRender( ::fwRenderQt::SRender::sptr sceneRende
 
 void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
 {
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::KeyPress);
-    sceneEvent.setButton( ::fwRenderQt::data::Event::NoButton);
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::KeyPress);
+    sceneEvent.setButton( ::fwRenderQtdata::Event::NoButton);
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
     sceneEvent.setKey(_event->key());
 
@@ -84,9 +84,9 @@ void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
 
 void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
 {
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::KeyRelease);
-    sceneEvent.setButton( ::fwRenderQt::data::Event::NoButton);
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::KeyRelease);
+    sceneEvent.setButton( ::fwRenderQtdata::Event::NoButton);
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
     sceneEvent.setKey(_event->key());
 
@@ -99,12 +99,12 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 {
     this->updateFromViewport();
 
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::Resize);
-    sceneEvent.setButton( ::fwRenderQt::data::Event::NoButton);
-    sceneEvent.setModifier( ::fwRenderQt::data::Event::NoModifier);
-    sceneEvent.setSize( ::fwRenderQt::data::Size( _event->size().width(), _event->size().height() ) );
-    sceneEvent.setOldSize( ::fwRenderQt::data::Size( _event->oldSize().width(), _event->oldSize().height() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::Resize);
+    sceneEvent.setButton( ::fwRenderQtdata::Event::NoButton);
+    sceneEvent.setModifier( ::fwRenderQtdata::Event::NoModifier);
+    sceneEvent.setSize( ::fwRenderQtdata::Size( _event->size().width(), _event->size().height() ) );
+    sceneEvent.setOldSize( ::fwRenderQtdata::Size( _event->oldSize().width(), _event->oldSize().height() ) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
@@ -114,9 +114,9 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 {
 
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonPress );
-    sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::MouseButtonPress );
+    sceneEvent.setCoord( ::fwRenderQtdata::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent.setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -125,25 +125,25 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent( QInputEvent* _event )
+::fwRenderQtdata::Event::Modifier Scene2DGraphicsView::getScene2DModifierFromEvent( QInputEvent* _event )
 {
-    ::fwRenderQt::data::Event::Modifier modifier;
+    ::fwRenderQtdata::Event::Modifier modifier;
 
     if(_event->modifiers() == Qt::ControlModifier)
     {
-        modifier = ::fwRenderQt::data::Event::ControlModifier;
+        modifier = ::fwRenderQtdata::Event::ControlModifier;
     }
     else if(_event->modifiers() == Qt::AltModifier)
     {
-        modifier = ::fwRenderQt::data::Event::AltModifier;
+        modifier = ::fwRenderQtdata::Event::AltModifier;
     }
     else if(_event->modifiers() == Qt::ShiftModifier)
     {
-        modifier = ::fwRenderQt::data::Event::ShiftModifier;
+        modifier = ::fwRenderQtdata::Event::ShiftModifier;
     }
     else
     {
-        modifier = ::fwRenderQt::data::Event::NoModifier;
+        modifier = ::fwRenderQtdata::Event::NoModifier;
     }
 
     // TODO: add support for combined modifiers
@@ -152,25 +152,25 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Event::Button Scene2DGraphicsView::getScene2DButtonFromEvent( QMouseEvent* _event )
+::fwRenderQtdata::Event::Button Scene2DGraphicsView::getScene2DButtonFromEvent( QMouseEvent* _event )
 {
-    ::fwRenderQt::data::Event::Button button;
+    ::fwRenderQtdata::Event::Button button;
 
     if( _event->button() == Qt::LeftButton )
     {
-        button = ::fwRenderQt::data::Event::LeftButton;
+        button = ::fwRenderQtdata::Event::LeftButton;
     }
     else if( _event->button() == Qt::RightButton )
     {
-        button = ::fwRenderQt::data::Event::RightButton;
+        button = ::fwRenderQtdata::Event::RightButton;
     }
     else if( _event->button() == Qt::MidButton )
     {
-        button = ::fwRenderQt::data::Event::MidButton;
+        button = ::fwRenderQtdata::Event::MidButton;
     }
     else
     {
-        button = ::fwRenderQt::data::Event::NoButton;
+        button = ::fwRenderQtdata::Event::NoButton;
     }
 
     return button;
@@ -181,9 +181,9 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 {
 
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonDoubleClick );
-    sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::MouseButtonDoubleClick );
+    sceneEvent.setCoord( ::fwRenderQtdata::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent.setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -194,9 +194,9 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 {
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::MouseButtonRelease );
-    sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::MouseButtonRelease );
+    sceneEvent.setCoord( ::fwRenderQtdata::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent.setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -207,9 +207,9 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 
 void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 {
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( ::fwRenderQt::data::Event::MouseMove );
-    sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( ::fwRenderQtdata::Event::MouseMove );
+    sceneEvent.setCoord( ::fwRenderQtdata::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent.setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -221,9 +221,9 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 void Scene2DGraphicsView::wheelEvent ( QWheelEvent* _event )
 {
     const bool scrollUp = _event->delta() > 0;
-    ::fwRenderQt::data::Event sceneEvent;
-    sceneEvent.setType( (scrollUp) ? ::fwRenderQt::data::Event::MouseWheelUp : ::fwRenderQt::data::Event::MouseWheelDown);
-    sceneEvent.setCoord( ::fwRenderQt::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    ::fwRenderQtdata::Event sceneEvent;
+    sceneEvent.setType( (scrollUp) ? ::fwRenderQtdata::Event::MouseWheelUp : ::fwRenderQtdata::Event::MouseWheelDown);
+    sceneEvent.setCoord( ::fwRenderQtdata::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent.setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
@@ -231,7 +231,7 @@ void Scene2DGraphicsView::wheelEvent ( QWheelEvent* _event )
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setViewport( ::fwRenderQt::data::Viewport::sptr viewport )
+void Scene2DGraphicsView::setViewport( ::fwRenderQtdata::Viewport::sptr viewport )
 {
     m_viewport = viewport;
 }

@@ -32,9 +32,9 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <data/Vector.hpp>
 
-#include <fwData/Vector.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 

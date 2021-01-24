@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void CameraSeriesTest::propertiesTest()
 {
     ::arData::CameraSeries::sptr series = ::arData::CameraSeries::New();
 
-    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)

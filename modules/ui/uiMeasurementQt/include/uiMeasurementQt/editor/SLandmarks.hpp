@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMeasurementQt/config.hpp"
 
-#include <fwData/Landmarks.hpp>
+#include <data/Landmarks.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
@@ -74,7 +74,7 @@ namespace editor
        @endcode
  *
  * @subsection In-Out In-Out
- * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
+ * - \b landmarks [data::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
  * - \b text (optional): text displayed at the top of this editor.
@@ -109,25 +109,25 @@ public:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_UPDATE_SLOT
-     * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_ADD_POINT_SLOT
-     * Connect ::fwData::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_POINT_SLOT
-     * Connect ::fwData::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_SELECT_POINT_SLOT
-     * Connect ::fwData::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_DESELECT_POINT_SLOT
-     * Connect ::fwData::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_ADD_GROUP_SLOT
-     * Connect ::fwData::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_GROUP_SLOT
-     * Connect ::fwData::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_POINT_SLOT
-     * Connect ::fwData::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_GROUP_SLOT
-     * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
+     * Connect data::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
      * ::uiMeasurementQt::editor::SLandmarks::s_RENAME_GROUP_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
@@ -299,7 +299,7 @@ public:
      * @param _color The landmarks color type.
      * @return A QColor with same colour value than _color.
      */
-    static QColor convertToQColor(const ::fwData::Landmarks::ColorType& _color);
+    static QColor convertToQColor(const data::Landmarks::ColorType& _color);
 
     /**
      * @brief Draws a colored square on the button.

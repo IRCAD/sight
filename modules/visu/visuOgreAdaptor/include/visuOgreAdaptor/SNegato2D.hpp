@@ -60,8 +60,8 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b image [::fwData::Image]: image to display.
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [data::Image]: image to display.
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -101,10 +101,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
-     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
+     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

@@ -43,7 +43,7 @@
 #include <unordered_map>
 #include <set>
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -72,21 +72,21 @@ public:
      * keeps relation between objects identifiers and attached services
      */
     typedef ::boost::bimaps::bimap<
-            ::boost::bimaps::multiset_of< ::fwData::Object::cwptr, std::owner_less< ::fwData::Object::cwptr > >,
+            ::boost::bimaps::multiset_of< data::Object::cwptr, std::owner_less< data::Object::cwptr > >,
             ::boost::bimaps::multiset_of< ::fwServices::IService::sptr >
             > ServiceContainerType;
 
-    typedef std::set< CSPTR( ::fwData::Object ) >      ObjectVectorType;
+    typedef std::set< CSPTR( data::Object ) >      ObjectVectorType;
     typedef std::set< SPTR( ::fwServices::IService ) > ServiceVectorType;
 
-    typedef std::map< ::fwServices::IService::KeyType, WPTR( ::fwData::Object )> ObjectMapType;
+    typedef std::map< ::fwServices::IService::KeyType, WPTR( data::Object )> ObjectMapType;
 
     /**
      * @name Signals API
      * @{
      */
     /// Type of signal m_sigRenderRequested
-    typedef core::com::Signal< void (::fwData::Object::sptr, const std::string&) > RegisterSignalType;
+    typedef core::com::Signal< void (data::Object::sptr, const std::string&) > RegisterSignalType;
 
     FWSERVICES_API static const core::com::Signals::SignalKeyType s_REGISTERED_SIG;
     FWSERVICES_API static const core::com::Signals::SignalKeyType s_UNREGISTERED_SIG;
@@ -120,7 +120,7 @@ public:
      * @param access Access (INPUT, INOUT, OUTPUT) of this key
      * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerService(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
+    FWSERVICES_API void registerService(data::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                         ::fwServices::IService::AccessType access,
                                         ::fwServices::IService::sptr service);
 
@@ -133,7 +133,7 @@ public:
      * @param objKey Key of the object
      * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerServiceInput(const ::fwData::Object::csptr& object,
+    FWSERVICES_API void registerServiceInput(const data::Object::csptr& object,
                                              const ::fwServices::IService::KeyType& objKey,
                                              const ::fwServices::IService::sptr& service);
 
@@ -144,7 +144,7 @@ public:
      * @param objKey Key of the object
      * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr object,
+    FWSERVICES_API void registerServiceOutput(data::Object::sptr object,
                                               const ::fwServices::IService::KeyType& objKey,
                                               ::fwServices::IService::sptr service);
     //@}
@@ -200,9 +200,9 @@ public:
      * @param access Access (INPUT, INOUT, OUTPUT) of this key
      * @param service Service where to look for the key
      */
-    FWSERVICES_API ::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
-                                                         ::fwServices::IService::AccessType access,
-                                                         IService::sptr service) const;
+    FWSERVICES_API data::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                                     ::fwServices::IService::AccessType access,
+                                                     IService::sptr service) const;
     //@}
 
     /**
@@ -221,7 +221,7 @@ public:
     /**
      * @brief Return registered services matching serviceType
      * @note Should be optimized
-     * @note Invoke getServices( ::fwData::Object::sptr , const std::string & ) for each registered object
+     * @note Invoke getServices( data::Object::sptr , const std::string & ) for each registered object
      *
      */
     FWSERVICES_API ServiceVectorType getServices( const std::string& serviceType ) const;
@@ -243,7 +243,7 @@ private:
      * removal at obj destruction.
      * @warning not thread-safe
      */
-    void internalRegisterService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service,
+    void internalRegisterService( data::Object::sptr obj, ::fwServices::IService::sptr service,
                                   const ::fwServices::IService::KeyType& objKey,
                                   ::fwServices::IService::AccessType access);
 
@@ -253,7 +253,7 @@ private:
      * removal at obj destruction.
      * @warning not thread-safe
      */
-    void internalRegisterServiceInput( const ::fwData::Object::csptr& obj, const ::fwServices::IService::sptr& service,
+    void internalRegisterServiceInput( const data::Object::csptr& obj, const ::fwServices::IService::sptr& service,
                                        const ::fwServices::IService::KeyType& objKey);
 
     /**
@@ -310,7 +310,7 @@ FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
  * @param access Access (INPUT, INOUT, OUTPUT) of this key
  * @param service Service whose key should be added
  */
-FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+FWSERVICES_API void registerService(data::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                                     ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service);
 
 /**
@@ -322,7 +322,7 @@ FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServic
  * @param objKey Key of the object
  * @param service Service whose key should be added
  */
-FWSERVICES_API void registerServiceInput(::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
+FWSERVICES_API void registerServiceInput(data::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
                                          ::fwServices::IService::sptr service);
 
 /**
@@ -332,7 +332,7 @@ FWSERVICES_API void registerServiceInput(::fwData::Object::csptr obj, const ::fw
  * @param objKey Key of the object
  * @param service Service whose key should be added
  */
-FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+FWSERVICES_API void registerServiceOutput(data::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                                           ::fwServices::IService::sptr service);
 
 /**
@@ -380,9 +380,9 @@ FWSERVICES_API bool isRegistered(const ::fwServices::IService::KeyType& objKey,
  * @param access Access (INPUT, INOUT, OUTPUT) of this key
  * @param service Service where to look for the key
  */
-FWSERVICES_API ::fwData::Object::csptr getRegistered( const ::fwServices::IService::KeyType& objKey,
-                                                      ::fwServices::IService::AccessType access,
-                                                      ::fwServices::IService::sptr service );
+FWSERVICES_API data::Object::csptr getRegistered( const ::fwServices::IService::KeyType& objKey,
+                                                  ::fwServices::IService::AccessType access,
+                                                  ::fwServices::IService::sptr service );
 
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal();
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getUnregisterSignal();

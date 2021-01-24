@@ -57,13 +57,13 @@ void TransformationMatrix3DTest::tearDown()
 
 void TransformationMatrix3DTest::identityMatrixTest()
 {
-    ::fwData::TransformationMatrix3D::sptr tm1 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm2 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm3 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm4 = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm1 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm2 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm3 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm4 = data::TransformationMatrix3D::New();
 
-    ::fwData::Point::sptr p1 = ::fwData::Point::New(1.0f, 2.3f, 5.1f);
-    ::fwData::Point::sptr p2 = ::fwData::Point::New();
+    data::Point::sptr p1 = data::Point::New(1.0f, 2.3f, 5.1f);
+    data::Point::sptr p2 = data::Point::New();
 
     //test identity
     bool shouldBeTrue = ::fwDataTools::TransformationMatrix3D::isIdentity(tm1);
@@ -139,14 +139,14 @@ void TransformationMatrix3DTest::identityMatrixTest()
 
 void TransformationMatrix3DTest::matrixTest()
 {
-    ::fwData::TransformationMatrix3D::sptr tm1 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm2 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm3 = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr tm4 = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm1 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm2 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm3 = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr tm4 = data::TransformationMatrix3D::New();
 
     ::fwDataTools::TransformationMatrix3D::identity(tm2);
 
-    ::fwData::TransformationMatrix3D::TMCoefArray tm1Coefs;
+    data::TransformationMatrix3D::TMCoefArray tm1Coefs;
     for (int i = 0; i < 16; ++i)
     {
         tm1Coefs[i] = i+1;
@@ -196,10 +196,10 @@ void TransformationMatrix3DTest::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(3, 2), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4->getCoefficient(3, 3), 0.00001);
 
-    ::fwData::TransformationMatrix3D::TMCoefArray tm2Coefs = { 3.1, 1., -7.9689, 4.9,
-                                                               5., -21., -1.3646, 14.4,
-                                                               9., -7.2, -23.36, 79.04,
-                                                               0.1, -3., -1.234, -49.94 };
+    data::TransformationMatrix3D::TMCoefArray tm2Coefs = { 3.1, 1., -7.9689, 4.9,
+                                                           5., -21., -1.3646, 14.4,
+                                                           9., -7.2, -23.36, 79.04,
+                                                           0.1, -3., -1.234, -49.94 };
     tm2->setCoefficients(tm2Coefs);
     ::fwDataTools::TransformationMatrix3D::invert(tm2, tm4);
 
@@ -224,8 +224,8 @@ void TransformationMatrix3DTest::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0124903619956978, tm4->getCoefficient(3, 3), 0.0001);
 
     // Test matrix-vector multiplication
-    ::fwData::Point::sptr p1 = ::fwData::Point::New(1.0f, 2.3f, 5.1f);
-    ::fwData::Point::sptr p2 = ::fwData::Point::New();
+    data::Point::sptr p1 = data::Point::New(1.0f, 2.3f, 5.1f);
+    data::Point::sptr p2 = data::Point::New();
 
     ::fwDataTools::TransformationMatrix3D::multiply(tm1, p1, p2);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9,  p2->getCoord()[0], 0.00001);
@@ -242,12 +242,12 @@ void TransformationMatrix3DTest::matrixTest()
 
 void TransformationMatrix3DTest::glmGetterSetterTest()
 {
-    ::fwData::TransformationMatrix3D::TMCoefArray coefs = { 2, -2, .3, .12,
-                                                            4, 8.9, 4.2, 1.2,
-                                                            7.8, -12.1, 2.3, 1.2,
-                                                            .3, 1.21, -3.1, 1.2};
+    data::TransformationMatrix3D::TMCoefArray coefs = { 2, -2, .3, .12,
+                                                        4, 8.9, 4.2, 1.2,
+                                                        7.8, -12.1, 2.3, 1.2,
+                                                        .3, 1.21, -3.1, 1.2};
 
-    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
     mat->setCoefficients(coefs);
 
     // Test getter

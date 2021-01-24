@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -70,7 +70,7 @@ SPointToLandmarkVector::~SPointToLandmarkVector() noexcept
 
 void SPointToLandmarkVector::starting()
 {
-    auto computedLandmarkLocked = this->getLockedInOut< ::fwData::Landmarks >(s_COMPUTED_LANDMARK_INOUT);
+    auto computedLandmarkLocked = this->getLockedInOut< data::Landmarks >(s_COMPUTED_LANDMARK_INOUT);
     m_computedLandmark = computedLandmarkLocked.get_shared();
     m_computedLandmark->addGroup(m_groupLabel);
 }
@@ -97,10 +97,10 @@ void SPointToLandmarkVector::configuring()
 
 void SPointToLandmarkVector::updating()
 {
-    auto transformLocked = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    auto transformLocked = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     auto transform = transformLocked.get_shared();
-    auto translationMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSLATION_INOUT);
-    const auto landmark = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARK_INPUT);
+    auto translationMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSLATION_INOUT);
+    const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
     std::array< double, 3> sourcePoint, targetPoint;
     if(landmark->getGroup(m_originLabel).m_size >= 1)
     {
@@ -142,7 +142,7 @@ void SPointToLandmarkVector::updating()
     pointToTargetMat[3] = ::glm::dvec4(sourcePt, 1.0);
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, pointToTargetMat);
-    auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = transform->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     // Create the computed landmark containing the position of the target point
@@ -153,15 +153,15 @@ void SPointToLandmarkVector::updating()
 
     m_computedLandmark->addPoint(m_groupLabel, targetPoint);
 
-    auto sig1 = m_computedLandmark->signal< ::fwData::Landmarks::PointAddedSignalType >(
-        ::fwData::Landmarks::s_POINT_ADDED_SIG);
+    auto sig1 = m_computedLandmark->signal< data::Landmarks::PointAddedSignalType >(
+        data::Landmarks::s_POINT_ADDED_SIG);
     sig1->asyncEmit(m_groupLabel);
 
     translationMatrix->setCoefficient(0, 3, pointToTarget[0]);
     translationMatrix->setCoefficient(1, 3, pointToTarget[1]);
     translationMatrix->setCoefficient(2, 3, pointToTarget[2]);
 
-    auto sig2 = translationMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig2 = translationMatrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig2->asyncEmit();
 
 }
@@ -172,7 +172,7 @@ void SPointToLandmarkVector::updating()
 {
 
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_LANDMARK_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

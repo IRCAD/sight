@@ -95,7 +95,7 @@ namespace trackerAruco
  * - \b camera [::arData::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
- * - \b frame [::fwData::Image]: video frame.
+ * - \b frame [data::Image]: video frame.
  * - \b tagTL [::arData::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout keys
  * must match the number of \b markers entries in the config below.
  * - \b markerMap [::arData::MarkerMap]: markers maps list where to extract the tags. The number of keys must match

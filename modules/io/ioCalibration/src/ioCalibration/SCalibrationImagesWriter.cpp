@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -78,16 +78,16 @@ void SCalibrationImagesWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(s_defaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result = ::fwData::location::Folder::dynamicCast(dialogFile.show());
+    data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
 
     if (result)
     {
         s_defaultPath = result->getFolder().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(s_defaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(s_defaultPath) );
         this->setFolder(result->getFolder());
     }
     else

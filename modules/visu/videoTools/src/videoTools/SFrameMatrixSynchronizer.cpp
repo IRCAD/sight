@@ -31,8 +31,8 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwMath/Compare.hpp>
 
@@ -127,7 +127,7 @@ void SFrameMatrixSynchronizer::starting()
     for(size_t i = 0; i < numFrameTLs; ++i)
     {
         m_frameTLs.push_back(this->getWeakInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i));
-        m_images.push_back(this->getWeakInOut< ::fwData::Image>(s_IMAGE_INOUT, i));
+        m_images.push_back(this->getWeakInOut< data::Image>(s_IMAGE_INOUT, i));
     }
 
     const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
@@ -142,11 +142,11 @@ void SFrameMatrixSynchronizer::starting()
 
         m_matrixTLs.push_back(this->getWeakInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i));
 
-        std::vector< ::fwData::mt::weak_ptr< ::fwData::TransformationMatrix3D> > matricesVector;
+        std::vector< data::mt::weak_ptr< data::TransformationMatrix3D> > matricesVector;
         for(size_t j = 0; j < numMatrices; ++j)
         {
             matricesVector.push_back(
-                this->getWeakInOut< ::fwData::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
+                this->getWeakInOut< data::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
         }
         m_totalOutputMatrices += numMatrices;
         m_matrices.push_back(matricesVector);
@@ -319,7 +319,7 @@ void SFrameMatrixSynchronizer::synchronize()
             const auto frameTL = m_frameTLs[i].lock();
             SLM_ASSERT("Image with index '" << i << "' does not exist", image);
 
-            const ::fwData::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
+            const data::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
             if(size != image->getSize2() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
             {
@@ -328,39 +328,39 @@ void SFrameMatrixSynchronizer::synchronize()
 
             if(!m_imagesInitialized)
             {
-                ::fwData::Image::PixelFormat format;
+                data::Image::PixelFormat format;
                 switch (frameTL->getPixelFormat())
                 {
                     case ::arData::FrameTL::PixelFormat::GRAY_SCALE:
-                        format = ::fwData::Image::GRAY_SCALE;
+                        format = data::Image::GRAY_SCALE;
                         break;
                     case ::arData::FrameTL::PixelFormat::RGB:
-                        format = ::fwData::Image::RGB;
+                        format = data::Image::RGB;
                         break;
                     case ::arData::FrameTL::PixelFormat::BGR:
-                        format = ::fwData::Image::BGR;
+                        format = data::Image::BGR;
                         break;
                     case ::arData::FrameTL::PixelFormat::RGBA:
-                        format = ::fwData::Image::RGBA;
+                        format = data::Image::RGBA;
                         break;
                     case ::arData::FrameTL::PixelFormat::BGRA:
-                        format = ::fwData::Image::BGRA;
+                        format = data::Image::BGRA;
                         break;
                     default:
-                        format = ::fwData::Image::UNDEFINED;
+                        format = data::Image::UNDEFINED;
                         FW_DEPRECATED_MSG("FrameTL pixel format should be defined, we temporary assume that the format "
                                           "is GrayScale, RGB or RGBA according to the number of components.", "22.0");
                         // FIXME Support old FrameTL API (sight 22.0)
                         switch (frameTL->getNumberOfComponents())
                         {
                             case 1:
-                                format = ::fwData::Image::GRAY_SCALE;
+                                format = data::Image::GRAY_SCALE;
                                 break;
                             case 3:
-                                format = ::fwData::Image::RGB;
+                                format = data::Image::RGB;
                                 break;
                             case 4:
-                                format = ::fwData::Image::RGBA;
+                                format = data::Image::RGBA;
                                 break;
                             default:
                                 SLM_ERROR("Number of component not managed.")
@@ -368,9 +368,9 @@ void SFrameMatrixSynchronizer::synchronize()
                         }
                 }
                 image->resize(size, frameTL->getType(), format);
-                const ::fwData::Image::Origin origin = {0., 0., 0.};
+                const data::Image::Origin origin = {0., 0., 0.};
                 image->setOrigin2(origin);
-                const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+                const data::Image::Spacing spacing = {1., 1., 1.};
                 image->setSpacing2(spacing);
                 image->setWindowWidth(1);
                 image->setWindowCenter(0);
@@ -391,8 +391,8 @@ void SFrameMatrixSynchronizer::synchronize()
         std::copy( frameBuff, frameBuff+buffer->getSize(), iter);
 
         // Notify
-        auto sig = image->signal< ::fwData::Image::BufferModifiedSignalType >(
-            ::fwData::Image::s_BUFFER_MODIFIED_SIG );
+        auto sig = image->signal< data::Image::BufferModifiedSignalType >(
+            data::Image::s_BUFFER_MODIFIED_SIG );
         sig->asyncEmit();
     }
 
@@ -433,8 +433,8 @@ void SFrameMatrixSynchronizer::synchronize()
                         m_sigMatrixSynchronized->asyncEmit(sendStatus);
                     }
 
-                    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
-                        ::fwData::Object::s_MODIFIED_SIG);
+                    auto sig = matrix->signal< data::Object::ModifiedSignalType >(
+                        data::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
 
                     matrixFound = true;

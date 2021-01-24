@@ -30,9 +30,9 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -85,16 +85,16 @@ void SCalibrationInfoReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(s_defaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result = ::fwData::location::Folder::dynamicCast(dialogFile.show());
+    data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
 
     if (result)
     {
         s_defaultPath = result->getFolder().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(s_defaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(s_defaultPath) );
         this->setFolder(result->getFolder());
     }
     else
@@ -136,12 +136,12 @@ void SCalibrationInfoReader::updating()
             this->getInOut< ::arData::CalibrationInfo >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info.", calibInfo);
 
-        ::fwData::mt::ObjectWriteLock calibInfoLock(calibInfo);
+        data::mt::ObjectWriteLock calibInfoLock(calibInfo);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        using DetectionPairType = std::pair< ::fwData::Image::sptr, ::fwData::PointList::sptr >;
+        using DetectionPairType = std::pair< data::Image::sptr, data::PointList::sptr >;
 
         const std::filesystem::path folder = this->getFolder();
 
@@ -157,13 +157,13 @@ void SCalibrationInfoReader::updating()
             {
                 ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
 
-                ::fwData::PointList::sptr chessboardPts = ::calibration3d::helper::detectChessboard(img,
-                                                                                                    m_width, m_height,
-                                                                                                    m_scale);
+                data::PointList::sptr chessboardPts = ::calibration3d::helper::detectChessboard(img,
+                                                                                                m_width, m_height,
+                                                                                                m_scale);
 
                 if(chessboardPts)
                 {
-                    ::fwData::Image::sptr calibImg = ::fwData::Image::New();
+                    data::Image::sptr calibImg = data::Image::New();
                     ::cvIO::Image::copyFromCv(calibImg, img);
 
                     calibImg->setSpacing2({{1., 1., 1.}});

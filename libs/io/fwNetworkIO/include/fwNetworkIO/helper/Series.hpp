@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwNetworkIO/config.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 

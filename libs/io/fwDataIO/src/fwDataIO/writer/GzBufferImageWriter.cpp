@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <zlib.h>
 
@@ -41,7 +41,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -57,7 +57,7 @@ void GzBufferImageWriter::write()
 {
     assert( getFile().empty() == false );
 
-    ::fwData::Image::csptr image = getConcreteObject();
+    data::Image::csptr image = getConcreteObject();
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");

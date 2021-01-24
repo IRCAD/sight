@@ -24,7 +24,7 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -53,7 +53,7 @@ namespace ioVTK
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [::fwData::Mesh]: mesh to read
+ * - \b data [data::Mesh]: mesh to read
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

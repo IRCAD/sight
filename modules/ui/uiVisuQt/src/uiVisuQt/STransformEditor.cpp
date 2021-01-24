@@ -24,9 +24,9 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -50,7 +50,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, data::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
@@ -235,7 +235,7 @@ void STransformEditor::updating()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -244,7 +244,7 @@ void STransformEditor::updating()
 
 void STransformEditor::onSliderChanged(int)
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
@@ -259,7 +259,7 @@ void STransformEditor::onSliderChanged(int)
 
     mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
 
-    ::fwData::mt::ObjectWriteLock lock(matrix);
+    data::mt::ObjectWriteLock lock(matrix);
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
@@ -267,7 +267,7 @@ void STransformEditor::onSliderChanged(int)
         m_sliders[i].m_sliderValue->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
     }
 
-    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -289,11 +289,11 @@ void STransformEditor::onTextChanged()
 
 void STransformEditor::updateFromMatrix()
 {
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >("matrix");
 
     SLM_ASSERT("Unable to get matrix", matrix);
 
-    ::fwData::mt::ObjectReadLock lock(matrix);
+    data::mt::ObjectReadLock lock(matrix);
     const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
 
     const ::glm::dquat quat(mat);

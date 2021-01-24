@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <boost/numeric/ublas/matrix.hpp>
 
@@ -39,7 +39,7 @@ namespace ie
 /**
  * @brief Image Information Entity class
  */
-class FWGDCMIO_CLASS_API Image : public ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >
+class FWGDCMIO_CLASS_API Image : public ::fwGdcmIO::reader::ie::InformationEntity< data::Image >
 {
 
 public:
@@ -56,7 +56,7 @@ public:
     FWGDCMIO_API Image(const CSPTR(::fwMedData::DicomSeries)& dicomSeries,
                        const SPTR(::gdcm::Reader)& reader,
                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                       const ::fwData::Image::sptr& image,
+                       const data::Image::sptr& image,
                        const ::fwLog::Logger::sptr& logger = nullptr,
                        ProgressCallback progress           = nullptr,
                        CancelRequestedCallback cancel      = nullptr);

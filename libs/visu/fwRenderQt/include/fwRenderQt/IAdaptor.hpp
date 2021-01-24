@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     /// <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceMacro(IAdaptor, ::fwServices::IService);
+    fwCoreServiceMacro(IAdaptor, ::fwServices::IService)
 
     /// Set the zValue.
     FWRENDERQT_API void setZValue(float _zValue);
@@ -65,7 +65,7 @@ public:
 
     /// Interact with the mouse events catched on the IAdaptor
     /// (virtual function, its behavior is only defined in the specific adaptors).
-    FWRENDERQT_API virtual void processInteraction(::fwRenderQt::data::Event& _event );
+    FWRENDERQT_API virtual void processInteraction(::fwRenderQtdata::Event& _event );
 
 protected:
 
@@ -91,14 +91,14 @@ protected:
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates
     FWRENDERQT_API Point2DType mapAdaptorToScene(const Point2DType& _xy,
-                                                 const ::fwRenderQt::data::Axis::sptr& _xAxis,
-                                                 const ::fwRenderQt::data::Axis::sptr& _yAxis) const;
+                                                 const ::fwRenderQtdata::Axis::sptr& _xAxis,
+                                                 const ::fwRenderQtdata::Axis::sptr& _yAxis) const;
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     /// coordinates to adaptor coordinates
     FWRENDERQT_API Point2DType mapSceneToAdaptor(const Point2DType& _xy,
-                                                 const ::fwRenderQt::data::Axis::sptr& _xAxis,
-                                                 const ::fwRenderQt::data::Axis::sptr& _yAxis) const;
+                                                 const ::fwRenderQtdata::Axis::sptr& _xAxis,
+                                                 const ::fwRenderQtdata::Axis::sptr& _yAxis) const;
 
     /// Return the ratio between view's initial size and its current size
     FWRENDERQT_API ViewSizeRatio getViewSizeRatio() const;
@@ -115,10 +115,10 @@ protected:
     FWRENDERQT_API Scene2DRatio getRatio() const;
 
     /// The x Axis.
-    ::fwRenderQt::data::Axis::sptr m_xAxis;
+    ::fwRenderQtdata::Axis::sptr m_xAxis;
 
     /// The y Axis.
-    ::fwRenderQt::data::Axis::sptr m_yAxis;
+    ::fwRenderQtdata::Axis::sptr m_yAxis;
 
     /// The adaptor zValue (depth within the scene).
     /// The adaptor with the highest zValue is displayed on top of all adaptors.

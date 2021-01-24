@@ -70,15 +70,15 @@ namespace videoCalibration
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
  * - \b markerMap [::arData::MarkerMap]: markers map list.
  * - \b camera [::arData::Camera]: calibrated cameras.
- * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
+ * - \b extrinsic [data::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
- * - \b matrix [::fwData::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * - \b matrix [data::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
  * @subsection InOut InOut
  * - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
- * - \b frame [::fwData::Image]: video frame.
+ * - \b frame [data::Image]: video frame.
  * @subsection Output Output
- * - \b error [::fwData::Float] : computed error
+ * - \b error [data::Float] : computed error
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */

@@ -26,10 +26,10 @@
 
 #include <core/runtime/Convert.hpp>
 
-#include <fwData/Color.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Color.hpp>
+#include <data/TransferFunction.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransferFunction, ::fwData::TransferFunction )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::TransferFunction, data::TransferFunction )
 
 namespace fwServices
 {
@@ -47,7 +47,7 @@ void TransferFunction::updating( )
 
 void TransferFunction::createConfig( core::tools::Object::sptr _obj )
 {
-    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast( _obj );
+    data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast( _obj );
     SLM_ASSERT("TransferFunction not instanced", tf);
 
     const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
@@ -58,7 +58,7 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
         const bool isDefault = colorCfg.get("<xmlattr>.default", false);
         if(isDefault)
         {
-            ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+            data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
             tf->deepCopy(defaultTf);
         }
         else
@@ -70,11 +70,11 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
                 const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
                 const std::string strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
 
-                ::fwData::Color::sptr newColor = ::fwData::Color::New();
+                data::Color::sptr newColor = data::Color::New();
                 newColor->setRGBA(strColor);
 
-                const ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
-                                                                newColor->blue(), newColor->alpha());
+                const data::TransferFunction::TFColor color(newColor->red(), newColor->green(),
+                                                            newColor->blue(), newColor->alpha());
                 tf->addTFColor(value, color);
             }
             tf->setWLMinMax(tf->getMinMaxTFValues());

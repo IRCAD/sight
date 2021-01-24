@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "scene2D/adaptor/SHistogramValue.hpp"
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Point.hpp>
+#include <data/Histogram.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -72,7 +72,7 @@ void SHistogramValue::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_color, color);
+    ::fwRenderQtdata::InitQtPen::setPenColor(m_color, color);
 
     m_fontSize = config.get< float >(s_FONT_SIZE_CONFIG, m_fontSize);
 }
@@ -109,8 +109,8 @@ void SHistogramValue::starting()
 ::fwServices::IService::KeyConnectionsMap SHistogramValue::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -121,20 +121,20 @@ void SHistogramValue::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    const ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
-    const ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue                       = histogram->getMinValue();
-    const float histogramBinsWidth                      = histogram->getBinsWidth();
+    const data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::fwHistogramValues values = histogram->getValues();
+    const float histogramMinValue                   = histogram->getMinValue();
+    const float histogramBinsWidth                  = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    const ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    const ::fwRenderQtdata::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size() && m_isInteracting) // avoid std out_of_range on Windows
     {
-        ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+        ::fwRenderQtdata::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
         const double viewportWidth  = viewport->getWidth();
 
@@ -167,7 +167,7 @@ void SHistogramValue::updating()
         QTransform transform;
         transform.scale(scaleX, scaleY);
 
-        const ::fwData::Point::csptr point = this->getInput< ::fwData::Point>(s_POINT_INPUT);
+        const data::Point::csptr point = this->getInput< data::Point>(s_POINT_INPUT);
 
         m_text->setTransform( transform );
         m_text->setPos(point->getCoord()[0] + diameterH * 2, point->getCoord()[1] - diameterV * 2 );
@@ -187,20 +187,20 @@ void SHistogramValue::stopping()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event)
+void SHistogramValue::processInteraction( ::fwRenderQtdata::Event& _event)
 {
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    if(_event.getType() == ::fwRenderQt::data::Event::MouseMove)
+    if(_event.getType() == ::fwRenderQtdata::Event::MouseMove)
     {
         m_coord = _event.getCoord();
     }
-    else if(_event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
+    else if(_event.getType() == ::fwRenderQtdata::Event::MouseButtonPress)
     {
         m_isInteracting = true;
     }
-    else if(_event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease)
+    else if(_event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease)
     {
         m_isInteracting = false;
     }

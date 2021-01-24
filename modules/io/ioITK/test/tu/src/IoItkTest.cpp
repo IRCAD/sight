@@ -72,7 +72,7 @@ void IoItkTest::tearDown()
 //------------------------------------------------------------------------------
 
 void executeService(
-    const SPTR(::fwData::Object)& obj,
+    const SPTR(data::Object)& obj,
     const std::string& srvImpl,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
     const ::fwServices::IService::AccessType access = ::fwServices::IService::AccessType::INOUT)
@@ -94,7 +94,7 @@ void executeService(
 void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
@@ -122,7 +122,7 @@ void IoItkTest::testImageSeriesWriterJPG()
 void IoItkTest::testImageWriterJPG()
 {
     // Create Image
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // Create path
@@ -154,11 +154,11 @@ double tolerance(double num)
 
 void IoItkTest::testSaveLoadInr()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     // inr only support image origin (0,0,0)
-    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
 
     // save image in inr
@@ -179,14 +179,14 @@ void IoItkTest::testSaveLoadInr()
         ::fwServices::IService::AccessType::INPUT);
 
     // load Image
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->setSpacing2(spacing);
 
@@ -202,14 +202,14 @@ void IoItkTest::testSaveLoadInr()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    ::fwData::Image::sptr image                = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     imageSeries->setImage(image);
 
     // inr only support image origin (0,0,0)
-    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
 
     // save image in inr
@@ -230,14 +230,14 @@ void IoItkTest::ImageSeriesInrTest()
         ::fwServices::IService::AccessType::INPUT);
 
     // load Image
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->setSpacing2(spacing);
 
@@ -284,15 +284,15 @@ void IoItkTest::SeriesDBInrTest()
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    const ::fwData::Image::Spacing spacing = {0.781, 0.781, 1.6};
-    const ::fwData::Image::Size size       = {512, 512, 134};
+    const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
+    const data::Image::Size size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
     ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
 
-    ::fwData::Image::sptr image = imgSeries->getImage();
+    data::Image::sptr image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
     CPPUNIT_ASSERT(size == image->getSize2());

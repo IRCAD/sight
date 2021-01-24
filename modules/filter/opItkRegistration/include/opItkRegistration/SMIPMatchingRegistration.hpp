@@ -49,13 +49,13 @@ namespace opItkRegistration
  * @endcode
  *
  * @subsection Input Input
- * - \b source [::fwData::Image]: Input image that will be aligned to the target.
- * - \b target [::fwData::Image]: Input image to which the source will be aligned.
- * - \b flipTransform [::fwData::TransformationMatrix3D]: temporary hack allowing to flip the image according to the
+ * - \b source [data::Image]: Input image that will be aligned to the target.
+ * - \b target [data::Image]: Input image to which the source will be aligned.
+ * - \b flipTransform [data::TransformationMatrix3D]: temporary hack allowing to flip the image according to the
  *   flipping applied in the RegistrationActivity.
  *
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: initial registration. The computed registration will be
+ * - \b transform [data::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
 class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public ::fwServices::IRegisterer

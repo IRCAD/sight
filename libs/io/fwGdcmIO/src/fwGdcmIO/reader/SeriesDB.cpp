@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,8 +58,8 @@ namespace reader
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
-    ::fwData::location::enableFolder< IObjectReader >(this),
-    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+    data::location::enableFolder< IObjectReader >(this),
+    data::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false),
     m_dicomFilterType(""),
     m_logger(::fwLog::Logger::New()),
@@ -218,7 +218,7 @@ void SeriesDB::readDicomSeries()
 void SeriesDB::readDicom()
 {
     SLM_ASSERT("This reader only work on folder selection.",
-               (::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this)));
+               (data::location::have < data::location::Folder, ::fwDataIO::reader::IObjectReader > (this)));
 
     // DICOMDIR
     auto dicomdir = ::fwGdcmIO::helper::DicomDir::findDicomDir(this->getFolder());

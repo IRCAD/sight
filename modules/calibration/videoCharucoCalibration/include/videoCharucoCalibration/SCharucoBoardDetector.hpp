@@ -26,8 +26,8 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -86,7 +86,7 @@ namespace videoCharucoCalibration
  * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the charucoBoard.
  * @subsection In-Out In-Out:
  * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
- * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
+ * - \b detection [data::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco Markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
@@ -128,9 +128,9 @@ public:
      * @param timestamp time corresponding to the frame to process in the timeline
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
-    ::fwData::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
-                                                 const core::HiResClock::HiResClockType timestamp,
-                                                 ::arData::FrameTL::sptr tlDetection = nullptr);
+    data::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+                                             const core::HiResClock::HiResClockType timestamp,
+                                             ::arData::FrameTL::sptr tlDetection = nullptr);
 
 protected:
 
@@ -168,7 +168,7 @@ private:
     /**
      * @brief Create an image from frame timeline
      */
-    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
+    data::Image::sptr createImage(arData::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when charucoBoard is detected
     CharucoBoardDetectedSignalType::sptr m_sigCharucoBoardDetected;
@@ -207,7 +207,7 @@ private:
     float m_markerSize;
 
     /// Last valid charucoBoard points for each timeline
-    std::vector< ::fwData::PointList::sptr> m_cornerAndIdLists;
+    std::vector< data::PointList::sptr> m_cornerAndIdLists;
 
     /// Timestamp of the last managed image
     core::HiResClock::HiResClockType m_lastTimestamp;

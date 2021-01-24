@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Material/V1ToV2Test.hpp"
+#include "data/Material/V1ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwData/Material/V1ToV2.hpp>
+#include <fwStructuralPatch/data/Material/V1ToV2.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -35,13 +35,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Material::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Material::V1ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Material
 {
@@ -69,7 +69,7 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtoms::Object::sptr matObjV1 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr matObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(matObjV1, "::fwData::Material");
+    ::fwAtomsPatch::helper::setClassname(matObjV1, "data::Material");
     ::fwAtomsPatch::helper::setVersion(matObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(matObjV1);
@@ -85,8 +85,8 @@ void V1ToV2Test::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[matObjV1] = matObjV2;
 
-    ::fwStructuralPatch::fwData::Material::V1ToV2::sptr mat1ToMat2Patch;
-    mat1ToMat2Patch = ::fwStructuralPatch::fwData::Material::V1ToV2::New();
+    ::fwStructuralPatchdata::Material::V1ToV2::sptr mat1ToMat2Patch;
+    mat1ToMat2Patch = ::fwStructuralPatchdata::Material::V1ToV2::New();
     CPPUNIT_ASSERT_NO_THROW(mat1ToMat2Patch->apply(matObjV1, matObjV2, newVersions));
 
     CPPUNIT_ASSERT(matObjV2);
@@ -97,6 +97,6 @@ void V1ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Material
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

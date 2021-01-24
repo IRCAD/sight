@@ -24,7 +24,7 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -64,7 +64,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG to s_UPDATE_SLOT.
+     * Connect data::Object::s_MODIFIED_SIG to s_UPDATE_SLOT.
      */
     IOIGTL_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -72,7 +72,7 @@ protected:
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    IOIGTL_API virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
+    IOIGTL_API virtual void sendObject(const data::Object::csptr& obj, const size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
     typedef core::com::Signal< void () > ConnectedSignalType;

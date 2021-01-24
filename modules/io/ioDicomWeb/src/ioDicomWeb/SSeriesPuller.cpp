@@ -28,7 +28,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -162,7 +162,7 @@ void SSeriesPuller::updating()
         m_serverPort = std::stoi(port);
     }
 
-    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
+    data::Vector::csptr selectedSeries = this->getInput< data::Vector >("selectedSeries");
 
     if(m_isPulling)
     {
@@ -208,13 +208,13 @@ void SSeriesPuller::pullSeries()
         m_seriesIndex   = 0;
         m_instanceCount = 0;
 
-        ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
+        data::Vector::csptr selectedSeries = this->getInput< data::Vector >("selectedSeries");
 
         // Find which selected series must be pulled
         DicomSeriesContainerType pullSeriesVector;
         DicomSeriesContainerType selectedSeriesVector;
 
-        ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
+        data::Vector::ConstIteratorType it = selectedSeries->begin();
         for(; it != selectedSeries->end(); ++it)
         {
             ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);

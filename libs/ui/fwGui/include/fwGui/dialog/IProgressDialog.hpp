@@ -25,7 +25,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwData/location/ILocation.hpp>
+#include <data/location/ILocation.hpp>
 
 #include <boost/signals2.hpp>
 

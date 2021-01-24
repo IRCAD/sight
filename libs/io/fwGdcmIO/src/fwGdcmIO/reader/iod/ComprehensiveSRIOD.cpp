@@ -24,8 +24,8 @@
 
 #include "fwGdcmIO/reader/ie/Document.hpp"
 
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 

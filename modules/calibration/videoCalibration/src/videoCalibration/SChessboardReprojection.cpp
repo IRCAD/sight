@@ -34,11 +34,11 @@
 #include <cvIO/Matrix.hpp>
 #include <cvIO/PointList.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -120,9 +120,9 @@ void SChessboardReprojection::starting()
 
 void SChessboardReprojection::updating()
 {
-    ::fwData::PointList::csptr detectedChessboard = this->getInput< ::fwData::PointList >(s_DETECTED_CHESSBOARD_INPUT);
+    data::PointList::csptr detectedChessboard = this->getInput< data::PointList >(s_DETECTED_CHESSBOARD_INPUT);
     SLM_ASSERT("Missing 'detectedChessboard'.", detectedChessboard);
-    ::fwData::mt::ObjectReadLock detectedPtsLock(detectedChessboard);
+    data::mt::ObjectReadLock detectedPtsLock(detectedChessboard);
 
     if(detectedChessboard->getPoints().empty())
     {
@@ -131,7 +131,7 @@ void SChessboardReprojection::updating()
 
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("Missing 'camera'.", camera);
-    ::fwData::mt::ObjectReadLock cameraLock(camera);
+    data::mt::ObjectReadLock cameraLock(camera);
 
     ::cv::Size imgSize;
     ::cv::Mat cameraMx, distortionCoefficents;
@@ -151,10 +151,10 @@ void SChessboardReprojection::updating()
 
     if (camera->getIsCalibrated() && !detectedPointsF.empty())
     {
-        ::fwData::TransformationMatrix3D::csptr transform =
-            this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+        data::TransformationMatrix3D::csptr transform =
+            this->getInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
         SLM_ASSERT("Missing 'transform'.", transform);
-        ::fwData::mt::ObjectReadLock trfLock(transform);
+        data::mt::ObjectReadLock trfLock(transform);
 
         ::cvIO::Matrix::copyToCv(transform, rvec, tvec);
 
@@ -166,7 +166,7 @@ void SChessboardReprojection::updating()
         m_errorComputedSig->asyncEmit(rmse);
     }
 
-    ::fwData::Image::sptr videoImage = this->getInOut< ::fwData::Image >(s_VIDEO_IMAGE_INOUT);
+    data::Image::sptr videoImage = this->getInOut< data::Image >(s_VIDEO_IMAGE_INOUT);
     SLM_ERROR_IF("Drawing is enabled in the configuration but there is no 'videoImage' to draw onto.",
                  !videoImage && (m_drawDetected || m_drawReprojection || m_drawReprojectionError));
 
@@ -176,7 +176,7 @@ void SChessboardReprojection::updating()
         int reprojRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
         reprojRadius = std::max(reprojRadius, 1);
 
-        ::fwData::mt::ObjectWriteLock imgLock(videoImage);
+        data::mt::ObjectWriteLock imgLock(videoImage);
         if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
         {
             return;
@@ -249,7 +249,7 @@ void SChessboardReprojection::updating()
         if(drawingEnabled)
         {
             auto sig =
-                videoImage->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+                videoImage->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
 
             sig->asyncEmit();
         }
@@ -294,7 +294,7 @@ void SChessboardReprojection::updateChessboardSize()
 
     m_chessboardModel.clear();
 
-    ::fwData::PointList::sptr chessboardModelPl = ::fwData::PointList::New();
+    data::PointList::sptr chessboardModelPl = data::PointList::New();
 
     for(unsigned long i = 0; i < height - 1; ++i)
     {
@@ -304,7 +304,7 @@ void SChessboardReprojection::updateChessboardSize()
         {
             const double y = j * squareSize;
             m_chessboardModel.push_back(::cv::Point3d(x, y, 0.));
-            chessboardModelPl->pushBack(::fwData::Point::New(x, y, 0.));
+            chessboardModelPl->pushBack(data::Point::New(x, y, 0.));
         }
     }
 
@@ -319,8 +319,8 @@ void SChessboardReprojection::updateChessboardSize()
 ::fwServices::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_DETECTED_CHESSBOARD_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DETECTED_CHESSBOARD_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

@@ -37,10 +37,10 @@
 
 #include <cvIO/Matrix.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -163,8 +163,8 @@ void SOpenCVExtrinsic::updating()
         std::vector< size_t > degeneratedImagesCam1, degeneratedImagesCam2;
 
         {
-            const ::fwData::mt::ObjectReadLock calInfo1Lock(calInfo1);
-            const ::fwData::mt::ObjectReadLock calInfo2Lock(calInfo2);
+            const data::mt::ObjectReadLock calInfo1Lock(calInfo1);
+            const data::mt::ObjectReadLock calInfo2Lock(calInfo2);
 
             ::arData::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             ::arData::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
@@ -183,8 +183,8 @@ void SOpenCVExtrinsic::updating()
             for(; itr1 != itr1End; ++itr1, ++itr2)
             {
 
-                ::fwData::PointList::sptr ptList1 = *itr1;
-                ::fwData::PointList::sptr ptList2 = *itr2;
+                data::PointList::sptr ptList1 = *itr1;
+                data::PointList::sptr ptList2 = *itr2;
                 std::vector< ::cv::Point2f > imgPoint1;
                 std::vector< ::cv::Point2f > imgPoint2;
                 std::vector<int> tempIds1;
@@ -195,7 +195,7 @@ void SOpenCVExtrinsic::updating()
                 imgPoint2.reserve(ptList2->getPoints().size());
                 tempIds2.reserve(imgPoint2.size());
 
-                for(fwData::Point::csptr point : ptList1->getPoints())
+                for(data::Point::csptr point : ptList1->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     imgPoint1.push_back(::cv::Point2f(
@@ -206,7 +206,7 @@ void SOpenCVExtrinsic::updating()
                 imagePoints1.push_back(imgPoint1);
                 ids1.push_back(tempIds1);
 
-                for(fwData::Point::csptr point : ptList2->getPoints())
+                for(data::Point::csptr point : ptList2->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     imgPoint2.push_back(::cv::Point2f(
@@ -233,16 +233,16 @@ void SOpenCVExtrinsic::updating()
         const ::cv::Mat essentialMatrix   = ::cv::Mat::zeros(3, 3, CV_64F);
         const ::cv::Mat fundamentalMatrix = ::cv::Mat::zeros(3, 3, CV_64F);
 
-        ::fwData::Image::sptr img = calInfo1->getImageContainer().front();
+        data::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
 
-            const ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);
+            const data::mt::ObjectReadLock camSeriesLock(camSeries);
             ::arData::Camera::sptr cam1 = camSeries->getCamera(0);
             ::arData::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
 
-            ::fwData::mt::ObjectReadLock cam1Lock(cam1);
-            ::fwData::mt::ObjectReadLock cam2Lock(cam2);
+            data::mt::ObjectReadLock cam1Lock(cam1);
+            data::mt::ObjectReadLock cam2Lock(cam2);
 
             cameraMatrix1.at<double>(0, 0) = cam1->getFx();
             cameraMatrix1.at<double>(1, 1) = cam1->getFy();
@@ -431,7 +431,7 @@ void SOpenCVExtrinsic::updating()
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
-        ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 
         ::cv::Mat cv4x4 = ::cv::Mat::eye(4, 4, CV_64F);
         rotationMatrix.copyTo(cv4x4(::cv::Rect(0, 0, 3, 3)));
@@ -440,7 +440,7 @@ void SOpenCVExtrinsic::updating()
         ::cvIO::Matrix::copyFromCv(cv4x4, matrix);
 
         {
-            ::fwData::mt::ObjectWriteLock camSeriesLock(camSeries);
+            data::mt::ObjectWriteLock camSeriesLock(camSeries);
             camSeries->setExtrinsicMatrix(m_camIndex, matrix);
         }
 

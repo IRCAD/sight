@@ -28,7 +28,7 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -309,11 +309,11 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::csptr& data ) const
+ActivityInfo::DataCountType Activities::getDataCount( const data::Vector::csptr& data ) const
 {
     ActivityInfo::DataCountType dataCount;
 
-    for( const ::fwData::Object::csptr& obj :  *data)
+    for( const data::Object::csptr& obj :  *data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -323,7 +323,7 @@ ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::cs
 
 //-----------------------------------------------------------------------------
 
-std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::csptr& data ) const
+std::vector< ActivityInfo > Activities::getInfos( const data::Vector::csptr& data ) const
 {
     ActivityInfo::DataCountType dataCount = this->getDataCount(data);
     std::vector< ActivityInfo > infos;

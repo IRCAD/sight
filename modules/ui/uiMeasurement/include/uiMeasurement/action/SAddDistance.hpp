@@ -44,7 +44,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: Image containing the distance field.
+ * - \b image [data::Image]: Image containing the distance field.
  */
 class UIMEASUREMENT_CLASS_API SAddDistance final : public ::fwGui::IActionSrv
 {

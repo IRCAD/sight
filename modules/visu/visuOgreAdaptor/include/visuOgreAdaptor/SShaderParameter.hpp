@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b parameter [::fwData::Object]: parameter containing the data to upload.
+ * - \b parameter [data::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
  * - \b materialName (mandatory, string): the name of the associated Ogre material

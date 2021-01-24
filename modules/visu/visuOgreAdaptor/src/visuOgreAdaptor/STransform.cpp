@@ -51,7 +51,7 @@ STransform::~STransform() noexcept
 ::fwServices::IService::KeyConnectionsMap STransform::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -98,7 +98,7 @@ void STransform::starting()
 void STransform::updating()
 {
     {
-        const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+        const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
         m_ogreTransform = ::Ogre::Affine3(::fwRenderOgre::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 

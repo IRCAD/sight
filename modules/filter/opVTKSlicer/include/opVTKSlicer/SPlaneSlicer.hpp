@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,12 +57,12 @@ namespace opVTKSlicer
    @endcode
  *
  * @subsection Input Input
- * - \b image [::fwData::Image]: Image from which the slice is extracted.
- * - \b imageExtent [::fwData::Image]: Image used to pass the extent.
- * - \b axes [::fwData::TransformationMatrix3D]: Matrix containing the axes defining the reslicing plane.
+ * - \b image [data::Image]: Image from which the slice is extracted.
+ * - \b imageExtent [data::Image]: Image used to pass the extent.
+ * - \b axes [data::TransformationMatrix3D]: Matrix containing the axes defining the reslicing plane.
  *
  * @subsection In-Out In-Out
- * - \b slice [::fwData::Image]: Extracted slice.
+ * - \b slice [data::Image]: Extracted slice.
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : operator configuration

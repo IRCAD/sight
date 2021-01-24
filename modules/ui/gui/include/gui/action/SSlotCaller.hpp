@@ -40,7 +40,7 @@ namespace action
 /**
  * @brief   Run a slot given by HasSlot id and slot key.
  *
- * This action works on a ::fwData::Object. It does the action specify by the specify config.
+ * This action works on a data::Object. It does the action specify by the specify config.
  * @code{.xml}
    <service uid="..." type="::gui::action::SSlotCaller" >
       <sync>true</sync>

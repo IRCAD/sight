@@ -34,11 +34,11 @@
 
 #include <cvIO/Camera.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -112,20 +112,20 @@ void SPoseFrom2d::starting()
     m_3dModel.push_back( ::cv::Point3f(halfWidth, -halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
 
-    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
     if(pl)
     {
-        ::fwData::mt::ObjectWriteLock lock(pl);
+        data::mt::ObjectWriteLock lock(pl);
         for(size_t i = 0; i < m_3dModel.size(); ++i)
         {
-            const ::cv::Point3f cvPoint        = m_3dModel.at(i);
-            const ::fwData::Point::sptr point  = ::fwData::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
-            const ::fwData::String::sptr label = ::fwData::String::New(std::to_string(i));
+            const ::cv::Point3f cvPoint    = m_3dModel.at(i);
+            const data::Point::sptr point  = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
+            const data::String::sptr label = data::String::New(std::to_string(i));
             point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label);
             pl->pushBack(point);
         }
 
-        auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = pl->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
@@ -139,12 +139,12 @@ void SPoseFrom2d::stopping()
     m_lastTimestamp = 0;
     m_isInitialized = false;
 
-    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
     if(pl)
     {
-        ::fwData::mt::ObjectWriteLock lock(pl);
+        data::mt::ObjectWriteLock lock(pl);
         pl->clear();
-        auto sig = pl->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = pl->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
@@ -299,7 +299,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                 for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERMAP_INPUT); ++i)
                 {
                     auto markerMap = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT, i);
-                    ::fwData::mt::ObjectReadLock lock(markerMap);
+                    data::mt::ObjectReadLock lock(markerMap);
                     const auto* marker = markerMap->getMarker(markerKey);
 
                     if(marker)
@@ -315,7 +315,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                     ++indexTL;
                 }
 
-                ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(
+                data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(
                     s_MATRIX_INOUT, markerIndex);
                 SLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
@@ -324,7 +324,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                 }
                 else
                 {
-                    ::fwData::TransformationMatrix3D::TMCoefArray matrixValues;
+                    data::TransformationMatrix3D::TMCoefArray matrixValues;
                     ::cv::Matx44f Rt;
                     if(markers.size() == 1)
                     {
@@ -349,13 +349,13 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                         }
                     }
 
-                    ::fwData::mt::ObjectWriteLock lock(matrix);
+                    data::mt::ObjectWriteLock lock(matrix);
                     matrix->setCoefficients(matrixValues);
                 }
 
                 // Always send the signal even if we did not find anything.
                 // This allows to keep updating the whole processing pipeline.
-                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
 
                 ++markerIndex;
@@ -392,7 +392,7 @@ void SPoseFrom2d::initialize()
     {
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
         SLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
-        ::fwData::mt::ObjectReadLock cameraLock(camera);
+        data::mt::ObjectReadLock cameraLock(camera);
 
         Camera cam;
         std::tie(cam.intrinsicMat, cam.imageSize, cam.distCoef) = ::cvIO::Camera::copyToCv(camera);
@@ -400,8 +400,8 @@ void SPoseFrom2d::initialize()
         // set extrinsic matrix only if stereo.
         if (idx == 1)
         {
-            auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
-            ::fwData::mt::ObjectReadLock matrixLock(extrinsicMatrix);
+            auto extrinsicMatrix = this->getInput< data::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
+            data::mt::ObjectReadLock matrixLock(extrinsicMatrix);
 
             SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
 
@@ -465,7 +465,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
     KeyConnectionsMap connections;
 
     connections.push( s_MARKERTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
-    connections.push( s_MARKERMAP_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

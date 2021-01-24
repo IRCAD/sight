@@ -59,16 +59,16 @@ namespace videoCalibration
    @endcode
  *
  * @subsection Input Input
- * - \b tranform [::fwData::TransformationMatrix3D] (mandatory): transform between the chessboard and the camera.
+ * - \b tranform [data::TransformationMatrix3D] (mandatory): transform between the chessboard and the camera.
  * - \b camera [::arData::Camera] (mandatory): camera filming the chessboard.
- * - \b detectedChessboard [::fwData::PointList] (mandatory): detected chessboard corners.
+ * - \b detectedChessboard [data::PointList] (mandatory): detected chessboard corners.
  *
  * @subsection In-Out In-Out
- * - \b videoImage [::fwData::Image] (optional): image of the chessboard, can be used to display the detected and/or
+ * - \b videoImage [data::Image] (optional): image of the chessboard, can be used to display the detected and/or
  * reprojected points.
  *
  * @subsection Output Output
- * - \b chessboardModel [::fwData::PointList] (optional): 3d chessboard model as described by the `board` preferences.
+ * - \b chessboardModel [data::PointList] (optional): 3d chessboard model as described by the `board` preferences.
  *
  * @subsection Configuration Configuration:
  * - \b board (mandatory): preference keys to retrieve the number of squares of the board in

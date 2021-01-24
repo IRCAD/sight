@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,13 @@ namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Image
 {
 
 /**
- * @brief Test patch to convert fwData::Reconstruction from version 3 to version 2.
+ * @brief Test patch to convert data::Reconstruction from version 3 to version 2.
  */
 class V3ToV2Test : public CPPUNIT_NS::TestFixture
 {
@@ -51,6 +51,6 @@ public:
 };
 
 } //namespace Image
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

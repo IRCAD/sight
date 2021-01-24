@@ -24,7 +24,7 @@
 
 #include "visuBasic/config.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
@@ -48,7 +48,7 @@ namespace visuBasic
    </service>
  *
  * @subsection Input Input
- * - \b mesh [::fwData::Mesh]: mesh to display.
+ * - \b mesh [data::Mesh]: mesh to display.
  */
 class VISUBASIC_CLASS_API SMesh : public ::fwGui::IGuiContainerSrv
 {
@@ -62,7 +62,7 @@ public:
 
     VISUBASIC_API static const core::com::Signals::SignalKeyType s_CAM_UPDATED_SIG;
 
-    typedef core::com::Signal< void (::fwData::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
+    typedef core::com::Signal< void (data::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
 
     /// Creates slots and the signal.
     VISUBASIC_API SMesh() noexcept;
@@ -84,7 +84,7 @@ private:
      * @note This is actually useless since the sub-service already listens to the data,
      * but this prevents a warning in fwServices from being raised.
      *
-     * Connect ::fwData::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VISUBASIC_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -97,7 +97,7 @@ private:
 private:
 
     /// SLOT: receives new camera transform and update the camera.
-    void updateCamPosition(::fwData::TransformationMatrix3D::sptr _transform);
+    void updateCamPosition(data::TransformationMatrix3D::sptr _transform);
 
     /// SLOT: receives new camera transform from the camera service and trigger the signal.
     void updateCamTransform();
@@ -115,7 +115,7 @@ private:
     ::fwServices::IService::sptr m_cameraSrv;
 
     /// Contains the transformation adaptor.
-    ::fwData::TransformationMatrix3D::sptr m_cameraTransform;
+    data::TransformationMatrix3D::sptr m_cameraTransform;
 
     /// Defines whether or not to autoConnect to the mesh, needed for the purpose of tutorials.
     bool m_meshAutoConnect { false };

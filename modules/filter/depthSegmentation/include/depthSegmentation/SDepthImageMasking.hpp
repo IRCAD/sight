@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,15 +53,15 @@ namespace depthSegmentation
    @endcode
  *
  * @subsection Input Input
- * - \b maskImage [::fwData::Image] : Mask image to perform the difference inside. Background value should be set to 0.
+ * - \b maskImage [data::Image] : Mask image to perform the difference inside. Background value should be set to 0.
  * this mask only.
- * - \b videoImage [::fwData::Image] : RGB image on which the foreground part will be extract from the depth difference
+ * - \b videoImage [data::Image] : RGB image on which the foreground part will be extract from the depth difference
  * image.
- * - \b depthImage [::fwData::Image] : Depth image on which the difference will be performed with the learned depth
+ * - \b depthImage [data::Image] : Depth image on which the difference will be performed with the learned depth
  * background image.
  *
  * @subsection In-Out In-Out
- * - \b foregroundImage [::fwData::Image] : Image containing the foreground pixels and background pixels are
+ * - \b foregroundImage [data::Image] : Image containing the foreground pixels and background pixels are
  * transparent.
  */
 class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOperator

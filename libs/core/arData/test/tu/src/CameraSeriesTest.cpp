@@ -80,12 +80,12 @@ void CameraSeriesTest::tearDown()
     series->addCamera(camera2);
 
     // --------------- Extrinsic matrix ----------------------
-    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            const auto value = static_cast< data::TransformationMatrix3D::TM3DType >(2*i+j);
             mat->setCoefficient(i, j, value);
         }
     }
@@ -102,13 +102,13 @@ void CameraSeriesTest::cameraTest()
     ::arData::CameraSeries::sptr series = ::arData::CameraSeries::New();
     CPPUNIT_ASSERT(series);
 
-    ::fwData::TransformationMatrix3D::sptr identity = ::fwData::TransformationMatrix3D::New();
-    ::fwData::TransformationMatrix3D::sptr mat      = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr identity = data::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr mat      = data::TransformationMatrix3D::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            const auto value = static_cast< data::TransformationMatrix3D::TM3DType >(2*i+j);
             mat->setCoefficient(i, j, value);
         }
     }
@@ -171,7 +171,7 @@ void CameraSeriesTest::deepCopyTest()
 {
     ::arData::CameraSeries::sptr series = initCameraSeries();
     ::arData::CameraSeries::sptr series2;
-    series2 = ::fwData::Object::copy< ::arData::CameraSeries >(series);
+    series2 = data::Object::copy< ::arData::CameraSeries >(series);
 
     CPPUNIT_ASSERT(::fwTest::helper::compare(series, series2));
 }

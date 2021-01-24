@@ -43,7 +43,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 VtpMeshWriter::VtpMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTP Mesh writer"))
 {
 }
@@ -66,7 +66,7 @@ void VtpMeshWriter::write()
 
     SLM_ASSERT("Object Lock null.", objectLock );
 
-    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    const data::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkXMLPolyDataWriter > writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh         = vtkSmartPointer< vtkPolyData >::New();

@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     servicesReg
-    fwData
+    data
     fwMedData
     gui
     uiTF

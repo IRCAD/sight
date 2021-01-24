@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ioDicom/SSeriesDBMerger.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -33,7 +33,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -81,13 +81,13 @@ void SSeriesDBMerger::updating()
 
     ::fwMedDataTools::helper::SeriesDB sDBhelper(destinationSeriesDB);
     ::fwMedData::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    ::fwData::Vector::csptr selectedSeries         = this->getInput< ::fwData::Vector >("selectedSeries");
+    data::Vector::csptr selectedSeries = this->getInput< data::Vector >("selectedSeries");
 
     // Save added series in this container in order to display information on the push
     std::vector< ::fwMedData::Series::sptr > addedSeries;
 
     // Loop through all selected series
-    for(const ::fwData::Object::sptr& obj: selectedSeries->getContainer())
+    for(const data::Object::sptr& obj: selectedSeries->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
 

@@ -79,7 +79,7 @@ void SViewportRangeSelector::configuring()
     m_initialX = config.get<float>(s_INITIAL_POS_CONFIG, m_initialX);
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_color, color, m_opacity);
+    ::fwRenderQtdata::InitQtPen::setPenColor(m_color, color, m_opacity);
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void SViewportRangeSelector::configuring()
 ::fwServices::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INOUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INOUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -96,7 +96,7 @@ void SViewportRangeSelector::configuring()
 void SViewportRangeSelector::starting()
 {
     {
-        ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+        ::fwRenderQtdata::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
         const double viewportWidth = sceneViewport->getWidth();
         const double defaultWidth  = 2. * viewportWidth / 4.;
@@ -115,8 +115,8 @@ void SViewportRangeSelector::starting()
         }
     }
 
-    const ::fwRenderQt::data::Viewport::sptr viewport =
-        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+    const ::fwRenderQtdata::Viewport::sptr viewport =
+        this->getInOut< ::fwRenderQtdata::Viewport>(s_VIEWPORT_INOUT);
 
     Point2DType pair = this->mapAdaptorToScene(
         Point2DType( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
@@ -137,8 +137,8 @@ void SViewportRangeSelector::starting()
     QRectF rect = m_shutter->rect();
     updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = viewport->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -159,10 +159,10 @@ void SViewportRangeSelector::updating()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _event )
+void SViewportRangeSelector::processInteraction( ::fwRenderQtdata::Event& _event )
 {
     // Event coordinates in scene
-    ::fwRenderQt::data::Coord coord;
+    ::fwRenderQtdata::Coord coord;
     coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     // Shutter coordinates in scene
@@ -179,7 +179,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
 
     QRectF rect = m_shutter->rect();
 
-    if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress )
+    if( _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress )
     {
         if( onShutterLeft )
         {
@@ -200,7 +200,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             m_dragStartShutterPos.setY( shutterCoordPair.second );
         }
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease )
     {
         m_isInteracting      = false;
         m_isLeftInteracting  = false;
@@ -216,7 +216,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             this->getScene2DRender()->getView()->setCursor( Qt::ArrowCursor );
         }
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseMove )
     {
         // If the mouse is moving onto the shutter, without interactions, the cursor is changed to an other cursor
         // that symbolize the available interactions
@@ -319,11 +319,11 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             // Update object
             this->updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height() );
 
-            ::fwRenderQt::data::Viewport::sptr viewport =
-                this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+            ::fwRenderQtdata::Viewport::sptr viewport =
+                this->getInOut< ::fwRenderQtdata::Viewport>(s_VIEWPORT_INOUT);
 
-            ::fwData::Object::ModifiedSignalType::sptr sig =
-                viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            data::Object::ModifiedSignalType::sptr sig =
+                viewport->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -336,8 +336,8 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
 
 void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, double _width, double _height )
 {
-    ::fwRenderQt::data::Viewport::sptr viewport =
-        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+    ::fwRenderQtdata::Viewport::sptr viewport =
+        this->getInOut< ::fwRenderQtdata::Viewport>(s_VIEWPORT_INOUT);
 
     const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
     viewport->setX( fromSceneCoord.first );
@@ -350,7 +350,7 @@ void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, do
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQtdata::Coord _coord)
 {
     Point2DType shutterCoordPair;
     shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
@@ -362,7 +362,7 @@ bool SViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _co
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQtdata::Coord _coord)
 {
     Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
@@ -373,7 +373,7 @@ bool SViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coor
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool SViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterRight( ::fwRenderQtdata::Coord _coord)
 {
     const Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),

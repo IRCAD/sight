@@ -109,7 +109,7 @@ void SVoxelPicker::starting()
 ::fwServices::IService::KeyConnectionsMap SVoxelPicker::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
 
     return connections;
 }
@@ -165,7 +165,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
         const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
         // Get image information.
-        const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+        const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
         const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image.get_shared());
 
         const std::pair< bool, ::Ogre::Vector3 > result
@@ -231,16 +231,16 @@ void SVoxelPicker::changeSliceType(int _from, int _to)
 //-----------------------------------------------------------------------------
 
 std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(const Ogre::Ray& _ray,
-                                                                             const ::fwData::Image::csptr _image,
+                                                                             const data::Image::csptr _image,
                                                                              const Ogre::Vector3& _origin,
                                                                              const Ogre::Vector3& _spacing)
 {
     const auto axialIdx =
-        _image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
     const auto frontalIdx =
-        _image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
     const auto sagittalIdx =
-        _image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
     const ::Ogre::Real axialIndex    = static_cast< ::Ogre::Real >(axialIdx);
     const ::Ogre::Real frontalIndex  = static_cast< ::Ogre::Real >(frontalIdx);

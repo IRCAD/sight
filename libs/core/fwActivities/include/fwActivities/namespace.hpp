@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ namespace factory
  *
  * - ::activities::action::SActivityLauncher uses the selected data to generate the activity.
  * - ::guiQt::editor::SDynamicView  displays the activity in the application.
- * - ::fwData::Vector contains the set of selected data .
+ * - data::Vector contains the set of selected data .
  *
  * @code{.xml}
      <extension implements="::fwActivities::registry::Activities">
@@ -83,19 +83,19 @@ namespace factory
          <desc>Activity description ...</desc>
          <icon>media-0.1/icons/icon-3D.png</icon>
          <requirements>
-            <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
+            <requirement name="param1" type="data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="data::Mesh" maxOccurs="3" >
                 <key>Item1</key>
                 <key>Item2</key>
                 <key>Item3</key>
             </requirement>
-            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" container="vector" />
+            <requirement name="param3" type="data::Mesh" maxOccurs="*" container="vector" />
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
-            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
+            <requirement name="transformationMatrix" type="data::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
  * create="true" />
              <!-- ...-->
          </requirements>
@@ -166,7 +166,7 @@ namespace factory
  * @code {.cpp}
    ValidationType validate(
            const ::fwActivities::registry::ActivityInfo& activityInfo,
-           SPTR(::fwData::Vector) currentSelection ) const;
+           SPTR(data::Vector) currentSelection ) const;
    @endcode
  *
  * @subsection activity Activity validator
@@ -190,7 +190,7 @@ namespace factory
  * method:
  *
  * @code {.cpp}
-   ValidationType validate(const CSPTR(::fwData::Object) &currentData ) const;
+   ValidationType validate(const CSPTR(data::Object) &currentData ) const;
    @endcode
  */
 

@@ -27,7 +27,7 @@
 #include <core/HiResClock.hpp>
 #include <core/mt/types.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 namespace arData
 {

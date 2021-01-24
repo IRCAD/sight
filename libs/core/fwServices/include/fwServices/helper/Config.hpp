@@ -36,7 +36,7 @@ namespace fwTools
 class Object;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -122,7 +122,7 @@ public:
         const std::string& objectKey,
         const CSPTR(core::runtime::ConfigurationElement)& cfg,
         ProxyConnectionsMapType& proxyMap,
-        const CSPTR(::fwData::Object)& obj = CSPTR(::fwData::Object)());
+        const CSPTR(data::Object)& obj = CSPTR(data::Object)());
 
     /// Disconnects all proxies associated to objectKey
     FWSERVICES_API static void disconnectProxies(const std::string& objectKey,

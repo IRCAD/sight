@@ -27,7 +27,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -44,7 +44,7 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::fwData::Object )
+fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ void SSeriesPusher::starting()
     m_pushSeriesWorker = core::thread::Worker::New();
 
     // Get pacs configuration
-    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
+    m_pacsConfiguration = this->getInput< ::fwPacsIOdata::PacsConfiguration>("pacsConfig");
     SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
 }
 
@@ -114,7 +114,7 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
+    data::Vector::csptr selectedSeries = this->getInput< data::Vector >("selectedSeries");
 
     if(m_isPushing)
     {
@@ -169,7 +169,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     // Return true if the push operation must be performed
     bool result = true;
 
-    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >("selectedSeries");
+    data::Vector::csptr seriesVector = this->getInput< data::Vector >("selectedSeries");
 
     // Catch any errors
     try
@@ -180,7 +180,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        ::fwData::Vector::ConstIteratorType it = seriesVector->begin();
+        data::Vector::ConstIteratorType it = seriesVector->begin();
         for(; it != seriesVector->end(); ++it)
         {
             ::fwMedData::DicomSeries::csptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
@@ -254,7 +254,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
 
 void SSeriesPusher::pushSeries()
 {
-    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >("selectedSeries");
+    data::Vector::csptr seriesVector = this->getInput< data::Vector >("selectedSeries");
 
     // Catch any errors
     try

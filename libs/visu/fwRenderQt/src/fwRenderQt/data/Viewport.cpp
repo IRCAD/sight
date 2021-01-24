@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "fwRenderQt/data/Viewport.hpp"
 
-#include <fwData/registry/macros.hpp>
+#include <data/registry/macros.hpp>
 
-fwDataRegisterMacro(::fwRenderQt::data::Viewport);
+fwDataRegisterMacro(::fwRenderQtdata::Viewport);
 
 namespace fwRenderQt
 {
@@ -33,10 +33,10 @@ namespace data
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallowCopy(const ::fwData::Object::csptr& _source )
+void Viewport::shallowCopy(const data::Object::csptr& _source )
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
@@ -49,10 +49,10 @@ void Viewport::shallowCopy(const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void Viewport::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache )
+void Viewport::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache )
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
@@ -65,4 +65,3 @@ void Viewport::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCa
 
 } // namespace data
 } // namespace fwRenderQt
-

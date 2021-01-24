@@ -25,9 +25,9 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Array.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -76,7 +76,7 @@ void ModelSeriesWriterTest::tearDown()
 void runModelSeriesSrv(
     const std::string& impl,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
-    const SPTR(::fwData::Object)& obj)
+    const SPTR(data::Object)& obj)
 {
     ::fwServices::IService::sptr srv = ::fwServices::add(impl);
 
@@ -208,8 +208,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
         for(; itRef != refRecs.end(); ++itRef, ++itRead)
         {
-            ::fwData::Mesh::csptr refMesh  = (*itRef)->getMesh();
-            ::fwData::Mesh::csptr readMesh = (*itRead)->getMesh();
+            data::Mesh::csptr refMesh  = (*itRef)->getMesh();
+            data::Mesh::csptr readMesh = (*itRead)->getMesh();
 
             const auto reflock      = refMesh->lock();
             const auto readMeshLock = readMesh->lock();
@@ -224,9 +224,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
             // Don't test internal structures for obj, ply and stl, since some of them are missing.
             if(ext != "obj" && ext != "ply" && ext != "stl")
             {
-                auto refPointsItr       = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
-                auto readPointsItr      = readMesh->begin< ::fwData::iterator::ConstPointIterator >();
-                const auto refPointsEnd = refMesh->end< ::fwData::iterator::ConstPointIterator >();
+                auto refPointsItr       = refMesh->begin< data::iterator::ConstPointIterator >();
+                auto readPointsItr      = readMesh->begin< data::iterator::ConstPointIterator >();
+                const auto refPointsEnd = refMesh->end< data::iterator::ConstPointIterator >();
 
                 for(; refPointsItr != refPointsEnd; ++refPointsItr, ++readPointsItr)
                 {
@@ -250,9 +250,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
                                                          readPointsItr->normal->nz, 0.00001);
                 }
 
-                auto refCellsItr       = refMesh->begin< ::fwData::iterator::ConstCellIterator >();
-                auto readCellsItr      = readMesh->begin< ::fwData::iterator::ConstCellIterator >();
-                const auto refCellsEnd = refMesh->end< ::fwData::iterator::ConstCellIterator >();
+                auto refCellsItr       = refMesh->begin< data::iterator::ConstCellIterator >();
+                auto readCellsItr      = readMesh->begin< data::iterator::ConstCellIterator >();
+                const auto refCellsEnd = refMesh->end< data::iterator::ConstCellIterator >();
 
                 for(; refCellsItr != refCellsEnd; ++refCellsItr, ++readCellsItr)
                 {

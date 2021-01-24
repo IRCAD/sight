@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -55,15 +55,15 @@ public:
     void registerConnectionTest();
 
 private:
-    void registerService(::fwData::Object::sptr obj, const std::string& id);
-    void unregisterService(::fwData::Object::sptr obj, const std::string& id);
+    void registerService(data::Object::sptr obj, const std::string& id);
+    void unregisterService(data::Object::sptr obj, const std::string& id);
 
     /// Synchronization with slots
     std::mutex m_mutex;
     std::condition_variable m_condition;
 
     std::string m_ret;
-    ::fwData::Object::csptr m_obj;
+    data::Object::csptr m_obj;
 };
 
 } //namespace ut

@@ -31,9 +31,9 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Boolean.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <utest/wait.hpp>
 
@@ -151,8 +151,8 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT(service3);
     CPPUNIT_ASSERT(service4);
 
-    ::fwData::Image::sptr image     = ::fwData::Image::New();
-    ::fwData::Boolean::sptr boolean = ::fwData::Boolean::New();
+    data::Image::sptr image     = data::Image::New();
+    data::Boolean::sptr boolean = data::Boolean::New();
 
     service->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT);
     service2->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
@@ -248,8 +248,8 @@ void AppManagerTest::managerWithObjectConnectionTest()
     CPPUNIT_ASSERT(service3);
     CPPUNIT_ASSERT(service4);
 
-    ::fwData::Image::sptr image     = ::fwData::Image::New();
-    ::fwData::Boolean::sptr boolean = ::fwData::Boolean::New();
+    data::Image::sptr image     = data::Image::New();
+    data::Boolean::sptr boolean = data::Boolean::New();
 
     service1->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT);
     service2->registerObject(imageId, "data1", ::fwServices::IService::AccessType::INPUT, true);
@@ -274,7 +274,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
 
-    auto sig = image->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+    auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
     sig->emit();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->getIsUpdated());
@@ -286,7 +286,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
 
     m_appMgr->removeObject(image, imageId);
     ::fwServices::helper::ProxyConnections connection(imageChannel);
-    connection.addSignalConnection(imageId,  ::fwData::Image::s_MODIFIED_SIG);
+    connection.addSignalConnection(imageId,  data::Image::s_MODIFIED_SIG);
     connection.addSlotConnection(service1->getID(), ::fwServices::ut::TestSrvAutoconnect::s_SLOT_1);
     m_appMgr->addProxyConnection(connection);
     m_appMgr->addObject(image, imageId);
@@ -298,7 +298,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
     service1->resetReceive();
 
     m_appMgr->addObject(boolean, booleanId);
-    auto sig2 = boolean->signal< ::fwData::Boolean::ModifiedSignalType >(::fwData::Boolean::s_MODIFIED_SIG);
+    auto sig2 = boolean->signal< data::Boolean::ModifiedSignalType >(data::Boolean::s_MODIFIED_SIG);
     sig2->emit();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->getReceived());
@@ -396,7 +396,7 @@ void AppManagerTest::managerWithOutputCreationTest()
     const std::string generatedIntegerId  = "generatedIntegerId";
     const std::string generatedInteger2Id = "generatedInteger2Id";
 
-    ::fwData::Integer::sptr integer1 = ::fwData::Integer::New(15);
+    data::Integer::sptr integer1 = data::Integer::New(15);
 
     auto service1 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
         "::fwServices::ut::TestServiceWithData", true, true);
@@ -433,15 +433,15 @@ void AppManagerTest::managerWithOutputCreationTest()
     fwTestWaitMacro(service2->isStarted()); // wait until service1 generate its output to start service2
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
 
-    auto integer2 = service1->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    auto integer2 = service1->getOutput< data::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
     CPPUNIT_ASSERT(integer2);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer2->value());
     CPPUNIT_ASSERT(nullptr ==
-                   service3->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT));
+                   service3->getOutput< data::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT));
 
     service3->update().wait();
 
-    auto integer3 = service3->getOutput< ::fwData::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    auto integer3 = service3->getOutput< data::Integer >(::fwServices::ut::TestServiceWithData::s_OUTPUT);
 
     CPPUNIT_ASSERT(integer3);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer3->getValue());
@@ -467,10 +467,10 @@ void AppManagerTest::managerWithGroupTest()
     const std::string generatedIntegerId  = "generatedIntegerId";
     const std::string generatedInteger2Id = "generatedInteger2Id";
 
-    ::fwData::Integer::sptr integer0 = ::fwData::Integer::New(1);
-    ::fwData::Integer::sptr integer1 = ::fwData::Integer::New(15);
-    ::fwData::Integer::sptr integer2 = ::fwData::Integer::New(25);
-    ::fwData::Integer::sptr integer3 = ::fwData::Integer::New(28);
+    data::Integer::sptr integer0 = data::Integer::New(1);
+    data::Integer::sptr integer1 = data::Integer::New(15);
+    data::Integer::sptr integer2 = data::Integer::New(25);
+    data::Integer::sptr integer3 = data::Integer::New(28);
 
     auto service1 = m_appMgr->addService< ::fwServices::ut::TestServiceWithData >(
         "::fwServices::ut::TestServiceWithData", true);
@@ -557,12 +557,12 @@ void AppManagerTest::managerWithInputsTest()
 
     appMgr->requireInput(INPUT_OBJ1, AppManagerForTest::InputType::OBJECT);
     appMgr->requireInput(INPUT_OBJ2, AppManagerForTest::InputType::OBJECT);
-    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "::fwData::Image");
+    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "data::Image");
 
     CPPUNIT_ASSERT(!appMgr->checkInputs());
 
-    ::fwData::Boolean::sptr boolean1 = ::fwData::Boolean::New();
-    ::fwData::Boolean::sptr boolean2 = ::fwData::Boolean::New();
+    data::Boolean::sptr boolean1 = data::Boolean::New();
+    data::Boolean::sptr boolean2 = data::Boolean::New();
 
     appMgr->replaceInput(INPUT_OBJ1, boolean1->getID());
     appMgr->replaceInput(INPUT_OBJ2, boolean2->getID());

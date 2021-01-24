@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::csptr& _input,
-                                    ::fwData::TransformationMatrix3D::sptr& _output)
+bool TransformationMatrix3D::invert(const data::TransformationMatrix3D::csptr& _input,
+                                    data::TransformationMatrix3D::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
@@ -55,9 +55,9 @@ bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::cspt
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trfA,
-                                      const ::fwData::TransformationMatrix3D::csptr& _trfB,
-                                      ::fwData::TransformationMatrix3D::sptr& _output)
+void TransformationMatrix3D::multiply(const data::TransformationMatrix3D::csptr& _trfA,
+                                      const data::TransformationMatrix3D::csptr& _trfB,
+                                      data::TransformationMatrix3D::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
@@ -82,7 +82,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _trf)
+void TransformationMatrix3D::identity(data::TransformationMatrix3D::sptr& _trf)
 {
     for (size_t i = 0; i < 4; ++i)
     {
@@ -95,8 +95,8 @@ void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _t
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                      const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output)
+void TransformationMatrix3D::multiply(const data::TransformationMatrix3D::csptr& _trf,
+                                      const data::Point::csptr& _input, data::Point::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
@@ -117,12 +117,12 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
 // ----------------------------------------------------------------------------
 
-bool TransformationMatrix3D::isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf, const double _epsilon)
+bool TransformationMatrix3D::isIdentity(const data::TransformationMatrix3D::csptr& _trf, const double _epsilon)
 {
-    static const ::fwData::TransformationMatrix3D::sptr s_IDENTITY = ::fwData::TransformationMatrix3D::New();
+    static const data::TransformationMatrix3D::sptr s_IDENTITY = data::TransformationMatrix3D::New();
 
-    const ::fwData::TransformationMatrix3D::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
-    const ::fwData::TransformationMatrix3D::TMCoefArray& arrayTrf = _trf->getCoefficients();
+    const data::TransformationMatrix3D::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
+    const data::TransformationMatrix3D::TMCoefArray& arrayTrf = _trf->getCoefficients();
 
     for(size_t i = 0; i < arrayID.size(); ++i)
     {

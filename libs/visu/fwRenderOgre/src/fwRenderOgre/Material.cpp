@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,8 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         _name, ::fwRenderOgre::RESOURCE_GROUP);
 
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName, RESOURCE_GROUP);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
+                                                                                               RESOURCE_GROUP);
 
     SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 
@@ -74,7 +75,7 @@ void Material::updateOptionsMode(int _optionsMode)
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    if(_optionsMode != ::fwData::Material::STANDARD)
+    if(_optionsMode != data::Material::STANDARD)
     {
         for(const auto currentTechnique : techniques)
         {
@@ -95,7 +96,7 @@ void Material::updateOptionsMode(int _optionsMode)
                 normalsPass->setVertexProgram("Normals_VP");
 
                 std::string gpName = depthOnly ? "DepthPeeling/depthMap/" : "";
-                gpName += (_optionsMode == ::fwData::Material::NORMALS) ?
+                gpName += (_optionsMode == data::Material::NORMALS) ?
                           "VerticesNormals_GP" :
                           "CellsNormals_GP";
 
@@ -149,7 +150,7 @@ void Material::updatePolygonMode(int _polygonMode)
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    if(_polygonMode == ::fwData::Material::EDGE)
+    if(_polygonMode == data::Material::EDGE)
     {
         for(const auto tech : techniques)
         {
@@ -193,23 +194,23 @@ void Material::updatePolygonMode(int _polygonMode)
             {
                 switch( _polygonMode )
                 {
-                    case ::fwData::Material::SURFACE:
+                    case data::Material::SURFACE:
                         ogrePass->setPolygonMode(::Ogre::PM_SOLID );
                         ogrePass->setPointSpritesEnabled(false);
                         break;
 
-                    case ::fwData::Material::WIREFRAME:
+                    case data::Material::WIREFRAME:
                         ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
                         break;
 
-                    case ::fwData::Material::POINT:
+                    case data::Material::POINT:
                         ogrePass->setPolygonMode(::Ogre::PM_POINTS);
                         ogrePass->setPointSpritesEnabled(false);
                         ogrePass->setPointSize(1.f);
                         break;
 
                     default:
-                        if( _polygonMode != ::fwData::Material::EDGE )
+                        if( _polygonMode != data::Material::EDGE )
                         {
                             SLM_ASSERT("Unhandled material representation mode : " << _polygonMode, false );
                         }
@@ -223,13 +224,13 @@ void Material::updatePolygonMode(int _polygonMode)
 
 void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha )
 {
-    const bool isR2VB = m_primitiveType != ::fwData::Mesh::CellType::TRIANGLE || m_hasPrimitiveColor;
+    const bool isR2VB = m_primitiveType != data::Mesh::CellType::TRIANGLE || m_hasPrimitiveColor;
 
     // If we have UVs with R2VB, then for the sake of simplicity we generate UVs whatever the material is
     // Otherwise we would have to update the whole R2VB pipeline each time a texture is set/unset
     const bool needDiffuseTexture = isR2VB ? m_hasUV : m_hasUV && _hasDiffuseTexture;
 
-    const ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(_shadingMode);
+    const data::Material::ShadingType mode = static_cast< data::Material::ShadingType >(_shadingMode);
 
     const ::Ogre::String permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, needDiffuseTexture,
                                                                                        m_hasVertexColor);
@@ -349,11 +350,11 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
 //------------------------------------------------------------------------------
 
-void Material::updateRGBAMode(fwData::Material::sptr _sightMaterial)
+void Material::updateRGBAMode(data::Material::sptr _sightMaterial)
 {
     //Set up Material colors
-    ::fwData::Color::csptr sightAmbient = _sightMaterial->ambient();
-    ::fwData::Color::csptr sightDiffuse = _sightMaterial->diffuse();
+    data::Color::csptr sightAmbient = _sightMaterial->ambient();
+    data::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 
     const ::Ogre::ColourValue ambient(sightAmbient->red(), sightAmbient->green(),
                                       sightAmbient->blue(), sightAmbient->alpha());
@@ -413,7 +414,8 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
 
 void Material::setTemplate(const std::string& _templateName)
 {
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName, RESOURCE_GROUP);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
+                                                                                               RESOURCE_GROUP);
 
     SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 

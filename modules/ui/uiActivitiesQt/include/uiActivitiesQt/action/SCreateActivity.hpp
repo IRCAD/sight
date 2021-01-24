@@ -24,10 +24,10 @@
 
 #include "uiActivitiesQt/config.hpp"
 
+#include <data/Vector.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
-
-#include <fwData/Vector.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -39,7 +39,7 @@ namespace action
 /**
  * @brief This action launchs an activity according to the given configuration
  *
- * This action works on a ::fwData::Vector. It proposes all the available activity according to the given configuration.
+ * This action works on a data::Vector. It proposes all the available activity according to the given configuration.
  * And then, it sends a signal with the activity identifier.
  *
  * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.

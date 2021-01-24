@@ -30,16 +30,16 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/reflection/exception/ObjectNotFound.hpp>
-#include <fwData/reflection/getObject.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/reflection/exception/ObjectNotFound.hpp>
+#include <data/reflection/getObject.hpp>
 
 #include <numeric>
 
 namespace ctrlHistory
 {
 
-fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, ::fwData::Object)
+fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";

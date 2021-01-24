@@ -24,7 +24,7 @@
 
 #include <uiVisuOgre/config.hpp>
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
@@ -34,7 +34,7 @@ namespace uiVisuOgre
 {
 
 /**
- * @brief   Add points in a ::fwData::PointList
+ * @brief   Add points in a data::PointList
  *
  * @section Slots Slots
  * - \b pick(::fwDataTools::PickingInfo) : Add or remove the closest point to the picking position, removal occurs when
@@ -48,7 +48,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b pointList [::fwData::PointList]: target points list.
+ * - \b pointList [data::PointList]: target points list.
  */
 class UIVISUOGRE_CLASS_API SAddPoint : public ::fwServices::IController
 {
@@ -90,10 +90,10 @@ protected:
 private:
 
     ///  Add a point in the point list
-    void addPoint(const ::fwData::Point::sptr);
+    void addPoint(const data::Point::sptr);
 
     ///  Remove a point from the point list
-    void removePoint(const ::fwData::Point::csptr);
+    void removePoint(const data::Point::csptr);
 
     /**
      * @name Slots methods

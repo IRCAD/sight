@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwServices/IHasServices.hpp>
 
-#include <fwData/Boolean.hpp>
+#include <data/Boolean.hpp>
 
 #include <TestService.hpp>
 
@@ -68,13 +68,13 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
     void testConnection()
     {
-        ::fwData::Boolean::sptr data1 = ::fwData::Boolean::New();
-        ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
-        ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
+        data::Boolean::sptr data1 = data::Boolean::New();
+        data::Boolean::sptr data2 = data::Boolean::New();
+        data::Boolean::sptr data3 = data::Boolean::New();
 
-        auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
-        auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
-        auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+        auto sig1 = data1->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig2 = data2->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig3 = data3->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
             auto testService = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);
             testService->registerInOut(data1, "data1", true);
@@ -139,7 +139,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
     void testRegistration()
     {
-        ::fwData::Boolean::sptr data1 = ::fwData::Boolean::New();
+        data::Boolean::sptr data1 = data::Boolean::New();
 
         {
             ::fwServices::IService::wptr refService1;
@@ -159,7 +159,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(data1 == refService1.lock()->getInOut< ::fwData::Boolean >("data1"));
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInOut< data::Boolean >("data1"));
 
             // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -189,7 +189,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(data1 == refService1.lock()->getInput< ::fwData::Boolean >("data1"));
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInput< data::Boolean >("data1"));
 
             // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -254,9 +254,9 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
     void testOptionalInputs()
     {
-        ::fwData::Boolean::sptr data1 = ::fwData::Boolean::New();
-        ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
-        ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
+        data::Boolean::sptr data1 = data::Boolean::New();
+        data::Boolean::sptr data2 = data::Boolean::New();
+        data::Boolean::sptr data3 = data::Boolean::New();
 
         {
             auto testService = this->registerService< ::fwServices::ut::TestServiceImplementation >(
@@ -282,9 +282,9 @@ struct TestIHasServices : public ::fwServices::IHasServices
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
         }
 
-        auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
-        auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
-        auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+        auto sig1 = data1->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig2 = data2->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig3 = data3->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
         {
             auto testService = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);

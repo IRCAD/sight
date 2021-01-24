@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwItkIO/config.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <itkMatrix.h>
 
@@ -42,18 +42,18 @@ public:
     typedef ::itk::Matrix< double, 4, 4> MatrixType;
     /**
      * @brief convert a Sight transformation to itk
-     * @param _inTrf input fwData::TransformationMatrix3D
+     * @param _inTrf input data::TransformationMatrix3D
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    FWITKIO_API static MatrixType convertToITK(const ::fwData::TransformationMatrix3D::csptr& _inTrf);
+    FWITKIO_API static MatrixType convertToITK(const data::TransformationMatrix3D::csptr& _inTrf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
      * @param _inTrf Const Pointer to a itk::Transform<double, 4,4>
-     * @param _outTrf output fwData::TransformationMatrix3D (needs to be allocated before)
+     * @param _outTrf output data::TransformationMatrix3D (needs to be allocated before)
      */
     FWITKIO_API static void convertFromITK(const MatrixType& _inTrf,
-                                           ::fwData::TransformationMatrix3D::sptr& _outTrf );
+                                           data::TransformationMatrix3D::sptr& _outTrf );
 };
 
 }// namespace helper

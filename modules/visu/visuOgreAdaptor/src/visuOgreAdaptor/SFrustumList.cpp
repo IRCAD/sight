@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -90,7 +90,7 @@ void SFrustumList::starting()
     m_frustumList.set_capacity(m_capacity);
 
     // Create material
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
@@ -110,7 +110,7 @@ void SFrustumList::starting()
 fwServices::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
+    connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
     return connections;
 }
 
@@ -180,7 +180,7 @@ void SFrustumList::addFrustum()
     // Set position
     ::Ogre::Affine3 ogreMat;
     {
-        const auto transform = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+        const auto transform = this->getLockedInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
         for(size_t lt = 0; lt < 4; lt++)
         {

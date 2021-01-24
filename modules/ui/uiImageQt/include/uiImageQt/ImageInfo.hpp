@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
@@ -56,7 +56,7 @@ namespace uiImageQt
     </service>
    @endcode
  * @subsection Input Input
- * - \b image [::fwData::Image]: image used to retrieve the pixel value.
+ * - \b image [data::Image]: image used to retrieve the pixel value.
  */
 class UIIMAGEQT_CLASS_API ImageInfo : public QObject,
                                       public ::fwGui::editor::IEditor

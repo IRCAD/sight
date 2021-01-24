@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "itkRegistrationOp/Metric.hpp"
 #include "itkRegistrationOp/Resampler.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -56,9 +56,9 @@ class MIPMatchingRegistration;
  */
 struct RegistrationDispatch {
     struct Parameters {
-        ::fwData::Image::csptr fixed;
-        ::fwData::Image::csptr moving;
-        ::fwData::TransformationMatrix3D::sptr transform;
+        data::Image::csptr fixed;
+        data::Image::csptr moving;
+        data::TransformationMatrix3D::sptr transform;
     };
 
     //------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ public:
      *
      * @pre The transformed moving image must approximately match
      */
-    static void registerImage(const ::fwData::Image::csptr& _moving,
-                              const ::fwData::Image::csptr& _fixed,
-                              fwData::TransformationMatrix3D::sptr& _transform);
+    static void registerImage(const data::Image::csptr& _moving,
+                              const data::Image::csptr& _fixed,
+                              data::TransformationMatrix3D::sptr& _transform);
 
 private:
     enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
@@ -125,9 +125,9 @@ private:
 //------------------------------------------------------------------------------
 
 template <class PIX>
-void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _moving,
-                                                 const ::fwData::Image::csptr& _fixed,
-                                                 ::fwData::TransformationMatrix3D::sptr& _transform)
+void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _moving,
+                                                 const data::Image::csptr& _fixed,
+                                                 data::TransformationMatrix3D::sptr& _transform)
 {
     const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing2().begin(), _fixed->getSpacing2().end(), 1.,
                                                     std::multiplies<double>());
@@ -135,13 +135,13 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
     const double movingVoxelVolume = std::accumulate(_moving->getSpacing2().begin(), _moving->getSpacing2().end(), 1.,
                                                      std::multiplies<double>());
 
-    ::fwData::Image::csptr fixed = _fixed,
-    moving                       = _moving;
+    data::Image::csptr fixed  = _fixed,
+                       moving = _moving;
 
     // Resample the image with the smallest voxels to match the other's voxel size.
     if(fixedVoxelVolume < movingVoxelVolume)
     {
-        auto inverseTransform = ::fwData::TransformationMatrix3D::New();
+        auto inverseTransform = data::TransformationMatrix3D::New();
         ::fwDataTools::TransformationMatrix3D::invert(_transform, inverseTransform);
 
         fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
@@ -164,7 +164,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
 
     const std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
-    ::fwData::TransformationMatrix3D::sptr translation = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr translation = data::TransformationMatrix3D::New();
     for(std::uint8_t i = 0; i != 3; ++i)
     {
         translation->setCoefficient(i, 3, res[i]);

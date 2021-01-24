@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -44,13 +44,13 @@ namespace fwVtkIO
  *
  * Write a VTK Image using the VTK lib
  */
-class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                       public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Image >,
+                       public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(VtiImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+    fwCoreClassMacro(VtiImageWriter, ::fwDataIO::writer::GenericObjectWriter< data::Image >,
                      ::fwDataIO::writer::factory::New< VtiImageWriter >);
     fwCoreAllowSharedFromThis();
 

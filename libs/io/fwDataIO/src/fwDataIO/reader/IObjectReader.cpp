@@ -22,7 +22,7 @@
 
 #include "fwDataIO/reader/IObjectReader.hpp"
 
-#include <fwData/location/ILocation.hpp>
+#include <data/location/ILocation.hpp>
 
 namespace fwDataIO
 {
@@ -60,14 +60,14 @@ core::tools::Object::sptr IObjectReader::getObject()
 
 //------------------------------------------------------------------------------
 
-void IObjectReader::setLocation( const ::fwData::location::ILocation::sptr _location )
+void IObjectReader::setLocation( const data::location::ILocation::sptr _location )
 {
     m_location = _location;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::location::ILocation::sptr IObjectReader::getLocation()
+data::location::ILocation::sptr IObjectReader::getLocation()
 {
     return m_location;
 }

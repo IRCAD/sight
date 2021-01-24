@@ -27,8 +27,8 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
@@ -53,9 +53,9 @@ namespace fwDcmtkIO
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
 class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                                           public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                                           public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::
-                                                                                        IObjectReader >,
+                                           public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                                           public data::location::enableMultiFiles< ::fwDataIO::reader::
+                                                                                    IObjectReader >,
                                            public core::tools::ProgressAdviser
 {
 

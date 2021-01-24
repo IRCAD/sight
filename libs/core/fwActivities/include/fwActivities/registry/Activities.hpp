@@ -34,7 +34,7 @@
 #include <map>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Vector;
 }
@@ -157,19 +157,19 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <desc>Activity description ...</desc>
         <icon>media-0.1/icons/icon-3D.png</icon>
         <requirements>
-            <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
+            <requirement name="param1" type="data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="data::Mesh" maxOccurs="3" >
                 <key>Item1</key>
                 <key>Item2</key>
                 <key>Item3</key>
             </requirement>
-            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" container="vector" />
+            <requirement name="param3" type="data::Mesh" maxOccurs="*" container="vector" />
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
-            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
+            <requirement name="transformationMatrix" type="data::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
  * create="true" />
             <!--# ...-->
         </requirements>
@@ -266,7 +266,7 @@ public:
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const CSPTR(::fwData::Vector)& data ) const;
+    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const CSPTR(data::Vector)& data ) const;
 
     /**
      * @brief Get all infos
@@ -278,7 +278,7 @@ public:
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    FWACTIVITIES_API ActivitiesType getInfos( const CSPTR(::fwData::Vector)& data ) const;
+    FWACTIVITIES_API ActivitiesType getInfos( const CSPTR(data::Vector)& data ) const;
 
     /**
      * @brief Get all keys

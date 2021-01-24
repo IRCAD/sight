@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Patient/V1ToFwMedDataPatientV1Test.hpp"
+#include "data/Patient/V1ToFwMedDataPatientV1Test.hpp"
 
-#include <fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp>
+#include <fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -36,13 +36,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Patient::V1ToFwMedDataPatientV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Patient::V1ToFwMedDataPatientV1Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Patient
 {
@@ -68,7 +68,7 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     ::fwAtoms::Object::sptr originObj = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr targetObj;
 
-    ::fwAtomsPatch::helper::setClassname(originObj, "::fwData::Patient");
+    ::fwAtomsPatch::helper::setClassname(originObj, "data::Patient");
     ::fwAtomsPatch::helper::setVersion(originObj, "1");
 
     ::fwAtomsPatch::helper::Object helper(originObj);
@@ -86,8 +86,8 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[originObj] = targetObj;
 
-    ::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1::sptr patch;
-    patch = ::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1::New();
+    ::fwStructuralPatchdata::Patient::V1ToFwMedDataPatientV1::sptr patch;
+    patch = ::fwStructuralPatchdata::Patient::V1ToFwMedDataPatientV1::New();
     CPPUNIT_ASSERT_NO_THROW(patch->apply(originObj, targetObj, newVersions));
 
     CPPUNIT_ASSERT(targetObj);
@@ -121,6 +121,6 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Patient
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

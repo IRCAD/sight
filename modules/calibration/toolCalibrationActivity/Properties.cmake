@@ -14,7 +14,7 @@ set( REQUIREMENTS
         visuVTKQt
         visuVTKARAdaptor
         arData
-        fwData
+        data
         servicesReg
         trackingCalibration
         videoCalibration

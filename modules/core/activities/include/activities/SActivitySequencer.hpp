@@ -72,7 +72,7 @@ namespace activities
     </service>
    @endcode
  * @subsection In In
- * - \b requirementOverrides [::fwData::Composite] (optional): provide some data that will be passed as activity
+ * - \b requirementOverrides [data::Composite] (optional): provide some data that will be passed as activity
  *   requirements. Can be used to supply required data that cannot be created by the activity, or to override
  *   data that would normally be passed from an activity to the next.
  *

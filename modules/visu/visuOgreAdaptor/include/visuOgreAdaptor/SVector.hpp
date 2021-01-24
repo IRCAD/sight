@@ -32,7 +32,7 @@
 
 #include <Ogre.h>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }
@@ -116,7 +116,7 @@ private:
     void deleteVector();
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material {nullptr};
+    data::Material::sptr m_material {nullptr};
 
     /// Defines the axis length (in mm).
     float m_length {1.f};

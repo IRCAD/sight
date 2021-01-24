@@ -26,7 +26,7 @@
 
 #include <cvIO/Image.hpp>
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::cvIO::ut::ImageTest );
@@ -39,11 +39,11 @@ namespace ut
 //------------------------------------------------------------------------------
 
 template <typename T>
-static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
-                                      std::uint8_t _numChannels)
+static data::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
+                                  std::uint8_t _numChannels)
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = data::Image::New();
+    const auto dumpLock     = image->lock();
 
     SLM_ASSERT("Width should be at least 1", _w >= 1);
     size_t imageDim = 1;
@@ -57,8 +57,8 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
     }
 
     const core::tools::Type imageType = core::tools::Type::create<T>();
-    ::fwData::Image::Size imageSize = {0, 0, 0};
-    imageSize[0]                    = _w;
+    data::Image::Size imageSize       = {0, 0, 0};
+    imageSize[0] = _w;
     if(_h > 0)
     {
         imageSize[1] = _h;
@@ -84,7 +84,7 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
 
 template <typename T>
 static void compareImages( const ::cv::Mat& _cvImage,
-                           const ::fwData::Image::csptr& _image,
+                           const data::Image::csptr& _image,
                            size_t _w, size_t _h, size_t _d,
                            std::uint8_t _numChannels)
 {
@@ -161,7 +161,7 @@ template <typename T>
 static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    ::fwData::Image::sptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    data::Image::sptr image          = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     ::cv::Mat cvImage = ::cvIO::Image::moveToCv(image);
 
@@ -180,7 +180,7 @@ static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numCha
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::cvIO::Image::copyFromCv(image, cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
@@ -196,7 +196,7 @@ template <typename T>
 static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    ::fwData::Image::csptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    data::Image::csptr image         = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     ::cv::Mat cvImage = ::cvIO::Image::copyToCv(image);
 

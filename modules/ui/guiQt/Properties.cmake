@@ -6,7 +6,7 @@ set( START ON )
 set( DEPENDENCIES
     fwActivities
     core
-    fwData
+    data
     fwDataTools
     fwMedData
     fwGui

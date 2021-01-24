@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "uiReconstructionQml/SOrganMaterialEditor.hpp"
 
-#include <fwData/Material.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Reconstruction.hpp>
 
 namespace uiReconstructionQml
 {
@@ -68,10 +68,10 @@ void SOrganMaterialEditor::stopping()
 
 void SOrganMaterialEditor::updating()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    data::Material::sptr material = reconstruction->getMaterial();
 
     QColor color;
     color.setRgbF(material->diffuse()->red(), material->diffuse()->green(), material->diffuse()->blue());
@@ -84,13 +84,13 @@ void SOrganMaterialEditor::updating()
 
 void SOrganMaterialEditor::onColor(QColor color)
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->red()        = static_cast<float>(color.redF());
-    material->diffuse()->green()      = static_cast<float>(color.greenF());
-    material->diffuse()->blue()       = static_cast<float>(color.blueF());
+    data::Material::sptr material = reconstruction->getMaterial();
+    material->diffuse()->red()   = static_cast<float>(color.redF());
+    material->diffuse()->green() = static_cast<float>(color.greenF());
+    material->diffuse()->blue()  = static_cast<float>(color.blueF());
     this->materialNotification();
 }
 
@@ -99,11 +99,11 @@ void SOrganMaterialEditor::onColor(QColor color)
 void SOrganMaterialEditor::onOpacitySlider(int value )
 {
 
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha()      = value/100.0f;
+    data::Material::sptr material = reconstruction->getMaterial();
+    material->diffuse()->alpha() = value/100.0f;
     this->materialNotification();
 }
 
@@ -111,12 +111,12 @@ void SOrganMaterialEditor::onOpacitySlider(int value )
 
 void SOrganMaterialEditor::materialNotification()
 {
-    ::fwData::Reconstruction::csptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
-        ::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
+        data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -125,7 +125,7 @@ void SOrganMaterialEditor::materialNotification()
 ::fwServices::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

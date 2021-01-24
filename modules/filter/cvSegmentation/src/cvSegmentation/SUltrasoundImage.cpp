@@ -106,7 +106,7 @@ void SUltrasoundImage::configuring()
 fwServices::IService::KeyConnectionsMap SUltrasoundImage::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_ULTRASOUND_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ULTRASOUND_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -128,9 +128,9 @@ void SUltrasoundImage::stopping()
 void SUltrasoundImage::updating()
 {
     // HACK: Const cast to avoid a useless copy, fix this by overloading the `moveToCv` function to
-    // take a `::fwData::Image::cpstr` and output `const ::cv::Mat`.
-    const auto constImage = this->getLockedInput< ::fwData::Image >(s_ULTRASOUND_IMAGE_INPUT);
-    ::fwData::Image::sptr inputImage = ::fwData::Image::constCast(constImage.get_shared());
+    // take a `data::Image::cpstr` and output `const ::cv::Mat`.
+    const auto constImage        = this->getLockedInput< data::Image >(s_ULTRASOUND_IMAGE_INPUT);
+    data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SLM_ASSERT("Missing input frame.", inputImage);
 
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
@@ -172,10 +172,10 @@ void SUltrasoundImage::updating()
     ::cv::Mat srcGray;
     ::cv::cvtColor( src, srcGray, ::cv::COLOR_RGB2GRAY );
 
-    auto outputImage = this->getLockedInOut< ::fwData::Image >(s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT);
+    auto outputImage = this->getLockedInOut< data::Image >(s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT);
     SLM_ASSERT("Missing output frame.", outputImage);
 
-    const ::fwData::Image::Size outputSize = {{ m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
+    const data::Image::Size outputSize = {{ m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
     if(outputImage->getSize2() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8 ||
        outputImage->getNumberOfComponents() != 1)
@@ -191,7 +191,7 @@ void SUltrasoundImage::updating()
     ::cv::Mat remapResult = ::cvIO::Image::moveToCv(outputImage.get_shared());
     ::cv::remap(srcGray, remapResult, m_extractionMap, ::cv::Mat(), ::cv::INTER_LINEAR);
 
-    auto sig = outputImage->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto sig = outputImage->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

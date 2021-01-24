@@ -64,9 +64,9 @@ void SMergeTF::starting()
 ::fwServices::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_TF_POOL_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INPUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INPUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INPUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INPUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -78,18 +78,18 @@ void SMergeTF::updating()
 
     // Iterates over each TF to create connections.
     {
-        const auto tfPool = this->getLockedInput< ::fwData::Composite >(s_TF_POOL_INPUT);
+        const auto tfPool = this->getLockedInput< data::Composite >(s_TF_POOL_INPUT);
         SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
-        for(::fwData::Composite::value_type poolElt : *tfPool)
+        for(data::Composite::value_type poolElt : *tfPool)
         {
             // Checks if it's a TF.
-            const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+            const data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(poolElt.second);
             SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
 
-            m_connections.connect(tf, ::fwData::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_MERGE_SLOT);
-            m_connections.connect(tf, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, this->getSptr(), s_MERGE_SLOT);
-            m_connections.connect(tf, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG,
+            m_connections.connect(tf, data::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_MERGE_SLOT);
+            m_connections.connect(tf, data::TransferFunction::s_POINTS_MODIFIED_SIG, this->getSptr(), s_MERGE_SLOT);
+            m_connections.connect(tf, data::TransferFunction::s_WINDOWING_MODIFIED_SIG,
                                   this->getSptr(), s_MERGE_SLOT);
         }
     }
@@ -108,32 +108,32 @@ void SMergeTF::stopping()
 void SMergeTF::merge() const
 {
     // Get the TF pool.
-    const auto tfPool = this->getLockedInput< ::fwData::Composite >(s_TF_POOL_INPUT);
+    const auto tfPool = this->getLockedInput< data::Composite >(s_TF_POOL_INPUT);
     SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
     // Clear the output TF.
-    const auto outTF = this->getLockedInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    const auto outTF = this->getLockedInOut< data::TransferFunction >(s_TF_INOUT);
     outTF->clear();
 
     // Iterates over each TF to merge them in the output one.
-    typedef ::fwData::TransferFunction::TFValueType TFValue;
+    typedef data::TransferFunction::TFValueType TFValue;
     TFValue min = std::numeric_limits< TFValue >::max();
     TFValue max = std::numeric_limits< TFValue >::lowest();
-    for(::fwData::Composite::value_type poolElt : *tfPool)
+    for(data::Composite::value_type poolElt : *tfPool)
     {
         // Checks if the composite element is a TF.
-        const ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+        const data::TransferFunction::csptr tf = data::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
-        const ::fwData::mt::locked_ptr tfLock(tf);
+        const data::mt::locked_ptr tfLock(tf);
 
-        const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-        const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-        const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
-        const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+        const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+        const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+        const data::TransferFunction::TFValueType window           = tf->getWindow();
+        const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
-        const auto addTFPoint = [&](::fwData::TransferFunction::TFValueType _value, double _delta)
+        const auto addTFPoint = [&](data::TransferFunction::TFValueType _value, double _delta)
                                 {
-                                    ::fwData::TransferFunction::TFValueType value;
+                                    data::TransferFunction::TFValueType value;
                                     value  = (_value - minMaxValues.first) / width;
                                     value  = value * window + minWL;
                                     value += _delta;
@@ -150,14 +150,14 @@ void SMergeTF::merge() const
                                 };
 
         // Add new TF value to the output.
-        bool first = true;
-        ::fwData::TransferFunction::TFValueType previousValue = 0;
-        for(const ::fwData::TransferFunction::TFDataType::value_type& elt : tf->getTFData())
+        bool first                                        = true;
+        data::TransferFunction::TFValueType previousValue = 0;
+        for(const data::TransferFunction::TFDataType::value_type& elt : tf->getTFData())
         {
             // If the TF interpolation mode is not linear, we create new point in the merged TF.
-            if(!first && tf->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
+            if(!first && tf->getInterpolationMode() == data::TransferFunction::NEAREST)
             {
-                ::fwData::TransferFunction::TFValueType middleValue = previousValue + (elt.first - previousValue) / 2.;
+                data::TransferFunction::TFValueType middleValue = previousValue + (elt.first - previousValue) / 2.;
                 addTFPoint(middleValue, -1.);
                 addTFPoint(middleValue, 1.);
             }
@@ -199,43 +199,43 @@ void SMergeTF::merge() const
     // Updates the window/level.
     if(outTF->getWindow() > 0)
     {
-        outTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+        outTF->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
     }
     else
     {
-        outTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
+        outTF->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
     }
 
     // Sends the modification signal.
-    const auto sig = outTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = outTF->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::TFColor SMergeTF::mergeColors(const ::fwData::Composite::csptr _tfPool,
-                                                          ::fwData::TransferFunction::TFValueType _value) const
+data::TransferFunction::TFColor SMergeTF::mergeColors(const data::Composite::csptr _tfPool,
+                                                      data::TransferFunction::TFValueType _value) const
 {
-    ::fwData::TransferFunction::TFColor result;
-    for(::fwData::Composite::value_type poolElt : *_tfPool)
+    data::TransferFunction::TFColor result;
+    for(data::Composite::value_type poolElt : *_tfPool)
     {
         // Checks if the composite element is a TF.
-        const ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+        const data::TransferFunction::csptr tf = data::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
-        const ::fwData::mt::locked_ptr tfLock(tf);
+        const data::mt::locked_ptr tfLock(tf);
 
         // Gets window/level informations to change TF value from window/level space to TF space .
-        const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-        const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-        const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
-        const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+        const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+        const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+        const data::TransferFunction::TFValueType window           = tf->getWindow();
+        const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
-        ::fwData::TransferFunction::TFValueType value = (_value - minWL) / window;
-        value                                         = value * width + minMaxValues.first;
+        data::TransferFunction::TFValueType value = (_value - minWL) / window;
+        value = value * width + minMaxValues.first;
 
         // The value need to be in the TF space, that why it's converted before.
-        ::fwData::TransferFunction::TFColor currentColor = tf->getInterpolatedColor(value);
+        data::TransferFunction::TFColor currentColor = tf->getInterpolatedColor(value);
 
         result.r += currentColor.r;
         result.g += currentColor.g;

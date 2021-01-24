@@ -24,9 +24,9 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/MultiFiles.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/ILocationDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
@@ -55,7 +55,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
 
 //------------------------------------------------------------------------------
 
-::fwData::location::ILocation::sptr LocationDialog::show()
+data::location::ILocation::sptr LocationDialog::show()
 {
     // If we don't create an alternative by creating an input dialog to save file,
     // The application freeze without opening the FileDialog
@@ -69,7 +69,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
             this->getTitle(), "This is a temporary dialog to save file under macOS. Write below the path of the file you want to save:",
             QDir::homePath().toStdString());
         std::filesystem::path bpath( result);
-        m_location = ::fwData::location::SingleFile::New(bpath);
+        m_location = data::location::SingleFile::New(bpath);
         return m_location;
     }
 #endif
@@ -160,7 +160,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
         // convert all selected location into boost filesystem and add it in m_location
         if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
         {
-            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
+            data::location::MultiFiles::sptr multifiles = data::location::MultiFiles::New();
             std::vector< std::filesystem::path > paths;
             for (const QUrl& filename : files)
             {
@@ -174,7 +174,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
                  m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
         {
             std::filesystem::path bpath( files.first().toLocalFile().toStdString());
-            m_location = ::fwData::location::SingleFile::New(bpath);
+            m_location = data::location::SingleFile::New(bpath);
         }
     }
 }

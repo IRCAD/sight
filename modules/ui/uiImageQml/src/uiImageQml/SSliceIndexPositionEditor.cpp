@@ -27,7 +27,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -69,7 +69,7 @@ SSliceIndexPositionEditor::~SSliceIndexPositionEditor() noexcept
 
 void SSliceIndexPositionEditor::starting()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     this->updateImageInfos(image);
     this->updateSliceTypeFromImg(m_orientation);
 
@@ -94,7 +94,7 @@ void SSliceIndexPositionEditor::configuring()
 
 void SSliceIndexPositionEditor::updating()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     this->updateImageInfos(image);
     this->updateSliceIndexFromImg();
@@ -108,7 +108,7 @@ void SSliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sag
     m_frontalIndex->value()  = frontal;
     m_sagittalIndex->value() = sagittal;
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
     image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
@@ -143,14 +143,14 @@ void SSliceIndexPositionEditor::updateSliceType(int from, int to)
 
 void SSliceIndexPositionEditor::updateSliceIndexFromImg()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
         SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
-        const int index = static_cast<int>(image->getField< ::fwData::Integer >( fieldID )->value());
+        const int index = static_cast<int>(image->getField< data::Integer >( fieldID )->value());
 
         // Update QSlider
         int max = 0;
@@ -170,7 +170,7 @@ void SSliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
     // Update Type Choice
     this->setSliceType(static_cast< int >( type ));
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     this->updateSliceIndexFromImg();
 }
@@ -179,14 +179,14 @@ void SSliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
 
 void SSliceIndexPositionEditor::onSliceIndex(int index)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
-    image->getField< ::fwData::Integer >( fieldID )->value() = index;
+    image->getField< data::Integer >( fieldID )->value() = index;
 
-    auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
-        ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+    auto sig = image->signal< data::Image::SliceIndexModifiedSignalType >(
+        data::Image::s_SLICE_INDEX_MODIFIED_SIG);
     core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
     sig->asyncEmit(static_cast<int>(m_axialIndex->value()), static_cast<int>(m_frontalIndex->value()),
                    static_cast<int>(m_sagittalIndex->value()));
@@ -206,10 +206,10 @@ void SSliceIndexPositionEditor::onSliceType( int _type )
     m_orientation = type;
 
     // Fire the signal
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    auto sig = image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(
-        ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
+    auto sig = image->signal< data::Image::SliceTypeModifiedSignalType >(
+        data::Image::s_SLICE_TYPE_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
         sig->asyncEmit(oldType, _type);
@@ -223,10 +223,10 @@ void SSliceIndexPositionEditor::onSliceType( int _type )
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

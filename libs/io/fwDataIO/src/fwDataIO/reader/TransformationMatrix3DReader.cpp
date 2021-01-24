@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -38,7 +38,7 @@ namespace reader
 {
 
 TransformationMatrix3DReader::TransformationMatrix3DReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< IObjectReader >(this)
+    data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -52,9 +52,9 @@ TransformationMatrix3DReader::~TransformationMatrix3DReader()
 
 void TransformationMatrix3DReader::read()
 {
-    assert( ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    assert( ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
     std::filesystem::path file =
-        ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+        ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
 
     assert( std::filesystem::exists(file) );
 

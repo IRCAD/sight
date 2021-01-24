@@ -25,8 +25,8 @@
 #include <core/base.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/Vector.hpp>
+#include <data/location/Folder.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
 #include <fwGdcmIO/writer/SeriesDB.hpp>
@@ -49,7 +49,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -79,17 +79,17 @@ void SSeriesDBWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result && this->selectFiducialsExportMode())
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -145,13 +145,13 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(::fwIO::s_DATA_KEY);
+        data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
 
         // Create SeriesDB
         ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
         ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
-        for(const ::fwData::Object::sptr& object : vector->getContainer())
+        for(const data::Object::sptr& object : vector->getContainer())
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
             SLM_ASSERT("The container should only contain series.", series);
@@ -176,7 +176,7 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, ::fwMedD
     ::fwGdcmIO::writer::SeriesDB::sptr writer = ::fwGdcmIO::writer::SeriesDB::New();
     writer->setObject(seriesDB);
     writer->setFiducialsExportMode(m_fiducialsExportMode);
-    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
+    data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(folder);
     writer->setLocation(loc);
 
@@ -214,13 +214,13 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, ::fwMedD
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    ::fwData::Vector::csptr vector = this->getInput< ::fwData::Vector >(::fwIO::s_DATA_KEY);
+    data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
 
     // Create SeriesDB
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
-    for(const ::fwData::Object::sptr& object : vector->getContainer())
+    for(const data::Object::sptr& object : vector->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
         SLM_ASSERT("The container should only contain series.", series);

@@ -24,7 +24,7 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 namespace Tuto06SceneQt3DCpp
 {
@@ -171,7 +171,7 @@ void Plugin::initialize()
     *              register inputs/inouts
     ****************************************************************************************/
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh = data::Mesh::New();
 
     meshReaderSrv->registerInOut(mesh, "data");
     meshAdaptor->registerInOut(mesh, "mesh", true);

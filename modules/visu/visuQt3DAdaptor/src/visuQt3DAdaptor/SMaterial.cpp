@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "visuQt3DAdaptor/SMaterial.hpp"
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -30,7 +30,7 @@
 
 #include <QQmlEngine>
 
-fwServicesRegisterMacro( ::fwRenderQt3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, ::fwData::Material )
+fwServicesRegisterMacro( ::fwRenderQt3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, data::Material )
 
 //-----------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 SMaterial::SMaterial() noexcept
 {
     // Allows using Material as QML type when using SMaterial service in QML applications.
-    qmlRegisterType< ::fwRenderQt3D::data::Material >("fwRenderQt3D", 1, 0, "Material");
-    qRegisterMetaType< ::fwRenderQt3D::data::Material* >("::fwRenderQt3D::Material*");
+    qmlRegisterType< ::fwRenderQt3Ddata::Material >("fwRenderQt3D", 1, 0, "Material");
+    qRegisterMetaType< ::fwRenderQt3Ddata::Material* >("::fwRenderQt3D::Material*");
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void SMaterial::starting()
     this->initialize();
 
     // Creates a Qt3D mesh from sight data.
-    m_material = new ::fwRenderQt3D::data::Material();
+    m_material = new ::fwRenderQt3Ddata::Material();
 
     this->updating();
 }
@@ -88,7 +88,7 @@ void SMaterial::starting()
 ::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -97,7 +97,7 @@ void SMaterial::starting()
 void SMaterial::updating()
 {
     // Reads the material from the input as sight data.
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    data::Material::sptr material = this->getInOut< data::Material >(s_MATERIAL_INOUT);
 
     m_material->updatePolygonMode(material->getRepresentationMode());
     m_material->updateOptionsMode(material->getOptionsMode());
@@ -113,14 +113,14 @@ void SMaterial::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SMaterial::setMaterial(::fwRenderQt3D::data::Material* _material)
+void SMaterial::setMaterial(::fwRenderQt3Ddata::Material* _material)
 {
     m_material = _material;
 }
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::data::Material* SMaterial::getMaterial()
+::fwRenderQt3Ddata::Material* SMaterial::getMaterial()
 {
     return m_material;
 }

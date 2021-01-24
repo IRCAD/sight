@@ -37,7 +37,7 @@ namespace parser
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <object uid="..." type="::fwData::Color" >
+    <object uid="..." type="data::Color" >
         <value>#FFFFFF</value>
     </object>
    @endcode

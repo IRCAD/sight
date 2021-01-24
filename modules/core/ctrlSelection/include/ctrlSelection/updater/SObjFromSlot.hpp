@@ -35,8 +35,8 @@ namespace updater
  * @brief  Registers/unregisters the object given by the slots.
  *
  * @section Slots Slots
- * - \b add(::fwData::Object::sptr) : Registers the given object in the OSR
- * - \b remove(::fwData::Object::sptr) : Unregisters the object in the OSR
+ * - \b add(data::Object::sptr) : Registers the given object in the OSR
+ * - \b remove(data::Object::sptr) : Unregisters the object in the OSR
  *
  * @section XML XML Configuration
  *
@@ -46,7 +46,7 @@ namespace updater
      </service>
      @endcode
  * @subsection Output Output
- * - \b object [::fwData::Object]: Object used to register/unregister the object given by the slots.
+ * - \b object [data::Object]: Object used to register/unregister the object given by the slots.
  */
 class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 {
@@ -93,7 +93,7 @@ protected:
      * @{
      */
     /// Registers the given object in the OSR
-    void add(::fwData::Object::sptr obj);
+    void add(data::Object::sptr obj);
 
     /// Adds the object from the composite with the key given by config.
     void remove();

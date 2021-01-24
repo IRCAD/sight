@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "fwGuiQt/dialog/LocationDialog.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/MultiFiles.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/ILocationDialog.hpp>
 #include <fwGui/registry/macros.hpp>
@@ -55,14 +55,14 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 //------------------------------------------------------------------------------
 
-::fwData::location::ILocation::sptr LocationDialog::show()
+data::location::ILocation::sptr LocationDialog::show()
 {
     QWidget* parent                         = qApp->activeWindow();
     QString caption                         = QString::fromStdString(this->getTitle());
     const std::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                            = QString::fromStdString(defaultPath.string());
     QString filter                          = this->fileFilters();
-    ::fwData::location::ILocation::sptr location;
+    data::location::ILocation::sptr location;
 
     QFileDialog dialog;
     dialog.setDirectory(path);
@@ -93,7 +93,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         }
         if(!files.isEmpty())
         {
-            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
+            data::location::MultiFiles::sptr multifiles = data::location::MultiFiles::New();
             std::vector< std::filesystem::path > paths;
             for (QString filename : files)
             {
@@ -129,7 +129,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         if(!fileName.isNull())
         {
             std::filesystem::path bpath( fileName.toStdString());
-            location = ::fwData::location::SingleFile::New(bpath);
+            location = data::location::SingleFile::New(bpath);
         }
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
@@ -147,7 +147,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         if(!dir.isNull())
         {
             std::filesystem::path bpath( dir.toStdString()  );
-            location = ::fwData::location::Folder::New(bpath);
+            location = data::location::Folder::New(bpath);
         }
     }
     return location;

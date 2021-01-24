@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,10 +61,10 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image](mandatory): image viewed in negato mode, used for auto connections only.
+ * - \b image [data::Image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
  *      autoConnect="yes".
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -148,9 +148,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_RESET_CAMERA_SLOT
-     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
-     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_RESET_CAMERA_SLOT
+     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
+     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

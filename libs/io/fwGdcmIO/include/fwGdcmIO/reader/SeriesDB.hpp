@@ -25,8 +25,8 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
@@ -51,11 +51,11 @@ namespace reader
 {
 
 /**
- * @brief This class adds patient(s) from DICOM file(s) to fwData::SeriesDB.
+ * @brief This class adds patient(s) from DICOM file(s) to data::SeriesDB.
  */
 class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                                    public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                                    public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+                                    public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                                    public data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
                                     public core::com::HasSignals
 {
 

@@ -56,7 +56,7 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 ChainManager::ChainManager(::Ogre::Viewport* _viewport) :
     m_ogreViewport(_viewport)
 {
-    m_adaptorsObjectsOwner = ::fwData::Composite::New();
+    m_adaptorsObjectsOwner = data::Composite::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -267,7 +267,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                     else
                     {
                         this->unregisterService(id);
-                        if(m_adaptorsObjectsOwner->at< ::fwData::Object>(constantName) != nullptr)
+                        if(m_adaptorsObjectsOwner->at< data::Object>(constantName) != nullptr)
                         {
                             m_adaptorsObjectsOwner->getContainer().erase(constantName);
                         }

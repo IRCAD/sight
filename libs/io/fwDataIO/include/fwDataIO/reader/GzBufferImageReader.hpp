@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
@@ -40,16 +40,16 @@ namespace reader
  * @brief   Image Reader. Read file format .raw.gz
  *
  *
- * Ircad reader to read a ::fwData::Image on filesystem which the file format
+ * Ircad reader to read a data::Image on filesystem which the file format
  * is .raw.gz. This format is basic. The buffer is writen in a file with zlib.
  */
-class FWDATAIO_CLASS_API GzBufferImageReader :  public GenericObjectReader< ::fwData::Image >,
-                                                public ::fwData::location::enableSingleFile< IObjectReader >
+class FWDATAIO_CLASS_API GzBufferImageReader :  public GenericObjectReader< data::Image >,
+                                                public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(GzBufferImageReader, GenericObjectReader< ::fwData::Image>,
+    fwCoreClassMacro(GzBufferImageReader, GenericObjectReader< data::Image>,
                      ::fwDataIO::reader::factory::New< GzBufferImageReader >)
 
     /// Constructor. Do nothing.

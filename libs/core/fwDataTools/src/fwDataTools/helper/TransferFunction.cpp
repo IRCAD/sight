@@ -30,7 +30,7 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/ActiveWorkers.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwDataTools
 {
@@ -71,16 +71,16 @@ TransferFunction::~TransferFunction()
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
+void TransferFunction::createTransferFunction( data::Image::sptr image )
 {
-    ::fwData::Composite::sptr tfPool =
+    data::Composite::sptr tfPool =
         image->setDefaultField(::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId,
-                               ::fwData::Composite::New());
+                               data::Composite::New());
 
     // create the default transfer function in the image tf field if it does not exist
-    if (tfPool->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME) == tfPool->end())
+    if (tfPool->find(data::TransferFunction::s_DEFAULT_TF_NAME) == tfPool->end())
     {
-        ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
+        data::TransferFunction::sptr tfGreyLevel = data::TransferFunction::createDefaultTF();
         if (image->getWindowWidth() != 0 )
         {
             tfGreyLevel->setWindow( image->getWindowWidth() );
@@ -90,32 +90,32 @@ void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
         {
             double min, max;
             ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+            data::TransferFunction::TFValuePairType wlMinMax(min, max);
             tfGreyLevel->setWLMinMax(wlMinMax);
         }
 
         ::fwDataTools::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(::fwData::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
+        compositeHelper.add(data::TransferFunction::s_DEFAULT_TF_NAME, tfGreyLevel);
         compositeHelper.notify();
     }
 
     if (m_transferFunction.expired())
     {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+        data::TransferFunction::sptr tfGreyLevel =
+            tfPool->at< data::TransferFunction >(data::TransferFunction::s_DEFAULT_TF_NAME);
         m_transferFunction = tfGreyLevel;
     }
     else if (m_transferFunction.lock()->getTFValues().empty())
     {
-        ::fwData::TransferFunction::sptr tfGreyLevel =
-            tfPool->at< ::fwData::TransferFunction >(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+        data::TransferFunction::sptr tfGreyLevel =
+            tfPool->at< data::TransferFunction >(data::TransferFunction::s_DEFAULT_TF_NAME);
         m_transferFunction.lock()->deepCopy(tfGreyLevel);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image)
+void TransferFunction::setOrCreateTF(const data::TransferFunction::sptr& _tf, const data::Image::sptr& _image)
 {
     this->removeTFConnections();
     if (_tf)
@@ -131,7 +131,7 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::sptr TransferFunction::getTransferFunction() const
+data::TransferFunction::sptr TransferFunction::getTransferFunction() const
 {
     SLM_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
                , !m_transferFunction.expired());
@@ -140,7 +140,7 @@ void TransferFunction::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, 
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setTransferFunction(const ::fwData::TransferFunction::sptr& _tf)
+void TransferFunction::setTransferFunction(const data::TransferFunction::sptr& _tf)
 {
     m_transferFunction = _tf;
 }
@@ -151,13 +151,13 @@ void TransferFunction::installTFConnections()
 {
     core::com::Connection connection;
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    data::TransferFunction::sptr tf = this->getTransferFunction();
 
-    connection = tf->signal(::fwData::Object::s_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
+    connection = tf->signal(data::Object::s_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
     m_tfConnections.addConnection(connection);
-    connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
+    connection = tf->signal(data::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
     m_tfConnections.addConnection(connection);
-    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
+    connection = tf->signal(data::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
     m_tfConnections.addConnection(connection);
 }
 
@@ -172,9 +172,9 @@ void TransferFunction::removeTFConnections()
 
 core::com::Connection TransferFunction::getTFUpdateConnection() const
 {
-    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    const auto sig                            = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const data::TransferFunction::sptr tf = this->getTransferFunction();
+    const auto sig                        = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
 
     return sig->getConnection(m_slotUpdateTFPoints);
 }
@@ -183,9 +183,9 @@ core::com::Connection TransferFunction::getTFUpdateConnection() const
 
 core::com::Connection TransferFunction::getTFWindowingConnection() const
 {
-    const ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    const auto sig                            = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    const data::TransferFunction::sptr tf = this->getTransferFunction();
+    const auto sig                        = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+        data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
 
     return sig->getConnection(m_slotUpdateTFWindowing);
 }

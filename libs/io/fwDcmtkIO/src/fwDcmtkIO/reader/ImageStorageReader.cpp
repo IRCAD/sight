@@ -66,7 +66,7 @@ ImageStorageReader::~ImageStorageReader()
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
     DicomContainerType instances = series->getDicomContainer();
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
@@ -321,7 +321,7 @@ ImageStorageReader::~ImageStorageReader()
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::directRead(const ::fwData::Image::sptr& image,
+void ImageStorageReader::directRead(const data::Image::sptr& image,
                                     DicomContainerType instances,
                                     unsigned short rows, unsigned short columns,
                                     int depth, double rescaleSlope,
@@ -341,7 +341,7 @@ void ImageStorageReader::directRead(const ::fwData::Image::sptr& image,
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
+void ImageStorageReader::directRGBLookupRead(const data::Image::sptr& image,
                                              DcmDataset& dataset,
                                              DicomContainerType instances,
                                              unsigned short rows, unsigned short columns,
@@ -414,7 +414,7 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
+void ImageStorageReader::lazyRead(const data::Image::sptr& image,
                                   const ::fwMedData::DicomSeries::csptr& series,
                                   unsigned short rows, unsigned short columns,
                                   int depth, double rescaleSlope,
@@ -442,7 +442,7 @@ void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
 
 //-----------------------------------------------------------------------------
 
-void ImageStorageReader::lazyRGBLookupRead(const ::fwData::Image::sptr& image,
+void ImageStorageReader::lazyRGBLookupRead(const data::Image::sptr& image,
                                            const ::fwMedData::DicomSeries::csptr& series,
                                            DcmDataset& dataset,
                                            DicomContainerType,

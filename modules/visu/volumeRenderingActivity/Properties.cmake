@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
-    fwData
+    data
     fwMedData
     gui
     guiQt

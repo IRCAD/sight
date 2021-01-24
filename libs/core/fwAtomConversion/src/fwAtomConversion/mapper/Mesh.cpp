@@ -28,10 +28,10 @@
 
 #include <core/tools/UUID.hpp>
 
+#include <data/Mesh.hpp>
+
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
-
-#include <fwData/Mesh.hpp>
 
 namespace fwAtomConversion
 {
@@ -40,11 +40,11 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Mesh, ::fwData::Mesh);
+fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Mesh, data::Mesh);
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Mesh::convert( ::fwData::Object::sptr object,
+::fwAtoms::Object::sptr Mesh::convert( data::Object::sptr object,
                                        DataVisitor::AtomCacheType& cache )
 {
     const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
@@ -52,7 +52,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Mesh, ::fwData::Mesh)
     metaclass.visit(visitor);
     ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(object);
+    data::Mesh::sptr mesh = data::Mesh::dynamicCast(object);
 
     const auto meshAttributes = mesh->getAttributes();
 
@@ -65,19 +65,19 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Mesh, ::fwData::Mesh)
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Mesh::convert(  ::fwAtoms::Object::sptr atom,
-                                       AtomVisitor::DataCacheType& cache,
-                                       const AtomVisitor::IReadPolicy& uuidPolicy
-                                       )
+data::Object::sptr Mesh::convert(  ::fwAtoms::Object::sptr atom,
+                                   AtomVisitor::DataCacheType& cache,
+                                   const AtomVisitor::IReadPolicy& uuidPolicy
+                                   )
 {
     ::fwAtomConversion::AtomVisitor visitor( atom, cache, uuidPolicy );
     visitor.visit();
-    ::fwData::Object::sptr data = visitor.getDataObject();
-    ::fwData::Mesh::sptr mesh   = ::fwData::Mesh::dynamicCast(data);
+    data::Object::sptr data = visitor.getDataObject();
+    data::Mesh::sptr mesh   = data::Mesh::dynamicCast(data);
 
     ::fwAtoms::Numeric::sptr attributes = ::fwAtoms::Numeric::dynamicCast( atom->getAttribute("attributes") );
 
-    ::fwData::Mesh::Attributes meshAttributes = static_cast< ::fwData::Mesh::Attributes >(attributes->getValue<int>());
+    data::Mesh::Attributes meshAttributes = static_cast< data::Mesh::Attributes >(attributes->getValue<int>());
 
     mesh->setAttributes(meshAttributes);
 

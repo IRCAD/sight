@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -38,7 +38,7 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image )
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, data::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr pImg = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
@@ -68,7 +68,7 @@ void MedicalImageSrv::convertImage()
 
         if (isModified)
         {
-            auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+            auto sig = pImg->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         }
     }
@@ -124,8 +124,8 @@ void MedicalImageSrv::info( std::ostream& )
 ::fwServices::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push("image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push("image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push("image", data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push("image", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

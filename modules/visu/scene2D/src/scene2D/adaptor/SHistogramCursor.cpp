@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "scene2D/adaptor/SHistogramCursor.hpp"
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Point.hpp>
+#include <data/Histogram.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -33,7 +33,7 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogramCursor);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogramCursor)
 
 namespace scene2D
 {
@@ -69,12 +69,12 @@ void SHistogramCursor::configuring()
 
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
     if (config.count("borderColor"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_borderColor, config.get<std::string>("borderColor"));
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_borderColor, config.get<std::string>("borderColor"));
     }
 
     if (config.count("pointSize"))
@@ -120,20 +120,20 @@ void SHistogramCursor::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
-    ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue  = histogram->getMinValue();
-    const float histogramBinsWidth = histogram->getBinsWidth();
+    data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    data::Histogram::fwHistogramValues values = histogram->getValues();
+    const float histogramMinValue             = histogram->getMinValue();
+    const float histogramBinsWidth            = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    ::fwRenderQtdata::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     int histIndex = (int) sceneCoord.getX();
     int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size()) // avoid std out_of_range on MS Windows
     {
-        ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+        ::fwRenderQtdata::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
         const double viewportWidth  = viewport->getWidth();
 
@@ -154,7 +154,7 @@ void SHistogramCursor::updating()
         diameterH *= ratio.first;
         diameterV *= ratio.second;
 
-        ::fwData::Point::csptr point = this->getInput< ::fwData::Point>(s_POINT_INPUT);
+        data::Point::csptr point = this->getInput< data::Point>(s_POINT_INPUT);
 
         const double x = point->getCoord()[0] - diameterH / 2;
         const double y = point->getCoord()[1] - diameterV / 2;
@@ -165,12 +165,12 @@ void SHistogramCursor::updating()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
+void SHistogramCursor::processInteraction( ::fwRenderQtdata::Event& _event )
 {
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+    if( _event.getType() == ::fwRenderQtdata::Event::MouseMove )
     {
         m_coord = _event.getCoord();
     }
@@ -183,8 +183,8 @@ void SHistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
 ::fwServices::IService::KeyConnectionsMap SHistogramCursor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

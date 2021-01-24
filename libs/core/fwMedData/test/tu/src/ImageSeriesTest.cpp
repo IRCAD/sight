@@ -56,7 +56,7 @@ void ImageSeriesTest::imageTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type("float"));
     CPPUNIT_ASSERT(img);
 

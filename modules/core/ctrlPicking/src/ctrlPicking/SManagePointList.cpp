@@ -26,11 +26,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/PointList.hpp>
@@ -110,9 +110,9 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
 {
     if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
     {
-        const ::fwData::Point::sptr point = ::fwData::Point::New();
+        const data::Point::sptr point = data::Point::New();
 
-        const auto matrixW = this->getWeakInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT);
+        const auto matrixW = this->getWeakInput< data::TransformationMatrix3D >(s_MATRIX_INPUT);
         const auto matrix  = matrixW.lock();
 
         if(matrix)
@@ -143,47 +143,47 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
 
 //------------------------------------------------------------------------------
 
-void SManagePointList::addPoint(const ::fwData::Point::sptr _point) const
+void SManagePointList::addPoint(const data::Point::sptr _point) const
 {
-    const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
 
     if(m_label)
     {
-        const auto counter                 = pointList->getPoints().size();
-        const ::fwData::String::sptr label = ::fwData::String::New(std::to_string(counter));
+        const auto counter             = pointList->getPoints().size();
+        const data::String::sptr label = data::String::New(std::to_string(counter));
         _point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label );
     }
 
     pointList->pushBack(_point);
-    const auto& sigAdded = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
-        ::fwData::PointList::s_POINT_ADDED_SIG);
+    const auto& sigAdded = pointList->signal< data::PointList::PointAddedSignalType >(
+        data::PointList::s_POINT_ADDED_SIG);
     sigAdded->asyncEmit(_point);
 
     if(m_max != 0 && pointList->getPoints().size() > m_max)
     {
-        const ::fwData::Point::sptr removedPoint = pointList->getPoints().front();
+        const data::Point::sptr removedPoint = pointList->getPoints().front();
         pointList->remove(0);
-        const auto& sigRemoved = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
+            data::PointList::s_POINT_REMOVED_SIG);
         sigRemoved->asyncEmit(removedPoint);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SManagePointList::removePoint(const ::fwData::Point::csptr _point) const
+void SManagePointList::removePoint(const data::Point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+        const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
 
-        const ::fwData::Point::sptr pointRes =
+        const data::Point::sptr pointRes =
             ::fwDataTools::helper::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
         if(pointRes != nullptr)
         {
-            const auto& sigRemoved = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
+                data::PointList::s_POINT_REMOVED_SIG);
             sigRemoved->asyncEmit(pointRes);
         }
     }
@@ -193,18 +193,18 @@ void SManagePointList::removePoint(const ::fwData::Point::csptr _point) const
 
 void SManagePointList::clearPoints() const
 {
-    const auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
 
-    using PLContainer = ::fwData::PointList::PointListContainer;
+    using PLContainer = data::PointList::PointListContainer;
     const PLContainer container = pointList->getPoints();
     pointList->clear();
 
     for(PLContainer::size_type i = 0; i < container.size(); ++i)
     {
-        const ::fwData::Point::sptr point = container[i];
+        const data::Point::sptr point = container[i];
 
-        const auto& sigRemoved = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
+            data::PointList::s_POINT_REMOVED_SIG);
         sigRemoved->asyncEmit(point);
     }
 }

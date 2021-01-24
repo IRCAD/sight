@@ -64,19 +64,19 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
     const std::string message = ss.str();
     const core::tools::Type imageType(imageTypeName);
     const core::tools::Type roiType(roiTypeName);
-    ::fwData::Image::sptr imageRef;
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwData::Image::sptr roi   = ::fwData::Image::New();
+    data::Image::sptr imageRef;
+    data::Image::sptr image = data::Image::New();
+    data::Image::sptr roi   = data::Image::New();
 
     // generate a random image
     ::fwTest::generator::Image::generateRandomImage(image, imageType);
-    const ::fwData::Image::Size size       = image->getSize2();
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
-    const ::fwData::Image::Origin origin   = image->getOrigin2();
+    const data::Image::Size size       = image->getSize2();
+    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Origin origin   = image->getOrigin2();
     ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType,
-                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                              data::Image::PixelFormat::GRAY_SCALE);
 
-    imageRef = ::fwData::Object::copy(image);
+    imageRef = data::Object::copy(image);
 
     // fill roi with random values
     ::fwTest::generator::Image::randomizeImage(roi);

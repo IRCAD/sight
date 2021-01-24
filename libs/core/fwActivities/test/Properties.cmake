@@ -2,5 +2,5 @@
 set( NAME fwActivitiesTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES core fwData fwMedData fwActivities fwTest)
+set( DEPENDENCIES core data fwMedData fwActivities fwTest)
 set( REQUIREMENTS  )

@@ -24,14 +24,14 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }

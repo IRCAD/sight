@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,10 +100,10 @@ void TransferFunction::removeTexture()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
+void TransferFunction::updateTexture(const data::TransferFunction::csptr& _tf)
 {
-    using TFValueType     = ::fwData::TransferFunction::TFValueType;
-    using TFValuePairType = ::fwData::TransferFunction::TFValuePairType;
+    using TFValueType     = data::TransferFunction::TFValueType;
+    using TFValuePairType = data::TransferFunction::TFValuePairType;
 
     // Retrieves the pixel buffer from the texture
     ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
@@ -130,7 +130,7 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
         const TFValueType value = (i - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) *
                                   invWindow + tfMinMax.first;
 
-        ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+        data::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.b * 255);
         *pDest++ = static_cast<std::uint8_t>(interpolatedColor.g * 255);

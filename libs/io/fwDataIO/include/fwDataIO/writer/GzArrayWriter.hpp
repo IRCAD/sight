@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
 
-#include <fwData/Array.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Array.hpp>
+#include <data/location/SingleFile.hpp>
 
 namespace fwDataIO
 {
@@ -37,16 +37,16 @@ namespace writer
  * @brief   Array Writer. Write file format .raw.gz
  *
  *
- * Ircad writer to write a ::fwData::Array on filesystem which the file format
+ * Ircad writer to write a data::Array on filesystem which the file format
  * is .raw.gz. This format is basic. The buffer is written in a file with zlib.
  */
-class FWDATAIO_CLASS_API GzArrayWriter :  public GenericObjectWriter< ::fwData::Array >,
-                                          public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class FWDATAIO_CLASS_API GzArrayWriter :  public GenericObjectWriter< data::Array >,
+                                          public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(GzArrayWriter, GenericObjectWriter< ::fwData::Array>,
+    fwCoreClassMacro(GzArrayWriter, GenericObjectWriter< data::Array>,
                      ::fwDataIO::writer::factory::New< GzArrayWriter >)
 
     /// Constructor. Do nothing.

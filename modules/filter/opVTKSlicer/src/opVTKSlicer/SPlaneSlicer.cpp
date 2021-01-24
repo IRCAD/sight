@@ -26,8 +26,8 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
+#include <data/Image.hpp>
+#include <data/Point.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -95,7 +95,7 @@ void SPlaneSlicer::updating()
     this->setReslicerExtent();
     this->setReslicerAxes();
 
-    auto image                           = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    auto image                           = this->getInput< data::Image >(s_IMAGE_IN);
     vtkSmartPointer<vtkImageData> vtkimg = vtkSmartPointer<vtkImageData>::New();
 
     ::fwVtkIO::toVTKImage(image, vtkimg.Get());
@@ -103,7 +103,7 @@ void SPlaneSlicer::updating()
     m_reslicer->SetInputData(vtkimg);
     m_reslicer->Update();
 
-    auto slice = this->getInOut< ::fwData::Image >(s_SLICE_OUT);
+    auto slice = this->getInOut< data::Image >(s_SLICE_OUT);
 
     ::fwVtkIO::fromVTKImage(m_reslicer->GetOutput(), slice);
 
@@ -117,7 +117,7 @@ void SPlaneSlicer::updating()
     const auto origin = slice->getOrigin2();
     slice->setOrigin2({{origin[0], origin[1], 0}});
 
-    auto sig = slice->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+    auto sig = slice->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
 
     sig->asyncEmit();
 }
@@ -156,12 +156,12 @@ void SPlaneSlicer::configuring()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT);
-    connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_AXES_IN, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT);
+    connections.push(s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_AXES_IN, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -170,7 +170,7 @@ void SPlaneSlicer::configuring()
 
 void SPlaneSlicer::setReslicerExtent()
 {
-    ::fwData::Image::csptr extentImg = this->getInput< ::fwData::Image >(s_EXTENT_IN);
+    data::Image::csptr extentImg = this->getInput< data::Image >(s_EXTENT_IN);
 
     SLM_ASSERT("No extentImg.", extentImg);
 
@@ -209,7 +209,7 @@ void SPlaneSlicer::setReslicerExtent()
 
 void SPlaneSlicer::setReslicerAxes()
 {
-    ::fwData::TransformationMatrix3D::csptr axes = this->getInput< ::fwData::TransformationMatrix3D>(s_AXES_IN);
+    data::TransformationMatrix3D::csptr axes = this->getInput< data::TransformationMatrix3D>(s_AXES_IN);
 
     SLM_ASSERT("No axes found.", axes);
 
@@ -252,9 +252,9 @@ void SPlaneSlicer::setReslicerAxes()
 
 void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const
 {
-    auto image = this->getInput< ::fwData::Image >(s_EXTENT_IN);
+    auto image = this->getInput< data::Image >(s_EXTENT_IN);
 
-    ::fwData::Object::sptr index;
+    data::Object::sptr index;
     switch (m_orientation)
     {
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
@@ -268,7 +268,7 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
             break;
     }
 
-    const int idx = ::fwData::Integer::dynamicCast(index)->value();
+    const int idx = data::Integer::dynamicCast(index)->value();
 
     const auto& spacing = image->getSpacing2();
     const auto& origin  = image->getOrigin2();
@@ -304,7 +304,7 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 
 void SPlaneSlicer::updateDefaultValue()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_IN);
     SLM_ASSERT("No 'image' found.", image);
 
     double min, max;

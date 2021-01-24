@@ -28,7 +28,7 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>

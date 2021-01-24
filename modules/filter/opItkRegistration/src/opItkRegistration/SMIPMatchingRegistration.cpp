@@ -25,11 +25,11 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadToWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -80,9 +80,9 @@ void SMIPMatchingRegistration::configuring()
 
 void SMIPMatchingRegistration::updating()
 {
-    auto fixed     = this->getInput< ::fwData::Image>("fixed");
-    auto moving    = this->getInput< ::fwData::Image>("moving");
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D>("transform");
+    auto fixed     = this->getInput< data::Image>("fixed");
+    auto moving    = this->getInput< data::Image>("moving");
+    auto transform = this->getInOut< data::TransformationMatrix3D>("transform");
     SLM_ASSERT("Missing required input 'fixed'", fixed);
     SLM_ASSERT("Missing required input 'moving'", moving);
     SLM_ASSERT("Missing required inout 'transform'", transform);
@@ -93,16 +93,16 @@ void SMIPMatchingRegistration::updating()
     params.transform = transform;
 
     {
-        ::fwData::mt::ObjectReadLock movingLock(moving);
-        ::fwData::mt::ObjectReadLock fixedLock(fixed);
-        ::fwData::mt::ObjectWriteLock transformLock(transform);
+        data::mt::ObjectReadLock movingLock(moving);
+        data::mt::ObjectReadLock fixedLock(fixed);
+        data::mt::ObjectWriteLock transformLock(transform);
         core::tools::Type type = moving->getType();
         core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ::itkRegistrationOp::RegistrationDispatch >
         ::invoke( type, params );
     }
 
-    transform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType>(
-        ::fwData::TransformationMatrix3D::s_MODIFIED_SIG)
+    transform->signal< data::TransformationMatrix3D::ModifiedSignalType>(
+        data::TransformationMatrix3D::s_MODIFIED_SIG)
     ->asyncEmit();
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,18 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_CONVERT_HPP__
-#define __FWATOMCONVERSION_CONVERT_HPP__
+#pragma once
 
+#include "fwAtomConversion/AtomVisitor.hpp"
 #include "fwAtomConversion/config.hpp"
 #include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/AtomVisitor.hpp"
 
 namespace fwAtoms
 {
 class Object;
 }
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -40,7 +39,7 @@ namespace fwAtomConversion
 {
 
 /**
- * @brief Helper to convert a ::fwData::Object to a ::fwAtoms::Object
+ * @brief Helper to convert a data::Object to a ::fwAtoms::Object
  *
  * @param data data object to convert
  * @return Converted ::fwAtoms::Object
@@ -52,57 +51,55 @@ namespace fwAtomConversion
  * @note fwData camp property names are used like key to store attributes in fwAtoms::Object
  * @note sub objects multi-referenced in the fwData structure are represented by the same fwAtoms::Object
  * ( also multi-referenced in fwAtoms structure )
- * @note null ::fwData::Object::sptr are kept and are converted in null ::fwAtoms::Base::sptr
- * @note Only std::vector of type fwData::Object::sptr, enum, bool, string, int or real are managed
+ * @note null data::Object::sptr are kept and are converted in null ::fwAtoms::Base::sptr
+ * @note Only std::vector of type data::Object::sptr, enum, bool, string, int or real are managed
  * @note Only std::map with key value : string, int or real are managed
- * @note Only std::map with type value : fwData::Object::sptr, bool, enum, string, int or real are managed
+ * @note Only std::map with type value : data::Object::sptr, bool, enum, string, int or real are managed
  */
-FWATOMCONVERSION_API SPTR(::fwAtoms::Object) convert( const SPTR(::fwData::Object) &data );
+FWATOMCONVERSION_API SPTR(::fwAtoms::Object) convert( const SPTR(data::Object) &data );
 
 /**
- * @brief Converts a ::fwData::Object to a ::fwAtoms::Object.
+ * @brief Converts a data::Object to a ::fwAtoms::Object.
  * @param dataObj data to convert
  * @param cache   cache to register already converted data, used when a data is referenced multiple times.
  * @return Returns the converted atom.
  * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
  */
-FWATOMCONVERSION_API SPTR(::fwAtoms::Object) convert( const SPTR(::fwData::Object) &dataObj,
-                                                      DataVisitor::AtomCacheType & cache );
+FWATOMCONVERSION_API SPTR(::fwAtoms::Object) convert( const SPTR(data::Object) &dataObj,
+                                                      DataVisitor::AtomCacheType& cache );
 
 /**
- * @brief Helper to convert a ::fwAtoms::Object to a ::fwData::Object
+ * @brief Helper to convert a ::fwAtoms::Object to a data::Object
  *
  * @param atom atom to convert
  * @param uuidPolicy AtomVisitor policy
- * @return Converted ::fwData::Object
+ * @return Converted data::Object
  *
  * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
- * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
+ * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in data::factory
  * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
  * @throw ::fwAtomConversion::exception::ConversionNotManaged if atom is not data compliant
  *
- * @note see notes of convert(::fwData::Object::sptr data) method
+ * @note see notes of convert(data::Object::sptr data) method
  */
-FWATOMCONVERSION_API SPTR(::fwData::Object) convert(
+FWATOMCONVERSION_API SPTR(data::Object) convert(
     const SPTR(::fwAtoms::Object) &atom,
-    const AtomVisitor::IReadPolicy &uuidPolicy = AtomVisitor::ChangePolicy()
+    const AtomVisitor::IReadPolicy& uuidPolicy = AtomVisitor::ChangePolicy()
     );
 
 /**
- * @brief Converts a ::fwAtoms::Object to a ::fwData::Object
+ * @brief Converts a ::fwAtoms::Object to a data::Object
  *
  * @param atomObj atom to convert
  * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times
  * @param uuidPolicy AtomVisitor policy
- * @return Converted ::fwData::Object.
+ * @return Converted data::Object.
  *
- * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
+ * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in data::factory
  * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
  */
-FWATOMCONVERSION_API SPTR(::fwData::Object) convert( const SPTR(::fwAtoms::Object) &atomObj,
-                                                     AtomVisitor::DataCacheType & cache,
-                                                     const AtomVisitor::IReadPolicy &uuidPolicy );
+FWATOMCONVERSION_API SPTR(data::Object) convert( const SPTR(::fwAtoms::Object) &atomObj,
+                                                 AtomVisitor::DataCacheType& cache,
+                                                 const AtomVisitor::IReadPolicy& uuidPolicy );
 
 } // end namespace fwAtomConversion
-
-#endif // __FWATOMCONVERSION_CONVERT_HPP__

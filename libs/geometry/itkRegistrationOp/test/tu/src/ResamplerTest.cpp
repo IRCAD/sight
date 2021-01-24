@@ -24,8 +24,8 @@
 
 #include <itkRegistrationOp/Resampler.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -56,25 +56,25 @@ void ResamplerTest::tearDown()
 
 void ResamplerTest::identityTest()
 {
-    const ::fwData::Image::Size SIZE = {{ 32, 32, 32 }};
+    const data::Image::Size SIZE = {{ 32, 32, 32 }};
 
     // TODO: make it work with an anisotropic spacing.
-    const ::fwData::Image::Spacing SPACING = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const core::tools::Type TYPE           = core::tools::Type::s_INT16;
+    const data::Image::Spacing SPACING = {{ 0.5, 0.5, 0.5 }};
+    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const core::tools::Type TYPE       = core::tools::Type::s_INT16;
 
-    ::fwData::Image::sptr imageIn = ::fwData::Image::New();
+    data::Image::sptr imageIn = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
     ::fwTest::generator::Image::randomizeImage(imageIn);
 
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
     // Identity.
-    ::fwData::TransformationMatrix3D::sptr idMat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr idMat = data::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::Resampler::resample(
-        ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(idMat), imageIn);
+        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(idMat), imageIn);
 
     CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
     CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
@@ -105,19 +105,19 @@ void ResamplerTest::identityTest()
 void ResamplerTest::translateTest()
 {
     // Generate a simple image with a white cube at its center.
-    const ::fwData::Image::Size SIZE       = {{ 16, 16, 16 }};
-    const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const core::tools::Type TYPE           = core::tools::Type::s_UINT8;
+    const data::Image::Size SIZE       = {{ 16, 16, 16 }};
+    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
+    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     std::uint8_t value = 255;
 
-    SPTR(::fwData::Image::BufferType) bufferValue =
+    SPTR(data::Image::BufferType) bufferValue =
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
     const auto inDumpLock = imageIn->lock();
@@ -133,11 +133,11 @@ void ResamplerTest::translateTest()
     imageIn->at<std::uint8_t>(8, 8, 8) = value;
 
     // 5 mm translation along the x axis.
-    ::fwData::TransformationMatrix3D::sptr transMat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr transMat = data::TransformationMatrix3D::New();
     transMat->setCoefficient(0, 3, 5);
 
     ::itkRegistrationOp::Resampler::resample(
-        ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(transMat));
+        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(transMat));
 
     const auto dumpLock = imageOut->lock();
 
@@ -170,15 +170,15 @@ void ResamplerTest::translateTest()
 
 void ResamplerTest::rotateTest()
 {
-    const ::fwData::Image::Size SIZE       = {{ 64, 64, 64 }};
-    const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
-    const core::tools::Type TYPE           = core::tools::Type::s_FLOAT;
+    const data::Image::Size SIZE       = {{ 64, 64, 64 }};
+    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
+    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const core::tools::Type TYPE       = core::tools::Type::s_FLOAT;
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     const float value = 1.f;
 
@@ -195,7 +195,7 @@ void ResamplerTest::rotateTest()
 
     // FIXME: compute to appropriate matrix to rotate a face from negative Z to negative X.
 
-    ::fwData::TransformationMatrix3D::sptr rotMat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr rotMat = data::TransformationMatrix3D::New();
     // 90° rotation along the Y axis.
     rotMat->setCoefficient(0, 0, 0);
     rotMat->setCoefficient(0, 2, 1);
@@ -206,7 +206,7 @@ void ResamplerTest::rotateTest()
     rotMat->setCoefficient(0, 3, SIZE[0] / 2.);
 
     ::itkRegistrationOp::Resampler::resample(
-        ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(rotMat));
+        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(rotMat));
 
     const auto outDumpLock = imageOut->lock();
 

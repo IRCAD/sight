@@ -26,7 +26,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::ImageTest );
@@ -38,12 +38,12 @@ namespace ut
 
 //-----------------------------------------------------------------------------
 
-void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+void compare(data::Object::sptr objRef, data::Object::sptr objComp)
 {
-    ::fwData::reflection::visitor::CompareObjects visitor;
+    data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
@@ -69,14 +69,14 @@ void ImageTest::tearDown()
 
 void ImageTest::generator3DTest()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    const ::fwData::Image::Size size       = {10, 15, 23};
-    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
-    const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
-    core::tools::Type type                 = core::tools::Type::create< std::int32_t >();
+    data::Image::sptr image            = data::Image::New();
+    const data::Image::Size size       = {10, 15, 23};
+    const data::Image::Spacing spacing = {0.85, 2.6, 1.87};
+    const data::Image::Origin origin   = {-45.6, 25.97, -53.9};
+    core::tools::Type type             = core::tools::Type::create< std::int32_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
-                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                              data::Image::PixelFormat::GRAY_SCALE);
 
     CPPUNIT_ASSERT(image->getSize2() == size);
     CPPUNIT_ASSERT(image->getSpacing2() == spacing);
@@ -88,14 +88,14 @@ void ImageTest::generator3DTest()
 
 void ImageTest::generator2DTest()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    const ::fwData::Image::Size size       = {10, 15, 0};
-    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 0.};
-    const ::fwData::Image::Origin origin   = {-45.6, 25.97, 0.};
-    core::tools::Type type                 = core::tools::Type::create< std::int16_t >();
+    data::Image::sptr image            = data::Image::New();
+    const data::Image::Size size       = {10, 15, 0};
+    const data::Image::Spacing spacing = {0.85, 2.6, 0.};
+    const data::Image::Origin origin   = {-45.6, 25.97, 0.};
+    core::tools::Type type             = core::tools::Type::create< std::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
-                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                              data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT(image->getSize2() == size);
     CPPUNIT_ASSERT(image->getSpacing2() == spacing);
     CPPUNIT_ASSERT(image->getOrigin2() == origin);
@@ -106,12 +106,12 @@ void ImageTest::generator2DTest()
 
 void ImageTest::deepCopyTest()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwData::Image::sptr image2;
+    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image2;
     core::tools::Type type = core::tools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
-    image2 = ::fwData::Object::copy(image);
+    image2 = data::Object::copy(image);
     compare(image, image2);
 }
 
@@ -156,11 +156,11 @@ void ImageTest::stressTestWithType(core::tools::Type type, int nbTest)
 {
     for (int nb = 0; nb < nbTest; ++nb)
     {
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, type);
 
-        ::fwData::Image::sptr image2;
-        image2 = ::fwData::Object::copy(image);
+        data::Image::sptr image2;
+        image2 = data::Object::copy(image);
         compare(image, image2);
     }
 }

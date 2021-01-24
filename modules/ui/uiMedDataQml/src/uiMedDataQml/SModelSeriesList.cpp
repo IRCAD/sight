@@ -24,8 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Boolean.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
 
@@ -116,7 +116,7 @@ void SModelSeriesList::onShowReconstructions(int state )
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
     SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
     ::fwDataTools::helper::Field helper( modelSeries );
-    helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(state == Qt::Unchecked));
+    helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
     helper.notify();
 }
 
@@ -136,9 +136,9 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
         {
             selectedRec->setIsVisible(visible);
 
-            ::fwData::Reconstruction::VisibilityModifiedSignalType::sptr sig;
-            sig = selectedRec->signal< ::fwData::Reconstruction::VisibilityModifiedSignalType >(
-                ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
+            data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
+            sig = selectedRec->signal< data::Reconstruction::VisibilityModifiedSignalType >(
+                data::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
             sig->asyncEmit(visible);
         }
     }
@@ -157,9 +157,9 @@ void SModelSeriesList::onCheckAllBoxes( bool checked )
         {
             rec->setIsVisible(checked);
 
-            ::fwData::Reconstruction::VisibilityModifiedSignalType::sptr sig;
-            sig = rec->signal< ::fwData::Reconstruction::VisibilityModifiedSignalType >(
-                ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
+            data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
+            sig = rec->signal< data::Reconstruction::VisibilityModifiedSignalType >(
+                data::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
             sig->asyncEmit(checked);
         }
     }

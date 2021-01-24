@@ -30,7 +30,7 @@
 #include <core/thread/Worker.hpp>
 #include <core/tools/Object.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -120,7 +120,7 @@ void SCameraSeriesEditor::updateInformations()
     ::arData::CameraSeries::csptr cameraSeries = this->getInput< ::arData::CameraSeries >("cameraSeries");
 
     //IS CALIBRATED
-    ::fwData::TransformationMatrix3D::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
+    data::TransformationMatrix3D::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
     if(matrix)
     {
         m_description->setText("<b>The cameras are calibrated.</b>");

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     auto instance           = static_cast< ::fwRenderOgre::vr::GridProxyGeometry*>
                               (_sceneManager->createMovableObject(_name, factoryName));
 
-    instance->m_inputPrimitiveType = ::fwData::Mesh::CellType::POINT;
+    instance->m_inputPrimitiveType = data::Mesh::CellType::POINT;
     instance->mParentSceneManager  = _sceneManager;
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;
@@ -67,7 +67,8 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_name + "_" + _mtlName, RESOURCE_GROUP);
     if(!mat)
     {
-        mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP)->clone(_name + "_" + _mtlName);
+        mat =
+            ::Ogre::MaterialManager::getSingleton().getByName(_mtlName, RESOURCE_GROUP)->clone(_name + "_" + _mtlName);
     }
     instance->setMaterial(mat);
 
@@ -242,7 +243,8 @@ void GridProxyGeometry::setupGrid()
 
     // Update R2VB source geometry.
     {
-        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(this->mName + "_gridMesh", RESOURCE_GROUP);
+        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(this->mName + "_gridMesh",
+                                                                                    RESOURCE_GROUP);
 
         ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 

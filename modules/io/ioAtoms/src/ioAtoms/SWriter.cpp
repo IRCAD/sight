@@ -27,6 +27,11 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/System.hpp>
 
+#include <data/Composite.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/reflection/visitor/RecursiveLock.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/types.hpp>
@@ -35,11 +40,6 @@
 #include <fwAtomsPatch/PatchingManager.hpp>
 #include <fwAtomsPatch/VersionsGraph.hpp>
 #include <fwAtomsPatch/VersionsManager.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -68,7 +68,7 @@ namespace ioAtoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::fwData::Object )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -326,7 +326,7 @@ void SWriter::updating()
         return;
     }
 
-    ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(::fwIO::s_DATA_KEY);
+    data::Object::csptr obj = this->getInput< data::Object >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
 
     ::fwGui::Cursor cursor;
@@ -386,7 +386,7 @@ void SWriter::updating()
     }
 
     // Mutex data lock
-    ::fwData::reflection::visitor::RecursiveLock recursiveLock(obj);
+    data::reflection::visitor::RecursiveLock recursiveLock(obj);
 
     ::fwAtoms::Object::sptr atom;
     const unsigned int progressBarOffset = 10;
@@ -397,7 +397,7 @@ void SWriter::updating()
         {
             runningJob.doneWork(progressBarOffset);
 
-            atom = ::fwAtomConversion::convert(::fwData::Object::constCast(obj));
+            atom = ::fwAtomConversion::convert(data::Object::constCast(obj));
             runningJob.done();
         }, m_associatedWorker );
 
@@ -569,7 +569,7 @@ void SWriter::openLocationDialog()
     {
         ::fwGui::dialog::LocationDialog dialogFile;
         dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-        dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
         dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
 
@@ -578,15 +578,15 @@ void SWriter::openLocationDialog()
             dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
         }
 
-        ::fwData::location::SingleFile::sptr result
-            = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+        data::location::SingleFile::sptr result
+            = data::location::SingleFile::dynamicCast( dialogFile.show() );
 
         if (result)
         {
             m_selectedExtension = dialogFile.getCurrentSelection();
             _sDefaultPath       = result->getPath();
             this->setFile( _sDefaultPath );
-            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
         }
         else
         {

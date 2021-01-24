@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <boost/spirit/include/phoenix_bind.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -48,7 +48,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 struct cell_data_offset_generator {
-    ::fwData::Mesh::CellId current;
+    data::Mesh::CellId current;
     cell_data_offset_generator()
     {
         current = 0;
@@ -57,7 +57,7 @@ struct cell_data_offset_generator {
 
     int operator()()
     {
-        ::fwData::Mesh::CellId res = current;
+        data::Mesh::CellId res = current;
         current += 3;
         return static_cast<int>(res);
     }
@@ -66,7 +66,7 @@ struct cell_data_offset_generator {
 //------------------------------------------------------------------------------
 
 template <typename Iterator>
-bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
+bool parseTrian2(Iterator first, Iterator last, data::Mesh::sptr mesh)
 {
     using boost::spirit::qi::ulong_long;
     using boost::spirit::qi::int_;
@@ -84,21 +84,21 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     using boost::phoenix::ref;
     namespace phx = boost::phoenix;
 
-    ::fwData::Mesh::Size nbPoints = 1;
-    ::fwData::Mesh::Size nbCells  = 1;
-    ::fwData::Mesh::Size count    = 0;
+    data::Mesh::Size nbPoints = 1;
+    data::Mesh::Size nbCells  = 1;
+    data::Mesh::Size count    = 0;
 
     // Starting from boost 1.65, the function could not be deduced
     auto reserveFn =
-        phx::bind(static_cast<size_t(::fwData::Mesh::*)(
-                                  ::fwData::Mesh::Size, ::fwData::Mesh::Size, ::fwData::Mesh::CellType,
-                                  ::fwData::Mesh::Attributes)>(
-                      &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
-                      nbCells), ::fwData::Mesh::CellType::TRIANGLE,
-                  ::fwData::Mesh::Attributes::CELL_NORMALS);
+        phx::bind(static_cast<size_t (data::Mesh::*)(
+                                  data::Mesh::Size, data::Mesh::Size, data::Mesh::CellType,
+                                  data::Mesh::Attributes)>(
+                      &data::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
+                      nbCells), data::Mesh::CellType::TRIANGLE,
+                  data::Mesh::Attributes::CELL_NORMALS);
 
     // initialize the mesh with 1 point, 1 cell and cell normals to be able to lock all the arrays
-    mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::CELL_NORMALS);
+    mesh->reserve(nbPoints, nbCells, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::CELL_NORMALS);
 
     const auto lock = mesh->lock();
 
@@ -117,11 +117,11 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                               [
                                   (float_ >> float_ >> float_)
                                   [
-                                      phx::bind(static_cast< ::fwData::Mesh::PointId(::fwData::Mesh::*)(
-                                                                 ::fwData::Mesh::PointValueType,
-                                                                 ::fwData::Mesh::PointValueType,
-                                                                 ::fwData::Mesh::PointValueType)>(
-                                                    &::fwData::Mesh::pushPoint), mesh, _1, _2, _3)
+                                      phx::bind(static_cast< data::Mesh::PointId (data::Mesh::*)(
+                                                                 data::Mesh::PointValueType,
+                                                                 data::Mesh::PointValueType,
+                                                                 data::Mesh::PointValueType)>(
+                                                    &data::Mesh::pushPoint), mesh, _1, _2, _3)
                                   ]
                               ]
 
@@ -135,18 +135,18 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                               [
                                   (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
                                   [
-                                      phx::bind(static_cast< ::fwData::Mesh::CellId(::fwData::Mesh::*)(
-                                                                 ::fwData::Mesh::PointId,
-                                                                 ::fwData::Mesh::PointId,
-                                                                 ::fwData::Mesh::PointId)>( &::fwData::Mesh::
-                                                                                            pushCell),
+                                      phx::bind(static_cast< data::Mesh::CellId (data::Mesh::*)(
+                                                                 data::Mesh::PointId,
+                                                                 data::Mesh::PointId,
+                                                                 data::Mesh::PointId)>( &data::Mesh::
+                                                                                        pushCell),
                                                 mesh, _1, _2, _3),
-                                      phx::bind(static_cast< void(::fwData::Mesh::*)(
-                                                                 ::fwData::Mesh::CellId,
-                                                                 ::fwData::Mesh::NormalValueType,
-                                                                 ::fwData::Mesh::NormalValueType,
-                                                                 ::fwData::Mesh::NormalValueType)>(
-                                                    &::fwData::Mesh::setCellNormal), mesh, ref(count), _4, _5, _6),
+                                      phx::bind(static_cast< void (data::Mesh::*)(
+                                                                 data::Mesh::CellId,
+                                                                 data::Mesh::NormalValueType,
+                                                                 data::Mesh::NormalValueType,
+                                                                 data::Mesh::NormalValueType)>(
+                                                    &data::Mesh::setCellNormal), mesh, ref(count), _4, _5, _6),
                                       ref(count)++
                                   ]
                               ]
@@ -161,12 +161,12 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     // Check if normals array is filled of -1. values
     const float normalBadValue = -1.f;
 
-    auto begin = mesh->begin< ::fwData::iterator::CellIterator >();
-    auto end   = mesh->end< ::fwData::iterator::CellIterator >();
+    auto begin = mesh->begin< data::iterator::CellIterator >();
+    auto end   = mesh->end< data::iterator::CellIterator >();
 
     const auto nbBadValues = std::count_if( begin, end,
                                             [&normalBadValue](
-                                                const ::fwData::iterator::CellIterator::value_type& val)
+                                                const data::iterator::CellIterator::value_type& val)
             {
                 return val.normal->nx == normalBadValue && val.normal->ny == normalBadValue && val.normal->nz == normalBadValue;
             });
@@ -188,7 +188,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< IObjectReader >(this)
+    data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -202,8 +202,8 @@ MeshReader::~MeshReader()
 
 void MeshReader::read()
 {
-    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
+    std::filesystem::path path = std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
 
     SLM_ASSERT("Empty path for Trian file", !path.empty() );
 
@@ -228,7 +228,7 @@ void MeshReader::read()
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    ::fwData::Mesh::sptr mesh = getConcreteObject();
+    data::Mesh::sptr mesh = getConcreteObject();
 
     mesh->clear();
 

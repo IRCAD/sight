@@ -30,7 +30,7 @@
 #include <core/spyLog.hpp>
 
 // Service associated data
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -99,9 +99,9 @@ void SImagesSubstract::updating()
 {
     core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
 
-    ::fwData::Image::csptr image1     = this->getInput< ::fwData::Image>("image1");
-    ::fwData::Image::csptr image2     = this->getInput< ::fwData::Image>("image2");
-    ::fwData::Image::sptr imageResult = this->getInOut< ::fwData::Image>("result");
+    data::Image::csptr image1     = this->getInput< data::Image>("image1");
+    data::Image::csptr image2     = this->getInput< data::Image>("image2");
+    data::Image::sptr imageResult = this->getInOut< data::Image>("result");
 
     // Test if the both images have the same type and it is signed short.
     const bool isSameType = ( image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
@@ -115,10 +115,10 @@ void SImagesSubstract::updating()
             typedef itk::Image< std::int16_t, 3 > ImageType;
 
             ImageType::Pointer itkImage1 = ::fwItkIO::itkImageFactory< ImageType >( image1 );
-            SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage1);
+            SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
             ImageType::Pointer itkImage2 = ::fwItkIO::itkImageFactory< ImageType >( image2 );
-            SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage2);
+            SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
 
@@ -135,7 +135,7 @@ void SImagesSubstract::updating()
             assert(output->GetSource());
             ::fwItkIO::dataImageFactory< ImageType >( output, imageResult, true );
 
-            auto sig = imageResult->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            auto sig = imageResult->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else

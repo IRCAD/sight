@@ -7,7 +7,7 @@ set( REQUIREMENTS
     activities
     gui
     guiQt
-    fwData
+    data
     fwMedData
     uiMeasurement
     uiMeasurementQt

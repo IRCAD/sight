@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,13 +36,13 @@ namespace arData
 class ARDATA_CLASS_API MatrixTL : public GenericTL< float[16] >
 {
 public:
-    fwCoreClassMacro(MatrixTL, ::arData::TimeLine, ::fwData::factory::New< MatrixTL >);
+    fwCoreClassMacro(MatrixTL, ::arData::TimeLine, data::factory::New< MatrixTL >)
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    MatrixTL( ::fwData::Object::Key key ) :
+    MatrixTL( data::Object::Key key ) :
         GenericTL< float[16] >(key)
     {
     }

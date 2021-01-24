@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -51,7 +51,7 @@ namespace uiImageQt
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image to set the transparency.
+ * - \b image [data::Image]: image to set the transparency.
  * @subsection Configuration Configuration
  * - \b shortcut : shortcut used to show/hide the image
  */

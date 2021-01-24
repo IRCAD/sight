@@ -27,8 +27,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/mt/locked_ptr.hpp>
+#include <data/Mesh.hpp>
+#include <data/mt/locked_ptr.hpp>
 
 #include <fwRenderQt3D/core/GenericScene.hpp>
 #include <fwRenderQt3D/data/Material.hpp>
@@ -57,8 +57,8 @@ static const std::string s_VISIBLE_CONFIG          = "visible";
 SMesh::SMesh() noexcept
 {
     // Allow using Mesh as QML type when using SMesh service in QML applications.
-    qmlRegisterType< ::fwRenderQt3D::data::Mesh >("fwRenderQt3D", 1, 0, "Mesh");
-    qRegisterMetaType< ::fwRenderQt3D::data::Mesh* >("::fwRenderQt3D::data::Mesh*");
+    qmlRegisterType< ::fwRenderQt3Ddata::Mesh >("fwRenderQt3D", 1, 0, "Mesh");
+    qRegisterMetaType< ::fwRenderQt3Ddata::Mesh* >("::fwRenderQt3Ddata::Mesh*");
 
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
 }
@@ -91,11 +91,11 @@ void SMesh::starting()
     this->initialize();
 
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
+    auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Create a Qt3D mesh from sight data.
-    m_mesh = new ::fwRenderQt3D::data::Mesh(this->getRenderService()->getScene());
+    m_mesh = new ::fwRenderQt3Ddata::Mesh(this->getRenderService()->getScene());
     m_mesh->setMesh(mesh);
 
     if(!m_materialName.empty())
@@ -132,8 +132,8 @@ void SMesh::starting()
 ::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
     return connections;
 }
 
@@ -142,7 +142,7 @@ void SMesh::starting()
 void SMesh::updating()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
+    auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Update the mesh and center camera if necessary.
@@ -194,7 +194,7 @@ void SMesh::updateVisibility(bool _visibility)
 void SMesh::modifyVertices()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
+    auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Update mesh position and normal buffers.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Color.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Color.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
@@ -125,7 +125,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
         }
 
         // Create the reconstruction
-        ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+        data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
 
         // Retrieve the Segment Sequence Item
         const ::gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
@@ -204,7 +204,7 @@ std::string getStructureTypeFromSegmentIdentification(const ::gdcm::SmartPointer
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr& reconstruction,
+void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& reconstruction,
                                             const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
                                             const ::gdcm::Item& segmentItem)
 {
@@ -253,18 +253,18 @@ void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr
     }
     else
     {
-        reconstruction->setComputedMaskVolume(::fwData::Reconstruction::s_NO_COMPUTED_MASK_VOLUME);
+        reconstruction->setComputedMaskVolume(data::Reconstruction::s_NO_COMPUTED_MASK_VOLUME);
     }
 
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& reconstruction,
+void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruction,
                                     const ::gdcm::SmartPointer< ::gdcm::Surface >& surface)
 {
     // Create material
-    ::fwData::Material::sptr material = fwData::Material::New();
+    data::Material::sptr material = data::Material::New();
 
     // Convert CIE Lab to RGBA
     const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
@@ -275,7 +275,7 @@ void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& recons
     colorVector.push_back(surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
-    ::fwData::Color::ColorArray rgba;
+    data::Color::ColorArray rgba;
     ::boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
 
     // Set reconstruction's visibility
@@ -283,7 +283,7 @@ void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& recons
     reconstruction->setIsVisible(rgba[3] > epsilon);
 
     // Set reconstruction's color
-    ::fwData::Color::sptr color = ::fwData::Color::New();
+    data::Color::sptr color = data::Color::New();
     color->setRGBA( rgba );
     material->setDiffuse(color);
 

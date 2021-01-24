@@ -29,7 +29,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::CompositeHelperTest );
@@ -61,11 +61,11 @@ void CompositeHelperTest::testHelper()
     const std::string COMPOSITE_ID2 = "COMPOSITE_ID2";
     const std::string COMPOSITE_ID3 = "COMPOSITE_ID3";
 
-    ::fwData::Object::sptr nullobj;
-    ::fwData::Composite::sptr obj        = ::fwData::Composite::New();
-    ::fwData::Object::sptr compositeObj1 = ::fwData::String::New();
-    ::fwData::Object::sptr compositeObj2 = ::fwData::String::New();
-    ::fwData::Object::sptr compositeObj3 = ::fwData::String::New();
+    data::Object::sptr nullobj;
+    data::Composite::sptr obj        = data::Composite::New();
+    data::Object::sptr compositeObj1 = data::String::New();
+    data::Object::sptr compositeObj2 = data::String::New();
+    data::Object::sptr compositeObj3 = data::String::New();
 
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
@@ -74,9 +74,9 @@ void CompositeHelperTest::testHelper()
     std::mutex mutex;
     std::condition_variable condition;
 
-    ::fwData::Composite::ContainerType addedComposites;
-    std::function<void ( ::fwData::Composite::ContainerType)> fnAdd =
-        [&](::fwData::Composite::ContainerType f)
+    data::Composite::ContainerType addedComposites;
+    std::function<void ( data::Composite::ContainerType)> fnAdd =
+        [&](data::Composite::ContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -88,14 +88,14 @@ void CompositeHelperTest::testHelper()
 
     auto slotAdded = core::com::newSlot( fnAdd );
     slotAdded->setWorker(worker);
-    auto sigAdded = obj->signal< ::fwData::Composite::AddedObjectsSignalType>(::fwData::Composite::s_ADDED_OBJECTS_SIG);
+    auto sigAdded = obj->signal< data::Composite::AddedObjectsSignalType>(data::Composite::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
 
     unsigned int numRemovedNotif = 0;
-    ::fwData::Composite::ContainerType removedComposites;
+    data::Composite::ContainerType removedComposites;
 
-    std::function<void ( ::fwData::Composite::ContainerType)> fnRemove =
-        [&](::fwData::Composite::ContainerType f)
+    std::function<void ( data::Composite::ContainerType)> fnRemove =
+        [&](data::Composite::ContainerType f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -106,16 +106,16 @@ void CompositeHelperTest::testHelper()
         };
     auto slotRemoved = core::com::newSlot( fnRemove );
     slotRemoved->setWorker(worker);
-    auto sigRemoved = obj->signal< ::fwData::Composite::RemovedObjectsSignalType>(
-        ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+    auto sigRemoved = obj->signal< data::Composite::RemovedObjectsSignalType>(
+        data::Composite::s_REMOVED_OBJECTS_SIG);
     sigRemoved->connect(slotRemoved);
 
     unsigned int numChangedNotif = 0;
-    ::fwData::Composite::ContainerType newComposites;
-    ::fwData::Composite::ContainerType oldComposites;
+    data::Composite::ContainerType newComposites;
+    data::Composite::ContainerType oldComposites;
 
-    std::function<void ( ::fwData::Composite::ContainerType, ::fwData::Composite::ContainerType)> fnChange =
-        [&](::fwData::Composite::ContainerType newF, ::fwData::Composite::ContainerType oldF)
+    std::function<void ( data::Composite::ContainerType, data::Composite::ContainerType)> fnChange =
+        [&](data::Composite::ContainerType newF, data::Composite::ContainerType oldF)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -127,8 +127,8 @@ void CompositeHelperTest::testHelper()
         };
     auto slotChanged = core::com::newSlot( fnChange );
     slotChanged->setWorker(worker);
-    auto sigChanged = obj->signal< ::fwData::Composite::ChangedObjectsSignalType>(
-        ::fwData::Composite::s_CHANGED_OBJECTS_SIG);
+    auto sigChanged = obj->signal< data::Composite::ChangedObjectsSignalType>(
+        data::Composite::s_CHANGED_OBJECTS_SIG);
     sigChanged->connect(slotChanged);
 
     auto clearArrays =

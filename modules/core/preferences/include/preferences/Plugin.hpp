@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <string>
 
@@ -46,7 +46,7 @@ protected:
 
     static const std::string s_PREF_SERVICE_UID;
 
-    ::fwData::Composite::sptr m_preferences;
+    data::Composite::sptr m_preferences;
 };
 
 } // namespace preferences

@@ -85,7 +85,7 @@ public:
     /**
      * @brief method to broadcast to all client the obj
      */
-    IGTLNETWORK_API void broadcast(const ::fwData::Object::csptr& obj);
+    IGTLNETWORK_API void broadcast(const data::Object::csptr& obj);
 
     /**
      * @brief method to broadcast to all client a msg
@@ -131,7 +131,7 @@ public:
      *
      * @return a vector of smart pointer of fwData object
      */
-    IGTLNETWORK_API std::vector< ::fwData::Object::sptr > receiveObjects(std::vector<std::string>& deviceNames);
+    IGTLNETWORK_API std::vector< data::Object::sptr > receiveObjects(std::vector<std::string>& deviceNames);
 
     /**
      * @brief set the device name when a message is sent

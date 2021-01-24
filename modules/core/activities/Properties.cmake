@@ -6,14 +6,14 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwActivities
-    fwData
+    data
     fwGui
     fwMedData
     fwServices
     fwMedDataTools
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )
 

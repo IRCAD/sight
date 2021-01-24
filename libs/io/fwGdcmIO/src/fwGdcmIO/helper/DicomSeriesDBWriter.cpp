@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ namespace helper
 //------------------------------------------------------------------------------
 
 DicomSeriesDBWriter::DicomSeriesDBWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_aggregator(::fwJobs::Aggregator::New("Writing Dicom series")),
     m_enableZippedArchive(false)
 

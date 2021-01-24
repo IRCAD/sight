@@ -59,7 +59,7 @@ void IoPacsTest::tearDown()
 void IoPacsTest::pacsConfigurationInitializer()
 {
     // Pacs Conifguration
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = ::fwPacsIO::data::PacsConfiguration::New();
+    ::fwPacsIOdata::PacsConfiguration::sptr pacsConfiguration = ::fwPacsIOdata::PacsConfiguration::New();
 
     // Create service
     ::fwServices::IService::sptr srv = ::fwServices::add( "::ioPacs::SPacsConfigurationInitializer" );
@@ -94,7 +94,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     CPPUNIT_ASSERT_EQUAL(pacsApplicationPort, pacsConfiguration->getPacsApplicationPort());
     CPPUNIT_ASSERT_EQUAL(std::string("MoveApplicationTitle"), pacsConfiguration->getMoveApplicationTitle());
     CPPUNIT_ASSERT_EQUAL(moveApplicationPort, pacsConfiguration->getMoveApplicationPort());
-    CPPUNIT_ASSERT_EQUAL(::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD,
+    CPPUNIT_ASSERT_EQUAL(::fwPacsIOdata::PacsConfiguration::GET_RETRIEVE_METHOD,
                          pacsConfiguration->getRetrieveMethod());
 
 }

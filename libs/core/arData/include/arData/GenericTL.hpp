@@ -37,14 +37,14 @@ class GenericTL : public BufferTL
 {
 
 public:
-    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, ::fwData::Object)
+    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, data::Object)
 
     typedef ::arData::timeline::GenericObject< BUFFER_TYPE > BufferType;
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    GenericTL( ::fwData::Object::Key key );
+    GenericTL( data::Object::Key key );
 
     /// Destructor
     virtual ~GenericTL();

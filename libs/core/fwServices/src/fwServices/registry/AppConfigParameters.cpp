@@ -26,8 +26,8 @@
 #include <core/runtime/helper.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <regex>
 

@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -53,7 +53,7 @@ public:
     void testSimpleMesh();
     void testMeshWithCellNormals();
 
-    void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
+    void compareMesh(data::Mesh::sptr mesh1, data::Mesh::sptr mesh2);
 
 };
 

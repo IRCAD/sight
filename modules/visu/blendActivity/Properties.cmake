@@ -13,7 +13,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     uiImageQt
     scene2D
-    fwData
+    data
     fwMedData
     uiTF
     uiMedDataQt

@@ -184,12 +184,12 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
 //-----------------------------------------------------------------------------
 
-void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
-                           ::fwData::TransformationMatrix3D::sptr _calibrationMatrix,
-                           ::fwData::TransformationMatrix3D::sptr _centerMatrix)
+void calibratePointingTool(const data::Vector::csptr _matricesVector,
+                           data::TransformationMatrix3D::sptr _calibrationMatrix,
+                           data::TransformationMatrix3D::sptr _centerMatrix)
 {
-    const ::fwData::Vector::ContainerType matrices = _matricesVector->getContainer();
-    const size_t nbrMatrices                       = matrices.size();
+    const data::Vector::ContainerType matrices = _matricesVector->getContainer();
+    const size_t nbrMatrices                   = matrices.size();
 
     if (nbrMatrices < 4)
     {
@@ -204,8 +204,8 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
 
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
-        ::fwData::TransformationMatrix3D::csptr m1 = ::fwData::TransformationMatrix3D::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a ::fwData::TransformationMatrix3D", m1);
+        data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
         ::eigenTools::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = m1->getCoefficient(0, 3);
@@ -233,8 +233,8 @@ void calibratePointingTool(const ::fwData::Vector::csptr _matricesVector,
     translation.fill(0);
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
-        ::fwData::TransformationMatrix3D::csptr m1 = ::fwData::TransformationMatrix3D::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a ::fwData::TransformationMatrix3D", m1);
+        data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
         const ::eigenTools::helper::EigenMatrix pointMatrix = ::eigenTools::helper::toEigen(m1->getCoefficients());
         ::eigenTools::helper::EigenMatrix centerMatrix(pointMatrix);
         const ::eigenTools::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
@@ -357,10 +357,10 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
 
 //-----------------------------------------------------------------------------
 
-::fwData::PointList::sptr detectChessboard(const ::cv::Mat& _img,
-                                           size_t _xDim, size_t _yDim, float _scale)
+data::PointList::sptr detectChessboard(const ::cv::Mat& _img,
+                                       size_t _xDim, size_t _yDim, float _scale)
 {
-    ::fwData::PointList::sptr pointlist;
+    data::PointList::sptr pointlist;
 
     SLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
@@ -408,11 +408,11 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
         ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
         ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
 
-        pointlist                                       = ::fwData::PointList::New();
-        ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
+        pointlist = data::PointList::New();
+        data::PointList::PointListContainer& points = pointlist->getPoints();
         points.reserve(corners.size());
 
-        const auto cv2SightPt = [](const ::cv::Point2f& p) { return ::fwData::Point::New(p.x, p.y); };
+        const auto cv2SightPt = [](const ::cv::Point2f& p) { return data::Point::New(p.x, p.y); };
         std::transform(corners.cbegin(), corners.cend(), std::back_inserter(points), cv2SightPt);
     }
 

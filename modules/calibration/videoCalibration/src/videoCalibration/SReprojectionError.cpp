@@ -35,9 +35,9 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -134,7 +134,7 @@ void SReprojectionError::starting()
 
     m_extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
 
-    auto extrinsic = this->getInput< ::fwData::TransformationMatrix3D>(s_EXTRINSIC_INPUT);
+    auto extrinsic = this->getInput< data::TransformationMatrix3D>(s_EXTRINSIC_INPUT);
     if(extrinsic != nullptr)
     {
         for(std::uint8_t i = 0; i < 4; ++i )
@@ -263,7 +263,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
             unsigned int i = 0;
             for(auto markerKey : m_matricesTag)
             {
-                auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT, i);
+                auto matrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT, i);
 
                 const auto* marker = markerMap->getMarker(markerKey);
 
@@ -308,10 +308,10 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                     if(m_display) //draw reprojected points
                     {
-                        auto frame = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
+                        auto frame = this->getInOut< data::Image >(s_FRAME_INOUT);
                         SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frame);
 
-                        ::fwData::mt::ObjectWriteLock lock(frame);
+                        data::mt::ObjectWriteLock lock(frame);
 
                         if(frame->getSizeInBytes() > 0)
                         {
@@ -378,7 +378,7 @@ void SReprojectionError::updating()
     KeyConnectionsMap connections;
 
     connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
-    connections.push( s_MATRIX_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

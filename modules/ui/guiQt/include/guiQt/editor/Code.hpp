@@ -41,7 +41,7 @@ namespace editor
 {
 
 /**
- * @brief   This service displays a code editor and works on a ::fwData::String.
+ * @brief   This service displays a code editor and works on a data::String.
  *
  * It provides highlighting for python and C++.
  *
@@ -55,7 +55,7 @@ namespace editor
     </service>
     @endcode
  * @subsection In-Out In-Out
- * - \b string [::fwData::String]: string containing the code
+ * - \b string [data::String]: string containing the code
  * @subsection Configuration Configuration
  * - \b language name: can be "Python" or "Cpp"
  */

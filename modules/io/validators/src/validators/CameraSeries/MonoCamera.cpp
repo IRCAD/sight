@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ MonoCamera::~MonoCamera()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType MonoCamera::validate(const ::fwData::Object::csptr& currentData ) const
+::fwActivities::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

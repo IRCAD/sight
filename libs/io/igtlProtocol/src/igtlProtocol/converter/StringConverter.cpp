@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <igtlStringMessage.h>
 
@@ -33,7 +33,7 @@ namespace igtlProtocol
 namespace converter
 {
 const std::string StringConverter::s_IGTL_TYPE          = "STRING";
-const std::string StringConverter::s_FWDATA_OBJECT_TYPE = ::fwData::String::classname();
+const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::String::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::StringConverter);
 
@@ -49,9 +49,9 @@ StringConverter::~StringConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    ::fwData::String::csptr srcStr = ::fwData::String::dynamicConstCast(src);
+    data::String::csptr srcStr = data::String::dynamicConstCast(src);
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
     dest->SetString(srcStr->getValue().c_str());
@@ -60,9 +60,9 @@ StringConverter::~StringConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::fwData::String::sptr dest = ::fwData::String::New();
+    data::String::sptr dest = data::String::New();
 
     ::igtl::StringMessage* msg            = dynamic_cast< ::igtl::StringMessage* >(src.GetPointer());
     ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);

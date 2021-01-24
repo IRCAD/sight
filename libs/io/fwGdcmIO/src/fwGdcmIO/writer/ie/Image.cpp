@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -40,11 +40,11 @@ namespace ie
 
 Image::Image(const SPTR(::gdcm::Writer)& writer,
              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-             const ::fwData::Image::csptr& image,
+             const data::Image::csptr& image,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image, logger, progress, cancel)
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Image >(writer, instance, image, logger, progress, cancel)
 {
 }
 
@@ -141,7 +141,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetNumberOfDimensions(dimension);
 
     // Image's dimension
-    const ::fwData::Image::Size& size = m_object->getSize2();
+    const data::Image::Size& size = m_object->getSize2();
     for (unsigned int i = 0; i < dimension; ++i)
     {
         gdcmImage.SetDimension(i, static_cast<unsigned int>(size[i]));
@@ -160,8 +160,8 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
-    const ::fwData::Image::Size& size = m_object->getSize2();
-    std::size_t bufferLength          = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
+    const data::Image::Size& size = m_object->getSize2();
+    std::size_t bufferLength      = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer

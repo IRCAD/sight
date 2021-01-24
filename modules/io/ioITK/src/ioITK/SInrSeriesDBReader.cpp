@@ -26,10 +26,10 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/MultiFiles.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -98,21 +98,21 @@ void SInrSeriesDBReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr result;
-    result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
+    data::location::MultiFiles::sptr result;
+    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
-        const ::fwData::location::ILocation::VectPathType paths = result->getPaths();
+        const data::location::ILocation::VectPathType paths = result->getPaths();
         if(!paths.empty())
         {
             _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         }
         this->setFiles(paths);
     }
@@ -124,7 +124,7 @@ void SInrSeriesDBReader::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwData::Image::sptr image )
+bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data::Image::sptr image )
 {
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
@@ -180,7 +180,7 @@ void SInrSeriesDBReader::updating()
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);
 
-            ::fwData::Image::sptr image = ::fwData::Image::New();
+            data::Image::sptr image = data::Image::New();
             if(!this->createImage( path, image ))
             {
                 m_readFailed = true;
@@ -192,7 +192,7 @@ void SInrSeriesDBReader::updating()
 
         ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
-        ::fwData::mt::ObjectWriteLock lock(seriesDB);
+        data::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
         sDBhelper.notify();
 

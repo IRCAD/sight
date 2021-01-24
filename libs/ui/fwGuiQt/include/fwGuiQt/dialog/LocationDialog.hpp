@@ -50,7 +50,7 @@ public:
 
     FWGUIQT_API LocationDialog(::fwGui::GuiBaseObject::Key key);
 
-    FWGUIQT_API ::fwData::location::ILocation::sptr show() override;
+    FWGUIQT_API data::location::ILocation::sptr show() override;
 
     FWGUIQT_API void setType( ::fwGui::dialog::ILocationDialog::Types type ) override;
 

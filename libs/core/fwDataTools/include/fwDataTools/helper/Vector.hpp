@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_VECTOR_HPP__
-#define __FWDATATOOLS_HELPER_VECTOR_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 namespace fwDataTools
 {
@@ -33,7 +32,8 @@ namespace helper
 {
 
 /**
- * @brief   Defines an helper to modify an ::fwData::Vector and create in parallel the message to announce this modification.
+ * @brief   Defines an helper to modify an data::Vector and create in parallel the message to announce this
+ * modification.
  */
 class FWDATATOOLS_CLASS_API Vector
 {
@@ -41,7 +41,7 @@ class FWDATATOOLS_CLASS_API Vector
 public:
 
     /// Constructor. Initialize parameters.
-    FWDATATOOLS_API Vector( ::fwData::Vector::wptr vector );
+    FWDATATOOLS_API Vector( data::Vector::wptr vector );
 
     /// Destrucotr. Do nothing.
     FWDATATOOLS_API ~Vector();
@@ -52,7 +52,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    FWDATATOOLS_API void add( ::fwData::Object::sptr _newObject );
+    FWDATATOOLS_API void add( data::Object::sptr _newObject );
 
     /**
      * @brief Remove an object in the vector.
@@ -60,7 +60,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    FWDATATOOLS_API void remove( ::fwData::Object::sptr _oldObject );
+    FWDATATOOLS_API void remove( data::Object::sptr _oldObject );
 
     /**
      * @brief Clear all objects in the vector.
@@ -74,12 +74,10 @@ public:
 
 private:
 
-    ::fwData::Vector::ContainerType m_addedObjects;
-    ::fwData::Vector::ContainerType m_removedObjects;
-    ::fwData::Vector::wptr m_vector;
+    data::Vector::ContainerType m_addedObjects;
+    data::Vector::ContainerType m_removedObjects;
+    data::Vector::wptr m_vector;
 };
 
 } // namespace helper
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_VECTOR_HPP__

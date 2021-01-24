@@ -33,11 +33,11 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/pathDifference.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Object.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/Object.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -146,7 +146,7 @@ void SCamera::starting()
     auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
-        const ::fwData::mt::ObjectWriteLock lock(cameraSeries);
+        const data::mt::ObjectWriteLock lock(cameraSeries);
 
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         if(numCameras == 0)
@@ -158,7 +158,7 @@ void SCamera::starting()
                 ::arData::Camera::sptr camera = ::arData::Camera::New();
                 const size_t index = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
-                cameraSeries->setExtrinsicMatrix(index, ::fwData::TransformationMatrix3D::New());
+                cameraSeries->setExtrinsicMatrix(index, data::TransformationMatrix3D::New());
                 const auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
                     ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);
@@ -216,7 +216,7 @@ void SCamera::onChooseFile()
     static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All files", "*.*");
     dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
     dialogFile.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
@@ -292,12 +292,12 @@ void SCamera::onChooseFile()
         {
             dialogFile.setTitle("Choose a file to load for video source #" + std::to_string(count++));
 
-            ::fwData::location::SingleFile::sptr result;
-            result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+            data::location::SingleFile::sptr result;
+            result = data::location::SingleFile::dynamicCast( dialogFile.show() );
             if (result)
             {
                 _sDefaultPath = result->getPath().parent_path();
-                dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+                dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
                 videoPath = result->getPath();
             }
         }
@@ -324,7 +324,7 @@ void SCamera::onChooseFile()
                 SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
             }
 
-            ::fwData::mt::ObjectWriteLock lock(camera);
+            data::mt::ObjectWriteLock lock(camera);
             camera->setCameraSource(::arData::Camera::FILE);
             camera->setVideoFile(videoPath.string());
             lock.unlock();
@@ -354,7 +354,7 @@ void SCamera::onChooseStream()
         const std::string streamSource = inputDialog.getInput();
         if(!streamSource.empty())
         {
-            ::fwData::mt::ObjectWriteLock lock(camera);
+            data::mt::ObjectWriteLock lock(camera);
             camera->setCameraSource(::arData::Camera::STREAM);
             camera->setStreamUrl(streamSource);
             lock.unlock();
@@ -386,7 +386,7 @@ void SCamera::onChooseDevice()
             return;
         }
 
-        ::fwData::mt::ObjectWriteLock lock(camera);
+        data::mt::ObjectWriteLock lock(camera);
         const bool isSelected = camDialog.getSelectedCamera(camera);
         lock.unlock();
 
@@ -411,7 +411,7 @@ std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
     auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
-        const ::fwData::mt::ObjectReadLock lock(cameraSeries);
+        const data::mt::ObjectReadLock lock(cameraSeries);
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         for(size_t i = 0; i < numCameras; ++i)
         {

@@ -34,8 +34,8 @@
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadToWriteLock.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
@@ -109,8 +109,8 @@ SArucoTracker::~SArucoTracker() noexcept
     KeyConnectionsMap connections;
 
     connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
-    connections.push( s_FRAME_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_FRAME_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
@@ -205,11 +205,11 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 
     ::cv::Mat inImage;
 
-    auto frame = this->getInOut< ::fwData::Image >(s_FRAME_INOUT);
-    std::unique_ptr< ::fwData::mt::ObjectReadToWriteLock> lockFrame;
+    auto frame = this->getInOut< data::Image >(s_FRAME_INOUT);
+    std::unique_ptr< data::mt::ObjectReadToWriteLock> lockFrame;
     if(frame)
     {
-        lockFrame = std::make_unique< ::fwData::mt::ObjectReadToWriteLock>(frame);
+        lockFrame = std::make_unique< data::mt::ObjectReadToWriteLock>(frame);
         inImage   = ::cvIO::Image::moveToCv(frame);
     }
     else
@@ -370,7 +370,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                 auto markerMap = this->getInOut< ::arData::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
                 // Always send the signal even if we did not find anything.
                 // This allows to keep updating the whole processing pipeline.
-                auto sig = markerMap->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG );
+                auto sig = markerMap->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG );
                 sig->asyncEmit();
             }
 

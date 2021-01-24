@@ -25,7 +25,7 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <functional>
 

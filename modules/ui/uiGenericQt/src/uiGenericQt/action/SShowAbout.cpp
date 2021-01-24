@@ -46,7 +46,7 @@ namespace uiGenericQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, data::Object )
 
 //------------------------------------------------------------------------------
 

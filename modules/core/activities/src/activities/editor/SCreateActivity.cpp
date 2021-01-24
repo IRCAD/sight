@@ -33,9 +33,9 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>

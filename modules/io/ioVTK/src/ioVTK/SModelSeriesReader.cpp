@@ -30,12 +30,12 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/ILocation.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/ILocation.hpp>
+#include <data/location/MultiFiles.hpp>
+#include <data/Mesh.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
@@ -93,7 +93,7 @@ void SModelSeriesReader::openLocationDialog()
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
@@ -105,15 +105,15 @@ void SModelSeriesReader::openLocationDialog()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr result;
-    result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
+    data::location::MultiFiles::sptr result;
+    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
-        const ::fwData::location::ILocation::VectPathType paths = result->getPaths();
+        const data::location::ILocation::VectPathType paths = result->getPaths();
         if(!paths.empty())
         {
             _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         }
         this->setFiles(paths);
     }
@@ -164,12 +164,12 @@ void SModelSeriesReader::updating()
 
         ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
         ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
-        for(const ::fwData::location::ILocation::PathType& file :  this->getFiles())
+        for(const data::location::ILocation::PathType& file :  this->getFiles())
         {
-            ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+            data::Mesh::sptr mesh = data::Mesh::New();
             this->loadMesh(file, mesh);
 
-            ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+            data::Reconstruction::sptr rec = data::Reconstruction::New();
             rec->setMesh(mesh);
             rec->setIsVisible(true);
             rec->setOrganName(file.stem().string());
@@ -200,7 +200,7 @@ typename READER::sptr configureReader(const std::filesystem::path& _file )
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh)
+void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mesh::sptr _mesh)
 {
     // Test extension to provide the reader
 

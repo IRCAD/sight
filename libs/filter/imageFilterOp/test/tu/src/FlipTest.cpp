@@ -24,7 +24,7 @@
 
 #include <imageFilterOp/Flipper.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -41,15 +41,15 @@ namespace ut
 
 void FlipTest::flipAlongXAxisTest()
 {
-    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
-    const ::fwData::Image::Spacing spacing    = {{ 0.1, 0.4, 1.6 }};
-    const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-    const core::tools::Type type              = core::tools::Type::s_UINT8;
-    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+    const data::Image::Size size          = {{ 3, 3, 3 }};
+    const data::Image::Spacing spacing    = {{ 0.1, 0.4, 1.6 }};
+    const data::Image::Origin origin      = {{ 0., 0., 0. }};
+    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{true, false, false};
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -78,15 +78,15 @@ void FlipTest::flipAlongXAxisTest()
 
 void FlipTest::flipAlongYAxisTest()
 {
-    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
-    const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::Origin origin      = {{ 8., 4., 2. }};
-    const core::tools::Type type              = core::tools::Type::s_UINT8;
-    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+    const data::Image::Size size          = {{ 3, 3, 3 }};
+    const data::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+    const data::Image::Origin origin      = {{ 8., 4., 2. }};
+    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -115,15 +115,15 @@ void FlipTest::flipAlongYAxisTest()
 
 void FlipTest::flipAlongZAxisTest()
 {
-    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
-    const ::fwData::Image::Spacing spacing    = {{ 2.0, 2.0, 2.0 }};
-    const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-    const core::tools::Type type              = core::tools::Type::s_UINT8;
-    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+    const data::Image::Size size          = {{ 3, 3, 3 }};
+    const data::Image::Spacing spacing    = {{ 2.0, 2.0, 2.0 }};
+    const data::Image::Origin origin      = {{ 0., 0., 0. }};
+    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, false, true};
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -153,15 +153,15 @@ void FlipTest::flipAlongZAxisTest()
 void FlipTest::flipAlongMultipleAxesTest()
 {
     {
-        const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
-        const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
-        const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-        const core::tools::Type type              = core::tools::Type::s_UINT8;
-        const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+        const data::Image::Size size          = {{ 3, 3, 3 }};
+        const data::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+        const data::Image::Origin origin      = {{ 0., 0., 0. }};
+        const core::tools::Type type          = core::tools::Type::s_UINT8;
+        const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, false };
 
-        ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+        data::Image::sptr imageIn  = data::Image::New();
+        data::Image::sptr imageOut = data::Image::New();
 
         ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -187,15 +187,15 @@ void FlipTest::flipAlongMultipleAxesTest()
     }
 
     {
-        const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
-        const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
-        const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
-        const core::tools::Type type              = core::tools::Type::s_UINT8;
-        const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+        const data::Image::Size size          = {{ 3, 3, 3 }};
+        const data::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+        const data::Image::Origin origin      = {{ 0., 0., 0. }};
+        const core::tools::Type type          = core::tools::Type::s_UINT8;
+        const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, true};
 
-        ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-        ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+        data::Image::sptr imageIn  = data::Image::New();
+        data::Image::sptr imageOut = data::Image::New();
 
         ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
         ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -225,15 +225,15 @@ void FlipTest::flipAlongMultipleAxesTest()
 
 void FlipTest::flipEmptyImageTest()
 {
-    const ::fwData::Image::Size size          = {0, 0, 0};
-    const ::fwData::Image::Spacing spacing    = {0., 0., 0.};
-    const ::fwData::Image::Origin origin      = {0., 0., 0.};
-    const core::tools::Type type              = core::tools::Type::s_UINT8;
-    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
+    const data::Image::Size size          = {0, 0, 0};
+    const data::Image::Spacing spacing    = {0., 0., 0.};
+    const data::Image::Origin origin      = {0., 0., 0.};
+    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 
-    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
-    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
+    data::Image::sptr imageIn  = data::Image::New();
+    data::Image::sptr imageOut = data::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(imageIn);
@@ -242,8 +242,8 @@ void FlipTest::flipEmptyImageTest()
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->lock();
 
-    const ::fwData::Image::Size imageSize    = imageIn->getSize2();
-    const ::fwData::Image::Size imageOutSize = imageOut->getSize2();
+    const data::Image::Size imageSize    = imageIn->getSize2();
+    const data::Image::Size imageOutSize = imageOut->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(imageSize[0], imageOutSize[0]);
     CPPUNIT_ASSERT_EQUAL(imageSize[1], imageOutSize[1]);

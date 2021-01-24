@@ -26,8 +26,8 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Point.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Point.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -45,8 +45,8 @@ public:
      * @param[in] _input Input matrix
      * @param[out] _output Inverted matrix.
      */
-    FWDATATOOLS_API static bool invert(const ::fwData::TransformationMatrix3D::csptr& _input,
-                                       ::fwData::TransformationMatrix3D::sptr& _output);
+    FWDATATOOLS_API static bool invert(const data::TransformationMatrix3D::csptr& _input,
+                                       data::TransformationMatrix3D::sptr& _output);
 
     /**
      * @brief Multiply two matrices.
@@ -54,15 +54,15 @@ public:
      * @param[in] trfB Second matrix.
      * @param[out] _output Output matrix.
      */
-    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::csptr& _trfA,
-                                         const ::fwData::TransformationMatrix3D::csptr& _trfB,
-                                         ::fwData::TransformationMatrix3D::sptr& _output);
+    FWDATATOOLS_API static void multiply(const data::TransformationMatrix3D::csptr& _trfA,
+                                         const data::TransformationMatrix3D::csptr& _trfB,
+                                         data::TransformationMatrix3D::sptr& _output);
 
     /**
      * @brief Set the matrix to identity.
      * @param[in,out] _trf Matrix we want to set to identity.
      */
-    FWDATATOOLS_API static void identity(::fwData::TransformationMatrix3D::sptr& _trf);
+    FWDATATOOLS_API static void identity(data::TransformationMatrix3D::sptr& _trf);
 
     /**
      * @brief Multiply a point and a matrix.
@@ -70,37 +70,37 @@ public:
      * @param[in] _input Input point.
      * @param[out] _output Output point.
      */
-    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                         const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output);
+    FWDATATOOLS_API static void multiply(const data::TransformationMatrix3D::csptr& _trf,
+                                         const data::Point::csptr& _input, data::Point::sptr& _output);
 
     /**
-     * @brief Convert a ::fwData::TransformationMatrix3D into a GLM matrix.
-     * @param[in] _trf Input ::fwData::TransformationMatrix3D.
+     * @brief Convert a data::TransformationMatrix3D into a GLM matrix.
+     * @param[in] _trf Input data::TransformationMatrix3D.
      * @return GLM matrix.
      */
-    FWDATATOOLS_API static ::glm::dmat4x4 getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::csptr& _trf);
+    FWDATATOOLS_API static ::glm::dmat4x4 getMatrixFromTF3D(const data::TransformationMatrix3D::csptr& _trf);
 
     /**
-     * @brief Convert a GLM matrix into a ::fwData::TransformationMatrix3D.
-     * @param[out] _trf Output ::fwData::TransformationMatrix3D.
+     * @brief Convert a GLM matrix into a data::TransformationMatrix3D.
+     * @param[out] _trf Output data::TransformationMatrix3D.
      * @param[in] _input Input GLM matrix.
      */
-    FWDATATOOLS_API static void setTF3DFromMatrix(::fwData::TransformationMatrix3D::sptr& _trf,
+    FWDATATOOLS_API static void setTF3DFromMatrix(data::TransformationMatrix3D::sptr& _trf,
                                                   const ::glm::dmat4x4& _input);
 
     /**
-     * @brief Return whether a ::fwData::TransformationMatrix3D is an identity matrix.
-     * @param[in] _trf Input ::fwData::TransformationMatrix3D.
+     * @brief Return whether a data::TransformationMatrix3D is an identity matrix.
+     * @param[in] _trf Input data::TransformationMatrix3D.
      * @param[in] _epsilon Precision of the test (default 1e-12)
      * @return boolean value: true if the matrix is identity, false otherwise.
      */
-    FWDATATOOLS_API static bool isIdentity(const ::fwData::TransformationMatrix3D::csptr& _trf,
+    FWDATATOOLS_API static bool isIdentity(const data::TransformationMatrix3D::csptr& _trf,
                                            const double _epsilon = 1e-12);
 };
 
 // ----------------------------------------------------------------------------
 
-inline ::glm::dmat4x4 TransformationMatrix3D::getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::csptr& _trf)
+inline ::glm::dmat4x4 TransformationMatrix3D::getMatrixFromTF3D(const data::TransformationMatrix3D::csptr& _trf)
 {
     // TransformationMatrix3D is stored row-major
     // glm matrices are stored column-major
@@ -116,7 +116,7 @@ inline ::glm::dmat4x4 TransformationMatrix3D::getMatrixFromTF3D(const ::fwData::
 
 // ----------------------------------------------------------------------------
 
-inline void TransformationMatrix3D::setTF3DFromMatrix(::fwData::TransformationMatrix3D::sptr& _trf,
+inline void TransformationMatrix3D::setTF3DFromMatrix(data::TransformationMatrix3D::sptr& _trf,
                                                       const ::glm::dmat4x4& _input)
 {
     // TransformationMatrix3D is stored row-major

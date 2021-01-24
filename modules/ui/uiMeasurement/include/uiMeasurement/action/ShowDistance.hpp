@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiMeasurement/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -50,7 +50,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image containing the distances.
+ * - \b image [data::Image]: image containing the distances.
  */
 class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 {

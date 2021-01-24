@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
@@ -46,13 +46,13 @@ namespace fwVtkIO
  */
 
 class FWVTKIO_CLASS_API ObjMeshReader :
-    public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+    public ::fwDataIO::reader::GenericObjectReader< data::Mesh >,
+    public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(ObjMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+    fwCoreClassMacro(ObjMeshReader, ::fwDataIO::reader::GenericObjectReader< data::Mesh >,
                      ::fwDataIO::reader::factory::New< ObjMeshReader >)
     fwCoreAllowSharedFromThis()
 

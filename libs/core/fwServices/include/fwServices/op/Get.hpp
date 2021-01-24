@@ -36,7 +36,7 @@ namespace fwServices
 
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on
- * fwData::Object::getID(...) method
+ * data::Object::getID(...) method
  *
 
  */

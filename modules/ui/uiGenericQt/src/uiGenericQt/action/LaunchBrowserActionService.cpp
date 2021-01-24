@@ -40,7 +40,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, data::Object )
 
 //------------------------------------------------------------------------------
 

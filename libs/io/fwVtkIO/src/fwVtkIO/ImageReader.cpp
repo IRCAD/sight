@@ -43,7 +43,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("VTK Image reader"))
 {
 }
@@ -63,7 +63,7 @@ void ImageReader::read()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Image::sptr pImage = getConcreteObject();
+    data::Image::sptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -100,7 +100,7 @@ void ImageReader::read()
     }
     catch( std::exception& e)
     {
-        FW_RAISE("VTKImage to fwData::Image failed "<<e.what());
+        FW_RAISE("VTKImage to data::Image failed "<<e.what());
     }
 }
 

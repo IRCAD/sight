@@ -50,7 +50,7 @@ namespace uiReconstructionQt
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction containing the material to update.
+ * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQT_CLASS_API SOrganMaterialEditor : public QObject,
                                                           public ::fwGui::editor::IEditor
@@ -75,7 +75,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to s_UPDATE_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Reconstruction/V1ToV2.hpp"
+#include "fwStructuralPatch/data/Reconstruction/V1ToV2.hpp"
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
@@ -29,7 +29,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Reconstruction
@@ -38,8 +38,8 @@ namespace Reconstruction
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Reconstruction";
-    m_targetClassname = "::fwData::Reconstruction";
+    m_originClassname = "data::Reconstruction";
+    m_targetClassname = "data::Reconstruction";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 
@@ -90,6 +90,6 @@ void V1ToV2::apply(
 
 } // namespace Reconstruction
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

@@ -41,11 +41,11 @@ namespace trackingCalibration
     </service>
    @endcode
  * @subsection Input Input
- * - \b matricesVector [::fwData::Vector]: vector of matrices corresponding to points on a sphere
+ * - \b matricesVector [data::Vector]: vector of matrices corresponding to points on a sphere
  *
  * @subsection Output Output
- * - \b matrixCalibration [::fwData::TransformationMatrix3D]: tool calibration
- * - \b matrixCenter [::fwData::TransformationMatrix3D] (optional): matrix representing the point around which the tool
+ * - \b matrixCalibration [data::TransformationMatrix3D]: tool calibration
+ * - \b matrixCenter [data::TransformationMatrix3D] (optional): matrix representing the point around which the tool
  * is moved
  *
  */

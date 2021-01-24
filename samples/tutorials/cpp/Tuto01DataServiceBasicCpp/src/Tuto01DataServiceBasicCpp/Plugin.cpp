@@ -50,7 +50,7 @@ void Plugin::start()
 void Plugin::initialize()
 {
     // Objects declaration.
-    m_image = ::fwData::Image::New();
+    m_image = data::Image::New();
 
     // UI declaration
     m_frameSrv = ::fwServices::add("::gui::frame::SDefaultFrame");

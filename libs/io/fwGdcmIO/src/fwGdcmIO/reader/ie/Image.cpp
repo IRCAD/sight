@@ -26,7 +26,7 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDicomTools/Image.hpp>
 
@@ -59,12 +59,12 @@ namespace ie
 Image::Image(const ::fwMedData::DicomSeries::csptr& dicomSeries,
              const SPTR(::gdcm::Reader)& reader,
              const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-             const ::fwData::Image::sptr& image,
+             const data::Image::sptr& image,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
-                                                                 logger, progress, cancel),
+    ::fwGdcmIO::reader::ie::InformationEntity< data::Image >(dicomSeries, reader, instance, image,
+                                                             logger, progress, cancel),
     m_enableBufferRotation(true)
 {
 }
@@ -135,8 +135,8 @@ void Image::readImagePlaneModule()
     const ::gdcm::Image& gdcmImage = imageReader->GetImage();
 
     // Image Position (Patient) - Type 1
-    const double* gdcmOrigin = gdcmImage.GetOrigin();
-    ::fwData::Image::Origin origin = {0., 0., 0.};
+    const double* gdcmOrigin   = gdcmImage.GetOrigin();
+    data::Image::Origin origin = {0., 0., 0.};
     if ( gdcmOrigin != 0 )
     {
         std::copy( gdcmOrigin, gdcmOrigin+3, origin.begin() );
@@ -148,8 +148,8 @@ void Image::readImagePlaneModule()
     const unsigned int dimension = gdcmImage.GetNumberOfDimensions();
 
     // Image's spacing
-    const double* gdcmSpacing = gdcmImage.GetSpacing();
-    ::fwData::Image::Spacing spacing = {1., 1., 1.};
+    const double* gdcmSpacing    = gdcmImage.GetSpacing();
+    data::Image::Spacing spacing = {1., 1., 1.};
     if ( gdcmSpacing != 0 )
     {
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
@@ -665,26 +665,26 @@ char* Image::correctImageOrientation(char* buffer,
         m_object->setSize2( {newSizeX, newSizeY, newSizeZ });
 
         // Update image spacing
-        const ::fwData::Image::Spacing spacing = m_object->getSpacing2();
+        const data::Image::Spacing spacing = m_object->getSpacing2();
         VectorType spacingVector(4);
         spacingVector(0) = spacing[0];
         spacingVector(1) = spacing[1];
         spacingVector(2) = spacing[2];
         VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector, inverseMatrix);
-        ::fwData::Image::Spacing newSpacing;
+        data::Image::Spacing newSpacing;
         newSpacing[0] = std::fabs(newSpacingVector[0]);
         newSpacing[1] = std::fabs(newSpacingVector[1]);
         newSpacing[2] = std::fabs(newSpacingVector[2]);
         m_object->setSpacing2( newSpacing );
 
         // Update image origin
-        const ::fwData::Image::Origin origin = m_object->getOrigin2();
+        const data::Image::Origin origin = m_object->getOrigin2();
         VectorType originVector(4);
         originVector(0) = origin[0];
         originVector(1) = origin[1];
         originVector(2) = origin[2];
         VectorType newOriginVector = ::boost::numeric::ublas::prod(originVector, inverseMatrix);
-        ::fwData::Image::Origin newOrigin;
+        data::Image::Origin newOrigin;
         newOrigin[0] = newOriginVector[0];
         newOrigin[1] = newOriginVector[1];
         newOrigin[2] = newOriginVector[2];

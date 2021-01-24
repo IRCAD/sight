@@ -30,9 +30,9 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Boolean.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -144,7 +144,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
     surfaceIE.readSurfaceSegmentationAndSurfaceMeshModules();
 
     // Display reconstructions
-    series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+    series->setField("ShowReconstructions", data::Boolean::New(true));
 
 }
 

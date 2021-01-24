@@ -31,7 +31,7 @@
 #include <core/com/Signals.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -55,7 +55,7 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, data::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
@@ -381,7 +381,7 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
     ::arData::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
     std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
-    ::fwData::Composite::sptr data            = m_activitySeries->getData();
+    data::Composite::sptr data     = m_activitySeries->getData();
     ::arData::CalibrationInfo::sptr calibInfo =
         ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
 
@@ -409,7 +409,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         std::string calibrationInfo1Key = "calibrationInfoExtr0_" + ::boost::lexical_cast<std::string>(cameraIdx);
         std::string calibrationInfo2Key = "calibrationInfoExtr1_" + ::boost::lexical_cast<std::string>(cameraIdx);
 
-        ::fwData::Composite::sptr data = m_activitySeries->getData();
+        data::Composite::sptr data = m_activitySeries->getData();
         ::arData::CalibrationInfo::sptr calibInfo1;
         ::arData::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity series if it exists or create it.

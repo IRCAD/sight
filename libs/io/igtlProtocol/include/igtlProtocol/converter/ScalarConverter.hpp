@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include "igtlProtocol/helper/ScalarToBytes.hpp"
 #include "igtlProtocol/RawMessage.hpp"
 
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/static_assert.hpp>
@@ -40,7 +40,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::Integer of Float and igtl::RawMessage
+ * @brief class to manage conversion between data::Integer of Float and igtl::RawMessage
  */
 template<typename ScalarType, typename FwDataObjectType>
 class IGTLPROTOCOL_CLASS_API ScalarConverter : public IConverter
@@ -50,13 +50,13 @@ public:
     /// Constructor
     ScalarConverter()
     {
-        BOOST_STATIC_ASSERT( ::boost::is_base_of< ::fwData::Object, FwDataObjectType>::value);
+        BOOST_STATIC_ASSERT( ::boost::is_base_of< data::Object, FwDataObjectType>::value);
     }
 
     ScalarConverter(const std::string& a) :
         m_igtlType(a)
     {
-        BOOST_STATIC_ASSERT( ::boost::is_base_of< ::fwData::Object, FwDataObjectType>::value);
+        BOOST_STATIC_ASSERT( ::boost::is_base_of< data::Object, FwDataObjectType>::value);
     }
 
     /// Destructor
@@ -67,9 +67,9 @@ public:
     /**
      * @brief convert a igtl::RawMessage(which contain scalar) to a FwDataObjectType
      *
-     * @return an fwData::Integer converted from an igtl::RawMessage
+     * @return an data::Integer converted from an igtl::RawMessage
      */
-    ::fwData::Object::sptr fromIgtlMessage (const ::igtl::MessageBase::Pointer src) const
+    data::Object::sptr fromIgtlMessage (const ::igtl::MessageBase::Pointer src) const
     {
         typename FwDataObjectType::sptr obj = FwDataObjectType::New();
 
@@ -81,11 +81,11 @@ public:
     }
 
     /**
-     * @brief convert a ::fwData::Scalar to an igtl::RawMessage
+     * @brief convert a data::Scalar to an igtl::RawMessage
      *
-     * @return an  igtl::RawMessage converted from an fwData::Integer
+     * @return an  igtl::RawMessage converted from an data::Integer
      */
-    ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const
+    ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const
     {
         RawMessage::Pointer msg;
         typename FwDataObjectType::csptr obj = FwDataObjectType::dynamicConstCast(src);
@@ -133,10 +133,10 @@ protected:
 
 };
 
-class IGTLPROTOCOL_CLASS_API IntConverter : public ScalarConverter< int, ::fwData::Integer>
+class IGTLPROTOCOL_CLASS_API IntConverter : public ScalarConverter< int, data::Integer>
 {
 public:
-    typedef ScalarConverter< int, ::fwData::Integer>  Superclass;
+    typedef ScalarConverter< int, data::Integer>  Superclass;
     /// Constructor
     IntConverter() :
         Superclass("INTEGER")
@@ -159,10 +159,10 @@ public:
     }
 };
 
-class IGTLPROTOCOL_CLASS_API FloatConverter : public ScalarConverter< float, ::fwData::Float>
+class IGTLPROTOCOL_CLASS_API FloatConverter : public ScalarConverter< float, data::Float>
 {
 public:
-    typedef ScalarConverter< float, ::fwData::Float>  Superclass;
+    typedef ScalarConverter< float, data::Float>  Superclass;
     /// Constructor
     FloatConverter() :
         Superclass("FLOAT")

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,8 +101,8 @@ void SRenderStats::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const std::string color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
-    ::fwData::Color::sptr sightColor = ::fwData::Color::New();
+    const std::string color      = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
+    data::Color::sptr sightColor = data::Color::New();
     sightColor->setRGBA(color);
 
     m_textColor = ::Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());

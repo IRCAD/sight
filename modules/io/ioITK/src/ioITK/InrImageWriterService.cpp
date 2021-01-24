@@ -24,9 +24,9 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -42,7 +42,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, data::Image )
 
 //------------------------------------------------------------------------------
 
@@ -85,17 +85,17 @@ void InrImageWriterService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
         this->setFile( result->getPath() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -124,7 +124,7 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
+void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const data::Image::csptr& image )
 {
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
 
@@ -162,7 +162,7 @@ void InrImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        data::Image::csptr image = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         ::fwGui::Cursor cursor;

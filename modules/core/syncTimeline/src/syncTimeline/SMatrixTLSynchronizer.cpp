@@ -29,8 +29,8 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -103,10 +103,10 @@ void SMatrixTLSynchronizer::synchronize()
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
-                auto matrix         = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, matrixIndex);
+                auto matrix         = this->getInOut< data::TransformationMatrix3D >(s_MATRICES_INOUT, matrixIndex);
 
                 {
-                    ::fwData::mt::ObjectWriteLock lock(matrix);
+                    data::mt::ObjectWriteLock lock(matrix);
                     SLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
 
                     matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
@@ -123,8 +123,8 @@ void SMatrixTLSynchronizer::synchronize()
                     }
                 }
                 this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(index);
-                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
-                    ::fwData::Object::s_MODIFIED_SIG);
+                auto sig = matrix->signal< data::Object::ModifiedSignalType >(
+                    data::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
             }
             else

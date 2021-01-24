@@ -24,19 +24,19 @@
 
 #include <core/runtime/Convert.hpp>
 
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -158,7 +158,7 @@ bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
                 if (!uid.empty())
                 {
                     // insert the object if it is in the required type
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj && obj->isA(requirement.type))
                     {
                         // Insert the new object
@@ -274,9 +274,9 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
         QHBoxLayout* const treeLayout   = new QHBoxLayout();
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
-        if (req.type == "::fwData::String" || req.type == "::fwData::Boolean"
-            || req.type == "::fwData::Integer" || req.type == "::fwData::Float"
-            || req.type == "::fwData::TransformationMatrix3D")
+        if (req.type == "data::String" || req.type == "data::Boolean"
+            || req.type == "data::Integer" || req.type == "data::Float"
+            || req.type == "data::TransformationMatrix3D")
         {
             QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
@@ -292,7 +292,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
         // If the type is a Series, we add a button to import the data from a SeriesDB,
         // we also improve the tree header by adding more informations.
-        ::fwData::Object::sptr newObject = ::fwData::factory::New(req.type);
+        data::Object::sptr newObject = data::factory::New(req.type);
         if (newObject && ::fwMedData::Series::dynamicCast(newObject))
         {
             QPushButton* const buttonAddFromSDB = new QPushButton("Import");
@@ -357,7 +357,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         ::fwActivities::registry::Activities::getDefault()->getInfo(_activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
-    ::fwData::Composite::sptr activitySeriesData = _activitySeries->getData();
+    data::Composite::sptr activitySeriesData = _activitySeries->getData();
 
     this->fillInformation(info);
 
@@ -365,7 +365,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
     {
         ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
 
-        ::fwData::Object::sptr obj = activitySeriesData->at< ::fwData::Object >(req.name);
+        data::Object::sptr obj = activitySeriesData->at< data::Object >(req.name);
         if (obj)
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) ||
@@ -378,7 +378,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             {
                 if (req.container == "vector")
                 {
-                    ::fwData::Vector::sptr vector = ::fwData::Vector::dynamicCast(obj);
+                    data::Vector::sptr vector = data::Vector::dynamicCast(obj);
                     if (vector)
                     {
                         for (auto subObj : vector->getContainer())
@@ -388,12 +388,12 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        SLM_ERROR("Object param '" + req.name + "' must be a '::fwData::Vector'");
+                        SLM_ERROR("Object param '" + req.name + "' must be a 'data::Vector'");
                     }
                 }
                 else // container == composite
                 {
-                    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(obj);
+                    data::Composite::sptr composite = data::Composite::dynamicCast(obj);
                     if (composite)
                     {
                         for (auto subObj : composite->getContainer())
@@ -403,7 +403,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        SLM_ERROR("Object param '" + req.name + "' must be a '::fwData::Composite'");
+                        SLM_ERROR("Object param '" + req.name + "' must be a 'data::Composite'");
                     }
                 }
             }
@@ -414,9 +414,9 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _errorMsg)
+data::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _errorMsg)
 {
-    ::fwData::Object::sptr object;
+    data::Object::sptr object;
 
     ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
@@ -433,7 +433,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             std::string uid =
                 item->data(int(ColumnCommunType::ID), ActivityDataView::s_UID_ROLE).toString().toStdString();
 
-            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+            data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj && obj->isA(req.type))
             {
                 object = obj;
@@ -448,7 +448,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                object = ::fwData::factory::New(req.type);
+                object = data::factory::New(req.type);
             }
             else
             {
@@ -477,7 +477,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         {
             if (req.container == "vector")
             {
-                ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+                data::Vector::sptr vector = data::Vector::New();
 
                 for (unsigned int i = 0; i < nbObj; ++i)
                 {
@@ -485,7 +485,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
                     {
                         vector->getContainer().push_back(obj);
@@ -503,7 +503,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             }
             else // container == composite
             {
-                ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+                data::Composite::sptr composite = data::Composite::New();
 
                 for (unsigned int i = 0; i < nbObj; ++i)
                 {
@@ -511,7 +511,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
                     {
                         std::string key  = req.keys[i].key;
@@ -522,7 +522,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                         }
                         else
                         {
-                            (*composite)[key] = ::fwData::reflection::getObject( obj, path );
+                            (*composite)[key] = data::reflection::getObject( obj, path );
                         }
                     }
                     else
@@ -564,7 +564,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
 {
     namespace ActReg = ::fwActivities::registry;
 
-    ::fwData::Composite::sptr composite = actSeries->getData();
+    data::Composite::sptr composite = actSeries->getData();
 
     bool ok = true;
     errorMsg += "The required data are not correct:";
@@ -574,7 +574,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
     {
         ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
         std::string msg;
-        ::fwData::Object::sptr obj = this->checkData(i, msg);
+        data::Object::sptr obj = this->checkData(i, msg);
         if (obj)
         {
             (*composite)[req.name] = obj;
@@ -658,7 +658,7 @@ void ActivityDataView::createNewObject()
         QMessageBox::warning(this, "New", message );
         return;
     }
-    ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
+    data::Object::sptr newObject = data::factory::New(type);
 
     m_importedObject.push_back(newObject);
     this->addObjectItem(index, newObject);
@@ -717,7 +717,7 @@ void ActivityDataView::importObjectFromSDB()
         return;
     }
 
-    ::fwData::Object::sptr newObject = ::fwData::factory::New(type);
+    data::Object::sptr newObject = data::factory::New(type);
     if (newObject)
     {
         SLM_ERROR_IF("Imported object must inherit from 'Series'.", !::fwMedData::Series::dynamicCast(newObject));
@@ -755,10 +755,10 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::readObject(const std::string& _classname,
-                                                    const std::string& _ioSelectorSrvConfig)
+data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
+                                                const std::string& _ioSelectorSrvConfig)
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
 
@@ -777,7 +777,7 @@ void ActivityDataView::importObjectFromSDB()
         ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
         ioSelectorSrv->start();
         ioSelectorSrv->update();
-        obj = ioSelectorSrv->getOutput< ::fwData::Object >(::fwIO::s_DATA_KEY);
+        obj = ioSelectorSrv->getOutput< data::Object >(::fwIO::s_DATA_KEY);
         ioSelectorSrv->stop();
         ::fwServices::OSR::unregisterService( ioSelectorSrv );
     }
@@ -799,7 +799,7 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::csptr& _obj)
+void ActivityDataView::addObjectItem(size_t _index, const data::Object::csptr& _obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
@@ -807,12 +807,12 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
     newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
-    const ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(_obj);
-    const ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(_obj);
-    const ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(_obj);
-    const ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(_obj);
-    const ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(_obj);
-    const ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(_obj);
+    const ::fwMedData::Series::csptr series       = ::fwMedData::Series::dynamicCast(_obj);
+    const data::String::csptr strObj              = data::String::dynamicCast(_obj);
+    const data::Integer::csptr intObj             = data::Integer::dynamicCast(_obj);
+    const data::Float::csptr floatObj             = data::Float::dynamicCast(_obj);
+    const data::Boolean::csptr boolObj            = data::Boolean::dynamicCast(_obj);
+    const data::TransformationMatrix3D::csptr trf = data::TransformationMatrix3D::dynamicCast(_obj);
     if (series)
     {
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
@@ -1014,14 +1014,14 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
         std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if (!uid.empty())
         {
-            ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+            data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj)
             {
-                if (obj->isA("::fwData::String"))
+                if (obj->isA("data::String"))
                 {
-                    ::fwData::String::sptr str = ::fwData::String::dynamicCast(obj);
-                    bool isOkClicked = false;
-                    QString value    = QInputDialog::getText(
+                    data::String::sptr str = data::String::dynamicCast(obj);
+                    bool isOkClicked       = false;
+                    QString value          = QInputDialog::getText(
                         this, "Edition", "Enter the String value:",
                         QLineEdit::Normal, QString::fromStdString(str->value()), &isOkClicked);
 
@@ -1031,9 +1031,9 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
-                else if (obj->isA("::fwData::Integer"))
+                else if (obj->isA("data::Integer"))
                 {
-                    ::fwData::Integer::sptr intObj = ::fwData::Integer::dynamicCast(obj);
+                    data::Integer::sptr intObj = data::Integer::dynamicCast(obj);
 
                     bool isOkClicked = false;
                     int value        = QInputDialog::getInt(
@@ -1045,9 +1045,9 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("::fwData::Float"))
+                else if (obj->isA("data::Float"))
                 {
-                    ::fwData::Float::sptr floatObj = ::fwData::Float::dynamicCast(obj);
+                    data::Float::sptr floatObj = data::Float::dynamicCast(obj);
 
                     bool isOkClicked = false;
                     double value     = QInputDialog::getDouble(
@@ -1059,17 +1059,17 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("::fwData::Boolean"))
+                else if (obj->isA("data::Boolean"))
                 {
-                    ::fwData::Boolean::sptr boolObj = ::fwData::Boolean::dynamicCast(obj);
+                    data::Boolean::sptr boolObj        = data::Boolean::dynamicCast(obj);
                     QMessageBox::StandardButton button = QMessageBox::question(
                         this, "Edition", "Defines the Boolean value");
                     boolObj->value() = (button == QMessageBox::Yes);
                     _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
-                else if (obj->isA("::fwData::TransformationMatrix3D"))
+                else if (obj->isA("data::TransformationMatrix3D"))
                 {
-                    ::fwData::TransformationMatrix3D::sptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+                    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::dynamicCast(obj);
                     std::stringstream str;
                     str << *trf;
 
@@ -1081,7 +1081,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                     QStringList coeffList = value.trimmed().split(QRegularExpression("\\s+"));
                     if (isOkClicked && coeffList.size() == 16)
                     {
-                        ::fwData::TransformationMatrix3D::TMCoefArray coeffs;
+                        data::TransformationMatrix3D::TMCoefArray coeffs;
 
                         bool conversionOK = false;
                         for (int i = 0; i < 16; ++i)

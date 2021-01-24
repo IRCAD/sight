@@ -25,11 +25,11 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/ILocation.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Image.hpp>
+#include <data/location/ILocation.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -56,12 +56,12 @@ namespace ut
 
 //-----------------------------------------------------------------------------
 
-void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+void compare(data::Object::sptr objRef, data::Object::sptr objComp)
 {
-    ::fwData::reflection::visitor::CompareObjects visitor;
+    data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
@@ -119,9 +119,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
     ::fwServices::OSR::unregisterService(srv);
 
     // Data expected
-    const ::fwData::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
-    const ::fwData::Image::Origin originExpected   = {34.64, 86.6, 56};
-    const fwData::Image::Size sizeExpected         = { 230, 170, 58};
+    const data::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
+    const data::Image::Origin originExpected   = {34.64, 86.6, 56};
+    const data::Image::Size sizeExpected       = { 230, 170, 58};
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
@@ -131,10 +131,10 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     // Data read.
-    ::fwData::Image::sptr image = imageSeries->getImage();
-    const ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    const ::fwData::Image::Spacing originRead  = image->getOrigin2();
-    const ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::sptr image                = imageSeries->getImage();
+    const data::Image::Spacing spacingRead = image->getSpacing2();
+    const data::Image::Spacing originRead  = image->getOrigin2();
+    const data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -154,13 +154,13 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     CPPUNIT_ASSERT_EQUAL(size_t(2),  modelSeries->getReconstructionDB().size());
 
-    ::fwData::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
-    ::fwData::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
-    ::fwData::Mesh::sptr mesh1          = rec1->getMesh();
-    ::fwData::Mesh::sptr mesh2          = rec2->getMesh();
+    data::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
+    data::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
+    data::Mesh::sptr mesh1          = rec1->getMesh();
+    data::Mesh::sptr mesh2          = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Size)720, mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Size)362, mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size)720, mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size)362, mesh1->getNumberOfPoints());
 
     compare(mesh1, mesh2);
 }

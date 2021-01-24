@@ -27,7 +27,7 @@
 
 #include <core/com/Signals.hpp>
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -298,7 +298,7 @@ private:
     bool m_extrude { true };
 
     /// Contains the material data used for the lasso tool.
-    ::fwData::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material { nullptr };
 
     /// Contains the adaptor used to create the Ogre material from the material data.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };

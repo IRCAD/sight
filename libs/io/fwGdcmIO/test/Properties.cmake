@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwGdcmIO
     core
-    fwData
+    data
     fwMedData
     fwTest
     fwDataTools

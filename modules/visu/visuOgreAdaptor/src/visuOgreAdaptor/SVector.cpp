@@ -94,7 +94,7 @@ void SVector::starting()
     m_sceneNode                      = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     // set the material
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");

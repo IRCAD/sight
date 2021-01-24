@@ -33,8 +33,8 @@ namespace fwDataTools
 
 struct RoiApplyerParam
 {
-    ::fwData::Image::sptr img;
-    ::fwData::Image::sptr roi;
+    data::Image::sptr img;
+    data::Image::sptr roi;
 };
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ struct RoiApplyerCaller
 
 //------------------------------------------------------------------------------
 
-void Image::applyRoi( ::fwData::Image::sptr image, ::fwData::Image::sptr roi )
+void Image::applyRoi( data::Image::sptr image, data::Image::sptr roi )
 {
     SLM_ASSERT( "Null image pointers", image && roi);
     SLM_ASSERT( "Images have different size", image->getSize2() == roi->getSize2());
@@ -108,9 +108,9 @@ void Image::applyRoi( ::fwData::Image::sptr image, ::fwData::Image::sptr roi )
 
 struct RoiTesterParam
 {
-    ::fwData::Image::sptr img;
-    ::fwData::Image::sptr imgRoiApplyed;
-    ::fwData::Image::sptr roi;
+    data::Image::sptr img;
+    data::Image::sptr imgRoiApplyed;
+    data::Image::sptr roi;
     bool result;
 };
 
@@ -167,7 +167,7 @@ struct RoiTesterCaller
 
 //------------------------------------------------------------------------------
 
-bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi, ::fwData::Image::sptr imgRoiApplyed )
+bool Image::isRoiApplyed( data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplyed )
 {
     SLM_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
     SLM_ASSERT( "Images have different size",

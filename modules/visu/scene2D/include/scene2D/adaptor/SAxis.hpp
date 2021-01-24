@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update axis.
+ * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update axis.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -77,7 +77,7 @@ protected:
     void configuring() override;
 
     /// Manage the given events
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 private:

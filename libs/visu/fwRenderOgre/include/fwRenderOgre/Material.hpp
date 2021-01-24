@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreMaterial.h>
@@ -63,17 +63,17 @@ public:
                                             bool useTextureAlpha);
 
     /// Update material color in fixed function pipeline
-    FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr _sightMaterial );
+    FWRENDEROGRE_API void updateRGBAMode( data::Material::sptr _sightMaterial );
 
     void setHasMeshNormal(bool _hasMeshNormal);
     void setHasUV(bool _hasUV);
     void setHasVertexColor(bool _hasVertexColor);
     void setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName);
-    [[deprecated("Use '::fwData::Mesh::CellType' instead of '::fwData::Mesh::CellTypesEnum'(sight 22.0)")]]
-    void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
+    [[deprecated("Use 'data::Mesh::CellType' instead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
+    void setPrimitiveType(data::Mesh::CellTypesEnum _type);
 
     /// Set the type of primitive
-    void setPrimitiveType(::fwData::Mesh::CellType _type);
+    void setPrimitiveType(data::Mesh::CellType _type);
 
     /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
     void setMeshSize(const float _size);
@@ -110,7 +110,7 @@ private:
     bool m_hasPrimitiveColor { false };
 
     /// Primitive type of the associated mesh
-    ::fwData::Mesh::CellType m_primitiveType { ::fwData::Mesh::CellType::TRIANGLE };
+    data::Mesh::CellType m_primitiveType { data::Mesh::CellType::TRIANGLE };
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
@@ -153,14 +153,14 @@ inline void Material::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::s
 
 //------------------------------------------------------------------------------
 
-inline void Material::setPrimitiveType(::fwData::Mesh::CellTypesEnum _type)
+inline void Material::setPrimitiveType(data::Mesh::CellTypesEnum _type)
 {
-    m_primitiveType = static_cast< ::fwData::Mesh::CellType >(_type);
+    m_primitiveType = static_cast< data::Mesh::CellType >(_type);
 }
 
 //------------------------------------------------------------------------------
 
-inline void Material::setPrimitiveType(::fwData::Mesh::CellType _type)
+inline void Material::setPrimitiveType(data::Mesh::CellType _type)
 {
     m_primitiveType = _type;
 }

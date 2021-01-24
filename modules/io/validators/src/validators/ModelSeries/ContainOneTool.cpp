@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "validators/ModelSeries/ContainOneTool.hpp"
 
-#include <fwActivities/validator/registry/macros.hpp>
+#include <data/Composite.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/Vector.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Vector.hpp>
+#include <fwActivities/validator/registry/macros.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -54,7 +54,7 @@ ContainOneTool::~ContainOneTool()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType ContainOneTool::validate(const ::fwData::Object::csptr& currentData ) const
+::fwActivities::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 
@@ -62,8 +62,8 @@ ContainOneTool::~ContainOneTool()
     validation.second = "";
 
     ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicConstCast(currentData);
-    ::fwData::Vector::csptr vector              = ::fwData::Vector::dynamicConstCast(currentData);
-    ::fwData::Composite::csptr composite        = ::fwData::Composite::dynamicConstCast(currentData);
+    data::Vector::csptr vector       = data::Vector::dynamicConstCast(currentData);
+    data::Composite::csptr composite = data::Composite::dynamicConstCast(currentData);
 
     if (modelSeries)
     {

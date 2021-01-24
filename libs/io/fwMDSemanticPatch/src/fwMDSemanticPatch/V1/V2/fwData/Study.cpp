@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V1/V2/fwData/Study.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Study.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -36,13 +36,13 @@ namespace V1
 {
 namespace V2
 {
-namespace fwData
+namespace sight::data
 {
 
 Study::Study() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Study";
+    m_originClassname = "data::Study";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -80,7 +80,7 @@ void Study::apply(
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch

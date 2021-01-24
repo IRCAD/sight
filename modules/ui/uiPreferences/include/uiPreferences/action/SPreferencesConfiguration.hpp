@@ -27,7 +27,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -39,7 +39,7 @@
 
 #include <vector>
 
-namespace fwData
+namespace sight::data
 {
 class String;
 }
@@ -171,7 +171,7 @@ private:
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
         QPointer<QComboBox> m_comboBox;
-        ::fwData::String::sptr m_dataPreference;
+        data::String::sptr m_dataPreference;
         std::string m_preferenceKey;
         std::string m_name;
         std::string m_defaultValue;

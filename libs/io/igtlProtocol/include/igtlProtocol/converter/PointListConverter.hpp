@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::PointList and igtl::PointMessage
+ * @brief class to manage conversion between data::PointList and igtl::PointMessage
  */
 class IGTLPROTOCOL_CLASS_API PointListConverter :
     public IConverter
@@ -44,18 +44,18 @@ public:
     IGTLPROTOCOL_API ~PointListConverter();
 
     /**
-     * @brief convert a igtl::PositionMessage to a ::fwData::Line
+     * @brief convert a igtl::PositionMessage to a data::Line
      *
-     * @return an fwData::Image converted from an igtl::ImageMessage
+     * @return an data::Image converted from an igtl::ImageMessage
      */
-    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    IGTLPROTOCOL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
-     * @brief convert a ::fwData::Line to an igtl::PositionMessage
+     * @brief convert a data::Line to an igtl::PositionMessage
      *
-     * @return an  igtl::ImageMessage converted from an fwData::Image
+     * @return an  igtl::ImageMessage converted from an data::Image
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
 
     /**
      * @brief create a new LineConverter smart pointer

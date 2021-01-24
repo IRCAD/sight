@@ -30,13 +30,13 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 #include <vector>
 
 fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries))
 
-namespace fwData
+namespace sight::data
 {
 class Reconstruction;
 }
@@ -52,9 +52,9 @@ class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 
 public:
 
-    typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
+    typedef std::vector< SPTR(data::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassMacro(ModelSeries, ::fwData::Object, ::fwData::factory::New< ModelSeries >)
+    fwCoreClassMacro(ModelSeries, data::Object, data::factory::New< ModelSeries >)
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries))
 
@@ -62,7 +62,7 @@ public:
      * @brief Creates the models series.
      * @param _key private construction key.
      */
-    FWMEDDATA_API ModelSeries(::fwData::Object::Key _key);
+    FWMEDDATA_API ModelSeries(data::Object::Key _key);
 
     /// Destroys the models series.
     FWMEDDATA_API virtual ~ModelSeries() override;
@@ -71,14 +71,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
     const ReconstructionVectorType& getReconstructionDB() const;

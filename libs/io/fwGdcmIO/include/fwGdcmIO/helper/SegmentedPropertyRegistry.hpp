@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,10 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 
-#include <fwData/Object.hpp>
-
-#include <filesystem>
+#include <data/Object.hpp>
 
 #include <array>
+#include <filesystem>
 #include <string>
 
 namespace fwLog

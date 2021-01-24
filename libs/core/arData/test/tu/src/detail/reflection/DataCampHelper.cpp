@@ -22,8 +22,8 @@
 
 #include "detail/reflection/DataCampHelper.hpp"
 
-#include <fwData/GenericFieldBase.hpp>
-#include <fwData/reflection/getObject.hpp>
+#include <data/GenericFieldBase.hpp>
+#include <data/reflection/getObject.hpp>
 
 #include <camp/class.hpp>
 
@@ -53,24 +53,24 @@ void visitProperties(const std::string& className, const PropertiesNameType& vec
 
 //------------------------------------------------------------------------------
 
-void compareSimplePropertyValue(::fwData::Object::sptr obj,
+void compareSimplePropertyValue(data::Object::sptr obj,
                                 const std::string& propertyPath,
                                 const std::string& value)
 {
-    ::fwData::GenericFieldBase::sptr field;
-    field = ::fwData::reflection::getObject< ::fwData::GenericFieldBase >(obj, propertyPath);
+    data::GenericFieldBase::sptr field;
+    field = data::reflection::getObject< data::GenericFieldBase >(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, field);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Retrieve property "+propertyPath+" not equal with value.", value, field->toString());
 }
 
 //------------------------------------------------------------------------------
 
-void compareObjectPropertyValue(::fwData::Object::sptr obj,
+void compareObjectPropertyValue(data::Object::sptr obj,
                                 const std::string& propertyPath,
-                                ::fwData::Object::sptr value)
+                                data::Object::sptr value)
 {
-    ::fwData::Object::sptr subObj;
-    subObj = ::fwData::reflection::getObject(obj, propertyPath);
+    data::Object::sptr subObj;
+    subObj = data::reflection::getObject(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, subObj);
     CPPUNIT_ASSERT_MESSAGE("Retrieve property "+propertyPath+" not equal with value.", value == subObj);
 }

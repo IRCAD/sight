@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,9 +37,9 @@ namespace tid
 MeasurementReport::MeasurementReport(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                                      const SPTR(::gdcm::Reader)& reader,
                                      const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                                     const ::fwData::Image::sptr& image,
+                                     const data::Image::sptr& image,
                                      const ::fwLog::Logger::sptr& logger) :
-    ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
+    ::fwGdcmIO::reader::tid::TemplateID< data::Image >(dicomSeries, reader, instance, image, logger)
 {
 }
 

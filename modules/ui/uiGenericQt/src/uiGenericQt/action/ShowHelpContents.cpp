@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, data::Object )
 
 //------------------------------------------------------------------------------
 

@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Acquisition/V1ToFwMedDataImageSeriesV1Test.hpp"
+#include "data/Acquisition/V1ToFwMedDataImageSeriesV1Test.hpp"
 
-#include <fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp>
+#include <fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -36,13 +36,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Acquisition::V1ToFwMedDataImageSeriesV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Acquisition::V1ToFwMedDataImageSeriesV1Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Acquisition
 {
@@ -68,7 +68,7 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     ::fwAtoms::Object::sptr acqObj = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr isObj;
 
-    ::fwAtomsPatch::helper::setClassname(acqObj, "::fwData::Acquisition");
+    ::fwAtomsPatch::helper::setClassname(acqObj, "data::Acquisition");
     ::fwAtomsPatch::helper::setVersion(acqObj, "1");
 
     ::fwAtomsPatch::helper::Object helper(acqObj);
@@ -109,8 +109,8 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[acqObj] = isObj;
 
-    ::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::sptr patch;
-    patch = ::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New();
+    ::fwStructuralPatchdata::Acquisition::V1ToFwMedDataImageSeriesV1::sptr patch;
+    patch = ::fwStructuralPatchdata::Acquisition::V1ToFwMedDataImageSeriesV1::New();
     CPPUNIT_ASSERT_NO_THROW(patch->apply(acqObj, isObj, newVersions));
 
     CPPUNIT_ASSERT(isObj);
@@ -162,6 +162,6 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Acquisition
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

@@ -5,11 +5,11 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwTest
     core
-    fwData
+    data
     fwServices
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     gui
     guiQt

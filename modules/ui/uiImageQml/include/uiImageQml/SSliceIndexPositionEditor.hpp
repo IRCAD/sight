@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ namespace uiImageQml
  * @section Objects Required objects
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image on which the slice index will be changed
+ * - \b image [data::Image]: image on which the slice index will be changed
  */
 class UIIMAGEQML_CLASS_QT_API SSliceIndexPositionEditor : public ::fwQml::IQmlEditor,
                                                           public ::fwDataTools::helper::MedicalImage
@@ -90,7 +90,7 @@ Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
 public:
 
-    fwCoreServiceMacro(SSliceIndexPositionEditor, ::fwQml::IQmlEditor);
+    fwCoreServiceMacro(SSliceIndexPositionEditor, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIIMAGEQML_QT_API SSliceIndexPositionEditor() noexcept;

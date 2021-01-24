@@ -26,9 +26,9 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -60,12 +60,12 @@ namespace opDepthMap
  * @endcode
  * @subsection Input Input
  * - \b calibration (mandatory) [::arData::CameraSeries]: calibration rgbd sensor.
- * - \b depthMap (mandatory) [::fwData::Image]: Grayscale image containing a depth map.
- * - \b rgbMap   (optional)  [::fwData::Image]: RGB image corresponding to the depth map. If present, the RGB
+ * - \b depthMap (mandatory) [data::Image]: Grayscale image containing a depth map.
+ * - \b rgbMap   (optional)  [data::Image]: RGB image corresponding to the depth map. If present, the RGB
  *   map must have the same dimensions as the depth map.
  *
  * @subsection In-Out In-Out
- * - \b pointCloud [::fwData::Mesh]: Computed point cloud.
+ * - \b pointCloud [data::Mesh]: Computed point cloud.
  *
  * @subsection Configuration Configuration
  */
@@ -129,8 +129,8 @@ private:
      * @brief Computes a point cloud from a depth map.
      */
     void depthMapToPointCloud(const ::arData::Camera::csptr& depthCamera,
-                              const ::fwData::Image::csptr& depthMap,
-                              const ::fwData::Mesh::sptr& pointCloud);
+                              const data::Image::csptr& depthMap,
+                              const data::Mesh::sptr& pointCloud);
 
     /**
      * @brief Computes a point cloud with colors from a depth map and a color
@@ -138,10 +138,10 @@ private:
      */
     void depthMapToPointCloudRGB(const ::arData::Camera::csptr& depthCamera,
                                  const ::arData::Camera::csptr& colorCamera,
-                                 const ::fwData::Image::csptr& depthMap,
-                                 const ::fwData::Image::csptr& colorMap,
-                                 const ::fwData::TransformationMatrix3D::csptr& extrinsic,
-                                 const ::fwData::Mesh::sptr& pointCloud);
+                                 const data::Image::csptr& depthMap,
+                                 const data::Image::csptr& colorMap,
+                                 const data::TransformationMatrix3D::csptr& extrinsic,
+                                 const data::Mesh::sptr& pointCloud);
 
     /// Min value of depth used to build pointcloud.
     std::uint16_t m_minDepth = 0;

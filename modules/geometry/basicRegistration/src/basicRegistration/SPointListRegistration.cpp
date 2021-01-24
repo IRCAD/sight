@@ -25,11 +25,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Composite.hpp>
+#include <data/Mesh.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -114,9 +114,9 @@ void SPointListRegistration::stopping()
 
 void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    ::fwData::PointList::sptr registeredPL        = this->getInOut< ::fwData::PointList >("registeredPL");
-    ::fwData::PointList::sptr referencePL         = this->getInOut< ::fwData::PointList >("referencePL");
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("output");
+    data::PointList::sptr registeredPL        = this->getInOut< data::PointList >("registeredPL");
+    data::PointList::sptr referencePL         = this->getInOut< data::PointList >("referencePL");
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >("output");
 
     if( registeredPL->getPoints().size() >= 3 &&
         registeredPL->getPoints().size() == referencePL->getPoints().size() )
@@ -130,19 +130,19 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr
-           && firstPointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr
+           && firstPointReg->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
         {
             // ... Then match them according to that label.
-            for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
+            for( data::Point::sptr pointRef : referencePL->getPoints() )
             {
                 const std::string& labelRef =
-                    pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                    pointRef->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
-                for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
+                for( data::Point::sptr pointReg : registeredPL->getPoints() )
                 {
                     const std::string& labelReg =
-                        pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                        pointReg->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
                     if(labelRef == labelReg)
                     {
@@ -228,7 +228,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 
         // Notify Matrix modified
-        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();

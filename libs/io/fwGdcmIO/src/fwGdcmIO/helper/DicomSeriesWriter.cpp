@@ -47,7 +47,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_writeCount(0),
     m_job(::fwJobs::Observer::New("Writing DICOM files"))
 {

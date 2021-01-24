@@ -32,9 +32,9 @@ namespace fwCommand
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiff diff) :
+ImageDiffCommand::ImageDiffCommand(const data::Image::sptr& img, ::fwDataTools::ImageDiff diff) :
     m_img(img),
-    m_modifSig(img->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG)),
+    m_modifSig(img->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG)),
     m_diff(diff)
 {
     m_diff.shrink();

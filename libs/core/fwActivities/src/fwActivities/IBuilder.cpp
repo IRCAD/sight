@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,20 @@
 
 #include "fwActivities/IBuilder.hpp"
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 namespace fwActivities
 {
 
 //------------------------------------------------------------------------------
 
-::fwData::Vector::sptr IBuilder::getType( const ::fwData::Vector::csptr& currentSelection,
-                                          const std::string& type ) const
+data::Vector::sptr IBuilder::getType( const data::Vector::csptr& currentSelection,
+                                      const std::string& type ) const
 {
     SLM_ASSERT("currentSelection not instanced", currentSelection);
 
-    ::fwData::Vector::sptr subSelection = ::fwData::Vector::New();
-    for(::fwData::Vector::value_type obj :  *currentSelection)
+    data::Vector::sptr subSelection = data::Vector::New();
+    for(data::Vector::value_type obj :  *currentSelection)
     {
         SLM_ASSERT("Object not instanced in selection", obj);
         if(obj->isA(type))

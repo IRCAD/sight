@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <future>
 #include <regex>

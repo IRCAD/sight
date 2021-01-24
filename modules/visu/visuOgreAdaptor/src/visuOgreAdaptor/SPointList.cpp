@@ -29,7 +29,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -73,7 +73,7 @@ static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
 SPointList::SPointList() noexcept
 {
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SPointList::configuring()
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
 
     const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
-    m_labelColor = ::fwData::Color::New();
+    m_labelColor = data::Color::New();
     m_labelColor->setRGBA(labelColor);
 }
 
@@ -173,7 +173,7 @@ void SPointList::starting()
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode                      = this->getTransformNode(rootSceneNode);
 
-    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -181,7 +181,7 @@ void SPointList::starting()
     }
     else
     {
-        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
@@ -204,12 +204,12 @@ void SPointList::starting()
 ::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
-    connections.push(s_MESH_INPUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_MESH_INPUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
@@ -248,7 +248,7 @@ void SPointList::updating()
 
     this->destroyLabel();
 
-    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -256,7 +256,7 @@ void SPointList::updating()
     }
     else
     {
-        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
@@ -272,7 +272,7 @@ void SPointList::updating()
 
 //------------------------------------------------------------------------------
 
-void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
+void SPointList::createLabel(const data::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
@@ -285,8 +285,8 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
     std::string labelNumber = std::to_string(i);
     for(auto& point: _pointList->getPoints())
     {
-        fwData::String::sptr strField =
-            point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId);
+        data::String::sptr strField =
+            point->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId);
         if(strField)
         {
             labelNumber = strField->value();
@@ -302,7 +302,7 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
                                                       m_labelColor->blue()));
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
         m_nodes[i]->attachObject(m_labels[i]);
-        ::fwData::Point::PointCoordArrayType coord = point->getCoord();
+        data::Point::PointCoordArrayType coord = point->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }
@@ -328,7 +328,7 @@ void SPointList::destroyLabel()
 }
 //-----------------------------------------------------------------------------
 
-void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
+void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
@@ -386,7 +386,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
+void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
@@ -403,7 +403,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     }
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(::std::const_pointer_cast< ::fwData::Mesh >(_mesh), true);
+    m_meshGeometry->updateMesh(::std::const_pointer_cast< data::Mesh >(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -454,7 +454,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
     std::string meshName;
-    const auto pointListW = this->getWeakInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -462,7 +462,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     }
     else
     {
-        const auto meshW = this->getWeakInput< ::fwData::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
@@ -507,7 +507,7 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
+    else if(m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
             m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();

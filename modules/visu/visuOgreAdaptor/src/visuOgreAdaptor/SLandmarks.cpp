@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Landmarks.hpp>
+#include <data/Landmarks.hpp>
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
@@ -124,7 +124,7 @@ void SLandmarks::starting()
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_transNode                      = this->getTransformNode(rootSceneNode);
 
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     // Register the material adaptor.
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
@@ -149,19 +149,19 @@ void SLandmarks::starting()
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_INSERT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_INITIALIZE_IMAGE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICE_INDEX_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_INSERTED_SIG, s_INSERT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_INITIALIZE_IMAGE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICE_INDEX_SLOT);
 
     return connections;
 }
@@ -171,7 +171,7 @@ void SLandmarks::starting()
 void SLandmarks::updating()
 {
     // Get landmarks.
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
     // Delete all groups.
     for(const std::string& groupName : landmarks->getGroupNames())
@@ -182,7 +182,7 @@ void SLandmarks::updating()
     // Create all point.
     for(const std::string& groupName : landmarks->getGroupNames())
     {
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
+        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
         for(size_t index = 0; index < group.m_points.size(); ++index)
         {
             this->insertPoint(groupName, index);
@@ -201,7 +201,7 @@ void SLandmarks::stopping()
     }
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
     // Delete all groups.
     for(const std::string& groupName : landmarks->getGroupNames())
@@ -264,10 +264,10 @@ void SLandmarks::modifyGroup(std::string _groupName)
     this->removeGroup(_groupName);
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
-    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
     // Re-create the group.
     for(size_t index = 0; index < group.m_points.size(); ++index)
@@ -290,10 +290,10 @@ void SLandmarks::addPoint(std::string _groupName)
     size_t index = 0;
     {
         // Get landmarks.
-        const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+        const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
         // Retreive group.
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
         SLM_ASSERT("They must have at least one point in the group `" << _groupName << "`", group.m_points.size() > 0);
 
         // Get the last index.
@@ -359,10 +359,10 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     this->getRenderService()->makeCurrent();
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
-    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
     // Create the point name.
     const std::string pointName = _groupName + "_" + std::to_string(_index);
@@ -375,12 +375,12 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     ::Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
     switch(group.m_shape)
     {
-        case ::fwData::Landmarks::Shape::SPHERE:
+        case data::Landmarks::Shape::SPHERE:
             ::fwRenderOgre::helper::ManualObject::createSphere(object,
                                                                m_materialAdaptor->getMaterialName(),
                                                                color, group.m_size*0.5f);
             break;
-        case ::fwData::Landmarks::Shape::CUBE:
+        case data::Landmarks::Shape::CUBE:
             ::fwRenderOgre::helper::ManualObject::createCube(object,
                                                              m_materialAdaptor->getMaterialName(),
                                                              color, group.m_size);
@@ -390,7 +390,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
 
     // Set the point to the right position.
-    const ::fwData::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
+    const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
     node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
 
     // Attach data.
@@ -536,7 +536,7 @@ void SLandmarks::changeSliceType(int _from, int _to)
 
 void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
 
@@ -564,7 +564,7 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 void SLandmarks::hideLandmarks()
 {
-    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
 
@@ -583,15 +583,15 @@ void SLandmarks::hideLandmarks()
 void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 {
     // Get image.
-    const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
-    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
 
     // Hide landmarks only if there is an image.
     bool show = true;
@@ -626,10 +626,10 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 //------------------------------------------------------------------------------
 void SLandmarks::setVisible(bool _visible)
 {
-    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const auto landmarks = this->getLockedInput< data::Landmarks >(s_LANDMARKS_INPUT);
     for(std::shared_ptr<Landmark> landmark : m_manualObjects)
     {
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
+        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
         landmark->m_object->setVisible(_visible && group.m_visibility);
         if(m_enableLabels)
         {

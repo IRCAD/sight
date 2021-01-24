@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     fwTest
     fwMath
-    fwData
+    data
     fwMedData
     fwGdcmIO
     fwLog

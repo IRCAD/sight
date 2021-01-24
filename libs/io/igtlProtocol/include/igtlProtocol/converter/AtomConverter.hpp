@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::Object and RawMessage(contain serialized atom)
+ * @brief class to manage conversion between data::Object and RawMessage(contain serialized atom)
  */
 class IGTLPROTOCOL_CLASS_API AtomConverter :
     public IConverter
@@ -44,18 +44,18 @@ public:
     IGTLPROTOCOL_API ~AtomConverter();
 
     /**
-     * @brief convert a igtl RawMessage contain an atom serialized object to a ::fwData::Object
+     * @brief convert a igtl RawMessage contain an atom serialized object to a data::Object
      *
      * @return an object converted from atom
      */
-    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer const src) const;
+    IGTLPROTOCOL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer const src) const;
 
     /**
-     * @brief convert a fwData::Object to a RawMessage contain an atom serialized object
+     * @brief convert a data::Object to a RawMessage contain an atom serialized object
      *
      * @return an RawMessage contain the compressed atom serialized object
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject(::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
 
     /**
      * @brief create a new AtomConverter smart pointer

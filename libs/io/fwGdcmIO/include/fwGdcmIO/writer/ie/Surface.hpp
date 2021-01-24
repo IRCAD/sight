@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,9 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <filesystem>
 #include <gdcmSegment.h>
+
+#include <filesystem>
 
 namespace fwGdcmIO
 {
@@ -93,7 +94,7 @@ protected:
      * @param[in] segment GDCM segment
      * @param[in] segmentNumber Segment number
      */
-    FWGDCMIO_API virtual void writeSegmentSequence(const CSPTR(::fwData::Reconstruction)& reconstruction,
+    FWGDCMIO_API virtual void writeSegmentSequence(const CSPTR(data::Reconstruction)& reconstruction,
                                                    ::gdcm::Item& segmentItem,
                                                    const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
                                                    unsigned short segmentNumber);
@@ -105,7 +106,7 @@ protected:
      * @param[in] surface GDCM surface
      * @param[in] segmentNumber Associated segment number
      */
-    FWGDCMIO_API virtual void writeSurfaceSequence(const CSPTR(::fwData::Reconstruction)& reconstruction,
+    FWGDCMIO_API virtual void writeSurfaceSequence(const CSPTR(data::Reconstruction)& reconstruction,
                                                    ::gdcm::Item& surfaceItem,
                                                    const ::gdcm::SmartPointer< ::gdcm::Surface >& surface,
                                                    unsigned short segmentNumber);

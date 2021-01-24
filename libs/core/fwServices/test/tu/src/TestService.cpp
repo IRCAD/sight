@@ -26,10 +26,10 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation)
-fwServicesRegisterObjectMacro(::fwServices::ut::TestServiceImplementation, ::fwData::Object);
+fwServicesRegisterObjectMacro(::fwServices::ut::TestServiceImplementation, data::Object);
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2 )
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvAutoconnect )
 fwServicesRegisterMacro( ::fwServices::IService, ::fwServices::ut::TestServiceWithData )
@@ -106,9 +106,9 @@ TestServiceImplementation::~TestServiceImplementation() noexcept
 
 void TestServiceWithData::updating()
 {
-    ::fwData::Object::csptr input = this->getInput< ::fwData::Object >(s_INPUT);
+    data::Object::csptr input = this->getInput< data::Object >(s_INPUT);
 
-    ::fwData::Object::sptr output = ::fwData::Object::copy(input);
+    data::Object::sptr output = data::Object::copy(input);
 
     this->setOutput(s_OUTPUT, output);
 }

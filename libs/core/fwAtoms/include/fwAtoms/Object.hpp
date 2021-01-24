@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,13 +30,13 @@ namespace fwAtoms
 {
 
 /**
- * @brief Class represented a fwData::Object
+ * @brief Class represented a data::Object
  *
  */
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassMacro(Object, ::fwAtoms::Base, ::fwAtoms::factory::New< Object >);
+    fwCoreClassMacro(Object, ::fwAtoms::Base, ::fwAtoms::factory::New< Object >)
 
     typedef std::map<std::string, Base::sptr> AttributesType;
     typedef std::map<std::string, std::string> MetaInfosType;

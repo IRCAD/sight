@@ -25,8 +25,8 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -237,7 +237,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     bool success = false;
 
     // Retrieve informations.
-    const auto pacsConfig = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
+    const auto pacsConfig = this->getLockedInput< const ::fwPacsIOdata::PacsConfiguration >(s_PACS_INPUT);
 
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -275,10 +275,10 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             // Pull selected series and save it to the temporary folder.
             switch (pacsConfig->getRetrieveMethod())
             {
-                case ::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD:
+                case ::fwPacsIOdata::PacsConfiguration::GET_RETRIEVE_METHOD:
                     seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
-                case ::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD:
+                case ::fwPacsIOdata::PacsConfiguration::MOVE_RETRIEVE_METHOD:
                     seriesEnquirer->pullInstanceUsingMoveRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
                 default:
@@ -324,7 +324,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
+void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
                                        std::size_t _selectedSliceIndex) const
 {
     // Retrieve informations.
@@ -370,21 +370,21 @@ void SSliceIndexDicomEditor::readSlice(const ::fwData::mt::locked_ptr< ::fwMedDa
         // Copy the read serie to the image.
         const ::fwMedData::ImageSeries::sptr imageSeries =
             ::fwMedData::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
-        const ::fwData::Image::sptr newImage = imageSeries->getImage();
+        const data::Image::sptr newImage = imageSeries->getImage();
 
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
         image->deepCopy(newImage);
 
-        ::fwData::Integer::sptr axialIndex    = ::fwData::Integer::New(0);
-        ::fwData::Integer::sptr frontalIndex  = ::fwData::Integer::New(image->getSize2()[0]/2);
-        ::fwData::Integer::sptr sagittalIndex = ::fwData::Integer::New(image->getSize2()[1]/2);
+        data::Integer::sptr axialIndex    = data::Integer::New(0);
+        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0]/2);
+        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1]/2);
 
         image->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
         image->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
         image->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
 
         // Send the signal
-        const auto sig = image->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+        const auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
     else

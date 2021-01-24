@@ -24,8 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -87,10 +87,10 @@ void SMultipleTF::configuring()
     const auto config     = tree.get_child("config.<xmlattr>");
 
     const std::string polygonColor = config.get(s_POLYGON_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_polygonsPen, polygonColor);
+    ::fwRenderQtdata::InitQtPen::setPenColor(m_polygonsPen, polygonColor);
 
     const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_pointsPen, pointColor);
+    ::fwRenderQtdata::InitQtPen::setPenColor(m_pointsPen, pointColor);
 
     m_secondOpacity = config.get< float >(s_SECOND_OPACITY_CONFIG, m_secondOpacity);
     m_pointSize     = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
@@ -102,24 +102,24 @@ void SMultipleTF::configuring()
 void SMultipleTF::starting()
 {
     // Gets the TF pool.
-    const ::fwData::Composite::csptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     // Sets the current TF.
     {
-        const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+        const data::mt::ObjectReadLock tfPoolLock(tfPool);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Sets the current TF used to highlight it in the editor.
-        const ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction >(s_CURRENT_TF_INPUT);
+        const data::TransferFunction::csptr tf = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
         if(tf)
         {
             // Check if the current is in the composite.
             bool found = false;
-            for(::fwData::Composite::value_type poolElt : *tfPool)
+            for(data::Composite::value_type poolElt : *tfPool)
             {
                 // Checks if it's a TF.
-                const ::fwData::TransferFunction::sptr poolTF = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+                const data::TransferFunction::sptr poolTF = data::TransferFunction::dynamicCast(poolElt.second);
                 SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
 
                 if(poolTF == tf)
@@ -137,8 +137,8 @@ void SMultipleTF::starting()
         if(m_currentTF == nullptr)
         {
             // Finds the first TF of the composite.
-            const ::fwData::TransferFunction::sptr poolTF
-                = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
+            const data::TransferFunction::sptr poolTF
+                = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
             m_currentTF = poolTF;
             // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
@@ -165,10 +165,10 @@ void SMultipleTF::starting()
 ::fwServices::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -193,10 +193,10 @@ void SMultipleTF::updating()
     // Connects all TF to the updating slot.
     for(const SubTF* const subTF : m_subTF)
     {
-        m_connections.connect(subTF->m_tf, ::fwData::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-        m_connections.connect(subTF->m_tf, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG,
+        m_connections.connect(subTF->m_tf, data::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+        m_connections.connect(subTF->m_tf, data::TransferFunction::s_POINTS_MODIFIED_SIG,
                               this->getSptr(), s_UPDATE_SLOT);
-        m_connections.connect(subTF->m_tf, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG,
+        m_connections.connect(subTF->m_tf, data::TransferFunction::s_WINDOWING_MODIFIED_SIG,
                               this->getSptr(), s_UPDATE_SLOT);
     }
 }
@@ -218,8 +218,8 @@ void SMultipleTF::swapping(const KeyType& _key)
 {
     SLM_ASSERT("The current TF mustn't be null", m_currentTF);
 
-    const ::fwData::TransferFunction::csptr newCurrentTF
-        = this->getInput< ::fwData::TransferFunction >(s_CURRENT_TF_INPUT);
+    const data::TransferFunction::csptr newCurrentTF
+        = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
 
     // Avoids swapping if it's the same TF.
     if(_key == s_CURRENT_TF_INPUT && newCurrentTF && newCurrentTF != m_currentTF)
@@ -245,17 +245,17 @@ void SMultipleTF::releaseTFData()
 void SMultipleTF::createTFPoints()
 {
     // Iterates over each TF to create subTF.
-    const ::fwData::Composite::csptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
-    const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+    const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least one TF inside.", tfPool->size() > 0);
 
     int zIndex = 0;
-    for(::fwData::Composite::value_type poolElt : *tfPool)
+    for(data::Composite::value_type poolElt : *tfPool)
     {
         // Checks if it's a TF.
-        const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+        const data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
 
         // Pushs the subTF to the vector.
@@ -283,10 +283,10 @@ void SMultipleTF::destroyTFPoints()
 
 //-----------------------------------------------------------------------------
 
-SMultipleTF::SubTF* SMultipleTF::createSubTF(const ::fwData::TransferFunction::sptr _tf, int _zIndex)
+SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr _tf, int _zIndex)
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const ::fwData::mt::ObjectReadLock viewportLock(viewport);
+    ::fwRenderQtdata::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    const data::mt::ObjectReadLock viewportLock(viewport);
 
     const double sceneWidth  = this->getScene2DRender()->getView()->width();
     const double sceneHeight = this->getScene2DRender()->getView()->height();
@@ -305,9 +305,9 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const ::fwData::TransferFunction::s
     const double pointWidth  = (viewportWidth * pointSize)/sceneWidth;
     const double pointHeight = (viewportHeight * pointSize)/sceneHeight;
 
-    const ::fwData::Composite::csptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
-    const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+    const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
@@ -320,24 +320,24 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const ::fwData::TransferFunction::s
     const bool isCurrent = m_currentTF == _tf;
     subTF->m_zIndex = isCurrent ? static_cast< int >(tfPool->size()) : _zIndex;
 
-    const ::fwData::mt::ObjectReadLock tfLock(_tf);
+    const data::mt::ObjectReadLock tfLock(_tf);
 
     // Gets window/level informations to change TF value from TF space to window/level space.
-    const ::fwData::TransferFunction::TFValuePairType minMaxValues = _tf->getMinMaxTFValues();
-    const ::fwData::TransferFunction::TFValueType minWL            = _tf->getWLMinMax().first;
-    const ::fwData::TransferFunction::TFValueType window           = _tf->getWindow();
-    const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+    const data::TransferFunction::TFValuePairType minMaxValues = _tf->getMinMaxTFValues();
+    const data::TransferFunction::TFValueType minWL            = _tf->getWLMinMax().first;
+    const data::TransferFunction::TFValueType window           = _tf->getWindow();
+    const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
     // Fills subTF point with color points.
-    for(const ::fwData::TransferFunction::TFDataType::value_type& elt : _tf->getTFData())
+    for(const data::TransferFunction::TFDataType::value_type& elt : _tf->getTFData())
     {
         // Computes TF value from TF space to window/level space.
-        ::fwData::TransferFunction::TFValueType value;
+        data::TransferFunction::TFValueType value;
         value = (elt.first - minMaxValues.first) / width;
         value = value * window + minWL;
 
         // Creates the color.
-        const ::fwData::TransferFunction::TFColor tfColor = elt.second;
+        const data::TransferFunction::TFColor tfColor = elt.second;
         const Point2DType valColor(value, tfColor.a);
         Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
 
@@ -378,7 +378,7 @@ void SMultipleTF::createTFPolygons()
     // Iterates over all subTF to create polygons.
     for(SubTF* const subTF : m_subTF)
     {
-        const ::fwData::mt::ObjectReadLock tfLock(subTF->m_tf);
+        const data::mt::ObjectReadLock tfLock(subTF->m_tf);
         this->createTFPolygon(subTF);
     }
 }
@@ -387,8 +387,8 @@ void SMultipleTF::createTFPolygons()
 
 void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 {
-    const ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const ::fwData::mt::ObjectReadLock viewportLock(viewport);
+    const ::fwRenderQtdata::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    const data::mt::ObjectReadLock viewportLock(viewport);
 
     QVector<QPointF> position;
     QLinearGradient grad;
@@ -431,7 +431,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     const double distanceMax = xEnd - xBegin;
 
     // Iterates on TF points vector to add line and polygon items to the polygons vector.
-    if(_subTF->m_tf->getInterpolationMode() == ::fwData::TransferFunction::LINEAR)
+    if(_subTF->m_tf->getInterpolationMode() == data::TransferFunction::LINEAR)
     {
         this->buildLinearPolygons(_subTF, position, grad, distanceMax);
     }
@@ -609,7 +609,7 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
 
 //-----------------------------------------------------------------------------
 
-std::vector< SMultipleTF::SubTF* > SMultipleTF::getMatchingSubTF(const ::fwRenderQt::data::Event& _event) const
+std::vector< SMultipleTF::SubTF* > SMultipleTF::getMatchingSubTF(const ::fwRenderQtdata::Event& _event) const
 {
     // Finds all subTF that match the clicked coord.
     std::vector< SubTF* > matchingSubTF;
@@ -632,7 +632,7 @@ std::vector< SMultipleTF::SubTF* > SMultipleTF::getMatchingSubTF(const ::fwRende
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
+void SMultipleTF::processInteraction(::fwRenderQtdata::Event& _event)
 {
     if(!m_interactive)
     {
@@ -642,7 +642,7 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     SLM_ASSERT("The current TF mustn't be null", m_currentTF);
 
     // If it's a resize event, all the scene must be recompted.
-    if(_event.getType() == ::fwRenderQt::data::Event::Resize)
+    if(_event.getType() == ::fwRenderQtdata::Event::Resize)
     {
         this->updating();
         _event.setAccepted(true);
@@ -652,8 +652,8 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     // If a point as already been captured.
     if(m_capturedTFPoint)
     {
-        if(_event.getButton() == ::fwRenderQt::data::Event::LeftButton &&
-           _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease)
+        if(_event.getButton() == ::fwRenderQtdata::Event::LeftButton &&
+           _event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease)
         {
             // Releases capture point.
             this->leftButtonReleaseEvent();
@@ -665,15 +665,15 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     // If a subTF as already been captured.
     if(m_capturedTF.first)
     {
-        if(_event.getType() == ::fwRenderQt::data::Event::MouseMove)
+        if(_event.getType() == ::fwRenderQtdata::Event::MouseMove)
         {
             // Changes the subTF level.
             this->mouseMoveOnSubTFEvent(_event);
             _event.setAccepted(true);
             return;
         }
-        else if(_event.getButton() == ::fwRenderQt::data::Event::MidButton &&
-                _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease)
+        else if(_event.getButton() == ::fwRenderQtdata::Event::MidButton &&
+                _event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease)
         {
             // Releases capture subTF.
             this->midButtonReleaseEvent();
@@ -694,7 +694,7 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
             // If a point has already been captured.
             if(m_capturedTFPoint == &tfPoint)
             {
-                if(_event.getType() == ::fwRenderQt::data::Event::MouseMove)
+                if(_event.getType() == ::fwRenderQtdata::Event::MouseMove)
                 {
                     // Moves the captured point.
                     this->mouseMoveOnPointEvent(subTF, _event);
@@ -706,24 +706,24 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
             else if(items.indexOf(tfPoint.second) >= 0)
             {
                 // If there is a double click on a point, open a color dialog.
-                if(_event.getButton() == ::fwRenderQt::data::Event::LeftButton &&
-                   _event.getType() == ::fwRenderQt::data::Event::MouseButtonDoubleClick)
+                if(_event.getButton() == ::fwRenderQtdata::Event::LeftButton &&
+                   _event.getType() == ::fwRenderQtdata::Event::MouseButtonDoubleClick)
                 {
                     this->leftButtonDoubleClickOnPointEvent(subTF, tfPoint);
                     _event.setAccepted(true);
                     return;
                 }
                 // If left button is pressed on a point, set the TF as current.
-                else if(_event.getButton() == ::fwRenderQt::data::Event::LeftButton &&
-                        _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
+                else if(_event.getButton() == ::fwRenderQtdata::Event::LeftButton &&
+                        _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress)
                 {
                     this->leftButtonClickOnPointEvent(subTF, tfPoint);
                     _event.setAccepted(true);
                     return;
                 }
                 // If right button is pressed on a point, remove it.
-                if(_event.getButton() == ::fwRenderQt::data::Event::RightButton &&
-                   _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
+                if(_event.getButton() == ::fwRenderQtdata::Event::RightButton &&
+                   _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress &&
                    subTF->m_tf == m_currentTF && subTF->m_TFPoints.size() > 2)
                 {
                     this->rightButtonClickOnPointEvent(subTF, tfPoint);
@@ -735,8 +735,8 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     }
 
     // Adds a new TF point.
-    if(_event.getButton() == ::fwRenderQt::data::Event::LeftButton &&
-       _event.getType() == ::fwRenderQt::data::Event::MouseButtonDoubleClick)
+    if(_event.getButton() == ::fwRenderQtdata::Event::LeftButton &&
+       _event.getType() == ::fwRenderQtdata::Event::MouseButtonDoubleClick)
     {
         // Cancel the previous single click interaction.
         m_eventFilter->stop();
@@ -746,8 +746,8 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     }
 
     // If left button is pressed, set the nearest TF as current.
-    if(_event.getButton() == ::fwRenderQt::data::Event::LeftButton &&
-       _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
+    if(_event.getButton() == ::fwRenderQtdata::Event::LeftButton &&
+       _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress)
     {
         // Cancel the previous event if it's needed.
         m_eventFilter->stop();
@@ -766,16 +766,16 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     }
 
     // If midlle button is pressed, select the current TF to adjust the window/level.
-    if(_event.getButton() == ::fwRenderQt::data::Event::MidButton &&
-       _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
+    if(_event.getButton() == ::fwRenderQtdata::Event::MidButton &&
+       _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress)
     {
         this->midButtonClickEvent(_event);
         return;
     }
 
     // If right button is pressed, open a context menu to manage multiple actions.
-    if(_event.getButton() == ::fwRenderQt::data::Event::RightButton &&
-       _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress)
+    if(_event.getButton() == ::fwRenderQtdata::Event::RightButton &&
+       _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress)
     {
         this->rightButtonCLickEvent(_event);
         _event.setAccepted(true);
@@ -783,9 +783,9 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     }
 
     // If the middle button wheel moves, change the whole subTF opacity.
-    if(_event.getButton() == ::fwRenderQt::data::Event::NoButton &&
-       (_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ||
-        _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp))
+    if(_event.getButton() == ::fwRenderQtdata::Event::NoButton &&
+       (_event.getType() == ::fwRenderQtdata::Event::MouseWheelDown ||
+        _event.getType() == ::fwRenderQtdata::Event::MouseWheelUp))
     {
         this->midButtonWheelMoveEvent(_event);
         return;
@@ -794,7 +794,7 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQtdata::Event& _event)
 {
     std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
 
@@ -812,7 +812,7 @@ void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
         // Finds the closets one.
         else
         {
-            ::fwRenderQt::data::Coord clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+            ::fwRenderQtdata::Coord clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
             float closestDistance  = std::numeric_limits< float >::max();
             SubTF* newCurrentSubTF = nullptr;
@@ -838,9 +838,9 @@ void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
                         else
                         {
                             // The first point is the same a the real but with an infinite lower value.
-                            const ::fwRenderQt::data::Viewport::csptr viewport =
+                            const ::fwRenderQtdata::Viewport::csptr viewport =
                                 this->getScene2DRender()->getViewport();
-                            const ::fwData::mt::ObjectReadLock viewportLock(viewport);
+                            const data::mt::ObjectReadLock viewportLock(viewport);
                             tfPoint1 = std::make_pair(viewport->getX(), tfPoint2.second);
                         }
                     }
@@ -856,9 +856,9 @@ void SMultipleTF::leftButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
                         else
                         {
                             // The last point is the same a the real but with an infinite upper value.
-                            const ::fwRenderQt::data::Viewport::csptr viewport =
+                            const ::fwRenderQtdata::Viewport::csptr viewport =
                                 this->getScene2DRender()->getViewport();
-                            const ::fwData::mt::ObjectReadLock viewportLock(viewport);
+                            const data::mt::ObjectReadLock viewportLock(viewport);
                             tfPoint2 = std::make_pair(viewport->getX() + viewport->getWidth(), tfPoint1.second);
                         }
                     }
@@ -957,7 +957,7 @@ void SMultipleTF::leftButtonClickOnPointEvent(SubTF* const _subTF,
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQtdata::Event& _event)
 {
     // m_capturedTFPoint must be previously sets by
     // leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
@@ -985,7 +985,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     const double nextPointXCoord     = nextPoint->first.first;
 
     // Gets the actual mouse point coordinates.
-    ::fwRenderQt::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    ::fwRenderQtdata::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // Clamps new y coord between -1 and 0.
     if(newCoord.getY() > 0)
@@ -1047,26 +1047,26 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
         pointIndex = _subTF->m_TFPoints.size() - 1 - pointIndex;
     }
 
-    const ::fwData::TransferFunction::sptr tf = _subTF->m_tf;
-    const ::fwData::mt::ObjectWriteLock tfLock(tf);
+    const data::TransferFunction::sptr tf = _subTF->m_tf;
+    const data::mt::ObjectWriteLock tfLock(tf);
 
     // Retrieves the TF point.
-    const ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-    auto tfDataIt                                       = tfData.begin();
+    const data::TransferFunction::TFDataType tfData = tf->getTFData();
+    auto tfDataIt                                   = tfData.begin();
     for(unsigned i = 0; i < pointIndex; ++i)
     {
         tfDataIt++;
     }
 
     // Gets the TF point information
-    ::fwData::TransferFunction::TFValueType oldTFValue = tfDataIt->first;
-    ::fwData::TransferFunction::TFColor tfColor        = tfDataIt->second;
+    data::TransferFunction::TFValueType oldTFValue = tfDataIt->first;
+    data::TransferFunction::TFColor tfColor        = tfDataIt->second;
 
     // Gets window/level informations to change TF value from TF space to window/level space.
-    const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-    const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-    const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
-    const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+    const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+    const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+    const data::TransferFunction::TFValueType window           = tf->getWindow();
+    const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
     // Gets new window/level min max value in the window/level space.
     const double min = _subTF->m_TFPoints.begin()->first.first;
@@ -1079,9 +1079,9 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     tfColor.a = std::abs(newCoord.getY());
 
     // Computes TF value from window/level space to TF space.
-    ::fwData::TransferFunction::TFValueType newTFValue = newCoord.getX();
-    newTFValue                                         = (newTFValue - minWL) / window;
-    newTFValue                                         = (newTFValue * width) + minMaxValues.first;
+    data::TransferFunction::TFValueType newTFValue = newCoord.getX();
+    newTFValue = (newTFValue - minWL) / window;
+    newTFValue = (newTFValue * width) + minMaxValues.first;
 
     // Adds the new TF point.
     tf->addTFColor(newTFValue, tfColor);
@@ -1089,7 +1089,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     // Updates unclamped data.
     if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
     {
-        ::fwData::TransferFunction::TFDataType& data = m_unclampedTFData[tf->getID()];
+        data::TransferFunction::TFDataType& data = m_unclampedTFData[tf->getID()];
         data.erase(oldTFValue);
         data[newTFValue] = tfColor;
     }
@@ -1097,16 +1097,16 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
     // Updates the window/level.
     if(window > 0)
     {
-        tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+        tf->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
     }
     else
     {
-        tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
+        tf->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1133,9 +1133,9 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
     SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
     size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
-    const ::fwData::TransferFunction::sptr tf = _subTF->m_tf;
+    const data::TransferFunction::sptr tf = _subTF->m_tf;
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::ObjectWriteLock tfLock(tf);
 
         // If the window is negative, the TF point list is reversed compared to the TF data.
         const double window = tf->getWindow();
@@ -1145,21 +1145,21 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
         }
 
         // Retrieves the TF point.
-        ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-        auto tfDataIt = tfData.begin();
+        data::TransferFunction::TFDataType tfData = tf->getTFData();
+        auto tfDataIt                             = tfData.begin();
         for(unsigned i = 0; i < pointIndex; ++i)
         {
             tfDataIt++;
         }
 
         // Removes the TF point.
-        const ::fwData::TransferFunction::TFValueType tfValue = tfDataIt->first;
+        const data::TransferFunction::TFValueType tfValue = tfDataIt->first;
         tf->eraseTFValue(tfValue);
 
         // Update unclamped data.
         if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
         {
-            ::fwData::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
+            data::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
             tfData.erase(tfValue);
         }
 
@@ -1180,17 +1180,17 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
         // Updates the window/level.
         if(window > 0)
         {
-            tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+            tf->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
         }
         else
         {
-            tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
+            tf->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
         }
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1228,9 +1228,9 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
         SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
         size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
-        const ::fwData::TransferFunction::sptr tf = _subTF->m_tf;
+        const data::TransferFunction::sptr tf = _subTF->m_tf;
         {
-            const ::fwData::mt::ObjectWriteLock tfLock(tf);
+            const data::mt::ObjectWriteLock tfLock(tf);
 
             // If the window is negative, the TF point list is reversed compared to the TF data.
             if(tf->getWindow() < 0)
@@ -1239,30 +1239,30 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
             }
 
             // Retrieves the TF point.
-            ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
-            auto tfDataIt = tfData.begin();
+            data::TransferFunction::TFDataType tfData = tf->getTFData();
+            auto tfDataIt                             = tfData.begin();
             for(unsigned i = 0; i < pointIndex; ++i)
             {
                 tfDataIt++;
             }
 
             // Removes the TF point.
-            ::fwData::TransferFunction::TFValueType tfValue = tfDataIt->first;
+            data::TransferFunction::TFValueType tfValue = tfDataIt->first;
 
             // Removes the old TF point.
             tf->eraseTFValue(tfValue);
 
             // Adds the new one with the new color.
-            ::fwData::TransferFunction::TFColor tfColor(newColor.red()/255.,
-                                                        newColor.green()/255.,
-                                                        newColor.blue()/255.,
-                                                        newColor.alpha()/255.);
+            data::TransferFunction::TFColor tfColor(newColor.red()/255.,
+                                                    newColor.green()/255.,
+                                                    newColor.blue()/255.,
+                                                    newColor.alpha()/255.);
             tf->addTFColor(tfValue, tfColor);
         }
 
         // Sends the modification signal.
-        const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-            ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+        const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
+            data::TransferFunction::s_POINTS_MODIFIED_SIG);
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -1284,9 +1284,9 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQtdata::Event& _event)
 {
-    ::fwRenderQt::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    ::fwRenderQtdata::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // Clamps new y coord between -1 and 0.
     if(newCoord.getY() > 0)
@@ -1304,41 +1304,41 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
             {
                 return _subTF->m_tf == m_currentTF;
             }));
-    const ::fwData::TransferFunction::sptr tf = currentSubTF->m_tf;
+    const data::TransferFunction::sptr tf = currentSubTF->m_tf;
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::ObjectWriteLock tfLock(tf);
 
         // Gets window/level informations to change TF value from TF space to window/level space.
-        const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-        const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-        const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
-        const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+        const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+        const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+        const data::TransferFunction::TFValueType window           = tf->getWindow();
+        const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
         // Computes TF value from window/level space to TF space.
-        ::fwData::TransferFunction::TFValueType tfValue = newCoord.getX();
-        tfValue                                         = (tfValue - minWL) / window;
-        tfValue                                         = (tfValue * width) + minMaxValues.first;
+        data::TransferFunction::TFValueType tfValue = newCoord.getX();
+        tfValue = (tfValue - minWL) / window;
+        tfValue = (tfValue * width) + minMaxValues.first;
 
-        ::fwData::TransferFunction::TFColor newColor;
+        data::TransferFunction::TFColor newColor;
 
         // The new coord becomes the new first TF point, get the current first color in the list.
         if(newCoord.getX() < currentSubTF->m_TFPoints.front().first.first)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.front().second->brush().color();
-            newColor = ::fwData::TransferFunction::TFColor(firstColor.red()/255.,
-                                                           firstColor.green()/255.,
-                                                           firstColor.blue()/255.,
-                                                           -newCoord.getY());
+            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
+                                                       firstColor.green()/255.,
+                                                       firstColor.blue()/255.,
+                                                       -newCoord.getY());
 
         }
         // The new coord becomes the new last TF point, get the current last color in the list.
         else if(newCoord.getX() > currentSubTF->m_TFPoints.back().first.first)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.back().second->brush().color();
-            newColor = ::fwData::TransferFunction::TFColor(firstColor.red()/255.,
-                                                           firstColor.green()/255.,
-                                                           firstColor.blue()/255.,
-                                                           -newCoord.getY());
+            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
+                                                       firstColor.green()/255.,
+                                                       firstColor.blue()/255.,
+                                                       -newCoord.getY());
 
         }
         // Gets an interpolate color since the new point is between two ohers.
@@ -1354,8 +1354,8 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
         // Update unclamped data.
         if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
         {
-            ::fwData::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
-            tfData[tfValue]                                = newColor;
+            data::TransferFunction::TFDataType& tfData = m_unclampedTFData[tf->getID()];
+            tfData[tfValue] = newColor;
         }
 
         // Gets new window/level min max value in the window/level space.
@@ -1374,17 +1374,17 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
         // Updates the window/level.
         if(window > 0)
         {
-            tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+            tf->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
         }
         else
         {
-            tf->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
+            tf->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
         }
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1396,7 +1396,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::midButtonClickEvent(::fwRenderQt::data::Event& _event)
+void SMultipleTF::midButtonClickEvent(::fwRenderQtdata::Event& _event)
 {
     // Finds all subTF that match the clicked coord.
     std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
@@ -1411,23 +1411,23 @@ void SMultipleTF::midButtonClickEvent(::fwRenderQt::data::Event& _event)
     if(matchingIt != matchingSubTF.end())
     {
         this->getScene2DRender()->getView()->setCursor(Qt::ClosedHandCursor);
-        ::fwRenderQt::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+        ::fwRenderQtdata::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF = std::make_pair(
             (*matchingIt)->m_tf,
-            ::fwRenderQt::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
+            ::fwRenderQtdata::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
         _event.setAccepted(true);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::mouseMoveOnSubTFEvent(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::mouseMoveOnSubTFEvent(const ::fwRenderQtdata::Event& _event)
 {
-    // m_capturedTF must be previously sets by midButtonClickEvent(const ::fwRenderQt::data::Event& _event)
+    // m_capturedTF must be previously sets by midButtonClickEvent(const ::fwRenderQtdata::Event& _event)
     SLM_ASSERT("The captured subTF must exist", m_capturedTF.first);
 
-    const ::fwRenderQt::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    const ::fwRenderQtdata::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
     // The level delta is in window/level space.
     const double levelDelta = windowLevelCoord.getX() - m_capturedTF.second.getX();
@@ -1436,15 +1436,15 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const ::fwRenderQt::data::Event& _event)
     const double windowDelta = _event.getCoord().getY() - m_capturedTF.second.getY();
 
     // Updates the TF.
-    const ::fwData::TransferFunction::sptr tf = m_capturedTF.first;
+    const data::TransferFunction::sptr tf = m_capturedTF.first;
     {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const data::mt::ObjectWriteLock tfLock(tf);
         tf->setWindow(tf->getWindow() - windowDelta);
         tf->setLevel(tf->getLevel() + levelDelta);
 
         // Sends the signal.
-        const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        const auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(tf->getWindow(), tf->getLevel());
@@ -1452,7 +1452,7 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const ::fwRenderQt::data::Event& _event)
     }
 
     // Stores the level in window/level space and the window in screen space.
-    m_capturedTF.second = ::fwRenderQt::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY());
+    m_capturedTF.second = ::fwRenderQtdata::Coord(windowLevelCoord.getX(), _event.getCoord().getY());
 
     // Re-draw all the scene.
     this->updating();
@@ -1468,7 +1468,7 @@ void SMultipleTF::midButtonReleaseEvent()
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQtdata::Event& _event)
 {
     // Finds all subTF that match the clicked coord.
     std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
@@ -1501,10 +1501,10 @@ void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
         // Adds the delete action if the current TF is clicked.
         if(matchingIt != matchingSubTF.end())
         {
-            const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+            const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
-            const ::fwData::mt::ObjectWriteLock tfPoolLock(tfPool);
+            const data::mt::ObjectWriteLock tfPoolLock(tfPool);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
             // Adds the delete action if there is more than one TF.
@@ -1525,7 +1525,7 @@ void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
             // Adds the interpolation mode action.
             QAction* const linearAction = new QAction("Linear");
             linearAction->setCheckable(true);
-            linearAction->setChecked(m_currentTF->getInterpolationMode() == ::fwData::TransferFunction::LINEAR);
+            linearAction->setChecked(m_currentTF->getInterpolationMode() == data::TransferFunction::LINEAR);
             QObject::connect(linearAction, &QAction::triggered, this, &SMultipleTF::toggleLinearCurrentTF);
             contextMenu->addAction(linearAction);
         }
@@ -1543,7 +1543,7 @@ void SMultipleTF::rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
+void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQtdata::Event& _event)
 {
     // Finds all subTF that match the current coord.
     std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
@@ -1557,16 +1557,16 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
     // Change the opacity only if the mouse if over the current TF.
     if(matchingIt != matchingSubTF.end())
     {
-        ::fwData::Composite::key_type key;
-        ::fwData::TransferFunction::sptr tf;
+        data::Composite::key_type key;
+        data::TransferFunction::sptr tf;
         {
-            const auto tfPool = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+            const auto tfPool = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
             // Finds the key in the composite
             SLM_ASSERT("The current TF mustn't be null", m_currentTF);
-            for(::fwData::Composite::value_type poolElt : *tfPool)
+            for(data::Composite::value_type poolElt : *tfPool)
             {
                 if(poolElt.second == m_currentTF)
                 {
@@ -1576,13 +1576,13 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
             }
 
             // Updates the current TF.
-            tf = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+            tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
 
-            const double scale = _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown ? -0.05 : 0.05;
+            const double scale = _event.getType() == ::fwRenderQtdata::Event::MouseWheelDown ? -0.05 : 0.05;
 
             // Find unclamped data.
-            ::fwData::TransferFunction::TFDataType tfData;
+            data::TransferFunction::TFDataType tfData;
             if(m_unclampedTFData.find(tf->getID()) != m_unclampedTFData.end())
             {
                 tfData = m_unclampedTFData[tf->getID()];
@@ -1596,13 +1596,13 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
             bool usefull = false;
             for(auto& data : tfData)
             {
-                if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelUp && data.second.a > 0. &&
+                if(_event.getType() == ::fwRenderQtdata::Event::MouseWheelUp && data.second.a > 0. &&
                    data.second.a < 1.)
                 {
                     usefull = true;
                     break;
                 }
-                else if(_event.getType() == ::fwRenderQt::data::Event::MouseWheelDown && data.second.a > 0.)
+                else if(_event.getType() == ::fwRenderQtdata::Event::MouseWheelDown && data.second.a > 0.)
                 {
                     usefull = true;
                     break;
@@ -1630,8 +1630,8 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
                 tf->setTFData(tfData);
 
                 // Sends the signal.
-                const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
-                    ::fwData::TransferFunction::s_MODIFIED_SIG);
+                const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
+                    data::TransferFunction::s_MODIFIED_SIG);
                 {
                     const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
@@ -1650,20 +1650,20 @@ void SMultipleTF::midButtonWheelMoveEvent(::fwRenderQt::data::Event& _event)
 
 void SMultipleTF::removeCurrenTF()
 {
-    const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     ::fwDataTools::helper::Composite compositeHelper(tfPool);
-    ::fwData::TransferFunction::sptr tf;
+    data::TransferFunction::sptr tf;
     {
-        const ::fwData::mt::ObjectWriteLock tfPoolLock(tfPool);
+        const data::mt::ObjectWriteLock tfPoolLock(tfPool);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
         SLM_ASSERT("The current TF mustn't be null", m_currentTF);
 
-        ::fwData::Composite::key_type key;
-        for(::fwData::Composite::value_type poolElt : *tfPool)
+        data::Composite::key_type key;
+        for(data::Composite::value_type poolElt : *tfPool)
         {
             if(poolElt.second == m_currentTF)
             {
@@ -1678,7 +1678,7 @@ void SMultipleTF::removeCurrenTF()
         compositeHelper.remove(key);
 
         // Sets the new current TF.
-        tf = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
+        tf = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
         m_currentTF = tf;
         // This action will call swapping method but m_currentTF is set, nothing will be done. The scene is draw after.
@@ -1686,8 +1686,8 @@ void SMultipleTF::removeCurrenTF()
     }
 
     // Sends the signal.
-    auto sig = tfPool->signal< ::fwData::Composite::RemovedObjectsSignalType >(
-        ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+    auto sig = tfPool->signal< data::Composite::RemovedObjectsSignalType >(
+        data::Composite::s_REMOVED_OBJECTS_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
@@ -1701,18 +1701,18 @@ void SMultipleTF::removeCurrenTF()
 
 void SMultipleTF::clampCurrentTF(bool _clamp)
 {
-    const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
-    ::fwData::Composite::key_type key;
-    ::fwData::TransferFunction::sptr tf;
+    data::Composite::key_type key;
+    data::TransferFunction::sptr tf;
     {
-        const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+        const data::mt::ObjectReadLock tfPoolLock(tfPool);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
         SLM_ASSERT("The current TF mustn't be null", m_currentTF);
-        for(::fwData::Composite::value_type poolElt : *tfPool)
+        for(data::Composite::value_type poolElt : *tfPool)
         {
             if(poolElt.second == m_currentTF)
             {
@@ -1722,14 +1722,14 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
         }
 
         // Updates the current TF.
-        tf = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+        tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
         tf->setIsClamped(_clamp);
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
-        ::fwData::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
+        data::TransferFunction::s_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1750,18 +1750,18 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
 
 void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 {
-    const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
-    ::fwData::Composite::key_type key;
-    ::fwData::TransferFunction::sptr tf;
+    data::Composite::key_type key;
+    data::TransferFunction::sptr tf;
     {
-        const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+        const data::mt::ObjectReadLock tfPoolLock(tfPool);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
         SLM_ASSERT("The current TF mustn't be null", m_currentTF);
-        for(::fwData::Composite::value_type poolElt : *tfPool)
+        for(data::Composite::value_type poolElt : *tfPool)
         {
             if(poolElt.second == m_currentTF)
             {
@@ -1771,14 +1771,14 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
         }
 
         // Updates the current TF.
-        tf = ::fwData::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
+        tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
-        tf->setInterpolationMode(_linear ? ::fwData::TransferFunction::LINEAR : ::fwData::TransferFunction::NEAREST);
+        tf->setInterpolationMode(_linear ? data::TransferFunction::LINEAR : data::TransferFunction::NEAREST);
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< ::fwData::TransferFunction::ModifiedSignalType >(
-        ::fwData::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
+        data::TransferFunction::s_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1799,27 +1799,27 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 
 bool SMultipleTF::hasTFName(const std::string& _name) const
 {
-    const ::fwData::Composite::csptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
-    const ::fwData::mt::ObjectReadLock tfPoolsLock(tfPool);
+    const data::mt::ObjectReadLock tfPoolsLock(tfPool);
     return tfPool->find(_name) != tfPool->end();
 }
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
+void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
 {
-    const ::fwData::Composite::sptr tfPool = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
-    const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
+    const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
     // Adds the new TF.
     ::fwDataTools::helper::Composite compositeHelper(tfPool);
     compositeHelper.add(_tf->getName(), _tf);
 
     // Sends the signal.
-    auto sig = tfPool->signal< ::fwData::Composite::AddedObjectsSignalType >(
-        ::fwData::Composite::s_ADDED_OBJECTS_SIG);
+    auto sig = tfPool->signal< data::Composite::AddedObjectsSignalType >(
+        data::Composite::s_ADDED_OBJECTS_SIG);
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
@@ -1842,86 +1842,86 @@ void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::addLeftRamp(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::addLeftRamp(const ::fwRenderQtdata::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
+    data::Composite::KeyType name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
-    const ::fwData::TransferFunction::sptr leftRamp = ::fwData::TransferFunction::New();
+    const data::TransferFunction::sptr leftRamp = data::TransferFunction::New();
     leftRamp->setName(name);
-    leftRamp->addTFColor(0.0, ::fwData::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
-    leftRamp->addTFColor(1.0, ::fwData::TransferFunction::TFColor());
+    leftRamp->addTFColor(0.0, data::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
+    leftRamp->addTFColor(1.0, data::TransferFunction::TFColor());
     leftRamp->setIsClamped(false);
     leftRamp->setWindow(500.);
     leftRamp->setLevel(50.);
 
     // Updates the window/level.
-    ::fwRenderQt::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-    const ::fwData::TransferFunction::TFValueType window = leftRamp->getWindow();
-    ::fwData::TransferFunction::TFValueType min = newCoord.getX() - window/2.;
-    ::fwData::TransferFunction::TFValueType max = min + window;
-    leftRamp->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+    ::fwRenderQtdata::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    const data::TransferFunction::TFValueType window = leftRamp->getWindow();
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType max          = min + window;
+    leftRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
     this->addNewTF(leftRamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::addRightRamp(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::addRightRamp(const ::fwRenderQtdata::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
+    data::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
-    const ::fwData::TransferFunction::sptr rightRamp = ::fwData::TransferFunction::New();
+    const data::TransferFunction::sptr rightRamp = data::TransferFunction::New();
     rightRamp->setName(name);
-    rightRamp->addTFColor(0.0, ::fwData::TransferFunction::TFColor());
-    rightRamp->addTFColor(1.0, ::fwData::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
+    rightRamp->addTFColor(0.0, data::TransferFunction::TFColor());
+    rightRamp->addTFColor(1.0, data::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
     rightRamp->setIsClamped(false);
     rightRamp->setWindow(500.);
     rightRamp->setLevel(50.);
 
     // Updates the window/level.
-    ::fwRenderQt::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-    const ::fwData::TransferFunction::TFValueType window = rightRamp->getWindow();
-    ::fwData::TransferFunction::TFValueType min = newCoord.getX() - window/2.;
-    ::fwData::TransferFunction::TFValueType max = min + window;
-    rightRamp->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+    ::fwRenderQtdata::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    const data::TransferFunction::TFValueType window = rightRamp->getWindow();
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType max          = min + window;
+    rightRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
     this->addNewTF(rightRamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::addTrapeze(const ::fwRenderQt::data::Event& _event)
+void SMultipleTF::addTrapeze(const ::fwRenderQtdata::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
+    data::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
         name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
     }
-    const ::fwData::TransferFunction::sptr trapeze = ::fwData::TransferFunction::New();
+    const data::TransferFunction::sptr trapeze = data::TransferFunction::New();
     trapeze->setName(name);
-    trapeze->addTFColor(0.0, ::fwData::TransferFunction::TFColor());
-    trapeze->addTFColor(0.33, ::fwData::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
-    trapeze->addTFColor(0.66, ::fwData::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
-    trapeze->addTFColor(1.0, ::fwData::TransferFunction::TFColor());
+    trapeze->addTFColor(0.0, data::TransferFunction::TFColor());
+    trapeze->addTFColor(0.33, data::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
+    trapeze->addTFColor(0.66, data::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
+    trapeze->addTFColor(1.0, data::TransferFunction::TFColor());
     trapeze->setIsClamped(false);
     trapeze->setWindow(500.);
     trapeze->setLevel(50.);
 
     // Updates the window/level.
-    ::fwRenderQt::data::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
-    const ::fwData::TransferFunction::TFValueType window = trapeze->getWindow();
-    ::fwData::TransferFunction::TFValueType min = newCoord.getX() - window/2.;
-    ::fwData::TransferFunction::TFValueType max = min + window;
-    trapeze->setWLMinMax(::fwData::TransferFunction::TFValuePairType(min, max));
+    ::fwRenderQtdata::Coord newCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    const data::TransferFunction::TFValueType window = trapeze->getWindow();
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType max          = min + window;
+    trapeze->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
     this->addNewTF(trapeze);
 }

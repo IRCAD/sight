@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERQT_SCENE2DGRAPHICSVIEW_HPP__
-#define __FWRENDERQT_SCENE2DGRAPHICSVIEW_HPP__
+#pragma once
 
 #include "fwRenderQt/config.hpp"
 #include "fwRenderQt/data/Event.hpp"
@@ -65,22 +64,19 @@ public:
 
     FWRENDERQT_API void updateFromViewport();
 
-    FWRENDERQT_API void setViewport( ::fwRenderQt::data::Viewport::sptr viewport );
+    FWRENDERQT_API void setViewport( ::fwRenderQtdata::Viewport::sptr viewport );
 
     FWRENDERQT_API void setSceneRender( SPTR(::fwRenderQt::SRender) sceneRender );
 
 protected:
 
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
+    ::fwRenderQtdata::Viewport::sptr m_viewport;
     WPTR(::fwRenderQt::SRender) m_scene2DRender;
 
-    ::fwRenderQt::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
-    ::fwRenderQt::data::Event::Modifier getScene2DModifierFromEvent( QInputEvent* _event );
+    ::fwRenderQtdata::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
+    ::fwRenderQtdata::Event::Modifier getScene2DModifierFromEvent( QInputEvent* _event );
 
     void paintEvent ( QPaintEvent* event );
 
 };
 } // namespace fwRenderQt
-
-#endif // __FWRENDERQT_SCENE2DGRAPHICSVIEW_HPP__
-

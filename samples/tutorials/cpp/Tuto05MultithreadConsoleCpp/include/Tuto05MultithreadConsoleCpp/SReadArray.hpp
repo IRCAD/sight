@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace Tuto05MultithreadConsoleCpp
 {
 
 /**
- * @brief This service initializes a ::fwData::Array with 10 values (0 to 9).
+ * @brief This service initializes a data::Array with 10 values (0 to 9).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -40,7 +40,7 @@ namespace Tuto05MultithreadConsoleCpp
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b array [::fwData::Array]: array which values should be initialized.
+ * - \b array [data::Array]: array which values should be initialized.
  */
 class TUTO05MULTITHREADCONSOLECPP_CLASS_API SReadArray final : public ::fwServices::IController
 {
@@ -64,7 +64,7 @@ protected:
     /// Does nothing.
     void starting() override;
 
-    /// Initializes the current ::fwData::Array with 10 values (0 to 9).
+    /// Initializes the current data::Array with 10 values (0 to 9).
     void updating() override;
 
     /// Does nothing.

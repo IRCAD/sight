@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( PRIORITY 2)
 set( DEPENDENCIES
-    fwData
+    data
     fwRenderQt3D
     fwServices
 )

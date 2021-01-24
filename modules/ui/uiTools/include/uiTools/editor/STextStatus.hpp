@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace editor
 
 /**
  * @brief This service is used to displays and update values (int, double or string) in a QLabel.
- * Values are set using slots or using a ::fwData::String input.
+ * Values are set using slots or using a data::String input.
  *
  * @section Slots Slots
  * - \b setIntParameter(int): display the value in the QLabel.
@@ -56,7 +56,7 @@ namespace editor
    @endcode
  *
  * @subsection Input Input
- * - \b string(::fwData::String, optional): string data to display.
+ * - \b string(data::String, optional): string data to display.
  *
  * @subsection Configuration Configuration
  * - \b label (optional, default="") : text to show before size of the vector
@@ -96,7 +96,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_STRING_INPUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_STRING_INPUT to s_UPDATE_SLOT
      */
     KeyConnectionsMap getAutoConnections() const override;
 

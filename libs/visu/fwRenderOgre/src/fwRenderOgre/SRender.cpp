@@ -32,7 +32,7 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -49,7 +49,7 @@
 
 #include <stack>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, data::Composite )
 
 namespace fwRenderOgre
 {
@@ -460,7 +460,7 @@ void SRender::requestRender()
     {
         FW_PROFILE("Offscreen rendering");
 
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_OFFSCREEN_INOUT);
         {
             this->makeCurrent();
             ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
@@ -468,7 +468,7 @@ void SRender::requestRender()
             ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
 
-        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }

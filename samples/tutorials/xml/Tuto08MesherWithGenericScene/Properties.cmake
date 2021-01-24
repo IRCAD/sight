@@ -13,7 +13,7 @@ set( REQUIREMENTS
     visuOgreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
-    fwData
+    data
     fwMedData
     servicesReg             # fwService
 

@@ -36,8 +36,8 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
+#include <data/Composite.hpp>
+#include <data/Object.hpp>
 
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
@@ -86,7 +86,7 @@ void AppConfigManager::setConfig(const std::string& _configId, const FieldAdapto
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& _configId, const ::fwData::Composite::csptr& _replaceFields)
+void AppConfigManager::setConfig(const std::string& _configId, const data::Composite::csptr& _replaceFields)
 {
     m_configId = _configId;
     m_cfgElem  =
@@ -138,7 +138,7 @@ void AppConfigManager::create()
 
     // Create the dummy object for new services that don't work on any object
     // For now this dummy object will also contain all the "deferred" objects
-    m_tmpRootObject = ::fwData::Composite::New();
+    m_tmpRootObject = data::Composite::New();
 
     m_addObjectConnection    = ::fwServices::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECTS_SLOT) );
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECTS_SLOT) );
@@ -234,7 +234,7 @@ void AppConfigManager::setIsUnitTest(bool _isUnitTest)
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid)
+void AppConfigManager::addExistingDeferredObject(const data::Object::sptr& _obj, const std::string& _uid)
 {
     SLM_ASSERT("Existing deferred objects must be added before starting the configuration, it's useless to do it later",
                m_state == STATE_DESTROYED);
@@ -245,7 +245,7 @@ void AppConfigManager::addExistingDeferredObject(const ::fwData::Object::sptr& _
 
 // ------------------------------------------------------------------------
 
-fwData::Object::sptr AppConfigManager::getConfigRoot() const
+data::Object::sptr AppConfigManager::getConfigRoot() const
 {
     if (m_createdObjects.empty())
     {
@@ -256,12 +256,12 @@ fwData::Object::sptr AppConfigManager::getConfigRoot() const
 
 // ------------------------------------------------------------------------
 
-fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const std::string& errMsgTail) const
+data::Object::sptr AppConfigManager::findObject(const std::string& uid, const std::string& errMsgTail) const
 {
 #ifndef _DEBUG
     FwCoreNotUsedMacro(errMsgTail);
 #endif
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
 
     // Look first in objects created in this appConfig
     auto it = m_createdObjects.find(uid);
@@ -283,13 +283,13 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
 
 // ------------------------------------------------------------------------
 
-::fwData::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid) const
+data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid) const
 {
     // Building object structure
     SPTR(core::runtime::Extension) ext = core::runtime::findExtension(type.first);
     if (ext)
     {
-        const std::string className = core::getClassname< ::fwData::Object >();
+        const std::string className = core::getClassname< data::Object >();
         SLM_ASSERT("Extension and classname are different.",
                    ext->getPoint() == className);
 
@@ -297,7 +297,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
         ext->getModule()->start();
     }
 
-    ::fwData::Object::sptr obj = ::fwData::factory::New(type.first);
+    data::Object::sptr obj = data::factory::New(type.first);
     SLM_ASSERT("Factory failed to build object : " + type.first, obj);
 
     if (uid.second)
@@ -312,17 +312,17 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
 
 // ------------------------------------------------------------------------
 
-::fwData::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, const std::string& uid) const
+data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, const std::string& uid) const
 {
     return this->getNewObject(type, ConfigAttribute(uid, true));
 }
 
 // ------------------------------------------------------------------------
 
-::fwData::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
+data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
 {
     SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", core::tools::fwID::exist(uid));
-    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(core::tools::fwID::getObject(uid));
+    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
 
     SLM_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
@@ -527,7 +527,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
             else
             {
                 // Creation of a new object
-                ::fwData::Object::sptr obj;
+                data::Object::sptr obj;
 
                 // Create new or get the referenced object
                 if (buildMode.second && buildMode.first == "ref")
@@ -656,7 +656,7 @@ void AppConfigManager::createServices(core::runtime::ConfigurationElement::csptr
     {
         srv->setObjectId(objectCfg.m_key, objectCfg.m_uid);
 
-        ::fwData::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
+        data::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 
         SLM_ASSERT(this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
                    (!objectCfg.m_optional && obj) || objectCfg.m_optional);
@@ -772,7 +772,7 @@ void AppConfigManager::createConnections()
 // ------------------------------------------------------------------------
 
 void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg,
-                                    const std::string& _key, ::fwData::Object::csptr _hintObj)
+                                    const std::string& _key, data::Object::csptr _hintObj)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
@@ -852,7 +852,7 @@ void AppConfigManager::destroyProxies()
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager::addObjects(fwData::Object::sptr _obj, const std::string& _id)
+void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _id)
 {
     FW_PROFILE("addObjects");
 
@@ -947,7 +947,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr _obj, const std::string& 
                             if(srv->isStarted())
                             {
                                 // Call the swapping callback of the service and wait for it
-                                srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                                srv->swapKey(objCfg.m_key, data::Object::constCast(registeredObj)).wait();
                             }
                         }
                     }
@@ -1008,7 +1008,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr _obj, const std::string& 
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::string& _id)
+void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string& _id)
 {
     FW_PROFILE("removeObjects");
 

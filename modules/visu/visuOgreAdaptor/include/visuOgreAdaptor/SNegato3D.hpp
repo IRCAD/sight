@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwData/Float.hpp>
+#include <data/Float.hpp>
 
 #include <fwDataTools/helper/TransferFunction.hpp>
 
@@ -70,8 +70,8 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b image [::fwData::Image]: image to display.
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [data::Image]: image to display.
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -118,12 +118,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEWIMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to s_NEWIMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to s_SLICETYPE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to s_SLICEINDEX_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEWIMAGE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to s_NEWIMAGE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to s_SLICETYPE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to s_SLICEINDEX_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ namespace uiVisuQt
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b matrix [::fwData::TransformationMatrix3D]: matrix modified by the editor
+ * - \b matrix [data::TransformationMatrix3D]: matrix modified by the editor
  *
  * @subsection Configuration Configuration
  * - \b enabled (optional): enable/disable rotation/translation edition.
@@ -62,7 +62,7 @@ class UIVISUQT_CLASS_API STransformEditor : public QObject,
 {
 Q_OBJECT;
 public:
-    fwCoreServiceMacro(STransformEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(STransformEditor, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API STransformEditor() noexcept;
@@ -84,7 +84,7 @@ protected:
     /// Updates Slider value
     UIVISUQT_API virtual void updating() override;
 
-    // Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to update slot
+    // Connect data::TransformationMatrix3D::s_MODIFIED_SIG to update slot
     UIVISUQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:

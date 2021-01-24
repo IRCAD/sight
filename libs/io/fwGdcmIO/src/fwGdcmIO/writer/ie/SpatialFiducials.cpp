@@ -27,11 +27,11 @@
 
 #include <core/tools/dateAndTime.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -48,12 +48,12 @@ namespace ie
 
 SpatialFiducials::SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                   const ::fwData::Image::csptr& image,
+                                   const data::Image::csptr& image,
                                    const ::fwLog::Logger::sptr& logger,
                                    ProgressCallback progress,
                                    CancelRequestedCallback cancel) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image,
-                                                                 logger, progress, cancel)
+    ::fwGdcmIO::writer::ie::InformationEntity< data::Image >(writer, instance, image,
+                                                             logger, progress, cancel)
 {
 }
 
@@ -149,12 +149,12 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 
 void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence)
 {
-    ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList =
+        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int index = 0;
-        for(const ::fwData::Point::sptr& point : pointList->getPoints())
+        for(const data::Point::sptr& point : pointList->getPoints())
         {
             ::gdcm::Item fiducialItem;
             fiducialItem.SetVLToUndefined();
@@ -167,7 +167,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
 
             // Fiducial Description - Type 3
             std::string label =
-                point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+                point->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
             ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x030F >(label, fiducialItemDataset);
 
             // Shape Type - Type 1

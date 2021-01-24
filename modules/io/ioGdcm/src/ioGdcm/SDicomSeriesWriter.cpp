@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
-#include <fwData/location/Folder.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 
@@ -81,17 +81,17 @@ void SDicomSeriesWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -183,7 +183,7 @@ void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
 
     writer->setObject(series);
-    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
+    data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(folder);
     writer->setLocation(loc);
     m_sigJobCreated->emit(writer->getJob());

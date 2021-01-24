@@ -24,10 +24,10 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Array.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Array.hpp>
+#include <data/Image.hpp>
+#include <data/Material.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
 
@@ -47,7 +47,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -121,18 +121,18 @@ void STextureSelector::updating()
 
 void STextureSelector::onLoadButton()
 {
-    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No associated Reconstruction", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::Image::sptr image       = material->getDiffuseTexture();
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::Image::sptr image       = material->getDiffuseTexture();
 
     bool existingTexture = (image != nullptr);
 
     // We have to instantiate a new image if necessary
     if(!existingTexture)
     {
-        image = ::fwData::Image::New();
+        image = data::Image::New();
         material->setDiffuseTexture(image);
     }
 
@@ -148,13 +148,13 @@ void STextureSelector::onLoadButton()
     // If we didn't have to create a new texture, we can notify the associated image
     if(existingTexture)
     {
-        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->emit();
     }
     else
     {
-        auto sig = material->signal< ::fwData::Material::AddedTextureSignalType >(
-            ::fwData::Material::s_ADDED_TEXTURE_SIG);
+        auto sig = material->signal< data::Material::AddedTextureSignalType >(
+            data::Material::s_ADDED_TEXTURE_SIG);
         sig->emit(image);
     }
 }
@@ -163,17 +163,17 @@ void STextureSelector::onLoadButton()
 
 void STextureSelector::onDeleteButton()
 {
-    auto reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("No associated Reconstruction", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::Image::sptr image       = material->getDiffuseTexture();
+    data::Material::sptr material = reconstruction->getMaterial();
+    data::Image::sptr image       = material->getDiffuseTexture();
 
     if(image)
     {
         material->setDiffuseTexture(nullptr);
-        auto sig = material->signal< ::fwData::Material::RemovedTextureSignalType >(
-            ::fwData::Material::s_REMOVED_TEXTURE_SIG);
+        auto sig = material->signal< data::Material::RemovedTextureSignalType >(
+            data::Material::s_REMOVED_TEXTURE_SIG);
         sig->emit(image);
     }
 }

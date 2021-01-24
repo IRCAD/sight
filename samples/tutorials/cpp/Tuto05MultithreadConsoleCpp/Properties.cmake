@@ -2,7 +2,7 @@ set( NAME Tuto05MultithreadConsoleCpp )
 set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES   
-    fwData
+    data
     fwServices
 )
 set( REQUIREMENTS
@@ -10,7 +10,7 @@ set( REQUIREMENTS
     appXml                  # XML configurations
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
 
     # The module console is used to run a console application with a main loop

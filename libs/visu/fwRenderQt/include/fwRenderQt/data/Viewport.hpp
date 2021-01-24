@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwRenderQt/config.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/Object.hpp>
+#include <data/Exception.hpp>
+#include <data/Object.hpp>
 
 namespace fwRenderQt
 {
@@ -35,17 +35,17 @@ namespace data
 /**
  * @brief Manage the current viewport of the fwRenderQt.
  */
-class FWRENDERQT_CLASS_API Viewport : public ::fwData::Object
+class FWRENDERQT_CLASS_API Viewport : public data::Object
 {
 
 public:
 
-    fwCoreClassMacro(Viewport, ::fwData::Object, ::fwData::factory::New< Viewport >);
+    fwCoreClassMacro(Viewport, data::Object, data::factory::New< Viewport >)
 
     /**
      * @brief Constructor
      */
-    Viewport(::fwData::Object::Key key) :
+    Viewport(data::Object::Key key) :
         m_x(200.f),
         m_y(200.f),
         m_width(400.f),
@@ -54,10 +54,10 @@ public:
     }
 
     /// Defines shallow copy
-    FWRENDERQT_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWRENDERQT_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWRENDERQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWRENDERQT_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     float getX() const;
     void setX (float _x);

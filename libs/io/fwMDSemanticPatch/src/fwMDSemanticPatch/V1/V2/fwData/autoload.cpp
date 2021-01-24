@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V1/V2/fwData/Acquisition.hpp"
-#include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
-#include "fwMDSemanticPatch/V1/V2/fwData/Patient.hpp"
-#include "fwMDSemanticPatch/V1/V2/fwData/Study.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Acquisition.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Composite.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Patient.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Study.hpp"
 
 #include <fwAtomsPatch/SemanticPatchDB.hpp>
 
@@ -33,7 +33,7 @@ namespace V1
 {
 namespace V2
 {
-namespace fwData
+namespace sight::data
 {
 
 /// Registers contextual patches dedicated to conversions from version 'V1' to version 'V2'.
@@ -42,10 +42,10 @@ struct runner
     runner()
     {
         ::fwAtomsPatch::SemanticPatchDB::sptr contextPatchDB = ::fwAtomsPatch::SemanticPatchDB::getDefault();
-        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2::fwData::Composite::New());
-        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2::fwData::Study::New());
-        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2::fwData::Patient::New());
-        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2::fwData::Acquisition::New());
+        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2data::Composite::New());
+        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2data::Study::New());
+        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2data::Patient::New());
+        contextPatchDB->registerPatch(::fwMDSemanticPatch::V1::V2data::Acquisition::New());
     }
 
     static runner r;
@@ -53,7 +53,7 @@ struct runner
 
 runner runner::r;
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch

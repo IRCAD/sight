@@ -29,8 +29,8 @@
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -74,12 +74,12 @@ void ImagePropertiesTest::propertiesTest()
     CPPUNIT_ASSERT(objValidator);
 
     {
-        ::fwData::Image::sptr img1 = ::fwData::Image::New();
-        ::fwData::Image::sptr img2 = ::fwData::Image::New();
+        data::Image::sptr img1 = data::Image::New();
+        data::Image::sptr img2 = data::Image::New();
         ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
         ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
 
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+        data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);
         vector->getContainer().push_back(img2);
 
@@ -88,25 +88,25 @@ void ImagePropertiesTest::propertiesTest()
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
 
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["img1"]                = img1;
-        (*composite)["img2"]                = img2;
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["img1"] = img1;
+        (*composite)["img2"] = img2;
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
     }
 
     {
-        ::fwData::Image::sptr img1 = ::fwData::Image::New();
-        ::fwData::Image::sptr img2 = ::fwData::Image::New();
+        data::Image::sptr img1 = data::Image::New();
+        data::Image::sptr img2 = data::Image::New();
 
         ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
 
         ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
                                                   img1->getOrigin2(), img1->getType(),
-                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                                  data::Image::PixelFormat::GRAY_SCALE);
 
-        ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+        data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);
         vector->getContainer().push_back(img2);
 
@@ -115,9 +115,9 @@ void ImagePropertiesTest::propertiesTest()
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
 
-        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        (*composite)["img1"]                = img1;
-        (*composite)["img2"]                = img2;
+        data::Composite::sptr composite = data::Composite::New();
+        (*composite)["img1"] = img1;
+        (*composite)["img2"] = img2;
 
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);

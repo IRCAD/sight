@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/macros.hpp>
@@ -61,7 +61,7 @@ void GuiQtTest::tearDown()
 
 void GuiQtTest::testDefaultFrame()
 {
-    ::fwData::String::sptr object = ::fwData::String::New();
+    data::String::sptr object = data::String::New();
 
     ::fwServices::IService::ConfigType frameConfig;
 

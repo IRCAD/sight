@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor binds a ::fwData::TransformationMatrix3D to an Ogre scene node.
+ * @brief This adaptor binds a data::TransformationMatrix3D to an Ogre scene node.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -45,7 +45,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b transform [::fwData::TransformationMatrix3D]: Sight transform matrix.
+ * - \b transform [data::TransformationMatrix3D]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): Defines the transform's layer.
@@ -80,11 +80,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Updates m_transformNode from the ::fwData::TransformationMatrix3D.
+    /// Updates m_transformNode from the data::TransformationMatrix3D.
     VISUOGREADAPTOR_API void updating() override;
 
     /// Does nothing.

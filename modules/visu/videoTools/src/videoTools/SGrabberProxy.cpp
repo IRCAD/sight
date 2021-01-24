@@ -182,7 +182,7 @@ void SGrabberProxy::startCamera()
 
             size_t numCamerasInSeries = 1;
 
-            auto cameraInput = this->getInput< ::fwData::Object >(s_CAMERA_INPUT);
+            auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
             auto camera      = ::arData::Camera::dynamicConstCast(cameraInput);
             if(camera)
             {
@@ -227,7 +227,7 @@ void SGrabberProxy::startCamera()
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getInOut< ::fwData::Object >(key);
+                        const auto obj = this->getInOut< data::Object >(key);
                         SLM_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "::arData::FrameTL")
                         {
@@ -389,7 +389,7 @@ void SGrabberProxy::startCamera()
             {
                 srv = this->registerService< ::arServices::IGrabber>(m_grabberImpl);
 
-                auto cameraInput = this->getInput< ::fwData::Object >(s_CAMERA_INPUT);
+                auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
                 auto camera      = ::arData::Camera::dynamicConstCast(cameraInput);
                 if(camera)
                 {

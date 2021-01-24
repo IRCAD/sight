@@ -24,8 +24,8 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
 
@@ -59,16 +59,16 @@ void ModelSeriesTest::modelTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
     CPPUNIT_ASSERT(rec1);
-    ::fwData::Reconstruction::sptr rec2 = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec2 = data::Reconstruction::New();
     CPPUNIT_ASSERT(rec2);
 
-    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh1 = data::Mesh::New();
     CPPUNIT_ASSERT(mesh1);
     ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
 
-    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    data::Mesh::sptr mesh2 = data::Mesh::New();
     CPPUNIT_ASSERT(mesh2);
     ::fwTest::generator::Mesh::generateQuadMesh(mesh2);
 
@@ -91,8 +91,8 @@ void ModelSeriesTest::deepCopyTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
-    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
+    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
+    data::Mesh::sptr mesh1          = data::Mesh::New();
     ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
 
     rec1->setMesh(mesh1);
@@ -116,8 +116,8 @@ void ModelSeriesTest::shallowCopyTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
-    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
+    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
+    data::Mesh::sptr mesh1          = data::Mesh::New();
     ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
     rec1->setMesh(mesh1);
     ModelSeries::ReconstructionVectorType recs;

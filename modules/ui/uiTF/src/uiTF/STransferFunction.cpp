@@ -26,11 +26,11 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadToWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -243,9 +243,9 @@ void STransferFunction::starting()
 ::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -264,7 +264,7 @@ void STransferFunction::swapping(const KeyType& _key)
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_INPUT)
     {
-        const auto tfW = this->getWeakInput< const ::fwData::TransferFunction >(_key);
+        const auto tfW = this->getWeakInput< const data::TransferFunction >(_key);
         const auto tf  = tfW.lock();
 
         if(tf && tf.get_shared() != m_selectedTF)
@@ -289,7 +289,7 @@ void STransferFunction::presetChoice(int index)
     this->updateTransferFunction();
 
     const std::string tfName = m_transferFunctionPreset->currentText().toStdString();
-    const bool isEnabled     = (tfName != ::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+    const bool isEnabled     = (tfName != data::TransferFunction::s_DEFAULT_TF_NAME);
 
     m_renameButton->setEnabled(isEnabled);
     m_deleteButton->setEnabled(isEnabled);
@@ -309,7 +309,7 @@ void STransferFunction::deleteTF()
 
     if(answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
         if(poolTF->size() > 1)
         {
@@ -321,14 +321,14 @@ void STransferFunction::deleteTF()
 
             compositeHelper.remove(selectedTFKey);
             {
-                const auto sig = poolTF->signal< ::fwData::Composite::RemovedObjectsSignalType >(
-                    ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+                const auto sig = poolTF->signal< data::Composite::RemovedObjectsSignalType >(
+                    data::Composite::s_REMOVED_OBJECTS_SIG);
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 compositeHelper.notify();
             }
 
             m_transferFunctionPreset->removeItem(indexSelectedTF);
-            const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+            const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
 
             int index = m_transferFunctionPreset->findText(QString::fromStdString(defaultTFName));
             index = std::max(index, 0);
@@ -364,12 +364,12 @@ void STransferFunction::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransferFunction::sptr pNewTransferFunction;
+            data::TransferFunction::sptr pNewTransferFunction;
 
-            pNewTransferFunction = ::fwData::Object::copy(m_selectedTF);
+            pNewTransferFunction = data::Object::copy(m_selectedTF);
             pNewTransferFunction->setName(newName);
             {
-                const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+                const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
                 ::fwDataTools::helper::Composite compositeHelper(poolTF.get_shared());
                 compositeHelper.add(newName, pNewTransferFunction);
                 compositeHelper.notify();
@@ -403,7 +403,7 @@ void STransferFunction::reinitializeTFPool()
     if(answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
         {
-            const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+            const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
             ::fwDataTools::helper::Composite compositeHelper(poolTF.get_shared());
             compositeHelper.clear();
             compositeHelper.notify();
@@ -433,11 +433,11 @@ void STransferFunction::renameTF()
         if(!this->hasTransferFunctionName(newName) )
         {
             {
-                const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+                const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
-                const ::fwData::TransferFunction::sptr pTF = ::fwData::TransferFunction::dynamicCast((*poolTF)[str]);
+                const data::TransferFunction::sptr pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
                 {
-                    const ::fwData::mt::locked_ptr TFLock(pTF);
+                    const data::mt::locked_ptr TFLock(pTF);
                     pTF->setName(newName);
                 }
 
@@ -468,8 +468,8 @@ void STransferFunction::renameTF()
 
 void STransferFunction::importTF()
 {
-    const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-    const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    const data::TransferFunction::sptr tf = data::TransferFunction::New();
+    const ::fwIO::IReader::sptr reader    = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
@@ -491,7 +491,7 @@ void STransferFunction::importTF()
             tf->setName(this->createTransferFunctionName(tf->getName()));
         }
 
-        const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
         ::fwDataTools::helper::Composite compositeHelper(poolTF.get_shared());
         compositeHelper.add(tf->getName(), tf);
@@ -533,14 +533,14 @@ void STransferFunction::initTransferFunctions()
 {
     {
         // Get transfer function composite (pool TF)
-        const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
         ::fwDataTools::helper::Composite compositeHelper(poolTF.get_shared());
 
-        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         if(!this->hasTransferFunctionName(defaultTFName, poolTF.get_shared()))
         {
-            ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+            data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
             compositeHelper.add(defaultTFName, defaultTf);
         }
 
@@ -564,8 +564,8 @@ void STransferFunction::initTransferFunctions()
                 }
             }
 
-            const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-            const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            const data::TransferFunction::sptr tf = data::TransferFunction::New();
+            const ::fwIO::IReader::sptr reader    = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
             reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
@@ -585,8 +585,8 @@ void STransferFunction::initTransferFunctions()
 
                 if(!tf->getName().empty())
                 {
-                    const ::fwData::TransferFunction::sptr newTF =
-                        ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
+                    const data::TransferFunction::sptr newTF =
+                        data::Object::copy< data::TransferFunction >(tf);
                     if(this->hasTransferFunctionName(newTF->getName(), poolTF.get_shared()))
                     {
                         newTF->setName( this->createTransferFunctionName( newTF->getName() ) );
@@ -609,20 +609,20 @@ void STransferFunction::initTransferFunctions()
 
 void STransferFunction::updateTransferFunctionPreset()
 {
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
 
     // Manage TF preset
     m_transferFunctionPreset->clear();
     {
-        const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
-        for(::fwData::Composite::value_type elt :  *poolTF)
+        const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
+        for(data::Composite::value_type elt :  *poolTF)
         {
             m_transferFunctionPreset->addItem( elt.first.c_str() );
         }
     }
 
     std::string currentTFName = defaultTFName;
-    const auto tfW            = this->getWeakInput< ::fwData::TransferFunction >(s_CURRENT_TF_INPUT);
+    const auto tfW            = this->getWeakInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
     {
         const auto tf = tfW.lock();
         if(tf)
@@ -644,7 +644,7 @@ void STransferFunction::updateTransferFunctionPreset()
 //------------------------------------------------------------------------------
 
 bool STransferFunction::hasTransferFunctionName(const std::string& _name,
-                                                const ::fwData::Composite::csptr _poolTF) const
+                                                const data::Composite::csptr _poolTF) const
 {
     if(_poolTF)
     {
@@ -652,7 +652,7 @@ bool STransferFunction::hasTransferFunctionName(const std::string& _name,
     }
     else
     {
-        const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+        const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
         return poolTF->find(_name) != poolTF->end();
     }
 }
@@ -685,14 +685,14 @@ void STransferFunction::updateTransferFunction()
 
     SLM_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
-    const auto poolTF = this->getLockedInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
+    const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
-    const ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
+    const data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 
     if(newSelectedTF && m_selectedTF != newSelectedTF)
     {
         this->setOutput(s_TF_OUTPUT, newSelectedTF);
-        m_selectedTF = ::fwData::TransferFunction::dynamicCast(newSelectedTF);
+        m_selectedTF = data::TransferFunction::dynamicCast(newSelectedTF);
     }
 }
 

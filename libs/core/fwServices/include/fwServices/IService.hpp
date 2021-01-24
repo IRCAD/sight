@@ -32,11 +32,11 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/Object.hpp>
-#include <fwData/mt/locked_ptr.hpp>
-#include <fwData/mt/weak_ptr.hpp>
-#include <fwData/mt/shared_ptr.hpp>
+#include <data/Exception.hpp>
+#include <data/Object.hpp>
+#include <data/mt/locked_ptr.hpp>
+#include <data/mt/weak_ptr.hpp>
+#include <data/mt/shared_ptr.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 
@@ -86,7 +86,7 @@ class Worker;
  * - \b update() : Update the service.
  * - \b stop() : Stop the service.
  * - \b swap() : @deprecated Swap the current object.
- * - \b swapKey(const KeyType&, ::fwData::Object::sptr) : Swap the object at the given key with the object in parameter.
+ * - \b swapKey(const KeyType&, data::Object::sptr) : Swap the object at the given key with the object in parameter.
  */
 class FWSERVICES_CLASS_API IService : public core::tools::Object,
                                       public core::com::HasSlots,
@@ -106,9 +106,9 @@ public:
 
     typedef std::string IdType;
     typedef std::string KeyType;
-    typedef std::map< KeyType, ::fwData::mt::weak_ptr< const ::fwData::Object > > InputMapType;
-    typedef std::map< KeyType, ::fwData::mt::weak_ptr< ::fwData::Object > > InOutMapType;
-    typedef std::map< KeyType, ::fwData::mt::shared_ptr< ::fwData::Object > > OutputMapType;
+    typedef std::map< KeyType, data::mt::weak_ptr< const data::Object > > InputMapType;
+    typedef std::map< KeyType, data::mt::weak_ptr< data::Object > > InOutMapType;
+    typedef std::map< KeyType, data::mt::shared_ptr< data::Object > > OutputMapType;
 
     enum class AccessType : std::uint8_t
     {
@@ -240,10 +240,10 @@ public:
     typedef core::com::Slot<SharedFutureType()> UpdateSlotType;
 
     FWSERVICES_API static const core::com::Slots::SlotKeyType s_SWAP_SLOT;
-    typedef core::com::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
+    typedef core::com::Slot<SharedFutureType(data::Object::sptr)> SwapSlotType;
 
     FWSERVICES_API static const core::com::Slots::SlotKeyType s_SWAPKEY_SLOT;
-    typedef core::com::Slot<SharedFutureType(const KeyType&, ::fwData::Object::sptr)> SwapKeySlotType;
+    typedef core::com::Slot<SharedFutureType(const KeyType&, data::Object::sptr)> SwapKeySlotType;
 
     /// Initializes m_associatedWorker and associates this worker to all service slots
     FWSERVICES_API void setWorker( SPTR(core::thread::Worker) worker );
@@ -328,7 +328,7 @@ public:
      *
      *
      */
-    FWSERVICES_API SharedFutureType swapKey( const KeyType& _key, ::fwData::Object::sptr _obj );
+    FWSERVICES_API SharedFutureType swapKey( const KeyType& _key, data::Object::sptr _obj );
     //@}
 
     /**
@@ -472,7 +472,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
-    inline ::fwData::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& key) const;
+    inline data::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& key) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key.
@@ -480,7 +480,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& key) const;
+    inline data::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& key) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key.
@@ -488,7 +488,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& key) const;
+    inline data::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& key) const;
 
     /**
      * @brief Return a weak data pointer of the input object at the given key and index.
@@ -497,7 +497,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
-    inline ::fwData::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& keybase, size_t index) const;
+    inline data::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
@@ -506,7 +506,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& keybase, size_t index) const;
+    inline data::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
@@ -515,64 +515,64 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& keybase, size_t index) const;
+    inline data::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return a locked data pointer of the input object at the given key.
      * @param key name of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
-    inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& key) const;
+    inline data::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& key) const;
 
     /**
      * @brief Return a locked data pointer of the in/out object at the given key.
      * @param key name of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& key) const;
+    inline data::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& key) const;
 
     /**
      * @brief Return a locked data pointer of the out object at the given key.
      * @param key name of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedOutput(const KeyType& key) const;
+    inline data::mt::locked_ptr< DATATYPE > getLockedOutput(const KeyType& key) const;
 
     /**
      * @brief Return a locked data pointer of the input object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
-    inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& keybase, size_t index) const;
+    inline data::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return a locked data pointer of the in/out object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& keybase, size_t index) const;
+    inline data::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return a locked data pointer of the out object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
-     * @throw ::fwData::Exception if the data object is not found.
+     * @throw data::Exception if the data object is not found.
      */
     template< class DATATYPE >
-    inline ::fwData::mt::locked_ptr< DATATYPE > geLockedOutput(const KeyType& keybase, size_t index) const;
+    inline data::mt::locked_ptr< DATATYPE > geLockedOutput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
@@ -584,7 +584,7 @@ public:
      * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
      * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
      */
-    FWSERVICES_API void setOutput(const ::fwServices::IService::KeyType& key, const ::fwData::Object::sptr& object,
+    FWSERVICES_API void setOutput(const ::fwServices::IService::KeyType& key, const data::Object::sptr& object,
                                   size_t index = 0);
 
     /**
@@ -693,7 +693,7 @@ public:
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    FWSERVICES_API void registerInput(const ::fwData::Object::csptr& obj, const std::string& key,
+    FWSERVICES_API void registerInput(const data::Object::csptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
@@ -711,7 +711,7 @@ public:
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    FWSERVICES_API void registerInOut(const ::fwData::Object::sptr& obj, const std::string& key,
+    FWSERVICES_API void registerInOut(const data::Object::sptr& obj, const std::string& key,
                                       const bool autoConnect = false, const bool optional = false);
 
     /**
@@ -733,7 +733,7 @@ public:
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    FWSERVICES_API void registerObject(const ::fwData::Object::sptr& obj, const std::string& key,
+    FWSERVICES_API void registerObject(const data::Object::sptr& obj, const std::string& key,
                                        AccessType access, const bool autoConnect = false, const bool optional = false);
 
     /**
@@ -950,8 +950,8 @@ private:
     SharedFutureType internalStop(bool _async);
 
     // Slot: swap an object
-    SharedFutureType swapKeySlot(const KeyType& _key, ::fwData::Object::sptr _obj);
-    SharedFutureType internalSwapKey(const KeyType& _key, ::fwData::Object::sptr _obj, bool _async);
+    SharedFutureType swapKeySlot(const KeyType& _key, data::Object::sptr _obj);
+    SharedFutureType internalSwapKey(const KeyType& _key, data::Object::sptr _obj, bool _async);
 
     // Slot: update the service
     SharedFutureType updateSlot();

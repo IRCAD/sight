@@ -25,7 +25,7 @@
 #include "fwPreferences/config.hpp"
 #include "fwPreferences/IPreferences.hpp"
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -47,7 +47,7 @@ FWPREFERENCES_API bool setPreference(const std::string& key, const std::string& 
 FWPREFERENCES_API std::filesystem::path getPreferencesFile();
 
 /// Returns the Composite of preferences. Return nullptr if it does not exist.
-FWPREFERENCES_API ::fwData::Composite::sptr getPreferences();
+FWPREFERENCES_API data::Composite::sptr getPreferences();
 
 /**
  * @brief Gets the preferences service and call 'update', it should save the preferences file (if the service is

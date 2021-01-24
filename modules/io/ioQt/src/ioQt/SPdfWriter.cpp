@@ -27,8 +27,8 @@
 #include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -41,7 +41,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::fwData::Object )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, data::Object )
 
 namespace ioQt
 {
@@ -105,17 +105,17 @@ void SPdfWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("pdf", "*.pdf");
 
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -145,7 +145,7 @@ void SPdfWriter::updating()
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;
         std::vector< std::shared_future< QImage > > futuresQImage;
-        for( const ::fwData::Image::sptr& fwImage : m_imagesToExport )
+        for( const data::Image::sptr& fwImage : m_imagesToExport )
         {
             std::shared_future< QImage > future;
             future = pool.post(&SPdfWriter::convertFwImageToQImage, fwImage);
@@ -199,7 +199,7 @@ void SPdfWriter::starting()
     const size_t groupImageSize = this->getKeyGroupSize(s_IMAGE_INPUT);
     for (size_t idxImage = 0; idxImage < groupImageSize; ++idxImage)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INPUT, idxImage);
+        data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INPUT, idxImage);
         m_imagesToExport.push_back(image);
     }
 
@@ -252,23 +252,23 @@ void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 
 //------------------------------------------------------------------------------
 
-QImage SPdfWriter::convertFwImageToQImage(::fwData::Image::sptr fwImage)
+QImage SPdfWriter::convertFwImageToQImage(data::Image::sptr fwImage)
 {
     if (fwImage->getNumberOfComponents() == 3
         && fwImage->getType().string() == "uint8"
         && fwImage->getSize2()[2] == 1)
     {
         // Initialize QImage parameters
-        const ::fwData::Image::Size dimension = fwImage->getSize2();
-        const int width                       = static_cast<int>(dimension[0]);
-        const int height                      = static_cast<int>(dimension[1]);
+        const data::Image::Size dimension = fwImage->getSize2();
+        const int width                   = static_cast<int>(dimension[0]);
+        const int height                  = static_cast<int>(dimension[1]);
 
         QImage qImage(width, height, QImage::Format_ARGB32);
         std::uint8_t* qImageBuffer = qImage.bits();
 
         const auto dumpLock = fwImage->lock();
 
-        auto imageItr = fwImage->begin< ::fwData::iterator::RGB >();
+        auto imageItr = fwImage->begin< data::iterator::RGB >();
 
         const unsigned int size = static_cast<unsigned int>( width * height) * 4;
         for(unsigned int idx = 0; idx < size; idx += 4, ++imageItr)

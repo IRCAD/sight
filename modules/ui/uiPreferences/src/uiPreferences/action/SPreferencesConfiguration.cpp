@@ -24,10 +24,10 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Composite.hpp>
+#include <data/Integer.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -196,16 +196,16 @@ void SPreferencesConfiguration::starting()
     this->actionServiceStarting();
 
     // Check preferences
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefs = ::fwPreferences::getPreferences();
     if(prefs)
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);
-            ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
+            pref.m_dataPreference = data::String::New(pref.m_defaultValue);
+            data::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
             if ( iterPref != prefs->end() )
             {
-                pref.m_dataPreference = ::fwData::String::dynamicCast(iterPref->second);
+                pref.m_dataPreference = data::String::dynamicCast(iterPref->second);
             }
             else
             {
@@ -386,16 +386,16 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select Storage directory");
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    const auto result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    const auto result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         lineEdit->setText( QString::fromStdString(result->getFolder().string()) );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
 }
 
@@ -407,16 +407,16 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select File");
-    dialogFile.setDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
 
-    const auto result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    const auto result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
         lineEdit->setText( QString::fromStdString(result->getPath().string()) );
-        dialogFile.saveDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
     }
 }
 

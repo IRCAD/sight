@@ -31,7 +31,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <array>
 #include <regex>
@@ -186,7 +186,7 @@ ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationEle
 void Config::createProxy( const std::string& objectKey,
                           const CSPTR(core::runtime::ConfigurationElement)& cfg,
                           Config::ProxyConnectionsMapType& proxyMap,
-                          const CSPTR(::fwData::Object)& obj)
+                          const CSPTR(data::Object)& obj)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 

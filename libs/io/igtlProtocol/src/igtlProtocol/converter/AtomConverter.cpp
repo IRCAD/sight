@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace igtlProtocol
 namespace converter
 {
 const std::string AtomConverter::s_IGTL_TYPE          = "ATOMS";
-const std::string AtomConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Object::classname();
+const std::string AtomConverter::s_FWDATA_OBJECT_TYPE = data::Object::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::AtomConverter);
 
@@ -57,11 +57,11 @@ AtomConverter::~AtomConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer AtomConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer AtomConverter::fromFwDataObject(data::Object::csptr src) const
 {
     typedef ::igtlProtocol::archiver::MemoryWriteArchive MemoryWriteArchiveType;
 
-    ::fwAtomsBoostIO::Writer writer(::fwAtomConversion::convert(::fwData::Object::constCast(src)));
+    ::fwAtomsBoostIO::Writer writer(::fwAtomConversion::convert(data::Object::constCast(src)));
 
     RawMessage::Pointer msg                   = RawMessage::New(AtomConverter::s_IGTL_TYPE);
     MemoryWriteArchiveType::sptr memoryWriter = std::make_shared<MemoryWriteArchiveType>(msg->getMessage());
@@ -72,7 +72,7 @@ AtomConverter::~AtomConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     typedef ::igtlProtocol::archiver::MemoryReadArchive MemoryReadArchiveType;
     ::fwAtomsBoostIO::Reader reader;
@@ -83,7 +83,7 @@ AtomConverter::~AtomConverter()
                                                                                        msg->getMessage().size());
 
     ::fwAtoms::Base::sptr atomObj = reader.read(memoryReader);
-    ::fwData::Object::sptr obj    = ::fwAtomConversion::convert(::fwAtoms::Object::dynamicCast(atomObj));
+    data::Object::sptr obj = ::fwAtomConversion::convert(::fwAtoms::Object::dynamicCast(atomObj));
 
     return obj;
 }

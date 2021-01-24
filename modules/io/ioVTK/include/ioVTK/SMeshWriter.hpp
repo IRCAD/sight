@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -61,7 +61,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwData::Mesh]: mesh to save.
+ * - \b data [data::Mesh]: mesh to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

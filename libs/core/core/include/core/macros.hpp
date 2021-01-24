@@ -138,8 +138,8 @@
 /**
  * @brief Generate virtual methods that return classname/namespace strings
  *
- * Example: for ::fwData::Object,
- * - Classname is ::fwData::Object
+ * Example: for data::Object,
+ * - Classname is data::Object
  * - LeafClassname is Object
  */
 #define __FWCORE_INTERFACE_MACRO()                                                              \
@@ -168,8 +168,8 @@
 /**
  * @brief Generate virtual methods that return classname/namespace strings
  *
- * Example: for ::fwData::Object,
- * - Classname is ::fwData::Object
+ * Example: for data::Object,
+ * - Classname is data::Object
  * - LeafClassname is Object
  */
 #define __FWCORE_CLASSNAME_MACRO()                                                              \
@@ -200,8 +200,8 @@
  * (or a topclass of) 'this' type
  *
  * Example:
- * ::fwData::Image::IsTypeOf("::fwData::Object") is true
- * image->isA("::fwData::Object") is true
+ * data::Image::IsTypeOf("data::Object") is true
+ * image->isA("data::Object") is true
  *
  */
 #define __FWCORE_TYPE_1(_class)                      \

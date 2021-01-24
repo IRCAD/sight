@@ -34,9 +34,9 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -268,7 +268,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     if(cameraSeries)
     {
-        ::fwData::mt::ObjectWriteLock cameraSeriesLock(cameraSeries);
+        data::mt::ObjectWriteLock cameraSeriesLock(cameraSeries);
 
         ::arData::Camera::sptr colorCamera;
         ::arData::Camera::sptr depthCamera;
@@ -305,7 +305,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         if (!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
         {
             // copy device calibration into the camera series
-            ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+            data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 
             const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
             const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
@@ -366,26 +366,26 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     //Only create the pointer one time.
     if(m_pointcloud == nullptr)
     {
-        m_pointcloud = ::fwData::Mesh::New();
+        m_pointcloud = data::Mesh::New();
     }
 
     // Re-init the pointcloud.
     SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
     const size_t nbPoints = depthStreamW * depthStreamH;
 
-    ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
+    data::mt::ObjectWriteLock meshLock(m_pointcloud);
 
     // Allocate mesh.
-    m_pointcloud->resize(nbPoints, nbPoints, nbPoints, ::fwData::Mesh::Attributes::POINT_COLORS);
+    m_pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
 
     const auto dumpLock = m_pointcloud->lock();
 
-    auto itr = m_pointcloud->begin< ::fwData::iterator::CellIterator >();
+    auto itr = m_pointcloud->begin< data::iterator::CellIterator >();
 
     // to display the mesh, we need to create cells with one point.
     for( size_t i = 0; i < nbPoints; ++i, ++itr )
     {
-        *itr->type       = ::fwData::Mesh::CellType::POINT;
+        *itr->type       = data::Mesh::CellType::POINT;
         *itr->offset     = i;
         *(itr+1)->offset = i+1; // to be able to iterate through point indices
         itr->pointIdx[0] = i;
@@ -415,7 +415,7 @@ void SScan::startCamera()
     }
     else // No cameraSeries (called by SGrabberProxy for ex.).
     {
-        const auto obj = this->getInput< ::fwData::Object >(s_CAMERA_INPUT);
+        const auto obj = this->getInput< data::Object >(s_CAMERA_INPUT);
         camera = ::arData::Camera::dynamicConstCast(obj);
     }
 
@@ -714,8 +714,8 @@ void SScan::configureRecordingPath()
 
     dial.addFilter("Bag files", "*.bag");
 
-    ::fwData::location::SingleFile::sptr result
-        = ::fwData::location::SingleFile::dynamicCast( dial.show() );
+    data::location::SingleFile::sptr result
+        = data::location::SingleFile::dynamicCast( dial.show() );
 
     // If filename is ok.
     if(result)
@@ -1213,7 +1213,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 {
     if (m_pointcloud)
     {
-        ::fwData::mt::ObjectWriteLock lockTFM(m_pointcloud);
+        data::mt::ObjectWriteLock lockTFM(m_pointcloud);
 
         const auto dumpLock = m_pointcloud->lock();
 
@@ -1233,7 +1233,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
 
-        const auto pointBegin = m_pointcloud->begin< ::fwData::iterator::PointIterator >();
+        const auto pointBegin = m_pointcloud->begin< data::iterator::PointIterator >();
         auto points           = pointBegin->point;
         auto colors           = pointBegin->rgba;
 
@@ -1268,12 +1268,12 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
         }
 
-        const auto sigVertex = m_pointcloud->signal< ::fwData::Mesh::VertexModifiedSignalType >
-                                   (::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+        const auto sigVertex = m_pointcloud->signal< data::Mesh::VertexModifiedSignalType >
+                                   (data::Mesh::s_VERTEX_MODIFIED_SIG);
         sigVertex->asyncEmit();
 
-        const auto sigcolor = m_pointcloud->signal< ::fwData::Mesh::PointColorsModifiedSignalType >
-                                  (::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        const auto sigcolor = m_pointcloud->signal< data::Mesh::PointColorsModifiedSignalType >
+                                  (data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sigcolor->asyncEmit();
     }
 }

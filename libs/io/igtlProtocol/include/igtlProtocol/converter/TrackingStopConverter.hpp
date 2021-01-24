@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::Composite and STP_TDATA in igtl::TrackingDataMessage
+ * @brief class to manage conversion between data::Composite and STP_TDATA in igtl::TrackingDataMessage
  */
 class IGTLPROTOCOL_CLASS_API TrackingStopConverter :  public IConverter
 {
@@ -42,14 +42,14 @@ public:
     /// Destructor
     IGTLPROTOCOL_API ~TrackingStopConverter();
 
-    /// convert a igtl::MessageBase to a ::fwData::Object
-    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage (::igtl::MessageBase::Pointer const src) const;
+    /// convert a igtl::MessageBase to a data::Object
+    IGTLPROTOCOL_API data::Object::sptr fromIgtlMessage (::igtl::MessageBase::Pointer const src) const;
 
     /**
-     * @brief convert a fwData::Composite to a igtl::TrackingDataMessage
-     * @return an igtl::TrackingDataMessage converted from an fwData::Composite
+     * @brief convert a data::Composite to a igtl::TrackingDataMessage
+     * @return an igtl::TrackingDataMessage converted from an data::Composite
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
 
     /**
      * @brief create new TrackingStopConverter

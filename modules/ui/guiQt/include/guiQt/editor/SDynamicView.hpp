@@ -48,7 +48,7 @@
 #include <set>
 
 class QTabWidget;
-namespace fwData
+namespace sight::data
 {
 class Composite;
 }
@@ -66,9 +66,9 @@ namespace editor
  * @note The same activitySeries cannot be launch in two different tabs.
  *
  * @section Signal Signal
- * - \b activitySelected( ::fwData::object::sptr ): this signal is emitted when the current tab selection
- *   changed, it contains the associated ActivitySeries. The activity series is send as a ::fwData::Object in order to
- *   connect this signal to slots receiving a ::fwData::Object.
+ * - \b activitySelected( data::object::sptr ): this signal is emitted when the current tab selection
+ *   changed, it contains the associated ActivitySeries. The activity series is send as a data::Object in order to
+ *   connect this signal to slots receiving a data::Object.
  * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
@@ -120,7 +120,7 @@ public:
 
     GUIQT_API virtual ~SDynamicView() noexcept;
 
-    typedef core::com::Signal< void ( ::fwData::Object::sptr ) > ActivitySelectedSignalType;
+    typedef core::com::Signal< void ( data::Object::sptr ) > ActivitySelectedSignalType;
     GUIQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
     typedef core::com::Signal< void () > NothingSelectedSignalType;
     GUIQT_API static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;

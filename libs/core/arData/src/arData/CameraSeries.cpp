@@ -26,11 +26,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/Image.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/registry/macros.hpp>
 
 namespace arData
 {
@@ -43,7 +43,7 @@ const core::com::Signals::SignalKeyType CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
 
 //------------------------------------------------------------------------------
 
-CameraSeries::CameraSeries(::fwData::Object::Key key) :
+CameraSeries::CameraSeries(data::Object::Key key) :
     Series(key)
 {
     m_sigAddedCamera         = AddedCameraSignalType::New();
@@ -64,10 +64,10 @@ CameraSeries::~CameraSeries()
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::shallowCopy( const ::fwData::Object::csptr& _source )
+void CameraSeries::shallowCopy( const data::Object::csptr& _source )
 {
     CameraSeries::csptr other = CameraSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -79,10 +79,10 @@ void CameraSeries::shallowCopy( const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CameraSeries::csptr other = CameraSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -94,14 +94,14 @@ void CameraSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCo
     for(CameraContainerType::value_type elt : other->m_cameras )
     {
         ::arData::Camera::sptr newCamera;
-        newCamera = ::fwData::Object::copy(elt, cache);
+        newCamera = data::Object::copy(elt, cache);
         m_cameras.push_back(newCamera);
     }
 
     for(MatricesContainer::value_type elt : other->m_extrinsicMatrices)
     {
-        ::fwData::TransformationMatrix3D::sptr matrix;
-        matrix = ::fwData::Object::copy(elt, cache);
+        data::TransformationMatrix3D::sptr matrix;
+        matrix = data::Object::copy(elt, cache);
         m_extrinsicMatrices.push_back(matrix);
     }
 }
@@ -113,10 +113,10 @@ void CameraSeries::addCamera(const ::arData::Camera::sptr& camera)
     FW_RAISE_IF("Camera already exists in CameraSeries.",
                 std::find(m_cameras.begin(), m_cameras.end(), camera) != m_cameras.end());
     m_cameras.push_back(camera);
-    ::fwData::TransformationMatrix3D::sptr matrix;
+    data::TransformationMatrix3D::sptr matrix;
     if (m_extrinsicMatrices.empty())
     {
-        matrix = ::fwData::TransformationMatrix3D::New();
+        matrix = data::TransformationMatrix3D::New();
     }
     m_extrinsicMatrices.push_back(matrix);
 }
@@ -145,7 +145,7 @@ void CameraSeries::removeCamera(const ::arData::Camera::sptr& camera)
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::setExtrinsicMatrix(size_t index, ::fwData::TransformationMatrix3D::sptr matrix)
+void CameraSeries::setExtrinsicMatrix(size_t index, data::TransformationMatrix3D::sptr matrix)
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     m_extrinsicMatrices[index] = matrix;
@@ -153,7 +153,7 @@ void CameraSeries::setExtrinsicMatrix(size_t index, ::fwData::TransformationMatr
 
 //------------------------------------------------------------------------------
 
-::fwData::TransformationMatrix3D::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
+data::TransformationMatrix3D::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     return m_extrinsicMatrices[index];

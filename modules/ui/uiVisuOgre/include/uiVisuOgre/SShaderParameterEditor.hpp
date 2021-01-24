@@ -27,7 +27,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -51,7 +51,7 @@ namespace uiVisuOgre
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction whose paremeters should be edited.
+ * - \b reconstruction [data::Reconstruction]: reconstruction whose paremeters should be edited.
  */
 class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::fwGui::editor::IEditor
 {

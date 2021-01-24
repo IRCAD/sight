@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,9 @@
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
+#include <data/Boolean.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -46,9 +46,9 @@ namespace tid
 Fiducial::Fiducial(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                    const SPTR(::gdcm::Reader)& reader,
                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                   const ::fwData::Image::sptr& image,
+                   const data::Image::sptr& image,
                    const ::fwLog::Logger::sptr& logger) :
-    ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
+    ::fwGdcmIO::reader::tid::TemplateID< data::Image >(dicomSeries, reader, instance, image, logger)
 {
 }
 
@@ -141,20 +141,20 @@ void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node
 
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
-    ::fwData::Point::sptr point = ::fwData::Point::New(x, y, z);
-    point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
+    data::Point::sptr point = data::Point::New(x, y, z);
+    point->setField(::fwDataTools::fieldHelper::Image::m_labelId, data::String::New(label));
 
-    ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList =
+        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
 
     if(!pointList)
     {
-        pointList = ::fwData::PointList::New();
+        pointList = data::PointList::New();
         m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     pointList->getPoints().push_back(point);
-    m_object->setField("ShowLandmarks", ::fwData::Boolean::New(true));
+    m_object->setField("ShowLandmarks", data::Boolean::New(true));
 }
 
 //------------------------------------------------------------------------------

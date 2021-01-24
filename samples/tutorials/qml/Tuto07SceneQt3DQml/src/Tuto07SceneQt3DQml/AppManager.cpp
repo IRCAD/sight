@@ -22,7 +22,7 @@
 
 #include "Tuto07SceneQt3DQml/AppManager.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -61,7 +61,7 @@ void AppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::data::Mesh* AppManager::getMesh()
+::fwRenderQt3Ddata::Mesh* AppManager::getMesh()
 {
     return m_mesh;
 }
@@ -75,7 +75,7 @@ void AppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-void AppManager::setMesh(::fwRenderQt3D::data::Mesh* _mesh)
+void AppManager::setMesh(::fwRenderQt3Ddata::Mesh* _mesh)
 {
     m_mesh = _mesh;
 }
@@ -95,12 +95,12 @@ void AppManager::onOpenModel()
     const auto meshReader = ::fwServices::add("::uiIO::editor::SIOSelector");
     ::fwServices::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
-    meshReaderConfig.put("type.<xmlattr>.class", "::fwData::Mesh");
+    meshReaderConfig.put("type.<xmlattr>.class", "data::Mesh");
     meshReader->setConfiguration(meshReaderConfig);
     meshReader->configure();
     meshReader->start();
     meshReader->update();
-    auto mesh = meshReader->getLockedOutput< ::fwData::Mesh >("data").get_shared();
+    auto mesh = meshReader->getLockedOutput< data::Mesh >("data").get_shared();
     this->addObject(mesh, s_MESH_ID);
 
     // Associates the mesh with the one declared in 'ui.qml'.

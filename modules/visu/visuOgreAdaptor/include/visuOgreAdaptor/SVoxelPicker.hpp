@@ -38,7 +38,7 @@ namespace visuOgreAdaptor
  * a picking on all scene meshes. This one picks only on an image and computes exactly the intersection between the
  * picking coordinates, and image slices.
  *
- * In 3D mode, it's useless to connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT.
+ * In 3D mode, it's useless to connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT.
  * (auto connection to true), it's only used in 2D mode.
  *
  * @section Signals Signals
@@ -56,7 +56,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [::fwData::Image]: image to pick.
+ * - \b image [data::Image]: image to pick.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): layer on which the adaptor picks points.
@@ -100,7 +100,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT
+     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -137,7 +137,7 @@ private:
      * @param _spacing image spacing.
      */
     std::pair< bool, ::Ogre::Vector3 > computeRayImageIntersection(const ::Ogre::Ray& _ray,
-                                                                   const ::fwData::Image::csptr _image,
+                                                                   const data::Image::csptr _image,
                                                                    const ::Ogre::Vector3& _origin,
                                                                    const ::Ogre::Vector3& _spacing);
 

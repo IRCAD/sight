@@ -226,8 +226,8 @@
  * @param \_cls_ Class to predeclare, in the form (some)(namespace)(class)
  *
  *   Example :
- *   fwCorePredeclare( (fwData)(Image) ) expands to :
- *   namespace fwData {
+ *   fwCorePredeclare( (sight)(data)(Image) ) expands to :
+ *   namespace sight::data {
  *     class Image;
  *     }
  *
@@ -248,8 +248,8 @@
  * (or a topclass of) 'this' type
  *
  * Example:
- * ::fwData::Image::IsTypeOf("::fwData::Object") is true
- * image->isA("::fwData::Object") is true
+ * data::Image::IsTypeOf("data::Object") is true
+ * image->isA("data::Object") is true
  *
  */
 #define __FWCOREISTYPEOFMACRO(_classinfo_)                                                  \

@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES
-    fwData
+    data
     fwDataTools
     fwGui
     fwServices
@@ -18,7 +18,7 @@ set( REQUIREMENTS
     visuOgreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
 
     # UI declaration/Actions

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_ITK_HPP__
-#define __FWITKIO_ITK_HPP__
+#pragma once
 
-
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include "fwItkIO/config.hpp"
 
@@ -35,27 +33,27 @@ namespace fwItkIO
  * @brief Allocate a new data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so ::fwData::Image manages it (in this case, itkImage must be the
+ * and so data::Image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * ::fwData::Image does not manage the image buffer.
+ * data::Image does not manage the image buffer.
  */
 template< class ITKIMAGE>
-::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true );
+data::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true );
 
 /**
  * @brief Update a data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so ::fwData::Image manages it (in this case, itkImage must be the
+ * and so data::Image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * ::fwData::Image does not manage the image buffer.
+ * data::Image does not manage the image buffer.
  */
 template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::sptr _dataImage,
+void dataImageFactory( typename ITKIMAGE::Pointer itkImage, data::Image::sptr _dataImage,
                        bool bufferManagerIsDataImage = true );
 
 /**
- * @brief Create an ITK image from an ::fwData::Image.
+ * @brief Create an ITK image from an data::Image.
  *
  * If bufferManagerIsDataImage = true, imageData conserve his buffer management
  * and so the created itkImage not manages it. If bufferManagerIsDataImage = false,
@@ -66,10 +64,8 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage = true );
+typename ITKIMAGE::Pointer itkImageFactory( data::Image::csptr imageData, bool bufferManagerIsDataImage = true );
 
 }
 
 #include "fwItkIO/itk.hxx"
-
-#endif // __FWITKIO_ITK_HPP__

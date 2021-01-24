@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Bitmap image reader"))
 {
     /* Initialize the available extensions */
@@ -76,7 +76,7 @@ void BitmapImageReader::read()
     SLM_ASSERT("The current object has expired.", !m_object.expired() );
     SLM_ASSERT("Unable to lock object", m_object.lock() );
 
-    ::fwData::Image::sptr pImage = getConcreteObject();
+    data::Image::sptr pImage = getConcreteObject();
 
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
@@ -115,7 +115,7 @@ void BitmapImageReader::read()
     }
     catch( std::exception& e)
     {
-        FW_RAISE("BitmapImage to fwData::Image failed "<<e.what());
+        FW_RAISE("BitmapImage to data::Image failed "<<e.what());
     }
 }
 

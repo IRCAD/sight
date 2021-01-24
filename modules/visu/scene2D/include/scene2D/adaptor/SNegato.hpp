@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,8 +59,8 @@ namespace adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image to display.
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [data::Image]: image to display.
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -77,7 +77,7 @@ class SCENE2D_CLASS_API SNegato : public ::fwRenderQt::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SNegato, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SNegato, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SNegato() noexcept;
 
@@ -108,7 +108,7 @@ protected:
     /// Retrives the current transfer function
     SCENE2D_API void swapping(const KeyType& key) override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     /// Slot: updates the TF
     SCENE2D_API void updateTF();
@@ -138,10 +138,10 @@ private:
 
     void updateBufferFromImage( QImage* qimg );
 
-    void changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord );
+    void changeImageMinMaxFromCoord( ::fwRenderQtdata::Coord& oldCoord, ::fwRenderQtdata::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
-                             double tfWin, const ::fwData::TransferFunction::csptr& tf);
+                             double tfWin, const data::TransferFunction::csptr& tf);
 
     QImage* m_qimg;
 
@@ -156,7 +156,7 @@ private:
     bool m_pointIsCaptured;
 
     /// Ref. position when changing image window/level
-    ::fwRenderQt::data::Coord m_oldCoord;
+    ::fwRenderQtdata::Coord m_oldCoord;
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;

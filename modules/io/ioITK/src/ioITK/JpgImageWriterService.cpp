@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -41,7 +41,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, data::Image )
 
 //------------------------------------------------------------------------------
 
@@ -84,17 +84,17 @@ void JpgImageWriterService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder(result->getFolder());
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -123,12 +123,12 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
+void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(data::Image)& img)
 {
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
-    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
+    data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(imgPath);
     writer->setLocation(loc);
     writer->setObject(img);
@@ -163,7 +163,7 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        data::Image::csptr image = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         ::fwGui::Cursor cursor;

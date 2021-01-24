@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -37,7 +37,7 @@ namespace ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class FWGDCMIO_CLASS_API SpatialFiducials : public ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >
+class FWGDCMIO_CLASS_API SpatialFiducials : public ::fwGdcmIO::writer::ie::InformationEntity< data::Image >
 {
 
 public:
@@ -52,7 +52,7 @@ public:
      */
     FWGDCMIO_API SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                  const ::fwData::Image::csptr& series,
+                                  const data::Image::csptr& series,
                                   const ::fwLog::Logger::sptr& logger = nullptr,
                                   ProgressCallback progress           = nullptr,
                                   CancelRequestedCallback cancel      = nullptr);

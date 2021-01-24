@@ -121,7 +121,7 @@ void SSeriesPuller::starting()
 
 void SSeriesPuller::updating()
 {
-    const auto selectedSeries = this->getLockedInput< const ::fwData::Vector >(s_SELECTED_INPUT);
+    const auto selectedSeries = this->getLockedInput< const data::Vector >(s_SELECTED_INPUT);
 
     if(selectedSeries->empty())
     {
@@ -161,14 +161,14 @@ void SSeriesPuller::pullSeries()
     m_instanceCount = 0;
 
     // Retrieve data.
-    const auto selectedSeries = this->getLockedInput< const ::fwData::Vector >(s_SELECTED_INPUT);
+    const auto selectedSeries = this->getLockedInput< const data::Vector >(s_SELECTED_INPUT);
     const auto localEnd       = m_localSeries.end();
 
     // Find which selected series must be pulled.
     DicomSeriesContainerType pullSeriesVector;
     DicomSeriesContainerType selectedSeriesVector;
-    ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
-    const ::fwData::Vector::ConstIteratorType itEnd = selectedSeries->end();
+    data::Vector::ConstIteratorType it          = selectedSeries->begin();
+    const data::Vector::ConstIteratorType itEnd = selectedSeries->end();
     for(; it != itEnd; ++it)
     {
         // Check that the series is a DICOM series.
@@ -197,7 +197,7 @@ void SSeriesPuller::pullSeries()
         m_sigProgressStarted->asyncEmit(m_progressbarId);
 
         // Retrieve informations.
-        const auto pacsConfig = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
+        const auto pacsConfig = this->getLockedInput< const ::fwPacsIOdata::PacsConfiguration >(s_PACS_INPUT);
 
         ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -225,13 +225,13 @@ void SSeriesPuller::pullSeries()
 
         try
         {
-            if(pacsConfig->getRetrieveMethod() == ::fwPacsIO::data::PacsConfiguration::GET_RETRIEVE_METHOD)
+            if(pacsConfig->getRetrieveMethod() == ::fwPacsIOdata::PacsConfiguration::GET_RETRIEVE_METHOD)
             {
                 seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(
                                                                      pullSeriesVector));
             }
             else if(pacsConfig->getRetrieveMethod() ==
-                    ::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
+                    ::fwPacsIOdata::PacsConfiguration::MOVE_RETRIEVE_METHOD)
             {
                 ::fwPacsIO::SeriesRetriever::sptr seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
                 seriesRetriever->initialize(

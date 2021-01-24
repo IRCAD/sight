@@ -25,9 +25,9 @@
 #include <core/com/Signal.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -44,7 +44,7 @@ namespace uiReconstructionQt
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor,
-                         ::fwData::Reconstruction )
+                         data::Reconstruction )
 
 //------------------------------------------------------------------------------
 
@@ -183,7 +183,7 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -204,28 +204,28 @@ void RepresentationEditor::updating()
 void RepresentationEditor::onChangeRepresentation( int id )
 {
 
-    ::fwData::Material::RepresentationType selectedMode = ::fwData::Material::SURFACE;
+    data::Material::RepresentationType selectedMode = data::Material::SURFACE;
 
     switch(id)
     {
         case 0:
         {
-            selectedMode = ::fwData::Material::SURFACE;
+            selectedMode = data::Material::SURFACE;
             break;
         }
         case 1:
         {
-            selectedMode = ::fwData::Material::POINT;
+            selectedMode = data::Material::POINT;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::WIREFRAME;
+            selectedMode = data::Material::WIREFRAME;
             break;
         }
         case 3:
         {
-            selectedMode = ::fwData::Material::EDGE;
+            selectedMode = data::Material::EDGE;
             break;
         }
     }
@@ -238,28 +238,28 @@ void RepresentationEditor::onChangeRepresentation( int id )
 
 void RepresentationEditor::onChangeShading(  int id )
 {
-    ::fwData::Material::ShadingType selectedMode = ::fwData::Material::PHONG;
+    data::Material::ShadingType selectedMode = data::Material::PHONG;
 
     switch(id)
     {
         case 0:
         {
-            selectedMode = ::fwData::Material::AMBIENT;
+            selectedMode = data::Material::AMBIENT;
             break;
         }
         case 1:
         {
-            selectedMode = ::fwData::Material::FLAT;
+            selectedMode = data::Material::FLAT;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::GOURAUD;
+            selectedMode = data::Material::GOURAUD;
             break;
         }
         case 3:
         {
-            selectedMode = ::fwData::Material::PHONG;
+            selectedMode = data::Material::PHONG;
             break;
         }
     }
@@ -277,25 +277,25 @@ void RepresentationEditor::refreshRepresentation()
 
     switch(representationMode)
     {
-        case ::fwData::Material::SURFACE:
+        case data::Material::SURFACE:
         {
             button = m_buttonGroup->button(0);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::POINT:
+        case data::Material::POINT:
         {
             button = m_buttonGroup->button(1);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::WIREFRAME:
+        case data::Material::WIREFRAME:
         {
             button = m_buttonGroup->button(2);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::EDGE:
+        case data::Material::EDGE:
         {
             button = m_buttonGroup->button(3);
             button->setChecked(true);
@@ -316,25 +316,25 @@ void RepresentationEditor::refreshShading()
 
     switch(shadingMode)
     {
-        case ::fwData::Material::AMBIENT:
+        case data::Material::AMBIENT:
         {
             button = m_buttonGroupShading->button(0);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::FLAT:
+        case data::Material::FLAT:
         {
             button = m_buttonGroupShading->button(1);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::GOURAUD:
+        case data::Material::GOURAUD:
         {
             button = m_buttonGroupShading->button(2);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::PHONG:
+        case data::Material::PHONG:
         {
             button = m_buttonGroupShading->button(3);
             button->setChecked(true);
@@ -351,36 +351,36 @@ void RepresentationEditor::refreshShading()
 void RepresentationEditor::refreshNormals()
 {
     QAbstractButton* buttonHide = m_normalsRadioBox->button(0);
-    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::STANDARD);
+    buttonHide->setChecked(m_material->getOptionsMode() == data::Material::STANDARD);
     QAbstractButton* buttonNormals = m_normalsRadioBox->button(1);
-    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::NORMALS);
+    buttonNormals->setChecked(m_material->getOptionsMode() == data::Material::NORMALS);
 }
 
 //------------------------------------------------------------------------------
 
 void RepresentationEditor::onShowNormals(int state )
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     switch(state)
     {
         case 0:
-            m_material->setOptionsMode( ::fwData::Material::STANDARD );
+            m_material->setOptionsMode( data::Material::STANDARD );
             break;
         case 1:
-            m_material->setOptionsMode( ::fwData::Material::NORMALS );
+            m_material->setOptionsMode( data::Material::NORMALS );
             break;
         case 2:
-            m_material->setOptionsMode( ::fwData::Material::CELLS_NORMALS );
+            m_material->setOptionsMode( data::Material::CELLS_NORMALS );
             break;
     }
 
     this->notifyMaterial();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal< ::fwData::Reconstruction::MeshChangedSignalType >(
-        ::fwData::Reconstruction::s_MESH_CHANGED_SIG);
+    auto sig = reconstruction->signal< data::Reconstruction::MeshChangedSignalType >(
+        data::Reconstruction::s_MESH_CHANGED_SIG);
     sig->asyncEmit(reconstruction->getMesh());
 }
 
@@ -388,12 +388,12 @@ void RepresentationEditor::onShowNormals(int state )
 
 void RepresentationEditor::notifyMaterial()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getInOut< ::fwData::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
-        ::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
+        data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -402,7 +402,7 @@ void RepresentationEditor::notifyMaterial()
 ::fwServices::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

@@ -125,16 +125,16 @@ public:
     FWRENDERQT_API Scene2DGraphicsView* getView() const;
 
     /// Get the viewport.
-    FWRENDERQT_API ::fwRenderQt::data::Viewport::sptr getViewport() const;
+    FWRENDERQT_API ::fwRenderQtdata::Viewport::sptr getViewport() const;
 
     /// Get the axis.
-    FWRENDERQT_API ::fwRenderQt::data::Axis::sptr getAxis(const std::string& id) const;
+    FWRENDERQT_API ::fwRenderQtdata::Axis::sptr getAxis(const std::string& id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
-    FWRENDERQT_API void dispatchInteraction(::fwRenderQt::data::Event& _event );
+    FWRENDERQT_API void dispatchInteraction(::fwRenderQtdata::Event& _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    FWRENDERQT_API ::fwRenderQt::data::Coord mapToScene( const ::fwRenderQt::data::Coord& coord ) const;
+    FWRENDERQT_API ::fwRenderQtdata::Coord mapToScene( const ::fwRenderQtdata::Coord& coord ) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     FWRENDERQT_API Qt::AspectRatioMode getAspectRatioMode() const;
@@ -190,16 +190,16 @@ private:
     /// set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
     void configureAdaptor ( ConfigurationType _conf );
 
-    std::map<std::string, ::fwRenderQt::data::Axis::sptr > m_axisMap;
+    std::map<std::string, ::fwRenderQtdata::Axis::sptr > m_axisMap;
 
     /// The render configuration.
     ConfigurationType m_sceneConfiguration;
 
     /// Coordinates of the scene top left corner.
-    ::fwRenderQt::data::Coord m_sceneStart;
+    ::fwRenderQtdata::Coord m_sceneStart;
 
     /// Width and height of the scene.
-    ::fwRenderQt::data::Coord m_sceneWidth;
+    ::fwRenderQtdata::Coord m_sceneWidth;
 
     /// The scene.
     QGraphicsScene* m_scene;
@@ -207,7 +207,7 @@ private:
     /// The view.
     Scene2DGraphicsView* m_view;
 
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
+    ::fwRenderQtdata::Viewport::sptr m_viewport;
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;

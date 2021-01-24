@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwData/location/Folder.hpp>
+#include <data/location/Folder.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -63,7 +63,7 @@ class DicomAnonymizer;
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
 class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries >,
-                          public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
+                          public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:

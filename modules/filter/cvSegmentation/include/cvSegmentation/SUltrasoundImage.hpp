@@ -24,7 +24,7 @@
 
 #include "cvSegmentation/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/VectorFunctions.hpp>
@@ -65,10 +65,10 @@ namespace cvSegmentation
    @endcode
  *
  * @subsection In In
- * - \b ultrasoundImage [::fwData::Image](mandatory): image outputted by the ultrasound machine.
+ * - \b ultrasoundImage [data::Image](mandatory): image outputted by the ultrasound machine.
  *
  * @subsection In-Out In-Out
- * - \b extractedUltrasoundBeam [::fwData::Image](mandatory): ultrasound beam image extracted from the input.
+ * - \b extractedUltrasoundBeam [data::Image](mandatory): ultrasound beam image extracted from the input.
  *
  * @subsection Configuration Configuration:
  * - \b thresholdMin (optional, default=4) : Minimum threshold used for ultrasound plane extraction.

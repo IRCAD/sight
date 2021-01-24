@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
@@ -35,7 +35,7 @@
 namespace Tuto04MeshGeneratorCpp
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::fwData::Mesh )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, data::Mesh )
 
 static const ::fwServices::IService::KeyType s_MESH_INOUT = "mesh";
 
@@ -87,7 +87,7 @@ void SMeshModifier::starting()
 
 void SMeshModifier::updating()
 {
-    const auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
 
     try
     {
@@ -95,68 +95,68 @@ void SMeshModifier::updating()
         {
             ::fwDataTools::Mesh::shakePoint(mesh.get_shared());
 
-            ::fwData::Mesh::VertexModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+            data::Mesh::VertexModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ColorizeMeshCells")
         {
             ::fwDataTools::Mesh::colorizeMeshCells(mesh.get_shared());
 
-            ::fwData::Mesh::CellColorsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
-                ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
+            data::Mesh::CellColorsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::CellColorsModifiedSignalType >(
+                data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
             ::fwDataTools::Mesh::colorizeMeshPoints(mesh.get_shared());
 
-            ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
-                ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+            data::Mesh::PointColorsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::PointColorsModifiedSignalType >(
+                data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ComputeCellNormals")
         {
             ::fwDataTools::Mesh::generateCellNormals(mesh.get_shared());
 
-            ::fwData::Mesh::CellNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::CellNormalsModifiedSignalType >(
-                ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
+            data::Mesh::CellNormalsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::CellNormalsModifiedSignalType >(
+                data::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ComputePointNormals")
         {
             ::fwDataTools::Mesh::generatePointNormals(mesh.get_shared());
 
-            ::fwData::Mesh::PointNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::PointNormalsModifiedSignalType >(
-                ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG);
+            data::Mesh::PointNormalsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::PointNormalsModifiedSignalType >(
+                data::Mesh::s_POINT_NORMALS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ShakeCellNormals")
         {
             ::fwDataTools::Mesh::shakeCellNormals(mesh.get_shared());
 
-            ::fwData::Mesh::CellNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::CellNormalsModifiedSignalType >(
-                ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
+            data::Mesh::CellNormalsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::CellNormalsModifiedSignalType >(
+                data::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "ShakePointNormals")
         {
             ::fwDataTools::Mesh::shakePointNormals(mesh.get_shared());
 
-            ::fwData::Mesh::PointNormalsModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Mesh::PointNormalsModifiedSignalType >(
-                ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG);
+            data::Mesh::PointNormalsModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Mesh::PointNormalsModifiedSignalType >(
+                data::Mesh::s_POINT_NORMALS_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else if(m_functor == "MeshDeformation")
         {
             m_animator.computeDeformation(mesh.get_shared(), 100, 50);
-            const auto sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            const auto sig = mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();

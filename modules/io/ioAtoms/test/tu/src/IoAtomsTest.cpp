@@ -25,9 +25,9 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Array.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -76,8 +76,8 @@ void IoAtomsTest::tearDown()
 template <typename T>
 void compareLog(T& comparator)
 {
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
-    for(::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
+    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
     }
@@ -151,7 +151,7 @@ void writeReadFile(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(
     SPTR(T) readObj = read<T>(srvCfg, reader);
 
     // Compare
-    using namespace ::fwData::reflection::visitor;
+    using namespace data::reflection::visitor;
     CompareObjects visitor;
 
     visitor.compare(readObj, obj);
@@ -167,13 +167,13 @@ void atomTest(const std::filesystem::path& filePath)
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
-    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
-    ::fwData::Composite::sptr workspace       = ::fwData::Composite::New();
-    workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
-    workspace->getContainer()["planningDB"]   = ::fwData::Composite::New();
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
+    data::Composite::sptr workspace = data::Composite::New();
+    workspace->getContainer()["processingDB"] = data::Composite::New();
+    workspace->getContainer()["planningDB"]   = data::Composite::New();
 
     std::filesystem::create_directories( filePath.parent_path() );
-    writeReadFile< ::fwData::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
+    writeReadFile< data::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
     writeReadFile< ::fwMedData::SeriesDB >( srvCfg, seriesDB, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
 
     ::fwMedData::SeriesDB::sptr readSeriesDB;
@@ -182,7 +182,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -191,7 +191,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -203,7 +203,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -213,7 +213,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -241,7 +241,7 @@ void atomTest(const std::filesystem::path& filePath)
 
         CPPUNIT_ASSERT_MESSAGE("Data have not the same pointer", seriesDB == readSeriesDB);
 
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDB, readSeriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -255,9 +255,9 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
-    ::fwData::Array::sptr array = ::fwData::Array::New();
-    const auto dumpLock = array->lock();
-    ::fwData::Array::SizeType size {10, 100};
+    data::Array::sptr array = data::Array::New();
+    const auto dumpLock     = array->lock();
+    data::Array::SizeType size {10, 100};
 
     array->resize(size, core::tools::Type::s_UINT32);
 
@@ -272,12 +272,12 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
 
     std::filesystem::create_directories( filePath.parent_path() );
 
-    write< ::fwData::Array >(srvCfg, array, "::ioAtoms::SWriter");
+    write< data::Array >(srvCfg, array, "::ioAtoms::SWriter");
 
-    ::fwData::Array::sptr readArray = read< ::fwData::Array >(srvCfg, "::ioAtoms::SReader");
+    data::Array::sptr readArray = read< data::Array >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwData::reflection::visitor::CompareObjects visitor;
+        data::reflection::visitor::CompareObjects visitor;
         visitor.compare(array, readArray);
         compareLog(visitor);
         for(const auto& it : *visitor.getDifferences())

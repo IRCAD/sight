@@ -25,7 +25,7 @@
 #include "fwRenderQt3D/core/GenericScene.hpp"
 #include "fwRenderQt3D/data/Mesh.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -69,12 +69,12 @@ void MeshTest::tearDown()
 
 void MeshTest::setCubeMesh()
 {
-    // Arranges a cube ::fwData::Mesh and a generic scene.
+    // Arranges a cube data::Mesh and a generic scene.
     auto scene = new ::fwRenderQt3Dcore::GenericScene(false);
     scene->setCamera(scene->getCamera());
 
-    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    mesh->reserve(8, 12, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_NORMALS);
+    const data::Mesh::sptr mesh = data::Mesh::New();
+    mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->lock();
 
@@ -101,7 +101,7 @@ void MeshTest::setCubeMesh()
     mesh->pushCell(6, 5, 0);
 
     // Sets Qt3D mesh.
-    auto qt3dMesh = new ::fwRenderQt3D::data::Mesh(scene);
+    auto qt3dMesh = new ::fwRenderQt3Ddata::Mesh(scene);
     qt3dMesh->setMesh(mesh);
 
     // Asserts.
@@ -119,8 +119,8 @@ void MeshTest::setCubeMesh()
     CPPUNIT_ASSERT_EQUAL(static_cast< unsigned int >(mesh->getNumberOfCells() * 3), indexAttribute->count());
 
     // Asserts each point is at the right position.
-    auto itrPt          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto endItrPt = mesh->end< ::fwData::iterator::ConstPointIterator >();
+    auto itrPt          = mesh->begin< data::iterator::ConstPointIterator >();
+    const auto endItrPt = mesh->end< data::iterator::ConstPointIterator >();
 
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();
     const float* const posBufferData   = reinterpret_cast< const float* >(posBufferDataByte.data());
@@ -134,8 +134,8 @@ void MeshTest::setCubeMesh()
     }
 
     // Asserts indexes are in the right order.
-    auto itrCell      = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto endItr = mesh->end< ::fwData::iterator::ConstCellIterator >();
+    auto itrCell      = mesh->begin< data::iterator::ConstCellIterator >();
+    const auto endItr = mesh->end< data::iterator::ConstCellIterator >();
 
     const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
     const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
@@ -157,12 +157,12 @@ void MeshTest::setCubeMesh()
 
 void MeshTest::centerCameraOnCube()
 {
-    // Arranges a cube ::fwData::Mesh and a generic scene.
+    // Arranges a cube data::Mesh and a generic scene.
     const auto scene = new ::fwRenderQt3Dcore::GenericScene(false);
     const auto camera = scene->getCamera();
 
-    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    mesh->reserve(8, 12, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_NORMALS);
+    const data::Mesh::sptr mesh = data::Mesh::New();
+    mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->lock();
 
@@ -199,7 +199,7 @@ void MeshTest::centerCameraOnCube()
     expectedCamera->viewSphere(QVector3D(0.5f, 0.5f, 0.5f), 1);
 
     // Sets Qt3D mesh and center camera on it.
-    auto qt3dMesh = new ::fwRenderQt3D::data::Mesh(scene);
+    auto qt3dMesh = new ::fwRenderQt3Ddata::Mesh(scene);
     qt3dMesh->setMesh(mesh);
     qt3dMesh->centerCameraOnMesh();
 

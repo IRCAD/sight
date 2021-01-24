@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -45,12 +45,12 @@ namespace ie
 SpatialFiducials::SpatialFiducials(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                                    const SPTR(::gdcm::Reader)& reader,
                                    const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                                   const ::fwData::Image::sptr& image,
+                                   const data::Image::sptr& image,
                                    const ::fwLog::Logger::sptr& logger,
                                    ProgressCallback progress,
                                    CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
-                                                                 logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< data::Image >(dicomSeries, reader, instance, image,
+                                                             logger, progress, cancel)
 {
 }
 
@@ -64,11 +64,11 @@ SpatialFiducials::~SpatialFiducials()
 
 void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 {
-    ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList =
+        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if(!pointList)
     {
-        pointList = ::fwData::PointList::New();
+        pointList = data::PointList::New();
         m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
@@ -103,9 +103,9 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
         double zCoordinate =
             ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, frameNumber);
 
-        ::fwData::Point::sptr point = ::fwData::Point::New(static_cast<double>(pointValues[0]),
-                                                           static_cast<double>(pointValues[1]), zCoordinate);
-        point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
+        data::Point::sptr point = data::Point::New(static_cast<double>(pointValues[0]),
+                                                   static_cast<double>(pointValues[1]), zCoordinate);
+        point->setField(::fwDataTools::fieldHelper::Image::m_labelId, data::String::New(label));
         pointList->getPoints().push_back(point);
 
     }

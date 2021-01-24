@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,10 +53,10 @@ void UtilsTest::tearDown()
 
 void UtilsTest::convertOgreColorToFwColor()
 {
-    ::fwData::Color::sptr refColor = ::fwData::Color::New();
+    data::Color::sptr refColor = data::Color::New();
     refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
 
-    ::fwData::Color::sptr resultColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(::Ogre::ColourValue());
+    data::Color::sptr resultColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(::Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->green()) == static_cast<int>(refColor->green()));
     CPPUNIT_ASSERT(static_cast<int>(resultColor->blue()) == static_cast<int>(refColor->blue()));
@@ -75,7 +75,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     // Convert from Sight to ogre and back to Sight.
     {
-        ::fwData::TransformationMatrix3D::sptr mat0 = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr mat0 = data::TransformationMatrix3D::New();
 
         for(double& coeff : mat0->getCoefficients())
         {
@@ -93,7 +93,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         }
 
         // Convert back to TM3D.
-        ::fwData::TransformationMatrix3D::sptr mat0Copy = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr mat0Copy = data::TransformationMatrix3D::New();
 
         ::fwRenderOgre::Utils::copyOgreMxToTM3D(ogreMat0, mat0Copy);
 
@@ -118,7 +118,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
 
-        ::fwData::TransformationMatrix3D::sptr mat1Copy = ::fwData::TransformationMatrix3D::New();
+        data::TransformationMatrix3D::sptr mat1Copy = data::TransformationMatrix3D::New();
         ::fwRenderOgre::Utils::copyOgreMxToTM3D(ogreMat1, mat1Copy);
 
         for(std::uint8_t l = 0; l < 4; ++l)

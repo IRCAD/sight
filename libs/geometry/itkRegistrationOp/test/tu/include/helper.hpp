@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwItkIO/itk.hpp>
 #include <fwItkIO/itk.hxx>
@@ -38,7 +38,7 @@ template <class P, size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-::fwData::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
+data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
 {
     using ImageType                      = ::itk::Image<P, N>;
     using EllipseType                    = ::itk::EllipseSpatialObject< N >;
@@ -85,7 +85,7 @@ template <class P, size_t N>
 
     image->Graft(imageFilter->GetOutput());
 
-    ::fwData::Image::sptr outputImage = ::fwData::Image::New();
+    data::Image::sptr outputImage = data::Image::New();
     ::fwItkIO::itkImageToFwDataImage(image, outputImage);
 
     return outputImage;

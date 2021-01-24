@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Tag;
 }
@@ -44,16 +44,16 @@ namespace reader
  * @brief   Tag Reader. Read file format .tag
  *
  *
- * Ircad reader to read a ::fwData::Tag on filesystem which the file format
+ * Ircad reader to read a data::Tag on filesystem which the file format
  * is .tag.
  */
 class FWDATAIO_CLASS_API TagReader :
-    public GenericObjectReader< ::fwData::Tag >,
-    public ::fwData::location::enableSingleFile< IObjectReader >
+    public GenericObjectReader< data::Tag >,
+    public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
-    fwCoreClassMacro(TagReader, GenericObjectReader< ::fwData::Tag >, ::fwDataIO::reader::factory::New< TagReader >)
+    fwCoreClassMacro(TagReader, GenericObjectReader< data::Tag >, ::fwDataIO::reader::factory::New< TagReader >)
     /// Constructor. Do nothing.
     FWDATAIO_API TagReader(::fwDataIO::reader::IObjectReader::Key key);
 

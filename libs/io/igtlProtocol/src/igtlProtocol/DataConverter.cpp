@@ -26,8 +26,8 @@
 
 #include <core/util/LazyInstantiator.hpp>
 
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 #include <igtlCapabilityMessage.h>
 #include <igtlStatusMessage.h>
@@ -64,7 +64,7 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::Object::csptr src) const
 {
     const std::string classname = src->getClassname();
     for(const converter::IConverter::sptr& converter :  m_converters)
@@ -80,9 +80,9 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::fwData::Object::sptr obj;
+    data::Object::sptr obj;
     const std::string deviceType = src->GetDeviceType();
 
     if (deviceType == "ATOMS")

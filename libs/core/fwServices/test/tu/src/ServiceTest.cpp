@@ -35,10 +35,10 @@
 #include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Object.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/Object.hpp>
 
 #include <utest/wait.hpp>
 
@@ -130,9 +130,9 @@ void ServiceTest::testServiceCreationWithMultipleData()
     const std::string dataKey1 = "data1";
     const std::string dataKey2 = "data2";
     const std::string dataKey3 = "data3";
-    ::fwData::Integer::sptr obj1 = ::fwData::Integer::New();
-    ::fwData::Integer::sptr obj2 = ::fwData::Integer::New();
-    ::fwData::Integer::sptr obj3 = ::fwData::Integer::New();
+    data::Integer::sptr obj1   = data::Integer::New();
+    data::Integer::sptr obj2   = data::Integer::New();
+    data::Integer::sptr obj3   = data::Integer::New();
 
     // Test if the object support the service
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj1->getClassname(),
@@ -148,21 +148,21 @@ void ServiceTest::testServiceCreationWithMultipleData()
     CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INOUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut< ::fwData::Integer >(dataKey1).get_shared());
+    CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut< data::Integer >(dataKey1).get_shared());
 
     srv->registerObject(obj2, dataKey2, AccessType::INOUT);
     CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
     CPPUNIT_ASSERT(obj2 == ::fwServices::OSR::getRegistered(dataKey2, AccessType::INOUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut< ::fwData::Integer >(dataKey2).get_shared());
+    CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut< data::Integer >(dataKey2).get_shared());
 
     srv->registerInput(obj3, dataKey3);
     CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
     CPPUNIT_ASSERT(obj3 == ::fwServices::OSR::getRegistered(dataKey3, AccessType::INPUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT(obj3 == srv->getLockedInput< ::fwData::Integer >(dataKey3).get_shared());
+    CPPUNIT_ASSERT(obj3 == srv->getLockedInput< data::Integer >(dataKey3).get_shared());
 
     // Test unregistering the objects
     srv->unregisterInOut(dataKey1);
@@ -189,7 +189,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
     const std::string dataKey = "data";
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
+    data::Integer::sptr obj   = data::Integer::New();
 
     // Test if the object support the service
     CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
@@ -203,7 +203,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     CPPUNIT_ASSERT(obj == ::fwServices::OSR::getRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 
     // Test getting the service its object
-    CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut< ::fwData::Integer >(dataKey).get_shared());
+    CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut< data::Integer >(dataKey).get_shared());
 
     srv->unregisterInOut(dataKey);
     CPPUNIT_ASSERT_EQUAL(false,
@@ -223,7 +223,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string dataKey = "data";
     size_t nbServices         = 0;
 
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
+    data::Integer::sptr obj = data::Integer::New();
     ::fwServices::IService::sptr service;
     ::fwServices::IService::sptr service2;
 
@@ -247,7 +247,7 @@ void ServiceTest::testServiceCreationWithUUID()
     // Test getting the service its object
     ::fwServices::IService::sptr service2bis = ::fwServices::get(myUUID2);
     CPPUNIT_ASSERT(service2bis);
-    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut< ::fwData::Integer >(dataKey).get_shared());
+    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut< data::Integer >(dataKey).get_shared());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->getID());
     CPPUNIT_ASSERT( !core::tools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices("::fwServices::ut::TestService").size() );
@@ -265,7 +265,7 @@ void ServiceTest::testStartStopUpdate()
 {
     const std::string myUUID = "myUUID";
 
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
+    data::Integer::sptr obj = data::Integer::New();
     ::fwServices::ut::TestService::sptr service;
 
     // Add service
@@ -382,7 +382,7 @@ void ServiceTest::testCommunication()
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
-    ::fwData::Composite::sptr obj = ::fwData::Composite::New();
+    data::Composite::sptr obj = data::Composite::New();
     ::fwServices::ut::TestService::sptr service1;
     ::fwServices::ut::TestService::sptr service2;
 
@@ -581,8 +581,8 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
 
 void ServiceTest::testWithInAndOut()
 {
-    ::fwData::Integer::sptr obj                         = ::fwData::Integer::New(18);
-    ::fwData::Integer::sptr obj2                        = ::fwData::Integer::New(23);
+    data::Integer::sptr obj  = data::Integer::New(18);
+    data::Integer::sptr obj2 = data::Integer::New(23);
     ::fwServices::ut::TestServiceWithData::sptr service =
         ::fwServices::add< ::fwServices::ut::TestServiceWithData >("::fwServices::ut::TestServiceWithData");
 
@@ -605,16 +605,16 @@ void ServiceTest::testWithInAndOut()
     service->update();
     CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
                                                                ::fwServices::IService::AccessType::OUTPUT, service));
-    ::fwData::Object::csptr output =
+    data::Object::csptr output =
         ::fwServices::OSR::getRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,
                                          ::fwServices::IService::AccessType::OUTPUT, service);
     CPPUNIT_ASSERT(output);
-    ::fwData::Integer::csptr outInteger = ::fwData::Integer::dynamicCast(output);
+    data::Integer::csptr outInteger = data::Integer::dynamicCast(output);
     CPPUNIT_ASSERT(outInteger);
 
     CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger->value());
 
-    ::fwData::Integer::csptr outInteger2 = service->getLockedOutput< ::fwData::Integer >(
+    data::Integer::csptr outInteger2 = service->getLockedOutput< data::Integer >(
         ::fwServices::ut::TestServiceWithData::s_OUTPUT).get_shared();
     CPPUNIT_ASSERT(outInteger2);
 
@@ -622,7 +622,7 @@ void ServiceTest::testWithInAndOut()
 
     service->stop();
 
-    auto nullInteger = service->getWeakOutput< ::fwData::Integer >( ::fwServices::ut::TestServiceWithData::s_OUTPUT);
+    auto nullInteger = service->getWeakOutput< data::Integer >( ::fwServices::ut::TestServiceWithData::s_OUTPUT);
     CPPUNIT_ASSERT(nullInteger.expired());
 
     CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(::fwServices::ut::TestServiceWithData::s_OUTPUT,

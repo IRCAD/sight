@@ -28,9 +28,9 @@
 #include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Point.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/Point.hpp>
 
 #include <numeric>
 #include <utility> // std::pair
@@ -55,7 +55,7 @@ public:
      * @param[in]   _pImg   image which must contains the field.
      * @return      true if the field is added.
      */
-    FWDATATOOLS_API static bool checkLandmarks( ::fwData::Image::sptr _pImg );
+    FWDATATOOLS_API static bool checkLandmarks( data::Image::sptr _pImg );
 
     /**
      * @brief       Check if the image is valid.
@@ -65,7 +65,7 @@ public:
      * @param[in]   _pImg   image checked.
      * @return      true if the image is valid.
      */
-    FWDATATOOLS_API static bool checkImageValidity( ::fwData::Image::csptr _pImg );
+    FWDATATOOLS_API static bool checkImageValidity( data::Image::csptr _pImg );
 
     /**
      * @brief       Check if the image has slice index fields.
@@ -75,7 +75,7 @@ public:
      * @param       _pImg   image which must contains the field.
      * @return      true if the fields are added.
      */
-    FWDATATOOLS_API static bool checkImageSliceIndex( ::fwData::Image::sptr _pImg );
+    FWDATATOOLS_API static bool checkImageSliceIndex( data::Image::sptr _pImg );
 
     /**
      * @brief       Get the X,Y,Z slice position.
@@ -83,7 +83,7 @@ public:
      * @return      X,Y,Z  slice position of the current image if exist field exist
      *              else install field and return (imgSizeX/2,imgSizeY/2,imgSizeZ/2).
      */
-    FWDATATOOLS_API static ::fwData::Point::sptr   getImageSliceIndices( ::fwData::Image::sptr _pImg );
+    FWDATATOOLS_API static data::Point::sptr   getImageSliceIndices( data::Image::sptr _pImg );
 
     /**
      * @brief       Check if the image has a comment field.
@@ -93,7 +93,7 @@ public:
      * @param[in]   _pImg image which contains the comment field.
      * @return      true if the comment field is added.
      */
-    FWDATATOOLS_API static bool checkComment( ::fwData::Image::sptr _pImg );
+    FWDATATOOLS_API static bool checkComment( data::Image::sptr _pImg );
 
     /**
      * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
@@ -106,10 +106,10 @@ public:
      * @deprecated  This method is not longer supported
      */
     [[deprecated("will be removed in sight 22.0")]]
-    FWDATATOOLS_API static ::fwData::Image::sptr initialize(
-        ::fwData::Image::sptr imgSrc,
-        ::fwData::Image::sptr imgToInitialize =
-            ::fwData::Image::sptr());
+    FWDATATOOLS_API static data::Image::sptr initialize(
+        data::Image::sptr imgSrc,
+        data::Image::sptr imgToInitialize =
+            data::Image::sptr());
 
     /**
      * @brief       Return true if the pixel value is null.
@@ -117,9 +117,9 @@ public:
      * @param[in] point : the coordinate of the pixel in the image.
      */
     template < typename INT_INDEX>
-    static bool isPixelNull(::fwData::Image::sptr image, INT_INDEX& point);
+    static bool isPixelNull(data::Image::sptr image, INT_INDEX& point);
 
-    FWDATATOOLS_API static bool isBufNull(const ::fwData::Image::BufferType* buf, const unsigned int len);
+    FWDATATOOLS_API static bool isBufNull(const data::Image::BufferType* buf, const unsigned int len);
 
     /**
      * @brief Set a pixel value.
@@ -128,7 +128,7 @@ public:
      * @param[in] value : the pixel value
      */
     template < typename T, typename INT_INDEX>
-    static void setPixel(::fwData::Image::sptr image, INT_INDEX& point, T& value);
+    static void setPixel(data::Image::sptr image, INT_INDEX& point, T& value);
 
     /**
      * @brief Set a pixel value.
@@ -137,7 +137,7 @@ public:
      * @param[in] value : the pixel value
      */
     template < typename T >
-    static void setPixel(::fwData::Image::sptr pImage, ::fwData::Point::sptr point, T& value);
+    static void setPixel(data::Image::sptr pImage, data::Point::sptr point, T& value);
 
     /**
      * @brief Return a buffer of image type's size, containing 'value' casted to image data type
@@ -145,7 +145,7 @@ public:
      * @param[in] value : value to map
      */
     template < typename T >
-    static SPTR( ::fwData::Image::BufferType ) getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value);
+    static SPTR( data::Image::BufferType ) getPixelBufferInImageSpace(data::Image::sptr image, T &value);
 
     /**
      * @brief Return minimum and maximum values contained in image. If image
@@ -156,7 +156,7 @@ public:
      * @param[out] _max : maximum value
      */
     template < typename MINMAXTYPE >
-    static void getMinMax(const ::fwData::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+    static void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
     /**
      * @brief Check if the image has a transfer function pool
@@ -166,7 +166,7 @@ public:
      * If the image has not transfer functions, the pool is
      * created and a grey level transfer function is added.
      */
-    FWDATATOOLS_API static bool checkTransferFunctionPool(const ::fwData::Image::sptr& _img);
+    FWDATATOOLS_API static bool checkTransferFunctionPool(const data::Image::sptr& _img);
 };
 
 // ------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ public:
     {
     public:
         typedef VALUE ValueType;
-        typedef SPTR ( ::fwData::Image::BufferType ) BufferTypeSptr;
+        typedef SPTR ( data::Image::BufferType ) BufferTypeSptr;
 
         Param(ValueType& v) :
             value(v)
@@ -199,9 +199,9 @@ public:
 
         IMAGE val = core::tools::numericRoundCast<IMAGE>(param.value);
 
-        ::fwData::Image::BufferType* buf = reinterpret_cast< ::fwData::Image::BufferType* > (&val);
+        data::Image::BufferType* buf = reinterpret_cast< data::Image::BufferType* > (&val);
 
-        SPTR( ::fwData::Image::BufferType ) res( new ::fwData::Image::BufferType[imageTypeSize] );
+        SPTR( data::Image::BufferType ) res( new data::Image::BufferType[imageTypeSize] );
         std::copy(buf, buf+imageTypeSize, res.get());
         param.res = res;
     }
@@ -226,7 +226,7 @@ public:
         {
         }
 
-        ::fwData::Image::sptr image;
+        data::Image::sptr image;
         const ValueType& value;
         const PointType& point;
     };
@@ -236,12 +236,12 @@ public:
     template < typename IMAGE >
     void operator()( Param& param )
     {
-        IMAGE* buffer                     = static_cast < IMAGE* > (param.image->getBuffer());
-        const INT_INDEX& p                = param.point;
-        const ::fwData::Image::Size& size = param.image->getSize2();
-        const int& sx                     = size[0];
-        const int& sy                     = size[1];
-        const int& offset                 = p[0] + sx*p[1] + p[2]*sx*sy;
+        IMAGE* buffer                 = static_cast < IMAGE* > (param.image->getBuffer());
+        const INT_INDEX& p            = param.point;
+        const data::Image::Size& size = param.image->getSize2();
+        const int& sx                 = size[0];
+        const int& sy                 = size[1];
+        const int& offset             = p[0] + sx*p[1] + p[2]*sx*sy;
         *(buffer+offset) = core::tools::numericRoundCast<IMAGE>(param.value);
     }
 
@@ -250,7 +250,7 @@ public:
 // ------------------------------------------------------------------------------
 
 template < typename T >
-void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point::sptr point, T& value)
+void MedicalImageHelpers::setPixel(data::Image::sptr image, data::Point::sptr point, T& value)
 {
     setPixel(image, point->getCoord(), value);
 }
@@ -258,7 +258,7 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point:
 // ------------------------------------------------------------------------------
 
 template < typename T, typename INT_INDEX>
-void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX& point, T& value)
+void MedicalImageHelpers::setPixel(data::Image::sptr image, INT_INDEX& point, T& value)
 {
     const auto dumpLock = image->lock();
     typename CastAndSetFunctor<T, INT_INDEX>::Param param(point, value);
@@ -272,8 +272,8 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX& point
 // ------------------------------------------------------------------------------
 
 template < typename T >
-SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image,
-                                                                                    T &value)
+SPTR( data::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(data::Image::sptr image,
+                                                                                T &value)
 {
     typename PixelCastAndSetFunctor<T>::Param param(value);
 
@@ -299,7 +299,7 @@ class [[deprecated("sight 22.0")]] CastAndCheckFunctor
             {
             }
 
-            ::fwData::Image::sptr image;
+            data::Image::sptr image;
             const PointType& point;
             bool& isNull;
         };
@@ -324,12 +324,12 @@ class [[deprecated("sight 22.0")]] CastAndCheckFunctor
 // ------------------------------------------------------------------------------
 
 template < typename INT_INDEX>
-bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX& point)
+bool MedicalImageHelpers::isPixelNull(data::Image::sptr image, INT_INDEX& point)
 {
     const auto dumpLock               = image->lock();
     const unsigned char imageTypeSize = image->getType().sizeOf();
-    ::fwData::Image::BufferType* buf =
-        static_cast< ::fwData::Image::BufferType*> (image->getPixelBuffer(point[0], point[1], point[2]));
+    data::Image::BufferType* buf      =
+        static_cast< data::Image::BufferType*> (image->getPixelBuffer(point[0], point[1], point[2]));
 
     return isBufNull(buf, imageTypeSize);
 }
@@ -344,14 +344,14 @@ public:
     {
     public:
 
-        Param(::fwData::Image::csptr _img, T& _min, T& _max) :
+        Param(data::Image::csptr _img, T& _min, T& _max) :
             image(_img),
             min(_min),
             max(_max)
         {
         }
 
-        ::fwData::Image::csptr image;
+        data::Image::csptr image;
         T& min;
         T& max;
     };
@@ -361,8 +361,8 @@ public:
     template < typename IMAGE >
     void operator()( Param& param )
     {
-        const ::fwData::Image::csptr image = param.image;
-        const auto dumpLock                = image->lock();
+        const data::Image::csptr image = param.image;
+        const auto dumpLock            = image->lock();
 
         auto itr       = image->begin<IMAGE>();
         const auto end = image->end<IMAGE>();
@@ -402,7 +402,7 @@ public:
 // ------------------------------------------------------------------------------
 
 template < typename MINMAXTYPE >
-void MedicalImageHelpers::getMinMax(const ::fwData::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
+void MedicalImageHelpers::getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 

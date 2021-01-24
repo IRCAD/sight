@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_MAPPER_GRAPH_HPP__
-#define __FWATOMCONVERSION_MAPPER_GRAPH_HPP__
-
+#pragma once
 
 #include "fwAtomConversion/AtomVisitor.hpp"
 #include "fwAtomConversion/config.hpp"
@@ -33,7 +31,7 @@ namespace fwAtoms
 class Object;
 }
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -44,11 +42,9 @@ namespace mapper
 {
 
 /**
- * @brief Specific mapper used to convert a ::fwData::Graph.
- * @class Graph
- * @date 2012-2013
+ * @brief Specific mapper used to convert a data::Graph.
  *
- * The attribute ::fwData::Graph::m_connections ( of type ::fwData::Graph::ConnectionContainer ) is
+ * The attribute data::Graph::m_connections ( of type data::Graph::ConnectionContainer ) is
  * represented in fwAtoms world like a fwAtoms::Sequence that contains fwAtoms::Object with three
  * attributes "edge", "source" and "destination".
  */
@@ -57,27 +53,25 @@ class FWATOMCONVERSION_CLASS_API Graph : public Base
 public:
 
     /**
-     * @brief Convert a ::fwData::Object to a ::fwAtoms::Object.
-     * @param object data to convert. It must be a ::fwData::Graph.
+     * @brief Convert a data::Object to a ::fwAtoms::Object.
+     * @param object data to convert. It must be a data::Graph.
      * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert ( SPTR(::fwData::Object) object,
-                                                                   DataVisitor::AtomCacheType & cache );
+    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert( SPTR(data::Object) object,
+                                                                  DataVisitor::AtomCacheType& cache );
 
     /**
-     * @brief Convert a ::fwAtoms::Object to a ::fwData::Object (which represent a ::fwData::Graph).
+     * @brief Convert a ::fwAtoms::Object to a data::Object (which represent a data::Graph).
      * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor policy
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwData::Object) convert ( SPTR(::fwAtoms::Object) atom,
-                                                                  AtomVisitor::DataCacheType & cache,
-                                                                  const AtomVisitor::IReadPolicy &uuidPolicy
-                                                                  );
+    FWATOMCONVERSION_API virtual SPTR(data::Object) convert( SPTR(::fwAtoms::Object) atom,
+                                                             AtomVisitor::DataCacheType& cache,
+                                                             const AtomVisitor::IReadPolicy& uuidPolicy
+                                                             );
 
 };
 
 }
 }
-
-#endif /*  __FWATOMCONVERSION_MAPPER_GRAPH_HPP__*/

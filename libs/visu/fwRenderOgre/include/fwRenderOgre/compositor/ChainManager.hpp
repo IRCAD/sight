@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "fwServices/IHasServices.hpp"
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <vector>
 
@@ -118,7 +118,7 @@ private:
     ::Ogre::Viewport* m_ogreViewport;
 
     /// Map allowing to keep the objects of the created adaptors alive
-    ::fwData::Composite::sptr m_adaptorsObjectsOwner;
+    data::Composite::sptr m_adaptorsObjectsOwner;
 
 };
 

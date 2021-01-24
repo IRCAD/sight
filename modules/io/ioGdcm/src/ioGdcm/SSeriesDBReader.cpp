@@ -25,9 +25,9 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/ProgressToLogger.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/String.hpp>
+#include <data/location/Folder.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/String.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -98,17 +98,17 @@ void SSeriesDBReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( _sDefaultPath );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -129,8 +129,8 @@ void SSeriesDBReader::openLocationDialog()
 
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
-        ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        data::String::sptr key = data::String::New();
+        filterSelectorSrv = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
@@ -338,12 +338,12 @@ void SSeriesDBReader::updating()
 
             // Clear SeriesDB and add new series
             ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
-            ::fwData::mt::ObjectWriteLock lock(seriesDB);
+            data::mt::ObjectWriteLock lock(seriesDB);
             sDBhelper.clear();
             // Notify removal.
             sDBhelper.notify();
             {
-                ::fwData::mt::ObjectWriteLock lock(localSeriesDB);
+                data::mt::ObjectWriteLock lock(localSeriesDB);
                 seriesDB->shallowCopy(localSeriesDB);
             }
 

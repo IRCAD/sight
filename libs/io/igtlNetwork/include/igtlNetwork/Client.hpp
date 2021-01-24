@@ -27,7 +27,7 @@
 
 #include <core/Exception.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlProtocol/DataConverter.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,8 +122,8 @@ void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::scaleTranslateCube(const ::fwData::Image::SpacingType& spacing,
-                                         const ::fwData::Image::OriginType& origin)
+void IVolumeRenderer::scaleTranslateCube(const data::Image::SpacingType& spacing,
+                                         const data::Image::OriginType& origin)
 {
     SLM_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
                spacing.size() == 3 && origin.size() == 3);
@@ -149,8 +149,8 @@ void IVolumeRenderer::scaleTranslateCube(const ::fwData::Image::SpacingType& spa
 }
 
 /// Scale the volume based on the image's spacing and move it to the image origin.
-void IVolumeRenderer::scaleTranslateCube(const ::fwData::Image::Spacing& spacing,
-                                         const ::fwData::Image::Origin& origin)
+void IVolumeRenderer::scaleTranslateCube(const data::Image::Spacing& spacing,
+                                         const data::Image::Origin& origin)
 {
     m_volumeSceneNode->resetToInitialState();
 

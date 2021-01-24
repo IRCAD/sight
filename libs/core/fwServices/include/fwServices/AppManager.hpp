@@ -27,7 +27,7 @@
 
 #include <core/com/SlotBase.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <mutex>
 
@@ -257,7 +257,7 @@ public:
      * @param id the identifier of the object, this identifier is only used to retrieve the object inside this
      *        AppManager, it is different from the uid.
      */
-    FWSERVICES_API void addObject(::fwData::Object::sptr obj, const std::string& id);
+    FWSERVICES_API void addObject(data::Object::sptr obj, const std::string& id);
 
     /**
      * @brief Slot: unregister the object from all the services that require it
@@ -269,14 +269,14 @@ public:
      * @param id the identifier of the object, this identifier is only used to retrieve the object inside this
      *        AppManager, it is different from the uid.
      */
-    FWSERVICES_API void removeObject(::fwData::Object::sptr obj, const std::string& id);
+    FWSERVICES_API void removeObject(data::Object::sptr obj, const std::string& id);
 
     /**
      * @brief Return the object registered with the given identifier.
      * @param id object identifier
      * @return Return the object registered with the given identifier or nullptr if it is not present
      */
-    FWSERVICES_API ::fwData::Object::sptr getObject(const std::string& id) const;
+    FWSERVICES_API data::Object::sptr getObject(const std::string& id) const;
 
     /// Add a proxy connection
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
@@ -323,10 +323,10 @@ protected:
     /**
      * @brief Define the object, channels or other parameters that are required to launch the manager
      * @param key name of the input
-     * @param type type of the input OBJECT (for a ::fwData::Object), CHANNEL (for communication) or OTHER (replaced by
+     * @param type type of the input OBJECT (for a data::Object), CHANNEL (for communication) or OTHER (replaced by
      * a String)
      * @param defaultValue default value of the input, if it is empty, the input is not present, it will be replaces by
-     * this value (for OBJECT, the default value must be the type of the object to create (ex. ::fwData::Image)
+     * this value (for OBJECT, the default value must be the type of the object to create (ex. data::Image)
      */
     FWSERVICES_API void requireInput(const std::string& key, const InputType& type,
                                      const std::string& defaultValue = "");
@@ -379,7 +379,7 @@ private:
     std::vector< ::fwServices::IService::sptr > m_startedService;
 
     /// Store registered objects <id, obj>
-    std::unordered_map< std::string, ::fwData::Object::sptr > m_registeredObject;
+    std::unordered_map< std::string, data::Object::sptr > m_registeredObject;
 
     /// Store the object connections <objId, connection >
     std::unordered_map< std::string, ConnectionInfo > m_objectConnection;

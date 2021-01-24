@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace uiCalibration
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera to edit.
  * @subsection In-Out In-Out
- * - \b matrix [::fwData::TransformationMatrix3D]: output matrix holding the delta values.
+ * - \b matrix [data::TransformationMatrix3D]: output matrix holding the delta values.
  *
  * This service takes a camera calibration and outputs a matrix holding the difference between
  * the input parameters and the camera parameters set by the user. Those differences are stored like this:
@@ -64,7 +64,7 @@ class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOpticalCenterEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SOpticalCenterEditor, ::fwGui::editor::IEditor)
 
     /// Constructor.
     UICALIBRATION_API SOpticalCenterEditor() noexcept;

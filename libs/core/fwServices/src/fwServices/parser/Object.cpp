@@ -26,7 +26,7 @@
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Object, ::fwData::Object )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::Object, data::Object )
 
 namespace fwServices
 {
@@ -83,7 +83,7 @@ void Object::createConfig( core::tools::Object::sptr _obj )
     const std::string BUILD_OBJECT      = "new";
     const std::string GET_OBJECT        = "ref";
 
-    ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
+    data::Object::sptr associatedObject = data::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
@@ -122,7 +122,7 @@ void Object::createConfig( core::tools::Object::sptr _obj )
 
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwData::Object::sptr localObj = ctm->getConfigRoot();
+                data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
                 associatedObject->setField(key, localObj);

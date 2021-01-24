@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between fwData::Image and igtl::ImageMessage
+ * @brief class to manage conversion between data::Image and igtl::ImageMessage
  */
 class IGTLPROTOCOL_CLASS_API ImageConverter :
     public IConverter
@@ -44,18 +44,18 @@ public:
     IGTLPROTOCOL_API ~ImageConverter();
 
     /**
-     * @brief convert a igtl::ImageMessage to a ::fwData::Object
+     * @brief convert a igtl::ImageMessage to a data::Object
      *
-     * @return an fwData::Image converted from an igtl::ImageMessage
+     * @return an data::Image converted from an igtl::ImageMessage
      */
-    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    IGTLPROTOCOL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
-     * @brief convert a ::fwData::Image to an igtl::MessageBase
+     * @brief convert a data::Image to an igtl::MessageBase
      *
-     * @return an  igtl::ImageMessage converted from an fwData::Image
+     * @return an  igtl::ImageMessage converted from an data::Image
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
 
     /**
      * @brief create a new ImageConverter smart pointer

@@ -24,9 +24,9 @@
 
 #include "ctrlTF/config.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/Point.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -49,10 +49,10 @@ namespace ctrlTF
    @endcode
  *
  * @subsection Input Input
- * - \b tfPool [::fwData::Composite]: composite where looking for TF.
+ * - \b tfPool [data::Composite]: composite where looking for TF.
  *
  * @subsection In-Out In-Out
- * - \b tf [::fwData::TransferFunction]: the merged TF.
+ * - \b tf [data::TransferFunction]: the merged TF.
  */
 class CTRLTF_CLASS_API SMergeTF final : public ::fwServices::IController
 {
@@ -79,9 +79,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -100,8 +100,8 @@ private:
      * @param _value the value used to get interpolated colors in the window/level space.
      * @return The final blended color.
      */
-    ::fwData::TransferFunction::TFColor mergeColors(const ::fwData::Composite::csptr _tfPool,
-                                                    ::fwData::TransferFunction::TFValueType _value) const;
+    data::TransferFunction::TFColor mergeColors(const data::Composite::csptr _tfPool,
+                                                data::TransferFunction::TFValueType _value) const;
 
     /// Handles all connections between this service and all TF.
     core::com::helper::SigSlotConnection m_connections;

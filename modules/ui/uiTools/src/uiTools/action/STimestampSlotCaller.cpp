@@ -29,7 +29,7 @@
 #include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <regex>
 
@@ -38,7 +38,7 @@ namespace uiTools
 namespace action
 {
 
-fwServicesRegisterMacro(::fwGui::IActionSrv, ::uiTools::action::STimestampSlotCaller, ::fwData::Object)
+fwServicesRegisterMacro(::fwGui::IActionSrv, ::uiTools::action::STimestampSlotCaller, data::Object)
 
 //-----------------------------------------------------------------------------
 

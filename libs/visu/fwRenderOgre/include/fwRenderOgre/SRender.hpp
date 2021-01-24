@@ -35,7 +35,7 @@
 #include <core/com/Slots.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
@@ -87,7 +87,7 @@ class Layer;
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
+ * - \b offScreen [data::Image] (optional, unused by default): If used, render the scene in an image
  *      and not in a window.
  *
  * @subsection Configuration Configuration

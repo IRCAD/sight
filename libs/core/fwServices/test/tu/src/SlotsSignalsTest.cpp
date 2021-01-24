@@ -123,7 +123,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         showTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
+        buffer->signal(data::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         showTestSrv->start();
@@ -137,7 +137,7 @@ void SlotsSignalsTest::comObjectServiceTest()
 
         CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
+        buffer->signal(data::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         ::fwServices::OSR::unregisterService(readerTestSrv);
         ::fwServices::OSR::unregisterService(showTestSrv);
@@ -246,7 +246,7 @@ void SlotsSignalsTest::blockConnectionTest()
     showTestSrv->setWorker(worker1);
 
     core::com::Connection connection;
-    connection = buffer->signal(::fwData::Object::s_MODIFIED_SIG)->
+    connection = buffer->signal(data::Object::s_MODIFIED_SIG)->
                  connect(showTestSrv->slot(SShow2Test::s_UPDATE_BUFFER_SLOT));
 
     readerTestSrv->start();

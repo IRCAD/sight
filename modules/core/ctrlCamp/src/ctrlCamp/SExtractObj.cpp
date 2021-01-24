@@ -22,10 +22,10 @@
 
 #include "ctrlCamp/SExtractObj.hpp"
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/reflection/exception/NullPointer.hpp>
-#include <fwData/reflection/exception/ObjectNotFound.hpp>
-#include <fwData/reflection/getObject.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/reflection/exception/NullPointer.hpp>
+#include <data/reflection/exception/ObjectNotFound.hpp>
+#include <data/reflection/getObject.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -82,23 +82,23 @@ void SExtractObj::starting()
 
 void SExtractObj::updating()
 {
-    auto sourceObject = this->getInOut< ::fwData::Object >(s_SOURCE_INOUT);
+    auto sourceObject = this->getInOut< data::Object >(s_SOURCE_INOUT);
 
     size_t index = 0;
     for(auto path : m_sourcePaths)
     {
         const std::string from = path;
 
-        ::fwData::Object::sptr object;
+        data::Object::sptr object;
         try
         {
-            object = ::fwData::reflection::getObject( sourceObject, from, true );
+            object = data::reflection::getObject( sourceObject, from, true );
         }
-        catch(::fwData::reflection::exception::NullPointer&)
+        catch(data::reflection::exception::NullPointer&)
         {
             this->setOutput("target", nullptr, index);
         }
-        catch(::fwData::reflection::exception::ObjectNotFound&)
+        catch(data::reflection::exception::ObjectNotFound&)
         {
             SLM_WARN("Object from '"+ from +"' not found");
         }

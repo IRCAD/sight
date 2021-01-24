@@ -36,9 +36,9 @@ namespace imageFilterOp
 
 struct Parameters
 {
-    ::fwData::Image::csptr i_image;
+    data::Image::csptr i_image;
     std::array<bool, 3> i_flipAxes;
-    ::fwData::Image::sptr o_image;
+    data::Image::sptr o_image;
 };
 
 //------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ struct FlippingDimensionExtractor
     template<class PixelType>
     void operator()(Parameters& params)
     {
-        const ::fwData::Image::Size size = params.i_image->getSize2();
+        const data::Image::Size size = params.i_image->getSize2();
         switch(size.size())
         {
             case 1:
@@ -105,8 +105,8 @@ struct FlippingDimensionExtractor
 
 //-----------------------------------------------------------------------------
 
-void Flipper::flip(const ::fwData::Image::csptr& _inImage,
-                   const ::fwData::Image::sptr& _outImage,
+void Flipper::flip(const data::Image::csptr& _inImage,
+                   const data::Image::sptr& _outImage,
                    const std::array<bool, 3>& _inFlipAxes)
 {
     // If the image is valid, process it, otherwise copy it in the output image

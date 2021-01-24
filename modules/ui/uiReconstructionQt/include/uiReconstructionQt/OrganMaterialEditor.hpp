@@ -49,7 +49,7 @@ namespace uiReconstructionQt
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction containing the material to update.
+ * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQT_CLASS_API OrganMaterialEditor : public QObject,
                                                          public ::fwGui::editor::IEditor

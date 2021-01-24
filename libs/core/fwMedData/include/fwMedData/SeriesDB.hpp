@@ -25,8 +25,8 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 #include <vector>
 
@@ -40,11 +40,11 @@ class Series;
 /**
  * @brief Holds series data.
  */
-class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
+class FWMEDDATA_CLASS_API SeriesDB : public data::Object
 {
 
 public:
-    fwCoreClassMacro(SeriesDB, ::fwData::Object, ::fwData::factory::New< SeriesDB >)
+    fwCoreClassMacro(SeriesDB, data::Object, data::factory::New< SeriesDB >)
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB))
 
@@ -95,7 +95,7 @@ public:
      * @brief Creates the series DB.
      * @param _key private construction key.
      */
-    FWMEDDATA_API SeriesDB(::fwData::Object::Key _key);
+    FWMEDDATA_API SeriesDB(data::Object::Key _key);
 
     /// Destroys the series DB.
     FWMEDDATA_API virtual ~SeriesDB();
@@ -104,14 +104,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the series container.
     ContainerType& getContainer();

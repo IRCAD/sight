@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwGui/config.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/location/ILocation.hpp>
+#include <data/Composite.hpp>
+#include <data/location/ILocation.hpp>
 
 #include <filesystem>
 #include <string>
@@ -79,13 +79,13 @@ public:
     FWGUI_API virtual const std::string& getTitle();
 
     /// set the initial location for the dialog
-    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::sptr loc);
+    FWGUI_API virtual void setDefaultLocation( data::location::ILocation::sptr loc);
 
     /// get the default location for the dialog (from preferences or specified by user)
     FWGUI_API virtual const std::filesystem::path getDefaultLocation();
 
     /// save the specified default location for the dialog in preferences (if available)
-    FWGUI_API virtual void saveDefaultLocation(::fwData::location::ILocation::sptr loc);
+    FWGUI_API virtual void saveDefaultLocation(data::location::ILocation::sptr loc);
 
     /// set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
     FWGUI_API virtual void setType( Types type ) = 0;
@@ -105,7 +105,7 @@ public:
      * Display the dialog
      * @return the ILocation selected or null sptr if user cancel the operation
      */
-    FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
+    FWGUI_API virtual data::location::ILocation::sptr show() = 0;
 
     /// Gets the current extension file selection
     FWGUI_API virtual std::string getCurrentSelection() const = 0;
@@ -116,12 +116,12 @@ protected:
 
     FWGUI_API void writeConfig();
 
-    FWGUI_API ::fwData::Composite::sptr getPreferenceUI();
+    FWGUI_API data::Composite::sptr getPreferenceUI();
 
 private:
 
     std::string m_title;
-    ::fwData::location::ILocation::sptr m_defaultLocaction;
+    data::location::ILocation::sptr m_defaultLocaction;
 };
 
 } //namespace dialog

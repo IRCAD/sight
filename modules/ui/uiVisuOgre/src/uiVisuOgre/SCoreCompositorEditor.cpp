@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiVisuOgre/SCoreCompositorEditor.hpp"
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -50,7 +50,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEditor, ::fwData::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEditor, data::Composite)
 
 //------------------------------------------------------------------------------
 

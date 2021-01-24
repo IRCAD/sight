@@ -83,12 +83,12 @@ void SMatrixList::starting()
 
     for(size_t j = 0; j < numMatrices; ++j)
     {
-        m_inputVector.push_back(this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT,
-                                                                                         j).get_shared());
+        m_inputVector.push_back(this->getLockedInOut< data::TransformationMatrix3D >(s_MATRICES_INOUT,
+                                                                                     j).get_shared());
         // create vector and push it back into the main vector
-        m_outputVector.push_back(::fwData::Vector::New());
-        m_selectedVector.push_back(this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_SELECTED_INOUT,
-                                                                                            j).get_shared());
+        m_outputVector.push_back(data::Vector::New());
+        m_selectedVector.push_back(this->getLockedInOut< data::TransformationMatrix3D >(s_SELECTED_INOUT,
+                                                                                        j).get_shared());
     }
 
     if(m_inputVector.empty() || m_selectedVector.empty() || m_outputVector.empty() )
@@ -116,12 +116,12 @@ void SMatrixList::updating()
 {
     // Get the computed matrix from input group vector
 
-    ::fwData::Vector::sptr computedVector;
+    data::Vector::sptr computedVector;
     if(m_inputVector.size() > 0)
     {
         for(int i = 0; i < m_inputVector.size(); ++i)
         {
-            ::fwData::TransformationMatrix3D::sptr computedMatrix = ::fwData::TransformationMatrix3D::New();
+            data::TransformationMatrix3D::sptr computedMatrix = data::TransformationMatrix3D::New();
             computedMatrix->deepCopy(m_inputVector[i]);
 
             // Fill the output vector group with the matrix
@@ -129,22 +129,22 @@ void SMatrixList::updating()
 
             if( nullptr == computedVector )
             {
-                computedVector = ::fwData::Vector::New();
+                computedVector = data::Vector::New();
             }
 
             computedVector->getContainer().push_back(computedMatrix);
             this->setOutput(s_VECTOR_INOUT, computedVector, i );
-            auto sig = m_outputVector[i]->signal< ::fwData::Vector::AddedObjectsSignalType >
-                           (::fwData::Vector::s_ADDED_OBJECTS_SIG);
+            auto sig = m_outputVector[i]->signal< data::Vector::AddedObjectsSignalType >
+                           (data::Vector::s_ADDED_OBJECTS_SIG);
             sig->asyncEmit(m_outputVector[i]->getContainer());
         }
     }
 
     // create string containing matrix values
     std::string str;
-    ::fwData::TransformationMatrix3D::sptr computedMatrix = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr computedMatrix = data::TransformationMatrix3D::New();
     computedMatrix->deepCopy(m_inputVector[0]);
-    const ::fwData::TransformationMatrix3D::TMCoefArray& coef = computedMatrix->getCoefficients();
+    const data::TransformationMatrix3D::TMCoefArray& coef = computedMatrix->getCoefficients();
     for(int i = 0; i < 4; ++i)
     {
         str += "[ ";
@@ -178,12 +178,12 @@ void SMatrixList::selectMatrix(int index)
 {
     for(int i = 0; i < m_inputVector.size(); ++i)
     {
-        ::fwData::TransformationMatrix3D::sptr selectedMatrix = m_selectedVector[i];
-        selectedMatrix->deepCopy(::fwData::TransformationMatrix3D::dynamicCast(m_outputVector[i]->getContainer()[
-                                                                                   index]));
+        data::TransformationMatrix3D::sptr selectedMatrix = m_selectedVector[i];
+        selectedMatrix->deepCopy(data::TransformationMatrix3D::dynamicCast(m_outputVector[i]->getContainer()[
+                                                                               index]));
 
-        auto sig = selectedMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >(
-            ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+        auto sig = selectedMatrix->signal< data::TransformationMatrix3D::ModifiedSignalType >(
+            data::TransformationMatrix3D::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
@@ -197,11 +197,11 @@ void SMatrixList::removeMatrix(int _index)
     {
         for(int i = 0; i < m_inputVector.size(); ++i)
         {
-            ::fwData::Vector::ContainerType& vec = m_outputVector[i]->getContainer();
+            data::Vector::ContainerType& vec = m_outputVector[i]->getContainer();
             vec.erase(vec.begin() + _index);
 
-            auto sig = m_outputVector[i]->signal< ::fwData::Vector::RemovedObjectsSignalType >
-                           (::fwData::Vector::s_REMOVED_OBJECTS_SIG);
+            auto sig = m_outputVector[i]->signal< data::Vector::RemovedObjectsSignalType >
+                           (data::Vector::s_REMOVED_OBJECTS_SIG);
             sig->asyncEmit(m_outputVector[i]->getContainer());
         }
         this->signal<MatrixRemovedSignalType>(s_MATRIX_REMOVED_SIG)->asyncEmit(_index);

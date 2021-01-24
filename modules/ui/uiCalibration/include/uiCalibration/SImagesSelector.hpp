@@ -41,7 +41,7 @@ namespace uiCalibration
 {
 
 /**
- * @brief   This editor allows to add images into a ::fwData::Vector from an ::arData::FrameTL.
+ * @brief   This editor allows to add images into a data::Vector from an ::arData::FrameTL.
  *
  * @section Slots Slots
  * - \b add(core::HiResClock::HiResClockType): .
@@ -59,7 +59,7 @@ namespace uiCalibration
  * @subsection Input Input:
  * - \b frameTL [::arData::FrameTL]: frame timeline used to extract images.
  * @subsection In-Out In-Out:
- * - \b key2 [::fwData::Vector]: vector containing extracted images.
+ * - \b key2 [data::Vector]: vector containing extracted images.
  */
 class UICALIBRATION_CLASS_API SImagesSelector : public QObject,
                                                 public ::fwGui::editor::IEditor

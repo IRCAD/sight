@@ -33,12 +33,12 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
+#include <data/Boolean.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
 
@@ -72,21 +72,21 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual std::string apply(::fwData::Object::sptr _obj)
+    virtual std::string apply(data::Object::sptr _obj)
     {
-        if(_obj->isA("::fwData::String"))
+        if(_obj->isA("data::String"))
         {
-            ::fwData::String::sptr fwValue = ::fwData::String::dynamicCast(_obj);
+            data::String::sptr fwValue = data::String::dynamicCast(_obj);
             return fwValue->getValue();
         }
-        else if(_obj->isA("::fwData::Integer"))
+        else if(_obj->isA("data::Integer"))
         {
-            ::fwData::Integer::sptr fwValue = ::fwData::Integer::dynamicCast(_obj);
+            data::Integer::sptr fwValue = data::Integer::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
         }
-        else if(_obj->isA("::fwData::Float"))
+        else if(_obj->isA("data::Float"))
         {
-            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
+            data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
         }
         else
@@ -106,24 +106,24 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual std::string apply(::fwData::Object::sptr _obj)
+    virtual std::string apply(data::Object::sptr _obj)
     {
-        if(_obj->isA("::fwData::Integer"))
+        if(_obj->isA("data::Integer"))
         {
-            ::fwData::Integer::sptr fwIntValue = ::fwData::Integer::dynamicCast(_obj);
+            data::Integer::sptr fwIntValue = data::Integer::dynamicCast(_obj);
 
             if(fwIntValue->getValue() > 0)
             {
                 std::stringstream ss;
-                ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
+                data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
                 ss << ::boost::format("%11.2f") % (fwValue->getValue());
                 return ss.str();
             }
             return "Unknown";
         }
-        else if(_obj->isA("::fwData::Float"))
+        else if(_obj->isA("data::Float"))
         {
-            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
+            data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
             if(fwValue->getValue() > 0)
             {
                 std::stringstream ss;
@@ -347,7 +347,7 @@ void SModelSeriesList::updateReconstructions()
 
     SLM_ASSERT("container not instanced", container);
 
-    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
         this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
@@ -359,7 +359,7 @@ void SModelSeriesList::updateReconstructions()
         if(m_showCheckBox)
         {
             m_showCheckBox->blockSignals(true);
-            const bool showAllRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+            const bool showAllRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
             m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
             m_showCheckBox->blockSignals(false);
         }
@@ -368,7 +368,7 @@ void SModelSeriesList::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries)
+void SModelSeriesList::fillTree(const data::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries)
 {
 
     auto& reconstructions = _modelSeries->getReconstructionDB();
@@ -386,7 +386,7 @@ void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::Mod
         QStringList info;
         for(auto const& cIt :  m_displayedInfo)
         {
-            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(reconstruction, cIt.first);
+            data::Object::sptr obj = data::reflection::getObject(reconstruction, cIt.first);
             SLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }
@@ -409,7 +409,7 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidg
     SLM_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
-    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+    data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
 
     m_sigReconstructionSelected->asyncEmit(rec);
 }
@@ -425,8 +425,8 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, int _colu
 
 void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
 {
-    std::string id = _item->data(0, Qt::UserRole).toString().toStdString();
-    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+    std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
+    data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
     SLM_ASSERT("rec not instanced", rec);
 
     const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
@@ -435,9 +435,9 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
     {
         rec->setIsVisible(itemIsChecked);
 
-        ::fwData::Reconstruction::VisibilityModifiedSignalType::sptr sig;
-        sig = rec->signal< ::fwData::Reconstruction::VisibilityModifiedSignalType >(
-            ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
+        data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
+        sig = rec->signal< data::Reconstruction::VisibilityModifiedSignalType >(
+            data::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
         sig->asyncEmit(itemIsChecked);
     }
 }
@@ -452,12 +452,12 @@ void SModelSeriesList::onShowReconstructions(int _state)
     m_unCheckAllButton->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
-    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
         this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     {
         ::fwDataTools::helper::Field helper( modelSeries.get_shared() );
-        helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(_state == Qt::Unchecked));
+        helper.addOrSwap("ShowReconstructions", data::Boolean::New(_state == Qt::Unchecked));
     }
 }
 
@@ -467,9 +467,9 @@ void SModelSeriesList::refreshVisibility()
 {
     for( int i = 0; i < m_tree->topLevelItemCount(); ++i)
     {
-        QTreeWidgetItem* item = m_tree->topLevelItem(i);
-        std::string id        = item->data(0, Qt::UserRole).toString().toStdString();
-        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+        QTreeWidgetItem* item          = m_tree->topLevelItem(i);
+        std::string id                 = item->data(0, Qt::UserRole).toString().toStdString();
+        data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
     }
 }
@@ -513,7 +513,7 @@ void SModelSeriesList::onCheckAllBoxes(bool _visible)
 
 void SModelSeriesList::onDeleteAllCheckBox()
 {
-    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
         this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     // Remove all reconstructions.
@@ -536,7 +536,7 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
         QAction* const deleteAction = new QAction("Delete");
         QObject::connect(deleteAction, &QAction::triggered, this, [ = ]()
                 {
-                    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries
+                    data::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries
                         = this->getLockedInOut< ::fwMedData::ModelSeries >(
                               s_MODEL_SERIES_INOUT);
 
@@ -547,7 +547,7 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
                         = modelSeries->getReconstructionDB();
                     const ::fwMedData::ModelSeries::ReconstructionVectorType::iterator recIt
                         = reconstructions.begin() + index.row();
-                    const ::fwData::Reconstruction::sptr reconstruction = *recIt;
+                    const data::Reconstruction::sptr reconstruction = *recIt;
                     reconstructions.erase(recIt);
                     modelSeries->setReconstructionDB(reconstructions);
 

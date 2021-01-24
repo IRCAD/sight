@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,11 +51,11 @@ namespace uiTools
    @endcode
  *
  * @subsection Input Input:
- * - \b landmark [::fwData::Landmarks]: landmarks representing the needle tip and target
- * - \b matrix [::fwData::TransformationMatrix3D]: Targeting matrix.
+ * - \b landmark [data::Landmarks]: landmarks representing the needle tip and target
+ * - \b matrix [data::TransformationMatrix3D]: Targeting matrix.
  *
  * @subsection InOut InOut:
- * - \b pointList [::fwData::PointList]: computed pointlist
+ * - \b pointList [data::PointList]: computed pointlist
  *
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
@@ -93,7 +93,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_MATRIX_INPUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_MATRIX_INPUT to s_UPDATE_SLOT
      */
     UITOOLS_API KeyConnectionsMap getAutoConnections() const override;
 

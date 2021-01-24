@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/reflection/UserObject.hpp>
 
-#include <fwData/Object.hpp>
-#include <fwData/reflection/mapper.hpp>
+#include <data/Object.hpp>
+#include <data/reflection/mapper.hpp>
 
 #endif // __FWDATACAMP_PCH_HPP__

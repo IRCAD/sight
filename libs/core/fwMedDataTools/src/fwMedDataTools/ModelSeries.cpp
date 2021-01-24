@@ -30,13 +30,13 @@ namespace fwMedDataTools
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, const ::fwData::Mesh::sptr& _mesh,
+void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, const data::Mesh::sptr& _mesh,
                           const std::string& _organName, const std::string& _structureType,
-                          const ::fwData::Color::sptr& _colour, ::fwData::Material::RepresentationType _mode,
+                          const data::Color::sptr& _colour, data::Material::RepresentationType _mode,
                           bool _visible)
 {
     //reconstruction creation
-    ::fwData::Reconstruction::sptr reconstructionQuadMesh =
+    data::Reconstruction::sptr reconstructionQuadMesh =
         createReconstructionFromMesh(_mesh, _organName, _structureType, _colour, _mode, _visible);
 
     addReconstruction(_modelSeries, reconstructionQuadMesh);
@@ -51,20 +51,20 @@ void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, co
 
 //------------------------------------------------------------------------------
 
-::fwData::Reconstruction::sptr ModelSeries::createReconstructionFromMesh( const ::fwData::Mesh::sptr& _mesh,
-                                                                          const std::string& _organName,
-                                                                          const std::string& _structureType,
-                                                                          const ::fwData::Color::sptr& _color,
-                                                                          ::fwData::Material::RepresentationType _mode,
-                                                                          bool _visible)
+data::Reconstruction::sptr ModelSeries::createReconstructionFromMesh( const data::Mesh::sptr& _mesh,
+                                                                      const std::string& _organName,
+                                                                      const std::string& _structureType,
+                                                                      const data::Color::sptr& _color,
+                                                                      data::Material::RepresentationType _mode,
+                                                                      bool _visible)
 {
-    ::fwData::Color::sptr diffuse = ::fwData::Color::New();
+    data::Color::sptr diffuse = data::Color::New();
     diffuse->setRGBA(_color->red(), _color->green(), _color->blue(), _color->alpha());
-    ::fwData::Material::sptr pMaterial = ::fwData::Material::New();
+    data::Material::sptr pMaterial = data::Material::New();
     pMaterial->setDiffuse(diffuse);
     pMaterial->setRepresentationMode(_mode);
 
-    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
     reconstruction->setMesh(_mesh);
     reconstruction->setIsVisible(_visible);
     reconstruction->setOrganName(_organName);
@@ -77,7 +77,7 @@ void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, co
 //------------------------------------------------------------------------------
 
 void ModelSeries::addReconstruction( const ::fwMedData::ModelSeries::sptr& _modelSeries,
-                                     const ::fwData::Reconstruction::sptr& _rec)
+                                     const data::Reconstruction::sptr& _rec)
 {
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
 

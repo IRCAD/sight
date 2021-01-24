@@ -33,7 +33,7 @@
 
 #include <Ogre.h>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }
@@ -107,7 +107,7 @@ protected:
 private:
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material { nullptr };
 
     /// Defines the axis length in scene units.
     float m_length { 50.f };

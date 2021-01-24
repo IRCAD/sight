@@ -29,7 +29,7 @@
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
-#include <fwData/location/ILocation.hpp>
+#include <data/location/ILocation.hpp>
 
 #include <fwJobs/IJob.hpp>
 
@@ -107,14 +107,14 @@ public:
      * @brief m_location setter.
      * @param[in] _location set location where object will be read
      */
-    FWDATAIO_API virtual void setLocation( const ::fwData::location::ILocation::sptr _location );
+    FWDATAIO_API virtual void setLocation( const data::location::ILocation::sptr _location );
 
     /**
      * @brief m_location getter.
      *
      * @return m_location
      */
-    FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
+    FWDATAIO_API virtual data::location::ILocation::sptr getLocation();
 
     FWDATAIO_API virtual std::string extension() = 0;
 
@@ -145,7 +145,7 @@ protected:
     core::tools::Object::wptr m_object;
 
     /// Object location ( file path, directory path, url, etc )
-    ::fwData::location::ILocation::sptr m_location;
+    data::location::ILocation::sptr m_location;
 
 };
 

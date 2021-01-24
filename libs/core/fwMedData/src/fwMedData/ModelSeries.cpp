@@ -26,10 +26,10 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/Image.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ModelSeries )
 
@@ -39,7 +39,7 @@ namespace fwMedData
 const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG   = "reconstructionsAdded";
 const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
 
-ModelSeries::ModelSeries(::fwData::Object::Key _key) :
+ModelSeries::ModelSeries(data::Object::Key _key) :
     Series(_key)
 {
     m_sigReconstructionsAdded   = ReconstructionsAddedSignalType::New();
@@ -57,10 +57,10 @@ ModelSeries::~ModelSeries()
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::shallowCopy(const ::fwData::Object::csptr& _source)
+void ModelSeries::shallowCopy(const data::Object::csptr& _source)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -72,21 +72,21 @@ void ModelSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void ModelSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
     m_reconstructionDB.clear();
-    for(const ::fwData::Reconstruction::sptr& rec : other->m_reconstructionDB)
+    for(const data::Reconstruction::sptr& rec : other->m_reconstructionDB)
     {
-        m_reconstructionDB.push_back(::fwData::Object::copy(rec, cache));
+        m_reconstructionDB.push_back(data::Object::copy(rec, cache));
     }
-    m_dicomReference = ::fwData::Object::copy(other->m_dicomReference);
+    m_dicomReference = data::Object::copy(other->m_dicomReference);
 }
 
 //------------------------------------------------------------------------------

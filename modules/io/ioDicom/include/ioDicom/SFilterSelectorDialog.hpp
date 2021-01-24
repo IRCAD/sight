@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace ioDicom
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b filter [::fwData::String]: string that will contain the identifier of the choosen filter.
+ * - \b filter [data::String]: string that will contain the identifier of the choosen filter.
  * @subsection Configuration Configuration
  * None of these parameters are mandatory.
  *  - \b selection
@@ -56,7 +56,7 @@ class IODICOM_CLASS_API SFilterSelectorDialog : public ::fwGui::editor::IDialogE
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectorDialog,  ::fwGui::editor::IDialogEditor);
+    fwCoreServiceMacro(SFilterSelectorDialog,  ::fwGui::editor::IDialogEditor)
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

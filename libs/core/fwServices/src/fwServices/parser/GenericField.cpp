@@ -24,19 +24,19 @@
 
 #include "fwServices/macros.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/GenericField.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
+#include <data/Boolean.hpp>
+#include <data/Float.hpp>
+#include <data/GenericField.hpp>
+#include <data/Integer.hpp>
+#include <data/String.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::BooleanParser, ::fwData::Boolean )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::BooleanParser, data::Boolean )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::IntegerParser, ::fwData::Integer )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::IntegerParser, data::Integer )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::FloatParser, ::fwData::Float )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::FloatParser, data::Float )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::StringParser, ::fwData::String )
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwServices::parser::StringParser, data::String )
 
 namespace fwServices
 {
@@ -54,7 +54,7 @@ void GenericField::updating( )
 
 void GenericField::createConfig( core::tools::Object::sptr _obj )
 {
-    ::fwData::GenericFieldBase::sptr field = ::fwData::GenericFieldBase::dynamicCast( _obj );
+    data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast( _obj );
     SLM_ASSERT("GenericField not instanced", field);
 
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");

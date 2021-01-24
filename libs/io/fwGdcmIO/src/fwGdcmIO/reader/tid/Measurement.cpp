@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,10 @@
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Boolean.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -47,9 +47,9 @@ namespace tid
 Measurement::Measurement(const ::fwMedData::DicomSeries::csptr& dicomSeries,
                          const SPTR(::gdcm::Reader)& reader,
                          const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                         const ::fwData::Image::sptr& image,
+                         const data::Image::sptr& image,
                          const ::fwLog::Logger::sptr& logger) :
-    ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
+    ::fwGdcmIO::reader::tid::TemplateID< data::Image >(dicomSeries, reader, instance, image, logger)
 {
 }
 
@@ -89,10 +89,10 @@ void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& n
                             double zCoordinate    = ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object, frameNumber);
 
-                            auto origin = ::fwData::Point::New(static_cast<double>(coordinates[0]),
-                                                               static_cast<double>(coordinates[1]), zCoordinate);
-                            auto destination = ::fwData::Point::New(static_cast<double>(coordinates[2]),
-                                                                    static_cast<double>(coordinates[3]), zCoordinate);
+                            auto origin = data::Point::New(static_cast<double>(coordinates[0]),
+                                                           static_cast<double>(coordinates[1]), zCoordinate);
+                            auto destination = data::Point::New(static_cast<double>(coordinates[2]),
+                                                                static_cast<double>(coordinates[3]), zCoordinate);
                             this->addDistance(origin, destination);
                         }
                     }
@@ -108,8 +108,8 @@ void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& n
                     // Retrieve coordinates
                     ::fwGdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoord3DNode->getGraphicDataContainer();
-                    this->addDistance(::fwData::Point::New(coordinates[0], coordinates[1], coordinates[2]),
-                                      ::fwData::Point::New(coordinates[3], coordinates[4], coordinates[5]));
+                    this->addDistance(data::Point::New(coordinates[0], coordinates[1], coordinates[2]),
+                                      data::Point::New(coordinates[3], coordinates[4], coordinates[5]));
                 }
             }
         }
@@ -118,24 +118,24 @@ void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& n
 
 //------------------------------------------------------------------------------
 
-void Measurement::addDistance(const SPTR(::fwData::Point)& point1,
-                              const SPTR(::fwData::Point)& point2)
+void Measurement::addDistance(const SPTR(data::Point)& point1,
+                              const SPTR(data::Point)& point2)
 {
-    ::fwData::Vector::sptr distanceVector =
-        m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector =
+        m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     if(!distanceVector)
     {
-        distanceVector = ::fwData::Vector::New();
+        distanceVector = data::Vector::New();
         m_object->setField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, distanceVector);
     }
 
-    ::fwData::PointList::sptr pointList = ::fwData::PointList::New();
+    data::PointList::sptr pointList = data::PointList::New();
     pointList->getPoints().push_back(point1);
     pointList->getPoints().push_back(point2);
 
     distanceVector->getContainer().push_back(pointList);
-    m_object->setField("ShowDistances", ::fwData::Boolean::New(true));
+    m_object->setField("ShowDistances", data::Boolean::New(true));
 }
 
 //------------------------------------------------------------------------------

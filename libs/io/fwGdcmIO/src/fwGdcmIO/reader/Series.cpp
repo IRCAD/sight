@@ -28,7 +28,7 @@
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDicomTools/Series.hpp>
 
@@ -89,7 +89,7 @@ Series::~Series()
             // Read the image
             ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
             imageSeries->setDicomReference(dicomSeries);
-            ::fwData::Image::sptr image = ::fwData::Image::New();
+            data::Image::sptr image = data::Image::New();
             imageSeries->setImage(image);
 
             // Create IOD Reader

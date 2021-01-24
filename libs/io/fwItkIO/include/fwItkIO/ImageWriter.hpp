@@ -26,22 +26,22 @@
 
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 namespace fwItkIO
 {
 
-class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Image >,
+                    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
                     public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(ImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>,
+    fwCoreClassMacro(ImageWriter, ::fwDataIO::writer::GenericObjectWriter< data::Image>,
                      ::fwDataIO::writer::factory::New< ImageWriter >);
     fwCoreAllowSharedFromThis();
 

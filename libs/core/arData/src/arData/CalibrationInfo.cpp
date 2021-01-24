@@ -26,7 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/registry/macros.hpp>
+#include <data/registry/macros.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -43,7 +43,7 @@ const core::com::Signals::SignalKeyType CalibrationInfo::s_GET_RECORD_SIG     = 
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::CalibrationInfo(::fwData::Object::Key)
+CalibrationInfo::CalibrationInfo(data::Object::Key)
 {
     m_sigAddedRecord   = AddedRecordSignalType::New();
     m_sigRemovedRecord = RemovedRecordSignalType::New();
@@ -65,10 +65,10 @@ CalibrationInfo::~CalibrationInfo()
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::shallowCopy( const ::fwData::Object::csptr& _source )
+void CalibrationInfo::shallowCopy( const data::Object::csptr& _source )
 {
     CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -80,10 +80,10 @@ void CalibrationInfo::shallowCopy( const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -93,10 +93,10 @@ void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, Dee
     SLM_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
 
     ImageContainerType::const_iterator imgIter = other->m_imageContainer.begin();
-    for(const ::fwData::PointList::sptr& pl : other->m_pointListContainer)
+    for(const data::PointList::sptr& pl : other->m_pointListContainer)
     {
-        ::fwData::Image::sptr otherImg    = ::fwData::Object::copy(*imgIter, cache);
-        ::fwData::PointList::sptr otherPl = ::fwData::Object::copy(pl, cache);
+        data::Image::sptr otherImg    = data::Object::copy(*imgIter, cache);
+        data::PointList::sptr otherPl = data::Object::copy(pl, cache);
         this->addRecord(otherImg, otherPl);
 
         ++imgIter;
@@ -105,7 +105,7 @@ void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, Dee
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr& pl )
+void CalibrationInfo::addRecord( const data::Image::sptr& img, const data::PointList::sptr& pl )
 {
     m_imageContainer.push_back(img);
     m_pointListContainer.push_back(pl);
@@ -151,9 +151,9 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 
 //------------------------------------------------------------------------------
 
-::fwData::PointList::sptr CalibrationInfo::getPointList( const ::fwData::Image::sptr& img) const
+data::PointList::sptr CalibrationInfo::getPointList( const data::Image::sptr& img) const
 {
-    ::fwData::PointList::sptr pl;
+    data::PointList::sptr pl;
 
     SLM_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
     size_t dist = 0;
@@ -175,9 +175,9 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr CalibrationInfo::getImage( const ::fwData::PointList::sptr& pl) const
+data::Image::sptr CalibrationInfo::getImage( const data::PointList::sptr& pl) const
 {
-    ::fwData::Image::sptr img;
+    data::Image::sptr img;
 
     SLM_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
 
@@ -200,7 +200,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr CalibrationInfo::getImage(size_t idx) const
+data::Image::sptr CalibrationInfo::getImage(size_t idx) const
 {
     SLM_ASSERT("index out of bound ", idx < m_imageContainer.size() );
 

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     fwDcmtkIO
     core
     fwTest
-    fwData
+    data
     fwMedData
     )
 set( REQUIREMENTS )

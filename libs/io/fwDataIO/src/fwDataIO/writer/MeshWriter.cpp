@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -57,9 +57,9 @@ void MeshWriter::write()
     SLM_INFO( "[MeshReader::read] Trian file: " << getFile());
     assert( getFile().empty() == false );
 
-    ::fwData::Mesh::csptr mesh = this->getConcreteObject();
+    data::Mesh::csptr mesh = this->getConcreteObject();
     FW_RAISE_IF("Can't convert this Mesh to Trian file",
-                !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::CellType::TRIANGLE));
+                !::fwDataTools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
@@ -78,8 +78,8 @@ void MeshWriter::write()
     const size_t nbPts   = mesh->getNumberOfPoints();
     const size_t nbCells = mesh->getNumberOfCells();
 
-    auto pointsItr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto pointsEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+    auto pointsItr       = mesh->begin< data::iterator::ConstPointIterator >();
+    const auto pointsEnd = mesh->end< data::iterator::ConstPointIterator >();
 
     file<<nbPts<<std::endl;
     for(; pointsItr != pointsEnd; ++pointsItr)
@@ -87,8 +87,8 @@ void MeshWriter::write()
         file << pointsItr->point->x << " " << pointsItr->point->y << " " << pointsItr->point->z << std::endl;
     }
 
-    auto cellItr       = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto cellEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+    auto cellItr       = mesh->begin< data::iterator::ConstCellIterator >();
+    const auto cellEnd = mesh->end< data::iterator::ConstCellIterator >();
 
     file << nbCells << std::endl;
 

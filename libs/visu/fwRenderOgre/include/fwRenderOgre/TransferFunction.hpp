@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwData/TransferFunction.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <boost/noncopyable.hpp>
 
@@ -54,7 +54,7 @@ public:
     FWRENDEROGRE_API void removeTexture();
 
     /// Update the TF texture according to the transfer function data.
-    FWRENDEROGRE_API void updateTexture(const ::fwData::TransferFunction::csptr& _tf);
+    FWRENDEROGRE_API void updateTexture(const data::TransferFunction::csptr& _tf);
 
     /// Return the TF texture.
     FWRENDEROGRE_API ::Ogre::TexturePtr getTexture() const;
@@ -75,7 +75,7 @@ private:
     float m_sampleDistance { 1.f };
 
     /**
-     *  @brief Defines interpolation mode on extremities. Copied from ::fwData::TransferFunction.
+     *  @brief Defines interpolation mode on extremities. Copied from data::TransferFunction.
      *
      *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
@@ -122,7 +122,7 @@ inline void TransferFunction::bind(const ::Ogre::Pass* const _pass, const std::s
     }
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
 
-    // Beware, "clamped" here means the border color is black (see ::fwData::TransferFunction), otherwise use the
+    // Beware, "clamped" here means the border color is black (see data::TransferFunction), otherwise use the
     // last value, which corresponds to the "clamp" texture address mode
     if(m_isClamped)
     {

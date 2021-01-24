@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Image/V2ToV3.hpp"
+#include "fwStructuralPatch/data/Image/V2ToV3.hpp"
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
@@ -31,7 +31,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Image
@@ -40,8 +40,8 @@ namespace Image
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Image";
-    m_targetClassname = "::fwData::Image";
+    m_originClassname = "data::Image";
+    m_targetClassname = "data::Image";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 
@@ -98,6 +98,6 @@ void V2ToV3::apply(
 
 } // namespace Image
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

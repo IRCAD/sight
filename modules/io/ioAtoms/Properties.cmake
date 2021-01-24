@@ -10,7 +10,7 @@ set( DEPENDENCIES
     fwAtomsFilter
     fwMDSemanticPatch
     core
-    fwData
+    data
     fwDataTools
     fwGui
     fwJobs

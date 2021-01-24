@@ -56,7 +56,7 @@ namespace videoCalibration
  * @subsection Input Input
  * - \b matrixTL [::arData::MatrixTL]: timeline for tool matrices.
  * @subsection In-Out In-Out
- * - \b pointList [::fwData::Pointlist]: marker position.
+ * - \b pointList [data::Pointlist]: marker position.
  */
 class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IController
 {

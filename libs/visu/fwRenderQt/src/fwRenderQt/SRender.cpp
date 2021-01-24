@@ -79,16 +79,16 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Viewport::sptr SRender::getViewport() const
+::fwRenderQtdata::Viewport::sptr SRender::getViewport() const
 {
     return m_viewport;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Axis::sptr SRender::getAxis(const std::string& id) const
+::fwRenderQtdata::Axis::sptr SRender::getAxis(const std::string& id) const
 {
-    ::fwRenderQt::data::Axis::sptr axis;
+    ::fwRenderQtdata::Axis::sptr axis;
     const auto iter = m_axisMap.find(id);
     if(iter != m_axisMap.end())
     {
@@ -99,7 +99,7 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
+void SRender::dispatchInteraction(::fwRenderQtdata::Event& _event)
 {
     if (!_event.isAccepted())
     {
@@ -141,12 +141,12 @@ void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Coord SRender::mapToScene( const ::fwRenderQt::data::Coord& coord ) const
+::fwRenderQtdata::Coord SRender::mapToScene( const ::fwRenderQtdata::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
     const QPoint qp( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
     const QPointF qps = m_view->mapToScene(qp);
-    return ::fwRenderQt::data::Coord(qps.x(), qps.y());
+    return ::fwRenderQtdata::Coord(qps.x(), qps.y());
 }
 
 //-----------------------------------------------------------------------------
@@ -275,10 +275,10 @@ void SRender::configureAxis( ConfigurationType _conf )
     const std::string scale     = _conf->getAttributeValue("scale");
     const std::string scaleType = _conf->getAttributeValue("scaleType");
 
-    ::fwRenderQt::data::Axis::sptr axis = std::make_shared< ::fwRenderQt::data::Axis >();
+    ::fwRenderQtdata::Axis::sptr axis = std::make_shared< ::fwRenderQtdata::Axis >();
     axis->setOrigin(std::stof( origin ));
     axis->setScale(std::stof( scale ));
-    axis->setScaleType( scaleType == "LINEAR" ? ::fwRenderQt::data::Axis::LINEAR : ::fwRenderQt::data::Axis::LOG);
+    axis->setScaleType( scaleType == "LINEAR" ? ::fwRenderQtdata::Axis::LINEAR : ::fwRenderQtdata::Axis::LOG);
     m_axisMap[id] = axis;
 }
 
@@ -294,7 +294,7 @@ void SRender::configureViewport( ConfigurationType _conf )
     const std::string width  = _conf->getAttributeValue("width");
     const std::string height = _conf->getAttributeValue("height");
 
-    m_viewport = ::fwRenderQt::data::Viewport::New();
+    m_viewport = ::fwRenderQtdata::Viewport::New();
     m_viewport->setX(std::stof( x ));
     m_viewport->setY(std::stof( y ));
     m_viewport->setWidth(std::stof( width ));

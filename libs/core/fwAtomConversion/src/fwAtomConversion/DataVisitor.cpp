@@ -31,6 +31,9 @@
 #include <core/reflection/Mapper/ValueMapper.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Array.hpp>
+#include <data/reflection/mapper.hpp>
+
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -39,9 +42,6 @@
 #include <fwAtoms/Numeric.hxx>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwData/Array.hpp>
-#include <fwData/reflection/mapper.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
@@ -129,8 +129,8 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
             else
             {
                 // get fwData object
-                ::fwData::Object* ptr          = value.get< ::fwData::Object* >();
-                ::fwData::Object::sptr dataObj = ptr->getSptr();
+                data::Object* ptr          = value.get< data::Object* >();
+                data::Object::sptr dataObj = ptr->getSptr();
 
                 baseObj = ::fwAtomConversion::convert( dataObj, m_cache );
             }
@@ -142,7 +142,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
 //-----------------------------------------------------------------------------
 
-DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType& cache ) :
+DataVisitor::DataVisitor( data::Object::sptr dataObj, AtomCacheType& cache ) :
     m_campDataObj( dataObj.get() ),
     m_cache( cache )
 {

@@ -33,8 +33,8 @@
 #include <core/Profiling.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 #include <unordered_set>
 
@@ -70,9 +70,9 @@ void ObjectServiceTest::registerKeyTest()
     const std::string srvImplementation1("::fwServices::ut::TestServiceImplementation");
     const std::string srvImplementation2("::fwServices::ut::TestServiceImplementation2");
 
-    ::fwData::Integer::sptr obj1 = ::fwData::Integer::New();
-    ::fwData::Integer::sptr obj2 = ::fwData::Integer::New();
-    ::fwData::Integer::sptr obj3 = ::fwData::Integer::New();
+    data::Integer::sptr obj1 = data::Integer::New();
+    data::Integer::sptr obj2 = data::Integer::New();
+    data::Integer::sptr obj3 = data::Integer::New();
 
     auto service1 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
     auto service2 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation2 );
@@ -199,8 +199,8 @@ void ObjectServiceTest::registerConnectionTest()
     const std::string srvType("::fwServices::ut::TestService");
     const std::string srvImplementation1("::fwServices::ut::TestServiceImplementation");
 
-    ::fwData::Integer::sptr obj1 = ::fwData::Integer::New();
-    ::fwData::Integer::sptr obj2 = ::fwData::Integer::New();
+    data::Integer::sptr obj1 = data::Integer::New();
+    data::Integer::sptr obj2 = data::Integer::New();
 
     auto service1 = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
 
@@ -247,7 +247,7 @@ void ObjectServiceTest::registerConnectionTest()
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceTest::registerService(::fwData::Object::sptr obj, const std::string& id)
+void ObjectServiceTest::registerService(data::Object::sptr obj, const std::string& id)
 {
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -260,7 +260,7 @@ void ObjectServiceTest::registerService(::fwData::Object::sptr obj, const std::s
 
 //------------------------------------------------------------------------------
 
-void ObjectServiceTest::unregisterService(::fwData::Object::sptr obj, const std::string& id)
+void ObjectServiceTest::unregisterService(data::Object::sptr obj, const std::string& id)
 {
     {
         std::unique_lock<std::mutex> lock(m_mutex);

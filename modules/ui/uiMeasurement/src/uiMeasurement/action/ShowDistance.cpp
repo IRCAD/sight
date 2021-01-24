@@ -26,9 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Boolean.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -42,7 +42,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, data::Image )
 
 static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
@@ -73,7 +73,7 @@ void ShowDistance::info(std::ostream& _sstream )
 
 void ShowDistance::updating()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
@@ -82,19 +82,19 @@ void ShowDistance::updating()
     }
     else
     {
-        ::fwData::Boolean::sptr showDistances =
-            image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
-                                                     true));
+        data::Boolean::sptr showDistances =
+            image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+                                                 true));
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
-        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(toShow));
+        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
-            ::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
+        auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
+            data::Image::s_DISTANCE_DISPLAYED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
             sig->asyncEmit(toShow);
@@ -106,12 +106,12 @@ void ShowDistance::updating()
 
 void ShowDistance::showDistance(bool)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    ::fwData::Boolean::sptr showDistances =
-        image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
-                                                 true));
+    data::Boolean::sptr showDistances =
+        image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+                                             true));
 
     this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
@@ -142,7 +142,7 @@ void ShowDistance::stopping()
 ::fwServices::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
 
     return connections;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace adaptor
  * @brief Adaptor implementation that manages the camera on the view (by updating the viewport object).
  *
  * The SViewportUpdater updates the viewport of the scene it is attached to, by picking values from the
- * managed ::fwRenderQt::data::Viewport object.
+ * managed ::fwRenderQtdata::Viewport object.
  *
  * @section XML XML Configuration
  *
@@ -47,7 +47,7 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b viewport [::fwRenderQt::data::Viewport]: the viewport object this updater takes values from.
+ * - \b viewport [::fwRenderQtdata::Viewport]: the viewport object this updater takes values from.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -61,7 +61,7 @@ class SCENE2D_CLASS_API SViewportUpdater : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SViewportUpdater, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SViewportUpdater, ::fwRenderQt::IAdaptor)
     SCENE2D_API SViewportUpdater() noexcept;
     SCENE2D_API ~SViewportUpdater() noexcept;
 
@@ -71,7 +71,7 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
     SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/creator/fwData/PointList1.hpp"
+#include "fwStructuralPatch/creator/data/PointList1.hpp"
 
 #include <fwAtoms/Sequence.hpp>
 
@@ -30,14 +30,14 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwData
+namespace sight::data
 {
 
 // ----------------------------------------------------------------------------
 
 PointList1::PointList1()
 {
-    m_classname = "::fwData::PointList";
+    m_classname = "data::PointList";
     m_version   = "1";
 }
 

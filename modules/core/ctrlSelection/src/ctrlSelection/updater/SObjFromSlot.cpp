@@ -40,7 +40,7 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SObjFromSlot, ::fwData::Composite )
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SObjFromSlot, data::Composite )
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ void SObjFromSlot::info( std::ostream& )
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::add(::fwData::Object::sptr obj)
+void SObjFromSlot::add(data::Object::sptr obj)
 {
     this->setOutput(s_OBJECT, obj);
 }

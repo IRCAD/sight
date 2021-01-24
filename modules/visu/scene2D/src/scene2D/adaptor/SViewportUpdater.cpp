@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,9 +70,9 @@ void SViewportUpdater::stopping()
 
 void SViewportUpdater::updating()
 {
-    ::fwRenderQt::data::Viewport::sptr sceneViewport   = this->getScene2DRender()->getViewport();
-    ::fwRenderQt::data::Viewport::csptr viewportObject =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+    ::fwRenderQtdata::Viewport::sptr sceneViewport   = this->getScene2DRender()->getViewport();
+    ::fwRenderQtdata::Viewport::csptr viewportObject =
+        this->getInput< ::fwRenderQtdata::Viewport>(s_VIEWPORT_INPUT);
 
     Point2DType pairCoord = this->mapAdaptorToScene(
         Point2DType(viewportObject->getX(), viewportObject->getY() ), m_xAxis, m_yAxis );
@@ -90,7 +90,7 @@ void SViewportUpdater::updating()
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::processInteraction( ::fwRenderQt::data::Event& )
+void SViewportUpdater::processInteraction( ::fwRenderQtdata::Event& )
 {
 
 }
@@ -100,7 +100,7 @@ void SViewportUpdater::processInteraction( ::fwRenderQt::data::Event& )
 ::fwServices::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

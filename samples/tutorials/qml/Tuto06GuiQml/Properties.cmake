@@ -3,12 +3,12 @@ set( VERSION 0.2 ) # Version of the application
 set( TYPE APP ) # Type APP represent "Application"
 set( START ON)
 set( DEPENDENCIES
-    fwData
+    data
     fwServices
     fwQml
 )
 set( REQUIREMENTS # The modules used by this application
-    fwData
+    data
     servicesReg
     gui
     guiQt

@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 namespace Tuto05EditorQml
 {
@@ -68,7 +68,7 @@ void SStringEditor::stopping()
 
 void SStringEditor::updating()
 {
-    auto sstr = this->getInOut< ::fwData::String >(s_STRING_INOUT);
+    auto sstr = this->getInOut< data::String >(s_STRING_INOUT);
     SLM_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
     const std::string value = sstr->value();
 
@@ -79,12 +79,12 @@ void SStringEditor::updating()
 
 void SStringEditor::updateString(const QString& str)
 {
-    auto sstr = this->getInOut< ::fwData::String >(s_STRING_INOUT);
+    auto sstr = this->getInOut< data::String >(s_STRING_INOUT);
     SLM_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
 
     sstr->value() = str.toStdString();
 
-    auto sig = sstr->signal< ::fwData::String::ModifiedSignalType >(::fwData::String::s_MODIFIED_SIG);
+    auto sig = sstr->signal< data::String::ModifiedSignalType >(data::String::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -97,7 +97,7 @@ void SStringEditor::updateString(const QString& str)
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_STRING_INOUT, ::fwData::String::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_STRING_INOUT, data::String::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -24,14 +24,14 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
+#include <data/Composite.hpp>
+#include <data/reflection/visitor/RecursiveLock.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -45,7 +45,7 @@
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, data::Composite )
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ void SPreferences::load()
         const std::filesystem::path folderPath = m_prefFile.parent_path();
         const std::filesystem::path filename   = m_prefFile.filename();
 
-        ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
+        data::Object::sptr data = this->getInOut< data::Object >(::fwPreferences::s_PREFERENCES_KEY);
         SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
 
         // Read atom
@@ -96,8 +96,8 @@ void SPreferences::load()
         {
             ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, filename ) );
 
-            ::fwData::Object::sptr newData = ::fwAtomConversion::convert(atom,
-                                                                         ::fwAtomConversion::AtomVisitor::ChangePolicy());
+            data::Object::sptr newData = ::fwAtomConversion::convert(atom,
+                                                                     ::fwAtomConversion::AtomVisitor::ChangePolicy());
             data->shallowCopy(newData);
         }
         catch(...)
@@ -114,11 +114,11 @@ void SPreferences::save()
     const std::filesystem::path folderPath = m_prefFile.parent_path();
     const std::filesystem::path filename   = m_prefFile.filename();
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
+    data::Object::sptr obj = this->getInOut< data::Object >(::fwPreferences::s_PREFERENCES_KEY);
     SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
 
     // Mutex data lock
-    ::fwData::reflection::visitor::RecursiveLock recursiveLock(obj);
+    data::reflection::visitor::RecursiveLock recursiveLock(obj);
 
     // Convert data to atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/StructureTraitsDictionary.hpp>
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class StructureTraitsDictionary;
 }
@@ -45,18 +45,18 @@ namespace reader
  * @brief   Dictionary reader. Read file with .dic extension.
  *
  *
- * Ircad reader to read a ::fwData::StructureTraitsDictionary on filesystem which the file format
+ * Ircad reader to read a data::StructureTraitsDictionary on filesystem which the file format
  * is .dic. This is an ascii file the structure of each line is defined on the first line of this file.
  */
 class FWDATAIO_CLASS_API DictionaryReader :
-    public GenericObjectReader< ::fwData::StructureTraitsDictionary>,
-    public ::fwData::location::enableSingleFile< IObjectReader >
+    public GenericObjectReader< data::StructureTraitsDictionary>,
+    public data::location::enableSingleFile< IObjectReader >
 
 {
 
 public:
 
-    fwCoreClassMacro(DictionaryReader, GenericObjectReader< ::fwData::StructureTraitsDictionary >,
+    fwCoreClassMacro(DictionaryReader, GenericObjectReader< data::StructureTraitsDictionary >,
                      ::fwDataIO::reader::factory::New< DictionaryReader >)
 
     /// Constructor. Do nothing .

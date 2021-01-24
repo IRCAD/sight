@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwData/Image/V3ToV2Test.hpp"
+#include "data/Image/V3ToV2Test.hpp"
 
-#include <fwStructuralPatch/fwData/Image/V3ToV2.hpp>
+#include <fwStructuralPatch/data/Image/V3ToV2.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Numeric.hpp>
@@ -36,13 +36,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Image::V3ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::utdata::Image::V3ToV2Test );
 
 namespace fwStructuralPatch
 {
 namespace ut
 {
-namespace fwData
+namespace sight::data
 {
 namespace Image
 {
@@ -65,12 +65,12 @@ void V3ToV2Test::tearDown()
 
 void V3ToV2Test::applyPatchTest()
 {
-    auto patch = ::fwStructuralPatch::fwData::Image::V3ToV2::New();
+    auto patch = ::fwStructuralPatchdata::Image::V3ToV2::New();
 
     ::fwAtoms::Object::sptr imgObjV3 = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr imgObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(imgObjV3, "::fwData::Image");
+    ::fwAtomsPatch::helper::setClassname(imgObjV3, "data::Image");
     ::fwAtomsPatch::helper::setVersion(imgObjV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(imgObjV3);
@@ -91,6 +91,6 @@ void V3ToV2Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace Image
-} //namespace fwData
+} //namespace sight::data
 } //namespace ut
 } //namespace fwStructuralPatch

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-
 #include "fwAtomsFilter/functions.hpp"
+
+#include <data/registry/detail.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 
@@ -31,13 +32,13 @@
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
-#include <fwData/registry/detail.hpp>
-
 #include <algorithm>
 #include <string>
 
 namespace fwAtomsFilter
 {
+
+//------------------------------------------------------------------------------
 
 bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
 {
@@ -49,9 +50,9 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
 
     const std::string& classname = ::fwAtomsPatch::helper::getClassname(series);
 
-    SPTR(::fwData::registry::Type) objectRegistry           = ::fwData::registry::get();
-    ::fwData::registry::Type::KeyVectorType keys            = objectRegistry->getFactoryKeys();
-    ::fwData::registry::Type::KeyVectorType::iterator itKey = std::find(keys.begin(), keys.end(), classname);
+    SPTR(data::registry::Type) objectRegistry = data::registry::get();
+    data::registry::Type::KeyVectorType keys            = objectRegistry->getFactoryKeys();
+    data::registry::Type::KeyVectorType::iterator itKey = std::find(keys.begin(), keys.end(), classname);
 
     if(itKey != keys.end())
     {
@@ -79,4 +80,3 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
 }
 
 } // namespace fwAtomsFilter
-

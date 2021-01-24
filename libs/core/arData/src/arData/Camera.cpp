@@ -27,8 +27,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
@@ -43,7 +43,7 @@ const core::com::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "id
 
 //------------------------------------------------------------------------------
 
-Camera::Camera( ::fwData::Object::Key ) :
+Camera::Camera( data::Object::Key ) :
     m_width(0),
     m_height(0),
     m_skew(0.),
@@ -136,10 +136,10 @@ std::string Camera::getPixelFormatName(PixelFormat format)
 
 //------------------------------------------------------------------------------
 
-void Camera::shallowCopy( const ::fwData::Object::csptr& _source )
+void Camera::shallowCopy( const data::Object::csptr& _source )
 {
     Camera::csptr other = Camera::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -166,7 +166,7 @@ void Camera::shallowCopy( const ::fwData::Object::csptr& _source )
 void Camera::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Camera::csptr other = Camera::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );

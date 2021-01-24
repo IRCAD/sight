@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,13 @@
 #include "fwMedData/Patient.hpp"
 #include "fwMedData/Study.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 namespace fwMedData
 {
 
-Series::Series(::fwData::Object::Key) :
+Series::Series(data::Object::Key) :
     m_patient(::fwMedData::Patient::New()),
     m_study(::fwMedData::Study::New()),
     m_equipment(::fwMedData::Equipment::New())
@@ -47,10 +47,10 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::shallowCopy(const ::fwData::Object::csptr& _source)
+void Series::shallowCopy(const data::Object::csptr& _source)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -70,18 +70,18 @@ void Series::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void Series::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void Series::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
 
-    m_patient   = ::fwData::Object::copy(other->m_patient, cache);
-    m_study     = ::fwData::Object::copy(other->m_study, cache);
-    m_equipment = ::fwData::Object::copy(other->m_equipment, cache);
+    m_patient   = data::Object::copy(other->m_patient, cache);
+    m_study     = data::Object::copy(other->m_study, cache);
+    m_equipment = data::Object::copy(other->m_equipment, cache);
 
     m_instanceUID              = other->m_instanceUID;
     m_modality                 = other->m_modality;

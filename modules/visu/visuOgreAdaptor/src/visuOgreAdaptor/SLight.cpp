@@ -128,7 +128,7 @@ void SLight::starting()
     {
         // Creates the visual feedback
         // Creates the material
-        m_material = ::fwData::Material::New();
+        m_material = data::Material::New();
 
         const ::visuOgreAdaptor::SMaterial::sptr materialAdaptor =
             this->registerService< ::visuOgreAdaptor::SMaterial >(
@@ -199,9 +199,9 @@ void SLight::starting()
 ::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_DIFFUSE_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_SPECULAR_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
@@ -210,8 +210,8 @@ void SLight::starting()
 
 void SLight::updating()
 {
-    const auto lightDiffuseColor  = this->getLockedInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
-    const auto lightSpecularColor = this->getLockedInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
+    const auto lightDiffuseColor  = this->getLockedInOut< data::Color >(s_DIFFUSE_COLOR_INOUT);
+    const auto lightSpecularColor = this->getLockedInOut< data::Color >(s_SPECULAR_COLOR_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -267,7 +267,7 @@ void SLight::stopping()
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    const auto lightDiffuseColor = this->getLockedInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    const auto lightDiffuseColor = this->getLockedInOut< data::Color >(s_DIFFUSE_COLOR_INOUT);
 
     lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 
@@ -279,7 +279,7 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    const auto lightSpecularColor = this->getLockedInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
+    const auto lightSpecularColor = this->getLockedInOut< data::Color >(s_SPECULAR_COLOR_INOUT);
 
     lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 

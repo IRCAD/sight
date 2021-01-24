@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwActivities/config.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
-#include <fwData/mt/weak_ptr.hpp>
+#include <data/mt/weak_ptr.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/Series.hpp>
@@ -46,7 +46,7 @@ public:
     typedef ::fwActivities::registry::ActivityAppConfigParam ParameterType;
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map< std::string, std::string> ReplaceMapType;
-    typedef std::map< std::string, ::fwData::mt::weak_ptr< ::fwData::Object > > InOutMapType;
+    typedef std::map< std::string, data::mt::weak_ptr< data::Object > > InOutMapType;
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API IActivityLauncher();
@@ -79,7 +79,7 @@ protected:
      * @param[in] parameters list of parameters to translate
      * @param[out] replaceMap map containing the translated parameter
      */
-    FWACTIVITIES_API void translateParameters(const ::fwData::Object::csptr& sourceObj,
+    FWACTIVITIES_API void translateParameters(const data::Object::csptr& sourceObj,
                                               const ParametersType& parameters,
                                               ReplaceMapType& replaceMap );
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace visuQt3DAdaptor
 /**
  * @brief This adaptor shows individual meshes.
  *
- * This class handles the conversion of ::fwData::Mesh to Qt3D. It can handle triangles.
+ * This class handles the conversion of data::Mesh to Qt3D. It can handle triangles.
  *
  * @section Slot Slot
  * - \b updateVisibility(bool): shows or hides the mesh.
@@ -49,7 +49,7 @@ namespace visuQt3DAdaptor
    @endcode
  *
  * @subsection Input Input
- * - \b mesh [::fwData::Mesh]: adapted mesh.
+ * - \b mesh [data::Mesh]: adapted mesh.
  *
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, bool, default=false): reset the camera when this mesh is modified.
@@ -84,8 +84,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
-     * Connect ::fwData::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
+     * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
+     * Connect data::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
     VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -107,7 +107,7 @@ private:
     void modifyVertices();
 
     /// Contains a Qt3D mesh.
-    QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
+    QPointer< ::fwRenderQt3Ddata::Mesh > m_mesh;
 
     /// Specifies the material adaptor used to configure mesh material.
     std::string m_materialName;

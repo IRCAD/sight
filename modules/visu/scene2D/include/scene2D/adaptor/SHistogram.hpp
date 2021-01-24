@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "scene2D/config.hpp"
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/IAdaptor.hpp>
 
@@ -48,10 +48,10 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [::fwData::Histogram]: histogram to display.
+ * - \b histogram [data::Histogram]: histogram to display.
  *
  * @subsection In-Out In-Out
- * - \b point [::fwData::Point](optional): histogram point, used to show information at the current histogram index
+ * - \b point [data::Point](optional): histogram point, used to show information at the current histogram index
  * pointed by the mouse.
  *
  * @subsection Configuration Configuration:
@@ -76,7 +76,7 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -91,7 +91,7 @@ protected:
 
 private:
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint( ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point );
+    void updateCurrentPoint( ::fwRenderQtdata::Event& _event, const data::Point::sptr& point );
 
     /// Color used for graphic item's inner and border color
     QPen m_color{Qt::green};

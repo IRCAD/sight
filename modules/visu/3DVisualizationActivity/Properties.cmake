@@ -10,7 +10,7 @@ set( REQUIREMENTS
     guiQt
     ctrlMemory
     ctrlSelection
-    fwData
+    data
     fwMedData
     uiVisu
     uiVisuQt

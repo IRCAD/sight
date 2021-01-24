@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "igtlProtocol/DataConverter.hpp"
 #include "igtlProtocol/ImageTypeConverter.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -38,7 +38,7 @@ namespace igtlProtocol
 namespace converter
 {
 const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
-const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Image::classname();
+const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::Image::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::ImageConverter);
 
@@ -54,9 +54,9 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    ::fwData::Image::csptr srcImg = ::fwData::Image::dynamicCast(src);
+    data::Image::csptr srcImg = data::Image::dynamicCast(src);
     ::igtl::Matrix4x4 matrix;
 
     const auto dumpLock = srcImg->lock();
@@ -82,18 +82,18 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::ImageMessage::Pointer srcImg;
     char* igtlImageBuffer;
-    ::fwData::Image::sptr destImg = ::fwData::Image::New();
-    const auto dumpLock = destImg->lock();
+    data::Image::sptr destImg = data::Image::New();
+    const auto dumpLock       = destImg->lock();
     float igtlSpacing[3];
     float igtlOrigins[3];
     int igtlDimensions[3];
-    ::fwData::Image::Spacing spacing;
-    ::fwData::Image::Origin origins;
-    ::fwData::Image::Size size;
+    data::Image::Spacing spacing;
+    data::Image::Origin origins;
+    data::Image::Size size;
 
     srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage* >(src.GetPointer()));
     srcImg->GetSpacing(igtlSpacing);
@@ -109,15 +109,15 @@ ImageConverter::~ImageConverter()
     destImg->setNumberOfComponents(srcImg->GetNumComponents());
     if (srcImg->GetNumComponents() == 1)
     {
-        destImg->setPixelFormat(::fwData::Image::GRAY_SCALE);
+        destImg->setPixelFormat(data::Image::GRAY_SCALE);
     }
     else if (srcImg->GetNumComponents() == 3)
     {
-        destImg->setPixelFormat(::fwData::Image::RGB);
+        destImg->setPixelFormat(data::Image::RGB);
     }
     else if (srcImg->GetNumComponents() == 4)
     {
-        destImg->setPixelFormat(::fwData::Image::RGBA);
+        destImg->setPixelFormat(data::Image::RGBA);
     }
 
     destImg->resize();

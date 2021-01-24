@@ -22,7 +22,7 @@
 
 #include "ImageV09ALAToV10Test.hpp"
 
-#include <fwMDSemanticPatch/V09ALA/V10/fwData/Image.hpp>
+#include <fwMDSemanticPatch/V09ALA/V10/data/Image.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -87,7 +87,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
     ::fwAtoms::Object::sptr image = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr patchedObj;
 
-    ::fwAtomsPatch::helper::setClassname(image, "::fwData::Image");
+    ::fwAtomsPatch::helper::setClassname(image, "data::Image");
     ::fwAtomsPatch::helper::setVersion(image, "2");
 
     ::fwAtomsPatch::helper::Object helperImage(image);
@@ -98,7 +98,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
 
     // create PointList
     ::fwAtoms::Object::sptr pl = ::fwAtoms::Object::New();
-    ::fwAtomsPatch::helper::setClassname(pl, "::fwData::PointList");
+    ::fwAtomsPatch::helper::setClassname(pl, "data::PointList");
     ::fwAtomsPatch::helper::setVersion(pl, "1");
     ::fwAtomsPatch::helper::Object helperPL(pl);
 
@@ -117,8 +117,8 @@ void ImageV09ALAToV10Test::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[image] = patchedObj;
 
-    ::fwMDSemanticPatch::V09ALA::V10::fwData::Image::sptr patcher =
-        ::fwMDSemanticPatch::V09ALA::V10::fwData::Image::New();
+    ::fwMDSemanticPatch::V09ALA::V10data::Image::sptr patcher =
+        ::fwMDSemanticPatch::V09ALA::V10data::Image::New();
     CPPUNIT_ASSERT_NO_THROW(patcher->apply(image, patchedObj, newVersions));
 
     CPPUNIT_ASSERT(patchedObj->getAttribute("fields"));
@@ -128,7 +128,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
     CPPUNIT_ASSERT(newFieldMap->find("m_landmarksId") != newFieldMap->end());
     ::fwAtoms::Object::sptr landmarks = ::fwAtoms::Object::dynamicCast((*newFieldMap)["m_landmarksId"]);
     CPPUNIT_ASSERT(landmarks);
-    CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Landmarks"), ::fwAtomsPatch::helper::getClassname(landmarks));
+    CPPUNIT_ASSERT_EQUAL(std::string("data::Landmarks"), ::fwAtomsPatch::helper::getClassname(landmarks));
     CPPUNIT_ASSERT(landmarks->getAttribute("landmarks"));
     ::fwAtoms::Map::sptr landmarksMap = ::fwAtoms::Map::dynamicCast(landmarks->getAttribute("landmarks"));
     CPPUNIT_ASSERT(landmarksMap);
@@ -171,7 +171,7 @@ void ImageV09ALAToV10Test::addPoint(::fwAtoms::Sequence::sptr seq, const std::ar
                                     const std::string& label)
 {
     ::fwAtoms::Object::sptr point = ::fwAtoms::Object::New();
-    ::fwAtomsPatch::helper::setClassname(point, "::fwData::Point");
+    ::fwAtomsPatch::helper::setClassname(point, "data::Point");
     ::fwAtomsPatch::helper::setVersion(point, "1");
     ::fwAtomsPatch::helper::Object helper(point);
 
@@ -187,7 +187,7 @@ void ImageV09ALAToV10Test::addPoint(::fwAtoms::Sequence::sptr seq, const std::ar
     helper.addAttribute("fields", fieldMap);
 
     ::fwAtoms::Object::sptr labelObj = ::fwAtoms::Object::New();
-    ::fwAtomsPatch::helper::setClassname(labelObj, "::fwData::String");
+    ::fwAtomsPatch::helper::setClassname(labelObj, "data::String");
     ::fwAtomsPatch::helper::setVersion(labelObj, "1");
     ::fwAtomsPatch::helper::Object helperLabel(labelObj);
     helperLabel.addAttribute("value", ::fwAtoms::String::New(label));

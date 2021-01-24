@@ -26,7 +26,7 @@
 #include <fwServices/macros.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 namespace fwItkIO
 {
@@ -50,7 +50,7 @@ public:
     void stressTest();
     void testConversion2D();
 
-    static void roundSpacing(::fwData::Image::sptr image);
+    static void roundSpacing(data::Image::sptr image);
 
     template< class TYPE >
     void stressTestForAType();

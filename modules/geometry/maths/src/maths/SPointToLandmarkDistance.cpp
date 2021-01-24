@@ -25,9 +25,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Landmarks.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Landmarks.hpp>
+#include <data/String.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -95,11 +95,11 @@ void SPointToLandmarkDistance::updating()
     if(m_landmarkSelected)
     {
         const auto pointMat =
-            this->getLockedInput< ::fwData::TransformationMatrix3D>("pointMatrix");
+            this->getLockedInput< data::TransformationMatrix3D>("pointMatrix");
         auto pointToLandmarkMatLocked =
-            this->getLockedInOut< ::fwData::TransformationMatrix3D>("pointToLandmarkMatrix");
+            this->getLockedInOut< data::TransformationMatrix3D>("pointToLandmarkMatrix");
         auto pointToLandmarkMat          = pointToLandmarkMatLocked.get_shared();
-        const auto distanceText          = this->getLockedInOut< ::fwData::String>("distanceText");
+        const auto distanceText          = this->getLockedInOut< data::String>("distanceText");
         const ::glm::dmat4x4 pointMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(
             pointMat.get_shared());
         const ::glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
@@ -116,7 +116,7 @@ void SPointToLandmarkDistance::updating()
         // notify that distance is modified
         this->signal< DistanceChangedSignalType>(DISTANCE_CHANGED_SIG)->asyncEmit(static_cast<float>(length));
         // notify that text distance is modified
-        distanceText->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG )->asyncEmit();
+        distanceText->signal< data::Object::ModifiedSignalType>( data::Object::s_MODIFIED_SIG )->asyncEmit();
 
         // compute the matrix
         ::glm::dmat4x4 cameraMatrix;
@@ -134,7 +134,7 @@ void SPointToLandmarkDistance::updating()
         ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(pointToLandmarkMat,
                                                                  cameraMatrix);
         auto sig =
-            pointToLandmarkMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            pointToLandmarkMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -147,9 +147,9 @@ void SPointToLandmarkDistance::updateSelectedPoint(std::string name, size_t inde
 {
     m_landmarkSelected = true;
 
-    const auto landmark = this->getLockedInput< ::fwData::Landmarks>("landmark");
+    const auto landmark = this->getLockedInput< data::Landmarks>("landmark");
 
-    const ::fwData::Landmarks::PointType& point = landmark->getPoint(name, index);
+    const data::Landmarks::PointType& point = landmark->getPoint(name, index);
     for(int i = 0; i < 3; ++i)
     {
         m_currentLandmark[i] = point[i];
@@ -162,9 +162,9 @@ void SPointToLandmarkDistance::updatePoint(std::string name)
 {
     m_landmarkSelected = true;
 
-    const auto landmark                         = this->getLockedInput< ::fwData::Landmarks>("landmark");
-    size_t size                                 = landmark->getGroup(name).m_points.size();
-    const ::fwData::Landmarks::PointType& point = landmark->getPoint(name, size-1);
+    const auto landmark                     = this->getLockedInput< data::Landmarks>("landmark");
+    size_t size                             = landmark->getGroup(name).m_points.size();
+    const data::Landmarks::PointType& point = landmark->getPoint(name, size-1);
     for(int i = 0; i < 3; ++i)
     {
         m_currentLandmark[i] = point[i];
@@ -180,11 +180,11 @@ void SPointToLandmarkDistance::removePoint()
     // Notify that distance is modified
     this->signal< DistanceChangedSignalType>(DISTANCE_CHANGED_SIG)->asyncEmit(static_cast<float>(0.0));
 
-    auto distanceText = this->getLockedInOut< ::fwData::String>("distanceText");
+    auto distanceText = this->getLockedInOut< data::String>("distanceText");
     distanceText->setValue("");
 
     // notify that text distance is modified
-    distanceText->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG )->asyncEmit();
+    distanceText->signal< data::Object::ModifiedSignalType>( data::Object::s_MODIFIED_SIG )->asyncEmit();
 }
 
 // -----------------------------------------------------------------------------

@@ -25,10 +25,10 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadToWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -242,9 +242,9 @@ void SMultipleTF::starting()
 ::fwServices::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_TF_POOLS_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOLS_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOLS_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOLS_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOLS_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOLS_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -262,10 +262,10 @@ void SMultipleTF::swapping(const KeyType& _key)
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_POOL_INPUT)
     {
-        const ::fwData::mt::weak_ptr< const ::fwData::Composite > tfPool
-            = this->getWeakInput< const ::fwData::Composite >(_key);
+        const data::mt::weak_ptr< const data::Composite > tfPool
+            = this->getWeakInput< const data::Composite >(_key);
 
-        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPoolLock = tfPool.lock();
+        const data::mt::locked_ptr< const data::Composite > tfPoolLock = tfPool.lock();
 
         if(tfPoolLock && tfPoolLock.get_shared() != m_currentTFPool)
         {
@@ -283,14 +283,14 @@ void SMultipleTF::stopping()
 
 //------------------------------------------------------------------------------
 
-bool SMultipleTF::hasPoolName(const std::string& _name, ::fwData::Composite::csptr _tfPools) const
+bool SMultipleTF::hasPoolName(const std::string& _name, data::Composite::csptr _tfPools) const
 {
     return _tfPools->find(_name) != _tfPools->end();
 }
 
 //------------------------------------------------------------------------------
 
-std::string SMultipleTF::createPoolName(const std::string& _basename, ::fwData::Composite::csptr _tfPools) const
+std::string SMultipleTF::createPoolName(const std::string& _basename, data::Composite::csptr _tfPools) const
 {
     bool hasTransferFunctionName = true;
     std::string newName          = _basename;
@@ -313,18 +313,18 @@ void SMultipleTF::initializePools()
 {
     {
         // Gets TF pools.
-        const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-            = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+        const data::mt::locked_ptr< data::Composite > tfPools
+            = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-        const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+        const data::Composite::sptr sTFPools = tfPools.get_shared();
         ::fwDataTools::helper::Composite compositeHelper(sTFPools);
 
         // Add the default TF if it not exists.
-        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         if(!this->hasPoolName(defaultTFName, sTFPools))
         {
-            const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
-            const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
+            const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+            const data::Composite::sptr defaultComposite = data::Composite::New();
             defaultComposite->getContainer()[defaultTFName] = defaultTf;
             compositeHelper.add(defaultTFName, defaultComposite);
         }
@@ -333,14 +333,14 @@ void SMultipleTF::initializePools()
         if(tfPools->size() <= 1)
         {
             // Creates the TF atoms reader.
-            const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-            const ::fwIO::IReader::sptr tfReader      = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            const data::TransferFunction::sptr tf = data::TransferFunction::New();
+            const ::fwIO::IReader::sptr tfReader  = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
             tfReader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
             for(std::filesystem::path dirPath : m_paths)
             {
-                ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+                data::Composite::sptr composite = data::Composite::New();
 
                 SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
                 for(std::filesystem::directory_iterator it(dirPath);
@@ -365,8 +365,8 @@ void SMultipleTF::initializePools()
 
                         if(!tf->getName().empty())
                         {
-                            const ::fwData::TransferFunction::sptr newTF
-                                = ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
+                            const data::TransferFunction::sptr newTF
+                                = data::Object::copy< data::TransferFunction >(tf);
                             if(this->hasPoolName(newTF->getName(), sTFPools))
                             {
                                 newTF->setName(this->createPoolName(newTF->getName(), sTFPools));
@@ -380,7 +380,7 @@ void SMultipleTF::initializePools()
                                 if(composite->size() > 0)
                                 {
                                     compositeHelper.add(newTF->getName(), composite);
-                                    composite = ::fwData::Composite::New();
+                                    composite = data::Composite::New();
                                 }
                             }
                         }
@@ -393,7 +393,7 @@ void SMultipleTF::initializePools()
                     if(composite->size() > 0)
                     {
                         compositeHelper.add(dirPath.filename().u8string(), composite);
-                        composite = ::fwData::Composite::New();
+                        composite = data::Composite::New();
                     }
                 }
             }
@@ -402,7 +402,7 @@ void SMultipleTF::initializePools()
             ::fwServices::OSR::unregisterService(tfReader);
 
             // Creates the multiple TF atoms reader.
-            ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
+            data::Composite::sptr tfPool            = data::Composite::New();
             const ::fwIO::IReader::sptr mulTFReader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
             mulTFReader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
 
@@ -436,8 +436,8 @@ void SMultipleTF::initializePools()
                         // Check the loaded composite.
                         if(tfPool->size() >= 1)
                         {
-                            const ::fwData::Composite::sptr newTFPool
-                                = ::fwData::Object::copy< ::fwData::Composite >(tfPool);
+                            const data::Composite::sptr newTFPool
+                                = data::Object::copy< data::Composite >(tfPool);
 
                             std::string poolName(file.stem().string());
                             if(this->hasPoolName(poolName, sTFPools))
@@ -468,27 +468,27 @@ void SMultipleTF::initializePools()
 void SMultipleTF::updatePoolsPreset()
 {
     // Store the current composite.
-    std::string currentPoolName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    std::string currentPoolName = data::TransferFunction::s_DEFAULT_TF_NAME;
 
     {
         // Gets TF pools.
-        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPools
-            = this->getLockedInOut< const ::fwData::Composite >(s_TF_POOLS_INOUT);
+        const data::mt::locked_ptr< const data::Composite > tfPools
+            = this->getLockedInOut< const data::Composite >(s_TF_POOLS_INOUT);
 
         // Iterate over each composite to add them to the presets selector.
-        for(::fwData::Composite::value_type elt : *tfPools)
+        for(data::Composite::value_type elt : *tfPools)
         {
             m_tfPoolsPreset->addItem(elt.first.c_str());
         }
 
         // If the current TF pool exists, find it.
-        const ::fwData::mt::weak_ptr< const ::fwData::Composite > tfPool
-            = this->getWeakInput< const ::fwData::Composite >(s_CURRENT_TF_POOL_INPUT);
-        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPoolLock = tfPool.lock();
+        const data::mt::weak_ptr< const data::Composite > tfPool
+            = this->getWeakInput< const data::Composite >(s_CURRENT_TF_POOL_INPUT);
+        const data::mt::locked_ptr< const data::Composite > tfPoolLock = tfPool.lock();
 
         if(tfPoolLock)
         {
-            for(::fwData::Composite::value_type elt : *tfPools)
+            for(data::Composite::value_type elt : *tfPools)
             {
                 if(elt.second == tfPoolLock.get_shared())
                 {
@@ -514,7 +514,7 @@ void SMultipleTF::presetChoice(int _index)
     this->setCurrentPool();
 
     const std::string tfName = m_tfPoolsPreset->currentText().toStdString();
-    const bool isEnabled     = (tfName != ::fwData::TransferFunction::s_DEFAULT_TF_NAME);
+    const bool isEnabled     = (tfName != data::TransferFunction::s_DEFAULT_TF_NAME);
 
     m_renameButton->setEnabled(isEnabled);
     m_deleteButton->setEnabled(isEnabled);
@@ -526,11 +526,11 @@ void SMultipleTF::setCurrentPool()
 {
     const std::string newSelectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
 
-    const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-        = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+    const data::mt::locked_ptr< data::Composite > tfPools
+        = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-    const ::fwData::Object::sptr newSelectedObject    = (*tfPools)[newSelectedTFPoolKey];
-    const ::fwData::Composite::sptr newSelectedTFPool = ::fwData::Composite::dynamicCast(newSelectedObject);
+    const data::Object::sptr newSelectedObject    = (*tfPools)[newSelectedTFPoolKey];
+    const data::Composite::sptr newSelectedTFPool = data::Composite::dynamicCast(newSelectedObject);
     SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", newSelectedTFPool);
 
     if(newSelectedTFPool && newSelectedTFPool != m_currentTFPool)
@@ -556,8 +556,8 @@ void SMultipleTF::deletePool()
     {
         {
             // Gets TF pools.
-            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+            const data::mt::locked_ptr< data::Composite > tfPools
+                = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
             // Remove the current TF pool from the Composite.
             const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
@@ -572,7 +572,7 @@ void SMultipleTF::deletePool()
         }
 
         // Find the new current composite.
-        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+        const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         const int index                 = m_tfPoolsPreset->findText(QString::fromStdString(defaultTFName));
 
         // Set the current composite
@@ -597,15 +597,15 @@ void SMultipleTF::newPool()
     {
         {
             // Gets TF pools.
-            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+            const data::mt::locked_ptr< data::Composite > tfPools
+                = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            const data::Composite::sptr sTFPools = tfPools.get_shared();
             if(!this->hasPoolName(newName, sTFPools))
             {
                 // Create the new composite.
-                const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
-                const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
+                const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+                const data::Composite::sptr defaultComposite = data::Composite::New();
                 defaultComposite->getContainer()[newName] = defaultTf;
 
                 // Add a new composite.
@@ -617,7 +617,7 @@ void SMultipleTF::newPool()
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
-                for(::fwData::Composite::value_type elt : *tfPools)
+                for(data::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
@@ -655,26 +655,26 @@ void SMultipleTF::copyPool()
     {
         {
             // Gets TF pools.
-            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+            const data::mt::locked_ptr< data::Composite > tfPools
+                = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            const data::Composite::sptr sTFPools = tfPools.get_shared();
             if(!this->hasPoolName(newName, sTFPools))
             {
-                ::fwData::Object::sptr object = (*tfPools)[str];
-                const ::fwData::Composite::sptr currentTFPool = ::fwData::Composite::dynamicCast(object);
+                data::Object::sptr object                 = (*tfPools)[str];
+                const data::Composite::sptr currentTFPool = data::Composite::dynamicCast(object);
                 SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
 
                 // Copy the composite.
                 ::fwDataTools::helper::Composite compositeHelper(sTFPools);
                 {
-                    compositeHelper.add(newName, ::fwData::Object::copy(currentTFPool));
+                    compositeHelper.add(newName, data::Object::copy(currentTFPool));
                 }
                 compositeHelper.notify();
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
-                for(::fwData::Composite::value_type elt : *tfPools)
+                for(data::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
@@ -704,8 +704,8 @@ void SMultipleTF::reinitializePools()
 
     {
         // Get the composite.
-        const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-            = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+        const data::mt::locked_ptr< data::Composite > tfPools
+            = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
         ::fwDataTools::helper::Composite compositeHelper(tfPools.get_shared());
 
@@ -737,13 +737,13 @@ void SMultipleTF::renamePool()
     {
         {
             // Gets TF pools.
-            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+            const data::mt::locked_ptr< data::Composite > tfPools
+                = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            const data::Composite::sptr sTFPools = tfPools.get_shared();
             if(!this->hasPoolName(newName, sTFPools))
             {
-                ::fwData::Object::sptr object = (*tfPools)[str];
+                data::Object::sptr object = (*tfPools)[str];
 
                 // Rename the composite.
                 ::fwDataTools::helper::Composite compositeHelper(sTFPools);
@@ -753,7 +753,7 @@ void SMultipleTF::renamePool()
 
                 // Creates presets.
                 m_tfPoolsPreset->clear();
-                for(::fwData::Composite::value_type elt : *tfPools)
+                for(data::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
@@ -779,7 +779,7 @@ void SMultipleTF::renamePool()
 
 void SMultipleTF::importPool()
 {
-    const ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
+    const data::Composite::sptr tfPool = data::Composite::New();
 
     const ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
@@ -805,10 +805,10 @@ void SMultipleTF::importPool()
             std::string poolName(reader->getFile().filename().stem().string());
 
             // Get the composite.
-            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
-                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+            const data::mt::locked_ptr< data::Composite > tfPools
+                = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            const data::Composite::sptr sTFPools = tfPools.get_shared();
             if(this->hasPoolName(poolName, sTFPools))
             {
                 poolName = this->createPoolName(poolName, sTFPools);

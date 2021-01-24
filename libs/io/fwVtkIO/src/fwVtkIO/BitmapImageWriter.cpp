@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("Bitmap image writer"))
 {
 }
@@ -67,7 +67,7 @@ void BitmapImageWriter::write()
     SLM_ASSERT("The current object has expired.", !m_object.expired() );
     SLM_ASSERT("Unable to lock object", m_object.lock() );
 
-    const ::fwData::Image::csptr pImage = getConcreteObject();
+    const data::Image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkImageWriter > writer;
 

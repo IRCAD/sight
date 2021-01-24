@@ -27,9 +27,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Color.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Color.hpp>
+#include <data/Composite.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -50,7 +50,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -347,8 +347,8 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
     if(currentLayer)
     {
-        ::fwData::Color::sptr lightDiffuseColor  = ::fwData::Color::New();
-        ::fwData::Color::sptr lightSpecularColor = ::fwData::Color::New();
+        data::Color::sptr lightDiffuseColor  = data::Color::New();
+        data::Color::sptr lightSpecularColor = data::Color::New();
 
         ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightDiffuseColor,
                                                                                                lightSpecularColor);

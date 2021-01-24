@@ -28,7 +28,7 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 namespace fwDataTools
 {
@@ -55,12 +55,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(::fwData::Mesh::sptr mesh)
+    static sptr New(data::Mesh::sptr mesh)
     {
         return std::make_shared< ::fwDataTools::helper::Mesh >(mesh);
     }
 
-    FWDATATOOLS_API Mesh( ::fwData::Mesh::sptr mesh );
+    FWDATATOOLS_API Mesh( data::Mesh::sptr mesh );
 
     FWDATATOOLS_API virtual ~Mesh();
 
@@ -75,17 +75,17 @@ public:
      *
      * @return The id of the new point
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API  ::fwData::Mesh::PointId insertNextPoint(const ::fwData::Mesh::PointValueType p[3]);
+    FWDATATOOLS_API data::Mesh::PointId insertNextPoint(const data::Mesh::PointValueType p[3]);
 
     /**
      * @brief Insert a point into the mesh.
      * @see insertNextPoint
      */
-    FWDATATOOLS_API ::fwData::Mesh::PointId insertNextPoint(::fwData::Mesh::PointValueType x,
-                                                            ::fwData::Mesh::PointValueType y,
-                                                            ::fwData::Mesh::PointValueType z);
+    FWDATATOOLS_API data::Mesh::PointId insertNextPoint(data::Mesh::PointValueType x,
+                                                        data::Mesh::PointValueType y,
+                                                        data::Mesh::PointValueType z);
 
     /**
      * @brief Set a point coordinates.
@@ -94,18 +94,18 @@ public:
      * @param id point index
      * @param p point coordinates
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setPoint(::fwData::Mesh::PointId id, const ::fwData::Mesh::PointValueType p[3]);
+    FWDATATOOLS_API void setPoint(data::Mesh::PointId id, const data::Mesh::PointValueType p[3]);
 
     /**
      * @brief Set a point coordinates.
      * @see setPoint
      */
-    FWDATATOOLS_API void setPoint(::fwData::Mesh::PointId id,
-                                  ::fwData::Mesh::PointValueType x,
-                                  ::fwData::Mesh::PointValueType y,
-                                  ::fwData::Mesh::PointValueType z);
+    FWDATATOOLS_API void setPoint(data::Mesh::PointId id,
+                                  data::Mesh::PointValueType x,
+                                  data::Mesh::PointValueType y,
+                                  data::Mesh::PointValueType z);
 
     /**
      * @brief Set a point color.
@@ -117,9 +117,9 @@ public:
      * @param id point index
      * @param c color
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setPointColor(::fwData::Mesh::PointId id, const ::fwData::Mesh::ColorValueType c[4]);
+    FWDATATOOLS_API void setPointColor(data::Mesh::PointId id, const data::Mesh::ColorValueType c[4]);
 
     /**
      * @brief Set a cell color.
@@ -131,9 +131,9 @@ public:
      * @param id cell index
      * @param c color
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setCellColor(::fwData::Mesh::CellId id, const ::fwData::Mesh::ColorValueType c[4]);
+    FWDATATOOLS_API void setCellColor(data::Mesh::CellId id, const data::Mesh::ColorValueType c[4]);
 
     /**
      * @brief Set a point normal.
@@ -143,9 +143,9 @@ public:
      * @param id point index
      * @param n normal
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setPointNormal(::fwData::Mesh::PointId id, const ::fwData::Mesh::NormalValueType n[3]);
+    FWDATATOOLS_API void setPointNormal(data::Mesh::PointId id, const data::Mesh::NormalValueType n[3]);
 
     /**
      * @brief Set a cell normal.
@@ -155,9 +155,9 @@ public:
      * @param id cell index
      * @param n normal
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setCellNormal(::fwData::Mesh::CellId id, const ::fwData::Mesh::NormalValueType n[3]);
+    FWDATATOOLS_API void setCellNormal(data::Mesh::CellId id, const data::Mesh::NormalValueType n[3]);
 
     /**
      * @brief Set a point texCoord.
@@ -167,9 +167,9 @@ public:
      * @param id point index
      * @param t texCoord
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setPointTexCoord(::fwData::Mesh::PointId id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    FWDATATOOLS_API void setPointTexCoord(data::Mesh::PointId id, const data::Mesh::TexCoordValueType t[2]);
 
     /**
      * @brief Set a cell texCoord.
@@ -179,9 +179,9 @@ public:
      * @param id cell index
      * @param t texCoord
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API void setCellTexCoord(::fwData::Mesh::CellId id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    FWDATATOOLS_API void setCellTexCoord(data::Mesh::CellId id, const data::Mesh::TexCoordValueType t[2]);
 
     /**
      * @brief Insert a cell into the mesh.
@@ -190,69 +190,69 @@ public:
      *
      * @return The id of the new cell
      *
-     * @throw ::fwData::Exception
+     * @throw data::Exception
      */
-    FWDATATOOLS_API ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::CellTypesEnum type,
-                                                          const ::fwData::Mesh::CellId* cell,
-                                                          size_t nb );
+    FWDATATOOLS_API data::Mesh::CellId insertNextCell(data::Mesh::CellTypesEnum type,
+                                                      const data::Mesh::CellId* cell,
+                                                      size_t nb );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    FWDATATOOLS_API ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::PointId p);
+    FWDATATOOLS_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p);
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    FWDATATOOLS_API ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::PointId p1,
-                                                          ::fwData::Mesh::PointId p2 );
+    FWDATATOOLS_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
+                                                      data::Mesh::PointId p2 );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    FWDATATOOLS_API ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::PointId p1,
-                                                          ::fwData::Mesh::PointId p2,
-                                                          ::fwData::Mesh::PointId p3 );
+    FWDATATOOLS_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
+                                                      data::Mesh::PointId p2,
+                                                      data::Mesh::PointId p3 );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    FWDATATOOLS_API ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::PointId p1,
-                                                          ::fwData::Mesh::PointId p2,
-                                                          ::fwData::Mesh::PointId p3,
-                                                          ::fwData::Mesh::PointId p4,
-                                                          ::fwData::Mesh::CellTypesEnum type = ::fwData::Mesh::QUAD);
+    FWDATATOOLS_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
+                                                      data::Mesh::PointId p2,
+                                                      data::Mesh::PointId p3,
+                                                      data::Mesh::PointId p4,
+                                                      data::Mesh::CellTypesEnum type = data::Mesh::QUAD);
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    template <typename T> ::fwData::Mesh::CellId insertNextCell(::fwData::Mesh::CellTypesEnum type,
-                                                                const T& pointsBegin,
-                                                                const T& pointsEnd );
+    template <typename T> data::Mesh::CellId insertNextCell(data::Mesh::CellTypesEnum type,
+                                                            const T& pointsBegin,
+                                                            const T& pointsEnd );
 
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::PointsMultiArrayType          getPoints() const;
+    FWDATATOOLS_API data::Mesh::PointsMultiArrayType          getPoints() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellTypesMultiArrayType       getCellTypes() const;
+    FWDATATOOLS_API data::Mesh::CellTypesMultiArrayType       getCellTypes() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellDataMultiArrayType        getCellData() const;
+    FWDATATOOLS_API data::Mesh::CellDataMultiArrayType        getCellData() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellDataOffsetsMultiArrayType getCellDataOffsets() const;
+    FWDATATOOLS_API data::Mesh::CellDataOffsetsMultiArrayType getCellDataOffsets() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::PointColorsMultiArrayType     getPointColors() const;
+    FWDATATOOLS_API data::Mesh::PointColorsMultiArrayType     getPointColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellColorsMultiArrayType      getCellColors() const;
+    FWDATATOOLS_API data::Mesh::CellColorsMultiArrayType      getCellColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
+    FWDATATOOLS_API data::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
+    FWDATATOOLS_API data::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
+    FWDATATOOLS_API data::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATATOOLS_API ::fwData::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
+    FWDATATOOLS_API data::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
 
-    /// Returns the internal ::fwData::Mesh
-    FWDATATOOLS_API ::fwData::Mesh::csptr getMesh() const;
+    /// Returns the internal data::Mesh
+    FWDATATOOLS_API data::Mesh::csptr getMesh() const;
 
     /*!
      * @brief Return true if the mesh is closed.
@@ -262,7 +262,7 @@ public:
 
 protected:
 
-    ::fwData::Mesh::sptr m_mesh;
+    data::Mesh::sptr m_mesh;
 
     ::fwDataTools::helper::Array::sptr m_helperPoints;
     ::fwDataTools::helper::Array::sptr m_helperCellTypes;
@@ -279,4 +279,4 @@ protected:
 
 } // namespace helper
 
-} // namespace fwData
+} // namespace sight::data

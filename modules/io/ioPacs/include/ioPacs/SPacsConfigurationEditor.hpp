@@ -56,7 +56,7 @@ namespace ioPacs
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b config [::fwPacsIO::data::PacsConfiguration]: pacs configuration.
+ * - \b config [::fwPacsIOdata::PacsConfiguration]: pacs configuration.
  *
  * @subsection Configuration Configuration:
  * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just send the
@@ -99,7 +99,7 @@ private:
      * @brief Sends a modified signal on the configuration.
      * @param _pacsConfiguration the modified data .
      */
-    void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration);
+    void modifiedNotify(::fwPacsIOdata::PacsConfiguration::sptr _pacsConfiguration);
 
     /**
      * @brief Displays an information dialog.

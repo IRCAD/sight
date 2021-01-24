@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -53,7 +53,7 @@ public:
 private:
 
     void stressTestInrWithType(core::tools::Type type, int nbTest);
-    void checkSaveLoadInr( ::fwData::Image::sptr image );
+    void checkSaveLoadInr( data::Image::sptr image );
 };
 
 } //namespace ut

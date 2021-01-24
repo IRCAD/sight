@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ActivitySeriesTest.hpp"
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ActivitySeriesTest );
@@ -62,7 +62,7 @@ void ActivitySeriesTest::activityConfigIdTest()
 
 void ActivitySeriesTest::dataTest()
 {
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
     CPPUNIT_ASSERT(m_series);
     CPPUNIT_ASSERT(data);
     m_series->setData(data);

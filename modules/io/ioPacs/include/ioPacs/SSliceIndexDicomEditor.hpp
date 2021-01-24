@@ -59,11 +59,11 @@ namespace ioPacs
    @endcode
  *
  * @subsection Input Input:
- * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
  * - \b series [::fwMedData::DicomSeries]: DICOM series where to extract the images.
- * - \b image [::fwData::Image]: downloaded slice.
+ * - \b image [data::Image]: downloaded slice.
  *
  * @subsection Configuration Configuration:
  * - \b delay (optional, unsigned, default=500): delay to wait between each slice move.
@@ -135,7 +135,7 @@ private:
      * @param _dicomSeries the dicom series instance.
      * @param _selectedSliceIndex index of the slice to read.
      */
-    void readSlice(const ::fwData::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
+    void readSlice(const data::mt::locked_ptr< ::fwMedData::DicomSeries >& _dicomSeries,
                    std::size_t _selectedSliceIndex) const;
 
     /// Contains the worker of the series enquire thread.

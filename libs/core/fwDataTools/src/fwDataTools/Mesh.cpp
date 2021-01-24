@@ -60,20 +60,20 @@ void Mesh::initRand()
 
 //------------------------------------------------------------------------------
 
-bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell)
+bool Mesh::hasUniqueCellType(data::Mesh::csptr mesh, data::Mesh::CellTypes cell)
 {
-    return hasUniqueCellType(mesh, static_cast< ::fwData::Mesh::CellTypes >(cell));
+    return hasUniqueCellType(mesh, static_cast< data::Mesh::CellTypes >(cell));
 }
 
 //------------------------------------------------------------------------------
 
-bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell)
+bool Mesh::hasUniqueCellType(data::Mesh::csptr mesh, data::Mesh::CellType cell)
 {
     bool res            = true;
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+    auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+    const auto itrEnd = mesh->end< data::iterator::ConstCellIterator >();
 
     for(; itr != itrEnd; ++itr)
     {
@@ -98,14 +98,14 @@ Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Poin
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::CellId regionMin,
-                               const ::fwData::Mesh::CellId regionMax)
+void generateRegionCellNormals(const data::Mesh::sptr& mesh, const data::Mesh::CellId regionMin,
+                               const data::Mesh::CellId regionMax)
 {
 
-    const auto pointBegin = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointBegin = mesh->begin< data::iterator::ConstPointIterator >();
 
-    auto cellItr          = mesh->begin< ::fwData::iterator::CellIterator >() + regionMin;
-    const auto cellItrEnd = mesh->begin< ::fwData::iterator::CellIterator >() + regionMax;
+    auto cellItr          = mesh->begin< data::iterator::CellIterator >() + regionMin;
+    const auto cellItrEnd = mesh->begin< data::iterator::CellIterator >() + regionMax;
 
     const Vector<float> vZero;
 
@@ -113,15 +113,15 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
     {
         Vector<float> n;
 
-        const ::fwData::Mesh::CellType type = *cellItr->type;
+        const data::Mesh::CellType type = *cellItr->type;
         switch (type)
         {
-            case ::fwData::Mesh::CellType::NO_CELL:
-            case ::fwData::Mesh::CellType::POINT:
-            case ::fwData::Mesh::CellType::EDGE:
+            case data::Mesh::CellType::NO_CELL:
+            case data::Mesh::CellType::POINT:
+            case data::Mesh::CellType::EDGE:
                 n = vZero;
                 break;
-            case ::fwData::Mesh::CellType::TRIANGLE:
+            case data::Mesh::CellType::TRIANGLE:
             {
                 auto pItr = pointBegin + cellItr->pointIdx[0];
                 const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
@@ -132,9 +132,9 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                 n = computeTriangleNormal(p1, p2, p3);
             }
             break;
-            case ::fwData::Mesh::CellType::QUAD:
-            case ::fwData::Mesh::CellType::POLY:
-            case ::fwData::Mesh::CellType::TETRA:
+            case data::Mesh::CellType::QUAD:
+            case data::Mesh::CellType::POLY:
+            case data::Mesh::CellType::TETRA:
             {
                 const auto nbPoints = cellItr->nbPoints;
                 for (size_t i = 0; i < nbPoints; ++i)
@@ -188,15 +188,15 @@ void vectorSum( std::vector< std::vector<T> >& vectors, size_t regionMin, size_t
 
 //------------------------------------------------------------------------------
 
-void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
+void Mesh::generateCellNormals(data::Mesh::sptr mesh)
 {
-    const ::fwData::Mesh::Size numberOfCells = mesh->getNumberOfCells();
+    const data::Mesh::Size numberOfCells = mesh->getNumberOfCells();
     if(numberOfCells > 0)
     {
         if (!mesh->hasCellNormals())
         {
             mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
-                         ::fwData::Mesh::Attributes::CELL_NORMALS);
+                         data::Mesh::Attributes::CELL_NORMALS);
         }
 
         const auto dumpLock = mesh->lock();
@@ -214,16 +214,16 @@ typedef std::vector< std::vector< float > > FloatVectors;
 //------------------------------------------------------------------------------
 
 void generateRegionCellNormalsByPoints(FloatVectors& normalsData, size_t dataId,
-                                       const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::CellId regionMin,
-                                       const ::fwData::Mesh::CellId regionMax)
+                                       const data::Mesh::sptr& mesh, const data::Mesh::CellId regionMin,
+                                       const data::Mesh::CellId regionMax)
 {
     FloatVectors::value_type& normalsResults = normalsData[dataId];
 
-    const ::fwData::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
+    const data::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
     normalsResults.resize(3*nbOfPoints, 0.f);
 
-    auto cellItr          = mesh->begin< ::fwData::iterator::ConstCellIterator >() + regionMin;
-    const auto cellItrEnd = mesh->begin< ::fwData::iterator::ConstCellIterator >() + regionMax;
+    auto cellItr          = mesh->begin< data::iterator::ConstCellIterator >() + regionMin;
+    const auto cellItrEnd = mesh->begin< data::iterator::ConstCellIterator >() + regionMax;
 
     const Vector<float> vZero;
 
@@ -242,18 +242,18 @@ void generateRegionCellNormalsByPoints(FloatVectors& normalsData, size_t dataId,
 //------------------------------------------------------------------------------
 
 void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
-                                        ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::CellId regionMin,
-                                        const ::fwData::Mesh::CellId regionMax)
+                                        data::Mesh::sptr mesh, const data::Mesh::CellId regionMin,
+                                        const data::Mesh::CellId regionMax)
 {
-    Vector< ::fwData::Mesh::NormalValueType >* normalSum =
-        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsData.begin()) );
+    Vector< data::Mesh::NormalValueType >* normalSum =
+        reinterpret_cast< Vector< data::Mesh::NormalValueType >* >( &(*normalsData.begin()) );
 
-    auto pointItr          = mesh->begin< ::fwData::iterator::PointIterator >() + regionMin;
-    const auto pointItrEnd = mesh->begin< ::fwData::iterator::PointIterator >() + regionMax;
+    auto pointItr          = mesh->begin< data::iterator::PointIterator >() + regionMin;
+    const auto pointItrEnd = mesh->begin< data::iterator::PointIterator >() + regionMax;
 
-    for ( ::fwData::Mesh::CellId i = regionMin; i < regionMax; ++i, ++pointItr)
+    for ( data::Mesh::CellId i = regionMin; i < regionMax; ++i, ++pointItr)
     {
-        Vector< ::fwData::Mesh::NormalValueType > normal = normalSum[i];
+        Vector< data::Mesh::NormalValueType > normal = normalSum[i];
 
         normal.normalize();
         pointItr->normal->nx = normal.x;
@@ -264,12 +264,12 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
 
 //------------------------------------------------------------------------------
 
-void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
+void Mesh::generatePointNormals(data::Mesh::sptr mesh)
 {
-    const ::fwData::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
+    const data::Mesh::Size nbOfPoints = mesh->getNumberOfPoints();
     if(nbOfPoints > 0)
     {
-        const ::fwData::Mesh::Size numberOfCells = mesh->getNumberOfCells();
+        const data::Mesh::Size numberOfCells = mesh->getNumberOfCells();
 
         // To generate point normals, we need to use the cell normals
         if (!mesh->hasCellNormals())
@@ -280,7 +280,7 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
         if (!mesh->hasPointNormals())
         {
             mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
-                         ::fwData::Mesh::Attributes::POINT_NORMALS);
+                         data::Mesh::Attributes::POINT_NORMALS);
         }
 
         const auto dumpLock = mesh->lock();
@@ -312,10 +312,10 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 template <typename T>
-void regionShakeNormals(T normals, const ::fwData::Mesh::CellId regionMin, const ::fwData::Mesh::CellId regionMax)
+void regionShakeNormals(T normals, const data::Mesh::CellId regionMin, const data::Mesh::CellId regionMax)
 {
     RandFloat randFloat;
-    for (::fwData::Mesh::CellId i = regionMin; i < regionMax; ++i)
+    for (data::Mesh::CellId i = regionMin; i < regionMax; ++i)
     {
         Vector<float> v(randFloat(), randFloat(), randFloat());
         normals[i] += v;
@@ -325,7 +325,7 @@ void regionShakeNormals(T normals, const ::fwData::Mesh::CellId regionMin, const
 
 //------------------------------------------------------------------------------
 
-void Mesh::shakeNormals(::fwData::Array::sptr array)
+void Mesh::shakeNormals(data::Array::sptr array)
 {
 
     if(array
@@ -355,12 +355,12 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-void Mesh::shakePointNormals(::fwData::Mesh::sptr mesh)
+void Mesh::shakePointNormals(data::Mesh::sptr mesh)
 {
     const auto dumpLock = mesh->lock();
 
-    auto pointIter          = mesh->begin< ::fwData::iterator::PointIterator >();
-    const auto pointIterEnd = mesh->begin< ::fwData::iterator::PointIterator >();
+    auto pointIter          = mesh->begin< data::iterator::PointIterator >();
+    const auto pointIterEnd = mesh->begin< data::iterator::PointIterator >();
 
     RandFloat randFloat;
 
@@ -378,12 +378,12 @@ void Mesh::shakePointNormals(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void Mesh::shakeCellNormals(::fwData::Mesh::sptr mesh)
+void Mesh::shakeCellNormals(data::Mesh::sptr mesh)
 {
     const auto dumpLock = mesh->lock();
 
-    auto cellIter          = mesh->begin< ::fwData::iterator::CellIterator >();
-    const auto cellIterEnd = mesh->begin< ::fwData::iterator::CellIterator >();
+    auto cellIter          = mesh->begin< data::iterator::CellIterator >();
+    const auto cellIterEnd = mesh->begin< data::iterator::CellIterator >();
 
     RandFloat randFloat;
 
@@ -401,18 +401,18 @@ void Mesh::shakeCellNormals(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
+void Mesh::colorizeMeshPoints(data::Mesh::sptr mesh)
 {
     if (!mesh->hasPointColors())
     {
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::POINT_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::POINT_COLORS);
     }
 
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    auto itr          = mesh->begin< data::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< data::iterator::PointIterator >();
 
     for (; itr != itrEnd; ++itr)
     {
@@ -424,18 +424,18 @@ void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 }
 //------------------------------------------------------------------------------
 
-void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
+void Mesh::colorizeMeshCells(data::Mesh::sptr mesh)
 {
     if (!mesh->hasCellColors())
     {
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+                     mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
     }
 
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< ::fwData::iterator::CellIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::CellIterator >();
+    auto itr          = mesh->begin< data::iterator::CellIterator >();
+    const auto itrEnd = mesh->end< data::iterator::CellIterator >();
 
     for (; itr != itrEnd; ++itr)
     {
@@ -448,14 +448,14 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
+void Mesh::shakePoint(data::Mesh::sptr mesh)
 {
     RandFloat randFloat;
 
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    auto itr          = mesh->begin< data::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< data::iterator::PointIterator >();
 
     for (; itr != itrEnd; ++itr)
     {
@@ -467,16 +467,16 @@ void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
-                      ::fwData::TransformationMatrix3D::csptr t )
+void Mesh::transform( data::Mesh::csptr inMesh, data::Mesh::sptr outMesh,
+                      data::TransformationMatrix3D::csptr t )
 {
     const auto inDumpLock  = inMesh->lock();
     const auto outDumpLock = outMesh->lock();
 
-    auto inItr = inMesh->begin< ::fwData::iterator::ConstPointIterator >();
+    auto inItr = inMesh->begin< data::iterator::ConstPointIterator >();
 
-    auto itr          = outMesh->begin< ::fwData::iterator::PointIterator >();
-    const auto itrEnd = outMesh->end< ::fwData::iterator::PointIterator >();
+    auto itr          = outMesh->begin< data::iterator::PointIterator >();
+    const auto itrEnd = outMesh->end< data::iterator::PointIterator >();
 
     const ::glm::dmat4x4 matrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(t);
 
@@ -511,10 +511,10 @@ void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh
     {
         SLM_ASSERT("out mesh must have normals", outMesh->hasCellNormals());
 
-        auto inCellItr = inMesh->begin< ::fwData::iterator::ConstCellIterator >();
+        auto inCellItr = inMesh->begin< data::iterator::ConstCellIterator >();
 
-        auto itrCell          = outMesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itrCellEnd = outMesh->end< ::fwData::iterator::CellIterator >();
+        auto itrCell          = outMesh->begin< data::iterator::CellIterator >();
+        const auto itrCellEnd = outMesh->end< data::iterator::CellIterator >();
 
         for (; itrCell != itrCellEnd; ++itrCell, ++inCellItr)
         {
@@ -530,22 +530,22 @@ void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh
 
 //------------------------------------------------------------------------------
 
-void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t )
+void Mesh::transform( data::Mesh::sptr mesh, data::TransformationMatrix3D::csptr t )
 {
     Mesh::transform(mesh, mesh, t);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR, const std::uint8_t colorG,
+void Mesh::colorizeMeshPoints( const data::Mesh::sptr& mesh, const std::uint8_t colorR, const std::uint8_t colorG,
                                const std::uint8_t colorB, const std::uint8_t colorA)
 {
     const auto dumpLock = mesh->lock();
 
     SLM_ASSERT("color array must be allocated", mesh->hasPointColors());
 
-    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    auto itr          = mesh->begin< data::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< data::iterator::PointIterator >();
 
     for (; itr != itrEnd; ++itr)
     {
@@ -555,23 +555,23 @@ void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& mesh, const std::uint
         itr->rgba->a = colorA;
     }
 
-    auto sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
-        ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+    auto sig = mesh->signal< data::Mesh::PointColorsModifiedSignalType >(
+        data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& _mesh, const std::vector< size_t >& _vectorNumTriangle,
+void Mesh::colorizeMeshPoints( const data::Mesh::sptr& _mesh, const std::vector< size_t >& _vectorNumTriangle,
                                const std::uint8_t _colorR, const std::uint8_t _colorG, const std::uint8_t _colorB,
                                const std::uint8_t _colorA)
 {
     const auto dumpLock = _mesh->lock();
 
-    auto itrCell          = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto itrCellEnd = _mesh->end< ::fwData::iterator::ConstCellIterator >();
+    auto itrCell          = _mesh->begin< data::iterator::ConstCellIterator >();
+    const auto itrCellEnd = _mesh->end< data::iterator::ConstCellIterator >();
 
-    auto itrPoint = _mesh->begin< ::fwData::iterator::PointIterator >();
+    auto itrPoint = _mesh->begin< data::iterator::PointIterator >();
 
     for (size_t index : _vectorNumTriangle)
     {
@@ -600,16 +600,16 @@ void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& _mesh, const std::vec
         point3->rgba->a = _colorA;
     }
 
-    ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
-    sig = _mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
-        ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+    data::Mesh::PointColorsModifiedSignalType::sptr sig;
+    sig = _mesh->signal< data::Mesh::PointColorsModifiedSignalType >(
+        data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
 void Mesh::colorizeMeshCells(
-    const ::fwData::Mesh::sptr& mesh,
+    const data::Mesh::sptr& mesh,
     const std::uint8_t colorR,
     const std::uint8_t colorG,
     const std::uint8_t colorB,
@@ -619,8 +619,8 @@ void Mesh::colorizeMeshCells(
 
     SLM_ASSERT("color array must be allocated", mesh->hasCellColors());
 
-    auto itr          = mesh->begin< ::fwData::iterator::CellIterator >();
-    const auto itrEnd = mesh->end< ::fwData::iterator::CellIterator >();
+    auto itr          = mesh->begin< data::iterator::CellIterator >();
+    const auto itrEnd = mesh->end< data::iterator::CellIterator >();
 
     for (; itr != itrEnd; ++itr)
     {
@@ -630,15 +630,15 @@ void Mesh::colorizeMeshCells(
         itr->rgba->a = colorA;
     }
 
-    auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
-        ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
+    auto sig = mesh->signal< data::Mesh::CellColorsModifiedSignalType >(
+        data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::colorizeMeshCells(
-    const ::fwData::Mesh::sptr& mesh,
+    const data::Mesh::sptr& mesh,
     const std::vector < size_t >& triangleIndexVector,
     const std::uint8_t colorR,
     const std::uint8_t colorG,
@@ -647,8 +647,8 @@ void Mesh::colorizeMeshCells(
 {
     const auto dumpLock = mesh->lock();
 
-    auto itrCell          = mesh->begin< ::fwData::iterator::CellIterator >();
-    const auto itrCellEnd = mesh->end< ::fwData::iterator::CellIterator >();
+    auto itrCell          = mesh->begin< data::iterator::CellIterator >();
+    const auto itrCellEnd = mesh->end< data::iterator::CellIterator >();
 
     for (size_t index : triangleIndexVector)
     {
@@ -660,25 +660,25 @@ void Mesh::colorizeMeshCells(
         cell->rgba->a = colorA;
     }
 
-    auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
-        ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
+    auto sig = mesh->signal< data::Mesh::CellColorsModifiedSignalType >(
+        data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-bool Mesh::isClosed(const ::fwData::Mesh::csptr& mesh)
+bool Mesh::isClosed(const data::Mesh::csptr& mesh)
 {
     bool isClosed = true;
 
-    typedef std::pair< ::fwData::Mesh::CellId, ::fwData::Mesh::CellId >  Edge;
+    typedef std::pair< data::Mesh::CellId, data::Mesh::CellId >  Edge;
     typedef std::map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
 
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    const auto itrEnd = mesh->end < ::fwData::iterator::ConstCellIterator >();
+    auto itr          = mesh->begin< data::iterator::ConstCellIterator >();
+    const auto itrEnd = mesh->end < data::iterator::ConstCellIterator >();
 
     size_t count = 0;
     for (; itr != itrEnd; ++itr)

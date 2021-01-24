@@ -28,9 +28,9 @@
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Object.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Image.hpp>
+#include <data/Object.hpp>
+#include <data/PointList.hpp>
 
 #include <list>
 
@@ -43,17 +43,17 @@ namespace arData
  * and the second one contains pointList
  *
  */
-class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
+class ARDATA_CLASS_API CalibrationInfo : public data::Object
 {
 public:
 
-    fwCoreClassMacro(CalibrationInfo, ::fwData::Object, ::fwData::factory::New< CalibrationInfo >)
+    fwCoreClassMacro(CalibrationInfo, data::Object, data::factory::New< CalibrationInfo >)
 
     fwCampMakeFriendDataMacro((arData)(CalibrationInfo));
 
     ///typedefs
-    typedef std::list< ::fwData::Image::sptr > ImageContainerType;
-    typedef std::list< ::fwData::PointList::sptr > PointListContainerType;
+    typedef std::list< data::Image::sptr > ImageContainerType;
+    typedef std::list< data::PointList::sptr > PointListContainerType;
 
     /**
      * @name Signals API
@@ -76,22 +76,22 @@ public:
      */
 
     ///Constructor
-    ARDATA_API CalibrationInfo(::fwData::Object::Key key);
+    ARDATA_API CalibrationInfo(data::Object::Key key);
     ///Destructor
     ARDATA_API ~CalibrationInfo();
 
     /// Defines shallow copy
-    ARDATA_API void shallowCopy(const ::fwData::Object::csptr& _source ) override;
+    ARDATA_API void shallowCopy(const data::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    ARDATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief add an Image and a pointList into CalibrationInfo
      * @param[in] img the new image
      * @param[in] pl the corresponding point list
      */
-    ARDATA_API void addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr& pl );
+    ARDATA_API void addRecord( const data::Image::sptr& img, const data::PointList::sptr& pl );
 
     /**
      * @brief remove the desired record (both image and pointList)
@@ -114,7 +114,7 @@ public:
      * @param[in] img image
      * @return pointList corresponding to the image
      */
-    ARDATA_API ::fwData::PointList::sptr getPointList( const ::fwData::Image::sptr& img) const;
+    ARDATA_API data::PointList::sptr getPointList( const data::Image::sptr& img) const;
 
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
@@ -122,7 +122,7 @@ public:
      * @param[in] pl the pointList
      * @return image corresponding to the pointList
      */
-    ARDATA_API ::fwData::Image::sptr getImage( const ::fwData::PointList::sptr& pl) const;
+    ARDATA_API data::Image::sptr getImage( const data::PointList::sptr& pl) const;
 
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
@@ -130,7 +130,7 @@ public:
      * @param[in] idx index of image
      * @return image corresponding to the index
      */
-    ARDATA_API ::fwData::Image::sptr getImage(size_t idx) const;
+    ARDATA_API data::Image::sptr getImage(size_t idx) const;
 
 protected:
     ///List of Image

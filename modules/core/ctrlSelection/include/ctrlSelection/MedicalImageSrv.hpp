@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace ctrlSelection
        </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image to be converted into a medical image.
+ * - \b image [data::Image]: image to be converted into a medical image.
  */
 class CTRLSELECTION_CLASS_API MedicalImageSrv : public ::fwServices::IController
 {

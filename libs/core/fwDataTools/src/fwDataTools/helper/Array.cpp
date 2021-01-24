@@ -28,11 +28,11 @@ namespace fwDataTools
 namespace helper
 {
 
-Array::Array(const ::fwData::Array::sptr& array ) :
+Array::Array(const data::Array::sptr& array ) :
     m_array(array)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
-                      "::fwData::Array", "22.0");
+                      "data::Array", "22.0");
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
@@ -85,7 +85,7 @@ void Array::setBuffer(
     void* buf,
     bool takeOwnership,
     const core::tools::Type& type,
-    const ::fwData::Array::SizeType& size,
+    const data::Array::SizeType& size,
     size_t nbOfComponents,
     core::memory::BufferAllocationPolicy::sptr policy)
 {
@@ -123,7 +123,7 @@ const char* Array::end() const
 
 //-----------------------------------------------------------------------------
 
-char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t )
+char* Array::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t )
 {
     size_t sizeOf = m_array->getType().sizeOf();
     size_t offset = m_array->getBufferOffset(id, component, sizeOf);
@@ -133,7 +133,7 @@ char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t componen
 
 //------------------------------------------------------------------------------
 
-const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t ) const
+const char* Array::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t ) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);
@@ -143,7 +143,7 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t co
 
 //------------------------------------------------------------------------------
 
-void Array::setItem(const ::fwData::Array::IndexType& id, const void* value)
+void Array::setItem(const data::Array::IndexType& id, const void* value)
 {
     size_t sizeOf   = m_array->getType().sizeOf();
     const char* val = static_cast<const char*>(value);
@@ -152,7 +152,7 @@ void Array::setItem(const ::fwData::Array::IndexType& id, const void* value)
 }
 //------------------------------------------------------------------------------
 
-void Array::setItem(const ::fwData::Array::IndexType& id, const size_t component, const void* value)
+void Array::setItem(const data::Array::IndexType& id, const size_t component, const void* value)
 {
     size_t sizeOf   = m_array->getType().sizeOf();
     const char* val = static_cast<const char*>(value);
@@ -162,7 +162,7 @@ void Array::setItem(const ::fwData::Array::IndexType& id, const size_t component
 
 //------------------------------------------------------------------------------
 
-void* Array::getItem(const ::fwData::Array::IndexType& id, const size_t component)
+void* Array::getItem(const data::Array::IndexType& id, const size_t component)
 {
     size_t sizeOf = m_array->getType().sizeOf();
     char* item    = this->getBufferPtr(id, component, sizeOf);
@@ -171,7 +171,7 @@ void* Array::getItem(const ::fwData::Array::IndexType& id, const size_t componen
 
 //------------------------------------------------------------------------------
 
-void Array::getItem(const ::fwData::Array::IndexType& id, void* value) const
+void Array::getItem(const data::Array::IndexType& id, void* value) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, 0, sizeOf);
@@ -181,7 +181,7 @@ void Array::getItem(const ::fwData::Array::IndexType& id, void* value) const
 
 //------------------------------------------------------------------------------
 
-void Array::getItem(const ::fwData::Array::IndexType& id, const size_t component, void* value) const
+void Array::getItem(const data::Array::IndexType& id, const size_t component, void* value) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, component, sizeOf);

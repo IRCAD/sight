@@ -26,14 +26,14 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -153,7 +153,7 @@ private:
      * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
      * @param[in] _mesh : const pointer of the data mesh.
      */
-    void writeMesh(const std::filesystem::path& _filename, const ::fwData::Mesh::csptr _mesh);
+    void writeMesh(const std::filesystem::path& _filename, const data::Mesh::csptr _mesh);
 
     /// Job Created signal
     SPTR(JobCreatedSignalType) m_sigJobCreated;

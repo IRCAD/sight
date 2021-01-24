@@ -28,8 +28,8 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 namespace fwDataTools
 {
@@ -69,20 +69,20 @@ public:
      * Set the current transfer function to the default grey-level if no transfer function was set (using
      * setTransferFunction() ).
      */
-    FWDATATOOLS_API void createTransferFunction( ::fwData::Image::sptr image );
+    FWDATATOOLS_API void createTransferFunction( data::Image::sptr image );
 
     /// Set the current TransferFunction
-    FWDATATOOLS_API void setTransferFunction(const fwData::TransferFunction::sptr&);
+    FWDATATOOLS_API void setTransferFunction(const data::TransferFunction::sptr&);
 
     /**
      * @brief Sets the transfer function, creates one if _tf is null (@see createTransferFunction).
      *
      * Connects the TF's signals to the updateTFPoints and updateTFWindowing slots.
      */
-    FWDATATOOLS_API void setOrCreateTF(const ::fwData::TransferFunction::sptr&, const fwData::Image::sptr&);
+    FWDATATOOLS_API void setOrCreateTF(const data::TransferFunction::sptr&, const data::Image::sptr&);
 
     /// Get the current transfer function
-    FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
+    FWDATATOOLS_API data::TransferFunction::sptr getTransferFunction() const;
 
     /// Install connections to listen TF modifications
     FWDATATOOLS_API void installTFConnections();
@@ -123,7 +123,7 @@ protected:
 private:
 
     /// Transfer function selection
-    ::fwData::TransferFunction::wptr m_transferFunction;
+    data::TransferFunction::wptr m_transferFunction;
 
     /// Connections to the transfer function
     core::com::helper::SigSlotConnection m_tfConnections;

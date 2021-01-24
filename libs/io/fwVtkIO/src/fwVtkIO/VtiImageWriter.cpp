@@ -44,7 +44,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 VtiImageWriter::VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTK Image Writer"))
 {
 }
@@ -64,7 +64,7 @@ void VtiImageWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::Image::csptr pImage = getConcreteObject();
+    data::Image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkXMLImageDataWriter > writer = vtkSmartPointer< vtkXMLImageDataWriter >::New();
     vtkSmartPointer< vtkImageData > vtkImage        = vtkSmartPointer< vtkImageData >::New();

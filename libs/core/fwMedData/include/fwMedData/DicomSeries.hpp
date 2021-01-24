@@ -28,7 +28,7 @@
 
 #include <core/memory/BufferObject.hpp>
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 #include <filesystem>
 
@@ -45,7 +45,7 @@ class FWMEDDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 
 public:
 
-    fwCoreClassMacro(DicomSeries, ::fwData::Object, ::fwData::factory::New< DicomSeries >)
+    fwCoreClassMacro(DicomSeries, data::Object, data::factory::New< DicomSeries >)
 
     fwCampMakeFriendDataMacro((fwMedData)(DicomSeries))
 
@@ -59,7 +59,7 @@ public:
      * @brief Creates the DICOM series.
      * @param _key private construction key.
      */
-    FWMEDDATA_API DicomSeries(::fwData::Object::Key _key);
+    FWMEDDATA_API DicomSeries(data::Object::Key _key);
 
     /// Destroys the DICOM series.
     FWMEDDATA_API virtual ~DicomSeries() override;
@@ -68,14 +68,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a DICOM path.

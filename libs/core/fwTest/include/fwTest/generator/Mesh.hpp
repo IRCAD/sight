@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 namespace fwTest
 {
@@ -41,7 +41,7 @@ class Mesh
 
 public:
 
-    typedef std::map< std::array<float, 3>, ::fwData::Mesh::PointId> PointsMapType;
+    typedef std::map< std::array<float, 3>, data::Mesh::PointId> PointsMapType;
 
     /**
      * @brief Initialize 'rand' seed
@@ -52,56 +52,56 @@ public:
      * @brief Generate a mesh.
      * @param mesh mesh to generate
      */
-    FWTEST_API static void generateMesh( const ::fwData::Mesh::sptr& mesh );
+    FWTEST_API static void generateMesh( const data::Mesh::sptr& mesh );
 
     /**
      * @brief Generate a quad mesh.
      *
      * This method generates synthetic mesh with quads (two faces of a cube).
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with quad cells.
+     * @param[out]  mesh data::Mesh empty mesh structure to fill with quad cells.
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     FWTEST_API static void generateQuadMesh(
-        const ::fwData::Mesh::sptr& mesh,
-        ::fwData::Mesh::Attributes attributes = ::fwData::Mesh::Attributes::NONE);
+        const data::Mesh::sptr& mesh,
+        data::Mesh::Attributes attributes = data::Mesh::Attributes::NONE);
 
     /**
      * @brief Generate a triangle mesh
      *
      * This method generates synthetic mesh with triangles (two faces of a cube).
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with triangle cell.
+     * @param[out]  mesh data::Mesh empty mesh structure to fill with triangle cell.
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     FWTEST_API static void generateTriangleMesh(
-        const ::fwData::Mesh::sptr& mesh,
-        ::fwData::Mesh::Attributes attributes = ::fwData::Mesh::Attributes::NONE);
+        const data::Mesh::sptr& mesh,
+        data::Mesh::Attributes attributes = data::Mesh::Attributes::NONE);
 
     /**
      * @brief Generate a mesh with quad and triangle cells.
      *
      * This method generates synthetic mesh with triangles and quads (four faces of a cube).
      *
-     * @param[out]  mesh fwData::Mesh empty mesh structure to fill with quad and triangle cells.
+     * @param[out]  mesh data::Mesh empty mesh structure to fill with quad and triangle cells.
      * @param[in]  attributes attributes of the mesh (POINT_COLORS, POINT_NORMALS, ...)
      */
     FWTEST_API static void generateTriangleQuadMesh(
-        const ::fwData::Mesh::sptr& mesh,
-        ::fwData::Mesh::Attributes attributes = ::fwData::Mesh::Attributes::NONE);
+        const data::Mesh::sptr& mesh,
+        data::Mesh::Attributes attributes = data::Mesh::Attributes::NONE);
 
 private:
 
     /**
      * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
      *
-     * @param[out]  mesh fwData::Mesh Mesh structure to fill with quad cells.
+     * @param[out]  mesh data::Mesh Mesh structure to fill with quad cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
      * @param[in]   nbPointsByEdge size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
 
-    static void addQuadMesh(const ::fwData::Mesh::sptr& mesh,
+    static void addQuadMesh(const data::Mesh::sptr& mesh,
                             PointsMapType& points,
                             size_t nbPointsByEdge = 10,
                             float edgeDim         = 100.f);
@@ -109,25 +109,25 @@ private:
     /**
      * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
      *
-     * @param[out]  mesh fwData::Mesh Mesh structure to fill with triangle cells.
+     * @param[out]  mesh data::Mesh Mesh structure to fill with triangle cells.
      * @param[in]   points PointsMapType Point registration map used to not create point which already in mesh buffer.
      * @param[in]   nbPointsByEdge size_t Number of points by edge.
      * @param[in]   edgeDim float Edge dimension in 3D world.
      */
-    static void addTriangleMesh(const ::fwData::Mesh::sptr& mesh,
+    static void addTriangleMesh(const data::Mesh::sptr& mesh,
                                 PointsMapType& points,
                                 size_t nbPointsByEdge = 10,
                                 float edgeDim         = 100.f);
 
-    static ::fwData::Mesh::PointId addPoint(const fwData::Mesh::PointValueType* pt,
-                                            const ::fwData::Mesh::sptr& mesh,
-                                            PointsMapType& points);
+    static data::Mesh::PointId addPoint(const data::Mesh::PointValueType* pt,
+                                        const data::Mesh::sptr& mesh,
+                                        PointsMapType& points);
     /**
      * @brief Shake points of the mesh.
      *
-     * @param[out]  mesh fwData::Mesh structure to shake.
+     * @param[out]  mesh data::Mesh structure to shake.
      */
-    static void shakePoints(const ::fwData::Mesh::sptr& mesh);
+    static void shakePoints(const data::Mesh::sptr& mesh);
 };
 
 } // namespace generator

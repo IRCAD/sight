@@ -26,9 +26,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -44,7 +44,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, ::fwData::Image )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, data::Image )
 
 //------------------------------------------------------------------------------
 
@@ -87,18 +87,18 @@ void InrImageReaderService::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
         this->setFile(result->getPath());
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
     else
     {
@@ -116,7 +116,7 @@ void InrImageReaderService::info(std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
-                                         const ::fwData::Image::sptr& _pImg )
+                                         const data::Image::sptr& _pImg )
 {
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
@@ -156,7 +156,7 @@ void InrImageReaderService::updating()
 
     if( this->hasLocationDefined() )
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
@@ -181,10 +181,10 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+    data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
-    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

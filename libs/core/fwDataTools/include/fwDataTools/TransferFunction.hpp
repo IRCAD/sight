@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <fwData/TransferFunction.hpp>
+#include <data/TransferFunction.hpp>
 
 namespace fwDataTools
 {
@@ -43,12 +43,12 @@ public:
      * @brief Generate a drawing tf with value between 0 and 255.
      * @param tf  transferFunction to generate
      */
-    FWDATATOOLS_API static void generateDrawingTF(::fwData::TransferFunction::sptr tf);
+    FWDATATOOLS_API static void generateDrawingTF(data::TransferFunction::sptr tf);
 
 protected:
 
     /// Return a map <value, color> used to generate drawing TF
-    FWDATATOOLS_API static ::fwData::TransferFunction::TFDataType getDrawingTFColors();
+    FWDATATOOLS_API static data::TransferFunction::TFDataType getDrawingTFColors();
 
 };
 

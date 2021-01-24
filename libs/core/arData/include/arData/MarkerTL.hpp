@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ namespace arData
 class ARDATA_CLASS_API MarkerTL : public ::arData::GenericTL< float[8] >
 {
 public:
-    fwCoreClassMacro(MarkerTL, ::arData::TimeLine, ::fwData::factory::New< MarkerTL >);
+    fwCoreClassMacro(MarkerTL, ::arData::TimeLine, data::factory::New< MarkerTL >)
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    ARDATA_API MarkerTL( ::fwData::Object::Key key ) :
+    ARDATA_API MarkerTL( data::Object::Key key ) :
         ::arData::GenericTL< float[8] >(key)
     {
     }

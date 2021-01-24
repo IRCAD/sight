@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <fwActivities/validator/registry/macros.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <fwActivities/validator/registry/macros.hpp>
 
 namespace validators
 {
@@ -53,7 +53,7 @@ StereoCamera::~StereoCamera()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType StereoCamera::validate(const ::fwData::Object::csptr& currentData ) const
+::fwActivities::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 
@@ -84,7 +84,7 @@ StereoCamera::~StereoCamera()
                 validation.second = "The second CameraSeries should be calibrated.";
             }
 
-            ::fwData::TransformationMatrix3D::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
+            data::TransformationMatrix3D::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
             if (!matrix)
             {
                 validation.first  = false;

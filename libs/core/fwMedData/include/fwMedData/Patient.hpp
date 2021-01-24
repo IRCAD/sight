@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(Patient))
 
@@ -36,11 +36,11 @@ namespace fwMedData
 /**
  * @brief Holds patient information
  */
-class FWMEDDATA_CLASS_API Patient : public ::fwData::Object
+class FWMEDDATA_CLASS_API Patient : public data::Object
 {
 
 public:
-    fwCoreClassMacro(Patient, ::fwData::Object, ::fwData::factory::New< Patient >)
+    fwCoreClassMacro(Patient, data::Object, data::factory::New< Patient >)
 
     fwCampMakeFriendDataMacro((fwMedData)(Patient))
 
@@ -48,7 +48,7 @@ public:
      * @brief Creates the patient.
      * @param _key private construction key.
      */
-    FWMEDDATA_API Patient(::fwData::Object::Key _key);
+    FWMEDDATA_API Patient(data::Object::Key _key);
 
     /// Destroys the patient.
     FWMEDDATA_API virtual ~Patient();
@@ -57,14 +57,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the patient's full name.
     const DicomValueType& getName () const;

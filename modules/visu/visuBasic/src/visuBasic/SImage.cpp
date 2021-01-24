@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void SImage::starting()
     const auto genericSceneId = this->getID() + "-genericScene";
     ::fwGui::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
-    auto image = this->getLockedInput< ::fwData::Object>(s_IMAGE_INPUT);
+    auto image = this->getLockedInput< data::Object>(s_IMAGE_INPUT);
 
     // create and register the render service
     ::fwServices::IService::ConfigType renderConfig;
@@ -109,7 +109,7 @@ void SImage::starting()
     negatoConfig.put("config.<xmlattr>.interactive", "true");
     m_negatoSrv = ::fwServices::add("::visuOgreAdaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
-    m_negatoSrv->registerInOut( std::const_pointer_cast< ::fwData::Object >(image->getConstSptr()), "image", true );
+    m_negatoSrv->registerInOut( std::const_pointer_cast< data::Object >(image->getConstSptr()), "image", true );
     m_negatoSrv->setID(this->getID() + "negato3DAdaptor");
     m_negatoSrv->configure();
 
@@ -125,7 +125,7 @@ void SImage::starting()
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

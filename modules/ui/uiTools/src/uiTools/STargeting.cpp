@@ -25,9 +25,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Landmarks.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/PointList.hpp>
+#include <data/Landmarks.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
@@ -105,11 +105,11 @@ void STargeting::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto landmark = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARK_INPUT);
+        const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
         SLM_ASSERT("Input \"landmark\" is missing.", landmark);
         if(landmark->getGroup(m_label).m_points.size() > 0)
         {
-            const ::fwData::Landmarks::PointType point = landmark->getPoint(m_label, m_index);
+            const data::Landmarks::PointType point = landmark->getPoint(m_label, m_index);
             m_targetLandmark = ::glm::dvec3(point[0], point[1], point[2]);
 
         }
@@ -122,7 +122,7 @@ void STargeting::updating()
 
     // Get the input matrix for the needle tip
     const auto matrix =
-        this->getLockedInput< ::fwData::TransformationMatrix3D >( s_MATRIX_INPUT );
+        this->getLockedInput< data::TransformationMatrix3D >( s_MATRIX_INPUT );
     SLM_ASSERT("Input \"matrix\" is missing.", matrix);
 
     const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix.get_shared());
@@ -193,20 +193,20 @@ void STargeting::updating()
 
         transformedNeedleIntersection = transformedNeedleIntersection * scale;
 
-        auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+        auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
         SLM_ASSERT("InOut \"pointList\" is missing.", pointList);
         if(pointList->getPoints().size() > 0)
         {
             pointList->clear();
         }
-        const ::fwData::Point::sptr point = ::fwData::Point::New(transformedNeedleIntersection[0],
-                                                                 -transformedNeedleIntersection[1],
-                                                                 0.);
+        const data::Point::sptr point = data::Point::New(transformedNeedleIntersection[0],
+                                                         -transformedNeedleIntersection[1],
+                                                         0.);
 
         pointList->pushBack(point);
 
-        auto sig = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
-            ::fwData::PointList::s_POINT_ADDED_SIG);
+        auto sig = pointList->signal< data::PointList::PointAddedSignalType >(
+            data::PointList::s_POINT_ADDED_SIG);
         sig->asyncEmit(point);
     }
 
@@ -218,7 +218,7 @@ void STargeting::updating()
 {
 
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -238,7 +238,7 @@ void STargeting::updatePoint(std::string name)
 {
     m_label            = name;
     m_landmarkSelected = true;
-    const auto landmark = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARK_INPUT);
+    const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
     SLM_ASSERT("Input \"landmark\" is missing.", landmark);
 
     const size_t size = landmark->getGroup(m_label).m_points.size();
@@ -253,15 +253,15 @@ void STargeting::removePoint()
     // When a point is removed, it's not selected anymore
     m_landmarkSelected = false;
 
-    auto pointList = this->getLockedInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
     SLM_ASSERT("InOut \"pointList\" is missing.", pointList);
     auto points = pointList->getPoints(); // copy the points.
     pointList->clear();
     for(const auto& pt : points)
     {
         // Send signals.
-        auto sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
-            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        auto sig = pointList->signal< data::PointList::PointRemovedSignalType >(
+            data::PointList::s_POINT_REMOVED_SIG);
         sig->asyncEmit(pt);
     }
 

@@ -27,9 +27,9 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/Vector.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Patient.hpp>
@@ -58,17 +58,17 @@ ActivitySeries::~ActivitySeries()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr vectorToComposite(const ::fwData::Vector::csptr& vector,
-                                            const ::fwActivities::registry::ActivityRequirement& req)
+data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
+                                        const ::fwActivities::registry::ActivityRequirement& req)
 {
-    namespace ActReg                    = ::fwActivities::registry;
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    namespace ActReg = ::fwActivities::registry;
+    data::Composite::sptr composite = data::Composite::New();
 
     SLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
-    for(const ::fwData::Object::sptr& obj :  *vector)
+    for(const data::Object::sptr& obj :  *vector)
     {
         const ActReg::ActivityRequirementKey& keyTag = (*iter++);
         if(keyTag.path.empty())
@@ -77,7 +77,7 @@ ActivitySeries::~ActivitySeries()
         }
         else
         {
-            (*composite)[keyTag.key] = ::fwData::reflection::getObject( obj, keyTag.path );
+            (*composite)[keyTag.key] = data::reflection::getObject( obj, keyTag.path );
         }
     }
 
@@ -88,12 +88,12 @@ ActivitySeries::~ActivitySeries()
 
 ::fwMedData::ActivitySeries::sptr ActivitySeries::buildData(
     const ::fwActivities::registry::ActivityInfo& activityInfo,
-    const ::fwData::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection ) const
 {
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 
     ::fwMedData::Series::sptr series;
-    for(const ::fwData::Object::sptr& obj :  *currentSelection)
+    for(const data::Object::sptr& obj :  *currentSelection)
     {
         series = ::fwMedData::Series::dynamicCast(obj);
         if(series)
@@ -104,9 +104,9 @@ ActivitySeries::~ActivitySeries()
 
     if(series)
     {
-        actSeries->setPatient( ::fwData::Object::copy(series->getPatient()) );
-        actSeries->setStudy( ::fwData::Object::copy(series->getStudy()) );
-        actSeries->setEquipment( ::fwData::Object::copy(series->getEquipment()) );
+        actSeries->setPatient( data::Object::copy(series->getPatient()) );
+        actSeries->setStudy( data::Object::copy(series->getStudy()) );
+        actSeries->setEquipment( data::Object::copy(series->getEquipment()) );
     }
 
     actSeries->setModality("OT");
@@ -117,14 +117,14 @@ ActivitySeries::~ActivitySeries()
     actSeries->setTime(core::tools::getTime(now));
 
     actSeries->setActivityConfigId(activityInfo.id);
-    ::fwData::Composite::sptr data = actSeries->getData();
+    data::Composite::sptr data = actSeries->getData();
 
     namespace ActReg = ::fwActivities::registry;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
     for(const ActReg::ActivityRequirement& req :  reqVect)
     {
-        ::fwData::Vector::sptr vectorType = this->getType(currentSelection, req.type);
+        data::Vector::sptr vectorType = this->getType(currentSelection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {

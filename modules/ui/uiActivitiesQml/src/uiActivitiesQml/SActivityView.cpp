@@ -26,9 +26,9 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <data/Composite.hpp>
 
-#include <fwData/Composite.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

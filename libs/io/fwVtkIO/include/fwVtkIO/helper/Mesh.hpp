@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -37,7 +37,7 @@ namespace helper
 {
 
 /**
- * @brief   Helper to manage vtkPolyData and ::fwData::Mesh.
+ * @brief   Helper to manage vtkPolyData and data::Mesh.
  */
 class FWVTKIO_CLASS_API Mesh
 {
@@ -45,42 +45,42 @@ class FWVTKIO_CLASS_API Mesh
 public:
 
     /*!
-     * @brief Convert a vtkPolyData to a ::fwData::Mesh::sptr.
+     * @brief Convert a vtkPolyData to a data::Mesh::sptr.
      *
      * @param[in] _polyData vtkPolyData.
-     * @param[out] _mesh ::fwData::Mesh::sptr.
+     * @param[out] _mesh data::Mesh::sptr.
      */
-    FWVTKIO_API static void fromVTKMesh(  vtkSmartPointer<vtkPolyData> _polyData, ::fwData::Mesh::sptr _mesh );
+    FWVTKIO_API static void fromVTKMesh(  vtkSmartPointer<vtkPolyData> _polyData, data::Mesh::sptr _mesh );
     /*!
-     * @brief Convert a vtkUnstructuredGrid to a ::fwData::Mesh::sptr.
+     * @brief Convert a vtkUnstructuredGrid to a data::Mesh::sptr.
      *
      * @param[in] grid vtkUnstructuredGrid.
-     * @param[out] mesh ::fwData::Mesh::sptr.
+     * @param[out] mesh data::Mesh::sptr.
      */
 
-    FWVTKIO_API static void fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh::sptr mesh);
+    FWVTKIO_API static void fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, data::Mesh::sptr mesh);
 
     /*!
-     * @brief Convert a ::fwData::Mesh::csptr to a vtkUnstructuredGrid.
+     * @brief Convert a data::Mesh::csptr to a vtkUnstructuredGrid.
      *
-     * @param[in] mesh ::fwData::Mesh::csptr.
+     * @param[in] mesh data::Mesh::csptr.
      * @param[out] grid vtkUnstructuredGrid.
      */
-    FWVTKIO_API static void toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid);
+    FWVTKIO_API static void toVTKGrid( const data::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid);
 
     /*!
-     * @brief Convert a ::fwData::Mesh::csptr to a vtkPolyData.
+     * @brief Convert a data::Mesh::csptr to a vtkPolyData.
      *
-     * @param[in] _mesh ::fwData::Mesh::csptr.
+     * @param[in] _mesh data::Mesh::csptr.
      * @param[out] _polyData vtkPolyData.
      */
-    FWVTKIO_API static void toVTKMesh( const ::fwData::Mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _polyData);
+    FWVTKIO_API static void toVTKMesh( const data::Mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _polyData);
 
     /*!
-     * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points positions, colors, normals and/or textures
+     * @brief Update a vtkPolyData with data::Mesh::sptr points positions, colors, normals and/or textures
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Warning : be careful with updatePoints : this may change the number of
@@ -88,13 +88,13 @@ public:
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void  updatePolyDataPointsAndAttributes(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                               const ::fwData::Mesh::csptr& meshSrc );
+                                                               const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points
+     * @brief Update a vtkPolyData with data::Mesh::sptr points
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Warning : be careful with updatePoints : this may change the number of
@@ -102,81 +102,81 @@ public:
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                  const ::fwData::Mesh::csptr& meshSrc );
+                                                  const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkPolyData with point color of ::fwData::Mesh
+     * @brief Update a vtkPolyData with point color of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                     const ::fwData::Mesh::csptr& meshSrc);
+                                                     const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkPolyData with cell color of ::fwData::Mesh
+     * @brief Update a vtkPolyData with cell color of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                    const ::fwData::Mesh::csptr& meshSrc );
+                                                    const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkPolyData with point normals of ::fwData::Mesh
+     * @brief Update a vtkPolyData with point normals of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                       const ::fwData::Mesh::csptr& meshSrc);
+                                                       const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkPolyData with cell normals of ::fwData::Mesh
+     * @brief Update a vtkPolyData with cell normals of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                      const ::fwData::Mesh::csptr& meshSrc);
+                                                      const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkPolyData with point texCoords of ::fwData::Mesh
+     * @brief Update a vtkPolyData with point texCoords of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataPointTexCoords(
-        vtkSmartPointer<vtkPolyData> polyDataDst, const ::fwData::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkPolyData> polyDataDst, const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkPolyData with cell texCoords of ::fwData::Mesh
+     * @brief Update a vtkPolyData with cell texCoords of data::Mesh
      *
      * @param[out] polyDataDst vtkPolyData
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return the updated vtkPolyPata
      */
     FWVTKIO_API static void updatePolyDataCellTexCoords(
-        vtkSmartPointer<vtkPolyData> polyDataDst, const ::fwData::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkPolyData> polyDataDst, const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with ::fwData::Mesh::sptr points positions, colors, normals and/or textures
+     * @brief Update a vtkUnstructuredGrid with data::Mesh::sptr points positions, colors, normals and/or textures
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Warning : be careful with updatePoints : this may change the number of
@@ -184,13 +184,13 @@ public:
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridPointsAndAttributes(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                          const ::fwData::Mesh::csptr& meshSrc );
+                                                          const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with ::fwData::Mesh::sptr points
+     * @brief Update a vtkUnstructuredGrid with data::Mesh::sptr points
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Warning : be careful with updatePoints : this may change the number of
@@ -199,90 +199,90 @@ public:
      */
     FWVTKIO_API static void updateGridPoints(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const ::fwData::Mesh::csptr& meshSrc );
+        const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with point color of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with point color of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridPointColor(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const ::fwData::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with cell color of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with cell color of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridCellColor(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const ::fwData::Mesh::csptr& meshSrc );
+        const data::Mesh::csptr& meshSrc );
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with point normals of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with point normals of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridPointNormals(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const ::fwData::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with cell normals of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with cell normals of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridCellNormals(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const ::fwData::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with point texCoords of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with point texCoords of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridPointTexCoords(
-        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const ::fwData::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const data::Mesh::csptr& meshSrc);
 
     /*!
-     * @brief Update a vtkUnstructuredGrid with cell texCoords of ::fwData::Mesh
+     * @brief Update a vtkUnstructuredGrid with cell texCoords of data::Mesh
      *
      * @param[out] gridDataDst vtkUnstructuredGrid
-     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @param[in]  meshSrc data::Mesh::sptr
      * @return vtkUnstructuredGrid
      *
      * Returns the updated vtkUnstructuredGrid
      */
     FWVTKIO_API static void updateGridCellTexCoords(
-        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const ::fwData::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const data::Mesh::csptr& meshSrc);
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
      * @param[in] mesh current mesh
      * @return volume of the mesh
      */
-    FWVTKIO_API static double computeVolume( const ::fwData::Mesh::csptr& mesh );
+    FWVTKIO_API static double computeVolume( const data::Mesh::csptr& mesh );
 
 };
 

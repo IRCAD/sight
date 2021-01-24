@@ -5,9 +5,9 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwTest
     core
-    fwData
+    data
     fwServices
     fwMedData
     arMDSemanticPatch
 )
-set( REQUIREMENTS fwData servicesReg ioAtoms patchMedicalData arPatchMedicalData)
+set( REQUIREMENTS data servicesReg ioAtoms patchMedicalData arPatchMedicalData)

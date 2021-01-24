@@ -24,8 +24,8 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwData/location/ILocation.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/ILocation.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -157,7 +157,7 @@ private:
      *
      * This method is used to load a mesh using the file path.
      */
-    void loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
+    void loadSeriesDB( const data::location::ILocation::VectPathType& vtkFiles,
                        const SPTR(::fwMedData::SeriesDB)& seriesDB );
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;

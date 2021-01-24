@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#include <fwData/TransferFunction.hpp>
+#include "TransferFunctionTest.hpp"
 
 #include <fwVtkIO/helper/TransferFunction.hpp>
 
-#include "TransferFunctionTest.hpp"
+#include <data/TransferFunction.hpp>
 
 using fwVtkIO::helper::TransferFunction;
 
@@ -52,21 +52,21 @@ void TransferFunctionTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::sptr TransferFunctionTest::createTFColor()
+data::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
-    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
+    data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
-    tf->setInterpolationMode( ::fwData::TransferFunction::LINEAR );
+    tf->setBackgroundColor( data::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
+    tf->setInterpolationMode( data::TransferFunction::LINEAR );
     tf->setIsClamped( false );
     tf->setLevel( 0.0 );
     tf->setName( "TFColor" );
     tf->setWindow( 400.0 );
 
-    tf->addTFColor( -200,   ::fwData::TransferFunction::TFColor( 1.0, 0.0, 0.0, 0.0) );
-    tf->addTFColor( 0,      ::fwData::TransferFunction::TFColor( 0.0, 1.0, 0.0, 0.0) );
-    tf->addTFColor( 100,     ::fwData::TransferFunction::TFColor( 0.0, 0.0, 1.0, 0.5) );
-    tf->addTFColor( 200,    ::fwData::TransferFunction::TFColor( 0.0, 1.0, 1.0, 1.0) );
+    tf->addTFColor( -200,   data::TransferFunction::TFColor( 1.0, 0.0, 0.0, 0.0) );
+    tf->addTFColor( 0,      data::TransferFunction::TFColor( 0.0, 1.0, 0.0, 0.0) );
+    tf->addTFColor( 100,     data::TransferFunction::TFColor( 0.0, 0.0, 1.0, 0.5) );
+    tf->addTFColor( 200,    data::TransferFunction::TFColor( 0.0, 1.0, 1.0, 1.0) );
 
     return tf;
 }
@@ -75,7 +75,7 @@ void TransferFunctionTest::tearDown()
 
 void TransferFunctionTest::toVtkLookupTableTest()
 {
-    ::fwData::TransferFunction::sptr tf = this->createTFColor();
+    data::TransferFunction::sptr tf    = this->createTFColor();
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
 
     double color[3];
@@ -90,23 +90,23 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, opacity, colorTolerance );
 
-    lt->GetColor(200,color);
+    lt->GetColor(200, color);
     opacity = lt->GetOpacity(200);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
-    lt->GetColor(150,color);
+    lt->GetColor(150, color);
     opacity = lt->GetOpacity(150);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.75, opacity, colorTolerance );
 
-    tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
+    tf->setInterpolationMode( data::TransferFunction::NEAREST );
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
-    lt->GetColor(120,color);
+    lt->GetColor(120, color);
     opacity = lt->GetOpacity(120);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1], colorTolerance );
@@ -145,21 +145,21 @@ void TransferFunctionTest::toBWVtkLookupTableTest()
     double opacity;
     double colorTolerance = 1.0/255.0;
 
-    lt->GetColor(0,color);
+    lt->GetColor(0, color);
     opacity = lt->GetOpacity(0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
-    lt->GetColor(100,color);
+    lt->GetColor(100, color);
     opacity = lt->GetOpacity(100);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
-    lt->GetColor(50,color);
+    lt->GetColor(50, color);
     opacity = lt->GetOpacity(50);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[0], colorTolerance );
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1], colorTolerance );

@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     core
-    fwData
+    data
     fwDataTools
     fwGui
     fwServices
@@ -13,6 +13,6 @@ set( DEPENDENCIES
     fwActivities
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )

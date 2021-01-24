@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace reader
 //------------------------------------------------------------------------------
 
 GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< IObjectReader >(this)
+    data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -53,12 +53,12 @@ GzArrayReader::~GzArrayReader()
 
 void GzArrayReader::read()
 {
-    assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
-    std::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
+    assert( data::location::SingleFile::dynamicCast(m_location) );
+    std::filesystem::path file = data::location::SingleFile::dynamicCast(m_location)->getPath();
 
     assert( file.empty() == false );
 
-    ::fwData::Array::sptr array = this->getConcreteObject();
+    data::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());
     const auto dumpLock     = array->lock();
 

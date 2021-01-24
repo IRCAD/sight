@@ -287,7 +287,7 @@ void SQueryEditor::executeQuery()
     // Initialize connection.
     try
     {
-        const auto pacsConfiguration = this->getLockedInput< const ::fwPacsIO::data::PacsConfiguration >(s_PACS_INPUT);
+        const auto pacsConfiguration = this->getLockedInput< const ::fwPacsIOdata::PacsConfiguration >(s_PACS_INPUT);
 
         seriesEnquirer->initialize(
             pacsConfiguration->getLocalApplicationTitle(),

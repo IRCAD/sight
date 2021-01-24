@@ -32,9 +32,9 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
@@ -97,7 +97,7 @@ void initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID
 //------------------------------------------------------------------------------
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
+    data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader")),
     m_lazyMode(true)
 {
@@ -145,19 +145,19 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::s
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  >& obj, const std::filesystem::path& file)
+data::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  >& obj, const std::filesystem::path& file)
 {
     vtkSmartPointer< vtkPolyData > mesh         = vtkPolyData::SafeDownCast(obj);
     vtkSmartPointer< vtkImageData > img         = vtkImageData::SafeDownCast(obj);
     vtkSmartPointer< vtkUnstructuredGrid > grid = vtkUnstructuredGrid::SafeDownCast(obj);
-    ::fwData::Object::sptr dataObj;
+    data::Object::sptr dataObj;
 
     if(grid)
     {
-        ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
+        data::Mesh::sptr meshObj = data::Mesh::New();
         ::fwVtkIO::helper::Mesh::fromVTKGrid(grid, meshObj);
 
-        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+        data::Reconstruction::sptr rec = data::Reconstruction::New();
         rec->setMesh(meshObj);
         rec->setOrganName(file.stem().string());
         rec->setIsVisible(true);
@@ -165,9 +165,9 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::s
     }
     if(mesh)
     {
-        ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
+        data::Mesh::sptr meshObj = data::Mesh::New();
         ::fwVtkIO::helper::Mesh::fromVTKMesh(mesh, meshObj);
-        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+        data::Reconstruction::sptr rec = data::Reconstruction::New();
         rec->setMesh(meshObj);
         rec->setOrganName(file.stem().string());
         rec->setIsVisible(true);
@@ -177,13 +177,13 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::s
     {
         try
         {
-            ::fwData::Image::sptr imgObj = ::fwData::Image::New();
+            data::Image::sptr imgObj = data::Image::New();
             ::fwVtkIO::fromVTKImage( img, imgObj);
             dataObj = imgObj;
         }
         catch( std::exception& e)
         {
-            FW_RAISE("VTKImage to fwData::Image failed "<<e.what());
+            FW_RAISE("VTKImage to data::Image failed "<<e.what());
         }
     }
     return dataObj;
@@ -195,7 +195,7 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
 
     typedef ::boost::iostreams::stream< ::boost::iostreams::array_source > BufferStreamType;
 
-    FilteringStream(const ::fwData::Image::sptr& source ) :
+    FilteringStream(const data::Image::sptr& source ) :
         m_image(source),
         m_bufferObject(source->getBufferObject()),
         m_lock( m_bufferObject->lock() ),
@@ -216,7 +216,7 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
         }
     }
 
-    ::fwData::Image::sptr m_image;
+    data::Image::sptr m_image;
     core::memory::BufferObject::sptr m_bufferObject;
     core::memory::BufferObject::Lock m_lock;
     SPTR(BufferStreamType) m_bufferStream;
@@ -238,7 +238,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    ::fwData::Image::sptr getImage()
+    data::Image::sptr getImage()
     {
         if(!std::filesystem::exists(m_path))
         {
@@ -248,7 +248,7 @@ protected:
         vtkSmartPointer< vtkDataObject  > obj;
         obj = getObj<READER>(m_path, nullptr);
 
-        return ::fwData::Image::dynamicCast(getDataObject(obj, m_path));
+        return data::Image::dynamicCast(getDataObject(obj, m_path));
     }
 
     SPTR(std::istream) get()
@@ -285,20 +285,20 @@ bool checkIfReadDataTypeIsImage(const vtkSmartPointer< vtkXMLGenericDataObjectRe
 
 //------------------------------------------------------------------------------
 
-void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation >& info, const ::fwData::Image::sptr& imgObj)
+void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation >& info, const data::Image::sptr& imgObj)
 {
     int extent[6];
     info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-    const ::fwData::Image::Size size = { static_cast<size_t>(extent[1]-extent[0]+1),
-                                         static_cast<size_t>(extent[3]-extent[2]+1),
-                                         static_cast<size_t>(extent[5]-extent[4]+1)};
+    const data::Image::Size size = { static_cast<size_t>(extent[1]-extent[0]+1),
+                                     static_cast<size_t>(extent[3]-extent[2]+1),
+                                     static_cast<size_t>(extent[5]-extent[4]+1)};
     imgObj->setSize2(size);
 
-    ::fwData::Image::Spacing spacing;
+    data::Image::Spacing spacing;
     info->Get(vtkDataObject::SPACING(), &spacing[0]);
     imgObj->setSpacing2(spacing);
 
-    ::fwData::Image::Origin origin;
+    data::Image::Origin origin;
     info->Get(vtkDataObject::ORIGIN(), &origin[0]);
     imgObj->setOrigin2(origin);
 
@@ -311,7 +311,7 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation >& info, const
 
 //------------------------------------------------------------------------------
 
-void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader >& reader, const ::fwData::Image::sptr& imgObj)
+void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader >& reader, const data::Image::sptr& imgObj)
 {
     vtkSmartPointer< vtkStructuredPointsReader > imgReader = vtkSmartPointer< vtkStructuredPointsReader >::New();
     imgReader->SetFileName(reader->GetFileName());
@@ -328,7 +328,7 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader >& reader, const 
 
 //------------------------------------------------------------------------------
 
-void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, const ::fwData::Image::sptr& imgObj)
+void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, const data::Image::sptr& imgObj)
 {
     vtkSmartPointer< vtkXMLImageDataReader > imgReader = vtkSmartPointer< vtkXMLImageDataReader >::New();
     imgReader->SetFileName(reader->GetFileName());
@@ -348,17 +348,17 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, con
 //------------------------------------------------------------------------------
 
 template< typename DATA_READER >
-::fwData::Image::sptr lazyRead( const std::filesystem::path& file, const ::fwJobs::Observer::sptr& job)
+data::Image::sptr lazyRead( const std::filesystem::path& file, const ::fwJobs::Observer::sptr& job)
 {
     vtkSmartPointer< DATA_READER > reader = vtkSmartPointer< DATA_READER >::New();
     reader->SetFileName(file.string().c_str());
     reader->UpdateInformation();
 
-    ::fwData::Image::sptr imgObj;
+    data::Image::sptr imgObj;
 
     if(checkIfReadDataTypeIsImage(reader))
     {
-        imgObj = ::fwData::Image::New();
+        imgObj = data::Image::New();
         getInfo(reader, imgObj);
 
         job->finish();
@@ -373,16 +373,16 @@ void SeriesDBReader::read()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
-    const ::fwData::location::ILocation::VectPathType files = this->getFiles();
-    const std::string instanceUID                           = core::tools::UUID::generateUUID();
+    const data::location::ILocation::VectPathType files = this->getFiles();
+    const std::string instanceUID                       = core::tools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;
-    for(const ::fwData::location::ILocation::VectPathType::value_type& file :  files)
+    for(const data::location::ILocation::VectPathType::value_type& file :  files)
     {
         vtkSmartPointer< vtkDataObject  > obj;
-        ::fwData::Image::sptr img;
-        ::fwData::Reconstruction::sptr rec;
+        data::Image::sptr img;
+        data::Reconstruction::sptr rec;
 
         if(file.extension().string() == ".vtk")
         {
@@ -429,9 +429,9 @@ void SeriesDBReader::read()
 
         if (!img)
         {
-            ::fwData::Object::sptr dataObj = getDataObject(obj, file);
-            img                            = ::fwData::Image::dynamicCast(dataObj);
-            rec                            = ::fwData::Reconstruction::dynamicCast(dataObj);
+            data::Object::sptr dataObj = getDataObject(obj, file);
+            img = data::Image::dynamicCast(dataObj);
+            rec = data::Reconstruction::dynamicCast(dataObj);
         }
         if(img)
         {

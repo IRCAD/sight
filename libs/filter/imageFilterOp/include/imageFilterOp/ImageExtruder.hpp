@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "imageFilterOp/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
 #include <glm/vec3.hpp>
 
@@ -36,7 +36,7 @@ namespace imageFilterOp
  * @brief This class implements one static method that call an image type dispatcher to extrude voxels that are
  * inside a mesh.
  *
- * The only way to use this class is to call @ref extrude(const ::fwData::Image::sptr&, const ::fwData::Mesh::csptr&),
+ * The only way to use this class is to call @ref extrude(const data::Image::sptr&, const data::Mesh::csptr&),
  * wich sets all voxels inside of the mesh to an empty value. To compute this quickly, we loop over two dimensions out
  * of three, for each voxel, we launch a ray on the third dimension and get a list of intersections between this ray,
  * and triangles of the mesh. After that, we iterate over the voxel line on the third dimension and look where it's
@@ -59,7 +59,7 @@ public:
      * @warning No data are locked here, it must be done before.
      * @warning No signals are sent here, it must be done after.
      */
-    static IMAGEFILTEROP_API void extrude(const ::fwData::Image::sptr& _image, const ::fwData::Mesh::csptr& _mesh);
+    static IMAGEFILTEROP_API void extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh);
 
     /**
      * @brief Stores parameters of the functor.
@@ -67,8 +67,8 @@ public:
      */
     struct Parameters
     {
-        ::fwData::Image::sptr m_image;
-        ::fwData::Mesh::csptr m_mesh;
+        data::Image::sptr m_image;
+        data::Mesh::csptr m_mesh;
     };
 
     /**

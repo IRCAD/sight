@@ -28,7 +28,7 @@
 #include <core/macros.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlMessageBase.h>
 
@@ -55,16 +55,16 @@ public:
     /**
      * @brief method to implement conversion igtl message to fwData object
      *
-     * @return a fwData::Object
+     * @return a data::Object
      */
-    IGTLPROTOCOL_API virtual ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const = 0;
+    IGTLPROTOCOL_API virtual data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const = 0;
 
     /**
      * @brief method to implement conversion fwData object to igtl message
      *
      * @return a igtl::MessageBase
      */
-    IGTLPROTOCOL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const = 0;
+    IGTLPROTOCOL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const = 0;
 
     /**
      * @brief get the igtlType supported for conversion

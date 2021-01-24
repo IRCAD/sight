@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
+#include "fwStructuralPatch/data/Study/V1ToFwMedDataStudyV1.hpp"
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
@@ -29,7 +29,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Study
@@ -38,7 +38,7 @@ namespace Study
 V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Study";
+    m_originClassname = "data::Study";
     m_targetClassname = "::fwMedData::Study";
     m_originVersion   = "1";
     m_targetVersion   = "1";
@@ -86,6 +86,6 @@ void V1ToFwMedDataStudyV1::apply(const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Study
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

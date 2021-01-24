@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "fwMedData/ImageSeries.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/Image.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ImageSeries )
 
 namespace fwMedData
 {
 
-ImageSeries::ImageSeries(::fwData::Object::Key _key) :
+ImageSeries::ImageSeries(data::Object::Key _key) :
     Series(_key)
 {
 }
@@ -44,10 +44,10 @@ ImageSeries::~ImageSeries()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::shallowCopy(const ::fwData::Object::csptr& _source)
+void ImageSeries::shallowCopy(const data::Object::csptr& _source)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -59,17 +59,17 @@ void ImageSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache)
+void ImageSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::cachedDeepCopy(_source, _cache);
 
-    m_image          = ::fwData::Object::copy(other->m_image);
-    m_dicomReference = ::fwData::Object::copy(other->m_dicomReference);
+    m_image          = data::Object::copy(other->m_image);
+    m_dicomReference = data::Object::copy(other->m_dicomReference);
 }
 
 //------------------------------------------------------------------------------

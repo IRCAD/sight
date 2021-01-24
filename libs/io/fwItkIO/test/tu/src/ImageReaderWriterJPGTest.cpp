@@ -29,7 +29,7 @@
 #include <core/base.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
@@ -65,7 +65,7 @@ void ImageReaderWriterJPGTest::tearDown()
 void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // save image in inr
@@ -87,7 +87,7 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     CPPUNIT_ASSERT_MESSAGE("The file '" + pathInr.string() + "' does not exist",
                            std::filesystem::exists(pathInr));
 
-    ::fwData::Image::sptr image           = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image);
     myReader->setFile(pathInr);

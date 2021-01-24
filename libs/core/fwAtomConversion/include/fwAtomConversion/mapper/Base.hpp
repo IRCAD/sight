@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,21 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMCONVERSION_MAPPER_BASE_HPP__
-#define __FWATOMCONVERSION_MAPPER_BASE_HPP__
+#pragma once
+
+#include "fwAtomConversion/AtomVisitor.hpp"
+#include "fwAtomConversion/config.hpp"
+#include "fwAtomConversion/DataVisitor.hpp"
+#include "fwAtomConversion/mapper/factory/new.hpp"
 
 #include <string>
-
-#include "fwAtomConversion/config.hpp"
-#include "fwAtomConversion/mapper/factory/new.hpp"
-#include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/AtomVisitor.hpp"
 
 namespace fwAtoms
 {
 class Object;
 }
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -72,27 +71,25 @@ public:
     }
 
     /**
-     * @brief Convert a ::fwData::Object to a ::fwAtoms::Object.
+     * @brief Convert a data::Object to a ::fwAtoms::Object.
      * @param object data to convert
      * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert(SPTR(::fwData::Object) object,
-                                                                 DataVisitor::AtomCacheType & cache) = 0;
+    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert(SPTR(data::Object) object,
+                                                                 DataVisitor::AtomCacheType& cache) = 0;
 
     /**
-     * @brief Convert a ::fwAtoms::Object to a ::fwData::Object.
+     * @brief Convert a ::fwAtoms::Object to a data::Object.
      * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor's policy
      */
-    FWATOMCONVERSION_API virtual SPTR(::fwData::Object) convert(SPTR(::fwAtoms::Object) atom,
-                                                                AtomVisitor::DataCacheType & cache,
-                                                                const AtomVisitor::IReadPolicy &uuidPolicy
-                                                                ) = 0;
+    FWATOMCONVERSION_API virtual SPTR(data::Object) convert(SPTR(::fwAtoms::Object) atom,
+                                                            AtomVisitor::DataCacheType& cache,
+                                                            const AtomVisitor::IReadPolicy& uuidPolicy
+                                                            ) = 0;
 
 };
 
 }
 }
-
-#endif /* __FWATOMCONVERSION_MAPPER_BASE_HPP__ */

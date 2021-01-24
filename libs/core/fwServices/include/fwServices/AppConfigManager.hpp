@@ -38,7 +38,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace fwData
+namespace sight::data
 {
 class Composite;
 }
@@ -50,8 +50,8 @@ namespace fwServices
  * @brief This class provides an API to manage config template.
  *
  * @section Slots Slots
- * - \b addObject(fwData::Object::sptr, const std::string&): adds objects to the configuration.
- * - \b removeObject(fwData::Object::sptr, const std::string&): removes objects from the configuration.
+ * - \b addObject(data::Object::sptr, const std::string&): adds objects to the configuration.
+ * - \b removeObject(data::Object::sptr, const std::string&): removes objects from the configuration.
  */
 class FWSERVICES_CLASS_API AppConfigManager :  public ::fwServices::IAppConfigManager,
                                                public core::com::HasSlots
@@ -82,13 +82,13 @@ public:
      * @param _replaceFields Composite of association between the value and the pattern to replace in the config.
      */
     FWSERVICES_API virtual void setConfig(const std::string& _configId,
-                                          const ::fwData::Composite::csptr& _replaceFields) override;
+                                          const data::Composite::csptr& _replaceFields) override;
 
     /**
      * @brief Get the configuraton root.
      * @return The configuration root.
      */
-    FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const override;
+    FWSERVICES_API virtual data::Object::sptr getConfigRoot() const override;
 
     /// Calls methods : create, start then update.
     FWSERVICES_API virtual void launch() override;
@@ -129,7 +129,7 @@ public:
      * @param _obj The object to add.
      * @param _uid The uid of this object.
      */
-    FWSERVICES_API void addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid);
+    FWSERVICES_API void addExistingDeferredObject(const data::Object::sptr& _obj, const std::string& _uid);
 
 private:
 
@@ -144,14 +144,14 @@ private:
      */
     FWSERVICES_API virtual void startModule();
 
-    ::fwData::Object::sptr findObject(const std::string& uid, const std::string& errMsgTail) const;
+    data::Object::sptr findObject(const std::string& uid, const std::string& errMsgTail) const;
 
-    ::fwData::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
+    data::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
 
-    ::fwData::Object::sptr getNewObject(ConfigAttribute type,
-                                        ConfigAttribute uid = ConfigAttribute("", false)) const;
+    data::Object::sptr getNewObject(ConfigAttribute type,
+                                    ConfigAttribute uid = ConfigAttribute("", false)) const;
 
-    ::fwData::Object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
+    data::Object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
 
     ::fwServices::IService::sptr getNewService(const std::string& uid, const std::string& implType) const;
 
@@ -185,26 +185,26 @@ private:
      * @param _obj The object to add.
      * @param _id The id of the object.
      */
-    void addObjects(::fwData::Object::sptr _obj, const std::string& _id);
+    void addObjects(data::Object::sptr _obj, const std::string& _id);
 
     /**
      * @brief Removes objects from the configuration.
      * @param _obj The object to remove.
      * @param _id The id of the remove.
      */
-    void removeObjects(::fwData::Object::sptr _obj, const std::string& _id);
+    void removeObjects(data::Object::sptr _obj, const std::string& _id);
 
     void connectProxy(const std::string& _channel, const ProxyConnections& _connectCfg);
 
     void destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg, const std::string& _key = "",
-                      fwData::Object::csptr _hintObj = nullptr);
+                      data::Object::csptr _hintObj = nullptr);
 
     void destroyProxies();
 
     /// Gets a list of UIDs or WIDs, get a friendly printable message.
     static std::string getUIDListAsString(const std::vector<std::string>& uidList);
 
-    typedef std::pair< ::fwData::Object::sptr, ::fwServices::IXMLParser::sptr> CreatedObjectType;
+    typedef std::pair< data::Object::sptr, ::fwServices::IXMLParser::sptr> CreatedObjectType;
 
     /// Map containing the object and its XML parser.
     std::unordered_map<std::string, CreatedObjectType> m_createdObjects;
@@ -214,7 +214,7 @@ private:
         std::vector< ServiceConfig > m_servicesCfg;
         std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
-        ::fwData::Object::sptr m_object;
+        data::Object::sptr m_object;
     };
 
     /// Map indexed by the object uid, containing all the service configurations that depend on this object.
@@ -252,7 +252,7 @@ private:
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.
     /// TODO: Remove with V1.
-    ::fwData::Composite::sptr m_tmpRootObject;
+    data::Composite::sptr m_tmpRootObject;
 
     /// Counter used to generate a unique proxy name.
     unsigned int m_proxyID;

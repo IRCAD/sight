@@ -22,10 +22,10 @@
 
 #include "uiVisuOgre/helper/ParameterEditor.hpp"
 
-#include <fwData/Array.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Array.hpp>
+#include <data/Color.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 namespace uiVisuOgre
 {
@@ -78,12 +78,12 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     ::fwServices::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
-    const ::fwData::Object::csptr shaderObj =
-        _adaptor->getInOut< ::fwData::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+    const data::Object::csptr shaderObj =
+        _adaptor->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
 
     const auto& objType = shaderObj->getClassname();
 
-    if(objType == "::fwData::Boolean")
+    if(objType == "data::Boolean")
     {
         _connections.connect(_paramSrv, "boolChanged", _adaptor, "setBoolParameter");
 
@@ -92,11 +92,11 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", false);
     }
-    else if(objType == "::fwData::Color")
+    else if(objType == "data::Color")
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
-        auto colorValue = ::fwData::Color::dynamicCast(shaderObj);
+        auto colorValue = data::Color::dynamicCast(shaderObj);
 
         int r = static_cast< unsigned char >(colorValue->red() * 255);
         int g = static_cast< unsigned char >(colorValue->green() * 255);
@@ -115,11 +115,11 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", hexStr.str());
     }
-    else if(objType == "::fwData::Float")
+    else if(objType == "data::Float")
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue           = ::fwData::Float::dynamicCast(shaderObj);
+        auto floatValue           = data::Float::dynamicCast(shaderObj);
         const double defaultValue = static_cast<double>(floatValue->value());
         const auto minmax         = getRange(defaultValue);
         const double min          = minmax.first;
@@ -132,11 +132,11 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "::fwData::Integer")
+    else if(objType == "data::Integer")
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
-        auto intValue          = ::fwData::Integer::dynamicCast(shaderObj);
+        auto intValue          = data::Integer::dynamicCast(shaderObj);
         const int defaultValue = intValue->value();
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
@@ -149,9 +149,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "::fwData::Array")
+    else if(objType == "data::Array")
     {
-        auto arrayObject         = ::fwData::Array::dynamicCast(shaderObj);
+        auto arrayObject         = data::Array::dynamicCast(shaderObj);
         const auto numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {

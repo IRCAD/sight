@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -42,7 +42,7 @@ namespace editor
 {
 
 /**
- * @brief  SShowVectorSize service show the size of a fwData::Vector
+ * @brief  SShowVectorSize service show the size of a data::Vector
  *
  * @code{.xml}
     <service uid="..." type="::uiTools::editor::SShowVectorSize" autoConnect="yes">
@@ -53,11 +53,11 @@ namespace editor
  * - \b text (optional, by default "") : the text to show before size of the vector
  *
  * @subsection Inputs Inputs
- * - \b vector [::fwData::Vector]: input vector.
+ * - \b vector [data::Vector]: input vector.
  *
  * @subsection Slots Slots
- * -\b addObjects(::fwData::Vector::ContainerType): increment displayed size of the vector.
- * -\b removeObjects(::fwData::Vector::ContainerType ): decrement displayed size of the vector.
+ * -\b addObjects(data::Vector::ContainerType): increment displayed size of the vector.
+ * -\b removeObjects(data::Vector::ContainerType ): decrement displayed size of the vector.
  *
  */
 class UITOOLS_CLASS_API SShowVectorSize : public QObject,
@@ -103,7 +103,7 @@ protected:
     /// Overrides
     virtual void swapping() override;
 
-    /// connect fwData::Vector's signals to SShowVector
+    /// connect data::Vector's signals to SShowVector
     virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Configures the service
@@ -115,10 +115,10 @@ protected:
 private:
 
     /// SLOT: add objects
-    void addObjects(::fwData::Vector::ContainerType objects);
+    void addObjects(data::Vector::ContainerType objects);
 
     /// SLOT: remove objects
-    void removeObjects(::fwData::Vector::ContainerType objects);
+    void removeObjects(data::Vector::ContainerType objects);
 
     size_t m_vectorSize; ///< size of the vector
     QPointer< QLabel > m_label; ///< label where the text will be displayed

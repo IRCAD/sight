@@ -24,7 +24,7 @@
 
 #include "ioNetwork/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -86,7 +86,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     IONETWORK_API virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -94,7 +94,7 @@ protected:
      * @brief Sends the obj at index
      * Usable if the configuration group exists.
      */
-    virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
+    virtual void sendObject(const data::Object::csptr& obj, const size_t index) = 0;
 
     /// Signal emitted when service is connected
     ConnectedSignalType::sptr m_sigConnected;

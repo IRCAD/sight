@@ -52,10 +52,10 @@ namespace ctrlCamp
         </service>
        @endcode
  * @subsection In-Out In-Out
- * - \b source [::fwData::Object]: define the source object where objects are extracted from.
+ * - \b source [data::Object]: define the source object where objects are extracted from.
  *
  * @subsection Output Output
- * - \b target [::fwData::Object]: define the target objects. The number of \b target keys must match
+ * - \b target [data::Object]: define the target objects. The number of \b target keys must match
  * the number of \b from tags.
  *
  * @subsection Configuration Configuration

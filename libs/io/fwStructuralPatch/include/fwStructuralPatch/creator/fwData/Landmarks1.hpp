@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,10 @@ namespace fwStructuralPatch
 {
 namespace creator
 {
-namespace fwData
+namespace sight::data
 {
 
-/// Structural creator for ::fwData::Landmarks version '1'.
+/// Structural creator for data::Landmarks version '1'.
 class FWSTRUCTURALPATCH_CLASS_API Landmarks1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
@@ -53,6 +53,6 @@ public:
 
 };
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace creator
 } // namespace fwStructuralPatch

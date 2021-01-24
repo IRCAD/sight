@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace Camera
 {
 
 /**
- * @brief Test patch to convert fwData::Reconstruction from version 2 to version 3.
+ * @brief Test patch to convert data::Reconstruction from version 2 to version 3.
  */
 class V2ToV3Test : public CPPUNIT_NS::TestFixture
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,28 +37,28 @@ namespace fwMedData
 } // namespace creator
 
 /// Contains the structural patch (::fwAtomsPatch::IStructuralPatch) to tranforms atoms from fwData objects.
-namespace fwData
+namespace sight::data
 {
-/// Contains the structural patch to transform atoms from fwData::Acquisition.
+/// Contains the structural patch to transform atoms from data::Acquisition.
 namespace Acquisition
 {
 }
 
-/// Contains the structural patch to transform atoms from fwData::Patient.
+/// Contains the structural patch to transform atoms from data::Patient.
 namespace Patient
 {
 }
 
-/// Contains the structural patch to transform atoms from fwData::Reconstruction.
+/// Contains the structural patch to transform atoms from data::Reconstruction.
 namespace Reconstruction
 {
 }
 
-/// Contains the structural patch to transform atoms from fwData::Study.
+/// Contains the structural patch to transform atoms from data::Study.
 namespace Study
 {
 }
-} // namespace fwData
+} // namespace sight::data
 
 /// Contains the structural patch (::fwAtomsPatch::IStructuralPatch) to tranforms atoms from fwMedData objects.
 namespace fwMedData

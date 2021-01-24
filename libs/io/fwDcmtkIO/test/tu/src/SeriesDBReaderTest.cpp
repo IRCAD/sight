@@ -26,7 +26,7 @@
 
 #include <core/Exception.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -146,7 +146,7 @@ void verifyTagValues(const std::string& filename, const ::fwMedData::SeriesDB::s
         CPPUNIT_ASSERT_EQUAL(getValue(root, "InstitutionName", mf), equipment->getInstitutionName());
 
         // Image
-        ::fwData::Image::sptr image = series->getImage();
+        data::Image::sptr image = series->getImage();
 
         // PixelSpacing
         std::vector< std::string > spacingValues;
@@ -398,26 +398,26 @@ void SeriesDBReaderTest::readCTSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    const ::fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), size[2]);
 
     // Check spacing
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1.6 ), spacing[2], delta);
 
     // Check origin
-    const ::fwData::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);
@@ -462,26 +462,26 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    const ::fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[2]);
 
     // Check spacing
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 6 ), spacing[2], delta);
 
     // Check origin
-    const ::fwData::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -180.058 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -97.1478 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 112.828 ), origin[2], delta);
@@ -526,27 +526,27 @@ void SeriesDBReaderTest::readOTSeries()
 
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
-    ::fwData::Image::sptr image           = series->getImage();
-    const auto dumpLock = image->lock();
+    data::Image::sptr image = series->getImage();
+    const auto dumpLock     = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    const ::fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[2]);
 
     // Check spacing
-    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[2], delta);
 
     // Check origin
-    const ::fwData::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);

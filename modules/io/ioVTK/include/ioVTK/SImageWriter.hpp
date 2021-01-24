@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwData
+namespace sight::data
 {
 class Image;
 }
@@ -60,7 +60,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::fwData::Image]: image to save.
+ * - \b data [data::Image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
@@ -104,7 +104,7 @@ public:
     /**
      * @brief Save a VTK image.
      * @param[in] imgFile std::filesystem::path.
-     * @param[in] image std::shared_ptr< ::fwData::Image >.
+     * @param[in] image std::shared_ptr< data::Image >.
      * @param[in] sigJobCreated signal emitted when the image is saved.
      * @return bool.
      *
@@ -112,7 +112,7 @@ public:
      * Returns \b true if the image saving is a success and \b false if it fails
      */
     IOVTK_API static bool saveImage( const std::filesystem::path& imgFile,
-                                     const CSPTR(::fwData::Image)& image,
+                                     const CSPTR(data::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:

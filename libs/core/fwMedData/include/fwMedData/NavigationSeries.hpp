@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
 
-#include <fwData/factory/new.hpp>
+#include <data/factory/new.hpp>
 
 #include <array>
 #include <map>
@@ -45,7 +45,7 @@ class FWMEDDATA_CLASS_API NavigationSeries : public ::fwMedData::Series
 
 public:
 
-    fwCoreClassMacro(NavigationSeries, ::fwMedData::Series, ::fwData::factory::New< NavigationSeries >)
+    fwCoreClassMacro(NavigationSeries, ::fwMedData::Series, data::factory::New< NavigationSeries >)
 
     fwCampMakeFriendDataMacro((fwMedData)(NavigationSeries))
 
@@ -57,7 +57,7 @@ public:
      * @brief Creates the navigation series.
      * @param _key private construction key.
      */
-    FWMEDDATA_API NavigationSeries(::fwData::Object::Key _key);
+    FWMEDDATA_API NavigationSeries(data::Object::Key _key);
 
     /// Destroys the navigation series.
     FWMEDDATA_API virtual ~NavigationSeries();
@@ -66,14 +66,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    FWMEDDATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a position associate with the specified timestamp.

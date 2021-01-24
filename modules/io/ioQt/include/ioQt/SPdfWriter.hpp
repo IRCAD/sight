@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ioQt/config.hpp"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -40,11 +40,11 @@ namespace ioQt
  *
  * @brief Creates and writes a PDF containing images.
  *
- * The service will take IDs at the configuration. Those IDs can either be UIDs of fwData::Image or
+ * The service will take IDs at the configuration. Those IDs can either be UIDs of data::Image or
  * either SID/WID of Qt containers. Converts the images if needed, in order to writes them in the PDF.
  * A scaling is applied to fit the A4 format of the PDF pages.
  *
- * @warning When the visuVTKAdaptor::Snapshot service fills an fwData::Image, the renderer must not be hidden.
+ * @warning When the visuVTKAdaptor::Snapshot service fills an data::Image, the renderer must not be hidden.
  * For example if there are multiple tabs of renderer, only the image corresponding to the selected tab will be
  * correctly saved in the PDF.
  *
@@ -60,7 +60,7 @@ namespace ioQt
  *
  * @endcode
  * @subsection Input Input:
- * - \b image [::fwData::Image] : Defines the UID of the fwData::Image to write.
+ * - \b image [data::Image] : Defines the UID of the data::Image to write.
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
@@ -70,7 +70,7 @@ class IOQT_CLASS_API SPdfWriter : public ::fwIO::IWriter
 public:
 
     typedef std::vector< QImage > ImagesScaledListType;
-    typedef std::vector< ::fwData::Image::sptr > ImagesListType;
+    typedef std::vector< data::Image::sptr > ImagesListType;
     typedef std::vector< std::string > ImagesIDsType;
 
     typedef std::vector< QWidget* > ContainersListType;
@@ -159,11 +159,11 @@ protected:
 private:
 
     /**
-     * @brief convertFwImageToQImage: converts a fwData::Image to a QImage
-     * @param fwData::Image to convert
+     * @brief convertFwImageToQImage: converts a data::Image to a QImage
+     * @param data::Image to convert
      * @return converted QImage
      */
-    IOQT_API static QImage convertFwImageToQImage(::fwData::Image::sptr image);
+    IOQT_API static QImage convertFwImageToQImage(data::Image::sptr image);
 
     /**
      * @brief scaleQImage: applies a scale the QImages

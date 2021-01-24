@@ -27,7 +27,7 @@
 
 #include <cvIO/FrameTL.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/video/tracking.hpp>
@@ -99,7 +99,7 @@ void SOpticalFlow::updating()
     if(timestamp > m_lastTimestamp + m_latency )
     {
         m_lastTimestamp = timestamp;
-        ::fwData::mt::ObjectReadLock lock(frameTL);
+        data::mt::ObjectReadLock lock(frameTL);
 
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(frameTL->getNewerTimestamp());
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );

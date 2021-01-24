@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
@@ -49,7 +49,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 Series::Series(::fwDataIO::writer::IObjectWriter::Key ) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_fiducialsExportMode(SPATIAL_FIDUCIALS)
 {
 }
@@ -82,17 +82,17 @@ void Series::write()
     {
         ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         SLM_ASSERT("::fwMedData::ImageSeries not instanced", imageSeries);
-        ::fwData::Image::sptr image = imageSeries->getImage();
-        SLM_ASSERT("::fwData::Image not instanced", image);
+        data::Image::sptr image = imageSeries->getImage();
+        SLM_ASSERT("data::Image not instanced", image);
 
         // Write image
         ::fwGdcmIO::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
         imageIOD.write(series);
 
-        ::fwData::PointList::sptr landmarks =
-            image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-        ::fwData::Vector::sptr distances =
-            image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        data::PointList::sptr landmarks =
+            image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        data::Vector::sptr distances =
+            image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
@@ -129,11 +129,11 @@ void Series::write()
 
 bool Series::hasDocumentSR(const ::fwMedData::ImageSeries::csptr& imageSeries) const
 {
-    ::fwData::Image::csptr image = imageSeries->getImage();
+    data::Image::csptr image = imageSeries->getImage();
     SLM_ASSERT("Image not instanced", image);
 
-    ::fwData::PointList::sptr pl;
-    pl = image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pl;
+    pl = image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     // Check if image has landmark and distance
     return ((pl && pl->getPoints().size() > 0) ||
             image->getField(::fwDataTools::fieldHelper::Image::m_imageDistancesId));

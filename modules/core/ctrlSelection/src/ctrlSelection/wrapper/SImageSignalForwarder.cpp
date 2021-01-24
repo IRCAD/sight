@@ -30,8 +30,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -66,27 +66,27 @@ SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_avail
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::SImageSignalForwarder,
-                         ::fwData::Image )
+                         data::Image )
 
 //-----------------------------------------------------------------------------
 
 SImageSignalForwarder::SImageSignalForwarder() noexcept
 {
-    m_availableConnection[::fwData::Image::s_MODIFIED_SIG]              = s_FORWARD_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Image::s_BUFFER_MODIFIED_SIG]       = s_FORWARD_BUFFER_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Image::s_LANDMARK_ADDED_SIG]        = s_FORWARD_LANDMARK_ADDED_SLOT;
-    m_availableConnection[::fwData::Image::s_LANDMARK_REMOVED_SIG]      = s_FORWARD_LANDMARK_REMOVED_SLOT;
-    m_availableConnection[::fwData::Image::s_LANDMARK_DISPLAYED_SIG]    = s_FORWARD_LANDMARK_DISPLAYED_SLOT;
-    m_availableConnection[::fwData::Image::s_DISTANCE_ADDED_SIG]        = s_FORWARD_DISTANCE_ADDED_SLOT;
-    m_availableConnection[::fwData::Image::s_DISTANCE_REMOVED_SIG]      = s_FORWARD_DISTANCE_REMOVED_SLOT;
-    m_availableConnection[::fwData::Image::s_DISTANCE_DISPLAYED_SIG]    = s_FORWARD_DISTANCE_DISPLAYED_SLOT;
-    m_availableConnection[::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG]  = s_FORWARD_SLICE_INDEX_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG]   = s_FORWARD_SLICE_TYPE_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Image::s_VISIBILITY_MODIFIED_SIG]   = s_FORWARD_VISIBILITY_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG] = s_FORWARD_TRANSPARENCY_MODIFIED_SLOT;
-    m_availableConnection[::fwData::Object::s_ADDED_FIELDS_SIG]         = s_FORWARD_ADDED_FIELDS_SLOT;
-    m_availableConnection[::fwData::Object::s_CHANGED_FIELDS_SIG]       = s_FORWARD_CHANGED_FIELDS_SLOT;
-    m_availableConnection[::fwData::Object::s_REMOVED_FIELDS_SIG]       = s_FORWARD_REMOVED_FIELDS_SLOT;
+    m_availableConnection[data::Image::s_MODIFIED_SIG]              = s_FORWARD_MODIFIED_SLOT;
+    m_availableConnection[data::Image::s_BUFFER_MODIFIED_SIG]       = s_FORWARD_BUFFER_MODIFIED_SLOT;
+    m_availableConnection[data::Image::s_LANDMARK_ADDED_SIG]        = s_FORWARD_LANDMARK_ADDED_SLOT;
+    m_availableConnection[data::Image::s_LANDMARK_REMOVED_SIG]      = s_FORWARD_LANDMARK_REMOVED_SLOT;
+    m_availableConnection[data::Image::s_LANDMARK_DISPLAYED_SIG]    = s_FORWARD_LANDMARK_DISPLAYED_SLOT;
+    m_availableConnection[data::Image::s_DISTANCE_ADDED_SIG]        = s_FORWARD_DISTANCE_ADDED_SLOT;
+    m_availableConnection[data::Image::s_DISTANCE_REMOVED_SIG]      = s_FORWARD_DISTANCE_REMOVED_SLOT;
+    m_availableConnection[data::Image::s_DISTANCE_DISPLAYED_SIG]    = s_FORWARD_DISTANCE_DISPLAYED_SLOT;
+    m_availableConnection[data::Image::s_SLICE_INDEX_MODIFIED_SIG]  = s_FORWARD_SLICE_INDEX_MODIFIED_SLOT;
+    m_availableConnection[data::Image::s_SLICE_TYPE_MODIFIED_SIG]   = s_FORWARD_SLICE_TYPE_MODIFIED_SLOT;
+    m_availableConnection[data::Image::s_VISIBILITY_MODIFIED_SIG]   = s_FORWARD_VISIBILITY_MODIFIED_SLOT;
+    m_availableConnection[data::Image::s_TRANSPARENCY_MODIFIED_SIG] = s_FORWARD_TRANSPARENCY_MODIFIED_SLOT;
+    m_availableConnection[data::Object::s_ADDED_FIELDS_SIG]         = s_FORWARD_ADDED_FIELDS_SLOT;
+    m_availableConnection[data::Object::s_CHANGED_FIELDS_SIG]       = s_FORWARD_CHANGED_FIELDS_SLOT;
+    m_availableConnection[data::Object::s_REMOVED_FIELDS_SIG]       = s_FORWARD_REMOVED_FIELDS_SLOT;
 
     newSlot(s_FORWARD_MODIFIED_SLOT, &SImageSignalForwarder::forwardModified, this);
     newSlot(s_FORWARD_BUFFER_MODIFIED_SLOT, &SImageSignalForwarder::forwardBufferModified, this);
@@ -130,7 +130,7 @@ void SImageSignalForwarder::configuring()
 
 void SImageSignalForwarder::starting()
 {
-    ::fwData::Image::csptr src = this->getInput< ::fwData::Image >(s_SOURCE_INPUT);
+    data::Image::csptr src = this->getInput< data::Image >(s_SOURCE_INPUT);
 
     for (auto signalKey: m_managedSignals)
     {
@@ -169,8 +169,8 @@ void SImageSignalForwarder::info( std::ostream& _sstream )
 
 void SImageSignalForwarder::forwardModified()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -178,26 +178,28 @@ void SImageSignalForwarder::forwardModified()
 
 void SImageSignalForwarder::forwardBufferModified()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 =
+        image->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardLandmarkAdded(SPTR(::fwData::Point)point)
+void SImageSignalForwarder::forwardLandmarkAdded(SPTR(data::Point)point)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::LandmarkAddedSignalType >(data::Image::s_LANDMARK_ADDED_SIG);
     sig->asyncEmit(point);
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardLandmarkRemoved(SPTR(::fwData::Point)point)
+void SImageSignalForwarder::forwardLandmarkRemoved(SPTR(data::Point)point)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::LandmarkRemovedSignalType >(::fwData::Image::s_LANDMARK_REMOVED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::LandmarkRemovedSignalType >(
+        data::Image::s_LANDMARK_REMOVED_SIG);
     sig->asyncEmit(point);
 }
 
@@ -205,26 +207,28 @@ void SImageSignalForwarder::forwardLandmarkRemoved(SPTR(::fwData::Point)point)
 
 void SImageSignalForwarder::forwardLandmarkDisplayed(bool display)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::LandmarkDisplayedSignalType >(::fwData::Image::s_LANDMARK_DISPLAYED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::LandmarkDisplayedSignalType >(
+        data::Image::s_LANDMARK_DISPLAYED_SIG);
     sig->asyncEmit(display);
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardDistanceAdded(SPTR(::fwData::PointList)pointList)
+void SImageSignalForwarder::forwardDistanceAdded(SPTR(data::PointList)pointList)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::DistanceAddedSignalType >(data::Image::s_DISTANCE_ADDED_SIG);
     sig->asyncEmit(pointList);
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardDistanceRemoved(CSPTR(::fwData::PointList)pointList)
+void SImageSignalForwarder::forwardDistanceRemoved(CSPTR(data::PointList)pointList)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(::fwData::Image::s_DISTANCE_REMOVED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::DistanceRemovedSignalType >(
+        data::Image::s_DISTANCE_REMOVED_SIG);
     sig->asyncEmit(pointList);
 }
 
@@ -232,8 +236,9 @@ void SImageSignalForwarder::forwardDistanceRemoved(CSPTR(::fwData::PointList)poi
 
 void SImageSignalForwarder::forwardDistanceDisplayed(bool display)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::DistanceDisplayedSignalType >(
+        data::Image::s_DISTANCE_DISPLAYED_SIG);
     sig->asyncEmit(display);
 }
 
@@ -241,9 +246,9 @@ void SImageSignalForwarder::forwardDistanceDisplayed(bool display)
 
 void SImageSignalForwarder::forwardSliceIndexModified(int axial, int frontal, int sagittal)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
-        ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::SliceIndexModifiedSignalType >(
+        data::Image::s_SLICE_INDEX_MODIFIED_SIG);
     sig->asyncEmit(axial, frontal, sagittal);
 }
 
@@ -251,9 +256,9 @@ void SImageSignalForwarder::forwardSliceIndexModified(int axial, int frontal, in
 
 void SImageSignalForwarder::forwardSliceTypeModified(int from, int to)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig =
-        image->signal< ::fwData::Image::SliceTypeModifiedSignalType >(::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 =
+        image->signal< data::Image::SliceTypeModifiedSignalType >(data::Image::s_SLICE_TYPE_MODIFIED_SIG);
     sig->asyncEmit(from, to);
 }
 
@@ -261,9 +266,9 @@ void SImageSignalForwarder::forwardSliceTypeModified(int from, int to)
 
 void SImageSignalForwarder::forwardVisibilityModified(bool visibility)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig =
-        image->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 =
+        image->signal< data::Image::VisibilityModifiedSignalType >(data::Image::s_VISIBILITY_MODIFIED_SIG);
     sig->asyncEmit(visibility);
 }
 
@@ -271,37 +276,39 @@ void SImageSignalForwarder::forwardVisibilityModified(bool visibility)
 
 void SImageSignalForwarder::forwardTransparencyModified()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Image::TransparencyModifiedSignalType >(
-        ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Image::TransparencyModifiedSignalType >(
+        data::Image::s_TRANSPARENCY_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardAddedFields(::fwData::Object::FieldsContainerType objects)
+void SImageSignalForwarder::forwardAddedFields(data::Object::FieldsContainerType objects)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Object::AddedFieldsSignalType >(::fwData::Object::s_ADDED_FIELDS_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 = image->signal< data::Object::AddedFieldsSignalType >(data::Object::s_ADDED_FIELDS_SIG);
     sig->asyncEmit(objects);
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardChangedFields(::fwData::Object::FieldsContainerType newObjects,
-                                                 ::fwData::Object::FieldsContainerType oldObjects)
+void SImageSignalForwarder::forwardChangedFields(data::Object::FieldsContainerType newObjects,
+                                                 data::Object::FieldsContainerType oldObjects)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Object::ChangedFieldsSignalType >(::fwData::Object::s_CHANGED_FIELDS_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 =
+        image->signal< data::Object::ChangedFieldsSignalType >(data::Object::s_CHANGED_FIELDS_SIG);
     sig->asyncEmit(newObjects, oldObjects);
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::forwardRemovedFields(::fwData::Object::FieldsContainerType objects)
+void SImageSignalForwarder::forwardRemovedFields(data::Object::FieldsContainerType objects)
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_TARGET_INPUT);
-    auto sig = image->signal< ::fwData::Object::RemovedFieldsSignalType >(::fwData::Object::s_REMOVED_FIELDS_SIG);
+    data::Image::csptr image = this->getInput< data::Image >(s_TARGET_INPUT);
+    auto sig                 =
+        image->signal< data::Object::RemovedFieldsSignalType >(data::Object::s_REMOVED_FIELDS_SIG);
     sig->asyncEmit(objects);
 }
 

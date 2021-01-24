@@ -28,8 +28,8 @@
 
 #include <core/HiResClock.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -56,7 +56,7 @@ namespace videoTools
  * @subsection Input Input:
  * - \b key1 [::arData::FrameTL]: timeline from which we synchronize images.
  * @subsection In-Out In-Out:
- * - \b key2 [::fwData::Image]: frame where to extract a buffer of a timeline.
+ * - \b key2 [data::Image]: frame where to extract a buffer of a timeline.
  */
 class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
 {
@@ -119,7 +119,7 @@ private:
     ::arData::FrameTL::csptr m_frameTL;
 
     /// Image
-    ::fwData::Image::sptr m_image;
+    data::Image::sptr m_image;
 
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp;

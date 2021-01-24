@@ -24,8 +24,8 @@
 
 #include "arData/timeline/RawBuffer.hpp"
 
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 #include <boost/bind.hpp>
 #include <boost/pool/pool.hpp>
@@ -39,7 +39,7 @@ namespace arData
 
 //------------------------------------------------------------------------------
 
-RawBufferTL::RawBufferTL ( ::fwData::Object::Key key ) :
+RawBufferTL::RawBufferTL ( data::Object::Key key ) :
     BufferTL(key)
 {
 }
@@ -55,7 +55,7 @@ RawBufferTL::~RawBufferTL ()
 void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );

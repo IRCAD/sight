@@ -27,9 +27,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/Image.hpp>
+#include <data/location/Folder.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
 
@@ -63,8 +63,8 @@ namespace ioVTK
 
 //------------------------------------------------------------------------------
 
-// Register a new reader of ::fwData::Image
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::fwData::Image )
+// Register a new reader of data::Image
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -104,7 +104,7 @@ void SImageReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -112,12 +112,12 @@ void SImageReader::openLocationDialog()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -165,7 +165,7 @@ void SImageReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(::fwIO::s_DATA_KEY);
+        data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
@@ -178,7 +178,7 @@ void SImageReader::updating()
             // Notify other image services that a new image has been loaded.
             if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
-                auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
@@ -211,7 +211,7 @@ template< typename READER > typename READER::sptr configureReader(const std::fil
 //------------------------------------------------------------------------------
 
 bool SImageReader::loadImage( const std::filesystem::path& imgFile,
-                              const ::fwData::Image::sptr& img,
+                              const data::Image::sptr& img,
                               const SPTR(JobCreatedSignalType)& sigJobCreated)
 {
     bool ok = true;
@@ -263,7 +263,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
     }
 
     // Set the image (already created, but empty) that will be modified
-    ::fwData::mt::ObjectWriteLock lock(img);
+    data::mt::ObjectWriteLock lock(img);
     imageReader->setObject(img);
 
     sigJobCreated->emit(imageReader->getJob());

@@ -22,13 +22,13 @@
 
 #include "ExTimeLine/SMain.hpp"
 
-#include "fwData/Composite.hpp"
+#include "data/Composite.hpp"
 
 #include <core/thread/Timer.hpp>
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SMain, ::fwData::Composite )
+fwServicesRegisterMacro( ::fwServices::IService, ::ExTimeLine::SMain, data::Composite )
 
 namespace ExTimeLine
 {

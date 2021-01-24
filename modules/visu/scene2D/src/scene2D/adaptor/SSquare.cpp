@@ -120,12 +120,12 @@ void SSquare::setColor(const std::string& _color )
 
 //-----------------------------------------------------------------------------
 
-void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
+void SSquare::processInteraction( ::fwRenderQtdata::Event& _event )
 {
     if(m_interaction)
     {
-        if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
-             _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
+        if ( _event.getType() == ::fwRenderQtdata::Event::MouseButtonPress &&
+             _event.getButton() == ::fwRenderQtdata::Event::LeftButton )
         {
             if ( this->coordViewIsInItem( _event.getCoord(), m_rec ) )
             {
@@ -135,14 +135,14 @@ void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
                 _event.setAccepted(true);
             }
         }
-        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQtdata::Event::MouseMove )
         {
-            ::fwRenderQt::data::Coord newCoord = this->coordViewToCoordItem( _event.getCoord(), m_rec );
+            ::fwRenderQtdata::Coord newCoord = this->coordViewToCoordItem( _event.getCoord(), m_rec );
             m_rec->moveBy( newCoord.getX() - m_oldCoord.getX(), newCoord.getY() - m_oldCoord.getY() );
             m_oldCoord = newCoord;
             _event.setAccepted(true);
         }
-        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
+        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQtdata::Event::MouseButtonRelease )
         {
             m_rec->setBrush( m_color );
             m_pointIsCaptured = false;
@@ -153,9 +153,9 @@ void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
+bool SSquare::coordViewIsInItem( const ::fwRenderQtdata::Coord& coord, QGraphicsItem* item )
 {
-    ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
+    ::fwRenderQtdata::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     QPointF sp( scenePoint.getX(), scenePoint.getY() );
     QPointF ip = item->mapFromScene( sp );
     return item->contains( ip );
@@ -163,12 +163,12 @@ bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphi
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Coord SSquare::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* )
+::fwRenderQtdata::Coord SSquare::coordViewToCoordItem( const ::fwRenderQtdata::Coord& coord, QGraphicsItem* )
 {
-    ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
+    ::fwRenderQtdata::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     //QPointF sp ( scenePoint.getX(), scenePoint.getY() );
     //QPointF ip = item->mapFromScene( sp );
-    //return ::fwRenderQt::data::Coord( ip.x(), ip.y() );
+    //return ::fwRenderQtdata::Coord( ip.x(), ip.y() );
     return scenePoint;
 }
 //-----------------------------------------------------------------------------

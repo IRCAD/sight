@@ -33,9 +33,9 @@
 
 #include <core/tools/Stringizer.hpp>
 
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -59,8 +59,8 @@ namespace tid
 
 Fiducial::Fiducial(const SPTR(::gdcm::Writer)& writer,
                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                   const ::fwData::Image::csptr& image) :
-    ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
+                   const data::Image::csptr& image) :
+    ::fwGdcmIO::writer::tid::TemplateID< data::Image >(writer, instance, image)
 {
 }
 
@@ -75,12 +75,12 @@ Fiducial::~Fiducial()
 void Fiducial::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
                            bool useSCoord3D)
 {
-    ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList =
+        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int id = 1;
-        for(const ::fwData::Point::sptr& point : pointList->getPoints())
+        for(const data::Point::sptr& point : pointList->getPoints())
         {
             this->createFiducial(parent, point, id++, useSCoord3D);
         }
@@ -90,7 +90,7 @@ void Fiducial::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& p
 //------------------------------------------------------------------------------
 
 void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
-                              const ::fwData::Point::csptr& point,
+                              const data::Point::csptr& point,
                               unsigned int id, bool useSCoord3D)
 {
     // Create Fiducial node
@@ -118,7 +118,7 @@ void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
 
     // Create Fiducial intent node
     const std::string label =
-        point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+        point->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     SPTR(::fwGdcmIO::container::sr::DicomSRTextNode) intentNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRTextNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"), "HAS PROPERTIES", label);

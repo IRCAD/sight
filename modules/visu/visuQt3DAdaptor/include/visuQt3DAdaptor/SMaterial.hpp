@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "visuQt3DAdaptor/config.hpp"
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwRenderQt3D/data/Material.hpp>
 #include <fwRenderQt3D/IAdaptor.hpp>
@@ -33,9 +33,9 @@ namespace visuQt3DAdaptor
 {
 
 /**
- * @brief Adapt a ::fwData::Material.
+ * @brief Adapt a data::Material.
  *
- * This class handles the conversion of ::fwData::Material to Qt3D.
+ * This class handles the conversion of data::Material to Qt3D.
  *
  * @warning This adaptor must be started before every adaptor using it.
  *
@@ -48,7 +48,7 @@ namespace visuQt3DAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [::fwData::Material]: adapted material.
+ * - \b mesh [data::Material]: adapted material.
  *
  * @subsection Configuration Configuration:
  * - \b materialName : used by other adaptors in the scene to retrieve the material handled by this adaptor.
@@ -68,10 +68,10 @@ public:
     VISUQT3DADAPTOR_API virtual ~SMaterial() noexcept;
 
     /// Updates associated material.
-    VISUQT3DADAPTOR_API void setMaterial(::fwRenderQt3D::data::Material* _material);
+    VISUQT3DADAPTOR_API void setMaterial(::fwRenderQt3Ddata::Material* _material);
 
     /// @returns associated material.
-    VISUQT3DADAPTOR_API ::fwRenderQt3D::data::Material* getMaterial();
+    VISUQT3DADAPTOR_API ::fwRenderQt3Ddata::Material* getMaterial();
 
     /// @returns material name.
     VISUQT3DADAPTOR_API std::string getMaterialName();
@@ -88,8 +88,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
-     * Connect ::fwData::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
+     * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
+     * Connect data::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
     VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -102,7 +102,7 @@ protected:
 private:
 
     /// Contains a Qt3D Material.
-    QPointer< ::fwRenderQt3D::data::Material > m_material;
+    QPointer< ::fwRenderQt3Ddata::Material > m_material;
 
     /// Specifies adaptor's name.
     std::string m_materialName;

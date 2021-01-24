@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Composite.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -35,7 +35,7 @@ namespace converter
 {
 
 const std::string CompositeConverter::s_IGTL_TYPE          = "TDATA";
-const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Composite::classname();
+const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = data::Composite::classname();
 
 converterRegisterMacro(::igtlProtocol::converter::CompositeConverter);
 
@@ -51,15 +51,15 @@ CompositeConverter::~CompositeConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer CompositeConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer CompositeConverter::fromFwDataObject(data::Object::csptr src) const
 {
     ::igtl::TrackingDataMessage::Pointer trackingMsg = ::igtl::TrackingDataMessage::New();
 
-    ::fwData::Composite::csptr composite = ::fwData::Composite::dynamicConstCast(src);
-    for(const ::fwData::Composite::ContainerType::value_type& elt : composite->getContainer())
+    data::Composite::csptr composite = data::Composite::dynamicConstCast(src);
+    for(const data::Composite::ContainerType::value_type& elt : composite->getContainer())
     {
-        ::fwData::TransformationMatrix3D::csptr transfoMatrix =
-            ::fwData::TransformationMatrix3D::dynamicConstCast(elt.second);
+        data::TransformationMatrix3D::csptr transfoMatrix =
+            data::TransformationMatrix3D::dynamicConstCast(elt.second);
         if(transfoMatrix)
         {
             ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
@@ -84,7 +84,7 @@ CompositeConverter::~CompositeConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
     trackingMsg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage* >(src.GetPointer()));
@@ -92,15 +92,15 @@ CompositeConverter::~CompositeConverter()
 
     FW_RAISE_EXCEPTION_IF(::igtlProtocol::exception::Conversion("TrackingDataElements"), nbTrckingElement < 0);
 
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    data::Composite::sptr composite = data::Composite::New();
     for(int i = 0; i < nbTrckingElement; ++i)
     {
         ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
         trackingMsg->GetTrackingDataElement(i, trackElement);
         const std::string name = trackElement->GetName();
 
-        ::fwData::TransformationMatrix3D::sptr transfoMatrix = ::fwData::TransformationMatrix3D::New();
-        (*composite)[name]                                   = transfoMatrix;
+        data::TransformationMatrix3D::sptr transfoMatrix = data::TransformationMatrix3D::New();
+        (*composite)[name] = transfoMatrix;
 
         ::igtl::Matrix4x4 matrix;
         trackElement->GetMatrix(matrix);

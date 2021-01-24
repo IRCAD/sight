@@ -39,7 +39,7 @@ void ImageConversionTest::stressTestForAType()
 {
     for(unsigned char k = 0; k < 5; k++)
     {
-        ::fwData::Image::sptr image = ::fwData::Image::New();
+        data::Image::sptr image = data::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create<TYPE>());
 
         typedef itk::Image< TYPE, 3 > ImageType;
@@ -50,13 +50,13 @@ void ImageConversionTest::stressTestForAType()
         exclude.insert("window_center");
         exclude.insert("window_width");
 
-        ::fwData::Image::sptr image2 = ::fwData::Image::New();
+        data::Image::sptr image2    = data::Image::New();
         bool image2ManagesHisBuffer = false;
         ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
         CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
         bool image3ManagesHisBuffer = false;
-        ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+        data::Image::sptr image3    = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
         CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
     }
 }

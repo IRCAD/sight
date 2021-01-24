@@ -61,7 +61,7 @@ void ActivityLauncherManager::initialize()
 {
     this->create();
 
-    m_seriesDB = ::fwData::factory::New< ::fwMedData::SeriesDB >();
+    m_seriesDB = data::factory::New< ::fwMedData::SeriesDB >();
 
     this->addObject(m_seriesDB, this->getInputID(s_SERIESDB_INOUT));
 
@@ -148,7 +148,7 @@ void ActivityLauncherManager::open()
     reader->stop();
     ::fwServices::OSR::unregisterService(reader);
 
-    auto sig = seriesDB->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = seriesDB->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

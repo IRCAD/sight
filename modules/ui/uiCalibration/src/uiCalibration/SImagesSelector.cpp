@@ -28,8 +28,8 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/helper/Vector.hpp>
 
@@ -44,7 +44,7 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
@@ -121,13 +121,13 @@ void SImagesSelector::stopping()
 
 void SImagesSelector::updating()
 {
-    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
-    for(::fwData::Object::sptr obj : vector->getContainer())
+    for(data::Object::sptr obj : vector->getContainer())
     {
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(obj);
+        data::Image::sptr image = data::Image::dynamicCast(obj);
         if (image)
         {
             QString countString;
@@ -148,8 +148,8 @@ void SImagesSelector::remove()
 
     if(idx >= 0)
     {
-        ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
-        ::fwData::Object::sptr obj    = vector->getContainer()[idx];
+        data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
+        data::Object::sptr obj    = vector->getContainer()[idx];
 
         ::fwDataTools::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
@@ -163,7 +163,7 @@ void SImagesSelector::remove()
 
 void SImagesSelector::reset()
 {
-    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
     ::fwDataTools::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
@@ -185,35 +185,35 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
         return;
     }
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
 
-    ::fwData::Image::Size size;
+    data::Image::Size size;
     size[0] = m_frameTL->getWidth();
     size[1] = m_frameTL->getHeight();
     size[2] = 1;
 
-    ::fwData::Image::PixelFormat format;
+    data::Image::PixelFormat format;
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
     switch ( m_frameTL->getNumberOfComponents())
     {
         case 1:
-            format = ::fwData::Image::GRAY_SCALE;
+            format = data::Image::GRAY_SCALE;
             break;
         case 3:
-            format = ::fwData::Image::RGB;
+            format = data::Image::RGB;
             break;
         case 4:
-            format = ::fwData::Image::RGBA;
+            format = data::Image::RGBA;
             break;
         default:
-            format = ::fwData::Image::UNDEFINED;
+            format = data::Image::UNDEFINED;
     }
 
     image->resize(size, m_frameTL->getType(), format);
-    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
-    const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+    const data::Image::Spacing spacing = {1., 1., 1.};
     image->setSpacing2(spacing);
     image->setWindowWidth(100);
     image->setWindowCenter(0);
@@ -224,7 +224,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     std::uint8_t* imgBuffer       = static_cast< std::uint8_t* >(image->getBuffer());
     std::copy( frameBuff, frameBuff+buffer->getSize(), imgBuffer);
 
-    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
     ::fwDataTools::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);

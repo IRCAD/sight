@@ -27,9 +27,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -50,7 +50,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::fwData::Mesh )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -83,7 +83,7 @@ void SMeshReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
     dialogFile.addFilter("PLY File(.ply)", "*.ply");
@@ -93,12 +93,12 @@ void SMeshReader::openLocationDialog()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -150,7 +150,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
 {
     bool ok = true;
     // Retrieve dataStruct associated with this service
-    const auto meshlockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+    const auto meshlockedPtr = this->getLockedInOut< data::Mesh >(::fwIO::s_DATA_KEY);
 
     // Test extension to provide the reader
 
@@ -248,10 +248,10 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    const auto meshLockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+    const auto meshLockedPtr = this->getLockedInOut< data::Mesh >(::fwIO::s_DATA_KEY);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = meshLockedPtr.get_shared()->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = meshLockedPtr.get_shared()->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

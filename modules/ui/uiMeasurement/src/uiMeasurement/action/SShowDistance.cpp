@@ -26,9 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Boolean.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -77,7 +77,7 @@ void SShowDistance::starting()
 
 void SShowDistance::updating()
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
@@ -85,19 +85,19 @@ void SShowDistance::updating()
     }
     else
     {
-        const ::fwData::Boolean::sptr showDistances =
-            image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
-                                                     true));
+        const data::Boolean::sptr showDistances =
+            image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+                                                 true));
         const bool isShown = showDistances->value();
 
         const bool toShow = !isShown;
-        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(toShow));
+        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // Manage hide/show from the field information.
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        const auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
-            ::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
+        const auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
+            data::Image::s_DISTANCE_DISPLAYED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
             sig->asyncEmit(toShow);
@@ -117,7 +117,7 @@ void SShowDistance::stopping()
 ::fwServices::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
 
     return connections;
 }
@@ -126,11 +126,11 @@ void SShowDistance::stopping()
 
 void SShowDistance::showDistance(bool)
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    ::fwData::Boolean::sptr SShowDistances =
-        image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
-                                                 true));
+    data::Boolean::sptr SShowDistances =
+        image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+                                             true));
 
     this->::fwGui::IActionSrv::setIsActive( !(SShowDistances->value()) );
 }

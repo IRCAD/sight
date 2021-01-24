@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <cvIO/Matrix.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -55,8 +55,8 @@ void MatrixTest::tearDown()
 
 void MatrixTest::copyFromCvFloat()
 {
-    ::cv::Matx44f cvMat                          = ::cv::Matx44f::eye();
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
+    ::cv::Matx44f cvMat = ::cv::Matx44f::eye();
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
 
     //identity test
     ::cvIO::Matrix::copyFromCv(cvMat, fwMat);
@@ -98,8 +98,8 @@ void MatrixTest::copyFromCvFloat()
 void MatrixTest::copyToCvFloat()
 {
 
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Matx44f cvMat                          = ::cv::Matx44f::eye();
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
+    ::cv::Matx44f cvMat = ::cv::Matx44f::eye();
 
     //identity test
     ::cvIO::Matrix::copyToCv(fwMat, cvMat);
@@ -115,10 +115,10 @@ void MatrixTest::copyToCvFloat()
         }
     }
 
-    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
-                                                            12.0, 11.0, 10.0, 9.0,
-                                                            0.08, 0.07, 0.0645687, 0.05,
-                                                            40.0, 30.0, 20.0, 10.0}};
+    data::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+                                                        12.0, 11.0, 10.0, 9.0,
+                                                        0.08, 0.07, 0.0645687, 0.05,
+                                                        40.0, 30.0, 20.0, 10.0}};
     fwMat->setCoefficients(array);
 
     ::cvIO::Matrix::copyToCv(fwMat, cvMat);
@@ -140,8 +140,8 @@ void MatrixTest::copyToCvFloat()
 
 void MatrixTest::copyFromCvDouble()
 {
-    ::cv::Matx44d cvMat                          = ::cv::Matx44d::eye();
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
+    ::cv::Matx44d cvMat = ::cv::Matx44d::eye();
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
 
     //identity test
     ::cvIO::Matrix::copyFromCv(cvMat, fwMat);
@@ -183,8 +183,8 @@ void MatrixTest::copyFromCvDouble()
 void MatrixTest::copyToCvDouble()
 {
 
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Matx44d cvMat                          = ::cv::Matx44d::eye();
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
+    ::cv::Matx44d cvMat = ::cv::Matx44d::eye();
 
     //identity test
     ::cvIO::Matrix::copyToCv(fwMat, cvMat);
@@ -200,10 +200,10 @@ void MatrixTest::copyToCvDouble()
         }
     }
 
-    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
-                                                            12.0, 11.0, 10.0, 9.0,
-                                                            0.08, 0.07, 0.0645687, 0.05,
-                                                            40.0, 30.0, 20.0, 10.0}};
+    data::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+                                                        12.0, 11.0, 10.0, 9.0,
+                                                        0.08, 0.07, 0.0645687, 0.05,
+                                                        40.0, 30.0, 20.0, 10.0}};
     fwMat->setCoefficients(array);
 
     //values test
@@ -228,8 +228,8 @@ void MatrixTest::copyFromCvMat()
 {
 
     // identity test
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Mat cvMat                              = ::cv::Mat::eye(4, 4, CV_64F);
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
+    ::cv::Mat cvMat = ::cv::Mat::eye(4, 4, CV_64F);
 
     CPPUNIT_ASSERT_NO_THROW(::cvIO::Matrix::copyFromCv(cvMat, fwMat));
 
@@ -271,8 +271,8 @@ void MatrixTest::copyFromCvMat()
 
 void MatrixTest::copyToCvMat()
 {
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Mat cvMat                              = ::cv::Mat::eye(4, 4, CV_64F);
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
+    ::cv::Mat cvMat = ::cv::Mat::eye(4, 4, CV_64F);
 
     //identity test
     CPPUNIT_ASSERT_NO_THROW(::cvIO::Matrix::copyToCv(fwMat, cvMat));
@@ -288,10 +288,10 @@ void MatrixTest::copyToCvMat()
         }
     }
 
-    ::fwData::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
-                                                            12.0, 11.0, 10.0, 9.0,
-                                                            0.08, 0.07, 0.0645687, 0.05,
-                                                            40.0, 30.0, 20.0, 10.0}};
+    data::TransformationMatrix3D::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+                                                        12.0, 11.0, 10.0, 9.0,
+                                                        0.08, 0.07, 0.0645687, 0.05,
+                                                        40.0, 30.0, 20.0, 10.0}};
     fwMat->setCoefficients(array);
 
     //values test
@@ -319,7 +319,7 @@ void MatrixTest::copyFromRvecTvec()
     ::cv::Mat tvec = cvMat(::cv::Rect(3, 0, 1, 3));
     ::cv::Mat rvec;
     ::cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
 
     CPPUNIT_ASSERT_NO_THROW(::cvIO::Matrix::copyFromCv(rvec, tvec, fwMat));
 
@@ -382,9 +382,9 @@ void MatrixTest::copyFromRvecTvec()
 void MatrixTest::copyToRvecTvec()
 {
 
-    ::fwData::TransformationMatrix3D::sptr fwMat = ::fwData::TransformationMatrix3D::New();
-    ::cv::Mat expectedRvec                       = ( ::cv::Mat_<double>(3, 1) << 0., 0., 0. );
-    ::cv::Mat expectedTvec                       = ( ::cv::Mat_<double>(3, 1) << 0., 0., 0. );
+    data::TransformationMatrix3D::sptr fwMat = data::TransformationMatrix3D::New();
+    ::cv::Mat expectedRvec = ( ::cv::Mat_<double>(3, 1) << 0., 0., 0. );
+    ::cv::Mat expectedTvec = ( ::cv::Mat_<double>(3, 1) << 0., 0., 0. );
     ::cv::Mat rvec, tvec;
 
     //identity test
@@ -401,10 +401,10 @@ void MatrixTest::copyToRvecTvec()
                                              tvec.at<double>(i), 1e-8);
     }
 
-    ::fwData::TransformationMatrix3D::TMCoefArray array = {{1., 0., 0., 4.,
-                                                            0., 0.86601905, -0.50001100, 8.,
-                                                            0., 0.50001100, 0.86601905, 12.,
-                                                            0., 0., 0., 1.}};
+    data::TransformationMatrix3D::TMCoefArray array = {{1., 0., 0., 4.,
+                                                        0., 0.86601905, -0.50001100, 8.,
+                                                        0., 0.50001100, 0.86601905, 12.,
+                                                        0., 0., 0., 1.}};
     fwMat->setCoefficients(array);
 
     //values test

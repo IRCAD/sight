@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <imageFilterOp/Flipper.hpp>
 
@@ -75,14 +75,14 @@ void SFlip::starting()
 
 void SFlip::updating()
 {
-    ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    data::Image::csptr inImg = this->getInput< data::Image >(s_IMAGE_IN);
 
     SLM_ASSERT("No 'imageIn' found !", inImg);
     if (inImg)
     {
-        ::fwData::mt::ObjectReadLock inImLock(inImg);
+        data::mt::ObjectReadLock inImLock(inImg);
 
-        ::fwData::Image::sptr outImg = ::fwData::Image::New();
+        data::Image::sptr outImg = data::Image::New();
 
         ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
 
@@ -132,8 +132,8 @@ void SFlip::flipAxisZ()
 ::fwServices::IService::KeyConnectionsMap SFlip::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

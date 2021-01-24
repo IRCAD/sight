@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
+ * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -67,7 +67,7 @@ class SCENE2D_CLASS_API SScaleValues : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SScaleValues, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SScaleValues, ::fwRenderQt::IAdaptor)
 
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API SScaleValues() noexcept;
@@ -89,7 +89,7 @@ protected:
     SCENE2D_API void stopping() override;
 
     /// Manage the given events
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 

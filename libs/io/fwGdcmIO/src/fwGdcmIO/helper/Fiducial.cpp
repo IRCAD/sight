@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -48,11 +48,11 @@ bool Fiducial::containsLandmarks(const SPTR(::fwMedData::SeriesDB)& seriesDB)
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
-            ::fwData::Image::sptr image = imageSeries->getImage();
+            data::Image::sptr image = imageSeries->getImage();
             if(image)
             {
-                ::fwData::PointList::sptr pointList =
-                    image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+                data::PointList::sptr pointList =
+                    image->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
                 if(pointList && !pointList->getPoints().empty())
                 {
                     return true;
@@ -74,11 +74,11 @@ bool Fiducial::containsDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
-            ::fwData::Image::sptr image = imageSeries->getImage();
+            data::Image::sptr image = imageSeries->getImage();
             if(image)
             {
-                ::fwData::Vector::sptr distanceVector =
-                    image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+                data::Vector::sptr distanceVector =
+                    image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     return true;
@@ -100,21 +100,21 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
         {
-            ::fwData::Image::csptr image = imageSeries->getImage();
+            data::Image::csptr image = imageSeries->getImage();
             if(image)
             {
-                ::fwData::Vector::sptr distanceVector =
-                    image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+                data::Vector::sptr distanceVector =
+                    image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
-                    for(const ::fwData::Object::sptr& object : distanceVector->getContainer())
+                    for(const data::Object::sptr& object : distanceVector->getContainer())
                     {
-                        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
+                        data::PointList::sptr pointList = data::PointList::dynamicCast(object);
                         if(pointList && pointList->getPoints().size() >= 2)
                         {
-                            const ::fwData::Point::csptr point1 = *pointList->getPoints().begin();
-                            const ::fwData::Point::csptr point2 = *(++pointList->getPoints().begin());
-                            const size_t frameNumber1           =
+                            const data::Point::csptr point1 = *pointList->getPoints().begin();
+                            const data::Point::csptr point2 = *(++pointList->getPoints().begin());
+                            const size_t frameNumber1       =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
                             const size_t frameNumber2 =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point2);

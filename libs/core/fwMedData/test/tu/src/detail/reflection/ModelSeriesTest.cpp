@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::ModelSeriesTest );
@@ -108,8 +108,8 @@ void ModelSeriesTest::propertiesTest()
                                                                   { "reconstruction_db" }, };
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB;
-    recDB.push_back(::fwData::Reconstruction::New());
-    recDB.push_back(::fwData::Reconstruction::New());
+    recDB.push_back(data::Reconstruction::New());
+    recDB.push_back(data::Reconstruction::New());
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
     ::fwMedData::ModelSeries::sptr obj = ::fwMedData::ModelSeries::New();

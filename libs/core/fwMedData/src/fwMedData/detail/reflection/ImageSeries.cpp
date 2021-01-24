@@ -27,7 +27,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 //------------------------------------------------------------------------------
 

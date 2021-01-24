@@ -31,8 +31,8 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Image.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>

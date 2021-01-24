@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 TransformationMatrix3DWriter::TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -61,8 +61,8 @@ void TransformationMatrix3DWriter::write()
         SLM_ERROR( "Trf file writing error for " << getFile());
         return;
     }
-    ::fwData::TransformationMatrix3D::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
-    int i = 0;
+    data::TransformationMatrix3D::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
+    int i                                         = 0;
     for (auto val : mat)
     {
         file << val;

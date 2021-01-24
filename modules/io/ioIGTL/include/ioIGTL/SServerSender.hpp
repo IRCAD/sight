@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "ioIGTL/config.hpp"
 #include "ioIGTL/INetworkSender.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <igtlNetwork/Client.hpp>
 #include <igtlNetwork/Server.hpp>
@@ -53,7 +53,7 @@ namespace ioIGTL
  * @subsection Configuration Configuration:
  * - \b port : defines the port where the objects will be sent
  * @subsection Input Input:
- * - \b objects [::fwData::Object]: specified objects to send.
+ * - \b objects [data::Object]: specified objects to send.
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 
@@ -89,7 +89,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
+    void sendObject(const data::Object::csptr& obj, const size_t index) override;
 
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;

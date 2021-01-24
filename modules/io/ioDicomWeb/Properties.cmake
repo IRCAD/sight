@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwNetworkIO
-    fwData
+    data
     fwDataTools
     fwMedData
     fwMedDataTools
@@ -17,6 +17,6 @@ set( DEPENDENCIES
     fwPreferences
     )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )

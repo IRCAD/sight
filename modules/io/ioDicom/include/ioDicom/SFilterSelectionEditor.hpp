@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ namespace ioDicom
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selection [::fwData::Vector]: selection.
+ * - \b selection [data::Vector]: selection.
  * @subsection In-Out In-Out:
  * - \b target [::fwMedData::SeriesDB]: seriesDB where to put the selection.
  */
@@ -66,7 +66,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectionEditor,  ::fwGui::editor::IEditor );
+    fwCoreServiceMacro(SFilterSelectionEditor,  ::fwGui::editor::IEditor )
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 

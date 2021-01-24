@@ -26,7 +26,7 @@
 
 #include <colourImageMasking/Masker.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwServices/IOperator.hpp>
 
@@ -63,7 +63,7 @@ namespace cvSegmentation
    @endcode
  *
  * @subsection Input Input
- * - \b mask [::fwData::Image] : mask image to perform image segmentation in
+ * - \b mask [data::Image] : mask image to perform image segmentation in
  * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
  *
  * @subsection In-Out In-Out

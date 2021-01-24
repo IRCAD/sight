@@ -36,10 +36,10 @@
 #include <core/HiResTimer.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <fwData/Float.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/PointList.hpp>
+#include <data/Float.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
+#include <data/PointList.hpp>
 
 #include <openvslamIO/OpenvslamConfig.hpp>
 
@@ -64,7 +64,7 @@ namespace openvslamTracker
 /**
  * @brief Service that manages an instance of Openvslam (Simultaneous tracking and Mapping).
  *
- * It will populate a matrixTL with camera position, and can also export the map as a pointcloud (::fwData::Mesh).
+ * It will populate a matrixTL with camera position, and can also export the map as a pointcloud (data::Mesh).
  * Note: in this version of the service only monocular (MONO) mode is available, and the downsample feature is disabled.
  *
  * @section Signals Signals
@@ -127,7 +127,7 @@ namespace openvslamTracker
  * camera and thus of the real camera.
  *
  * @subsection Output Output:
- * - \b pointCloud [::fwData::Mesh](optional): mesh containing the 3D points given by openvslam
+ * - \b pointCloud [data::Mesh](optional): mesh containing the 3D points given by openvslam
  *
  * @subsection Configuration Configuration:
  * - \b mode (optional): set the tracking mode (MONO, STEREO, DEPTH), by default MONO will be used.
@@ -292,7 +292,7 @@ private:
     ::arData::Camera::csptr m_camera;
 
     /// Mesh that represent MapPoints.
-    ::fwData::Mesh::sptr m_pointCloud;
+    data::Mesh::sptr m_pointCloud;
 
     /// ORB Parameters structure
     ::openvslamIO::OrbParams m_orbParameters;
@@ -345,7 +345,7 @@ private:
     std::string m_saveMapPath;
 
     /// Stores the folder where to save trajectories files.
-    ::fwData::location::SingleFile::sptr m_trajectoriesSavePath;
+    data::location::SingleFile::sptr m_trajectoriesSavePath;
 
     /// Stores the trajectories format ("KITTI" or "TUM" are internal formats in openvslam).
     /// This is only used when saving trajectories at stop.

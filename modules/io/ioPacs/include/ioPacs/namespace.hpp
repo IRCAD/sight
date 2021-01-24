@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
  * @brief ioPacs contains services use to deal with PACS using DCMTK library.
  *
  * It's also used to load fwPacsIO library. So, if you want to use a
- * ::fwPacsIO::data::PacsConfiguration objects in your application,
+ * ::fwPacsIOdata::PacsConfiguration objects in your application,
  * you require this module: add the requirement in your application plugin.xml.
  */
 namespace ioPacs

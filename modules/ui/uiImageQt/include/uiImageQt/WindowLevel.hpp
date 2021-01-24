@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Integer.hpp>
+#include <data/Integer.hpp>
 
 #include <fwDataTools/helper/TransferFunction.hpp>
 
@@ -71,8 +71,8 @@ namespace uiImageQt
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image on which the windowing will be changed.
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [data::Image]: image on which the windowing will be changed.
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
@@ -118,7 +118,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG to ::uiImageQt::WindowLevel::s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to ::uiImageQt::WindowLevel::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to ::uiImageQt::WindowLevel::s_UPDATE_SLOT
      */
     UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override final;
@@ -146,7 +146,7 @@ protected Q_SLOTS:
 
 protected:
 
-    typedef ::fwData::TransferFunction::TFValuePairType WindowLevelMinMaxType;
+    typedef data::TransferFunction::TFValuePairType WindowLevelMinMaxType;
 
     double toWindowLevel(double _val);
 
@@ -184,7 +184,7 @@ private:
     bool m_enableSquareTF;
 
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
-    ::fwData::TransferFunction::sptr m_previousTF;
+    data::TransferFunction::sptr m_previousTF;
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
 

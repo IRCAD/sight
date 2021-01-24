@@ -26,9 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwDataIO/reader/MeshReader.hpp>
 
@@ -43,7 +43,7 @@
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, data::Mesh )
 
 namespace ioData
 {
@@ -94,16 +94,16 @@ void STrianMeshReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a trian file" : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Trian file", "*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
     else
@@ -119,7 +119,7 @@ void STrianMeshReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+        data::Mesh::sptr mesh = this->getInOut< data::Mesh >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("mesh not instanced", mesh);
 
         ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
@@ -131,8 +131,8 @@ void STrianMeshReader::updating()
             // Launch reading process
             reader->read();
             // Notify reading
-            ::fwData::Object::ModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            data::Object::ModifiedSignalType::sptr sig;
+            sig = mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();

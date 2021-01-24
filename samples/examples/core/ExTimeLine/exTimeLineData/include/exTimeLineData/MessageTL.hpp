@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,13 +54,13 @@ class EXTIMELINEDATA_CLASS_API MessageTL : public ::arData::GenericTL< MsgData >
 
 public:
 
-    fwCoreClassMacro(MessageTL, ::arData::TimeLine, ::fwData::factory::New< MessageTL >)
+    fwCoreClassMacro(MessageTL, ::arData::TimeLine, data::factory::New< MessageTL >)
 
     /**
      * @brief Creates the data.
      * @param _key private construction key.
      */
-    EXTIMELINEDATA_API MessageTL(::fwData::Object::Key _key) :
+    EXTIMELINEDATA_API MessageTL(data::Object::Key _key) :
         GenericTL< MsgData >(_key)
     {
     }

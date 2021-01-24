@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "cvIO/config.hpp"
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -38,13 +38,13 @@ class CVIO_CLASS_API PointList
 public:
 
     /// Copy the first two coordinates of the Sight point to the OpenCV point.
-    CVIO_API static void copyToCv(const ::fwData::Point::csptr& _src, ::cv::Point2d& _dst);
+    CVIO_API static void copyToCv(const data::Point::csptr& _src, ::cv::Point2d& _dst);
 
     /// Copy a Sight 2D point list to OpenCV.
-    CVIO_API static void copyToCv(const ::fwData::PointList::csptr& _src, std::vector< ::cv::Point2d >& _dst);
+    CVIO_API static void copyToCv(const data::PointList::csptr& _src, std::vector< ::cv::Point2d >& _dst);
 
     /// Convert OpenCV points to a Sight point list.
-    CVIO_API static void copyFromCv(const std::vector< ::cv::Point2d >& _src, const ::fwData::PointList::sptr& _dst);
+    CVIO_API static void copyFromCv(const std::vector< ::cv::Point2d >& _src, const data::PointList::sptr& _dst);
 
 };
 

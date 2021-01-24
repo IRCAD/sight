@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/GenericFieldBase.hpp>
+#include <data/GenericFieldBase.hpp>
 
 #include <fwDataTools/Color.hpp>
 
@@ -127,7 +127,7 @@ void SText::starting()
 ::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_OBJECT_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -207,12 +207,12 @@ void SText::updateText()
 {
     std::string textString = m_textString;
 
-    const auto objW = this->getWeakInput< ::fwData::Object >(s_OBJECT_INPUT);
+    const auto objW = this->getWeakInput< data::Object >(s_OBJECT_INPUT);
     const auto obj  = objW.lock();
 
     if(obj)
     {
-        const ::fwData::GenericFieldBase::csptr field = ::fwData::GenericFieldBase::dynamicCast(obj.get_shared());
+        const data::GenericFieldBase::csptr field = data::GenericFieldBase::dynamicCast(obj.get_shared());
 
         if(field)
         {

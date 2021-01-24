@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "scene2D/adaptor/SHistogram.hpp"
 
-#include <fwData/Histogram.hpp>
-#include <fwData/Point.hpp>
+#include <data/Histogram.hpp>
+#include <data/Point.hpp>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -69,7 +69,7 @@ void SHistogram::configuring()
 
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
     if (config.count("opacity"))
@@ -91,8 +91,8 @@ void SHistogram::updating()
 {
     this->stopping();
 
-    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
-    ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
+    data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    data::Histogram::fwHistogramValues values = histogram->getValues();
 
     m_layer = new QGraphicsItemGroup();
 
@@ -147,15 +147,15 @@ void SHistogram::updating()
 
 //---------------------------------------------------------------------------------------------------------
 
-void SHistogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point)
+void SHistogram::updateCurrentPoint(::fwRenderQtdata::Event& _event, const data::Point::sptr& point)
 {
-    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram >(s_HISTOGRAM_INPUT);
-    ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue  = histogram->getMinValue();
-    const float histogramBinsWidth = histogram->getBinsWidth();
+    data::Histogram::csptr histogram          = this->getInput< data::Histogram >(s_HISTOGRAM_INPUT);
+    data::Histogram::fwHistogramValues values = histogram->getValues();
+    const float histogramMinValue             = histogram->getMinValue();
+    const float histogramBinsWidth            = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
+    ::fwRenderQtdata::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = histIndex - histogramMinValue;
@@ -182,12 +182,12 @@ void SHistogram::stopping()
 
 //---------------------------------------------------------------------------------------------------------
 
-void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
+void SHistogram::processInteraction( ::fwRenderQtdata::Event& _event)
 {
     bool updatePointedPos = false;
 
     // Vertical scaling
-    if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp )
+    if( _event.getType() == ::fwRenderQtdata::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
@@ -197,7 +197,7 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
@@ -207,12 +207,12 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQtdata::Event::MouseMove )
     {
         updatePointedPos = true;
     }
 
-    ::fwData::Point::sptr point = this->getInOut< ::fwData::Point>(s_POINT_INOUT);
+    data::Point::sptr point = this->getInOut< data::Point>(s_POINT_INOUT);
     if( point && updatePointedPos )
     {
         this->updateCurrentPoint(_event, point);
@@ -224,7 +224,7 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 ::fwServices::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

@@ -29,10 +29,10 @@
 
 #include <cvIO/FrameTL.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -191,13 +191,13 @@ void SOpenvslam::starting()
     SLM_ASSERT("The input " + s_CAMERA_INPUT +" is not valid.", m_camera);
 
     m_cameraMatrixTL = this->getInOut< ::arData::MatrixTL >(s_CAMERA_MATRIXTL_INOUT);
-    const ::fwData::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
+    const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
     if (m_cameraMatrixTL)
     {
         m_cameraMatrixTL->initPoolSize(50);
     }
 
-    m_pointCloud = ::fwData::Mesh::New();
+    m_pointCloud = data::Mesh::New();
     this->setOutput(s_POINTCLOUD_OUTPUT, m_pointCloud);
 
     if(m_trackingMode != TrackingMode::MONO)
@@ -249,7 +249,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     }
     if(m_slamSystem == nullptr)
     {
-        const ::fwData::mt::ObjectReadLock cameraLock(m_camera);
+        const data::mt::ObjectReadLock cameraLock(m_camera);
         const auto config = ::openvslamIO::Helper::createMonocularConfig(m_camera, m_orbParameters,
                                                                          m_initializerParameters);
 
@@ -486,18 +486,18 @@ void SOpenvslam::loadMap()
     static std::filesystem::path sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select openvslam map file");
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
     dialogFile.addFilter("openvlsam map files", "*.map");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    const ::fwData::location::SingleFile::csptr result =
-        ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    const data::location::SingleFile::csptr result =
+        data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         m_sigMapLoaded->asyncEmit();
 
         sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(sDefaultPath) );
         this->stopTracking();
         const std::string mapFile = result->getPath().string();
         this->startTracking(mapFile);
@@ -512,19 +512,19 @@ void SOpenvslam::saveMap()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to save Openvslam map");
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
     dialogFile.addFilter("openvslam files", "*.map");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    const ::fwData::location::SingleFile::csptr result =
-        ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    const data::location::SingleFile::csptr result =
+        data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (!result)
     {
         return;
     }
 
     sDefaultPath = result->getPath().parent_path();
-    dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+    dialogFile.saveDefaultLocation( data::location::Folder::New(sDefaultPath) );
     m_saveMapPath = result->getPath().string();
 
     const std::unique_lock< std::mutex > lock(m_slamLock);
@@ -564,13 +564,13 @@ void SOpenvslam::saveTrajectories()
     dialogFolder.setTitle("Choose a folder & name to save trajectories files.");
     // Use SINGLE_FILE type, so we can use filters, only the basename of files will be used.
     dialogFolder.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
-    dialogFolder.setDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+    dialogFolder.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
     dialogFolder.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     // Use filter to store the format (matrix or vector & quaternions).
     dialogFolder.addFilter("Matrix Format", " KITTI");
     dialogFolder.addFilter("Vector & Quat Format", " TUM");
 
-    const auto result = ::fwData::location::SingleFile::dynamicCast( dialogFolder.show() );
+    const auto result = data::location::SingleFile::dynamicCast( dialogFolder.show() );
 
     if (!result)
     {
@@ -579,7 +579,7 @@ void SOpenvslam::saveTrajectories()
 
     m_trajectoriesSavePath = result;
     sDefaultPath           = result->getPath().remove_filename();
-    dialogFolder.saveDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
+    dialogFolder.saveDefaultLocation( data::location::Folder::New(sDefaultPath) );
     const std::string trajFolder   = result->getPath().remove_filename().string();
     const std::string trajFilename = result->getPath().filename().replace_extension("").string();   // keep only the
                                                                                                     // base filename.
@@ -644,11 +644,11 @@ void SOpenvslam::resetPointCloud()
         m_timer->stop();
     }
 
-    const ::fwData::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
+    const data::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
     // Clear Sight mesh
     m_pointCloud->clear();
-    auto sigMesh = m_pointCloud->signal< ::fwData::Object::ModifiedSignalType >
-                       (::fwData::Object::s_MODIFIED_SIG);
+    auto sigMesh = m_pointCloud->signal< data::Object::ModifiedSignalType >
+                       (data::Object::s_MODIFIED_SIG);
     sigMesh->asyncEmit();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
@@ -672,7 +672,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
     const std::unique_lock<std::mutex> lock(m_slamLock);
     if (m_slamSystem && !m_isPaused)
     {
-        ::fwData::mt::ObjectReadLock frameTLLock(m_frameTL);
+        data::mt::ObjectReadLock frameTLLock(m_frameTL);
         const auto bufferFrame = m_frameTL->getClosestBuffer(timestamp);
         if(bufferFrame == nullptr)
         {
@@ -691,7 +691,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
         if(m_trackingMode != TrackingMode::MONO)
         {
-            ::fwData::mt::ObjectReadLock frameTL2Lock(m_frameTL2);
+            data::mt::ObjectReadLock frameTL2Lock(m_frameTL2);
             const auto bufferFrame2 = m_frameTL2->getClosestBuffer(timestamp);
             if(bufferFrame2 == nullptr)
             {
@@ -746,11 +746,11 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             return;
         }
 
-        const ::fwData::Float::csptr floatObj = this->getInput< ::fwData::Float >(s_SCALE_INPUT);
+        const data::Float::csptr floatObj = this->getInput< data::Float >(s_SCALE_INPUT);
         if(floatObj)
         {
             // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D Scene.
-            const ::fwData::mt::ObjectReadLock floatLock(floatObj);
+            const data::mt::ObjectReadLock floatLock(floatObj);
             if(floatObj->value() > 0)
             {
                 m_scale = m_scale / floatObj->value();
@@ -781,7 +781,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
                 matrix[7]  *= m_scale;
                 matrix[11] *= m_scale;
 
-                const ::fwData::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
+                const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
                 SPTR(::arData::MatrixTL::BufferType) data = m_cameraMatrixTL->createBuffer(timestamp);
                 data->setElement(matrix, 0);
                 m_cameraMatrixTL->pushObject(data);
@@ -827,8 +827,8 @@ void SOpenvslam::updatePointCloud()
     // or if tracker is paused.
     if (m_pointCloud && !m_isPaused)
     {
-        std::vector< ::openvslam::data::landmark* > landmarks;
-        std::set< ::openvslam::data::landmark* > local_landmarks;
+        std::vector< ::openvslamdata::landmark* > landmarks;
+        std::set< ::openvslamdata::landmark* > local_landmarks;
 
         const auto nblandmarks = m_ovsMapPublisher->get_landmarks(landmarks, local_landmarks);
 
@@ -841,7 +841,7 @@ void SOpenvslam::updatePointCloud()
 
         m_numberOfLandmarks = nblandmarks;
 
-        const ::fwData::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
+        const data::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
         m_pointCloud->clear();
 
         const auto dumplLock = m_pointCloud->lock();
@@ -887,8 +887,8 @@ void SOpenvslam::updatePointCloud()
 
         m_sigTrackingInitialized->asyncEmit();
         m_sigTracked->asyncEmit();
-        auto sigMesh = m_pointCloud->signal< ::fwData::Object::ModifiedSignalType >
-                           (::fwData::Object::s_MODIFIED_SIG);
+        auto sigMesh = m_pointCloud->signal< data::Object::ModifiedSignalType >
+                           (data::Object::s_MODIFIED_SIG);
         sigMesh->asyncEmit();
 
     }

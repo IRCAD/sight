@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "fwGui/dialog/ILocationDialog.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -68,10 +68,10 @@ const std::string& ILocationDialog::getTitle()
 
 //------------------------------------------------------------------------------
 
-void ILocationDialog::setDefaultLocation( ::fwData::location::ILocation::sptr loc)
+void ILocationDialog::setDefaultLocation( data::location::ILocation::sptr loc)
 {
-    ::fwData::location::SingleFile::csptr singleFile = ::fwData::location::SingleFile::dynamicConstCast(loc);
-    ::fwData::location::Folder::csptr folder         = ::fwData::location::Folder::dynamicConstCast(loc);
+    data::location::SingleFile::csptr singleFile = data::location::SingleFile::dynamicConstCast(loc);
+    data::location::Folder::csptr folder         = data::location::Folder::dynamicConstCast(loc);
     SLM_FATAL_IF( "Unsupported location",  !singleFile && !folder );
     m_defaultLocaction = loc;
 }
@@ -81,13 +81,13 @@ void ILocationDialog::setDefaultLocation( ::fwData::location::ILocation::sptr lo
 const std::filesystem::path ILocationDialog::getDefaultLocation()
 {
     std::filesystem::path defaultPath;
-    ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
-    ::fwData::location::ILocation::sptr location;
+    data::Composite::sptr prefUI = this->getPreferenceUI();
+    data::location::ILocation::sptr location;
     if(prefUI)
     {
         if ( prefUI->find( ILocationDialog::DLG_DEFAULT_LOCATION ) != prefUI->end() )
         {
-            location = ::fwData::location::ILocation::dynamicCast( (*prefUI)[ ILocationDialog::DLG_DEFAULT_LOCATION ] );
+            location = data::location::ILocation::dynamicCast( (*prefUI)[ ILocationDialog::DLG_DEFAULT_LOCATION ] );
             SLM_ASSERT("LOCATION not correct", location);
         }
     }
@@ -97,8 +97,8 @@ const std::filesystem::path ILocationDialog::getDefaultLocation()
         location = m_defaultLocaction;
     }
 
-    ::fwData::location::SingleFile::csptr singleFile = ::fwData::location::SingleFile::dynamicConstCast(location);
-    ::fwData::location::Folder::csptr folder         = ::fwData::location::Folder::dynamicConstCast(location);
+    data::location::SingleFile::csptr singleFile = data::location::SingleFile::dynamicConstCast(location);
+    data::location::Folder::csptr folder         = data::location::Folder::dynamicConstCast(location);
     if (singleFile)
     {
         defaultPath = singleFile->getPath();
@@ -113,9 +113,9 @@ const std::filesystem::path ILocationDialog::getDefaultLocation()
 
 //-----------------------------------------------------------------------------
 
-void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr loc)
+void ILocationDialog::saveDefaultLocation(data::location::ILocation::sptr loc)
 {
-    ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
+    data::Composite::sptr prefUI = this->getPreferenceUI();
     if(prefUI && loc)
     {
         (*prefUI)[ ILocationDialog::DLG_DEFAULT_LOCATION ] = loc;
@@ -124,33 +124,33 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr ILocationDialog::getPreferenceUI()
+data::Composite::sptr ILocationDialog::getPreferenceUI()
 {
-    ::fwData::Composite::sptr prefUI;
+    data::Composite::sptr prefUI;
 
     // Get preferences
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefs = ::fwPreferences::getPreferences();
     if(prefs)
     {
-        ::fwData::Composite::sptr framesUI;
+        data::Composite::sptr framesUI;
         // Retrieves software UI pref
         if ( prefs->find( ILocationDialog::SOFTWARE_UI ) != prefs->end() )
         {
-            framesUI = ::fwData::Composite::dynamicCast( (*prefs)[ ILocationDialog::SOFTWARE_UI ]);
+            framesUI = data::Composite::dynamicCast( (*prefs)[ ILocationDialog::SOFTWARE_UI ]);
         }
         else
         {
-            framesUI                                 = ::fwData::Composite::New();
+            framesUI                                 = data::Composite::New();
             (*prefs)[ ILocationDialog::SOFTWARE_UI ] = framesUI;
         }
         // Retrieves associated dialog UI pref
         if ( framesUI->find( this->getTitle() ) != framesUI->end() )
         {
-            prefUI = ::fwData::Composite::dynamicCast( (*framesUI)[ this->getTitle() ] );
+            prefUI = data::Composite::dynamicCast( (*framesUI)[ this->getTitle() ] );
         }
         else
         {
-            prefUI                          = ::fwData::Composite::New();
+            prefUI                          = data::Composite::New();
             (*framesUI)[ this->getTitle() ] = prefUI;
         }
     }

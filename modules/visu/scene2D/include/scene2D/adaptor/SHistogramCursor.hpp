@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,10 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [::fwData::Histogram]: histogram to display.
- * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * - \b histogram [data::Histogram]: histogram to display.
+ * - \b point [data::Point]: histogram point, used to show information at the current histogram index pointed by the
  * mouse.
- * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
+ * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -69,7 +69,7 @@ class SHistogramCursor : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SHistogramCursor, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SHistogramCursor, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SHistogramCursor() noexcept;
     SCENE2D_API virtual ~SHistogramCursor() noexcept;
@@ -82,7 +82,7 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    SCENE2D_API void processInteraction( ::fwRenderQtdata::Event& _event ) override;
 
     /// Color used for graphic item's inner color
     QPen m_color;
@@ -96,7 +96,7 @@ protected:
     QGraphicsEllipseItem* m_index;
 
     /// Coordinates of the current event.
-    ::fwRenderQt::data::Coord m_coord;
+    ::fwRenderQtdata::Coord m_coord;
 
     /// Point size
     float m_pointSize;

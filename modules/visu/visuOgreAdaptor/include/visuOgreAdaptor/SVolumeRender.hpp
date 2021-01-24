@@ -91,10 +91,10 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: input volume data.
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [data::Image]: input volume data.
+ * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
- * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
+ * - \b clippingMatrix [data::TransformationMatrix3D]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.
@@ -148,9 +148,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEW_IMAGE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEW_IMAGE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "fwPacsIO/config.hpp"
 
-#include <fwData/factory/new.hpp>
-#include <fwData/Object.hpp>
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwPacsIO)(data)(PacsConfiguration), FWPACSIO_API);
+fwCampAutoDeclareDataMacro((fwPacsIO)(sight)(data)(PacsConfiguration), FWPACSIO_API);
 
 namespace fwPacsIO
 {
@@ -36,19 +36,19 @@ namespace data
 /**
  * @brief   This class defines a Pacs configuration.
  */
-class FWPACSIO_CLASS_API PacsConfiguration : public ::fwData::Object
+class FWPACSIO_CLASS_API PacsConfiguration : public data::Object
 {
 
 public:
 
-    fwCoreClassMacro(PacsConfiguration, ::fwData::Object, ::fwData::factory::New< PacsConfiguration >);
-    fwCampMakeFriendDataMacro((fwPacsIO)(data)(PacsConfiguration));
+    fwCoreClassMacro(PacsConfiguration, data::Object, data::factory::New< PacsConfiguration >)
+    fwCampMakeFriendDataMacro((fwPacsIO)(sight)(data)(PacsConfiguration));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    FWPACSIO_API PacsConfiguration(::fwData::Object::Key key);
+    FWPACSIO_API PacsConfiguration(data::Object::Key key);
 
     /// Destructor
     FWPACSIO_API virtual ~PacsConfiguration();

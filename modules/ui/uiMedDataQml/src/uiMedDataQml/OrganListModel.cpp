@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uiMedDataQml/OrganListModel.hpp"
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 namespace uiMedDataQml
 {

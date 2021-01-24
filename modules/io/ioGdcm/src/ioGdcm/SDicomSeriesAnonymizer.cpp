@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
 
@@ -86,7 +86,7 @@ void SDicomSeriesAnonymizer::stopping()
 
 void SDicomSeriesAnonymizer::updating()
 {
-    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
+    data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
 
     ::fwGui::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
@@ -130,7 +130,7 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
 void SDicomSeriesAnonymizer::anonymize()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
-    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >("selectedSeries");
+    data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
 
     ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,17 +29,17 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Patient
 {
 
-/// Transforms a ::fwData::Patient to a ::fwMedData::Patient.
+/// Transforms a data::Patient to a ::fwMedData::Patient.
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataPatientV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToFwMedDataPatientV1, ::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1,
+    fwCoreClassMacro(V1ToFwMedDataPatientV1, ::fwStructuralPatchdata::Patient::V1ToFwMedDataPatientV1,
                      new V1ToFwMedDataPatientV1)
 
     /// Constructor
@@ -65,6 +65,6 @@ public:
 
 } // namespace Patient
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

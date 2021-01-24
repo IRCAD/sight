@@ -41,7 +41,7 @@ namespace writer
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_fiducialsExportMode(::fwGdcmIO::writer::Series::SPATIAL_FIDUCIALS)
 {
 }

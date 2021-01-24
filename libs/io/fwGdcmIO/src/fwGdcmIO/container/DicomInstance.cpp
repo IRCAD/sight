@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -123,7 +123,7 @@ void DicomInstance::computeSOPClassUID(const ::fwMedData::Series::csptr& series)
     if(imageSeries)
     {
         // Retrieve image from series
-        ::fwData::Image::csptr image = imageSeries->getImage();
+        data::Image::csptr image = imageSeries->getImage();
 
         // Compute instance dimension
         unsigned int dimension =

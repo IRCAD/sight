@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
+#include <data/Float.hpp>
+#include <data/Integer.hpp>
 
 #include <unordered_set>
 
@@ -89,21 +89,21 @@ public:
 class TestSrvOneData : public TestEmptyService
 {
 public:
-    fwCoreServiceMacro(TestSrvOneData, ::fwServices::IService);
+    fwCoreServiceMacro(TestSrvOneData, ::fwServices::IService)
 
 };
 class TestSrvThreeData : public TestEmptyService
 {
 public:
-    fwCoreServiceMacro(TestSrvThreeData, ::fwServices::IService);
+    fwCoreServiceMacro(TestSrvThreeData, ::fwServices::IService)
 
 };
 
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvOneData, ::fwData::Float );
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvThreeData );
-fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, ::fwData::Float );
-fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, ::fwData::Integer );
-fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, ::fwData::Float );
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvOneData, data::Float )
+fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestSrvThreeData )
+fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, data::Float );
+fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, data::Integer );
+fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, data::Float );
 
 //------------------------------------------------------------------------------
 
@@ -111,30 +111,30 @@ void ServiceFactoryTest::factoryTest()
 {
     const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Object",
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Object",
                                                                                        "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestServiceImplementation");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestServiceImplementation not found ", it != servicesImpl.end());
     }
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Float",
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Float",
                                                                                        "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvOneData");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestSrvOneData not found ", it != servicesImpl.end());
 
         const auto objects = serviceFactory->getServiceObjects("::fwServices::ut::TestSrvOneData");
-        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Float"), objects[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[0]);
     }
     {
-        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Float",
+        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Float",
                                                                                  "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestSrvThreeData not found ", it != servicesImpl.end());
 
-        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Integer",
+        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Integer",
                                                                             "::fwServices::ut::TestService");
 
         it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvThreeData");
@@ -142,9 +142,9 @@ void ServiceFactoryTest::factoryTest()
 
         const auto objects = serviceFactory->getServiceObjects("::fwServices::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), objects.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Float"), objects[0]);
-        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Integer"), objects[1]);
-        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Float"), objects[2]);
+        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("data::Integer"), objects[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[2]);
     }
 }
 

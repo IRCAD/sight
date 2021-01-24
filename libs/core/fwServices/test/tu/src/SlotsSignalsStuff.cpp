@@ -31,8 +31,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/registry/macros.hpp>
 
 namespace fwServices
 {
@@ -101,8 +101,8 @@ void SReaderTest::updating()
     Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
 
     // Emit object Modified
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = buff->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = buff->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
 
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -131,7 +131,7 @@ void SShowTest::updating()
 {
     Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
     std::this_thread::sleep_for(m_receiveRetarder);
-    ::fwData::mt::ObjectWriteLock lock(buffer);
+    data::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 }
 
@@ -148,7 +148,7 @@ void SShowTest::change()
 ::fwServices::IService::KeyConnectionsMap SShowTest::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_BUFFER_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_BUFFER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -196,8 +196,8 @@ void SShow2Test::updating()
     Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
 
     // Emit object Modified
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = buff->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = buff->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
     {
         core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_BUFFER_SLOT)));
         sig->asyncEmit();
@@ -211,7 +211,7 @@ void SShow2Test::updateBuffer()
     {
         Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
         std::this_thread::sleep_for(m_receiveRetarder);
-        ::fwData::mt::ObjectWriteLock lock(buffer);
+        data::mt::ObjectWriteLock lock(buffer);
         ++m_receiveCount;
     }
 

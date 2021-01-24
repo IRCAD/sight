@@ -25,7 +25,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -123,9 +123,9 @@ void SNegato2D::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -183,9 +183,9 @@ void SNegato2D::swapping(const KeyType& _key)
 {
     if (_key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -210,9 +210,9 @@ void SNegato2D::newImage()
     int sagittalIdx = 0;
     {
 
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -230,19 +230,19 @@ void SNegato2D::newImage()
 
         // Update Slice
         const auto imgSize       = image->getSize2();
-        const auto axialIdxField = image->getField< ::fwData::Integer >(
+        const auto axialIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
         SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
         axialIdx = axialIdxField ?
                    static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
-        const auto frontalIdxField = image->getField< ::fwData::Integer >(
+        const auto frontalIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
         SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
         frontalIdx = frontalIdxField ?
                      static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
-        const auto sagittalIdxField = image->getField< ::fwData::Integer >(
+        const auto sagittalIdxField = image->getField< data::Integer >(
             ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
         SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
         sagittalIdx = sagittalIdxField ?
@@ -261,7 +261,7 @@ void SNegato2D::newImage()
 
 void SNegato2D::changeSliceType(int _from, int _to)
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
@@ -292,7 +292,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -332,9 +332,9 @@ void SNegato2D::updateTF()
 {
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
-        const ::fwData::mt::locked_ptr lock(tf);
+        const data::mt::locked_ptr lock(tf);
         m_gpuTF->updateTexture(tf);
 
         m_plane->switchThresholding(tf->getIsClamped());
@@ -351,10 +351,10 @@ void SNegato2D::updateTF()
 ::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
     return connections;
 }

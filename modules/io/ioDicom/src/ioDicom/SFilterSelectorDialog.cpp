@@ -27,8 +27,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
+#include <data/Composite.hpp>
+#include <data/String.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -48,7 +48,7 @@ namespace ioDicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::fwData::String )
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, data::String )
 
 static const ::fwServices::IService::KeyType s_FILTER_INOUT = "filter";
 
@@ -180,13 +180,13 @@ void SFilterSelectorDialog::updating()
 
             ::fwDicomIOFilter::IFilter::sptr filter = availableFiltersMap[filterName];
 
-            ::fwData::String::sptr obj = this->getInOut< ::fwData::String >(s_FILTER_INOUT);
+            data::String::sptr obj = this->getInOut< data::String >(s_FILTER_INOUT);
             SLM_ASSERT("The inout key '" + s_FILTER_INOUT + "' is not correctly set.", obj);
 
             obj->setValue(filter->getClassname());
 
             auto sig
-                = obj->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
+                = obj->signal< data::Object::ModifiedSignalType>( data::Object::s_MODIFIED_SIG );
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();

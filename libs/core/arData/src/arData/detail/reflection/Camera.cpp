@@ -33,7 +33,7 @@ fwCampImplementDataMacro((arData)(Camera))
     builder
     .tag("object_version", "3")
     .tag("lib_name", "arData")
-    .base< ::fwData::Object>()
+    .base< sight::data::Object>()
     .property("intrinsic", &::arData::Camera::m_intrinsic)
     .property("is_calibrated", &::arData::Camera::m_isCalibrated)
     .property("skew", &::arData::Camera::m_skew)

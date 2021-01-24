@@ -50,11 +50,11 @@ namespace registrationCV
        </service>
    @endcode
  * @subsection Input Input:
- * - \b pointList2d [::fwData::PointList]: list of 2d points clicked on image
- * - \b pointList3d [::fwData::PointList]: list of corresponding 3d points clicked on 3d model
+ * - \b pointList2d [data::PointList]: list of 2d points clicked on image
+ * - \b pointList3d [data::PointList]: list of corresponding 3d points clicked on 3d model
  * - \b calibration [::arData::Camera]: camera parameters (intrinsic & distorison coefficients)
  * @subsection In-Out In-Out:
- * - \b matrix [::fwData::TransformationMatrix3D]: output registration matrix
+ * - \b matrix [data::TransformationMatrix3D]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
  *      Values are "top_left" or "center" (default: "top_left")

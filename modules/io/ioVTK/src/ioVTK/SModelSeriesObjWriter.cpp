@@ -27,9 +27,9 @@
 #include <core/base.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/location/Folder.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
@@ -81,13 +81,13 @@ void SModelSeriesObjWriter::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
+    data::location::Folder::sptr result;
 
-    while (result = ::fwData::location::Folder::dynamicCast( dialog.show() ))
+    while (result = data::location::Folder::dynamicCast( dialog.show() ))
     {
         if( std::filesystem::is_empty(result->getFolder()) )
         {
@@ -109,7 +109,7 @@ void SModelSeriesObjWriter::openLocationDialog()
     if (result)
     {
         _sDefaultPath = result->getFolder().parent_path();
-        dialog.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialog.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
     }
     else

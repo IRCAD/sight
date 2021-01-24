@@ -34,7 +34,7 @@ struct runner
 {
     runner()
     {
-        localDeclarefwMemoryBufferObject();
+        localDeclaresightcorememoryBufferObject();
     }
 
     static runner r;

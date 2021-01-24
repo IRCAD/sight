@@ -5,13 +5,13 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     fwActivities
-    fwData
+    data
     fwGui
     fwQml
 )
 set( REQUIREMENTS
     styleQml
-    fwData
+    data
     servicesReg
     ioAtoms
     ioActivity

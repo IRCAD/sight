@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SLine);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SLine)
 
 namespace scene2D
 {
@@ -72,7 +72,7 @@ void SLine::configuring()
     // If the corresponding attributes are present in the config, set the color of the line
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
     }
 }
 
@@ -127,4 +127,3 @@ void SLine::stopping()
 
 } // namespace adaptor
 } // namespace scene2D
-

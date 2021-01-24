@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "Tuto05EditorQml/config.hpp"
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwServices/AppManager.hpp>
 
@@ -61,7 +61,7 @@ public Q_SLOTS:
 
 private:
 
-    ::fwData::String::sptr m_string;
+    data::String::sptr m_string;
 };
 
 } // namespace Tuto05EditorQml

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to s_UPDATE_SLOT
+     * Connect data::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
 

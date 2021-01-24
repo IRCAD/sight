@@ -26,8 +26,8 @@
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Image.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -58,7 +58,7 @@ namespace ut
 void runImageSrv(
     const std::string& srvname,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
-    const SPTR(::fwData::Object)& image)
+    const SPTR(data::Object)& image)
 {
 
     ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
@@ -121,20 +121,20 @@ void ImageReaderWriterTest::testVtkImageReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
 
     // Data expected
-    ::fwData::Image::Spacing spacingExpected;
+    data::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.732;
     spacingExpected[1] = 1.732;
     spacingExpected[2] = 3.2;
 
-    ::fwData::Image::Origin originExpected;
+    data::Image::Origin originExpected;
     originExpected[0] = 34.64;
     originExpected[1] = 86.6;
     originExpected[2] = 56;
 
-    ::fwData::Image::Size sizeExpected;
+    data::Image::Size sizeExpected;
     sizeExpected[0] = 230;
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
@@ -142,9 +142,9 @@ void ImageReaderWriterTest::testVtkImageReader()
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -173,21 +173,21 @@ void ImageReaderWriterTest::testVtiImageReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
-    ::fwData::Image::Spacing spacingExpected;
+    data::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
 
-    ::fwData::Image::Origin originExpected;
+    data::Image::Origin originExpected;
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
 
-    ::fwData::Image::Size sizeExpected;
+    data::Image::Size sizeExpected;
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
@@ -195,9 +195,9 @@ void ImageReaderWriterTest::testVtiImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -227,21 +227,21 @@ void ImageReaderWriterTest::testMhdImageReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
-    ::fwData::Image::Spacing spacingExpected;
+    data::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
 
-    ::fwData::Image::Origin originExpected;
+    data::Image::Origin originExpected;
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
 
-    ::fwData::Image::Size sizeExpected;
+    data::Image::Size sizeExpected;
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
@@ -249,9 +249,9 @@ void ImageReaderWriterTest::testMhdImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -282,7 +282,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ofile.open(file.string().c_str());
     ofile.close();
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
 
     {
         const std::string srvname("::ioVTK::SImageReader");
@@ -309,16 +309,16 @@ void ImageReaderWriterTest::testImageReaderExtension()
 void ImageReaderWriterTest::testBitmapImageWriter()
 {
     // Data to write
-    const core::tools::Type type             = core::tools::Type::s_UINT8;
-    const ::fwData::Image::Size sizeExpected = {10, 20, 0};
+    const core::tools::Type type         = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected = {10, 20, 0};
     // Use standard information for spacing and origin
     // As the data will be lost in the file format
-    const ::fwData::Image::Spacing spacingExpected = {1., 1., 0};
-    const ::fwData::Image::Origin originExpected   = {0., 0., 0.};
+    const data::Image::Spacing spacingExpected = {1., 1., 0};
+    const data::Image::Origin originExpected   = {0., 0., 0.};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              ::fwData::Image::RGB);
+                                              data::Image::RGB);
 
     // Test all teh available extensions
     std::vector<std::string> extensions;
@@ -337,15 +337,15 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
         // Read image from disk
-        const ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+        const data::Image::sptr imageFromDisk = data::Image::New();
         runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
         std::filesystem::remove(file);
 
         // Data read
-        ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-        ::fwData::Image::Origin originRead   = image->getOrigin2();
-        ::fwData::Image::Size sizeRead       = image->getSize2();
+        data::Image::Spacing spacingRead = image->getSpacing2();
+        data::Image::Origin originRead   = image->getOrigin2();
+        data::Image::Size sizeRead       = image->getSize2();
 
         CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
         CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -376,14 +376,14 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    core::tools::Type type                         = core::tools::Type::s_UINT8;
-    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
-    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type                     = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected       = {10, 20, 30};
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              ::fwData::Image::RGBA);
+                                              data::Image::RGBA);
     ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
@@ -392,15 +392,15 @@ void ImageReaderWriterTest::testVtkImageWriter()
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+    data::Image::sptr imageFromDisk = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     std::filesystem::remove(file);
 
     // Data read
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -433,8 +433,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    core::tools::Type type = core::tools::Type::s_FLOAT;
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    core::tools::Type type  = core::tools::Type::s_FLOAT;
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
@@ -446,7 +446,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     runImageSrv("::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    ::fwData::Image::sptr newImage = ::fwData::Image::New();
+    data::Image::sptr newImage = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), newImage);
 
     ::fwTest::helper::ExcludeSetType exclude;
@@ -461,14 +461,14 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    core::tools::Type type                         = core::tools::Type::s_UINT8;
-    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
-    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type                     = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected       = {10, 20, 30};
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              ::fwData::Image::GRAY_SCALE);
+                                              data::Image::GRAY_SCALE);
     ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
@@ -477,13 +477,13 @@ void ImageReaderWriterTest::testVtiImageWriter()
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+    data::Image::sptr imageFromDisk = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -517,14 +517,14 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    core::tools::Type type                         = core::tools::Type::s_UINT8;
-    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
-    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type                     = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected       = {10, 20, 30};
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              ::fwData::Image::RGB);
+                                              data::Image::RGB);
     ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
@@ -533,13 +533,13 @@ void ImageReaderWriterTest::testMhdImageWriter()
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
+    data::Image::sptr imageFromDisk = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
-    ::fwData::Image::Origin originRead   = image->getOrigin2();
-    ::fwData::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing2();
+    data::Image::Origin originRead   = image->getOrigin2();
+    data::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -573,14 +573,14 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    core::tools::Type type                         = core::tools::Type::s_UINT8;
-    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
-    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type                     = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected       = {10, 20, 30};
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              ::fwData::Image::GRAY_SCALE);
+                                              data::Image::GRAY_SCALE);
     ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.

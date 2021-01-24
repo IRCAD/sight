@@ -28,11 +28,11 @@
 #include <core/com/Signals.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -61,7 +61,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, data::Image)
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT = "tf";
@@ -114,7 +114,7 @@ void WindowLevel::configuring()
 
 void WindowLevel::starting()
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
@@ -194,7 +194,7 @@ void WindowLevel::starting()
     QObject::connect(m_dynamicRangeSelection, &::QToolButton::triggered, this,
                      &WindowLevel::onDynamicRangeSelectionChanged);
 
-    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
 
     this->updating();
@@ -204,9 +204,9 @@ void WindowLevel::starting()
 
 void WindowLevel::updating()
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectReadLock imgLock(image);
+    const data::mt::ObjectReadLock imgLock(image);
 
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     this->setEnabled(imageIsValid);
@@ -220,10 +220,10 @@ void WindowLevel::updating()
             this->updateImageWindowLevel(min, max);
         }
 
-        const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+        const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
         SLM_ASSERT("TransferFunction null pointer", tf);
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
-        ::fwData::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
+        const data::mt::ObjectReadLock tfLock(tf);
+        data::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
 }
@@ -253,10 +253,10 @@ void WindowLevel::swapping(const KeyType& key)
     if (key == s_TF_INOUT)
     {
         {
-            const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
 
-            const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+            const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
             m_helperTF.setOrCreateTF(tf, image);
         }
         this->updating();
@@ -281,9 +281,9 @@ void WindowLevel::info( std::ostream& _sstream )
 
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
-    const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
+    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", tf);
-    const ::fwData::mt::ObjectReadLock tfLock(tf);
+    const data::mt::ObjectReadLock tfLock(tf);
     return tf->getWLMinMax();
 }
 
@@ -323,12 +323,12 @@ double WindowLevel::toWindowLevel(double _val)
 
 void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
-    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    const ::fwData::mt::ObjectWriteLock tfLock(tf);
-    tf->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin,
-                                                                 _imageMax) );
-    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const data::mt::ObjectWriteLock tfLock(tf);
+    tf->setWLMinMax( data::TransferFunction::TFValuePairType(_imageMin,
+                                                             _imageMax) );
+    auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
+        data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
         const core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( tf->getWindow(), tf->getLevel());
@@ -354,7 +354,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
     double max               = m_widgetDynamicRangeWidth + min;
     int index                = action->data().toInt();
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     switch (index)
@@ -375,7 +375,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
             break;
         case 4:         // Fit Image Range
         {
-            const ::fwData::mt::ObjectReadLock imgLock(image);
+            const data::mt::ObjectReadLock imgLock(image);
             ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
         break;
@@ -409,15 +409,15 @@ void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void WindowLevel::onToggleTF(bool squareTF)
 {
-    ::fwData::TransferFunction::sptr currentTF = m_helperTF.getTransferFunction();
-    ::fwData::mt::ObjectWriteLock tfLock(currentTF);
+    data::TransferFunction::sptr currentTF = m_helperTF.getTransferFunction();
+    data::mt::ObjectWriteLock tfLock(currentTF);
 
-    ::fwData::TransferFunction::sptr newTF;
+    data::TransferFunction::sptr newTF;
 
     if( squareTF )
     {
-        newTF = ::fwData::TransferFunction::New();
-        ::fwData::TransferFunction::TFColor color(1., 1., 1., 1.);
+        newTF = data::TransferFunction::New();
+        data::TransferFunction::TFColor color(1., 1., 1., 1.);
         newTF->setName("SquareTF");
         newTF->addTFColor(0.0, color);
         newTF->addTFColor(1.0, color);
@@ -431,20 +431,20 @@ void WindowLevel::onToggleTF(bool squareTF)
         }
         else
         {
-            newTF = ::fwData::TransferFunction::createDefaultTF();
+            newTF = data::TransferFunction::createDefaultTF();
         }
     }
 
     newTF->setWindow( currentTF->getWindow() );
     newTF->setLevel( currentTF->getLevel() );
 
-    m_previousTF = ::fwData::Object::copy(currentTF);
+    m_previousTF = data::Object::copy(currentTF);
 
     currentTF->deepCopy(newTF);
 
     // Send signal
-    auto sig = currentTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
-        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
+    auto sig = currentTF->signal< data::TransferFunction::PointsModifiedSignalType >(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(m_helperTF.getTFUpdateConnection());
         sig->asyncEmit();
@@ -459,7 +459,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
 
     if (m_autoWindowing)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
         double min, max;
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
@@ -519,8 +519,8 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 ::fwServices::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

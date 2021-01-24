@@ -27,6 +27,6 @@
 
 #include <core/reflection/macros.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
-fwCampDeclareAccessor((fwMedData)(ActivitySeries), (fwData)(Composite));
+fwCampDeclareAccessor((fwMedData)(ActivitySeries), (sight)(data)(Composite));

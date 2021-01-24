@@ -49,7 +49,7 @@ public:
     /// Destructor. Do nothing.
     CALIBRATIONACTIVITY_API virtual ~TagId();
 
-    CALIBRATIONACTIVITY_API virtual ValidationType validate(const CSPTR(::fwData::Object)& currentData ) const override;
+    CALIBRATIONACTIVITY_API virtual ValidationType validate(const CSPTR(data::Object)& currentData ) const override;
 };
 
 } // namespace validator

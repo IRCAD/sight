@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwData/Vector.hpp>
+#include <data/Vector.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -63,7 +63,7 @@ namespace editor
  *
  * @subsection In-Out In-Out
  * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
- * - \b selection [::fwData::Vector]: defines the id of the ::fwData::Vector where the selection will be put or get.
+ * - \b selection [data::Vector]: defines the id of the data::Vector where the selection will be put or get.
  *
  * @subsection Configuration Configuration
  * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where

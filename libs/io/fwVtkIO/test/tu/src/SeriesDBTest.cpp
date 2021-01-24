@@ -27,10 +27,10 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/BufferObject.hpp>
 
-#include <fwData/Array.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/reflection/visitor/CompareObjects.hpp>
+#include <data/Array.hpp>
+#include <data/Image.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -74,7 +74,7 @@ void SeriesDBTest::testImportSeriesDB()
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
 
-    ::fwData::location::ILocation::VectPathType paths;
+    data::location::ILocation::VectPathType paths;
     paths.push_back(imagePath);
     paths.push_back(meshPath);
     paths.push_back(meshPath);
@@ -95,22 +95,22 @@ void SeriesDBTest::testImportSeriesDB()
     ::fwMedData::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(size_t(2), recVect.size());
 
-    ::fwData::Reconstruction::sptr rec1 = recVect.at(0);
-    ::fwData::Reconstruction::sptr rec2 = recVect.at(1);
+    data::Reconstruction::sptr rec1 = recVect.at(0);
+    data::Reconstruction::sptr rec2 = recVect.at(1);
 
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->getOrganName());
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->getOrganName());
 
-    ::fwData::Mesh::sptr mesh1 = rec1->getMesh();
-    ::fwData::Mesh::sptr mesh2 = rec2->getMesh();
+    data::Mesh::sptr mesh1 = rec1->getMesh();
+    data::Mesh::sptr mesh2 = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Size)720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Size)362);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (data::Mesh::Size)720);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (data::Mesh::Size)362);
 
-    ::fwData::reflection::visitor::CompareObjects visitor;
+    data::reflection::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);
-    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
@@ -149,7 +149,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
 
-    ::fwData::location::ILocation::VectPathType paths;
+    data::location::ILocation::VectPathType paths;
     paths.push_back(imagePath);
     paths.push_back(meshPath);
 
@@ -182,7 +182,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
         ::fwMedData::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL(size_t(1), recVect.size());
 
-        ::fwData::Mesh::sptr mesh = recVect[0]->getMesh();
+        data::Mesh::sptr mesh = recVect[0]->getMesh();
 
         CPPUNIT_ASSERT_NO_THROW(auto lock = mesh->lock());
     }

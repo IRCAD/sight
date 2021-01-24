@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "itkRegistrationOp/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Image.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 namespace itkRegistrationOp
 {
@@ -39,15 +39,15 @@ public:
 
     /**
      * @brief transforms and resamples an image using ITK.
-     * @param[in] _inImg the input fwData::Image.
+     * @param[in] _inImg the input data::Image.
      * @param[out] _outImg the resulting transformed image.
      * @param[in] _trf transform applied to the input.
      * @param[in] _targetImg image used to set the desired origin, spacing and size.
      */
-    static ITKREGISTRATIONOP_API void resample(const ::fwData::Image::csptr& _inImg,
-                                               const ::fwData::Image::sptr& outImg,
-                                               const ::fwData::TransformationMatrix3D::csptr& _trf,
-                                               const ::fwData::Image::csptr& _targetImg = nullptr);
+    static ITKREGISTRATIONOP_API void resample(const data::Image::csptr& _inImg,
+                                               const data::Image::sptr& outImg,
+                                               const data::TransformationMatrix3D::csptr& _trf,
+                                               const data::Image::csptr& _targetImg = nullptr);
 
     /**
      * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
@@ -57,9 +57,9 @@ public:
      * @return resampled image.
      */
     [[deprecated("Will be removed in sigth 22.0")]]
-    static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(const fwData::Image::csptr& _img,
-                                                                const fwData::TransformationMatrix3D::csptr& _trf,
-                                                                const fwData::Image::SpacingType& _outputSpacing);
+    static ITKREGISTRATIONOP_API data::Image::sptr resample(const data::Image::csptr& _img,
+                                                            const data::TransformationMatrix3D::csptr& _trf,
+                                                            const data::Image::SpacingType& _outputSpacing);
 
     /**
      * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
@@ -68,9 +68,9 @@ public:
      * @param _outputSpacing desired sampling rate.
      * @return resampled image.
      */
-    static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(const fwData::Image::csptr& _img,
-                                                                const fwData::TransformationMatrix3D::csptr& _trf,
-                                                                const fwData::Image::Spacing& _outputSpacing);
+    static ITKREGISTRATIONOP_API data::Image::sptr resample(const data::Image::csptr& _img,
+                                                            const data::TransformationMatrix3D::csptr& _trf,
+                                                            const data::Image::Spacing& _outputSpacing);
 
 };
 

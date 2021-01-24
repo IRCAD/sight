@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/System.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -124,17 +124,17 @@ void SDicomSeriesDBReader::openLocationDialog()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    data::location::Folder::sptr result;
+    result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
         this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     }
 }
 
@@ -274,12 +274,12 @@ void SDicomSeriesDBReader::updating()
 
             // Clear SeriesDB and add new series
             ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
-            ::fwData::mt::ObjectWriteLock lock(associatedSeriesDB);
+            data::mt::ObjectWriteLock lock(associatedSeriesDB);
             sDBhelper.clear();
             // Notify removal.
             sDBhelper.notify();
             {
-                ::fwData::mt::ObjectWriteLock lock(seriesDB);
+                data::mt::ObjectWriteLock lock(seriesDB);
                 associatedSeriesDB->shallowCopy(seriesDB);
             }
 

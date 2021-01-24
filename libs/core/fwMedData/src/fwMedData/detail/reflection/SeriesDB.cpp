@@ -35,7 +35,7 @@ fwCampImplementDataMacro((fwMedData)(SeriesDB))
     builder
     .tag("object_version", "1")
     .tag("lib_name", "fwMedData")
-    .base< ::fwData::Object>()
+    .base< sight::data::Object>()
     .property("values", &::fwMedData::SeriesDB::m_container)
     ;
 }

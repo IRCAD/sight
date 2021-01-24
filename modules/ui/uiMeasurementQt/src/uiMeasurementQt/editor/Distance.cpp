@@ -28,10 +28,10 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -50,7 +50,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
@@ -119,11 +119,11 @@ void Distance::updating()
 
 void Distance::onDistanceButton()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
+    data::Image::sptr image = this->getInOut< data::Image >("image");
     SLM_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
-    image->setField("ShowDistances",  ::fwData::Boolean::New(true));
+    image->setField("ShowDistances",  data::Boolean::New(true));
 
     m_sigDistanceRequested->asyncEmit();
 }

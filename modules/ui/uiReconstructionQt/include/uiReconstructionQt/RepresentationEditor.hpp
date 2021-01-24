@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwData/Material.hpp>
+#include <data/Material.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -54,7 +54,7 @@ namespace uiReconstructionQt
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction that will be updated
+ * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
                                                           public ::fwGui::editor::IEditor
@@ -114,7 +114,7 @@ private:
     QPointer<QButtonGroup> m_buttonGroupShading;
     QPointer<QButtonGroup> m_normalsRadioBox;
 
-    ::fwData::Material::sptr m_material;
+    data::Material::sptr m_material;
 
 };
 

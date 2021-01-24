@@ -30,9 +30,9 @@ namespace camp_ext
 {
 
 template <>
-struct ValueMapper< core::tools::Type >
+struct ValueMapper< sight::core::tools::Type >
 {
-    typedef core::tools::Type ReturnType;
+    typedef sight::core::tools::Type ReturnType;
     static const int type = camp::stringType;
     //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ struct ValueMapper< core::tools::Type >
 
     static ReturnType from(const std::string& source)
     {
-        return core::tools::Type::create(source);
+        return sight::core::tools::Type::create(source);
     }
     //------------------------------------------------------------------------------
 

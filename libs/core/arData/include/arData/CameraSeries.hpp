@@ -29,8 +29,8 @@
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
 
-#include <fwData/Object.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Object.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -48,7 +48,7 @@ namespace arData
 class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
 {
 public:
-    fwCoreClassMacro(CameraSeries, ::fwData::Object, ::fwData::factory::New< CameraSeries >)
+    fwCoreClassMacro(CameraSeries, data::Object, data::factory::New< CameraSeries >)
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
 
@@ -58,22 +58,22 @@ public:
      *@brief Constructor
      *@param key Private construction key
      */
-    ARDATA_API CameraSeries(::fwData::Object::Key key);
+    ARDATA_API CameraSeries(data::Object::Key key);
 
     /// Destructor
     ARDATA_API virtual ~CameraSeries();
 
     /**
      * @brief Defines shallow copy
-     * @throws ::fwData::Exception if an errors occurs during copy
+     * @throws data::Exception if an errors occurs during copy
      */
-    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    ARDATA_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy
-     * @throws ::fwData::Exception if an errors occurs during copy
+     * @throws data::Exception if an errors occurs during copy
      */
-    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    ARDATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**@name Signals API
      * @{
@@ -88,7 +88,7 @@ public:
     typedef core::com::Signal<void ()> ExtrinsicCalibratedSignalType;
     /** @} */
 
-    typedef std::vector< ::fwData::TransformationMatrix3D::sptr > MatricesContainer;
+    typedef std::vector< data::TransformationMatrix3D::sptr > MatricesContainer;
 
     /**
      * @brief Adds a camera in the cameraSeries.
@@ -122,7 +122,7 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity.
      * @throws core::Exception if the index is out of range
      */
-    ARDATA_API void setExtrinsicMatrix(size_t index, ::fwData::TransformationMatrix3D::sptr matrix);
+    ARDATA_API void setExtrinsicMatrix(size_t index, data::TransformationMatrix3D::sptr matrix);
 
     /**
      * @brief Gets the extrinsic matrix.
@@ -132,14 +132,14 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      * @throws core::Exception if the index is out of range
      */
-    ARDATA_API ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index) const;
+    ARDATA_API data::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index) const;
 
     /**
      * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @deprecated Use getExtrinsicMatrix(1) instead of this method
      */
-    ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix() const
+    data::TransformationMatrix3D::sptr getExtrinsicMatrix() const
     {
         return this->getExtrinsicMatrix(1);
     }

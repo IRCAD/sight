@@ -30,7 +30,7 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
-namespace fwData
+namespace sight::data
 {
 
 class Mesh;
@@ -42,7 +42,7 @@ namespace visuOgreAdaptor
  * @brief This adaptor displays a reconstruction.
  *
  * @section Slots Slots
- * - \b changeMesh(::fwData::Mesh::sptr): called when the associated mesh changes.
+ * - \b changeMesh(data::Mesh::sptr): called when the associated mesh changes.
  * - \b updateVisibility(bool): sets whether the reconstruction is to be seen or not.
  * - \b toggleVisibility(): toggle whether the reconstruction is shown or not.
  * - \b show(): shows the reconstruction.
@@ -58,7 +58,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
+ * - \b reconstruction [data::Reconstruction]: reconstruction to display.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
@@ -119,8 +119,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
-     * Connect ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
+     * Connect data::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
+     * Connect data::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -139,7 +139,7 @@ protected:
 private:
 
     /// Changes the attached mesh.
-    void changeMesh(::fwData::Mesh::sptr);
+    void changeMesh(data::Mesh::sptr);
 
     /// Modifies the visibility.
     void modifyVisibility();

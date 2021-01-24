@@ -24,7 +24,7 @@
 
 #include "ctrlSelection/config.hpp"
 
-#include <fwData/Object.hpp>
+#include <data/Object.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -35,10 +35,10 @@ namespace ctrlSelection
  * @brief This service manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).
  *
  * It works on different objects:
- * - ::fwData::Composite: the object is added/swapped/removed from composite at the given key
- * - ::fwData::Vector: the object is added or removed from the container
+ * - data::Composite: the object is added/swapped/removed from composite at the given key
+ * - data::Vector: the object is added or removed from the container
  * - ::fwMedData::SeriesDB: the object is added or removed from the container
- * - ::fwData::Object: the object is added or removed from the field map at the given key
+ * - data::Object: the object is added or removed from the field map at the given key
  *
  * @section Slots Slots
  * - \b add() : Adds the object into the target (vector, seriesDB, composite), if target is a Composite or a Field, it
@@ -55,7 +55,7 @@ namespace ctrlSelection
  *
  * @section XML XML Configuration
  *
- * For ::fwData::Composite:
+ * For data::Composite:
  * @code{.xml}
    <service type="::ctrlSelection::SManage">
       <inout key="object" uid="..." />
@@ -64,7 +64,7 @@ namespace ctrlSelection
    </service>
    @endcode
  *
- * For ::fwData::Vector:
+ * For data::Vector:
  * @code{.xml}
    <service type="::ctrlSelection::SManage">
       <inout key="object" uid="..." />
@@ -80,7 +80,7 @@ namespace ctrlSelection
    </service>
    @endcode
  *
- * For ::fwData::Object:
+ * For data::Object:
  * @code{.xml}
    <service type="::ctrlSelection::SManage">
       <inout key="object" uid="..." />
@@ -90,18 +90,18 @@ namespace ctrlSelection
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b object [::fwData::Object] (optional): object to add/swap/remove. Not needed when invoking clean slot and remove
+ * - \b object [data::Object] (optional): object to add/swap/remove. Not needed when invoking clean slot and remove
  * slots with composites and fields, since the removal is based on the name.
- * - \b composite [::fwData::Composite] (optional): Composite where to add/swap/remove object.
- * - \b vector [::fwData::Vector] (optional): Vector where to add/remove object.
+ * - \b composite [data::Composite] (optional): Composite where to add/swap/remove object.
+ * - \b vector [data::Vector] (optional): Vector where to add/remove object.
  * - \b seriesDB [::fwMedData::SeriesDB] (optional): SeriesDB where to add/remove object.
- * - \b fieldHolder [::fwData::Object] (optional): Object where to add/swap/remove object as a field.
+ * - \b fieldHolder [data::Object] (optional): Object where to add/swap/remove object as a field.
  *
  * <b>Only one of the target (composite, vector or seriesDB) is allowed.</b>
  * For SeriesDB, the object must inherit of Series
  * @subsection Configuration Configuration
  * - \b compositeKey (optional, only if target object in a Composite) : key of the object in the composite
- * - \b field (optional, only if target object in a ::fwData::Object) : name of the field
+ * - \b field (optional, only if target object in a data::Object) : name of the field
  */
 class CTRLSELECTION_CLASS_API SManage : public ::fwServices::IController
 {

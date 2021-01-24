@@ -26,7 +26,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwData/String.hpp>
+#include <data/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
@@ -42,7 +42,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::fwData::String )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, data::String )
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ void Code::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
+    data::String::sptr stringObj = this->getInOut< data::String >(s_STRING_INOUT);
 
     QHBoxLayout* layout = new QHBoxLayout();
     m_valueCtrl = new QTextEdit( );
@@ -130,7 +130,7 @@ void Code::configuring()
 
 void Code::updating()
 {
-    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
+    data::String::sptr stringObj = this->getInOut< data::String >(s_STRING_INOUT);
     SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
@@ -154,10 +154,10 @@ void Code::info( std::ostream& _sstream )
 
 void Code::onModifyValue()
 {
-    QString value = m_valueCtrl->toPlainText();
-    ::fwData::String::sptr stringObj = this->getInOut< ::fwData::String >(s_STRING_INOUT);
-    ::fwData::String::sptr oldValue;
-    oldValue = ::fwData::Object::copy(stringObj);
+    QString value                = m_valueCtrl->toPlainText();
+    data::String::sptr stringObj = this->getInOut< data::String >(s_STRING_INOUT);
+    data::String::sptr oldValue;
+    oldValue = data::Object::copy(stringObj);
 
     std::string strValue = value.toStdString();
     stringObj->value() = strValue;
@@ -165,7 +165,7 @@ void Code::onModifyValue()
     if ( oldValue->value() != stringObj->value() )
     {
 
-        auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        auto sig = stringObj->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -178,7 +178,7 @@ void Code::onModifyValue()
 ::fwServices::IService::KeyConnectionsMap Code::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_STRING_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_STRING_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

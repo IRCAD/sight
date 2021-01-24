@@ -31,16 +31,16 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sptr _dataImage,
+void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, data::Image::sptr _dataImage,
                        bool _bufferManagerIsDataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
 
     // Add by arnaud
-    std::uint8_t dim = ITKIMAGE::ImageDimension;
-    ::fwData::Image::Spacing vSpacing = {0., 0., 0.};
-    ::fwData::Image::Origin vOrigin   = {0., 0., 0.};
-    ::fwData::Image::Size vSize       = {0, 0, 0};
+    std::uint8_t dim              = ITKIMAGE::ImageDimension;
+    data::Image::Spacing vSpacing = {0., 0., 0.};
+    data::Image::Origin vOrigin   = {0., 0., 0.};
+    data::Image::Size vSize       = {0, 0, 0};
 
     for (std::uint8_t d = 0; d < dim; ++d)
     {
@@ -55,7 +55,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
 
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( core::tools::Type::create<PixelType>() );
-    _dataImage->setPixelFormat(::fwData::Image::GRAY_SCALE);
+    _dataImage->setPixelFormat(data::Image::GRAY_SCALE);
 
     const auto dumpLock = _dataImage->lock();
     if( _bufferManagerIsDataImage )
@@ -81,9 +81,9 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
+data::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
-    ::fwData::Image::sptr data = ::fwData::Image::New();
+    data::Image::sptr data = data::Image::New();
     ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage, data, bufferManagerIsDataImage);
     return data;
 }
@@ -91,7 +91,7 @@ template< class ITKIMAGE>
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE_PTR >
-void itkImageToFwDataImage( ITKIMAGE_PTR itkImage, ::fwData::Image::sptr _dataImage )
+void itkImageToFwDataImage( ITKIMAGE_PTR itkImage, data::Image::sptr _dataImage )
 {
     dataImageFactory< typename ITKIMAGE_PTR::ObjectType >(itkImage, _dataImage);
 }
@@ -99,7 +99,7 @@ void itkImageToFwDataImage( ITKIMAGE_PTR itkImage, ::fwData::Image::sptr _dataIm
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage )
+typename ITKIMAGE::Pointer fwDataImageToItkImage( data::Image::csptr imageData, bool bufferManagerIsDataImage )
 {
     // Pre Condition
     SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image",
@@ -156,7 +156,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage )
+typename ITKIMAGE::Pointer itkImageFactory( data::Image::csptr imageData, bool bufferManagerIsDataImage )
 {
     return fwDataImageToItkImage<ITKIMAGE>( imageData, bufferManagerIsDataImage );
 }

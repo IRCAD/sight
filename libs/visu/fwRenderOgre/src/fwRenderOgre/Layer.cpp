@@ -307,8 +307,8 @@ void Layer::createScene()
 
     if(m_hasDefaultLight)
     {
-        m_defaultLightDiffuseColor  = ::fwData::Color::New();
-        m_defaultLightSpecularColor = ::fwData::Color::New();
+        m_defaultLightDiffuseColor  = data::Color::New();
+        m_defaultLightSpecularColor = data::Color::New();
 
         m_lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(m_defaultLightDiffuseColor,
                                                                     m_defaultLightSpecularColor);

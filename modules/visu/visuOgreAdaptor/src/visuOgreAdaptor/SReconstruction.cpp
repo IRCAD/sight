@@ -24,8 +24,8 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwRenderOgre/Material.hpp>
 
@@ -96,8 +96,8 @@ void SReconstruction::starting()
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
-    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
+    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
+    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
     return connections;
 }
 
@@ -107,7 +107,7 @@ void SReconstruction::updating()
 {
     if (!m_meshAdaptor.expired())
     {
-        const auto reconstruction = this->getLockedInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        const auto reconstruction = this->getLockedInput< data::Reconstruction >(s_RECONSTRUCTION_INPUT);
 
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
@@ -139,8 +139,8 @@ void SReconstruction::stopping()
 void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
-    const auto reconstruction = this->getLockedInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
-    ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
+    const auto reconstruction = this->getLockedInput< data::Reconstruction >(s_RECONSTRUCTION_INPUT);
+    data::Mesh::sptr mesh     = reconstruction->getMesh();
     if(mesh)
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
@@ -178,7 +178,7 @@ void SReconstruction::setVisible(bool _hide)
 
         if (meshAdaptor)
         {
-            const auto reconstruction = this->getLockedInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+            const auto reconstruction = this->getLockedInput< data::Reconstruction >(s_RECONSTRUCTION_INPUT);
             meshAdaptor->setVisible(_hide ? false : reconstruction->getIsVisible());
         }
     }
@@ -186,7 +186,7 @@ void SReconstruction::setVisible(bool _hide)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::changeMesh(::fwData::Mesh::sptr)
+void SReconstruction::changeMesh(data::Mesh::sptr)
 {
     this->updating();
 }
@@ -197,7 +197,7 @@ void SReconstruction::modifyVisibility()
 {
     if (!m_meshAdaptor.expired())
     {
-        const auto reconstruction = this->getLockedInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        const auto reconstruction = this->getLockedInput< data::Reconstruction >(s_RECONSTRUCTION_INPUT);
         this->updateVisibility(!reconstruction->getIsVisible());
     }
 }

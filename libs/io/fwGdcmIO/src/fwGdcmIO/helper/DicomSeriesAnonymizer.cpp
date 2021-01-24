@@ -88,7 +88,7 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
 
     // Write DicomSeries (Copy files)
     m_writer->setObject(source);
-    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
+    data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(destPath);
     m_writer->setLocation(loc);
     m_writer->write();

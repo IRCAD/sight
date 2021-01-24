@@ -28,11 +28,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Boolean.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -129,7 +129,7 @@ void SModelSeries::updating()
     this->stopping();
 
     // showRec indicates if we have to show the associated reconstructions or not
-    const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+    const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
@@ -180,7 +180,7 @@ void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
-    const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+    const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 
     auto adaptors = this->getRegisteredServices();
     for(auto adaptor : adaptors)

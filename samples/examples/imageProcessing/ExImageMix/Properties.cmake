@@ -13,7 +13,7 @@ set( REQUIREMENTS
     visuVTKQt               # Enable VTK to render things in Qt window
 
     # Objects declaration
-    fwData
+    data
     servicesReg             # fwService
 
     # UI declaration/Actions

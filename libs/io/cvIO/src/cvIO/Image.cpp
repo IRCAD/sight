@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "cvIO/Type.hpp"
 
-#include <fwData/Array.hpp>
+#include <data/Array.hpp>
 
 namespace cvIO
 {
 
 //------------------------------------------------------------------------------
 
-static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
+static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
     const auto imageComp = _image->getNumberOfComponents();
@@ -71,21 +71,21 @@ static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::moveToCv(::fwData::Image::sptr& _image)
+::cv::Mat Image::moveToCv(data::Image::sptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-const ::cv::Mat Image::moveToCv(const ::fwData::Image::csptr& _image)
+const ::cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
+void Image::copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage)
 {
     const auto prevImageType = _image->getType();
     const auto prevImageComp = _image->getNumberOfComponents();
@@ -96,7 +96,7 @@ void Image::copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
     SLM_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
     SLM_ASSERT("Number of dimension should be between 1 and 3", _cvImage.dims >= 1 && _cvImage.dims <= 3);
 
-    ::fwData::Image::Size imageSize = {0, 0, 0};
+    data::Image::Size imageSize = {0, 0, 0};
 
     if (_cvImage.dims == 1)
     {
@@ -139,7 +139,7 @@ void Image::copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::copyToCv(const ::fwData::Image::csptr& _image)
+::cv::Mat Image::copyToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, true);
 }

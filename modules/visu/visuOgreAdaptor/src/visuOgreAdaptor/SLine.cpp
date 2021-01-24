@@ -107,7 +107,7 @@ void SLine::starting()
     m_line->setDynamic(true);
 
     // Set the material
-    m_material = ::fwData::Material::New();
+    m_material = data::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");

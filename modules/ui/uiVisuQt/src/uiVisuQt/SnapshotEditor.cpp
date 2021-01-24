@@ -28,8 +28,8 @@
 #include <core/com/Signals.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -170,12 +170,12 @@ std::string SnapshotEditor::requestFileName()
     dialogFile.addFilter("all", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    data::location::SingleFile::sptr result;
+    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         fileName = result->getPath().string();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(result->getPath().parent_path()) );
+        dialogFile.saveDefaultLocation( data::location::Folder::New(result->getPath().parent_path()) );
     }
 
     return fileName;

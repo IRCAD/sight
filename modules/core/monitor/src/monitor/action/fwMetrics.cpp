@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <fwData/registry/detail.hpp>
+#include <data/registry/detail.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -38,7 +38,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::fwMetrics, ::fwData::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::fwMetrics, data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ void fwMetrics::updating()
     stream << std::endl;
 
     stream << "fwData: ";
-    stream << ::fwData::registry::get()->getFactoryKeys().size();
+    stream << data::registry::get()->getFactoryKeys().size();
     stream << std::endl;
 
     stream << "IService: ";

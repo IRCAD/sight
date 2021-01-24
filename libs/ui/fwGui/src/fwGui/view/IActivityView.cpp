@@ -31,12 +31,12 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <data/Composite.hpp>
+#include <data/reflection/getObject.hpp>
+#include <data/String.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/reflection/getObject.hpp>
-#include <fwData/String.hpp>
 
 #include <fwServices/macros.hpp>
 

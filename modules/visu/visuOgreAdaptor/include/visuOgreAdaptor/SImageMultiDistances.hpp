@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
@@ -60,7 +60,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b image [::fwData::Image]: image containing the distance field.
+ * - \b image [data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines distance's layer.
@@ -118,10 +118,10 @@ protected:
     /**
      * @brief Proposals to connect service slots to associated object signals.
      *
-     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
+     * Connect data::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
+     * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -146,7 +146,7 @@ private:
     /// it's retrieve from the image via a field.
     struct DistanceData
     {
-        ::fwData::PointList::sptr m_pointList;
+        data::PointList::sptr m_pointList;
         ::Ogre::SceneNode*  m_node1;
         ::Ogre::ManualObject* m_sphere1;
         ::Ogre::SceneNode* m_node2;
@@ -219,7 +219,7 @@ private:
      * @brief Creates a distance and add it into m_distances.
      * @param _pl The point list used to create the distance.
      */
-    void createDistance(::fwData::PointList::sptr _pl);
+    void createDistance(data::PointList::sptr _pl);
 
     /**
      * @brief Updates a distance.

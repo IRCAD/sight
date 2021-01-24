@@ -6,13 +6,13 @@ set( DEPENDENCIES
     arData
     calibration3d
     core
-    fwData
+    data
     fwMath
     fwServices
     cvIO
 )
 
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
 )

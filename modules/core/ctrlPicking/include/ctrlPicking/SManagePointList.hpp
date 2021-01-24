@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlPicking/config.hpp"
 
-#include <fwData/Point.hpp>
+#include <data/Point.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
@@ -34,7 +34,7 @@ namespace ctrlPicking
 {
 
 /**
- * @brief Add point in a ::fwData::PointList
+ * @brief Add point in a data::PointList
  *
  * @section Slots Slots
  * - \b pick(::fwDataTools::PickingInfo): Add or remove the closest point to the picking position, actions occur when
@@ -51,10 +51,10 @@ namespace ctrlPicking
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b pointList [::fwData::PointList]: Target point list.
+ * - \b pointList [data::PointList]: Target point list.
  *
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D](optional): Transformation applied to picked positions.
+ * - \b matrix [data::TransformationMatrix3D](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, size_t, default=0): set the maximum number of points contained in the point list, if it's 0, the
@@ -101,13 +101,13 @@ private:
      * @brief Adds a point in the point list
      * @param _point the point added to the list.
      */
-    void addPoint(const ::fwData::Point::sptr _point) const;
+    void addPoint(const data::Point::sptr _point) const;
 
     /**
      * @brief Removes a point from the point list.
      * @param _point the point removed from the list.
      */
-    void removePoint(const ::fwData::Point::csptr _point) const;
+    void removePoint(const data::Point::csptr _point) const;
 
     /// SLOT: Clears the point list.
     void clearPoints() const;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ static const ::fwServices::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlMemory::LockDumpSrv, ::fwData::Object )
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlMemory::LockDumpSrv, data::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -49,17 +49,17 @@ LockDumpSrv::~LockDumpSrv() noexcept
 
 void LockDumpSrv::starting()
 {
-    ::fwData::Object::sptr object = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
+    data::Object::sptr object = this->getInOut< data::Object >(s_TARGET_INOUT);
     SLM_ASSERT("The inout key '" + s_TARGET_INOUT + "' is not correctly set.", object);
 
-    m_objLock = ::fwData::ObjectLock( object );
+    m_objLock = data::ObjectLock( object );
 }
 
 //-----------------------------------------------------------------------------
 
 void LockDumpSrv::stopping()
 {
-    m_objLock = ::fwData::ObjectLock();
+    m_objLock = data::ObjectLock();
 }
 
 //-----------------------------------------------------------------------------

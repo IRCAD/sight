@@ -5,9 +5,9 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwTest
     core
-    fwData
+    data
     fwServices
     fwMedData
     fwMDSemanticPatch
 )
-set( REQUIREMENTS fwData servicesReg ioAtoms gui guiQt patchMedicalData )
+set( REQUIREMENTS data servicesReg ioAtoms gui guiQt patchMedicalData )

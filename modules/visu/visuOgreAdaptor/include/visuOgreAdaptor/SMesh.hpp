@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "visuOgreAdaptor/SMaterial.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -35,11 +35,11 @@
 
 #include <OGRE/OgreEntity.h>
 
-namespace fwData
+namespace sight::data
 {
 class Material;
 }
-namespace fwData
+namespace sight::data
 {
 class Mesh;
 }
@@ -50,7 +50,7 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor shows individual meshes.
  *
- * This class handles the conversion of ::fwData::Mesh to Ogre3d. It can handle triangles, edges, quads or tetrahedrons.
+ * This class handles the conversion of data::Mesh to Ogre3d. It can handle triangles, edges, quads or tetrahedrons.
  * For the quads and tetrahedrons, we generate the triangles in a pre-process, using the render to vertex buffer (r2vb)
  * feature to avoid the cost of geometry shaders when usign multi-pass rendering techniques.
  *
@@ -59,7 +59,7 @@ namespace visuOgreAdaptor
  * An Ogre material is also created, and then managed by a SMaterial adaptor (specified in the configuration otherwise
  * a new one is generated).
  *
- * To handle the per-primitive color of ::fwData::Mesh we also rely on geometry shaders, and thus on r2vb. We build a
+ * To handle the per-primitive color of data::Mesh we also rely on geometry shaders, and thus on r2vb. We build a
  * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
  * primitive id.
  *
@@ -83,7 +83,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [::fwData::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
+ * - \b mesh [data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
  * fields.
  *
  * @subsection Configuration Configuration:
@@ -125,13 +125,13 @@ public:
      * @brief Gets the associated material.
      * @return The material.
      */
-    VISUOGREADAPTOR_API ::fwData::Material::sptr getMaterial() const;
+    VISUOGREADAPTOR_API data::Material::sptr getMaterial() const;
 
     /**
      * @brief Sets the current material.
      * @param _material new material.
      */
-    VISUOGREADAPTOR_API void setMaterial(::fwData::Material::sptr _material);
+    VISUOGREADAPTOR_API void setMaterial(data::Material::sptr _material);
 
     /**
      * @brief Sets the material template Name.
@@ -203,11 +203,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Mesh::s_VERTEX_MODIFIED_SIG to s_MODIFY_VERTICES_SLOT
-     * Connect ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
-     * Connect ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
-     * Connect ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
-     * Connect ::fwData::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG to s_MODIFY_VERTICES_SLOT
+     * Connect data::Mesh::s_POINT_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
+     * Connect data::Mesh::s_CELL_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
+     * Connect data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
+     * Connect data::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -232,14 +232,14 @@ private:
      * @brief Updates the mesh, checks if color, number of vertices have changed, and updates them.
      * @param _mesh used for the update.
      */
-    void updateMesh(const ::fwData::Mesh::sptr& _mesh);
+    void updateMesh(const data::Mesh::sptr& _mesh);
 
     /**
      * @brief Instantiates a new material adaptor
      * @param _materialSuffix used for the material name.
      * @param _mesh used to create an unique material name.
      */
-    ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const ::fwData::Mesh::sptr& _mesh,
+    ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const data::Mesh::sptr& _mesh,
                                                              const std::string& _materialSuffix = "");
 
     /**
@@ -247,7 +247,7 @@ private:
      * With this method, SMesh is responsible for creating a SMaterial.
      * @param _mesh used to create the material service.
      */
-    void updateNewMaterialAdaptor(const ::fwData::Mesh::sptr& _mesh);
+    void updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh);
 
     /// Updates the associated material adaptor.
     /// This method is called when a material adaptor has been configured in the XML scene.
@@ -272,7 +272,7 @@ private:
     std::string m_materialName;
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material { nullptr };
 
     /// Defines the attached material's name.
     std::string m_materialTemplateName { ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME };
@@ -299,7 +299,7 @@ private:
     ::fwRenderOgre::Mesh::sptr m_meshGeometry { nullptr };
 
     /// Stores material adaptors attached to the r2vb objects.
-    std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+    std::map< data::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
@@ -307,14 +307,14 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline ::fwData::Material::sptr SMesh::getMaterial() const
+inline data::Material::sptr SMesh::getMaterial() const
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SMesh::setMaterial(::fwData::Material::sptr _material)
+inline void SMesh::setMaterial(data::Material::sptr _material)
 {
     m_material = _material;
 }

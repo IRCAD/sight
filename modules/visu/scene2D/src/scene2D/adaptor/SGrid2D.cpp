@@ -95,7 +95,7 @@ void SGrid2D::configuring()
 
     if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
+        ::fwRenderQtdata::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
     }
 }
 
@@ -231,9 +231,9 @@ void SGrid2D::updating()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SGrid2D::processInteraction( ::fwRenderQt::data::Event& _event)
+void SGrid2D::processInteraction( ::fwRenderQtdata::Event& _event)
 {
-    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQtdata::Event::Resize)
     {
         this->updating();
     }

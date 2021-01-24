@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "ContainOneToolTest.hpp"
 
+#include <data/Composite.hpp>
+#include <data/Reconstruction.hpp>
+#include <data/Vector.hpp>
+
 #include <fwActivities/IObjectValidator.hpp>
 #include <fwActivities/IValidator.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -67,9 +67,9 @@ void ContainOneToolTest::testValidator()
     ::fwActivities::IValidator::ValidationType validation;
 
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-    ::fwData::Reconstruction::sptr rec1        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec2        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec3        = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec2 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec3 = data::Reconstruction::New();
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst;
 
     {
@@ -141,17 +141,17 @@ void ContainOneToolTest::testValidatorWithVector()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+    data::Vector::sptr vector = data::Vector::New();
 
     ::fwMedData::ModelSeries::sptr modelSeries1 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    ::fwData::Reconstruction::sptr rec11        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec12        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec21        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec22        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec31        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec32        = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec11 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec12 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec21 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec22 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec31 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec32 = data::Reconstruction::New();
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst1;
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst2;
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst3;
@@ -243,17 +243,17 @@ void ContainOneToolTest::testValidatorWithComposite()
 
     ::fwActivities::IValidator::ValidationType validation;
 
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    data::Composite::sptr composite = data::Composite::New();
 
     ::fwMedData::ModelSeries::sptr modelSeries1 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries2 = ::fwMedData::ModelSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeries3 = ::fwMedData::ModelSeries::New();
-    ::fwData::Reconstruction::sptr rec11        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec12        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec21        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec22        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec31        = ::fwData::Reconstruction::New();
-    ::fwData::Reconstruction::sptr rec32        = ::fwData::Reconstruction::New();
+    data::Reconstruction::sptr rec11 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec12 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec21 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec22 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec31 = data::Reconstruction::New();
+    data::Reconstruction::sptr rec32 = data::Reconstruction::New();
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst1;
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst2;
     ::fwMedData::ModelSeries::ReconstructionVectorType vecReconst3;

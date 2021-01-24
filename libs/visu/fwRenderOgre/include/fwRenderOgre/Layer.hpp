@@ -46,7 +46,7 @@
 #include <map>
 #include <vector>
 
-namespace fwData
+namespace sight::data
 {
 class Color;
 class TransformationMatrix3D;
@@ -399,10 +399,10 @@ private:
     SPTR(::fwRenderOgre::ILight) m_lightAdaptor { nullptr };
 
     /// Contains the diffuse color of the default light.
-    SPTR(::fwData::Color) m_defaultLightDiffuseColor { nullptr };
+    SPTR(data::Color) m_defaultLightDiffuseColor { nullptr };
 
     /// Contains the specular color of the specular light.
-    SPTR(::fwData::Color) m_defaultLightSpecularColor { nullptr };
+    SPTR(data::Color) m_defaultLightSpecularColor { nullptr };
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct LayerCameraListener;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,11 +47,11 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input:
- * - \b source [::fwData::Object]: Source image, can be a ::fwMedData::ImageSeries or a ::fwData::Image.
+ * - \b source [data::Object]: Source image, can be a ::fwMedData::ImageSeries or a data::Image.
  * @subsection Output Output:
- * - \b target [::fwData::Object]: Target image (ie the filtered image),
+ * - \b target [data::Object]: Target image (ie the filtered image),
  * if the type of the source is a ::fwMedData::ImageSeries then target will be a ::fwMedData::ImageSeries,
- * otherwise it will be an simple ::fwData::Image.
+ * otherwise it will be an simple data::Image.
  * @subsection Configuration Configuration
  * - \b threshold : Specify the desired threshold used in filter
  * (Pixels with value lower than this value will be set to 0,

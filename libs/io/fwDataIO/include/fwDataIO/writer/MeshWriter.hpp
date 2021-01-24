@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/location/SingleFile.hpp>
+#include <data/Mesh.hpp>
 
 #include <filesystem>
 
@@ -40,7 +40,7 @@ namespace writer
  * @brief   Mesh writer. Write file format .trian
  *
  *
- * Ircad writer to write a ::fwData::Mesh (with only triangular cells) on filesystem which the file format
+ * Ircad writer to write a data::Mesh (with only triangular cells) on filesystem which the file format
  * is .trian. This format is basic. This is an ascii file which contains :
  * 1) nb of points
  * 2) list of points (x,y,z). Line numbers represent index of point in vector
@@ -48,13 +48,13 @@ namespace writer
  * 4) list of triangles with index of points and normals ( often set a -1 )
  */
 class FWDATAIO_CLASS_API MeshWriter :
-    public GenericObjectWriter< ::fwData::Mesh>,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public GenericObjectWriter< data::Mesh>,
+    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(MeshWriter, GenericObjectWriter< ::fwData::Mesh >, ::fwDataIO::writer::factory::New< MeshWriter >)
+    fwCoreClassMacro(MeshWriter, GenericObjectWriter< data::Mesh >, ::fwDataIO::writer::factory::New< MeshWriter >)
     /// Constructor. Do nothing.
     FWDATAIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 

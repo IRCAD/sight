@@ -24,9 +24,9 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -128,7 +128,7 @@ void SOpticalCenterEditor::updating()
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     SLM_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
 
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
@@ -171,7 +171,7 @@ fwServices::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections
 
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -182,17 +182,17 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 {
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
-    ::fwData::mt::ObjectReadLock lockCam(camera);
-    ::fwData::mt::ObjectWriteLock lockMat(matrix);
+    data::mt::ObjectReadLock lockCam(camera);
+    data::mt::ObjectWriteLock lockMat(matrix);
 
     matrix->setCoefficient(0, 2, value - camera->getCx());
 
     m_cxLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -205,17 +205,17 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 {
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
-    ::fwData::mt::ObjectReadLock lockCam(camera);
-    ::fwData::mt::ObjectWriteLock lockMat(matrix);
+    data::mt::ObjectReadLock lockCam(camera);
+    data::mt::ObjectWriteLock lockMat(matrix);
 
     matrix->setCoefficient(1, 2, value - camera->getCy());
 
     m_cyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -228,17 +228,17 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 {
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
-    ::fwData::mt::ObjectReadLock lockCam(camera);
-    ::fwData::mt::ObjectWriteLock lockMat(matrix);
+    data::mt::ObjectReadLock lockCam(camera);
+    data::mt::ObjectWriteLock lockMat(matrix);
 
     matrix->setCoefficient(1, 1, value - camera->getFy());
 
     m_fyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

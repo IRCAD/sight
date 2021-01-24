@@ -26,16 +26,16 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Array.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/Array.hpp>
+#include <data/Boolean.hpp>
+#include <data/Color.hpp>
+#include <data/Float.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -109,7 +109,7 @@ const std::string& IParameter::getParamName() const
 fwServices::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_PARAMETER_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -243,34 +243,34 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         return false;
     }
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_PARAMETER_INOUT);
+    data::Object::sptr obj = this->getInOut< data::Object>(s_PARAMETER_INOUT);
 
     // Set shader parameters
     std::string objClass = obj->getClassname();
-    if(objClass == "::fwData::Integer")
+    if(objClass == "data::Integer")
     {
-        ::fwData::Integer::sptr intValue = ::fwData::Integer::dynamicCast(obj);
+        data::Integer::sptr intValue = data::Integer::dynamicCast(obj);
         SLM_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
     }
-    else if(objClass == "::fwData::Float")
+    else if(objClass == "data::Float")
     {
-        ::fwData::Float::sptr floatValue = ::fwData::Float::dynamicCast(obj);
+        data::Float::sptr floatValue = data::Float::dynamicCast(obj);
         SLM_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
     }
-    else if(objClass == "::fwData::Boolean")
+    else if(objClass == "data::Boolean")
     {
-        ::fwData::Boolean::sptr booleanValue = ::fwData::Boolean::dynamicCast(obj);
+        data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj);
         SLM_ASSERT("The given boolean object is null", booleanValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
     }
-    else if(objClass == "::fwData::Color")
+    else if(objClass == "data::Color")
     {
-        ::fwData::Color::sptr colorValue = ::fwData::Color::dynamicCast(obj);
+        data::Color::sptr colorValue = data::Color::dynamicCast(obj);
         SLM_ASSERT("The given color object is null", colorValue);
 
         float paramValues[4];
@@ -284,13 +284,13 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         params->setNamedConstant(m_paramName, color);
     }
-    else if(objClass == "::fwData::PointList")
+    else if(objClass == "data::PointList")
     {
-        ::fwData::PointList::sptr pointListValue = ::fwData::PointList::dynamicCast(obj);
+        data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj);
         SLM_ASSERT("The given pointList object is null", pointListValue);
 
-        std::vector< ::fwData::Point::sptr > points = pointListValue->getPoints();
-        int nbPoints                                = static_cast<int>(points.size());
+        std::vector< data::Point::sptr > points = pointListValue->getPoints();
+        int nbPoints                            = static_cast<int>(points.size());
 
         float* paramValues = new float[static_cast<unsigned long long>(nbPoints * 3)];
 
@@ -310,9 +310,9 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         delete [] paramValues;
     }
-    else if(objClass == "::fwData::TransformationMatrix3D")
+    else if(objClass == "data::TransformationMatrix3D")
     {
-        ::fwData::TransformationMatrix3D::sptr transValue = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+        data::TransformationMatrix3D::sptr transValue = data::TransformationMatrix3D::dynamicCast(obj);
         SLM_ASSERT("The given TransformationMatrix3D object is null", transValue);
 
         float paramValues[16];
@@ -324,9 +324,9 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(16), static_cast<size_t>(1));
     }
-    else if(objClass == "::fwData::Array")
+    else if(objClass == "data::Array")
     {
-        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+        data::Array::sptr arrayObject = data::Array::dynamicCast(obj);
         SLM_ASSERT("The object is nullptr", arrayObject);
 
         const size_t numComponents = arrayObject->getSize()[0];
@@ -359,12 +359,12 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             SLM_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
         }
     }
-    else if(objClass == "::fwData::Image")
+    else if(objClass == "data::Image")
     {
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(obj);
+        data::Image::sptr image = data::Image::dynamicCast(obj);
         SLM_ASSERT("The object is nullptr", image);
 
-        ::fwData::mt::ObjectReadLock lock(image);
+        data::mt::ObjectReadLock lock(image);
 
         if(!m_texture)
         {
@@ -388,7 +388,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         }
     }
     // We allow to work on the SRender composite and interact with slots instead
-    else if(objClass != "::fwData::Composite")
+    else if(objClass != "data::Composite")
     {
         SLM_ERROR("This Type " << objClass << " isn't supported.");
     }
@@ -411,7 +411,7 @@ void IParameter::setBoolParameter(bool value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Boolean::sptr paramObject = this->getInOut< ::fwData::Boolean>(s_PARAMETER_INOUT);
+        data::Boolean::sptr paramObject = this->getInOut< data::Boolean>(s_PARAMETER_INOUT);
         paramObject->setValue(value);
 
         this->updating();
@@ -426,7 +426,7 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
     {
         m_dirty = true;
 
-        ::fwData::Color::sptr paramObject = this->getInOut< ::fwData::Color>(s_PARAMETER_INOUT);
+        data::Color::sptr paramObject = this->getInOut< data::Color>(s_PARAMETER_INOUT);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
 
         this->updating();
@@ -441,7 +441,7 @@ void IParameter::setIntParameter(int value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Integer::sptr paramObject = this->getInOut< ::fwData::Integer>(s_PARAMETER_INOUT);
+        data::Integer::sptr paramObject = this->getInOut< data::Integer>(s_PARAMETER_INOUT);
         paramObject->setValue(value);
 
         this->updating();
@@ -456,7 +456,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
+        data::Array::sptr arrayObject = this->getInOut< data::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {
@@ -479,7 +479,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
     {
         m_dirty = true;
 
-        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
+        data::Array::sptr arrayObject = this->getInOut< data::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {
@@ -503,7 +503,7 @@ void IParameter::setDoubleParameter(double value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Float::sptr paramObject = this->getInOut< ::fwData::Float>(s_PARAMETER_INOUT);
+        data::Float::sptr paramObject = this->getInOut< data::Float>(s_PARAMETER_INOUT);
         paramObject->setValue(static_cast<float>(value));
 
         this->updating();
@@ -518,7 +518,7 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
     {
         m_dirty = true;
 
-        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
+        data::Array::sptr arrayObject = this->getInOut< data::Array>(s_PARAMETER_INOUT);
         if(arrayObject->empty())
         {
             core::tools::Type type = core::tools::Type::create< core::tools::Type::DoubleType>();
@@ -550,7 +550,7 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
     {
         m_dirty = true;
 
-        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
+        data::Array::sptr arrayObject = this->getInOut< data::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {

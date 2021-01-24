@@ -32,7 +32,7 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
@@ -57,9 +57,9 @@ namespace ut
 
 static const double epsilon = 0.00001;
 
-static const ::fwData::Image::Size bostonTeapotSize       = {{ 256, 256, 178 }};
-static const ::fwData::Image::Spacing bostonTeapotSpacing = {{ 1, 1, 1 }};
-static const ::fwData::Image::Origin bostonTeapotOrigin   = {{ 1.1, 2.2, 3.3 }};
+static const data::Image::Size bostonTeapotSize       = {{ 256, 256, 178 }};
+static const data::Image::Spacing bostonTeapotSpacing = {{ 1, 1, 1 }};
+static const data::Image::Origin bostonTeapotOrigin   = {{ 1.1, 2.2, 3.3 }};
 
 //------------------------------------------------------------------------------
 
@@ -80,12 +80,12 @@ void compareImageAttributes(const ExpSizeType& expSize,
     for(size_t i = 0; i < static_cast< size_t >(dim); ++i)
     {
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::Spacing::value_type >(expSpacing[i]),
-                                      static_cast< ::fwData::Image::Spacing::value_type >(spacing[i]), epsilon );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::Origin::value_type >(expOrigin[i]),
-                                      static_cast< ::fwData::Image::Origin::value_type >(origin[i]), epsilon );
-        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::Size::value_type >(expSize[i]),
-                              static_cast< ::fwData::Image::Size::value_type >(size[i]) );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< data::Image::Spacing::value_type >(expSpacing[i]),
+                                      static_cast< data::Image::Spacing::value_type >(spacing[i]), epsilon );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< data::Image::Origin::value_type >(expOrigin[i]),
+                                      static_cast< data::Image::Origin::value_type >(origin[i]), epsilon );
+        CPPUNIT_ASSERT_EQUAL( static_cast< data::Image::Size::value_type >(expSize[i]),
+                              static_cast< data::Image::Size::value_type >(size[i]) );
     }
 }
 
@@ -93,13 +93,13 @@ void compareImageAttributes(const ExpSizeType& expSize,
 
 void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 {
-    const ::fwData::Image::Size size       = {10, 15, 23};
-    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
-    const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
+    const data::Image::Size size       = {10, 15, 23};
+    const data::Image::Spacing spacing = {0.85, 2.6, 1.87};
+    const data::Image::Origin origin   = {-45.6, 25.97, -53.9};
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type(
-                                                  imgtype), ::fwData::Image::PixelFormat::GRAY_SCALE);
+                                                  imgtype), data::Image::PixelFormat::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
 
@@ -136,7 +136,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     const std::filesystem::path testFile(core::tools::System::getTemporaryFolder() /
                                          std::filesystem::path(filename));
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type(imagetype));
 
     typename W::sptr writer = W::New();
@@ -147,8 +147,8 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     CPPUNIT_ASSERT_MESSAGE( "test on <" + filename + ">  of type <" + imagetype + "> Failed ",
                             std::filesystem::exists(testFile) );
 
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    typename R::sptr reader = R::New();
+    data::Image::sptr image2 = data::Image::New();
+    typename R::sptr reader  = R::New();
     reader->setObject(image2);
     reader->setFile(testFile);
     reader->read();
@@ -190,7 +190,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
     CPPUNIT_ASSERT(vtkImage);
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::fromVTKImage(vtkImage, image);
 
     const auto dumpLock = image->lock();
@@ -224,7 +224,7 @@ void testVtkReader(std::string imagetype)
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
 
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
     reader->setObject(image);
@@ -319,7 +319,7 @@ void ImageTest::testFromVtk()
     int dataType = ::fwVtkIO::TypeTranslator::translate(core::tools::Type::create(type));
     vtkImage->AllocateScalars(dataType, nbComponents);
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::fromVTKImage(vtkImage, image);
 
     const auto dumpLock = image->lock();
@@ -347,21 +347,21 @@ void ImageTest::testFromVtk()
 // ------------------------------------------------------------------------------
 
 template<typename TYPE>
-void fromToTest(::fwData::Image::PixelFormat format)
+void fromToTest(data::Image::PixelFormat format)
 {
-    const ::fwData::Image::Size size       = {10, 20, 0};
-    const ::fwData::Image::Spacing spacing = {1., 1., 0};
-    const ::fwData::Image::Origin origin   = {0., 0., 0.};
-    const core::tools::Type type           = core::tools::Type::create<TYPE>();
+    const data::Image::Size size       = {10, 20, 0};
+    const data::Image::Spacing spacing = {1., 1., 0};
+    const data::Image::Origin origin   = {0., 0., 0.};
+    const core::tools::Type type       = core::tools::Type::create<TYPE>();
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(image);
 
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage(image, vtkImage);
 
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    data::Image::sptr image2 = data::Image::New();
     ::fwVtkIO::fromVTKImage(vtkImage, image2);
 
     CPPUNIT_ASSERT_EQUAL( image->getSize2()[0], image2->getSize2()[0] );
@@ -389,29 +389,29 @@ void fromToTest(::fwData::Image::PixelFormat format)
 
 void ImageTest::fromToVtkTest()
 {
-    fromToTest<std::uint8_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::uint8_t>(::fwData::Image::RGB);
-    fromToTest<std::uint8_t>(::fwData::Image::RGBA);
+    fromToTest<std::uint8_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::uint8_t>(data::Image::RGB);
+    fromToTest<std::uint8_t>(data::Image::RGBA);
 
-    fromToTest<std::uint16_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::uint16_t>(::fwData::Image::RGB);
-    fromToTest<std::uint16_t>(::fwData::Image::RGBA);
+    fromToTest<std::uint16_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::uint16_t>(data::Image::RGB);
+    fromToTest<std::uint16_t>(data::Image::RGBA);
 
-    fromToTest<std::uint32_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::uint32_t>(::fwData::Image::RGB);
-    fromToTest<std::uint32_t>(::fwData::Image::RGBA);
+    fromToTest<std::uint32_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::uint32_t>(data::Image::RGB);
+    fromToTest<std::uint32_t>(data::Image::RGBA);
 
-    fromToTest<std::int8_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::int8_t>(::fwData::Image::RGB);
-    fromToTest<std::int8_t>(::fwData::Image::RGBA);
+    fromToTest<std::int8_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::int8_t>(data::Image::RGB);
+    fromToTest<std::int8_t>(data::Image::RGBA);
 
-    fromToTest<std::int16_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::int16_t>(::fwData::Image::RGB);
-    fromToTest<std::int16_t>(::fwData::Image::RGBA);
+    fromToTest<std::int16_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::int16_t>(data::Image::RGB);
+    fromToTest<std::int16_t>(data::Image::RGBA);
 
-    fromToTest<std::int32_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::int32_t>(::fwData::Image::RGB);
-    fromToTest<std::int32_t>(::fwData::Image::RGBA);
+    fromToTest<std::int32_t>(data::Image::GRAY_SCALE);
+    fromToTest<std::int32_t>(data::Image::RGB);
+    fromToTest<std::int32_t>(data::Image::RGBA);
 
     // uint64 and int64 are not recognized on Windows for VTK conversion.
 }
@@ -425,7 +425,7 @@ void ImageTest::mhdReaderTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
 
-    ::fwData::Image::sptr image             = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -461,7 +461,7 @@ void ImageTest::mhdWriterTest()
     const std::filesystem::path testFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.mhd");
     const std::filesystem::path testZRawFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
-    ::fwData::Image::sptr image             = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -503,7 +503,7 @@ void ImageTest::vtiReaderTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
 
-    ::fwData::Image::sptr image            = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
 
     reader->setObject(image);
@@ -548,16 +548,16 @@ void ImageTest::vtkReaderTest()
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
 
-    ::fwData::Image::sptr image         = ::fwData::Image::New();
+    data::Image::sptr image = data::Image::New();
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
-    ::fwData::Image::Size vtkSize {{ 230, 170, 58 }};
-    ::fwData::Image::Spacing vtkSpacing {{ 1.732, 1.732, 3.2 }};
-    ::fwData::Image::Origin vtkOrigin {{ 34.64, 86.6, 56 }};
+    data::Image::Size vtkSize {{ 230, 170, 58 }};
+    data::Image::Spacing vtkSpacing {{ 1.732, 1.732, 3.2 }};
+    data::Image::Origin vtkOrigin {{ 34.64, 86.6, 56 }};
 
     compareImageAttributes(
         vtkSize,

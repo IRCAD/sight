@@ -33,9 +33,9 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwActivities/IValidator.hpp>
+#include <data/Composite.hpp>
 
-#include <fwData/Composite.hpp>
+#include <fwActivities/IValidator.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 
@@ -293,8 +293,8 @@ void SActivityWizard::createActivity(std::string activityID)
         for(const auto& req : info.requirements)
         {
             SLM_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            ::fwData::Composite::sptr data = m_actSeries->getData();
-            (*data)[req.name]              = ::fwData::factory::New(req.type);
+            data::Composite::sptr data = m_actSeries->getData();
+            (*data)[req.name] = data::factory::New(req.type);
         }
 
         ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
@@ -351,8 +351,8 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     else
     {
         // Start immediately without popping any configuration UI
-        ::fwData::Object::ModifiedSignalType::sptr sig;
-        sig = m_actSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        data::Object::ModifiedSignalType::sptr sig;
+        sig = m_actSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
         m_sigActivityUpdated->asyncEmit(m_actSeries);
     }
@@ -449,7 +449,7 @@ void SActivityWizard::onBuildActivity()
                 }
                 else if (button == QMessageBox::Yes)
                 {
-                    m_actSeries = ::fwData::Object::copy(m_actSeries);
+                    m_actSeries = data::Object::copy(m_actSeries);
                     m_mode      = Mode::CREATE; // The new activity should be added in the seriesDB
                 }
             }
@@ -458,7 +458,7 @@ void SActivityWizard::onBuildActivity()
             bool ok = m_activityDataView->checkAndComputeData(m_actSeries, errorMsg);
             if (ok)
             {
-                ::fwData::Composite::sptr data = m_actSeries->getData();
+                data::Composite::sptr data = m_actSeries->getData();
 
                 // Copy the patient/study information of a series
                 ::fwMedData::Series::sptr series;
@@ -467,9 +467,9 @@ void SActivityWizard::onBuildActivity()
                     series = ::fwMedData::Series::dynamicCast(elt.second);
                     if(series)
                     {
-                        m_actSeries->setPatient( ::fwData::Object::copy(series->getPatient()) );
-                        m_actSeries->setStudy( ::fwData::Object::copy(series->getStudy()) );
-                        m_actSeries->setEquipment( ::fwData::Object::copy(series->getEquipment()) );
+                        m_actSeries->setPatient( data::Object::copy(series->getPatient()) );
+                        m_actSeries->setStudy( data::Object::copy(series->getStudy()) );
+                        m_actSeries->setEquipment( data::Object::copy(series->getEquipment()) );
                         break;
                     }
                 }
@@ -500,8 +500,8 @@ void SActivityWizard::onBuildActivity()
                 }
                 else // m_mode == Mode::UPDATE
                 {
-                    ::fwData::Object::ModifiedSignalType::sptr sig;
-                    sig = m_actSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                    data::Object::ModifiedSignalType::sptr sig;
+                    sig = m_actSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
                     m_sigActivityUpdated->asyncEmit(m_actSeries);
                 }

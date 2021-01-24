@@ -22,7 +22,7 @@
 
 #include "ImageV10ToV09ALATest.hpp"
 
-#include <fwMDSemanticPatch/V10/V09ALA/fwData/Image.hpp>
+#include <fwMDSemanticPatch/V10/V09ALA/data/Image.hpp>
 
 #include <core/tools/UUID.hpp>
 
@@ -86,7 +86,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     ::fwAtoms::Object::sptr image = ::fwAtoms::Object::New();
     ::fwAtoms::Object::sptr patchedObj;
 
-    ::fwAtomsPatch::helper::setClassname(image, "::fwData::Image");
+    ::fwAtomsPatch::helper::setClassname(image, "data::Image");
     ::fwAtomsPatch::helper::setVersion(image, "2");
 
     ::fwAtomsPatch::helper::Object helperImage(image);
@@ -97,7 +97,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
 
     // create PointList
     ::fwAtoms::Object::sptr landmarks = ::fwAtoms::Object::New();
-    ::fwAtomsPatch::helper::setClassname(landmarks, "::fwData::Landmarks");
+    ::fwAtomsPatch::helper::setClassname(landmarks, "data::Landmarks");
     ::fwAtomsPatch::helper::setVersion(landmarks, "1");
     ::fwAtomsPatch::helper::Object helperLandmarks(landmarks);
 
@@ -116,8 +116,8 @@ void ImageV10ToV09ALATest::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[image] = patchedObj;
 
-    ::fwMDSemanticPatch::V10::V09ALA::fwData::Image::sptr patcher =
-        ::fwMDSemanticPatch::V10::V09ALA::fwData::Image::New();
+    ::fwMDSemanticPatch::V10::V09ALAdata::Image::sptr patcher =
+        ::fwMDSemanticPatch::V10::V09ALAdata::Image::New();
     CPPUNIT_ASSERT_NO_THROW(patcher->apply(image, patchedObj, newVersions));
 
     CPPUNIT_ASSERT(patchedObj->getAttribute("fields"));
@@ -127,7 +127,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     CPPUNIT_ASSERT(newFieldMap->find("m_imageLandmarksId") != newFieldMap->end());
     ::fwAtoms::Object::sptr pl = ::fwAtoms::Object::dynamicCast((*newFieldMap)["m_imageLandmarksId"]);
     CPPUNIT_ASSERT(pl);
-    CPPUNIT_ASSERT_EQUAL(std::string("::fwData::PointList"), ::fwAtomsPatch::helper::getClassname(pl));
+    CPPUNIT_ASSERT_EQUAL(std::string("data::PointList"), ::fwAtomsPatch::helper::getClassname(pl));
     CPPUNIT_ASSERT(pl->getAttribute("points"));
     ::fwAtoms::Sequence::sptr plSeq = ::fwAtoms::Sequence::dynamicCast(pl->getAttribute("points"));
     CPPUNIT_ASSERT(plSeq);
@@ -138,7 +138,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     {
         ::fwAtoms::Object::sptr point = ::fwAtoms::Object::dynamicCast(elt);
         CPPUNIT_ASSERT(point);
-        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Point"), ::fwAtomsPatch::helper::getClassname(point));
+        CPPUNIT_ASSERT_EQUAL(std::string("data::Point"), ::fwAtomsPatch::helper::getClassname(point));
         ::fwAtoms::Sequence::csptr pointCoords = ::fwAtoms::Sequence::dynamicCast(point->getAttribute("coord"));
         CPPUNIT_ASSERT_EQUAL(size_t(3), pointCoords->size());
         ::fwAtoms::Numeric::csptr coordX = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[0]);

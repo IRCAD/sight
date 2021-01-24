@@ -29,17 +29,17 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
 namespace videoCalibration
 {
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, ::fwData::PointList)
+fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, data::PointList)
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
@@ -96,9 +96,9 @@ void SMarkerToPoint::stopping()
 void SMarkerToPoint::addPoint()
 {
     ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
-    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
 
-    ::fwData::TransformationMatrix3D::sptr matrix3D = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr matrix3D = data::TransformationMatrix3D::New();
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
@@ -119,12 +119,12 @@ void SMarkerToPoint::addPoint()
                                          <<matrix3D->getCoefficient(2, 3));
 
     //Save the position and drop the orientation
-    ::fwData::Point::sptr p = ::fwData::Point::New(matrix3D->getCoefficient(0, 3),
-                                                   matrix3D->getCoefficient(1, 3),
-                                                   matrix3D->getCoefficient(2, 3));
+    data::Point::sptr p = data::Point::New(matrix3D->getCoefficient(0, 3),
+                                           matrix3D->getCoefficient(1, 3),
+                                           matrix3D->getCoefficient(2, 3));
 
     pl->pushBack(p);
-    auto sig = pl->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+    auto sig = pl->signal< data::PointList::PointAddedSignalType >(data::PointList::s_POINT_ADDED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(p);
@@ -136,15 +136,15 @@ void SMarkerToPoint::addPoint()
 
 void SMarkerToPoint::clear()
 {
-    ::fwData::PointList::sptr pl = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
 
-    ::fwData::mt::ObjectReadLock lock(pl);
+    data::mt::ObjectReadLock lock(pl);
 
     if (pl && !pl->getPoints().empty())
     {
         pl->clear();
 
-        auto sig = pl->signal< ::fwData::PointList::ModifiedSignalType >(::fwData::PointList::s_MODIFIED_SIG);
+        auto sig = pl->signal< data::PointList::ModifiedSignalType >(data::PointList::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();

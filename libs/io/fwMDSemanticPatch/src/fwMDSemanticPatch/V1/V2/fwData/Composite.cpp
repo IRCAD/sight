@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
+#include "fwMDSemanticPatch/V1/V2/data/Composite.hpp"
 
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/UUID.hpp>
@@ -50,7 +50,7 @@ namespace V1
 {
 namespace V2
 {
-namespace fwData
+namespace sight::data
 {
 
 typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > Image2ModelType;
@@ -58,7 +58,7 @@ typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > Image2Model
 Composite::Composite() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Composite";
+    m_originClassname = "data::Composite";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -141,7 +141,7 @@ void processPlanning(
         ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "::fwMedData::ActivitySeries", "1");
 
         ::fwAtoms::Object::sptr imgComposite = ::fwAtoms::Object::New();
-        ::fwAtomsPatch::helper::setClassname(imgComposite, "::fwData::Composite");
+        ::fwAtomsPatch::helper::setClassname(imgComposite, "data::Composite");
         ::fwAtomsPatch::helper::setVersion(imgComposite, "1");
         ::fwAtomsPatch::helper::generateID(imgComposite);
         ::fwAtomsPatch::helper::cleanFields(imgComposite);
@@ -157,7 +157,7 @@ void processPlanning(
         activityDataMap->insert("imageSeries", imgComposite);
 
         ::fwAtoms::Object::sptr mapObj = ::fwAtoms::Object::New();
-        ::fwAtomsPatch::helper::setClassname(mapObj, "::fwData::Composite");
+        ::fwAtomsPatch::helper::setClassname(mapObj, "data::Composite");
         ::fwAtomsPatch::helper::setVersion(mapObj, "1");
         ::fwAtomsPatch::helper::generateID(mapObj);
         ::fwAtomsPatch::helper::cleanFields(mapObj);
@@ -240,7 +240,7 @@ void processProcessing(
         activityDataMap->insert("processing", oldProcessingAtom.second);
 
         ::fwAtoms::Object::sptr mapObj = ::fwAtoms::Object::New();
-        ::fwAtomsPatch::helper::setClassname(mapObj, "::fwData::Composite");
+        ::fwAtomsPatch::helper::setClassname(mapObj, "data::Composite");
         ::fwAtomsPatch::helper::setVersion(mapObj, "1");
         ::fwAtomsPatch::helper::generateID(mapObj);
         ::fwAtomsPatch::helper::cleanFields(mapObj);
@@ -304,7 +304,7 @@ void Composite::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    // If fwData::Composite is a MedicalWorkspace
+    // If data::Composite is a MedicalWorkspace
     if ( previous->getMetaInfo("compositeType") == "MedicalWorkspace" )
     {
         // Update type/version
@@ -434,7 +434,7 @@ void Composite::apply(
     } // End "MedicalWorkspace"
 }
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch

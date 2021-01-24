@@ -30,7 +30,7 @@
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -170,7 +170,7 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        auto mask        = this->getInput< ::fwData::Image >(s_MASK_KEY);
+        auto mask        = this->getInput< data::Image >(s_MASK_KEY);
         auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
@@ -251,7 +251,7 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    auto mask    = this->getInput< ::fwData::Image >(s_MASK_KEY);
+    auto mask    = this->getInput< data::Image >(s_MASK_KEY);
     auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
@@ -266,7 +266,7 @@ void SColourImageMasking::setBackground()
     //convert the ::arData::FrameTL videoTL to an OpenCV image
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
-    // convert the ::fwData::Image mask to an OpenCV image
+    // convert the data::Image mask to an OpenCV image
     ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
 
     // Convert color mask to grayscale value

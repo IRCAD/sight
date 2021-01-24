@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwGdcmIO/config.hpp"
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <data/location/Folder.hpp>
+#include <data/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
@@ -51,8 +51,8 @@ class DicomAnonymizer;
 
 class FWGDCMIO_CLASS_API DicomSeriesDBWriter :
     public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
-    public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 
 {
 public:

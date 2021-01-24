@@ -28,8 +28,8 @@
 #include <core/base.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwData/Material.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Material.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
@@ -56,7 +56,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("ModelSeries Writer"))
 {
 }
@@ -69,12 +69,12 @@ ModelSeriesObjWriter::~ModelSeriesObjWriter()
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr& pReconstruction )
+vtkSmartPointer< vtkActor > createActor( const data::Reconstruction::sptr& pReconstruction )
 {
     vtkSmartPointer< vtkActor >  actor = vtkSmartPointer< vtkActor >::New();
 
-    ::fwData::Mesh::sptr mesh         = pReconstruction->getMesh();
-    ::fwData::Material::sptr material = pReconstruction->getMaterial();
+    data::Mesh::sptr mesh         = pReconstruction->getMesh();
+    data::Material::sptr material = pReconstruction->getMaterial();
 
     vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
@@ -84,11 +84,11 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr& p
 
     vtkProperty* property = actor->GetProperty();
 
-    ::fwData::Color::sptr diffuse = material->diffuse();
+    data::Color::sptr diffuse = material->diffuse();
     property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
     property->SetOpacity( diffuse->alpha() );
 
-    ::fwData::Color::sptr ambient = material->ambient();
+    data::Color::sptr ambient = material->ambient();
     property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
 
     property->SetSpecularColor(1., 1., 1.);
@@ -115,7 +115,7 @@ void ModelSeriesObjWriter::write()
 
     m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;
-    for(const ::fwData::Reconstruction::sptr& rec :  modelSeries->getReconstructionDB() )
+    for(const data::Reconstruction::sptr& rec :  modelSeries->getReconstructionDB() )
     {
         vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
         vtkSmartPointer< vtkActor >  actor      = createActor(rec);

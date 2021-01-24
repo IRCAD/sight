@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwMDSemanticPatch/V09ALA/V10/fwData/Image.hpp"
+#include "fwMDSemanticPatch/V09ALA/V10/data/Image.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -41,13 +41,13 @@ namespace V09ALA
 {
 namespace V10
 {
-namespace fwData
+namespace sight::data
 {
 
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "::fwData::Image";
+    m_originClassname = "data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V09ALA", "V10");
 }
@@ -85,7 +85,7 @@ void Image::apply(
         // create new Landmarks structure
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
-        ::fwAtoms::Object::sptr currentLandmarks = creators->create( "::fwData::Landmarks", "1");
+        ::fwAtoms::Object::sptr currentLandmarks = creators->create( "data::Landmarks", "1");
         ::fwAtomsPatch::helper::Object helperLandmarks( currentLandmarks );
 
         ::fwAtoms::Map::sptr currentFieldMap = ::fwAtoms::Map::dynamicCast(current->getAttribute("fields"));
@@ -145,7 +145,7 @@ void Image::apply(
 
 // ----------------------------------------------------------------------------
 
-} // namespace fwData
+} // namespace sight::data
 } // namespace V10
 } // namespace V09ALA
 } // namespace fwMDSemanticPatch

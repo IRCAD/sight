@@ -24,8 +24,8 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -56,15 +56,15 @@ private:
 
     const core::tools::Type m_type { "int8" };
 
-    const ::fwData::Image::PixelFormat m_format { ::fwData::Image::PixelFormat::GRAY_SCALE };
+    const data::Image::PixelFormat m_format { data::Image::PixelFormat::GRAY_SCALE };
 
-    const ::fwData::Image::Size m_size { 8, 16, 24 };
+    const data::Image::Size m_size { 8, 16, 24 };
 
-    const ::fwData::Image::Origin m_origin { 0.f, 0.f, 0.f };
+    const data::Image::Origin m_origin { 0.f, 0.f, 0.f };
 
-    const ::fwData::Image::Spacing m_spacing { 1.f, 1.f, 1.f };
+    const data::Image::Spacing m_spacing { 1.f, 1.f, 1.f };
 
-    ::fwData::Image::sptr m_image;
+    data::Image::sptr m_image;
 
 };
 

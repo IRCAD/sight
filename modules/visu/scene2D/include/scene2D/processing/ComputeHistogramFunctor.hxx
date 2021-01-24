@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,8 @@ struct ComputeHistogramFunctor
     /// Parameters of the functor.
     struct Parameter
     {
-        ::fwData::Image::csptr image;
-        ::fwData::Histogram::sptr histogram;
+        data::Image::csptr image;
+        data::Histogram::sptr histogram;
         float binsWidth;
     };
 
@@ -49,8 +49,8 @@ struct ComputeHistogramFunctor
     template<class IMAGETYPE>
     void operator()(Parameter& param)
     {
-        ::fwData::Image::csptr image        = param.image;
-        ::fwData::Histogram::sptr histogram = param.histogram;
+        data::Image::csptr image        = param.image;
+        data::Histogram::sptr histogram = param.histogram;
 
         const auto dumpLock = image->lock();
 

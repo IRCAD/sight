@@ -24,8 +24,8 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Image.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -77,8 +77,8 @@ void SImageExtruder::starting()
     connections.push(s_MESHES_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
     connections.push(s_MESHES_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
 
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -87,18 +87,18 @@ void SImageExtruder::starting()
 
 void SImageExtruder::updating()
 {
-    const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
         {
-            const auto imageOut = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
 
-            const auto sig = imageOut->signal< ::fwData::Image::ModifiedSignalType>(::fwData::Image::s_MODIFIED_SIG);
+            const auto sig = imageOut->signal< data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
 
@@ -120,17 +120,17 @@ void SImageExtruder::stopping()
 
 void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const
 {
-    const auto imageOut = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
     {
-        for(const ::fwData::Reconstruction::csptr reconstruction : _reconstructions)
+        for(const data::Reconstruction::csptr reconstruction : _reconstructions)
         {
-            ::fwData::mt::locked_ptr lockedReconstruction(reconstruction);
+            data::mt::locked_ptr lockedReconstruction(reconstruction);
 
-            const ::fwData::Mesh::csptr mesh = lockedReconstruction->getMesh();
+            const data::Mesh::csptr mesh = lockedReconstruction->getMesh();
 
-            ::fwData::mt::locked_ptr lockedMesh(mesh);
+            data::mt::locked_ptr lockedMesh(mesh);
 
             this->extrudeMesh(lockedMesh.get_shared(), imageOut.get_shared());
         }
@@ -139,14 +139,14 @@ void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::Reconstruction
 
 //------------------------------------------------------------------------------
 
-void SImageExtruder::extrudeMesh(const ::fwData::Mesh::csptr _mesh, const fwData::Image::sptr _image) const
+void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const
 {
     // Extrude the image.
     ::imageFilterOp::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
     const auto sig =
-        _image->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        _image->signal< data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

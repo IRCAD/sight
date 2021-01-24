@@ -4,7 +4,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     arData
     core
-    fwData
+    data
     fwDataTools
     fwGui
     fwRender

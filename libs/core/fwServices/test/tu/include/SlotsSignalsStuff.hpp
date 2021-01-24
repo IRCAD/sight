@@ -56,12 +56,12 @@ public:
 
 //------------------------------------------------------------------------------
 
-class Buffer : public ::fwData::Object
+class Buffer : public data::Object
 {
 public:
-    fwCoreClassMacro(Buffer, ::fwData::Object, ::fwData::factory::New< Buffer >)
+    fwCoreClassMacro(Buffer, data::Object, data::factory::New< Buffer >)
 
-    Buffer( ::fwData::Object::Key )
+    Buffer( data::Object::Key )
     {
     }
     ~Buffer()

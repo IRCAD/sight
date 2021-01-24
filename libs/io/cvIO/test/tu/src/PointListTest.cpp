@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <cvIO/PointList.hpp>
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -37,7 +37,7 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-static void assert2dPointEquality(const ::fwData::Point::csptr& _pt, const ::cv::Point2d& _cvPt)
+static void assert2dPointEquality(const data::Point::csptr& _pt, const ::cv::Point2d& _cvPt)
 {
     const auto& coords = _pt->getCoord();
     CPPUNIT_ASSERT_EQUAL(coords[0], _cvPt.x);
@@ -70,12 +70,12 @@ void PointListTest::copyFromCv()
         cvPointList.push_back( ::cv::Point2d(double(i), double(i * 2 + 3)));
     }
 
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    data::PointList::sptr pl = data::PointList::New();
     ::cvIO::PointList::copyFromCv(cvPointList, pl);
 
     for(std::uint16_t i = 0; i < 512; ++i)
     {
-        ::fwData::Point::csptr pt = pl->getPoints()[i];
+        data::Point::csptr pt = pl->getPoints()[i];
         assert2dPointEquality(pt, cvPointList[i]);
         CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(pt->getCoord()[0]));
         CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 2  + 3), std::uint16_t(pt->getCoord()[1]));
@@ -87,11 +87,11 @@ void PointListTest::copyFromCv()
 
 void PointListTest::copyToCv()
 {
-    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
+    data::PointList::sptr pl = data::PointList::New();
 
     for(std::uint16_t i = 0; i < 512; ++i)
     {
-        ::fwData::Point::sptr point = ::fwData::Point::New(double(i), double(i * 3 + 5), 0.);
+        data::Point::sptr point = data::Point::New(double(i), double(i * 3 + 5), 0.);
         pl->getPoints().push_back(point);
     }
 

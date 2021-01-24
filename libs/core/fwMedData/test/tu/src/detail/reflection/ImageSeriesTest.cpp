@@ -30,8 +30,8 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Image.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -136,7 +136,7 @@ void ImageSeriesTest::propertiesTest()
                                                                   { "acquisition_date" },
                                                                   { "acquisition_time" }, };
 
-    ::fwData::Image::sptr img = ::fwData::Image::New();
+    data::Image::sptr img = data::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create("uint8"));
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);

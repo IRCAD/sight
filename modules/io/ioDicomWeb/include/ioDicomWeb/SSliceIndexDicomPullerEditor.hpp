@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-namespace fwData
+namespace sight::data
 {
 class Integer;
 }
@@ -88,7 +88,7 @@ namespace ioDicomWeb
  * @subsection In-Out In-Out:
  * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
  * @subsection Output Output:
- * - \b image [::fwData::Image]: Downloaded image.
+ * - \b image [data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
  * - \b dicomReader Reader type to use.
  * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
@@ -175,11 +175,11 @@ private:
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
     /// Axial slice index
-    SPTR(fwData::Integer) m_axialIndex;
+    SPTR(data::Integer) m_axialIndex;
     /// Frontal slice index
-    SPTR(::fwData::Integer) m_frontalIndex;
+    SPTR(data::Integer) m_frontalIndex;
     /// Sagittal slice index
-    SPTR(::fwData::Integer) m_sagittalIndex;
+    SPTR(data::Integer) m_sagittalIndex;
 
     /// Series enquirer
     ::fwNetworkIO::http::ClientQt m_clientQt;

@@ -29,7 +29,7 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-namespace fwData
+namespace sight::data
 {
 class Object;
 }
@@ -53,7 +53,7 @@ public:
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(
         const ::fwActivities::registry::ActivityInfo&,
-        const CSPTR(::fwData::Vector)& ) const override
+        const CSPTR(data::Vector)& ) const override
     {
         ValidationType validation;
         validation.first  = true;
@@ -65,7 +65,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwData::Object)& currentData ) const = 0;
+    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(data::Object)& currentData ) const = 0;
 
 };
 

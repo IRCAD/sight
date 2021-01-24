@@ -84,7 +84,7 @@ void SPacsConfigurationEditor::starting()
     // Create the worker.
     m_requestWorker = core::thread::Worker::New();
 
-    const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -145,7 +145,7 @@ void SPacsConfigurationEditor::starting()
     m_retrieveMethodWidget->addItem("Move");
     m_retrieveMethodWidget->addItem("Get");
     m_retrieveMethodWidget->setCurrentIndex(
-        (pacsConfiguration->getRetrieveMethod() == ::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1);
+        (pacsConfiguration->getRetrieveMethod() == ::fwPacsIOdata::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1);
     QLabel* const RetrieveMethod = new QLabel("Retrieve method:");
     RetrieveMethod->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(RetrieveMethod, 6, 0);
@@ -215,7 +215,7 @@ void SPacsConfigurationEditor::pingPACS()
     m_requestWorker->post([&]
         {
             const auto pacsConfiguration =
-                this->getLockedInOut< const ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+                this->getLockedInOut< const ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
             ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -272,9 +272,9 @@ void SPacsConfigurationEditor::pingPACS()
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration)
+void SPacsConfigurationEditor::modifiedNotify(::fwPacsIOdata::PacsConfiguration::sptr _pacsConfiguration)
 {
-    auto sig = _pacsConfiguration->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = _pacsConfiguration->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -285,7 +285,7 @@ void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguratio
 
 void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
@@ -296,7 +296,7 @@ void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPHostNameChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
@@ -307,7 +307,7 @@ void SPacsConfigurationEditor::onSCPHostNameChanged()
 
 void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
@@ -318,7 +318,7 @@ void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
@@ -329,7 +329,7 @@ void SPacsConfigurationEditor::onSCPPortChanged(int value)
 
 void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
@@ -340,7 +340,7 @@ void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
@@ -351,12 +351,12 @@ void SPacsConfigurationEditor::onMovePortChanged(int _value)
 
 void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 {
-    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut< ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
     pacsConfiguration->setRetrieveMethod(
         (_index ==
-         0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::
-                                                                            GET_RETRIEVE_METHOD));
+         0) ? (::fwPacsIOdata::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIOdata::PacsConfiguration::
+                                                                          GET_RETRIEVE_METHOD));
 
     this->modifiedNotify(pacsConfiguration.get_shared());
 }

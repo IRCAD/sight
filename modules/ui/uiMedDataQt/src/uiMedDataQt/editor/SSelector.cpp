@@ -308,7 +308,7 @@ void SSelector::stopping()
 void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > _selection,
                                  QVector< ::fwMedData::Series::sptr > _deselection)
 {
-    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
     ::fwDataTools::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for( ::fwMedData::Series::sptr series :  _deselection)
@@ -331,12 +331,12 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(_index);
 
-    const auto selectionVector = this->getLockedInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+    const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
 
     if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
-        ::fwData::Object::sptr obj       = selectionVector->front();
+        data::Object::sptr obj = selectionVector->front();
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
         SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
 

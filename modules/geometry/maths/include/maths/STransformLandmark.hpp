@@ -24,7 +24,7 @@
 
 #include "maths/config.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -53,10 +53,10 @@ namespace maths
    @endcode
  *
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D]: transform applied to the landmark
+ * - \b matrix [data::TransformationMatrix3D]: transform applied to the landmark
  *
  * @subsection InOut InOut:
- * - \b landmark [::fwData::Landmarks]: landmark to modify
+ * - \b landmark [data::Landmarks]: landmark to modify
  *
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
@@ -110,7 +110,7 @@ private:
     void removePoint();
 
     /// Transform to apply to Landmark.
-    ::fwData::TransformationMatrix3D::csptr m_transform;
+    data::TransformationMatrix3D::csptr m_transform;
 
     /// Label containing the landmark group name.
     std::string m_label{""};

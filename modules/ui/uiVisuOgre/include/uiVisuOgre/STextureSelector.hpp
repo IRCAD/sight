@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwData/Reconstruction.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -37,7 +37,7 @@ namespace uiVisuOgre
 {
 
 /**
- * @brief   Allows to select a ::fwData::Image and apply it to the current reconstruction as an Ogre texture
+ * @brief   Allows to select a data::Image and apply it to the current reconstruction as an Ogre texture
  *
  * @section XML XML Configuration
  *
@@ -47,7 +47,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [::fwData::Reconstruction]: reconstruction where the texture should be applied.
+ * - \b reconstruction [data::Reconstruction]: reconstruction where the texture should be applied.
  */
 class UIVISUOGRE_CLASS_API STextureSelector : public QObject,
                                               public ::fwGui::editor::IEditor
@@ -57,7 +57,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(STextureSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(STextureSelector, ::fwGui::editor::IEditor)
 
     UIVISUOGRE_API STextureSelector() noexcept;
     UIVISUOGRE_API virtual ~STextureSelector() noexcept;

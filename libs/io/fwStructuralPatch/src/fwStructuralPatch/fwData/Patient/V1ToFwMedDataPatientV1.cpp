@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
+#include "fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp"
 
 #include <core/tools/dateAndTime.hpp>
 
@@ -34,7 +34,7 @@
 namespace fwStructuralPatch
 {
 
-namespace fwData
+namespace sight::data
 {
 
 namespace Patient
@@ -43,7 +43,7 @@ namespace Patient
 V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::fwData::Patient";
+    m_originClassname = "data::Patient";
     m_targetClassname = "::fwMedData::Patient";
     m_originVersion   = "1";
     m_targetVersion   = "1";
@@ -110,6 +110,6 @@ void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
 
 } // namespace Patient
 
-} // namespace fwData
+} // namespace sight::data
 
 } // namespace fwStructuralPatch

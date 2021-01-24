@@ -26,10 +26,10 @@
 #include <core/com/Slot.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
+#include <data/Composite.hpp>
+#include <data/Material.hpp>
+#include <data/Mesh.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 #include <fwDataTools/helper/Field.hpp>
@@ -187,9 +187,9 @@ void SOrganTransformation::refresh()
 
     if(hasReconstructions)
     {
-        ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
+        data::Composite::sptr pComposite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
 
-        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             m_reconstructionMap[ rec->getOrganName() ] = rec;
         }
@@ -213,9 +213,9 @@ void SOrganTransformation::refresh()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
+void SOrganTransformation::notitfyTransformationMatrix(data::TransformationMatrix3D::sptr aTransMat)
 {
-    auto sig = aTransMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = aTransMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -223,12 +223,12 @@ void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationM
 
 void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
-    ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
+    data::Composite::sptr pComposite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
     if (pComposite != nullptr)
     {
-        ::std::string item_name                        = currentItem->text().toStdString();
-        ::fwData::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
-        ::fwData::Mesh::sptr pMesh                     = pReconstruction->getMesh();
+        ::std::string item_name = currentItem->text().toStdString();
+        data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
+        data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
         ::fwDataTools::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
@@ -260,12 +260,12 @@ void SOrganTransformation::onResetClick()
     ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     //search the corresponding triangular mesh
-    for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+    for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
     {
-        ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
+        data::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-        ::fwData::TransformationMatrix3D::sptr pTmpMat =
-            pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+        data::TransformationMatrix3D::sptr pTmpMat =
+            pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
         if (pTmpMat)
         {
             ::fwDataTools::TransformationMatrix3D::identity(pTmpMat);
@@ -284,15 +284,15 @@ void SOrganTransformation::onSaveClick()
 
     if(!series->getReconstructionDB().empty())
     {
-        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
-            ::fwData::Mesh::sptr pTmpTrMesh                = rec->getMesh();
-            ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+            data::Mesh::sptr pTmpTrMesh                = rec->getMesh();
+            data::TransformationMatrix3D::sptr pTmpMat =
+                pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
             if (pTmpMat)
             {
-                ::fwData::TransformationMatrix3D::sptr pCpyTmpMat;
-                pCpyTmpMat                  = ::fwData::Object::copy(pTmpMat);
+                data::TransformationMatrix3D::sptr pCpyTmpMat;
+                pCpyTmpMat                  = data::Object::copy(pTmpMat);
                 matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
             }
         }
@@ -316,13 +316,13 @@ void SOrganTransformation::onLoadClick()
         ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
         //search the corresponding triangular mesh
-        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
-            ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
+            data::Mesh::sptr pTmpTrMesh = rec->getMesh();
             if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
             {
-                ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                    pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+                data::TransformationMatrix3D::sptr pTmpMat =
+                    pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
                 if (pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -338,7 +338,7 @@ void SOrganTransformation::onLoadClick()
 void SOrganTransformation::onSelectAllChanged(int state)
 {
 
-    ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
+    data::Composite::sptr composite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
     ::fwDataTools::helper::Composite compositeHelper(composite);
 
     if(state == Qt::Checked)
@@ -347,7 +347,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
         ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
-        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             if(composite->find(rec->getOrganName()) == composite->end())
             {
@@ -381,14 +381,14 @@ void SOrganTransformation::addMeshTransform()
 {
     ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
-    for(const ::fwData::Reconstruction::sptr& rec :  series->getReconstructionDB())
+    for(const data::Reconstruction::sptr& rec :  series->getReconstructionDB())
     {
-        ::fwData::Mesh::sptr mesh = rec->getMesh();
+        data::Mesh::sptr mesh = rec->getMesh();
 
         if (!mesh->getField( s_MATRIX_FIELD_NAME ))
         {
             ::fwDataTools::helper::Field fieldHelper(mesh);
-            fieldHelper.setField(s_MATRIX_FIELD_NAME, ::fwData::TransformationMatrix3D::New());
+            fieldHelper.setField(s_MATRIX_FIELD_NAME, data::TransformationMatrix3D::New());
             fieldHelper.notify();
         }
     }
@@ -402,10 +402,10 @@ void SOrganTransformation::addMeshTransform()
     connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, data::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

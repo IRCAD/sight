@@ -31,7 +31,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -74,14 +74,14 @@ void MIPMatchingRegistrationTest::tearDown()
 
 void MIPMatchingRegistrationTest::identityTest()
 {
-    ::fwData::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
-    ::fwData::Image::csptr fixed               = ::fwData::Object::copy(moving);
-    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+    data::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr fixed               = data::Object::copy(moving);
+    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = ::fwData::TransformationMatrix3D::New();
+    params.transform = data::TransformationMatrix3D::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
 
@@ -96,10 +96,10 @@ void MIPMatchingRegistrationTest::identityTest()
 
 void MIPMatchingRegistrationTest::translateTransformTest()
 {
-    ::fwData::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
-    ::fwData::Image::sptr fixed   = ::fwData::Image::New();
+    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::sptr fixed   = data::Image::New();
 
-    ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr transform = data::TransformationMatrix3D::New();
     transform->setCoefficient(0, 3, 4.);
     transform->setCoefficient(1, 3, 12.);
     transform->setCoefficient(2, 3, 7.);
@@ -109,7 +109,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = ::fwData::TransformationMatrix3D::New();
+    params.transform = data::TransformationMatrix3D::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
@@ -127,14 +127,14 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
 
     // Create the moving image
     auto movingSpacing = ImageType::SpacingType(1.);
-    movingSpacing[1]             = 1.3;
-    ::fwData::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
-    ::fwData::Image::sptr fixed  = ::fwData::Image::New();
+    movingSpacing[1] = 1.3;
+    data::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
+    data::Image::sptr fixed  = data::Image::New();
     moving->setOrigin2({ 107., 50., -30. });
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{ 4., 19., 7. }};
-    ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
+    data::TransformationMatrix3D::sptr transform = data::TransformationMatrix3D::New();
     transform->setCoefficient(0, 3, vTrans[0]);
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
@@ -171,7 +171,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
-    params.transform = ::fwData::TransformationMatrix3D::New();
+    params.transform = data::TransformationMatrix3D::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)

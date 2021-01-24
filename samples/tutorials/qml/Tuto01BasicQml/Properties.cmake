@@ -3,12 +3,12 @@ set( VERSION 0.2 ) # Version of the application
 set( TYPE APP ) # Type APP represent "Application"
 set( START ON) # This module will be automatically started
 set( DEPENDENCIES
-    fwData
+    data
     fwServices
     fwQml
 )
 set( REQUIREMENTS
-    fwData
+    data
     servicesReg
     guiQml
     fwlauncher

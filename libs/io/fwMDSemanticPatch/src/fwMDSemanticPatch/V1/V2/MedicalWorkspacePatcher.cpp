@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ MedicalWorkspacePatcher::~MedicalWorkspacePatcher()
 
 void MedicalWorkspacePatcher::addCompositeTypes(::fwAtoms::Object::sptr object)
 {
-    if( ::fwAtomsPatch::helper::getClassname( object ) == "::fwData::Composite")
+    if( ::fwAtomsPatch::helper::getClassname( object ) == "data::Composite")
     {
         ::fwAtoms::Map::sptr values = object->getAttribute< ::fwAtoms::Map >("values");
         if((*values)["patientDB"] && (*values)["planningDB"] && (*values)["processingDB"])

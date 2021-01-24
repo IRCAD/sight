@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -35,7 +35,7 @@ namespace converter
 {
 
 const std::string TrackingStopConverter::s_IGTL_TYPE          = "STP_TDATA";
-const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = ::fwData::Composite::classname();
+const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = data::Composite::classname();
 const std::string s_statusKey                                 = "Status";
 
 converterRegisterMacro(::igtlProtocol::converter::TrackingStopConverter);
@@ -52,7 +52,7 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(::fwData::Object::csptr src) const
+::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::Object::csptr src) const
 {
     ::igtl::StopTrackingDataMessage::Pointer trackingMsg = ::igtl::StopTrackingDataMessage::New();
     return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
@@ -60,11 +60,11 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::Boolean::sptr status      = ::fwData::Boolean::New();
-    (*composite)[s_statusKey]           = status;
+    data::Composite::sptr composite = data::Composite::New();
+    data::Boolean::sptr status      = data::Boolean::New();
+    (*composite)[s_statusKey] = status;
 
     status->setValue(false);
 

@@ -28,8 +28,8 @@
 
 #include <filesystem> // Used to save the file system path of loaded image
 
-// Pre-definition of ::fwData::Image to avoid inclusion file
-namespace fwData
+// Pre-definition of data::Image to avoid inclusion file
+namespace sight::data
 {
 class Image;
 }
@@ -61,7 +61,7 @@ namespace ioVTK
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [::fwData::Image]: loaded image.
+ * - \b data [data::Image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
@@ -106,7 +106,7 @@ public:
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
     IOVTK_API static bool loadImage( const std::filesystem::path& vtkFile,
-                                     const SPTR(::fwData::Image)& image,
+                                     const SPTR(data::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:

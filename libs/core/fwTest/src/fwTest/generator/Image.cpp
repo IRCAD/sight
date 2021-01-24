@@ -41,8 +41,8 @@ void Image::initRand()
 
 //------------------------------------------------------------------------------
 
-void Image::generateImage(::fwData::Image::sptr image,
-                          ::fwData::Image::SizeType size,
+void Image::generateImage(data::Image::sptr image,
+                          data::Image::SizeType size,
                           std::vector<double> spacing,
                           std::vector<double> origin,
                           core::tools::Type type)
@@ -60,12 +60,12 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 //------------------------------------------------------------------------------
 
-void Image::generateImage(::fwData::Image::sptr image,
-                          ::fwData::Image::Size size,
-                          ::fwData::Image::Spacing spacing,
-                          ::fwData::Image::Origin origin,
+void Image::generateImage(data::Image::sptr image,
+                          data::Image::Size size,
+                          data::Image::Spacing spacing,
+                          data::Image::Origin origin,
                           core::tools::Type type,
-                          ::fwData::Image::PixelFormat format)
+                          data::Image::PixelFormat format)
 {
     image->resize(size, type, format);
     image->setSpacing2(spacing);
@@ -77,30 +77,30 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 //------------------------------------------------------------------------------
 
-void Image::generateRandomImage(::fwData::Image::sptr image, core::tools::Type type)
+void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
 {
     constexpr int SIZE        = 50;
     constexpr int DOUBLE_SIZE = SIZE * 2;
     image->setType(type);
 
-    ::fwData::Image::Size size;
+    data::Image::Size size;
     size[0] = rand() % SIZE + 2;
     size[1] = rand() % SIZE + 2;
     size[2] = rand() % SIZE + 2;
     image->setSize2(size);
 
-    ::fwData::Image::Spacing spacing;
+    data::Image::Spacing spacing;
     spacing[0] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
     spacing[1] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
     spacing[2] = (rand() % DOUBLE_SIZE +1) / double(SIZE);
     image->setSpacing2(spacing);
 
-    ::fwData::Image::Origin origin;
+    data::Image::Origin origin;
     origin[0] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[1] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[2] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     image->setOrigin2(origin);
-    image->setPixelFormat(::fwData::Image::GRAY_SCALE);
+    image->setPixelFormat(data::Image::GRAY_SCALE);
 
     image->resize();
 
@@ -112,7 +112,7 @@ void Image::generateRandomImage(::fwData::Image::sptr image, core::tools::Type t
 
 //------------------------------------------------------------------------------
 
-void Image::randomizeImage(::fwData::Image::sptr image)
+void Image::randomizeImage(data::Image::sptr image)
 {
     auto lock          = image->lock();
     auto iter          = image->begin();
@@ -126,7 +126,7 @@ void Image::randomizeImage(::fwData::Image::sptr image)
 
 //------------------------------------------------------------------------------
 
-void Image::randomizeArray(::fwData::Array::sptr array)
+void Image::randomizeArray(data::Array::sptr array)
 {
     const auto dumpLock = array->lock();
     auto iter           = array->begin();
@@ -140,9 +140,9 @@ void Image::randomizeArray(::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::sptr Image::createRandomizedArray(const std::string& type, ::fwData::Array::SizeType sizes)
+data::Array::sptr Image::createRandomizedArray(const std::string& type, data::Array::SizeType sizes)
 {
-    ::fwData::Array::sptr array = ::fwData::Array::New();
+    data::Array::sptr array = data::Array::New();
 
     array->resize(sizes,  core::tools::Type::create(type), true );
 

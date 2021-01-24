@@ -30,7 +30,7 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectReadLock.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -133,7 +133,7 @@ void SSeriesSignal::updating()
 {
     const ::fwMedData::SeriesDB::csptr seriesDB = this->getInput< ::fwMedData::SeriesDB >(s_SERIES_DB_INPUT);
     SLM_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
-    ::fwData::mt::ObjectReadLock lock(seriesDB);
+    data::mt::ObjectReadLock lock(seriesDB);
 
     this->reportSeries(seriesDB->getContainer());
 }

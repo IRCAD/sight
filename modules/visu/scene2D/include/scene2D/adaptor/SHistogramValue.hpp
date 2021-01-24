@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,10 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [::fwData::Histogram]: histogram to display.
- * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * - \b histogram [data::Histogram]: histogram to display.
+ * - \b point [data::Point]: histogram point, used to show information at the current histogram index pointed by the
  * mouse.
- * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
+ * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration.
@@ -88,9 +88,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect ::fwRenderQtdata::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
      * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
-     * Connect ::fwData::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
+     * Connect data::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
      * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
      */
     virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -105,7 +105,7 @@ private:
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
+    virtual void processInteraction(::fwRenderQtdata::Event& _event ) override;
 
     /// Defines the color used for graphic item's inner color.
     QPen m_color;
@@ -120,7 +120,7 @@ private:
     QFont m_font;
 
     /// Defines  the coordinates of the current event.
-    ::fwRenderQt::data::Coord m_coord;
+    ::fwRenderQtdata::Coord m_coord;
 
     /// Defines the size of the font used for rendering the current value of this tracker.
     float m_fontSize;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,18 @@
 
 #include "fwMedData/ActivitySeries.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <data/Composite.hpp>
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ActivitySeries )
 
 namespace fwMedData
 {
 
-ActivitySeries::ActivitySeries(::fwData::Object::Key _key) :
+ActivitySeries::ActivitySeries(data::Object::Key _key) :
     Series(_key),
-    m_data(::fwData::Composite::New())
+    m_data(data::Composite::New())
 {
 }
 
@@ -45,10 +45,10 @@ ActivitySeries::~ActivitySeries()
 
 //------------------------------------------------------------------------------
 
-void ActivitySeries::shallowCopy(const ::fwData::Object::csptr& _source)
+void ActivitySeries::shallowCopy(const data::Object::csptr& _source)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
@@ -59,17 +59,17 @@ void ActivitySeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void ActivitySeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+    FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
     m_activityConfigId = other->m_activityConfigId;
-    m_data             = ::fwData::Object::copy(other->m_data, cache);
+    m_data             = data::Object::copy(other->m_data, cache);
 }
 
 //------------------------------------------------------------------------------

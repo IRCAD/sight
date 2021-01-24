@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwData/Image.hpp>
+#include <data/Image.hpp>
 
 #include <fwItkIO/itk.hpp>
 
@@ -38,7 +38,7 @@ struct ItkImageCaster
 
     struct Params
     {
-        ::fwData::Image::csptr i_img;
+        data::Image::csptr i_img;
         typename OutputImageType::Pointer o_img;
     };
 
@@ -63,7 +63,7 @@ struct ItkImageCaster
 //------------------------------------------------------------------------------
 
 template <typename OUTPUT_PIXELTYPE>
-typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const ::fwData::Image::csptr& _img)
+typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const data::Image::csptr& _img)
 {
     using CasterType = ItkImageCaster<OUTPUT_PIXELTYPE>;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwData/Composite.hpp>
+#include <data/Composite.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::detail::reflection::ut::ActivitySeriesTest );
@@ -106,7 +106,7 @@ void ActivitySeriesTest::propertiesTest()
                                                                   { "activity_config_id" },
                                                                   { "data" }, };
 
-    ::fwData::Composite::sptr data = ::fwData::Composite::New();
+    data::Composite::sptr data = data::Composite::New();
 
     ::fwMedData::ActivitySeries::sptr obj = ::fwMedData::ActivitySeries::New();
     obj->setModality(modality);
