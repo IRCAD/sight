@@ -13,25 +13,25 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Frames timelines to manage video and depth streams  -->
-            <object uid="frameTLVideo" type="::arData::FrameTL" />
-            <object uid="frameTLDepth" type="::arData::FrameTL" />
+            <object uid="frameTLVideo" type="::sight::data::FrameTL" />
+            <object uid="frameTLDepth" type="::sight::data::FrameTL" />
             <!-- Images extracted from the TL and used to perform image masking -->
-            <object uid="videoImage" type="::fwData::Image" />
-            <object uid="depthImage" type="::fwData::Image" />
-            <object uid="foregroundImage" type="::fwData::Image" />
-            <object uid="offscreenImage" type="::fwData::Image" />
+            <object uid="videoImage" type="::sight::data::Image" />
+            <object uid="depthImage" type="::sight::data::Image" />
+            <object uid="foregroundImage" type="::sight::data::Image" />
+            <object uid="offscreenImage" type="::sight::data::Image" />
             <!-- Objects related to the camera managing the calibration data -->
-            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
-            <object uid="RGBcamera" type="::arData::Camera" src="deferred" />
-            <object uid="Dcamera" type="::arData::Camera" src="deferred" />
+            <object uid="RGBDCameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="RGBcamera" type="::sight::data::Camera" src="deferred" />
+            <object uid="Dcamera" type="::sight::data::Camera" src="deferred" />
             <!-- Matrices to register to mesh in the right space regading the camera position -->
-            <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="inverseMatrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
+            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="inverseMatrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
             <!-- Objectes related to the models loaded to perform AR -->
-            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-            <object uid="modelSeries" type="::fwMedData::ModelSeries" src="deferred" />
-            <object uid="mesh" type="::fwData::Mesh" src="deferred" />
+            <object uid="seriesDB" type="::sight::data::SeriesDB" />
+            <object uid="modelSeries" type="::sight::data::ModelSeries" src="deferred" />
+            <object uid="mesh" type="::sight::data::Mesh" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -364,7 +364,7 @@
                </out>
             </service>
 
-            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
             <service uid="extractCameraSrv" type="::ctrlCamp::SExtractObj" >
                 <!-- Source -->
                 <inout key="source" uid="RGBDCameraSeries" >

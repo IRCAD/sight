@@ -15,22 +15,22 @@
     <!-- input image -->
     <config>
         <!-- activity -->
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::sight::data::ActivitySeries" src="ref" />
 
         <!-- input image -->
-        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
 
         <!-- Transfer function -->
-        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="transferFunction" type="::sight::data::TransferFunction" src="deferred" />
 
         <!-- optional model series -->
-        <object uid="${optionalModelSeriesComposite}" type="::fwData::Composite" src="ref" />
-        <object uid="optionalModelSeries" type="::fwData::Image" src="deferred" />
+        <object uid="${optionalModelSeriesComposite}" type="::sight::data::Composite" src="ref" />
+        <object uid="optionalModelSeries" type="::sight::data::Image" src="deferred" />
 
         <!-- TF editor -->
-        <object uid="Histogram" type="::fwData::Histogram" />
-        <object uid="landmarks" type="::fwData::Landmarks" />
+        <object uid="Histogram" type="::sight::data::Histogram" />
+        <object uid="landmarks" type="::sight::data::Landmarks" />
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">

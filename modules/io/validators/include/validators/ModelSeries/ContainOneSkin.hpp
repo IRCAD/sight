@@ -24,7 +24,7 @@
 
 #include "validators/config.hpp"
 
-#include <fwActivities/IObjectValidator.hpp>
+#include <activities/IObjectValidator.hpp>
 
 namespace validators
 {
@@ -35,14 +35,14 @@ namespace ModelSeries
  * @note If the given Obect is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
  *       with one and only one Skin.
  */
-class VALIDATORS_CLASS_API ContainOneSkin : public ::fwActivities::IObjectValidator
+class VALIDATORS_CLASS_API ContainOneSkin : public activities::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ContainOneSkin, ::fwActivities::IObjectValidator,
-                     ::fwActivities::validator::factory::New< ContainOneSkin >)
+    fwCoreClassMacro(ContainOneSkin, activities::IObjectValidator,
+                     activities::validator::factory::New< ContainOneSkin >)
 
     /// Constructor. Do nothing.
-    VALIDATORS_API ContainOneSkin(::fwActivities::IValidator::Key key);
+    VALIDATORS_API ContainOneSkin(activities::IValidator::Key key);
 
     /// Destructor. Do nothing.
     VALIDATORS_API virtual ~ContainOneSkin();
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Checks that the ModelSeries contains one only one Skin.
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
-     * @see ::fwActivities::IValidator::validate
+     * @see activities::IValidator::validate
      */
     VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
     override;

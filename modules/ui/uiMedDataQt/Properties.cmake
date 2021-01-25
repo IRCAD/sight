@@ -3,12 +3,11 @@ set( NAME uiMedDataQt )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    fwActivities
+    activities
     core
     data
     fwGui
     fwGuiQt
-    fwMedDataTools
     fwServices
     fwDataTools
     fwIO

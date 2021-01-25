@@ -33,7 +33,7 @@ class ObjectService;
 class IService;
 }
 
-namespace fwActivities
+namespace sight::activities
 {
 class IActivityLauncher;
 }
@@ -122,7 +122,7 @@ private:
     /// @todo remove me when IService and ObjectService will be ready to use lock()
     friend class ::fwServices::IService;
     friend class ::fwServices::registry::ObjectService;
-    friend class ::fwActivities::IActivityLauncher;
+    friend class activities::IActivityLauncher;
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()

@@ -10,8 +10,8 @@
     </parameters>
     <config>
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="selections" type="::fwData::Vector" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="selections" type="::sight::data::Vector" />
 
         <service uid="mainview" type="::gui::view::SDefaultView" >
             <gui>
@@ -75,10 +75,10 @@
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
-                <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
+                <config id="3DSimpleConfig2" type="::sight::data::ModelSeries" />
             </configs>
         </service>
 

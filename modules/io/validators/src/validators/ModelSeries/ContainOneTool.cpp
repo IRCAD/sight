@@ -22,12 +22,12 @@
 
 #include "validators/ModelSeries/ContainOneTool.hpp"
 
+#include <activities/validator/registry/macros.hpp>
+
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/validator/registry/macros.hpp>
 
 namespace validators
 {
@@ -39,7 +39,7 @@ fwActivitiesValidatorRegisterMacro(::validators::ModelSeries::ContainOneTool,
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(::fwActivities::IValidator::Key key)
+ContainOneTool::ContainOneTool(activities::IValidator::Key key)
 {
 
 }
@@ -53,7 +53,7 @@ ContainOneTool::~ContainOneTool()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData ) const
+activities::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

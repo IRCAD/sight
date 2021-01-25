@@ -24,7 +24,7 @@
 
 #include "validators/config.hpp"
 
-#include <fwActivities/IObjectValidator.hpp>
+#include <activities/IObjectValidator.hpp>
 
 namespace validators
 {
@@ -34,21 +34,21 @@ namespace CameraSeries
  * @brief Defines a validator which checks if the current CameraSeries contains one and only one Camera and is
  *        calibrated.
  */
-class VALIDATORS_CLASS_API MonoCamera : public ::fwActivities::IObjectValidator
+class VALIDATORS_CLASS_API MonoCamera : public activities::IObjectValidator
 {
 public:
-    fwCoreClassMacro(MonoCamera, ::fwActivities::IObjectValidator,
-                     ::fwActivities::validator::factory::New< MonoCamera >)
+    fwCoreClassMacro(MonoCamera, activities::IObjectValidator,
+                     activities::validator::factory::New< MonoCamera >)
 
     /// Constructor. Do nothing.
-    VALIDATORS_API MonoCamera(::fwActivities::IValidator::Key key);
+    VALIDATORS_API MonoCamera(activities::IValidator::Key key);
 
     /// Destructor. Do nothing.
     VALIDATORS_API virtual ~MonoCamera();
 
     /**
      * @brief Checks if the current CameraSeries contains one and only one Camera and is calibrated.
-     * @see ::fwActivities::IValidator::validate
+     * @see activities::IValidator::validate
      */
     VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
     override;

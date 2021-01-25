@@ -25,12 +25,12 @@ Example:
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}"     type="::fwData::Image"     src="ref" />
-        <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref"/>
+        <object uid="${image}"     type="::sight::data::Image"     src="ref" />
+        <object uid="${histogram}" type="::sight::data::Histogram" src="ref"/>
+        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref"/>
 
-        <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-        <object uid="${transferFunctionOutput}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
+        <object uid="${transferFunctionOutput}" type="::sight::data::TransferFunction" src="deferred" />
 
         <service uid="tfEditor" type="::gui::view::SDefaultView">
             <gui>

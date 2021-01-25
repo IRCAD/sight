@@ -24,7 +24,7 @@
 
 #include "validators/config.hpp"
 
-#include <fwActivities/IObjectValidator.hpp>
+#include <activities/IObjectValidator.hpp>
 
 namespace validators
 {
@@ -34,21 +34,21 @@ namespace CameraSeries
  * @brief Defines a validator which checks if the current CameraSeries contains two calibrated cameras and an extrinsic
  *        matrix.
  */
-class VALIDATORS_CLASS_API StereoCamera : public ::fwActivities::IObjectValidator
+class VALIDATORS_CLASS_API StereoCamera : public activities::IObjectValidator
 {
 public:
-    fwCoreClassMacro(StereoCamera, ::fwActivities::IObjectValidator,
-                     ::fwActivities::validator::factory::New< StereoCamera >)
+    fwCoreClassMacro(StereoCamera, activities::IObjectValidator,
+                     activities::validator::factory::New< StereoCamera >)
 
     /// Constructor. Do nothing.
-    VALIDATORS_API StereoCamera(::fwActivities::IValidator::Key key);
+    VALIDATORS_API StereoCamera(activities::IValidator::Key key);
 
     /// Destructor. Do nothing.
     VALIDATORS_API virtual ~StereoCamera();
 
     /**
      * @brief Checks if the current CameraSeries contains two calibrated Cameras and an extrinsic matrix.
-     * @see ::fwActivities::IValidator::validate
+     * @see activities::IValidator::validate
      */
     VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
     override;

@@ -14,9 +14,9 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
-        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::sight::data::ActivitySeries" src="ref" />
+        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

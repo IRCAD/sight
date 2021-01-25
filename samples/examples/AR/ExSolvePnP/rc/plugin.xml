@@ -12,18 +12,18 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="camera" type="::arData::Camera" src="deferred" />
-            <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="camera" type="::sight::data::Camera" src="deferred" />
+            <object uid="frameTL" type="::sight::data::FrameTL" />
+            <object uid="videoImage" type="::sight::data::Image" />
 
-            <object uid="cube" type="::fwData::Mesh" />
+            <object uid="cube" type="::sight::data::Mesh" />
 
-            <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="2dPoints" type="::fwData::PointList" />
-            <object uid="2dPixels" type="::fwData::PointList" />
-            <object uid="3dPoints" type="::fwData::PointList" />
+            <object uid="2dPoints" type="::sight::data::PointList" />
+            <object uid="2dPixels" type="::sight::data::PointList" />
+            <object uid="3dPoints" type="::sight::data::PointList" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -295,7 +295,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->

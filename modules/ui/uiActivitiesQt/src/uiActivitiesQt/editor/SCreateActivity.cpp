@@ -22,6 +22,9 @@
 
 #include "uiActivitiesQt/editor/SCreateActivity.hpp"
 
+#include <activities/IBuilder.hpp>
+#include <activities/IValidator.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
@@ -33,9 +36,6 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/IBuilder.hpp>
-#include <fwActivities/IValidator.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -54,7 +54,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
 
 namespace uiActivitiesQt
 {
@@ -125,11 +125,11 @@ void SCreateActivity::starting()
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
     m_activitiesInfo = this->getEnabledActivities(infos);
 
     // Add the load button
-    ::fwActivities::registry::ActivityInfo infoLoad;
+    activities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
     infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
@@ -166,7 +166,7 @@ void SCreateActivity::starting()
     int i = 1;
     int j = 0;
 
-    for(const ::fwActivities::registry::ActivityInfo& info :  m_activitiesInfo)
+    for(const activities::registry::ActivityInfo& info :  m_activitiesInfo)
     {
         QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));

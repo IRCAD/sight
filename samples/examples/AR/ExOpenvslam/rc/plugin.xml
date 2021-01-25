@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -13,14 +12,14 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="Frame"        type="::fwData::Image" />
-            <object uid="Timeline"          type="::arData::FrameTL" />
-            <object uid="CamMatrixTimeline" type="::arData::MatrixTL" />
-            <object uid="CameraPoseMatrix"  type="::fwData::TransformationMatrix3D" />
+            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="Frame"        type="::sight::data::Image" />
+            <object uid="Timeline"          type="::sight::data::FrameTL" />
+            <object uid="CamMatrixTimeline" type="::sight::data::MatrixTL" />
+            <object uid="CameraPoseMatrix"  type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="openvslamPointCloud" type="::fwData::Mesh"     src="deferred" />
-            <object uid="camera"              type="::arData::Camera"   src="deferred" />
+            <object uid="openvslamPointCloud" type="::sight::data::Mesh"     src="deferred" />
+            <object uid="camera"              type="::sight::data::Camera"   src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -367,7 +366,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->

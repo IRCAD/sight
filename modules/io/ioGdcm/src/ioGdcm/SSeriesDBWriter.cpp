@@ -28,6 +28,7 @@
 #include <data/location/Folder.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
@@ -40,8 +41,6 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwIO/IWriter.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -148,7 +147,7 @@ void SSeriesDBWriter::updating()
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-        ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
 
         for(const data::Object::sptr& object : vector->getContainer())
         {
@@ -217,7 +216,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     for(const data::Object::sptr& object : vector->getContainer())
     {

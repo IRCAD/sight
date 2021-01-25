@@ -14,8 +14,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
-        <object uid="${LOADING_SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref"/>
+        <object uid="${LOADING_SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -42,7 +42,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::arData::CameraSeries" icon="flatIcon-0.1/icons/YellowCamera.svg" />
+                <icon type="::sight::data::CameraSeries" icon="flatIcon-0.1/icons/YellowCamera.svg" />
             </icons>
         </service>
 
@@ -63,7 +63,7 @@
             <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>
-                <type>::fwMedData::ActivitySeries</type>
+                <type>::sight::data::ActivitySeries</type>
             </filter>
         </service>
 

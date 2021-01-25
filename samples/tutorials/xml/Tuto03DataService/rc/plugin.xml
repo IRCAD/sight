@@ -10,8 +10,8 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- The root data object in tutoDataService is a ::fwData::Image. -->
-            <object uid="image" type="::fwData::Image" />
+            <!-- The root data object in tutoDataService is a ::sight::data::Image. -->
+            <object uid="image" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -105,7 +105,7 @@
                 This is a generic service that shows a dialog to display all the readers or writers available for its
                 associated data. By default it is configured to show readers. (Note: if there is only one reading
                 service, it is directly selected without prompting.)
-                Here, the only reader available to read a ::fwData::Image is ::ioVTK::ImageReaderService (see
+                Here, the only reader available to read a ::sight::data::Image is ::ioVTK::ImageReaderService (see
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->

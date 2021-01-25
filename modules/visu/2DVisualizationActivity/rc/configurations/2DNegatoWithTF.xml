@@ -10,9 +10,9 @@
         <param name="transferFunctionDeferred" />
     </parameters>
     <config>
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
-        <object uid="${transferFunctionDeferred}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
+        <object uid="${transferFunctionDeferred}" type="::sight::data::TransferFunction" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>

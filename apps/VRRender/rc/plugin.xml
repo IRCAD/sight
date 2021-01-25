@@ -19,7 +19,7 @@
         </parameters>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>SDBVRRender</id>
         <title>SDB</title>
         <desc>Series Selector</desc>

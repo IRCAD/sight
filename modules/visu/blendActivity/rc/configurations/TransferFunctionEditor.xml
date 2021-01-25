@@ -8,10 +8,10 @@
         <param name="transferFunction" />
     </parameters>
     <config>
-        <object uid="Histogram" type="::fwData::Histogram" />
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-        <object uid="${transferFunction}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="Histogram" type="::sight::data::Histogram" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
+        <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>

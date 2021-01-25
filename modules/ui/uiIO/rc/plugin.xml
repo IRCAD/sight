@@ -6,20 +6,20 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IDialogEditor</type>
         <service>::uiIO::editor::SIOSelector</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiIO::action::SSeriesDBMerger</service>
-        <object>::fwMedData::SeriesDB</object>
+        <object>::sight::data::SeriesDB</object>
         <desc>Merge SeriesDB</desc>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiIO::action::SExportWithSeriesDB</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
         <desc>Export the series using a SeriesDB</desc>
     </extension>
 

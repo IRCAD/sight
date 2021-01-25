@@ -22,12 +22,12 @@ Example:
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}"     type="::fwData::Image"     src="ref" />
-        <object uid="${transferFunction}" type="::fwData::TransferFunction" src="ref" />
-        <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
+        <object uid="${image}"     type="::sight::data::Image"     src="ref" />
+        <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="ref" />
+        <object uid="${histogram}" type="::sight::data::Histogram" src="ref"/>
 
         <object uid="viewport" type="::fwRenderQt::data::Viewport" />
-        <object uid="histogramPoint" type="::fwData::Point" />
+        <object uid="histogramPoint" type="::sight::data::Point" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

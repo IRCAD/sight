@@ -24,9 +24,9 @@
 
 #include "uiActivitiesQml/config.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <activities/IActivitySequencer.hpp>
 
-#include <fwActivities/IActivitySequencer.hpp>
+#include <data/ActivitySeries.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -87,7 +87,7 @@ namespace uiActivitiesQml
  * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
  */
 class UIACTIVITIESQML_CLASS_API SActivitySequencer : public ::fwQml::IQmlEditor,
-                                                     public ::fwActivities::IActivitySequencer
+                                                     public activities::IActivitySequencer
 {
 
 Q_OBJECT

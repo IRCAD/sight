@@ -14,8 +14,8 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-            <object uid="selections" type="::fwData::Vector" />
+            <object uid="seriesDB" type="::sight::data::SeriesDB" />
+            <object uid="selections" type="::sight::data::Vector" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -183,10 +183,10 @@
                 <in key="series" uid="selections" />
                 <parentView wid="previewView" />
                 <configs>
-                    <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries" >
+                    <config id="2DSimpleConfig2" type="::sight::data::ImageSeries" >
                         <extract path="@image" pattern="imageID" />
                     </config>
-                    <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
+                    <config id="3DSimpleConfig2" type="::sight::data::ModelSeries" />
                 </configs>
             </service>
 

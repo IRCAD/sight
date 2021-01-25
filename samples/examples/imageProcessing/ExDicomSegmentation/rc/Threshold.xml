@@ -10,13 +10,13 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${imageSeries}"  type="::fwMedData::ImageSeries" src="ref" />
-        <object uid="imageSeriesMask" type="::fwMedData::ImageSeries" src="deferred" />
-        <object uid="inputImage" type="::fwData::Image" src="deferred" />
-        <object uid="outputImage" type="::fwData::Image" src="deferred" />
-        <object uid="landmarks1" type="::fwData::Landmarks" />
-        <object uid="landmarks2" type="::fwData::Landmarks" />
+        <object uid="${seriesDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${imageSeries}"  type="::sight::data::ImageSeries" src="ref" />
+        <object uid="imageSeriesMask" type="::sight::data::ImageSeries" src="deferred" />
+        <object uid="inputImage" type="::sight::data::Image" src="deferred" />
+        <object uid="outputImage" type="::sight::data::Image" src="deferred" />
+        <object uid="landmarks1" type="::sight::data::Landmarks" />
+        <object uid="landmarks2" type="::sight::data::Landmarks" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

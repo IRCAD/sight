@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     atoms
     fwAtomsPatch
-    fwActivities
+    activities
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET )

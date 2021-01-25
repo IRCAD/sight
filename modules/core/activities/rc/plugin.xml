@@ -7,19 +7,19 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::activities::action::SActivityLauncher</service>
-        <object>::fwData::Vector</object>
+        <object>::sight::data::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::activities::action::SCreateActivity</service>
-        <object>::fwData::Vector</object>
+        <object>::sight::data::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::activities::SSeriesSignal</service>
-        <object>::fwMedData::SeriesDB</object>
+        <object>::sight::data::SeriesDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -28,7 +28,7 @@
     </extension>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::fwActivities::registry::Activities" schema="fwActivities-0.1/activities.xsd"/>
+    <extension-point id="::activities::registry::Activities" schema="activities-0.1/activities.xsd"/>
 
 
 

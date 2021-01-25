@@ -22,6 +22,8 @@
 
 #include "uiMedDataQt/action/SExportSeries.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
@@ -31,12 +33,9 @@
 
 #include <data/ActivitySeries.hpp>
 #include <data/SeriesDB.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -121,11 +120,11 @@ void SExportSeries::updating()
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
-        ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
-        std::string id = activitySeries->getActivityConfigId();
+        activities::registry::Activities::sptr registry = activities::registry::Activities::getDefault();
+        std::string id                                  = activitySeries->getActivityConfigId();
         SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-        ::fwActivities::registry::ActivityInfo activityInfo;
+        activities::registry::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);
 
         description = activitySeries->getDescription();
@@ -150,7 +149,7 @@ void SExportSeries::updating()
         series->setPerformingPhysiciansName(physicians);
         series->setDescription(description);
 
-        ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
         seriesDBHelper.add(series);
         seriesDBHelper.notify();
         this->setIsExecutable(false);

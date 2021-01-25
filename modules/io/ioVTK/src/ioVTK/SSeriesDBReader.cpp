@@ -29,6 +29,7 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -37,8 +38,6 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -194,7 +193,7 @@ void SSeriesDBReader::updating()
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        ::fwMedDataTools::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
+        data::tools::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
         sdbHelper.clear();
         // Notify removal.
         sdbHelper.notify();

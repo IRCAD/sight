@@ -22,13 +22,13 @@
 
 #include "uiActivitiesQml/SActivityView.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -106,8 +106,8 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
     if (isValid)
     {
-        ::fwActivities::registry::ActivityInfo info;
-        info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        activities::registry::ActivityInfo info;
+        info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "

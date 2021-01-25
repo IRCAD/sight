@@ -22,13 +22,13 @@
 
 #include "fwAtomsFilter/functions.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <atoms/Object.hpp>
 #include <atoms/Object.hxx>
 #include <atoms/String.hpp>
 
 #include <data/registry/detail.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
@@ -44,7 +44,7 @@ bool isSeriesKnown(const SPTR(atoms::Object)& series)
 {
     bool isKnown = false;
 
-    namespace reg = ::fwActivities::registry;
+    namespace reg = activities::registry;
     reg::Activities::sptr registry                = reg::Activities::getDefault();
     const std::vector< reg::ActivityInfo >& infos = registry->getInfos();
 

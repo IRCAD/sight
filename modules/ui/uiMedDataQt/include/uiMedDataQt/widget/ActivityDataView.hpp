@@ -24,10 +24,10 @@
 
 #include "uiMedDataQt/config.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <QEvent>
 #include <QPointer>
@@ -110,7 +110,7 @@ public:
      *
      * @param _info the struct containing the activity configuration.
      */
-    UIMEDDATAQT_API void fillInformation(const ::fwActivities::registry::ActivityInfo& _info);
+    UIMEDDATAQT_API void fillInformation(const activities::registry::ActivityInfo& _info);
 
     /**
      * @brief Creates all tabs from an activity series.
@@ -218,7 +218,7 @@ private:
     void addObjectItem(size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
-    ::fwActivities::registry::ActivityInfo m_activityInfo;
+    activities::registry::ActivityInfo m_activityInfo;
 
     /// Defines the IO selector config.
     std::string m_ioSelectorSrvConfig;

@@ -7,14 +7,14 @@
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPreview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
         <icon>media-0.1/icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="DicomFiltering">
         </appConfig>
     </extension>

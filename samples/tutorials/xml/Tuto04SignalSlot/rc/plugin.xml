@@ -9,8 +9,8 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- The main data object is ::fwData::Mesh. -->
-            <object uid="mesh" type="::fwData::Mesh" />
+            <!-- The main data object is ::sight::data::Mesh. -->
+            <object uid="mesh" type="::sight::data::Mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

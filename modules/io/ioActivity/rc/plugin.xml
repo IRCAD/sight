@@ -4,15 +4,15 @@
     <requirement id="activities" />
 
     <!-- Activity used to export an image series. -->
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
         <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
-            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="series" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
             <parameters>
                 <parameter replace="selection" by="@values.series" />
@@ -21,15 +21,15 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
         <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
-            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="series" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
             <parameters>
                 <parameter replace="selection" by="@values.series" />
@@ -38,15 +38,15 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>DicomSegmentationSurfaceExport</id>
         <title>Dicom Segmentation Surface Export</title>
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>
         <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="ExportDicomSelection">
             <parameters>
                 <parameter replace="model" by="@values.modelSeries" />
@@ -81,7 +81,7 @@
             <param name="model" />
         </parameters>
         <config>
-            <object uid="${model}" type="::fwMedData::ModelSeries" src="ref" />
+            <object uid="${model}" type="::sight::data::ModelSeries" src="ref" />
 
             <service uid="exportSelection" type="::uiIO::editor::SIOSelector">
                 <inout key="data" uid="${model}" />

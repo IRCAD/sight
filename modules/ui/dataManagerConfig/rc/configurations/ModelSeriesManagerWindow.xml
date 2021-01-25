@@ -25,7 +25,7 @@ With:
     <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
     <config>
 
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
 
         <!-- MAIN FRAME -->
         <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">

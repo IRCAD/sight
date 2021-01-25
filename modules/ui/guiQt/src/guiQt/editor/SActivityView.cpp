@@ -147,8 +147,8 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
         {
             m_configManager->stopAndDestroy();
         }
-        ::fwActivities::registry::ActivityInfo info;
-        info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        activities::registry::ActivityInfo info;
+        info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);

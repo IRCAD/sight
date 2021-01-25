@@ -22,12 +22,12 @@
 
 #include "validators/CameraSeries/StereoCamera.hpp"
 
+#include <activities/validator/registry/macros.hpp>
+
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwActivities/validator/registry/macros.hpp>
 
 namespace validators
 {
@@ -39,7 +39,7 @@ fwActivitiesValidatorRegisterMacro(::validators::CameraSeries::StereoCamera,
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(::fwActivities::IValidator::Key key)
+StereoCamera::StereoCamera(activities::IValidator::Key key)
 {
 
 }
@@ -53,7 +53,7 @@ StereoCamera::~StereoCamera()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
+activities::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

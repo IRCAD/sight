@@ -1,5 +1,0 @@
-set( NAME fwMedDataToolsTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core dataTools utestData )
-set( REQUIREMENTS  )

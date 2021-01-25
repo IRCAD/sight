@@ -10,12 +10,12 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="previewSeriesDB" type="::fwMedData::SeriesDB" />
-        <object uid="previewSelections" type="::fwData::Vector" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="previewSeriesDB" type="::sight::data::SeriesDB" />
+        <object uid="previewSelections" type="::sight::data::Vector" />
 
-        <object uid="localSeriesDB" type="::fwMedData::SeriesDB" />
-        <object uid="localSelections" type="::fwData::Vector" />
+        <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
+        <object uid="localSelections" type="::sight::data::Vector" />
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
@@ -126,7 +126,7 @@
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
-                <config id="2DDicomWebPreviewConfig" type="::fwMedData::DicomSeries" />
+                <config id="2DDicomWebPreviewConfig" type="::sight::data::DicomSeries" />
             </configs>
         </service>
 
@@ -140,7 +140,7 @@
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>

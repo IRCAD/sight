@@ -12,20 +12,20 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="frameTLVideo" type="::arData::FrameTL" />
-            <object uid="frameTLDepth" type="::arData::FrameTL" />
-            <object uid="imageDepth" type="::fwData::Image" />
-            <object uid="imageVideo" type="::fwData::Image" />
-            <object uid="pointcloud" type="::fwData::Mesh" src="deferred" />
-            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
-            <object uid="RGBCamera" type="::arData::Camera" src="deferred" />
-            <object uid="DCamera" type="::arData::Camera" src="deferred" />
-            <object uid="identity" type="::fwData::TransformationMatrix3D" />
-            <object uid="3dCameraTrf" type="::fwData::TransformationMatrix3D" />
-            <object uid="depth_to_color" type="::fwData::TransformationMatrix3D" src="deferred" />
+            <object uid="frameTLVideo" type="::sight::data::FrameTL" />
+            <object uid="frameTLDepth" type="::sight::data::FrameTL" />
+            <object uid="imageDepth" type="::sight::data::Image" />
+            <object uid="imageVideo" type="::sight::data::Image" />
+            <object uid="pointcloud" type="::sight::data::Mesh" src="deferred" />
+            <object uid="RGBDCameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="RGBCamera" type="::sight::data::Camera" src="deferred" />
+            <object uid="DCamera" type="::sight::data::Camera" src="deferred" />
+            <object uid="identity" type="::sight::data::TransformationMatrix3D" />
+            <object uid="3dCameraTrf" type="::sight::data::TransformationMatrix3D" />
+            <object uid="depth_to_color" type="::sight::data::TransformationMatrix3D" src="deferred" />
 
             <!-- Transfer function to visualize depth images -->
-            <object uid="tfDepth" type="::fwData::TransferFunction" >
+            <object uid="tfDepth" type="::sight::data::TransferFunction" >
                 <colors>
                     <step color="#000000ff" value="0" />
                     <step color="#0000ffff" value="1" />
@@ -499,7 +499,7 @@
                 </inout>
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
              <service uid="extractCameraSrv" type="::ctrlCamp::SExtractObj" >
                  <inout key="source" uid="RGBDCameraSeries" autoConnect="yes" >
                      <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->

@@ -8,12 +8,12 @@
     </parameters>
     <config>
 
-        <object type="::fwMedData::SeriesDB" uid="${SERIESDB}" src="ref" />
-        <object type="::fwMedData::SeriesDB" uid="readingSeriesDB" />
-        <object type="::fwMedData::SeriesDB" uid="loadedSeriesDB" />
-        <object type="::fwMedData::SeriesDB" uid="filteredSeriesDB" />
-        <object type="::fwData::Vector" uid="readingSelection" />
-        <object type="::fwData::Vector" uid="loadedSelection" />
+        <object type="::sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="::sight::data::SeriesDB" uid="readingSeriesDB" />
+        <object type="::sight::data::SeriesDB" uid="loadedSeriesDB" />
+        <object type="::sight::data::SeriesDB" uid="filteredSeriesDB" />
+        <object type="::sight::data::Vector" uid="readingSelection" />
+        <object type="::sight::data::Vector" uid="loadedSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -132,7 +132,7 @@
             <in key="series" uid="readingSelection" />
             <parentView wid="readingPreview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
             </configs>
         </service>
 
@@ -163,7 +163,7 @@
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>

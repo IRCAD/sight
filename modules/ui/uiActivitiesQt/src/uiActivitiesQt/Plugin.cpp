@@ -22,9 +22,9 @@
 
 #include "uiActivitiesQt/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <activities/registry/Activities.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace uiActivitiesQt
 {

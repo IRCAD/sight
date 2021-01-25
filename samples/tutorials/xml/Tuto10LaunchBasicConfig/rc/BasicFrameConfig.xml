@@ -15,7 +15,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${imageUid}" type="::sight::data::Image" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

@@ -7,17 +7,17 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="frameTLColor" type="::arData::FrameTL" />
-        <object uid="depthTL" type="::arData::FrameTL" />
-        <object uid="exportTLColor" type="::arData::FrameTL" />
-        <object uid="exportTLDepth" type="::arData::FrameTL" />
-        <object uid="exportTLIR" type="::arData::FrameTL" />
-        <object uid="imageDepth" type="::fwData::Image" />
-        <object uid="imageVideo" type="::fwData::Image" />
-        <object uid="snapshotDepth" type="::fwData::Image" />
-        <object uid="snapshotColor" type="::fwData::Image" />
-        <object uid="snapshotIR" type="::fwData::Image" />
-        <object uid="tfDepth" type="::fwData::TransferFunction">
+        <object uid="frameTLColor" type="::sight::data::FrameTL" />
+        <object uid="depthTL" type="::sight::data::FrameTL" />
+        <object uid="exportTLColor" type="::sight::data::FrameTL" />
+        <object uid="exportTLDepth" type="::sight::data::FrameTL" />
+        <object uid="exportTLIR" type="::sight::data::FrameTL" />
+        <object uid="imageDepth" type="::sight::data::Image" />
+        <object uid="imageVideo" type="::sight::data::Image" />
+        <object uid="snapshotDepth" type="::sight::data::Image" />
+        <object uid="snapshotColor" type="::sight::data::Image" />
+        <object uid="snapshotIR" type="::sight::data::Image" />
+        <object uid="tfDepth" type="::sight::data::TransferFunction">
             <colors>
                 <step color="#000000ff" value="0" />
                 <step color="#ff0000ff" value="1" />

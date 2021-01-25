@@ -35,14 +35,13 @@
 
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -349,7 +348,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 void SSelector::onRemoveSeries(QVector< data::Series::sptr > _selection)
 {
     const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Remove duplicated series
     std::set< data::Series::sptr > seriesSet;

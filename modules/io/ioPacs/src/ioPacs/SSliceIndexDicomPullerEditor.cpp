@@ -34,6 +34,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
@@ -41,8 +42,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwPacsIO/exceptions/Base.hpp>
 
@@ -282,7 +281,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
     }
 
     // Clear temporary seriesDB
-    ::fwMedDataTools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
+    data::tools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
     sDBTempohelper.clear();
 
     // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)

@@ -12,26 +12,26 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="camera" type="::arData::Camera" />
-            <object uid="frameTL" type="::arData::FrameTL" >
+            <object uid="camera" type="::sight::data::Camera" />
+            <object uid="frameTL" type="::sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="frameTL1" type="::arData::FrameTL" >
+            <object uid="frameTL1" type="::sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="frameTL2" type="::arData::FrameTL" >
+            <object uid="frameTL2" type="::sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="frameTL3" type="::arData::FrameTL" >
+            <object uid="frameTL3" type="::sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="frameTL4" type="::arData::FrameTL" >
+            <object uid="frameTL4" type="::sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="videoImage1" type="::fwData::Image" />
-            <object uid="videoImage2" type="::fwData::Image" />
-            <object uid="videoImage3" type="::fwData::Image" />
-            <object uid="videoImage4" type="::fwData::Image" />
+            <object uid="videoImage1" type="::sight::data::Image" />
+            <object uid="videoImage2" type="::sight::data::Image" />
+            <object uid="videoImage3" type="::sight::data::Image" />
+            <object uid="videoImage4" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

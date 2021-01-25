@@ -22,6 +22,8 @@
 
 #include "uiMedDataQt/editor/SActivityWizard.hpp"
 
+#include <activities/IValidator.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
@@ -38,14 +40,11 @@
 #include <data/Patient.hpp>
 #include <data/Series.hpp>
 #include <data/Study.hpp>
-
-#include <fwActivities/IValidator.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -240,8 +239,8 @@ void SActivityWizard::updating()
 void SActivityWizard::createActivity(std::string activityID)
 {
     m_mode = Mode::CREATE;
-    ::fwActivities::registry::ActivityInfo info;
-    info = ::fwActivities::registry::Activities::getDefault()->getInfo(activityID);
+    activities::registry::ActivityInfo info;
+    info = activities::registry::Activities::getDefault()->getInfo(activityID);
 
     // load activity module
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
@@ -299,7 +298,7 @@ void SActivityWizard::createActivity(std::string activityID)
         data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
         SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-        ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
+        data::tools::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
         helper.notify();
         m_sigActivityCreated->asyncEmit(m_actSeries);
@@ -310,8 +309,8 @@ void SActivityWizard::createActivity(std::string activityID)
 
 void SActivityWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
 {
-    ::fwActivities::registry::ActivityInfo info;
-    info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    activities::registry::ActivityInfo info;
+    info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId,
@@ -388,8 +387,8 @@ void SActivityWizard::onReset()
 {
     if (m_actSeries)
     {
-        ::fwActivities::registry::ActivityInfo info;
-        info = ::fwActivities::registry::Activities::getDefault()->getInfo(m_actSeries->getActivityConfigId());
+        activities::registry::ActivityInfo info;
+        info = activities::registry::Activities::getDefault()->getInfo(m_actSeries->getActivityConfigId());
         m_activityDataView->fillInformation(info);
 
         if (m_activityDataView->count() > 1)
@@ -476,8 +475,8 @@ void SActivityWizard::onBuildActivity()
                 if (m_mode == Mode::CREATE)
                 {
                     // Add the new activity series in seriesDB
-                    ::fwActivities::registry::ActivityInfo info;
-                    info = ::fwActivities::registry::Activities::getDefault()->getInfo(
+                    activities::registry::ActivityInfo info;
+                    info = activities::registry::Activities::getDefault()->getInfo(
                         m_actSeries->getActivityConfigId());
 
                     std::string description = ::fwGui::dialog::InputDialog::showInputDialog(
@@ -492,7 +491,7 @@ void SActivityWizard::onBuildActivity()
                     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
                     SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-                    ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
+                    data::tools::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();
                     m_sigActivityCreated->asyncEmit(m_actSeries);

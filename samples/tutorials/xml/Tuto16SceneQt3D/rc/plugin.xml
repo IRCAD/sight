@@ -29,8 +29,8 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="mesh" type="::fwData::Mesh" />
-            <object uid="material" type="::fwData::Material" />
+            <object uid="mesh" type="::sight::data::Mesh" />
+            <object uid="material" type="::sight::data::Material" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

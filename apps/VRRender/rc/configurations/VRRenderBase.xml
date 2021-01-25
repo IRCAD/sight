@@ -6,7 +6,7 @@
         <param name="appVersion" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="seriesDB" type="::sight::data::SeriesDB" />
 
         <service uid="action_open" type="::uiIO::action::SSeriesDBMerger">
             <inout key="seriesDB" uid="seriesDB" />

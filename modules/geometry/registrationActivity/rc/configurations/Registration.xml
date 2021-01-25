@@ -8,25 +8,25 @@
         <param name="transformUid" />
     </parameters>
     <config>
-        <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="Histogram" type="::fwData::Histogram" />
+        <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${transformUid}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="Histogram" type="::sight::data::Histogram" />
 
         <!-- Transfer Functions -->
-        <object uid="referenceTFComposite" type="::fwData::Composite" />
-        <object uid="targetTransferFunction" type="::fwData::TransferFunction">
+        <object uid="referenceTFComposite" type="::sight::data::Composite" />
+        <object uid="targetTransferFunction" type="::sight::data::TransferFunction">
             <colors isClamped="false">
                 <step color="#00000000" value="-1024" />
                 <step color="#ffffffff" value="1024" />
             </colors>
         </object>
-        <object uid="referenceTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="referenceTransferFunction" type="::sight::data::TransferFunction" src="deferred" />
 
         <!-- Matrices -->
-        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::sight::data::TransformationMatrix3D" />
 
-        <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
+        <object uid="flipSagittalMatrix" type="::sight::data::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
                     1      0      0     0
@@ -37,7 +37,7 @@
             </matrix>
         </object>
 
-        <object uid="flipFrontalMatrix" type="::fwData::TransformationMatrix3D">
+        <object uid="flipFrontalMatrix" type="::sight::data::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
                    -1      0      0     0
@@ -48,7 +48,7 @@
             </matrix>
         </object>
 
-        <object uid="flipAxialMatrix" type="::fwData::TransformationMatrix3D">
+        <object uid="flipAxialMatrix" type="::sight::data::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
                     -1      0     0     0
@@ -59,9 +59,9 @@
             </matrix>
         </object>
 
-        <object uid="centerTransformTarget" type="::fwData::TransformationMatrix3D" />
-        <object uid="centerTransformReference" type="::fwData::TransformationMatrix3D" />
-        <object uid="flipTransform" type="::fwData::TransformationMatrix3D" />
+        <object uid="centerTransformTarget" type="::sight::data::TransformationMatrix3D" />
+        <object uid="centerTransformReference" type="::sight::data::TransformationMatrix3D" />
+        <object uid="flipTransform" type="::sight::data::TransformationMatrix3D" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>

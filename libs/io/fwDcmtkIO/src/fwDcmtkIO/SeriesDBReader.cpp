@@ -33,6 +33,7 @@
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
@@ -40,8 +41,6 @@
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -140,7 +139,7 @@ void SeriesDBReader::readFromDicomSeriesDB(data::SeriesDB::csptr dicomSeriesDB,
 void SeriesDBReader::readDicomSeries()
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Get filenames
     FilenameContainerType filenames = this->getFilenames();
@@ -484,7 +483,7 @@ void SeriesDBReader::convertDicomSeries(data::DicomSeries::csptr dicomSeries,
                                         ::fwServices::IService::sptr notifier)
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
     data::Series::sptr result = data::Series::sptr();
 
     data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();

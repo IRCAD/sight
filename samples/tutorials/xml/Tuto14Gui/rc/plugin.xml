@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="text" type="::fwData::String" >
+        <object uid="text" type="::sight::data::String" >
             <value>
             <![CDATA[
                 This is a STextStatus

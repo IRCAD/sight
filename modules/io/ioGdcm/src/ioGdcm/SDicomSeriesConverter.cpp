@@ -26,6 +26,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
+#include <data/tools/helper/SeriesDB.hpp>
+
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
 #include <fwGui/dialog/LoggerDialog.hpp>
@@ -34,8 +36,6 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -131,12 +131,12 @@ void SDicomSeriesConverter::updating()
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                ::fwMedDataTools::helper::SeriesDB sDBhelper(dummy);
+                data::tools::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
             else
             {
-                ::fwMedDataTools::helper::SeriesDB sDBhelper(destinationSeriesDB);
+                data::tools::helper::SeriesDB sDBhelper(destinationSeriesDB);
                 sDBhelper.merge(dummy);
                 sDBhelper.notify();
             }

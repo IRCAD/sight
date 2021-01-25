@@ -7,14 +7,14 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioAtoms::SReader</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioAtoms::SWriter</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
         <desc>Atoms writer</desc>
     </extension>
 

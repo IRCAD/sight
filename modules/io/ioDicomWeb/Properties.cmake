@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwNetworkIO
     data
     fwDataTools
-    fwMedDataTools
     fwServices
     fwIO
     fwPreferences

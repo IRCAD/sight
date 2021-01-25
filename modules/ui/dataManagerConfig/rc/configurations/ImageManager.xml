@@ -22,8 +22,8 @@ Example:
     <desc>Displays sliders to manage the image (slice index, windowing)</desc>
     <config>
 
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${transferFunction}" type="::fwData::TransferFunction" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="ref" />
 
         <service uid="imageManagerView" type="::gui::view::SDefaultView">
             <gui>

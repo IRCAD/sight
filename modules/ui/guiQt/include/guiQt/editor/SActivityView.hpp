@@ -24,11 +24,11 @@
 
 #include "guiQt/config.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <core/tools/Failed.hpp>
 
 #include <data/ActivitySeries.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
 

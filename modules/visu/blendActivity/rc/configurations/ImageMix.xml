@@ -10,11 +10,11 @@
         <param name="patient_name" default="" />
     </parameters>
     <config>
-        <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${backgroundImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${frontImageUid}" type="::sight::data::Image" src="ref" />
 
-        <object uid="${tfBackgroundImage}" type="::fwData::TransferFunction" src="deferred" />
-        <object uid="${tfFrontImage}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${tfBackgroundImage}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${tfFrontImage}" type="::sight::data::TransferFunction" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>

@@ -10,10 +10,10 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'myMesh' -->
-            <object uid="myMesh" type="::fwData::Mesh" />
+            <object uid="myMesh" type="::sight::data::Mesh" />
 
             <!-- Image object associated to the key 'myImage' -->
-            <object uid="myImage" type="::fwData::Image" />
+            <object uid="myImage" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

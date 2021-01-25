@@ -12,10 +12,10 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageId1}" src="ref" type="::fwData::Image" />
-        <object uid="${imageId2}" src="ref" type="::fwData::Image" />
-        <object uid="${pointListId1}" src="ref" type="::fwData::PointList" />
-        <object uid="${pointListId2}" src="ref" type="::fwData::PointList" />
+        <object uid="${imageId1}" src="ref" type="::sight::data::Image" />
+        <object uid="${imageId2}" src="ref" type="::sight::data::Image" />
+        <object uid="${pointListId1}" src="ref" type="::sight::data::PointList" />
+        <object uid="${pointListId2}" src="ref" type="::sight::data::PointList" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

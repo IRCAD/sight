@@ -31,13 +31,12 @@
 #include <data/Exception.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 #include <fwDataTools/helper/Field.hpp>
 #include <fwDataTools/helper/Vector.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -171,7 +170,7 @@ void SManage::addOrSwap()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if (iter == seriesDB->end())
         {
-            ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+            data::tools::helper::SeriesDB helper( seriesDB );
             helper.add(series);
             helper.notify();
         }
@@ -253,7 +252,7 @@ void SManage::remove()
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
-        ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+        data::tools::helper::SeriesDB helper( seriesDB );
         helper.remove(series);
         helper.notify();
     }
@@ -314,7 +313,7 @@ void SManage::removeIfPresent()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if (iter != seriesDB->end())
         {
-            ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+            data::tools::helper::SeriesDB helper( seriesDB );
             helper.remove(series);
             helper.notify();
         }
@@ -365,7 +364,7 @@ void SManage::clear()
     }
     else if (seriesDB)
     {
-        ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+        data::tools::helper::SeriesDB helper( seriesDB );
         helper.clear();
         helper.notify();
     }
@@ -418,7 +417,7 @@ void SManage::internalAdd(bool _copy)
         data::Series::sptr series = data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-        ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+        data::tools::helper::SeriesDB helper( seriesDB );
         helper.add(series);
         helper.notify();
     }

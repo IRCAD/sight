@@ -24,8 +24,8 @@
 
 #include "activities/config.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/registry/ActivityMsg.hpp>
+#include <activities/registry/Activities.hpp>
+#include <activities/registry/ActivityMsg.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -135,7 +135,7 @@ private:
      */
     void launchActivity(data::ActivitySeries::sptr activitySeries);
 
-    typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

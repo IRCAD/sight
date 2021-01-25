@@ -27,20 +27,20 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${volumeTF}" type="::fwData::TransferFunction" src="ref" />
-        <object uid="${extrudedModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="${modelSeries}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${volumeTF}" type="::sight::data::TransferFunction" src="ref" />
+        <object uid="${extrudedModelSeries}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
 
-        <object uid="extrudedImage" type="::fwData::Image" />
-        <object uid="clippingMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="background" type="::fwData::Image" />
-        <object uid="border" type="::fwData::Color" >
+        <object uid="extrudedImage" type="::sight::data::Image" />
+        <object uid="clippingMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="background" type="::sight::data::Image" />
+        <object uid="border" type="::sight::data::Color" >
             <value>#2E3034</value>
         </object>
-        <object uid="snapshot" type="::fwData::Image" />
+        <object uid="snapshot" type="::sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

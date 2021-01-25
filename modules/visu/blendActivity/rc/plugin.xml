@@ -8,20 +8,20 @@
     <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>Blend</id>
         <title>Blend</title>
         <desc>Activity to superimpose two images.</desc>
         <icon>media-0.1/icons/icon-blend.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
+            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
-                <validator>::fwActivities::validator::ImageProperties</validator>
+                <validator>::activities::validator::ImageProperties</validator>
                 <key>FrontImage</key>
                 <key>BackImage</key>
             </requirement>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="Blend">
             <parameters>
                 <parameter replace="frontImageUid"      by="@values.imageSeries.values.FrontImage.image" />

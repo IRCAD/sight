@@ -22,12 +22,12 @@
 
 #include "validators/ModelSeries/ContainOneSkin.hpp"
 
+#include <activities/validator/registry/macros.hpp>
+
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/validator/registry/macros.hpp>
 
 namespace validators
 {
@@ -39,7 +39,7 @@ fwActivitiesValidatorRegisterMacro(::validators::ModelSeries::ContainOneSkin,
 
 //-----------------------------------------------------------------------------
 
-ContainOneSkin::ContainOneSkin(::fwActivities::IValidator::Key key)
+ContainOneSkin::ContainOneSkin(activities::IValidator::Key key)
 {
 
 }
@@ -53,7 +53,7 @@ ContainOneSkin::~ContainOneSkin()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData ) const
+activities::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

@@ -26,6 +26,7 @@
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
@@ -35,8 +36,6 @@
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -131,7 +130,7 @@ void SDicomSeriesAnonymizer::anonymize()
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>("seriesDB");
     data::Vector::sptr vector     = this->getInOut< data::Vector >("selectedSeries");
 
-    ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
+    data::tools::helper::SeriesDB sDBhelper(seriesDB);
 
     ::fwGdcmIO::helper::DicomSeriesAnonymizer::sptr anonymizer =
         ::fwGdcmIO::helper::DicomSeriesAnonymizer::New();

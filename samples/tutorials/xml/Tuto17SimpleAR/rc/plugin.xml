@@ -28,23 +28,23 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Series of camera calibration -->
-            <object uid="cameraSeries" type="::arData::CameraSeries" />
+            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
             <!-- Camera calibration, deferred because it is extracted from the series -->
-            <object uid="camera" type="::arData::Camera" src="deferred" />
+            <object uid="camera" type="::sight::data::Camera" src="deferred" />
             <!-- Frame timeline used to buffer the output of the video grabber -->
-            <object uid="frameTL" type="::arData::FrameTL" />
+            <object uid="frameTL" type="::sight::data::FrameTL" />
             <!-- Video frame that is used for the current iteration -->
-            <object uid="sourceFrame" type="::fwData::Image" />
+            <object uid="sourceFrame" type="::sight::data::Image" />
             <!-- Map containing all detected markers in the current frame -->
-            <object uid="markerMap" type="::arData::MarkerMap" />
+            <object uid="markerMap" type="::sight::data::MarkerMap" />
             <!-- Marker matrix in the camera world -->
-            <object uid="markerToCamera" type="::fwData::TransformationMatrix3D" />
+            <object uid="markerToCamera" type="::sight::data::TransformationMatrix3D" />
             <!-- Camera matrix in the marker world -->
-            <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D" />
+            <object uid="cameraToMarker" type="::sight::data::TransformationMatrix3D" />
             <!-- Cube superimposed on the video at the marker location -->
-            <object uid="cubeMesh" type="::fwData::Mesh" />
-            <object uid="undistortMap" type="::fwData::Image" />
-            <object uid="distortMap" type="::fwData::Image" />
+            <object uid="cubeMesh" type="::sight::data::Mesh" />
+            <object uid="undistortMap" type="::sight::data::Image" />
+            <object uid="distortMap" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -328,7 +328,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract the first ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract the first ::sight::data::Camera from the ::sight::data::CameraSeries -->
             <service uid="extractCameraSrv" type="::ctrlCamp::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->

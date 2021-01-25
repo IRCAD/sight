@@ -28,6 +28,8 @@
 #include "fwGdcmIO/helper/SOPClass.hpp"
 #include "fwGdcmIO/reader/Series.hpp"
 
+#include <data/tools/helper/SeriesDB.hpp>
+
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwDicomIOFilter/factory/new.hpp>
@@ -37,8 +39,6 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -181,7 +181,7 @@ void SeriesDB::readDicomSeries()
     }
 
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Push Dicom Series
     if(!m_job->cancelRequested())
@@ -385,7 +385,7 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
                 if(series)
                 {
                     // Add the series to the DB
-                    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+                    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
                     seriesDBHelper.add(series);
 
                     if(notifier)

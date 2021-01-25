@@ -6,7 +6,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::memory::SDumpPolicy</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
     </extension>
 
 </plugin>

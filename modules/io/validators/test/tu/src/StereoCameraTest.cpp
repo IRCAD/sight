@@ -22,13 +22,13 @@
 
 #include "StereoCameraTest.hpp"
 
+#include <activities/IObjectValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwActivities/IObjectValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::StereoCameraTest );
@@ -56,14 +56,14 @@ void StereoCameraTest::tearDown()
 
 void StereoCameraTest::testValidator()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::CameraSeries::StereoCamera");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::CameraSeries::StereoCamera");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::New();
     data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();

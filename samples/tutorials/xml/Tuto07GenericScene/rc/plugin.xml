@@ -16,10 +16,10 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="image" type="::fwData::Image" />
-            <object uid="mesh" type="::fwData::Mesh" />
-            <object uid="texture" type="::fwData::Image" />
-            <object uid="snapshot" type="::fwData::Image" />
+            <object uid="image" type="::sight::data::Image" />
+            <object uid="mesh" type="::sight::data::Mesh" />
+            <object uid="texture" type="::sight::data::Image" />
+            <object uid="snapshot" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

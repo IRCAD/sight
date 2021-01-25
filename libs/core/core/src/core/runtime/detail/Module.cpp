@@ -270,7 +270,7 @@ const std::string& Module::getIdentifier() const
 
 const std::string Module::getLibraryName() const
 {
-    return m_library->getName();
+    return m_library ? m_library->getName() : "";
 }
 
 //------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ void Module::loadLibraries()
     m_loadingModule = shared_from_this();
 
     // Loads the library
-    if(m_library->isLoaded() == false)
+    if(m_library && m_library->isLoaded() == false)
     {
         try
         {

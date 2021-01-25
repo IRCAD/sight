@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="seriesDB" type="::sight::data::SeriesDB" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

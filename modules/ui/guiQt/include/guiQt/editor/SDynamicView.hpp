@@ -24,6 +24,9 @@
 
 #include "guiQt/config.hpp"
 
+#include <activities/registry/Activities.hpp>
+#include <activities/registry/ActivityMsg.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
@@ -31,9 +34,6 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/ActivitySeries.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
 
@@ -76,7 +76,7 @@ namespace editor
  *   series.
  * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b createTab( ::fwActivities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
+ * - \b createTab( activities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
  *
  * @section XML XML Configuration
@@ -190,7 +190,7 @@ private:
     virtual void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(::fwActivities::registry::ActivityMsg info);
+    void createTab(activities::registry::ActivityMsg info);
 
     /// Create the main activitySeries and launch the activity
     virtual void buildMainActivity();

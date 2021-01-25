@@ -7,8 +7,8 @@
     </parameters>
     <config>
 
-        <object type="::fwMedData::SeriesDB" uid="${SERIESDB}" src="ref" />
-        <object type="::fwData::Vector" uid="dicomSelection" />
+        <object type="::sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="::sight::data::Vector" uid="dicomSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -49,7 +49,7 @@
             <in key="series" uid="dicomSelection" />
             <parentView wid="dicomPreview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
             </configs>
         </service>
 

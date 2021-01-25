@@ -9,18 +9,18 @@
         <param name="referenceTransferFunction" />
     </parameters>
     <config>
-        <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
+        <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${transformUid}" type="::sight::data::TransformationMatrix3D" src="ref" />
 
-        <object uid="${targetTransferFunction}" type="::fwData::TransferFunction" src="ref" />
-        <object uid="${referenceTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
+        <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <object uid="referencePL" type="::fwData::PointList" />
-        <object uid="targetPL" type="::fwData::PointList" />
+        <object uid="referencePL" type="::sight::data::PointList" />
+        <object uid="targetPL" type="::sight::data::PointList" />
 
-        <object uid="transformedImage" type="::fwData::Image" />
-        <object uid="emptyImage" type="::fwData::Image" />
+        <object uid="transformedImage" type="::sight::data::Image" />
+        <object uid="emptyImage" type="::sight::data::Image" />
 
         <service uid="landmarkRegistrationView" type="::gui::view::SDefaultView">
             <gui>

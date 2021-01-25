@@ -23,14 +23,13 @@
 #pragma once
 
 #include "activities/config.hpp"
+#include <activities/registry/Activities.hpp>
+#include <activities/registry/ActivityMsg.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/Vector.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -59,7 +58,7 @@ namespace action
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(::fwActivities::registry::ActivityMsg) : This signal is emitted when the activity is created,
+ * - \b activityLaunched(activities::registry::ActivityMsg) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
  *      '::guiQt::editor::SDynamicView'.
  *
@@ -153,7 +152,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void ( activities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     ACTIVITIES_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
@@ -187,7 +186,7 @@ protected:
      */
     virtual void configuring() override;
 
-    typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector< std::string > KeysType;
 
@@ -226,12 +225,12 @@ private:
 
     /**
      * @brief Send message to launch new tab view
-     * If given activity info contains an ::fwActivities::IValidator, first checks if activity is valid according to
+     * If given activity info contains an activities::IValidator, first checks if activity is valid according to
      * validator, then build activity with activity builder.
      *
      * @param info activity information
      */
-    void sendConfig( const ::fwActivities::registry::ActivityInfo& info );
+    void sendConfig( const activities::registry::ActivityInfo& info );
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -239,12 +238,12 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const data::Vector::csptr& selection);
+    void buildActivity(const activities::registry::ActivityInfo& info, const data::Vector::csptr& selection);
 
-    typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
+    activities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

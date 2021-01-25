@@ -7,8 +7,8 @@
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
-        <object uid="${objectID}" type="::fwMedData::ImageSeries" src="ref" />
-        <object uid="${imageID}" type="::fwData::Image" src="ref" />
+        <object uid="${objectID}" type="::sight::data::ImageSeries" src="ref" />
+        <object uid="${imageID}" type="::sight::data::Image" src="ref" />
         <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">

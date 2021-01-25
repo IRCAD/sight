@@ -13,7 +13,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="image" type="::fwData::Image" />
+            <object uid="image" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

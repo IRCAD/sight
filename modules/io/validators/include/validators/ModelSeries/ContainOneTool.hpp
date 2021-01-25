@@ -24,7 +24,7 @@
 
 #include "validators/config.hpp"
 
-#include <fwActivities/IObjectValidator.hpp>
+#include <activities/IObjectValidator.hpp>
 
 namespace validators
 {
@@ -35,14 +35,14 @@ namespace ModelSeries
  * @note If the given Obect is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
  *       with one and only one Tool.
  */
-class VALIDATORS_CLASS_API ContainOneTool : public ::fwActivities::IObjectValidator
+class VALIDATORS_CLASS_API ContainOneTool : public activities::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ContainOneTool, ::fwActivities::IObjectValidator,
-                     ::fwActivities::validator::factory::New< ContainOneTool >)
+    fwCoreClassMacro(ContainOneTool, activities::IObjectValidator,
+                     activities::validator::factory::New< ContainOneTool >)
 
     /// Constructor. Do nothing.
-    VALIDATORS_API ContainOneTool(::fwActivities::IValidator::Key key);
+    VALIDATORS_API ContainOneTool(activities::IValidator::Key key);
 
     /// Destructor. Do nothing.
     VALIDATORS_API virtual ~ContainOneTool();
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Checks that the ModelSeries contains one only one Tool.
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
-     * @see ::fwActivities::IValidator::validate
+     * @see activities::IValidator::validate
      */
     VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
     override;

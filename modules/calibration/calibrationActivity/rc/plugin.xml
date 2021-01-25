@@ -19,15 +19,15 @@
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
         <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <builder>::activities::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibration">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
@@ -35,7 +35,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>calibrationEdition</id>
         <title>Calibration Edition</title>
         <desc>
@@ -47,7 +47,7 @@
         </desc>
         <icon>flatIcon-0.1/icons/BlueParametersCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
              </requirement>
         </requirements>
@@ -58,7 +58,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
@@ -71,15 +71,15 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
         <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <builder>::activities::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibrationCharuco">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />

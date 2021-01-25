@@ -24,7 +24,7 @@
 
 #include "uiActivitiesQt/config.hpp"
 
-#include <fwActivities/IActivitySequencer.hpp>
+#include <activities/IActivitySequencer.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -106,7 +106,7 @@ namespace editor
  */
 class UIACTIVITIESQT_CLASS_API SActivitySequencer : public QObject,
                                                     public ::fwGui::editor::IEditor,
-                                                    public ::fwActivities::IActivitySequencer
+                                                    public activities::IActivitySequencer
 {
 Q_OBJECT
 

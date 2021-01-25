@@ -27,6 +27,7 @@
 
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -39,8 +40,6 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -228,7 +227,7 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
             // If the user cancel the reading process we delete the loaded series
             if(!result || reader->getJob()->cancelRequested())
             {
-                ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
+                data::tools::helper::SeriesDB sDBhelper(seriesDB);
                 sDBhelper.clear();
             }
         }
@@ -272,7 +271,7 @@ void SDicomSeriesDBReader::updating()
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
-            ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
+            data::tools::helper::SeriesDB sDBhelper(associatedSeriesDB);
             data::mt::ObjectWriteLock lock(associatedSeriesDB);
             sDBhelper.clear();
             // Notify removal.

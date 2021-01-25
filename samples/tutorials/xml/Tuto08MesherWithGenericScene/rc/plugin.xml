@@ -16,11 +16,11 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="modelSeries" type="::fwMedData::ModelSeries" src="deferred" />
-            <object uid="imageSeries" type="::fwMedData::ImageSeries" />
-            <object uid="image" type="::fwData::Image" src="deferred" />
-            <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
-            <object uid="snapshot" type="::fwData::Image" />
+            <object uid="modelSeries" type="::sight::data::ModelSeries" src="deferred" />
+            <object uid="imageSeries" type="::sight::data::ImageSeries" />
+            <object uid="image" type="::sight::data::Image" src="deferred" />
+            <object uid="reconstruction" type="::sight::data::Reconstruction" src="deferred" />
+            <object uid="snapshot" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -252,7 +252,7 @@
                 <type mode="reader" />
             </service>
 
-            <!-- extract a ::fwData::Image from the ::fwMedData::ImageSeries -->
+            <!-- extract a ::sight::data::Image from the ::sight::data::ImageSeries -->
             <service uid="extractImageSrv" type="::ctrlCamp::SExtractObj" >
                <inout key="source" uid="imageSeries" >
                    <extract from="@image" />

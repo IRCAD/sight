@@ -35,6 +35,7 @@
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -44,8 +45,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -189,7 +188,7 @@ void SInrSeriesDBReader::updating()
             localSeriesDB->getContainer().push_back(imgSeries);
         }
 
-        ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
+        data::tools::helper::SeriesDB sDBhelper(seriesDB);
 
         data::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);

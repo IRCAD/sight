@@ -12,8 +12,8 @@
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">

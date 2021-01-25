@@ -8,10 +8,10 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-        <object uid="loadingSeriesDB" type="::fwMedData::SeriesDB" />
-        <object uid="currentActivity" type="::fwMedData::ActivitySeries" src="deferred" />
-        <object uid="selections" type="::fwData::Vector" />
+        <object uid="seriesDB" type="::sight::data::SeriesDB" />
+        <object uid="loadingSeriesDB" type="::sight::data::SeriesDB" />
+        <object uid="currentActivity" type="::sight::data::ActivitySeries" src="deferred" />
+        <object uid="selections" type="::sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

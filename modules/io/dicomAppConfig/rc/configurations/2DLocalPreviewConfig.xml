@@ -6,8 +6,8 @@
         <param name="FILE_CACHE" default="none" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="::fwMedData::DicomSeries" src="ref" />
-        <object uid="image" type="::fwData::Image" src="deferred" />
+        <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
+        <object uid="image" type="::sight::data::Image" src="deferred" />
         <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">

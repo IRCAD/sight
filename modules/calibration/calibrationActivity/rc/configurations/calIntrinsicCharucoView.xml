@@ -10,11 +10,11 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="${calibrationInfo}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${camera}" type="::sight::data::Camera" src="ref" />
 
-        <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="frame" type="::fwData::Image" />
+        <object uid="frameTL" type="::sight::data::FrameTL" />
+        <object uid="frame" type="::sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

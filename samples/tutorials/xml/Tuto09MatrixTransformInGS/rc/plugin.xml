@@ -16,7 +16,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="matrixA" type="::fwData::TransformationMatrix3D" >
+            <object uid="matrixA" type="::sight::data::TransformationMatrix3D" >
                 <matrix>
                     <![CDATA[
                         1 0 0 2
@@ -27,7 +27,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixB" type="::fwData::TransformationMatrix3D" >
+            <object uid="matrixB" type="::sight::data::TransformationMatrix3D" >
                 <matrix>
                     <![CDATA[
                         1 0 0 4
@@ -38,7 +38,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixC" type="::fwData::TransformationMatrix3D" >
+            <object uid="matrixC" type="::sight::data::TransformationMatrix3D" >
                 <matrix>
                     <![CDATA[
                         1 0 0 0
@@ -49,7 +49,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixD" type="::fwData::TransformationMatrix3D" >
+            <object uid="matrixD" type="::sight::data::TransformationMatrix3D" >
                 <matrix>
                     <![CDATA[
                         0.75 0        0        0
@@ -60,15 +60,15 @@
                 </matrix>
             </object>
 
-            <object uid="matrixE" type="::fwData::TransformationMatrix3D" />
+            <object uid="matrixE" type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="rotation1" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotation1" type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="rotation2" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotation2" type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="rotation3" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotation3" type="::sight::data::TransformationMatrix3D" />
 
-            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="mesh" type="::sight::data::Mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

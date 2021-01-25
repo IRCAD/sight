@@ -38,6 +38,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
@@ -45,8 +46,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwNetworkIO/exceptions/Base.hpp>
 

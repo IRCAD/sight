@@ -4,42 +4,42 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioITK::InrImageReaderService</service>
-        <object>::fwData::Image</object>
+        <object>::sight::data::Image</object>
         <desc>Inrimage Reader (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioITK::InrImageWriterService</service>
-        <object>::fwData::Image</object>
+        <object>::sight::data::Image</object>
         <desc>Inrimage Writer (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioITK::JpgImageWriterService</service>
-        <object>::fwData::Image</object>
+        <object>::sight::data::Image</object>
         <desc>Jpeg Writer (ITK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioITK::SJpgImageSeriesWriter</service>
-        <object>::fwMedData::ImageSeries</object>
+        <object>::sight::data::ImageSeries</object>
         <desc>ImageSeries Jpeg Writer (ITK)</desc>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioITK::SInrSeriesDBReader</service>
-        <object>::fwMedData::SeriesDB</object>
+        <object>::sight::data::SeriesDB</object>
         <desc>SeriesDB Inrimage Reader (ITK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioITK::SImageSeriesWriter</service>
-        <object>::fwMedData::ImageSeries</object>
+        <object>::sight::data::ImageSeries</object>
         <desc>ImageSeries Inr Writer (ITK)</desc>
     </extension>
 

@@ -15,18 +15,18 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <!-- Displayed image pair. -->
-        <object uid="frame1" type="::fwData::Image" />
-        <object uid="frame2" type="::fwData::Image" />
+        <object uid="frame1" type="::sight::data::Image" />
+        <object uid="frame2" type="::sight::data::Image" />
 
         <!-- Second pair of images used for detection. Prevents the detector from slowing down the video. -->
-        <object uid="frame1TL" type="::arData::FrameTL" />
-        <object uid="frame2TL" type="::arData::FrameTL" />
-        <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${calibrationInfo2}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
-        <object uid="${camera1}" type="::arData::Camera" src="ref" />
-        <object uid="${camera2}" type="::arData::Camera" src="ref" />
-        <object uid="exportExtrinsicMat" type="::fwData::TransformationMatrix3D" src="deferred" />
+        <object uid="frame1TL" type="::sight::data::FrameTL" />
+        <object uid="frame2TL" type="::sight::data::FrameTL" />
+        <object uid="${calibrationInfo1}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${calibrationInfo2}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
+        <object uid="${camera1}" type="::sight::data::Camera" src="ref" />
+        <object uid="${camera2}" type="::sight::data::Camera" src="ref" />
+        <object uid="exportExtrinsicMat" type="::sight::data::TransformationMatrix3D" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

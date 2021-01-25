@@ -10,15 +10,15 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${camera}" type="::arData::Camera" src="ref" />
-        <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="videoFrame" type="::fwData::Image" />
-        <object uid="distortedFrame" type="::fwData::Image" />
+        <object uid="${calibrationInfo}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${camera}" type="::sight::data::Camera" src="ref" />
+        <object uid="frameTL" type="::sight::data::FrameTL" />
+        <object uid="videoFrame" type="::sight::data::Image" />
+        <object uid="distortedFrame" type="::sight::data::Image" />
 
-        <object uid="detectedChessboard" type="::fwData::PointList" />
-        <object uid="chessboardModel" type="::fwData::PointList" src="deferred" />
-        <object uid="cameraPoseMx" type="::fwData::TransformationMatrix3D" />
+        <object uid="detectedChessboard" type="::sight::data::PointList" />
+        <object uid="chessboardModel" type="::sight::data::PointList" src="deferred" />
+        <object uid="cameraPoseMx" type="::sight::data::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

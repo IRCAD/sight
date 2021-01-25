@@ -11,8 +11,8 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- In tutoDataServiceBasic, the central data object is a ::fwData::Image. -->
-            <object uid="imageData" type="::fwData::Image" />
+            <!-- In tutoDataServiceBasic, the central data object is a ::sight::data::Image. -->
+            <object uid="imageData" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

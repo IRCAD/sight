@@ -42,7 +42,7 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal, data::SeriesDB )
+fwServicesRegisterMacro( ::fwServices::IController, activities::SSeriesSignal, data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

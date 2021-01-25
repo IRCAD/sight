@@ -6,7 +6,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioQt::SPdfWriter</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
     </extension>
 
 </plugin>

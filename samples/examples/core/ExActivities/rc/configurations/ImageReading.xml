@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

@@ -5,27 +5,27 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::ioDicom::SFilterSelectionEditor</service>
-        <object>::fwData::Vector</object>
+        <object>::sight::data::Vector</object>
         <desc>Filter Selection Editor</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IDialogEditor</type>
         <service>::ioDicom::SFilterSelectorDialog</service>
-        <object>::fwData::String</object>
+        <object>::sight::data::String</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::ioDicom::SSeriesDBMerger</service>
-        <object>::fwData::Vector</object>
+        <object>::sight::data::Vector</object>
         <desc>Push Series to SeriesDB</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::ioDicom::SSliceIndexDicomEditor</service>
-        <object>::fwMedData::DicomSeries</object>
+        <object>::sight::data::DicomSeries</object>
         <desc>Slice Index Dicom Editor</desc>
     </extension>
 

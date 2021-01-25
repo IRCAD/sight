@@ -6,13 +6,13 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiVisu::action::CrossTypeAction</service>
-        <object>::fwData::Image</object>
+        <object>::sight::data::Image</object>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiVisu::action::SSnapshot</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
     </extension>
 
     

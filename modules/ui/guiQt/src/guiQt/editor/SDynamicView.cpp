@@ -22,6 +22,9 @@
 
 #include "guiQt/editor/SDynamicView.hpp"
 
+#include <activities/IActivityValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
@@ -33,9 +36,6 @@
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
-
-#include <fwActivities/IActivityValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
@@ -185,7 +185,7 @@ void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::createTab( ::fwActivities::registry::ActivityMsg info )
+void SDynamicView::createTab( activities::registry::ActivityMsg info )
 {
     SDynamicViewInfo viewInfo;
     viewInfo.title          = info.getTitle();
@@ -396,8 +396,8 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
     ReplaceMapType replaceMap;
     this->translateParameters(m_parameters, replaceMap);
 
-    ::fwActivities::registry::ActivityInfo info;
-    info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    activities::registry::ActivityInfo info;
+    info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     std::string tabInfo;
     if(info.tabInfo.empty())

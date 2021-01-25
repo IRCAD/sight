@@ -15,15 +15,15 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${histogram}" type="::fwData::Histogram" src="ref" />
-        <object uid="${tfPools}" type="::fwData::Composite" src="ref" />
-        <object uid="${currentTFPool}" type="::fwData::Composite" src="deferred" />
-        <object uid="${currentTF}" type="::fwData::TransferFunction" src="deferred" />
-        <object uid="${mergedTF}" type="::fwData::TransferFunction" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${histogram}" type="::sight::data::Histogram" src="ref" />
+        <object uid="${tfPools}" type="::sight::data::Composite" src="ref" />
+        <object uid="${currentTFPool}" type="::sight::data::Composite" src="deferred" />
+        <object uid="${currentTF}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${mergedTF}" type="::sight::data::TransferFunction" src="ref" />
 
         <object uid="viewport" type="::fwRenderQt::data::Viewport" />
-        <object uid="histogramPoint" type="::fwData::Point" />
+        <object uid="histogramPoint" type="::sight::data::Point" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

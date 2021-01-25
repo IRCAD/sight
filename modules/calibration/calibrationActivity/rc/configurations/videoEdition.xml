@@ -14,9 +14,9 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${camera}" type="::arData::Camera" src="ref" />
-        <object uid="timeLine" type="::arData::FrameTL" />
-        <object uid="frame" type="::fwData::Image" />
+        <object uid="${camera}" type="::sight::data::Camera" src="ref" />
+        <object uid="timeLine" type="::sight::data::FrameTL" />
+        <object uid="frame" type="::sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

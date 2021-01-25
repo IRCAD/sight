@@ -12,20 +12,20 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="camera1" type="::arData::Camera" src="deferred" />
-            <object uid="camera2" type="::arData::Camera" src="deferred" />
-            <object uid="frameTL1" type="::arData::FrameTL" />
-            <object uid="frameTL2" type="::arData::FrameTL" />
-            <object uid="tagTL1" type="::arData::MarkerTL" />
-            <object uid="tagTL2" type="::arData::MarkerTL" />
-            <object uid="videoImage1" type="::fwData::Image" />
-            <object uid="videoImage2" type="::fwData::Image" />
-            <object uid="matrixTL" type="::arData::MatrixTL" />
-            <object uid="matrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
-            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
-            <object uid="rightMat" type="::fwData::TransformationMatrix3D" />
+            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="camera1" type="::sight::data::Camera" src="deferred" />
+            <object uid="camera2" type="::sight::data::Camera" src="deferred" />
+            <object uid="frameTL1" type="::sight::data::FrameTL" />
+            <object uid="frameTL2" type="::sight::data::FrameTL" />
+            <object uid="tagTL1" type="::sight::data::MarkerTL" />
+            <object uid="tagTL2" type="::sight::data::MarkerTL" />
+            <object uid="videoImage1" type="::sight::data::Image" />
+            <object uid="videoImage2" type="::sight::data::Image" />
+            <object uid="matrixTL" type="::sight::data::MatrixTL" />
+            <object uid="matrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
+            <object uid="inverseMat" type="::sight::data::TransformationMatrix3D" />
+            <object uid="rightMat" type="::sight::data::TransformationMatrix3D" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -325,7 +325,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" />

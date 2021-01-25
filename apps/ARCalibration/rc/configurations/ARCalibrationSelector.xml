@@ -9,8 +9,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
-        <object uid="selections" type="::fwData::Vector" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref"/>
+        <object uid="selections" type="::sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -33,7 +33,7 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
-                <icon series="::arData::CameraSeries" icon="media-0.1/icons/calibrationActivity.svg" />
+                <icon series="::sight::data::CameraSeries" icon="media-0.1/icons/calibrationActivity.svg" />
             </icons>
         </service>
 

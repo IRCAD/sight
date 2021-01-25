@@ -23,12 +23,11 @@
 #pragma once
 
 #include "activities/config.hpp"
+#include <activities/IActivitySequencer.hpp>
 
 #include <core/com/Signal.hpp>
 
 #include <data/ActivitySeries.hpp>
-
-#include <fwActivities/IActivitySequencer.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -85,7 +84,7 @@ namespace activities
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController,
-                                                public ::fwActivities::IActivitySequencer
+                                                public activities::IActivitySequencer
 {
 
 public:

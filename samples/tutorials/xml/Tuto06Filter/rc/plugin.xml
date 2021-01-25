@@ -10,10 +10,10 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- This is the source image for the filtering. -->
-            <object uid="myImage1" type="::fwData::Image" />
+            <object uid="myImage1" type="::sight::data::Image" />
             <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
                  beginning, but will be created by a service. -->
-            <object uid="myImage2" type="::fwData::Image" src="deferred" />
+            <object uid="myImage2" type="::sight::data::Image" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

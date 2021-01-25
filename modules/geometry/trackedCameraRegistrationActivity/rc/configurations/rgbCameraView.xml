@@ -14,16 +14,16 @@
     </parameters>
     <config>
         <!-- *************************** Begin objects declaration **************************** -->
-        <object uid="${camera}" type="::arData::Camera" src="ref" />
-        <object uid="${frameTL}" type="::arData::FrameTL" src="ref" />
-        <object uid="${matrixTL}" type="::arData::MatrixTL" src="ref" />
-        <object uid="${imageVideo}" type="::fwData::Image" src="ref" />
-        <object uid="${markerMesh}" type="::fwData::Mesh" src="ref" />
-        <object uid="${tagMatrix1}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="${tagMatrix2}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="${registrationMatrix}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="tagTL" type="::arData::MarkerTL" />
-        <object uid="identity" type="::fwData::TransformationMatrix3D" />
+        <object uid="${camera}" type="::sight::data::Camera" src="ref" />
+        <object uid="${frameTL}" type="::sight::data::FrameTL" src="ref" />
+        <object uid="${matrixTL}" type="::sight::data::MatrixTL" src="ref" />
+        <object uid="${imageVideo}" type="::sight::data::Image" src="ref" />
+        <object uid="${markerMesh}" type="::sight::data::Mesh" src="ref" />
+        <object uid="${tagMatrix1}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="${tagMatrix2}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="${registrationMatrix}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="tagTL" type="::sight::data::MarkerTL" />
+        <object uid="identity" type="::sight::data::TransformationMatrix3D" />
         <!-- *************************** End objects declaration ****************************** -->
         <!-- *************************** Begin layouts declaration **************************** -->
         <service uid="videoView" type="::gui::view::SDefaultView">

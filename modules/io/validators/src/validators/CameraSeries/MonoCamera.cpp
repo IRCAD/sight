@@ -22,10 +22,10 @@
 
 #include "validators/CameraSeries/MonoCamera.hpp"
 
+#include <activities/validator/registry/macros.hpp>
+
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
-
-#include <fwActivities/validator/registry/macros.hpp>
 
 namespace validators
 {
@@ -36,7 +36,7 @@ fwActivitiesValidatorRegisterMacro(::validators::CameraSeries::MonoCamera, "::va
 
 //-----------------------------------------------------------------------------
 
-MonoCamera::MonoCamera(::fwActivities::IValidator::Key key)
+MonoCamera::MonoCamera(activities::IValidator::Key key)
 {
 
 }
@@ -50,7 +50,7 @@ MonoCamera::~MonoCamera()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
+activities::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

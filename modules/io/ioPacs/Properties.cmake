@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwPacsIO
     data
     fwDataTools
-    fwMedDataTools
     fwServices
     fwIO
     fwPreferences

@@ -32,10 +32,9 @@
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -46,7 +45,7 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::activities::SActivitySequencer )
+fwServicesRegisterMacro( ::fwServices::IController, activities::SActivitySequencer )
 
 //------------------------------------------------------------------------------
 

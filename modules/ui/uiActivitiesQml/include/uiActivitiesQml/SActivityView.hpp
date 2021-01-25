@@ -24,9 +24,9 @@
 
 #include "uiActivitiesQml/config.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <activities/IActivityLauncher.hpp>
 
-#include <fwActivities/IActivityLauncher.hpp>
+#include <data/ActivitySeries.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -101,7 +101,7 @@ namespace uiActivitiesQml
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
 class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
-                                                public ::fwActivities::IActivityLauncher
+                                                public activities::IActivityLauncher
 {
 
 Q_OBJECT

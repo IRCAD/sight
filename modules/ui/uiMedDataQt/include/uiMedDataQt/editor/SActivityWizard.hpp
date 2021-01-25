@@ -25,6 +25,8 @@
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/ActivityDataView.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
@@ -35,8 +37,6 @@
 #include <data/ActivitySeries.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 

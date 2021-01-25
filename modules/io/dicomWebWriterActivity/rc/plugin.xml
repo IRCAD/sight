@@ -7,14 +7,14 @@
 
     <xi:include href="configurations/DicomWebWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>DicomWebWriterActivity</id>
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>
         <icon>media-0.1/icons/Push.svg</icon>
         <requirements>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="DicomWebWriterActivity">
         </appConfig>
     </extension>

@@ -9,12 +9,12 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
 
-        <object uid="newCameraSeries" type="::arData::CameraSeries" src="deferred" />
-        <object uid="camera0" type="::arData::Camera" src="deferred" />
-        <object uid="camera1" type="::arData::Camera" src="deferred" />
+        <object uid="newCameraSeries" type="::sight::data::CameraSeries" src="deferred" />
+        <object uid="camera0" type="::sight::data::Camera" src="deferred" />
+        <object uid="camera1" type="::sight::data::Camera" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

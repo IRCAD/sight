@@ -5,7 +5,7 @@
         <param name="objectID" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${objectID}" type="::sight::data::ModelSeries" src="ref" />
         <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="gs" type="::fwRenderVTK::SRender">

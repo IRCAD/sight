@@ -65,12 +65,12 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="image1" type="::fwData::Image" />
-            <object uid="image2" type="::fwData::Image" />
-            <object uid="imageResult" type="::fwData::Image" />
-            <object uid="snapshot1" type="::fwData::Image" />
-            <object uid="snapshot2" type="::fwData::Image" />
-            <object uid="snapshot3" type="::fwData::Image" />
+            <object uid="image1" type="::sight::data::Image" />
+            <object uid="image2" type="::sight::data::Image" />
+            <object uid="imageResult" type="::sight::data::Image" />
+            <object uid="snapshot1" type="::sight::data::Image" />
+            <object uid="snapshot2" type="::sight::data::Image" />
+            <object uid="snapshot3" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

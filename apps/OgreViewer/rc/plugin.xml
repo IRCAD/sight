@@ -45,22 +45,22 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-            <object uid="modelSeries" type="::fwMedData::ModelSeries" />
-            <object uid="image" type="::fwData::Image" />
-            <object uid="histogram" type="::fwData::Histogram" />
-            <object uid="extrudedModelSeries" type="::fwMedData::ModelSeries" />
-            <object uid="landmarks" type="::fwData::Landmarks" />
+            <object uid="seriesDB" type="::sight::data::SeriesDB" />
+            <object uid="modelSeries" type="::sight::data::ModelSeries" />
+            <object uid="image" type="::sight::data::Image" />
+            <object uid="histogram" type="::sight::data::Histogram" />
+            <object uid="extrudedModelSeries" type="::sight::data::ModelSeries" />
+            <object uid="landmarks" type="::sight::data::Landmarks" />
 
-            <object uid="volumeTFPools" type="::fwData::Composite" />
-            <object uid="volumeCurrentTFPool" type="::fwData::Composite" src="deferred" />
-            <object uid="volumeCurrentTF" type="::fwData::TransferFunction" src="deferred" />
-            <object uid="volumeTF" type="::fwData::TransferFunction" >
+            <object uid="volumeTFPools" type="::sight::data::Composite" />
+            <object uid="volumeCurrentTFPool" type="::sight::data::Composite" src="deferred" />
+            <object uid="volumeCurrentTF" type="::sight::data::TransferFunction" src="deferred" />
+            <object uid="volumeTF" type="::sight::data::TransferFunction" >
                 <colors default="true" />
             </object>
 
-            <object uid="previewSeriesDB" type="::fwMedData::SeriesDB" />
-            <object uid="localSeriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="previewSeriesDB" type="::sight::data::SeriesDB" />
+            <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

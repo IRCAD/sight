@@ -7,7 +7,6 @@ set( DEPENDENCIES
     data
     fwGui
     fwItkIO
-    fwMedDataTools
     fwServices
     fwIO
 )

@@ -9,24 +9,24 @@
     </parameters>
     <config>
 
-        <object uid="${firstCameraSeries}" type="::arData::CameraSeries" src="ref"/>
-        <object uid="${secondCameraSeries}" type="::arData::CameraSeries" src="ref"/>
+        <object uid="${firstCameraSeries}" type="::sight::data::CameraSeries" src="ref"/>
+        <object uid="${secondCameraSeries}" type="::sight::data::CameraSeries" src="ref"/>
 
-        <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
+        <object uid="${markerMesh}" type="::sight::data::Mesh" src="ref"/>
 
-        <object uid="firstCamera" type="::arData::Camera" src="deferred" />
-        <object uid="secondCamera" type="::arData::Camera" src="deferred" />
+        <object uid="firstCamera" type="::sight::data::Camera" src="deferred" />
+        <object uid="secondCamera" type="::sight::data::Camera" src="deferred" />
 
-        <object uid="secondFrameTL" type="::arData::FrameTL" />
-        <object uid="firstFrameTL" type="::arData::FrameTL" />
+        <object uid="secondFrameTL" type="::sight::data::FrameTL" />
+        <object uid="firstFrameTL" type="::sight::data::FrameTL" />
 
-        <object uid="firstImageVideo" type="::fwData::Image" />
-        <object uid="secondImageVideo" type="::fwData::Image" />
+        <object uid="firstImageVideo" type="::sight::data::Image" />
+        <object uid="secondImageVideo" type="::sight::data::Image" />
 
-        <object uid="firstMatrixTL" type="::arData::MatrixTL" />
-        <object uid="secondMatrixTL" type="::arData::MatrixTL" />
+        <object uid="firstMatrixTL" type="::sight::data::MatrixTL" />
+        <object uid="secondMatrixTL" type="::sight::data::MatrixTL" />
 
-        <object uid="firstTag1Matrix" type="::fwData::TransformationMatrix3D" >
+        <object uid="firstTag1Matrix" type="::sight::data::TransformationMatrix3D" >
             <matrix>
                    <![CDATA[
                        1  0  0  1000
@@ -37,7 +37,7 @@
             </matrix>
         </object>
 
-        <object uid="firstTag2Matrix" type="::fwData::TransformationMatrix3D" >
+        <object uid="firstTag2Matrix" type="::sight::data::TransformationMatrix3D" >
             <matrix>
                    <![CDATA[
                        1  0  0  1000
@@ -48,7 +48,7 @@
             </matrix>
         </object>
 
-        <object uid="secondTag1Matrix" type="::fwData::TransformationMatrix3D" >
+        <object uid="secondTag1Matrix" type="::sight::data::TransformationMatrix3D" >
             <matrix>
                    <![CDATA[
                        1  0  0  1000
@@ -59,7 +59,7 @@
             </matrix>
         </object>
 
-        <object uid="secondTag2Matrix" type="::fwData::TransformationMatrix3D" >
+        <object uid="secondTag2Matrix" type="::sight::data::TransformationMatrix3D" >
             <matrix>
                    <![CDATA[
                        1  0  0  1000
@@ -70,10 +70,10 @@
             </matrix>
         </object>
 
-        <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="secondCameraOpticalCenterMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="arTag1Matrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="currentTag1Matrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="secondCameraOpticalCenterMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="arTag1Matrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="currentTag1Matrix" type="::sight::data::TransformationMatrix3D" />
 
         <!-- ***************************************** Begin layouts declaration ***************************************** -->
 

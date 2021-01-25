@@ -24,8 +24,8 @@
 
 #ifdef KEEP_OLD_SERVICE
 
-#include <fwActivities/IBuilder.hpp>
-#include <fwActivities/IValidator.hpp>
+#include <activities/IBuilder.hpp>
+#include <activities/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -58,7 +58,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
 
 #endif
 
@@ -71,7 +71,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::activities::editor::SCreateActivity )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, activities::editor::SCreateActivity )
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ const core::com::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG = 
 SCreateActivity::SCreateActivity() noexcept
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::editor::SCreateActivity' instead of '::activities::editor::SCreateActivity'");
+    SLM_FATAL("Use '::uiActivitiesQt::editor::SCreateActivity' instead of 'activities::editor::SCreateActivity'");
 #else
     FW_DEPRECATED("::activities::editor::SCreateActivity", "::uiActivitiesQt::editor::SCreateActivity", "21.0");
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
@@ -146,11 +146,11 @@ void SCreateActivity::starting()
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
     m_activitiesInfo = this->getEnabledActivities(infos);
 
     // Add the load button
-    ::fwActivities::registry::ActivityInfo infoLoad;
+    activities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
     infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
@@ -186,7 +186,7 @@ void SCreateActivity::starting()
     int i = 1;
     int j = 0;
 
-    for(const ::fwActivities::registry::ActivityInfo& info :  m_activitiesInfo)
+    for(const activities::registry::ActivityInfo& info :  m_activitiesInfo)
     {
         QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));

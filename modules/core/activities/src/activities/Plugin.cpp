@@ -22,9 +22,9 @@
 
 #include "activities/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <activities/registry/Activities.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace activities
 {
@@ -39,7 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
+    activities::registry::Activities::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
     // Clear all operator configurations
-    ::fwActivities::registry::Activities::getDefault()->clearRegistry();
+    activities::registry::Activities::getDefault()->clearRegistry();
 }
 
 } // namespace activities

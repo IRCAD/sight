@@ -12,19 +12,19 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${previewSeriesDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${localSeriesDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${previewSeriesDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${localSeriesDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${image}" type="::sight::data::Image" src="ref" />
 
         <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
 
-        <object uid="previewSelections" type="::fwData::Vector" />
-        <object uid="previewDicom" type="::fwMedData::DicomSeries" />
-        <object uid="previewImage" type="::fwData::Image" />
-        <object uid="previewImageReset" type="::fwData::Image" />
+        <object uid="previewSelections" type="::sight::data::Vector" />
+        <object uid="previewDicom" type="::sight::data::DicomSeries" />
+        <object uid="previewImage" type="::sight::data::Image" />
+        <object uid="previewImageReset" type="::sight::data::Image" />
 
-        <object uid="localSelections" type="::fwData::Vector" />
-        <object uid="localImage" type="::fwData::Image" />
+        <object uid="localSelections" type="::sight::data::Vector" />
+        <object uid="localImage" type="::sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -436,7 +436,7 @@
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
-                <icon series="::fwMedData::DicomSeries" icon="flatIcon-0.1/icons/GreenMedicine.svg" />
+                <icon series="::sight::data::DicomSeries" icon="flatIcon-0.1/icons/GreenMedicine.svg" />
             </icons>
             <config selectionMode="extended" allowedRemove="false" />
         </service>
@@ -467,7 +467,7 @@
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>
-                <icon series="::fwMedData::ImageSeries" icon="flatIcon-0.1/icons/Volume.svg" />
+                <icon series="::sight::data::ImageSeries" icon="flatIcon-0.1/icons/Volume.svg" />
             </icons>
             <config selectionMode="extended"
                     removeStudyIcon="flatIcon-0.1/icons/RedCross.svg"

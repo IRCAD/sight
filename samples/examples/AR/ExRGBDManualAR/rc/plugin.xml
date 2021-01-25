@@ -12,20 +12,20 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="cameraRGB" type="::arData::Camera" src="deferred" />
-            <object uid="cameraDepth" type="::arData::Camera" src="deferred" />
-            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-            <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="maskTL" type="::arData::FrameTL" />
-            <object uid="videoImage" type="::fwData::Image" />
-            <object uid="backgroundMask" type="::fwData::Image" />
-            <object uid="foregroundMask" type="::fwData::Image" />
-            <object uid="matrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
-            <object uid="skinMesh" type="::fwData::Mesh" src="deferred" />
-            <object uid="modelseries" type="::fwMedData::ModelSeries" src="deferred" />
+            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="cameraRGB" type="::sight::data::Camera" src="deferred" />
+            <object uid="cameraDepth" type="::sight::data::Camera" src="deferred" />
+            <object uid="seriesDB" type="::sight::data::SeriesDB" />
+            <object uid="frameTL" type="::sight::data::FrameTL" />
+            <object uid="maskTL" type="::sight::data::FrameTL" />
+            <object uid="videoImage" type="::sight::data::Image" />
+            <object uid="backgroundMask" type="::sight::data::Image" />
+            <object uid="foregroundMask" type="::sight::data::Image" />
+            <object uid="matrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="inverseMat" type="::sight::data::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
+            <object uid="skinMesh" type="::sight::data::Mesh" src="deferred" />
+            <object uid="modelseries" type="::sight::data::ModelSeries" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -342,7 +342,7 @@
                 <addSelection service="::ioData::TransformationMatrix3DReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->

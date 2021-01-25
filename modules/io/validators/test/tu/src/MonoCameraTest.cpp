@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "MonoCameraTest.hpp"
 
+#include <activities/IObjectValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
-
-#include <fwActivities/IObjectValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::MonoCameraTest );
@@ -54,14 +54,14 @@ void MonoCameraTest::tearDown()
 
 void MonoCameraTest::testValidator()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::CameraSeries::MonoCamera");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::CameraSeries::MonoCamera");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::New();
     ::arData::Camera::sptr camera             = ::arData::Camera::New();

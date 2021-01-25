@@ -18,12 +18,12 @@
     </parameters>
     <config>
 
-        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
-        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="${imageComposite}" type="::fwData::Composite" src="ref" />
-        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
-        <object uid="optionalInputImage" type="::fwData::Image" src="deferred" />
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::sight::data::ActivitySeries" src="ref" />
+        <object uid="${modelSeries}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="${imageComposite}" type="::sight::data::Composite" src="ref" />
+        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
+        <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>

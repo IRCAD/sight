@@ -9,8 +9,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="selection" type="::fwData::Vector" />
+        <object uid="${seriesDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="selection" type="::sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -120,10 +120,10 @@
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
-                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries" >
+                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries" >
                     <extract path="@image" pattern="imageID" />
                 </config>
-                <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
+                <config id="3DSimpleConfig2" type="::sight::data::ModelSeries" />
             </configs>
         </service>
 

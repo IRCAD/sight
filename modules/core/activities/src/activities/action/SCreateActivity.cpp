@@ -22,8 +22,8 @@
 
 #include "activities/action/SCreateActivity.hpp"
 
-#include <fwActivities/IBuilder.hpp>
-#include <fwActivities/IValidator.hpp>
+#include <activities/IBuilder.hpp>
+#include <activities/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -54,7 +54,7 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
 
 #endif
 
@@ -65,7 +65,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, data::Vector)
+fwServicesRegisterMacro( ::fwGui::IActionSrv, activities::action::SCreateActivity, data::Vector)
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ const core::com::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG
 SCreateActivity::SCreateActivity() noexcept
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of '::activities::action::SCreateActivity'");
+    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of 'activities::action::SCreateActivity'");
 #else
     FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
@@ -134,7 +134,7 @@ void SCreateActivity::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
+activities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
 #ifdef KEEP_OLD_SERVICE
 
@@ -145,7 +145,7 @@ void SCreateActivity::configuring()
     dialog->resize(600, 400);
 
     QStandardItemModel* model = new QStandardItemModel(dialog);
-    for( const ::fwActivities::registry::ActivityInfo& info :  infos)
+    for( const activities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -190,19 +190,19 @@ void SCreateActivity::configuring()
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
-    ::fwActivities::registry::ActivityInfo info;
+    activities::registry::ActivityInfo info;
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
         QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
-        info = var.value< ::fwActivities::registry::ActivityInfo >();
+        info = var.value< activities::registry::ActivityInfo >();
     }
 
     return info;
 
 #endif
-    return ::fwActivities::registry::ActivityInfo();
+    return activities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------
@@ -241,12 +241,12 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 void SCreateActivity::updating()
 {
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
     infos = this->getEnabledActivities(infos);
 
     if ( !infos.empty())
     {
-        ::fwActivities::registry::ActivityInfo info;
+        activities::registry::ActivityInfo info;
         if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
         {
             info = infos[0];

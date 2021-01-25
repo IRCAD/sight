@@ -8,19 +8,19 @@
     <extension implements="::fwServices::registry::ServiceFactory" >
         <type>::fwServices::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SReadArray</service>
-        <object>::fwData::Array</object>
+        <object>::sight::data::Array</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory" >
         <type>::fwServices::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SShowArray</service>
-        <object>::fwData::Array</object>
+        <object>::sight::data::Array</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory" >
         <type>::fwServices::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SIncrementArray</service>
-        <object>::fwData::Array</object>
+        <object>::sight::data::Array</object>
     </extension>
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -31,7 +31,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="array" type="::fwData::Array" />
+            <object uid="array" type="::sight::data::Array" />
 
             <!-- ******************************* Services ***************************************** -->
 

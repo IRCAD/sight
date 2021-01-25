@@ -5,7 +5,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::arServices::ISynchronizer</type>
         <service>::syncTimeline::SMatrixTLSynchronizer</service>
-        <object>::arData::MatrixTL</object>
+        <object>::sight::data::MatrixTL</object>
     </extension>
 
 </plugin>

@@ -69,15 +69,15 @@ Detail of the ToolBar
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Object to store the image loading in the first tab -->
-            <object uid="myImage" type="::fwData::Image" />
-            <object uid="meshOnNegato1" type="::fwData::Mesh" />
-            <object uid="meshOnNegato2" type="::fwData::Mesh" />
+            <object uid="myImage" type="::sight::data::Image" />
+            <object uid="meshOnNegato1" type="::sight::data::Mesh" />
+            <object uid="meshOnNegato2" type="::sight::data::Mesh" />
             <!-- Object to store the point put in the first tab -->
-            <object uid="pointList1" type="::fwData::PointList" />
+            <object uid="pointList1" type="::sight::data::PointList" />
             <!-- Object to store the point put in the second tab -->
-            <object uid="pointList2" type="::fwData::PointList" />
+            <object uid="pointList2" type="::sight::data::PointList" />
             <!-- Object to store the registration matrix -->
-            <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

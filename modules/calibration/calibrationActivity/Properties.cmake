@@ -5,7 +5,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwActivities
 )
 set( REQUIREMENTS
     preferences             # Start the module, load file location or window preferences

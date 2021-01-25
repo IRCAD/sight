@@ -138,7 +138,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& _conf
     SLM_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1 );
 
     const ::fwServices::IService::ConfigType& appConfigCfg = srvconfig.get_child("appConfig");
-    m_appConfig = ::fwActivities::registry::ActivityAppConfig(appConfigCfg);
+    m_appConfig = activities::registry::ActivityAppConfig(appConfigCfg);
 }
 
 //------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& _conf
 void ConfigLauncher::startConfig(::fwServices::IService::sptr _srv,
                                  const FieldAdaptorType& _optReplaceMap )
 {
-    typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
+    typedef activities::registry::ActivityAppConfig AppConfig;
     FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID

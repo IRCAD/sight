@@ -9,8 +9,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${organManagerModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
-        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+        <object uid="${organManagerModelSeries}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::sight::data::Reconstruction" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

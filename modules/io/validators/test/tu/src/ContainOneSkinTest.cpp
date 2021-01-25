@@ -22,13 +22,13 @@
 
 #include "ContainOneSkinTest.hpp"
 
+#include <activities/IObjectValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/IObjectValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::ContainOneSkinTest );
@@ -56,14 +56,14 @@ void ContainOneSkinTest::tearDown()
 
 void ContainOneSkinTest::testValidator()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     data::Reconstruction::sptr rec1     = data::Reconstruction::New();
@@ -131,14 +131,14 @@ void ContainOneSkinTest::testValidator()
 
 void ContainOneSkinTest::testValidatorWithVector()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::Vector::sptr vector = data::Vector::New();
 
@@ -233,14 +233,14 @@ void ContainOneSkinTest::testValidatorWithVector()
 
 void ContainOneSkinTest::testValidatorWithComposite()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::Composite::sptr composite = data::Composite::New();
 

@@ -8,14 +8,14 @@
     <xi:include href="configurations/DicomWebReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities">
+    <extension implements="::activities::registry::Activities">
         <id>DicomWebReaderActivity</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
         <icon>media-0.1/icons/Pull.svg</icon>
         <requirements>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::activities::builder::ActivitySeries</builder>
         <appConfig id="DicomWebReaderActivity">
         </appConfig>
         </extension>

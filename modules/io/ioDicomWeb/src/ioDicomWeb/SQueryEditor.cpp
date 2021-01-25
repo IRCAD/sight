@@ -23,12 +23,11 @@
 #include "ioDicomWeb/SQueryEditor.hpp"
 
 #include <data/DicomSeries.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwNetworkIO/helper/Series.hpp>
 
@@ -323,7 +322,7 @@ void SQueryEditor::queryStudyDate()
 void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >("seriesDB");
-    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Delete old series from the SeriesDB
     seriesDBHelper.clear();

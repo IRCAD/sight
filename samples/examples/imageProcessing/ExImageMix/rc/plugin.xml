@@ -13,9 +13,9 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- backgroundImage description -->
-            <object uid="backgroundImage" type="::fwData::Image" />
+            <object uid="backgroundImage" type="::sight::data::Image" />
             <!-- frontImage description -->
-            <object uid="frontImage" type="::fwData::Image" />
+            <object uid="frontImage" type="::sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -271,12 +271,12 @@
 
             <service uid="backgroundImageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="backgroundImage" />
-                <type mode="reader" class="::fwData::Image" />
+                <type mode="reader" class="::sight::data::Image" />
             </service>
 
             <service uid="foregroundImageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="frontImage" />
-                <type mode="reader" class="::fwData::Image" />
+                <type mode="reader" class="::sight::data::Image" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->

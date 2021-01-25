@@ -25,13 +25,13 @@
 #include "fwGui/config.hpp"
 #include "fwGui/IGuiContainerSrv.hpp"
 
+#include <activities/IActivityLauncher.hpp>
+#include <activities/registry/Activities.hpp>
+
 #include <core/com/Slots.hpp>
 
 #include <data/ActivitySeries.hpp>
 #include <data/Series.hpp>
-
-#include <fwActivities/IActivityLauncher.hpp>
-#include <fwActivities/registry/Activities.hpp>
 
 namespace fwGui
 {
@@ -68,7 +68,7 @@ namespace view
  *          composite contained in the ActivitySeries.
  */
 class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv,
-                                      public ::fwActivities::IActivityLauncher
+                                      public activities::IActivityLauncher
 {
 public:
 
@@ -79,8 +79,8 @@ public:
 
 protected:
 
-    typedef ::fwActivities::registry::ActivityAppConfigParam ParameterType;
-    typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activities::registry::ActivityAppConfigParam ParameterType;
+    typedef activities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map< std::string, std::string> ReplaceMapType;
 
     /// Constructor. Do nothing.

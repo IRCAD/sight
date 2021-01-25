@@ -14,15 +14,15 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="Frame1" type="::fwData::Image" />
-        <object uid="Frame2" type="::fwData::Image" />
-        <object uid="Frame1TL" type="::arData::FrameTL" />
-        <object uid="Frame2TL" type="::arData::FrameTL" />
-        <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${calibrationInfo2}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
-        <object uid="${camera1}" type="::arData::Camera" src="ref" />
-        <object uid="${camera2}" type="::arData::Camera" src="ref" />
+        <object uid="Frame1" type="::sight::data::Image" />
+        <object uid="Frame2" type="::sight::data::Image" />
+        <object uid="Frame1TL" type="::sight::data::FrameTL" />
+        <object uid="Frame2TL" type="::sight::data::FrameTL" />
+        <object uid="${calibrationInfo1}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${calibrationInfo2}" type="::sight::data::CalibrationInfo" src="ref" />
+        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
+        <object uid="${camera1}" type="::sight::data::Camera" src="ref" />
+        <object uid="${camera2}" type="::sight::data::Camera" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

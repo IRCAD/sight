@@ -11,7 +11,7 @@
     <extension implements="::fwServices::registry::ServiceFactory" >
         <type>::fwGui::IActionSrv</type>
         <service>::Tuto04MeshGeneratorCpp::SMeshModifier</service>
-        <object>::fwData::Mesh</object>
+        <object>::sight::data::Mesh</object>
     </extension>
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -20,7 +20,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="mesh" type="::sight::data::Mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

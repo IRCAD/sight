@@ -22,6 +22,9 @@
 
 #include "uiActivitiesQt/action/SCreateActivity.hpp"
 
+#include <activities/IBuilder.hpp>
+#include <activities/IValidator.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
@@ -32,9 +35,6 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/IBuilder.hpp>
-#include <fwActivities/IValidator.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -51,7 +51,7 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
 
 namespace uiActivitiesQt
 {
@@ -120,7 +120,7 @@ void SCreateActivity::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
+activities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
     QWidget* parent = qApp->activeWindow();
 
@@ -129,7 +129,7 @@ void SCreateActivity::configuring()
     dialog->resize(600, 400);
 
     QStandardItemModel* const model = new QStandardItemModel(dialog);
-    for( const ::fwActivities::registry::ActivityInfo& info :  infos)
+    for( const activities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -174,13 +174,13 @@ void SCreateActivity::configuring()
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
-    ::fwActivities::registry::ActivityInfo info;
+    activities::registry::ActivityInfo info;
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
         QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
-        info = var.value< ::fwActivities::registry::ActivityInfo >();
+        info = var.value< activities::registry::ActivityInfo >();
     }
 
     return info;
@@ -222,12 +222,12 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 void SCreateActivity::updating()
 {
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
     infos = this->getEnabledActivities(infos);
 
     if ( !infos.empty())
     {
-        ::fwActivities::registry::ActivityInfo info;
+        activities::registry::ActivityInfo info;
         if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
         {
             info = infos[0];

@@ -19,61 +19,61 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::Color</service>
-        <object>::fwData::Color</object>
+        <object>::sight::data::Color</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::Composite</service>
-        <object>::fwData::Composite</object>
+        <object>::sight::data::Composite</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::TransformationMatrix3D</service>
-        <object>::fwData::TransformationMatrix3D</object>
+        <object>::sight::data::TransformationMatrix3D</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::Object</service>
-        <object>::fwData::Object</object>
+        <object>::sight::data::Object</object>
     </extension>
 
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::List</service>
-        <object>::fwData::List</object>
+        <object>::sight::data::List</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::BooleanParser</service>
-        <object>::fwData::Boolean</object>
+        <object>::sight::data::Boolean</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::FloatParser</service>
-        <object>::fwData::Float</object>
+        <object>::sight::data::Float</object>
     </extension>
 
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::IntegerParser</service>
-        <object>::fwData::Integer</object>
+        <object>::sight::data::Integer</object>
     </extension>
 
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::StringParser</service>
-        <object>::fwData::String</object>
+        <object>::sight::data::String</object>
     </extension>
 
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwServices::parser::TransferFunction</service>
-        <object>::fwData::TransferFunction</object>
+        <object>::sight::data::TransferFunction</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

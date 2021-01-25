@@ -14,7 +14,6 @@ set( DEPENDENCIES
     fwIO
     data
     fwDataTools
-    fwMedDataTools
     )
 set( REQUIREMENTS
     data

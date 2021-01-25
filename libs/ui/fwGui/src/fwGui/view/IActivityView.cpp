@@ -24,6 +24,9 @@
 
 #include "fwGui/dialog/MessageDialog.hpp"
 
+#include <activities/IActivityValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
@@ -34,9 +37,6 @@
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
-
-#include <fwActivities/IActivityValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -91,7 +91,7 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
     bool isValid;
     std::string message;
 
-    std::tie(isValid, message) = this->::fwActivities::IActivityLauncher::validateActivity(activitySeries);
+    std::tie(isValid, message) = this->activities::IActivityLauncher::validateActivity(activitySeries);
 
     if (!isValid)
     {
@@ -107,7 +107,7 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
 
 data::ActivitySeries::sptr IActivityView::createMainActivity() const
 {
-    data::ActivitySeries::sptr actSeries = this->::fwActivities::IActivityLauncher::createMainActivity();
+    data::ActivitySeries::sptr actSeries = this->activities::IActivityLauncher::createMainActivity();
 
     if (nullptr == actSeries)
     {

@@ -23,11 +23,10 @@
 #pragma once
 
 #include "activities/config.hpp"
+#include <activities/registry/Activities.hpp>
+#include <activities/registry/ActivityMsg.hpp>
 
 #include <data/Vector.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -124,10 +123,10 @@ private:
      */
     void launchActivity(data::ActivitySeries::sptr activitySeries);
 
-    typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
+    activities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

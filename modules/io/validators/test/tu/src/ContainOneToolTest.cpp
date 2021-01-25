@@ -22,13 +22,13 @@
 
 #include "ContainOneToolTest.hpp"
 
+#include <activities/IObjectValidator.hpp>
+#include <activities/IValidator.hpp>
+
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
-
-#include <fwActivities/IObjectValidator.hpp>
-#include <fwActivities/IValidator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::ContainOneToolTest );
@@ -56,14 +56,14 @@ void ContainOneToolTest::tearDown()
 
 void ContainOneToolTest::testValidator()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     data::Reconstruction::sptr rec1     = data::Reconstruction::New();
@@ -131,14 +131,14 @@ void ContainOneToolTest::testValidator()
 
 void ContainOneToolTest::testValidatorWithVector()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::Vector::sptr vector = data::Vector::New();
 
@@ -233,14 +233,14 @@ void ContainOneToolTest::testValidatorWithVector()
 
 void ContainOneToolTest::testValidatorWithComposite()
 {
-    ::fwActivities::IValidator::sptr validator =
-        ::fwActivities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
+    activities::IValidator::sptr validator =
+        activities::validator::factory::New("::validators::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
-    ::fwActivities::IObjectValidator::sptr objValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+    activities::IObjectValidator::sptr objValidator = activities::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    ::fwActivities::IValidator::ValidationType validation;
+    activities::IValidator::ValidationType validation;
 
     data::Composite::sptr composite = data::Composite::New();
 

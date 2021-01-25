@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     utestData
     data
-    fwActivities
 )
 set( REQUIREMENTS
     activities

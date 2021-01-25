@@ -26,7 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <fwMedDataTools/helper/SeriesDB.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/exceptions/Base.hpp>
@@ -314,7 +314,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         ::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
     // Create temporary series helper.
-    ::fwMedDataTools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
+    data::tools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
     const auto infoNotif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
         ::fwServices::IService::s_INFO_NOTIFIED_SIG);
@@ -358,7 +358,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                     m_localSeries.push_back(selectedSeriesUID);
                 }
 
-                ::fwMedDataTools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
+                data::tools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
                 seriesHelper.merge(m_seriesDB);
                 seriesHelper.notify();
             }

@@ -1,15 +1,13 @@
 
-set( NAME activities )
+set( NAME module_activities )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 
 set( DEPENDENCIES
     core
-    fwActivities
     data
     fwGui
     fwServices
-    fwMedDataTools
 )
 set( REQUIREMENTS
     data

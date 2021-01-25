@@ -27,14 +27,13 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Series.hpp>
+#include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwGui/Cursor.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
 #include <fwJobs/IJob.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -130,7 +129,7 @@ void SSeriesDBMerger::updating( )
     ioSelectorSrv->stop();
     ::fwServices::OSR::unregisterService( ioSelectorSrv );
 
-    ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
+    data::tools::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);
     sDBhelper.notify();
 }

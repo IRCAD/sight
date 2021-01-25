@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwGui
     fwServices
     fwJobs
-    fwActivities
+    activities
 )
 set( REQUIREMENTS
     data

@@ -12,9 +12,9 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="frameTL"    type="::arData::FrameTL" />
-            <object uid="videoImage" type="::fwData::Image" />
-            <object uid="camera"     type="::arData::Camera" />
+            <object uid="frameTL"    type="::sight::data::FrameTL" />
+            <object uid="videoImage" type="::sight::data::Image" />
+            <object uid="camera"     type="::sight::data::Camera" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

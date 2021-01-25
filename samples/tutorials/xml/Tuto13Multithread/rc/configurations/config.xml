@@ -6,7 +6,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="mesh" type="::fwData::Mesh" />
+        <object uid="mesh" type="::sight::data::Mesh" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

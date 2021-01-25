@@ -13,13 +13,13 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="frameTLVideo" type="::arData::FrameTL" />
-            <object uid="frameTLDepth" type="::arData::FrameTL" />
-            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
-            <object uid="imageDepth" type="::fwData::Image" />
-            <object uid="imageVideo" type="::fwData::Image" />
+            <object uid="frameTLVideo" type="::sight::data::FrameTL" />
+            <object uid="frameTLDepth" type="::sight::data::FrameTL" />
+            <object uid="RGBDCameraSeries" type="::sight::data::CameraSeries" />
+            <object uid="imageDepth" type="::sight::data::Image" />
+            <object uid="imageVideo" type="::sight::data::Image" />
             <object uid="viewport" type="::fwRenderQt::data::Viewport" />
-            <object uid="tfDepth" type="::fwData::TransferFunction" >
+            <object uid="tfDepth" type="::sight::data::TransferFunction" >
                 <colors>
                     <step color="#000000ff" value="0" />
                     <step color="#ff0000ff" value="1" />
@@ -297,7 +297,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <!-- The videoSelectorSrv creates 2 empty ::arData::Camera so we can use it without any prior calibration -->
+            <!-- The videoSelectorSrv creates 2 empty ::sight::data::Camera so we can use it without any prior calibration -->
             <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <videoSupport>yes</videoSupport>

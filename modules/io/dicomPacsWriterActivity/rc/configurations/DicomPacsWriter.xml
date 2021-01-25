@@ -7,8 +7,8 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
-        <object uid="selections" type="::fwData::Vector" />
+        <object uid="seriesDB" type="::sight::data::SeriesDB" />
+        <object uid="selections" type="::sight::data::Vector" />
         <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -101,7 +101,7 @@
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
             </configs>
         </service>
 

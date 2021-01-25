@@ -5,7 +5,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioDcmtk::SSeriesDBReader</service>
-        <object>::fwMedData::SeriesDB</object>
+        <object>::sight::data::SeriesDB</object>
         <desc>Series DB Reader (DCMTK)</desc>
     </extension>
 

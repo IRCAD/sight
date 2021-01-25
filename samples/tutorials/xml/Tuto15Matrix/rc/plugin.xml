@@ -12,15 +12,15 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <!-- Mesh object associated to the uid 'mesh' -->
-        <object uid="mesh"              type="::fwData::Mesh" />
+        <object uid="mesh"              type="::sight::data::Mesh" />
         <!-- Matrix object associated to the uid 'matrix' -->
-        <object uid="matrix"            type="::fwData::TransformationMatrix3D" />
+        <object uid="matrix"            type="::sight::data::TransformationMatrix3D" />
         <!-- Translation matrix object associated to the uid 'translationMatrix' -->
-        <object uid="translationMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="translationMatrix" type="::sight::data::TransformationMatrix3D" />
         <!-- Rotation matrix object associated to the uid 'rotationMatrix' -->
-        <object uid="rotationMatrix"    type="::fwData::TransformationMatrix3D" />
-        <object uid="transRotMatrix"    type="::fwData::TransformationMatrix3D" />
-        <object uid="rotTransMatrix"    type="::fwData::TransformationMatrix3D" />
+        <object uid="rotationMatrix"    type="::sight::data::TransformationMatrix3D" />
+        <object uid="transRotMatrix"    type="::sight::data::TransformationMatrix3D" />
+        <object uid="rotTransMatrix"    type="::sight::data::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -154,8 +154,8 @@
 
         <!--
             Defines transform adaptors:
-            This adaptor works on a ::fwData::TransformationMatrix3D and manages a vtkTransform. When
-            the ::fwData::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
+            This adaptor works on a ::sight::data::TransformationMatrix3D and manages a vtkTransform. When
+            the ::sight::data::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
             versa.
         -->
         <service uid="matrix1Adp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >

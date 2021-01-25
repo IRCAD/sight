@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwDicomTools
     fwJobs
     fwMath
-    fwMedDataTools
+    data
     fwServices
     fwZip
     )

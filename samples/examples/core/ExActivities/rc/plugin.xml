@@ -8,13 +8,13 @@
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwActivities::registry::Activities" >
+    <extension implements="::activities::registry::Activities" >
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
         <icon>flatIcon-0.1/icons/BlueFile.svg</icon>
         <requirements>
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
             </requirement>
         </requirements>
@@ -25,17 +25,17 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities" >
+    <extension implements="::activities::registry::Activities" >
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
         <icon>flatIcon-0.1/icons/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0" >
+            <requirement name="landmarks" type="::sight::data::Landmarks" minOccurs="0" maxOccurs="0" >
                 <desc>Landmarks that will be created in this activity.</desc>
             </requirement>
         </requirements>
@@ -47,17 +47,17 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwActivities::registry::Activities" >
+    <extension implements="::activities::registry::Activities" >
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
         <icon>flatIcon-0.1/icons/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="optionalModelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+            <requirement name="optionalModelSeries" type="::sight::data::ModelSeries" minOccurs="0" maxOccurs="1" >
                 <desc>Optional model series.</desc>
             </requirement>
         </requirements>
@@ -95,7 +95,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::fwData::Image" icon="flatIcon-0.1/icons/Volume.svg" />
+                <icon type="::sight::data::Image" icon="flatIcon-0.1/icons/Volume.svg" />
             </icons>
         </config>
     </extension>

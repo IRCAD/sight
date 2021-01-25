@@ -24,6 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
+#include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <fwDicomIOFilter/composite/IComposite.hpp>
@@ -34,8 +35,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -407,7 +406,7 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB
-    ::fwMedDataTools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+    data::tools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
     sDBhelper.clear();
 
     // Be sure series are selected

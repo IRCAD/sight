@@ -24,6 +24,8 @@
 
 #include "uiMedDataQt/InsertSeries.hpp"
 
+#include <activities/registry/Activities.hpp>
+
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
@@ -34,8 +36,6 @@
 #include <data/ModelSeries.hpp>
 #include <data/Patient.hpp>
 #include <data/Series.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
@@ -456,11 +456,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         }
         else if (activitySeries)
         {
-            ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
-            std::string id = activitySeries->getActivityConfigId();
+            activities::registry::Activities::sptr registry = activities::registry::Activities::getDefault();
+            std::string id                                  = activitySeries->getActivityConfigId();
             SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-            ::fwActivities::registry::ActivityInfo activityInfo;
+            activities::registry::ActivityInfo activityInfo;
             activityInfo = registry->getInfo(id);
             _item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
         }

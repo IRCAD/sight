@@ -33,7 +33,7 @@ class ObjectService;
 class IService;
 }
 
-namespace fwActivities
+namespace sight::activities
 {
 class IActivityLauncher;
 }

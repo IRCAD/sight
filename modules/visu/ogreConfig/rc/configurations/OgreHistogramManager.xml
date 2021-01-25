@@ -9,11 +9,11 @@
     <config>
 
         <!-- *********************************** Begin Objects declaration *********************************** -->
-        <object uid="${IMAGE}"     type="::fwData::Image"     src="ref" />
-        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${IMAGE}"     type="::sight::data::Image"     src="ref" />
+        <object uid="${TF}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <object uid="TFPool" type="::fwData::Composite" />
-        <object uid="histogram" type="::fwData::Histogram" />
+        <object uid="TFPool" type="::sight::data::Composite" />
+        <object uid="histogram" type="::sight::data::Histogram" />
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->

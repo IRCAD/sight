@@ -24,9 +24,9 @@
 
 #include "calibrationActivity/config.hpp"
 
-#include <core/base.hpp>
+#include <activities/IObjectValidator.hpp>
 
-#include <fwActivities/IObjectValidator.hpp>
+#include <core/base.hpp>
 
 namespace calibrationActivity
 {
@@ -38,13 +38,13 @@ namespace validator
  *        a ',' (for example: "101, 102, 103").
  *
  */
-class CALIBRATIONACTIVITY_CLASS_API TagId : public ::fwActivities::IObjectValidator
+class CALIBRATIONACTIVITY_CLASS_API TagId : public activities::IObjectValidator
 {
 public:
-    fwCoreClassMacro(TagId, ::fwActivities::IValidator, ::fwActivities::validator::factory::New< TagId >)
+    fwCoreClassMacro(TagId, activities::IValidator, activities::validator::factory::New< TagId >)
 
     /// Constructor. Do nothing.
-    CALIBRATIONACTIVITY_API TagId(::fwActivities::IValidator::Key key);
+    CALIBRATIONACTIVITY_API TagId(activities::IValidator::Key key);
 
     /// Destructor. Do nothing.
     CALIBRATIONACTIVITY_API virtual ~TagId();

@@ -179,7 +179,7 @@ void SActivitySequencer::starting()
 
     QStringList activitiesName;
 
-    auto activityReg = ::fwActivities::registry::Activities::getDefault();
+    auto activityReg = activities::registry::Activities::getDefault();
     for (size_t i = 0; i < m_activityIds.size(); ++i)
     {
         std::string name = m_activityNames[i];
