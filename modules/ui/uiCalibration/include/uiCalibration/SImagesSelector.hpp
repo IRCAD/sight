@@ -24,11 +24,11 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
+
+#include <data/FrameTL.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -41,7 +41,7 @@ namespace uiCalibration
 {
 
 /**
- * @brief   This editor allows to add images into a data::Vector from an ::arData::FrameTL.
+ * @brief   This editor allows to add images into a data::Vector from an data::FrameTL.
  *
  * @section Slots Slots
  * - \b add(core::HiResClock::HiResClockType): .
@@ -57,7 +57,7 @@ namespace uiCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b frameTL [::arData::FrameTL]: frame timeline used to extract images.
+ * - \b frameTL [data::FrameTL]: frame timeline used to extract images.
  * @subsection In-Out In-Out:
  * - \b key2 [data::Vector]: vector containing extracted images.
  */
@@ -118,7 +118,7 @@ protected:
 private:
 
     /// Frame timeline used to extract images
-    ::arData::FrameTL::csptr m_frameTL;
+    data::FrameTL::csptr m_frameTL;
 
     /// Index of the last acquisition.
     int m_captureIdx;

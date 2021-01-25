@@ -52,8 +52,8 @@ namespace uiCalibration
    </service>
    @endcode
  * @subsection Input Input
- * - \b calInfo1 [::arData::CalibrationInfo]: calibration information for first camera.
- * - \b calInfo2 [::arData::CalibrationInfo] (optional): calibration information for optional second camera.
+ * - \b calInfo1 [data::CalibrationInfo]: calibration information for first camera.
+ * - \b calInfo2 [data::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
                                                        public ::fwGui::editor::IEditor

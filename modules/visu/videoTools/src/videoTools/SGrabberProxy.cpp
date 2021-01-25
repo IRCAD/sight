@@ -22,12 +22,12 @@
 
 #include "videoTools/SGrabberProxy.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -54,7 +54,7 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL)
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -170,27 +170,27 @@ void SGrabberProxy::startCamera()
             const auto srvConfigFactory = ::fwServices::registry::ServiceConfig::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
-            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
                                                                                  "::arServices::IRGBDGrabber");
 
-            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
                                                                                     "::arServices::IGrabber");
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 
-            ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
+            data::Camera::SourceType sourceType = data::Camera::UNKNOWN;
 
             size_t numCamerasInSeries = 1;
 
             auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
-            auto camera      = ::arData::Camera::dynamicConstCast(cameraInput);
+            auto camera      = data::Camera::dynamicConstCast(cameraInput);
             if(camera)
             {
                 sourceType = camera->getCameraSource();
             }
             else
             {
-                auto cameraSeries = ::arData::CameraSeries::dynamicConstCast(cameraInput);
+                auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput);
                 if(cameraSeries)
                 {
                     numCamerasInSeries = cameraSeries->getNumberOfCameras();
@@ -216,7 +216,7 @@ void SGrabberProxy::startCamera()
                     objectsType.erase(std::remove_if(objectsType.begin(), objectsType.end(),
                                                      [ & ](const std::string& _type)
                         {
-                            return _type != "::arData::FrameTL";
+                            return _type != "data::FrameTL";
                         }), objectsType.end());
 
                     size_t numTL   = 0;
@@ -229,7 +229,7 @@ void SGrabberProxy::startCamera()
                         SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->getInOut< data::Object >(key);
                         SLM_ASSERT("Object key '" + key + "' not found", obj);
-                        if(obj->getClassname() == "::arData::FrameTL")
+                        if(obj->getClassname() == "data::FrameTL")
                         {
                             ++numTL;
                         }
@@ -253,7 +253,7 @@ void SGrabberProxy::startCamera()
                     }
 
                     // 2. Filter against the source type
-                    if(sourceType != ::arData::Camera::UNKNOWN)
+                    if(sourceType != data::Camera::UNKNOWN)
                     {
                         const auto tags = srvFactory->getServiceTags(srvImpl);
 
@@ -265,18 +265,18 @@ void SGrabberProxy::startCamera()
                             // Remove trailing and leading spaces.
                             const auto trimedToken = ::boost::algorithm::trim_copy(token);
 
-                            ::arData::Camera::SourceType handledSourceType = ::arData::Camera::UNKNOWN;
+                            data::Camera::SourceType handledSourceType = data::Camera::UNKNOWN;
                             if(trimedToken == "FILE")
                             {
-                                handledSourceType = ::arData::Camera::FILE;
+                                handledSourceType = data::Camera::FILE;
                             }
                             else if(trimedToken == "STREAM")
                             {
-                                handledSourceType = ::arData::Camera::STREAM;
+                                handledSourceType = data::Camera::STREAM;
                             }
                             else if(trimedToken == "DEVICE")
                             {
-                                handledSourceType = ::arData::Camera::DEVICE;
+                                handledSourceType = data::Camera::DEVICE;
                             }
                             if(handledSourceType == sourceType)
                             {
@@ -390,14 +390,14 @@ void SGrabberProxy::startCamera()
                 srv = this->registerService< ::arServices::IGrabber>(m_grabberImpl);
 
                 auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
-                auto camera      = ::arData::Camera::dynamicConstCast(cameraInput);
+                auto camera      = data::Camera::dynamicConstCast(cameraInput);
                 if(camera)
                 {
                     srv->registerInput(camera, s_CAMERA_INPUT);
                 }
                 else
                 {
-                    auto cameraSeries = ::arData::CameraSeries::dynamicConstCast(cameraInput);
+                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput);
                     if(cameraSeries)
                     {
                         const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
@@ -416,7 +416,7 @@ void SGrabberProxy::startCamera()
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SLM_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getInOut< ::arData::FrameTL >(key);
+                    auto frameTL = this->getInOut< data::FrameTL >(key);
                     if(frameTL)
                     {
                         if(m_services.size() > 1)

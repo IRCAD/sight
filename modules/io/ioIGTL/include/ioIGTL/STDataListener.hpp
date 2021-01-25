@@ -60,7 +60,7 @@ namespace ioIGTL
  * </service>
  * @endcode
  * @subsection In-Out In-Out:
- * - \b timeline [::arData::MatrixTL]: Timeline used to store received matrix.
+ * - \b timeline [data::MatrixTL]: Timeline used to store received matrix.
  * @subsection Configuration Configuration:
  * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
  * - \b TData : specified IGTL matrix name to push in specified timeline index

@@ -22,12 +22,11 @@
 
 #include "ioIGTL/STDataListener.hpp"
 
-#include <arData/MatrixTL.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
 #include <data/Composite.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -41,7 +40,7 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL)
+fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::STDataListener, data::MatrixTL)
 
 namespace ioIGTL
 {
@@ -182,7 +181,7 @@ void STDataListener::runClient()
 
 void STDataListener::starting()
 {
-    ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
+    data::MatrixTL::sptr matTL = this->getInOut< data::MatrixTL>(s_TIMELINE_KEY);
     matTL->setMaximumSize(10);
     matTL->initPoolSize(static_cast< unsigned int >(m_matrixNameIndex.size()));
 
@@ -202,8 +201,8 @@ void STDataListener::stopping()
 
 void STDataListener::manageTimeline(const data::Composite::sptr& obj, double timestamp)
 {
-    ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
-    SPTR(::arData::MatrixTL::BufferType) matrixBuf;
+    data::MatrixTL::sptr matTL = this->getInOut< data::MatrixTL>(s_TIMELINE_KEY);
+    SPTR(data::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
     for(const data::Composite::ContainerType::value_type& elt : obj->getContainer())
@@ -236,8 +235,8 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
     }
     matTL->pushObject(matrixBuf);
 
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = matTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -58,7 +58,7 @@ public:
     void writeReadConfig();
 
     /// Comparision of camera, set _sightExpected to true if the expected values are sight camera, false otherwise.
-    void compareCam(const ::arData::Camera::csptr _sightCam, const ::openvslam::camera::perspective& _ovsCam,
+    void compareCam(const data::Camera::csptr _sightCam, const ::openvslam::camera::perspective& _ovsCam,
                     bool _sightExpected = true);
 
 };

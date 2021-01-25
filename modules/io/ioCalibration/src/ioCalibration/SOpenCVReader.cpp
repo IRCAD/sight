@@ -22,10 +22,9 @@
 
 #include "ioCalibration/SOpenCVReader.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/Signal.hxx>
 
+#include <data/CameraSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
@@ -130,7 +129,7 @@ void SOpenCVReader::stopping()
 void SOpenCVReader::updating()
 {
 
-    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(::fwIO::s_DATA_KEY);
+    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(::fwIO::s_DATA_KEY);
 
     bool use_dialog = false;
     //use dialog only if no file was configured
@@ -158,13 +157,13 @@ void SOpenCVReader::updating()
 
     for(size_t c = 0; c < cams; ++c)
     {
-        ::arData::Camera::sptr cam = camSeries->getCamera(0);
+        data::Camera::sptr cam = camSeries->getCamera(0);
         lock.upgrade();
         camSeries->removeCamera(cam);
         lock.downgrade();
 
-        auto sig = camSeries->signal< ::arData::CameraSeries::RemovedCameraSignalType >
-                       (::arData::CameraSeries::s_REMOVED_CAMERA_SIG);
+        auto sig = camSeries->signal< data::CameraSeries::RemovedCameraSignalType >
+                       (data::CameraSeries::s_REMOVED_CAMERA_SIG);
         sig->asyncEmit(cam);
 
     }
@@ -201,7 +200,7 @@ void SOpenCVReader::updating()
             scale = 1.;
         }
 
-        ::arData::Camera::sptr cam = ::arData::Camera::New();
+        data::Camera::sptr cam = data::Camera::New();
         cam->setFx(matrix.at<double>(0, 0));
         cam->setFy(matrix.at<double>(1, 1));
         cam->setCx(matrix.at<double>(0, 2));
@@ -225,8 +224,8 @@ void SOpenCVReader::updating()
         camSeries->addCamera(cam);
         writeLock.unlock();
 
-        auto sig = camSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-            ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+        auto sig = camSeries->signal< data::CameraSeries::AddedCameraSignalType >(
+            data::CameraSeries::s_ADDED_CAMERA_SIG);
         sig->asyncEmit(cam);
 
         ::cv::Mat extrinsic;
@@ -247,14 +246,14 @@ void SOpenCVReader::updating()
             writeLock.lock();
             camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
             writeLock.unlock();
-            auto sig = camSeries->signal< ::arData::CameraSeries::ExtrinsicCalibratedSignalType >
-                           (::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+            auto sig = camSeries->signal< data::CameraSeries::ExtrinsicCalibratedSignalType >
+                           (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camSeries->signal< ::arData::CameraSeries::ModifiedSignalType >(::arData::CameraSeries::s_MODIFIED_SIG);
+    auto sig = camSeries->signal< data::CameraSeries::ModifiedSignalType >(data::CameraSeries::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     //clear locations only if it was configured through GUI.

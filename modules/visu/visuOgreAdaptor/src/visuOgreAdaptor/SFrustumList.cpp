@@ -22,10 +22,9 @@
 
 #include "visuOgreAdaptor/SFrustumList.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/com/Slots.hxx>
 
+#include <data/Camera.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -151,7 +150,7 @@ void SFrustumList::setVisible(bool _visible)
 void SFrustumList::addFrustum()
 {
     //Get camera parameters
-    const auto cameraData = this->getLockedInput< ::arData::Camera >(s_CAMERA_INPUT);
+    const auto cameraData = this->getLockedInput< data::Camera >(s_CAMERA_INPUT);
 
     ::Ogre::Camera* ogreCamera =
         this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"

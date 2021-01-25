@@ -22,9 +22,6 @@
 
 #include "videoTools/SMatrixSynchronizer.hpp"
 
-#include <arData/MatrixTL.hpp>
-#include <arData/timeline/Buffer.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
@@ -35,7 +32,9 @@
 #include <core/tools/Object.hpp>
 
 #include <data/Image.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
@@ -84,13 +83,13 @@ void SMatrixSynchronizer::stopping()
 void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
     data::TransformationMatrix3D::sptr matrix3D = this->getInOut< data::TransformationMatrix3D >("matrix");
-    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >("TL");
+    data::MatrixTL::csptr matrixTL              = this->getInput< data::MatrixTL >("TL");
 
     if (timestamp > m_lastTimestamp)
     {
 
         core::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
-        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+        CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
         SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,12 +29,12 @@ namespace arStructuralPatch
 {
 
 /// Contains the structural patch (::fwAtomsPatch::IStructuralPatch) to tranforms atoms from arData objects.
-namespace arData
+namespace sight::data
 {
-/// Contains the structural patch to transform atoms from arData::Camera.
+/// Contains the structural patch to transform atoms from data::Camera.
 namespace Camera
 {
 }
-}     // namespace arData
+}     // namespace sight::data
 
 } // namespace arStructuralPatch

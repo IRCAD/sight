@@ -24,7 +24,7 @@
 
 #include "ioTimeline/config.hpp"
 
-#include <arData/MatrixTL.hpp>
+#include <data/MatrixTL.hpp>
 
 #include <fwIO/IWriter.hpp>
 
@@ -55,7 +55,7 @@ namespace ioTimeline
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::arData::MatrixTL]: timeline containing the matrices to save.
+ * - \b data [data::MatrixTL]: timeline containing the matrices to save.
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter

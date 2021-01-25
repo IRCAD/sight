@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace ioCalibration
 {
 
 /**
- * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a arData::CameraSeries.
+ * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a data::CameraSeries.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -39,7 +39,7 @@ namespace ioCalibration
        </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b data [::arData::CameraSeries]: object to read
+ * - \b data [data::CameraSeries]: object to read
  */
 class IOCALIBRATION_CLASS_API SOpenCVReader : public ::fwIO::IReader
 {

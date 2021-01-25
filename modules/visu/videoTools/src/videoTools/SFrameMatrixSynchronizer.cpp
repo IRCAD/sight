@@ -22,16 +22,15 @@
 
 #include "videoTools/SFrameMatrixSynchronizer.hpp"
 
-#include <arData/FrameTL.hpp>
-#include <arData/MatrixTL.hpp>
-#include <arData/timeline/Buffer.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/MatrixTL.hpp>
+#include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwMath/Compare.hpp>
@@ -95,9 +94,9 @@ SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
 ::fwServices::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
-    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
+    connections.push( s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 
@@ -126,7 +125,7 @@ void SFrameMatrixSynchronizer::starting()
     m_images.reserve(numFrameTLs);
     for(size_t i = 0; i < numFrameTLs; ++i)
     {
-        m_frameTLs.push_back(this->getWeakInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i));
+        m_frameTLs.push_back(this->getWeakInput< data::FrameTL>(s_FRAMETL_INPUT, i));
         m_images.push_back(this->getWeakInOut< data::Image>(s_IMAGE_INOUT, i));
     }
 
@@ -140,7 +139,7 @@ void SFrameMatrixSynchronizer::starting()
         // if ever the group is not found 'getKeyGroupSize' will assert.
         const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT + std::to_string(i));
 
-        m_matrixTLs.push_back(this->getWeakInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i));
+        m_matrixTLs.push_back(this->getWeakInput< data::MatrixTL>(s_MATRIXTL_INPUT, i));
 
         std::vector< data::mt::weak_ptr< data::TransformationMatrix3D> > matricesVector;
         for(size_t j = 0; j < numMatrices; ++j)
@@ -314,7 +313,7 @@ void SFrameMatrixSynchronizer::synchronize()
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
         const auto image = m_images[i].lock();
-        CSPTR(::arData::FrameTL::BufferType) buffer;
+        CSPTR(data::FrameTL::BufferType) buffer;
         {
             const auto frameTL = m_frameTLs[i].lock();
             SLM_ASSERT("Image with index '" << i << "' does not exist", image);
@@ -331,19 +330,19 @@ void SFrameMatrixSynchronizer::synchronize()
                 data::Image::PixelFormat format;
                 switch (frameTL->getPixelFormat())
                 {
-                    case ::arData::FrameTL::PixelFormat::GRAY_SCALE:
+                    case data::FrameTL::PixelFormat::GRAY_SCALE:
                         format = data::Image::GRAY_SCALE;
                         break;
-                    case ::arData::FrameTL::PixelFormat::RGB:
+                    case data::FrameTL::PixelFormat::RGB:
                         format = data::Image::RGB;
                         break;
-                    case ::arData::FrameTL::PixelFormat::BGR:
+                    case data::FrameTL::PixelFormat::BGR:
                         format = data::Image::BGR;
                         break;
-                    case ::arData::FrameTL::PixelFormat::RGBA:
+                    case data::FrameTL::PixelFormat::RGBA:
                         format = data::Image::RGBA;
                         break;
-                    case ::arData::FrameTL::PixelFormat::BGRA:
+                    case data::FrameTL::PixelFormat::BGRA:
                         format = data::Image::BGRA;
                         break;
                     default:
@@ -400,7 +399,7 @@ void SFrameMatrixSynchronizer::synchronize()
     size_t syncMatricesNbr = 0;
     for(const auto& tlIdx: availableMatricesTL)
     {
-        CSPTR(::arData::MatrixTL::BufferType) buffer;
+        CSPTR(data::MatrixTL::BufferType) buffer;
         {
             const auto matrixTL = m_matrixTLs[tlIdx].lock();
             buffer = matrixTL->getClosestBuffer(matrixTimestamp);

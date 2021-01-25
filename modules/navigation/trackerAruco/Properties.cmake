@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwDataTools
     fwServices
     fwMath
-    arData
     arServices
     cvIO
 
@@ -15,5 +14,4 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     data
     servicesReg
-    arData
 )

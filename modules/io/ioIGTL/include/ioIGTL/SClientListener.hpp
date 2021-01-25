@@ -50,7 +50,7 @@ namespace ioIGTL
  * @endcode
  * @subsection In-Out In-Out:
  * - \b object [data::Object]:
- *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL):
+ *   - if associated object is a timeline (data::MatrixT or data::FrameTL):
  *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
@@ -93,7 +93,7 @@ private:
 
     /**
      * @brief method called when the current object is a timeline
-     * @note Currently only arData::MatrixTL and arData::FrameTL are managed
+     * @note Currently only data::MatrixTL and data::FrameTL are managed
      */
     void manageTimeline(data::Object::sptr obj, size_t index);
 

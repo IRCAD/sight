@@ -22,13 +22,13 @@
 
 #include "uiCalibration/SIntrinsicEdition.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Object.hpp>
+
+#include <data/Camera.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -70,7 +70,7 @@ void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
 
 void SIntrinsicEdition::updateCalibration()
 {
-    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+    data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
     SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     camera->setWidth( m_calibration[0]);
@@ -86,9 +86,9 @@ void SIntrinsicEdition::updateCalibration()
 
     camera->setSkew(m_calibration[11]);
 
-    ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
-        ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
+    data::Camera::IntrinsicCalibratedSignalType::sptr sig;
+    sig = camera->signal< data::Camera::IntrinsicCalibratedSignalType >(
+        data::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
     sig->asyncEmit();
 }
@@ -107,7 +107,7 @@ void SIntrinsicEdition::configuring()
 
 void SIntrinsicEdition::readCalibration()
 {
-    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+    data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
     SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     m_calibration[0] = camera->getWidth();

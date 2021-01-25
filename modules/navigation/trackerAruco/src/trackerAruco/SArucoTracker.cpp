@@ -22,11 +22,6 @@
 
 #include "trackerAruco/SArucoTracker.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-#include <arData/MarkerMap.hpp>
-#include <arData/MarkerTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
@@ -34,7 +29,11 @@
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/MarkerMap.hpp>
+#include <data/MarkerTL.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 
 #include <boost/foreach.hpp>
@@ -108,7 +107,7 @@ SArucoTracker::~SArucoTracker() noexcept
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_TIMELINE_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_TIMELINE_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
     connections.push( s_FRAME_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_FRAME_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
@@ -160,7 +159,7 @@ void SArucoTracker::starting()
     const size_t numTagTL = this->getKeyGroupSize(s_TAGTL_INOUT_GROUP);
     for(size_t i = 0; i < numTagTL; ++i)
     {
-        ::arData::MarkerTL::sptr markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
+        data::MarkerTL::sptr markerTL = this->getInOut< data::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
         if(markerTL)
         {
             SLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
@@ -195,7 +194,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 {
     if(!m_isInitialized)
     {
-        ::arData::Camera::csptr arCam = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+        data::Camera::csptr arCam = this->getInput< data::Camera >(s_CAMERA_INPUT);
 
         std::tie(m_cameraParams.intrinsic, m_cameraParams.size, m_cameraParams.distorsion) =
             ::cvIO::Camera::copyToCv(arCam);
@@ -214,11 +213,11 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
     }
     else
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(s_TIMELINE_INPUT);
 
         if(frameTL)
         {
-            const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+            const CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
             SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
 
@@ -302,13 +301,13 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
-            ::arData::MarkerTL::sptr markerTL;
+            data::MarkerTL::sptr markerTL;
 
             if(this->getKeyGroupSize(s_TAGTL_INOUT_GROUP))
             {
-                markerTL = this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
+                markerTL = this->getInOut< data::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
             }
-            SPTR(::arData::MarkerTL::BufferType) trackerObject;
+            SPTR(data::MarkerTL::BufferType) trackerObject;
 
             unsigned int markerPosition = 0;
             for (const auto& markerID : markersID)
@@ -339,10 +338,10 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                         else
                         {
                             auto markerMap =
-                                this->getInOut< ::arData::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
+                                this->getInOut< data::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
                             SLM_ASSERT("Marker map not found", markerMap);
 
-                            ::arData::MarkerMap::MarkerType marker;
+                            data::MarkerMap::MarkerType marker;
                             marker.resize(4);
                             for (size_t j = 0; j < 4; ++j)
                             {
@@ -360,14 +359,14 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
             // Notify
             if(trackerObject != nullptr)
             {
-                ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = markerTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+                data::TimeLine::ObjectPushedSignalType::sptr sig;
+                sig = markerTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                    data::TimeLine::s_OBJECT_PUSHED_SIG );
                 sig->asyncEmit(timestamp);
             }
             if(this->getKeyGroupSize(s_MARKER_MAP_INOUT_GROUP))
             {
-                auto markerMap = this->getInOut< ::arData::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
+                auto markerMap = this->getInOut< data::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
                 // Always send the signal even if we did not find anything.
                 // This allows to keep updating the whole processing pipeline.
                 auto sig = markerMap->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG );

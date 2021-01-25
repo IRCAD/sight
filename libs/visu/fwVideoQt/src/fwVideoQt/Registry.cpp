@@ -61,21 +61,21 @@ Registry::~Registry()
 
 //-----------------------------------------------------------------------------
 
-Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
+Player* Registry::requestPlayer(const data::Camera::csptr& camera)
 {
-    const ::arData::Camera::SourceType type = camera->getCameraSource();
+    const data::Camera::SourceType type = camera->getCameraSource();
 
     Key videoKey;
     videoKey.m_eType = type;
     switch(type)
     {
-        case ::arData::Camera::FILE:
+        case data::Camera::FILE:
             videoKey.m_strID = camera->getVideoFile().string();
             break;
-        case ::arData::Camera::STREAM:
+        case data::Camera::STREAM:
             videoKey.m_strID = camera->getStreamUrl();
             break;
-        case ::arData::Camera::DEVICE:
+        case data::Camera::DEVICE:
             videoKey.m_strID = camera->getCameraID();
             break;
         default:
@@ -97,7 +97,7 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
         player = new Player();
         switch(type)
         {
-            case ::arData::Camera::FILE:
+            case data::Camera::FILE:
             {
                 /// Path of the video file stored in the camera description
                 std::filesystem::path videoPath(camera->getVideoFile());
@@ -125,15 +125,15 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
 
                 break;
             }
-            case ::arData::Camera::STREAM:
+            case data::Camera::STREAM:
             {
                 player->initCameraStream(camera->getStreamUrl());
                 break;
             }
-            case ::arData::Camera::DEVICE:
+            case data::Camera::DEVICE:
             {
-                ::QVideoFrame::PixelFormat qtPixelFormat  = QVideoFrame::PixelFormat::Format_Invalid;
-                ::arData::Camera::PixelFormat sightFormat = camera->getPixelFormat();
+                ::QVideoFrame::PixelFormat qtPixelFormat = QVideoFrame::PixelFormat::Format_Invalid;
+                data::Camera::PixelFormat sightFormat = camera->getPixelFormat();
 
                 ::fwVideoQt::helper::PixelFormatTranslatorType::right_const_iterator iter;
                 iter = ::fwVideoQt::helper::pixelFormatTranslator.right.find(sightFormat);

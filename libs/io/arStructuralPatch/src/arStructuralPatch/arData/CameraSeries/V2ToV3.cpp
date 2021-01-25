@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "arStructuralPatch/arData/CameraSeries/V2ToV3.hpp"
+#include "arStructuralPatch/data/CameraSeries/V2ToV3.hpp"
 
 #include <atoms/String.hpp>
 
 namespace arStructuralPatch
 {
-namespace arData
+namespace sight::data
 {
 namespace CameraSeries
 {
@@ -34,8 +34,8 @@ namespace CameraSeries
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::arData::CameraSeries";
-    m_targetClassname = "::arData::CameraSeries";
+    m_originClassname = "data::CameraSeries";
+    m_targetClassname = "data::CameraSeries";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 }
@@ -83,5 +83,5 @@ void V2ToV3::apply( const atoms::Object::sptr& _previous,
 }
 
 } // namespace CameraSeries
-} // namespace arData
+} // namespace sight::data
 } // namespace arStructuralPatch

@@ -24,9 +24,9 @@
 
 #include "ioTimeline/config.hpp"
 
-#include <arData/MatrixTL.hpp>
-
 #include <core/thread/Timer.hpp>
+
+#include <data/MatrixTL.hpp>
 
 #include <fwIO/IReader.hpp>
 
@@ -68,7 +68,7 @@ namespace ioTimeline
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b matrixTL [::arData::MatrixTL]: timeline in which matrices will be pushed.
+ * - \b matrixTL [data::MatrixTL]: timeline in which matrices will be pushed.
  * @subsection Configuration Configuration
  * - \b oneShot (optionnal): if true reader will read csv line per line.
  * to read next/previous line you should call readNext/readPrevious. If false reader will read each line with

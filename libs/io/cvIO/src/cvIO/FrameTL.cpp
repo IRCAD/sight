@@ -31,7 +31,7 @@ namespace cvIO
 
 //------------------------------------------------------------------------------
 
-static void toCv(const ::arData::FrameTL::csptr& _timeline, const ::arData::FrameTL::BufferType::ElementType* _buffer,
+static void toCv(const data::FrameTL::csptr& _timeline, const data::FrameTL::BufferType::ElementType* _buffer,
                  cv::Mat& _cvImage, bool _copy)
 {
     const auto imageType = _timeline->getType();
@@ -41,7 +41,7 @@ static void toCv(const ::arData::FrameTL::csptr& _timeline, const ::arData::Fram
 
     ::cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
 
-    auto buffer = static_cast<void*>(const_cast< ::arData::FrameTL::BufferType::ElementType*>(_buffer));
+    auto buffer = static_cast<void*>(const_cast< data::FrameTL::BufferType::ElementType*>(_buffer));
     if(_copy)
     {
         ::cv::Mat mat = ::cv::Mat(cvSize, cvType, buffer);
@@ -55,8 +55,8 @@ static void toCv(const ::arData::FrameTL::csptr& _timeline, const ::arData::Fram
 
 //------------------------------------------------------------------------------
 
-void FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
-                       ::arData::FrameTL::BufferType::ElementType* _buffer,
+void FrameTL::moveToCv(const data::FrameTL::csptr& _timeline,
+                       data::FrameTL::BufferType::ElementType* _buffer,
                        ::cv::Mat& _cvImage)
 {
     toCv(_timeline, _buffer, _cvImage, false);
@@ -64,8 +64,8 @@ void FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
 
 //------------------------------------------------------------------------------
 
-const cv::Mat FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
-                                const ::arData::FrameTL::BufferType::ElementType* _buffer)
+const cv::Mat FrameTL::moveToCv(const data::FrameTL::csptr& _timeline,
+                                const data::FrameTL::BufferType::ElementType* _buffer)
 {
     ::cv::Mat mat;
     toCv(_timeline, _buffer, mat, false);
@@ -74,8 +74,8 @@ const cv::Mat FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
 
 //------------------------------------------------------------------------------
 
-void FrameTL::copyFromCv(const ::arData::FrameTL::csptr& _timeline,
-                         ::arData::FrameTL::BufferType::ElementType* _buffer,
+void FrameTL::copyFromCv(const data::FrameTL::csptr& _timeline,
+                         data::FrameTL::BufferType::ElementType* _buffer,
                          const ::cv::Mat& _cvImage)
 {
     const auto prevImageType = _timeline->getType();
@@ -104,8 +104,8 @@ void FrameTL::copyFromCv(const ::arData::FrameTL::csptr& _timeline,
 
 //------------------------------------------------------------------------------
 
-void FrameTL::copyToCv(const ::arData::FrameTL::csptr& _timeline,
-                       const ::arData::FrameTL::BufferType::ElementType* _buffer,
+void FrameTL::copyToCv(const data::FrameTL::csptr& _timeline,
+                       const data::FrameTL::BufferType::ElementType* _buffer,
                        ::cv::Mat& _cvImage)
 {
     toCv(_timeline, _buffer, _cvImage, true);

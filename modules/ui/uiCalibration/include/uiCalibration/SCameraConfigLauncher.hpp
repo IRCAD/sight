@@ -24,9 +24,8 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <data/ActivitySeries.hpp>
+#include <data/CameraSeries.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -70,7 +69,7 @@ namespace uiCalibration
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b cameraSeries [::arData::CameraSeries] : stores camera calibrations.
+ * - \b cameraSeries [data::CameraSeries] : stores camera calibrations.
  * - \b activitySeries [data::ActivitySeries]: stores the information used to generate the calibration.
  *        It allows to re-open the activity with this information.
  *
@@ -135,7 +134,7 @@ private:
     ::fwServices::helper::ConfigLauncher m_intrinsicLauncher;
     ::fwServices::helper::ConfigLauncher m_extrinsicLauncher;
 
-    ::arData::CameraSeries::sptr m_cameraSeries;
+    data::CameraSeries::sptr m_cameraSeries;
     data::ActivitySeries::sptr m_activitySeries;
 
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ namespace ioCalibration
    @endcode
  *
  * @subsection InOut InOut
- * - \b data [::arData::CalibrationInfo]: structure to which the loaded data is appended
+ * - \b data [data::CalibrationInfo]: structure to which the loaded data is appended
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.

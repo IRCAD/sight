@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <cvIO/Camera.hpp>
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -53,7 +53,7 @@ void CameraTest::tearDown()
 
 void CameraTest::copyToCv()
 {
-    ::arData::Camera::sptr sightCam = ::arData::Camera::New();
+    data::Camera::sptr sightCam = data::Camera::New();
 
     sightCam->setCx(666.);
     sightCam->setCy(777.);

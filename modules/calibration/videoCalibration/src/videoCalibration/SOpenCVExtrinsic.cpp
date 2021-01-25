@@ -22,10 +22,6 @@
 
 #include "videoCalibration/SOpenCVExtrinsic.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
@@ -35,6 +31,9 @@
 
 #include <cvIO/Matrix.hpp>
 
+#include <data/CalibrationInfo.hpp>
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
@@ -48,7 +47,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
-fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries)
+fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVExtrinsic, data::CameraSeries)
 
 namespace videoCalibration
 {
@@ -134,13 +133,13 @@ void SOpenCVExtrinsic::swapping()
 
 void SOpenCVExtrinsic::updating()
 {
-    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERASERIES_INOUT);
+    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(s_CAMERASERIES_INOUT);
 
     SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
                m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
 
-    ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo>(s_CALIBINFO1_INPUT);
-    ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo>(s_CALIBINFO2_INPUT);
+    data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo>(s_CALIBINFO1_INPUT);
+    data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo>(s_CALIBINFO2_INPUT);
 
     SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
     SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
@@ -167,15 +166,15 @@ void SOpenCVExtrinsic::updating()
             data::mt::ObjectReadLock calInfo1Lock(calInfo1);
             data::mt::ObjectReadLock calInfo2Lock(calInfo2);
 
-            ::arData::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
-            ::arData::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
+            data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
+            data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
             SLM_ERROR_IF("The two calibrationInfo do not have the same size", ptlists1.size() != ptlists2.size());
 
-            ::arData::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
-            ::arData::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
-            ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd1 = ptlists1.end();
-            ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd2 = ptlists2.end();
+            data::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
+            data::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
+            data::CalibrationInfo::PointListContainerType::iterator itrEnd1 = ptlists1.end();
+            data::CalibrationInfo::PointListContainerType::iterator itrEnd2 = ptlists2.end();
 
             for(; itr1 != itrEnd1 && itr2 != itrEnd2; ++itr1, ++itr2)
             {
@@ -222,8 +221,8 @@ void SOpenCVExtrinsic::updating()
         {
 
             data::mt::ObjectReadLock camSeriesLock(camSeries);
-            ::arData::Camera::sptr cam1 = camSeries->getCamera(0);
-            ::arData::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
+            data::Camera::sptr cam1 = camSeries->getCamera(0);
+            data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
 
             data::mt::ObjectReadLock cam1Lock(cam1);
             data::mt::ObjectReadLock cam2Lock(cam2);
@@ -266,9 +265,9 @@ void SOpenCVExtrinsic::updating()
             camSeries->setExtrinsicMatrix(m_camIndex, matrix);
         }
 
-        ::arData::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
-        sig = camSeries->signal< ::arData::CameraSeries::ExtrinsicCalibratedSignalType > (
-            ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+        data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
+        sig = camSeries->signal< data::CameraSeries::ExtrinsicCalibratedSignalType > (
+            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
 
         sig->asyncEmit();
 

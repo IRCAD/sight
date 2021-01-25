@@ -24,9 +24,9 @@
 
 #include <openvslamIO/Helper.hpp>
 
-#include <arData/Camera.hpp>
-
 #include <core/tools/System.hpp>
+
+#include <data/Camera.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/system.h>
@@ -64,7 +64,7 @@ void HelperTest::toSight()
                                          1920, 1080, 60,
                                          400, 401, 200, 201, 0.0, 0.1, 0.2, 0.3, 0.4);
 
-    const ::arData::Camera::sptr cam = ::openvslamIO::Helper::toSight(oVSlamCam);
+    const data::Camera::sptr cam = ::openvslamIO::Helper::toSight(oVSlamCam);
 
     compareCam(cam, oVSlamCam, true);
 
@@ -74,8 +74,8 @@ void HelperTest::toSight()
 
 void HelperTest::fromSight()
 {
-    //Create a dummy ::arData::Camera;
-    ::arData::Camera::sptr cam = ::arData::Camera::New();
+    //Create a dummy data::Camera;
+    data::Camera::sptr cam = data::Camera::New();
 
     cam->setCameraID("Dummy Test Camera");
     cam->setWidth(1920);
@@ -98,8 +98,8 @@ void HelperTest::fromSight()
 
 void HelperTest::createConfig()
 {
-    //Create a dummy ::arData::Camera;
-    ::arData::Camera::sptr cam = ::arData::Camera::New();
+    //Create a dummy data::Camera;
+    data::Camera::sptr cam = data::Camera::New();
 
     cam->setCameraID("Dummy Test Camera");
     cam->setWidth(1920);
@@ -139,8 +139,8 @@ void HelperTest::createConfig()
 
 void HelperTest::writeReadConfig()
 {
-    //Create a dummy ::arData::Camera;
-    ::arData::Camera::sptr cam = ::arData::Camera::New();
+    //Create a dummy data::Camera;
+    data::Camera::sptr cam = data::Camera::New();
 
     cam->setCameraID("Dummy Test Camera");
     cam->setWidth(1920);
@@ -207,7 +207,7 @@ void HelperTest::writeReadConfig()
 
 //-----------------------------------------------------------------------------
 
-void HelperTest::compareCam(const arData::Camera::csptr _sightCam, const openvslam::camera::perspective& _ovsCam,
+void HelperTest::compareCam(const data::Camera::csptr _sightCam, const openvslam::camera::perspective& _ovsCam,
                             bool _sightExpected)
 {
     if(_sightExpected)

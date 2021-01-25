@@ -36,7 +36,7 @@
 
 #include <filesystem>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -85,9 +85,9 @@ namespace videoOpenCV
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera used to display video.
+ * - \b camera [data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * - \b frameTL [data::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,
@@ -162,10 +162,10 @@ private:
     void readVideo(const std::filesystem::path& file);
 
     /// Initializes the usb device reader, start the timer.
-    void readDevice(const CSPTR(::arData::Camera)_cam);
+    void readDevice(const CSPTR(data::Camera)_cam);
 
     /// Initializes the ffmpeg based stream grabber, start the timer.
-    void readStream(const CSPTR(::arData::Camera)_cam);
+    void readStream(const CSPTR(data::Camera)_cam);
 
     /// Initializes the image reader, start the timer.
     void readImages(const std::filesystem::path& folder, const std::string& extension);

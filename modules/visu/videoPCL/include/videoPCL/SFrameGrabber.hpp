@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -68,9 +68,9 @@ namespace videoPCL
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera used to display video.
+ * - \b camera [data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * - \b frameTL [data::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */

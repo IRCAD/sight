@@ -24,11 +24,11 @@
 
 #include "videoOpenni/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <arServices/IRGBDGrabber.hpp>
 
 #include <core/thread/Worker.hpp>
+
+#include <data/FrameTL.hpp>
 
 #include <OpenNI.h>
 
@@ -64,12 +64,12 @@ namespace videoOpenni
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depthTL [::arData::FrameTL]: Frame timeline of the depth stream.
- * - \b frameTL [::arData::FrameTL]: Frame timeline of the color stream.
- * - \b irTL [::arData::FrameTL]: Frame timeline of the infrared stream.
- * - \b snapshotTLDepth [::arData::FrameTL]: Frame timeline used to store snaphots of the color stream.
- * - \b snapshotTLColors [::arData::FrameTL]: Frame timeline used to store snaphots of the depth stream.
- * - \b snapshotTLIR [::arData::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
+ * - \b depthTL [data::FrameTL]: Frame timeline of the depth stream.
+ * - \b frameTL [data::FrameTL]: Frame timeline of the color stream.
+ * - \b irTL [data::FrameTL]: Frame timeline of the infrared stream.
+ * - \b snapshotTLDepth [data::FrameTL]: Frame timeline used to store snaphots of the color stream.
+ * - \b snapshotTLColors [data::FrameTL]: Frame timeline used to store snaphots of the depth stream.
+ * - \b snapshotTLIR [data::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
  */
 class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
@@ -142,14 +142,14 @@ private:
     ::openni::VideoFrameRef m_irFrame; ///< Frame of the infrared information.
 
     // Timelines
-    ::arData::FrameTL::sptr m_depthTL; ///< Depth timeline.
-    ::arData::FrameTL::sptr m_colorTL; ///< Color timeline.
-    ::arData::FrameTL::sptr m_irTL; ///< Infrared timeline.
+    data::FrameTL::sptr m_depthTL; ///< Depth timeline.
+    data::FrameTL::sptr m_colorTL; ///< Color timeline.
+    data::FrameTL::sptr m_irTL; ///< Infrared timeline.
 
     // Snapshot timelines
-    ::arData::FrameTL::sptr m_snapshotDepthTL; ///< Depth timeline.
-    ::arData::FrameTL::sptr m_snapshotColorTL; ///< Color timeline.
-    ::arData::FrameTL::sptr m_snapshotIRTL; ///< Infrared timeline.
+    data::FrameTL::sptr m_snapshotDepthTL; ///< Depth timeline.
+    data::FrameTL::sptr m_snapshotColorTL; ///< Color timeline.
+    data::FrameTL::sptr m_snapshotIRTL; ///< Infrared timeline.
 
     // Video Streams
     ::openni::VideoStream m_depthStream;   ///< Depth stream.

@@ -22,14 +22,13 @@
 
 #include "syncTimeline/SMatrixTLSynchronizer.hpp"
 
-#include <arData/MatrixTL.hpp>
-#include <arData/timeline/Buffer.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
@@ -41,7 +40,7 @@ namespace syncTimeline
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL)
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
@@ -89,8 +88,8 @@ void SMatrixTLSynchronizer::synchronize()
     core::HiResClock::HiResClockType currentTimestamp =
         std::numeric_limits< core::HiResClock::HiResClockType >::max();
 
-    ::arData::MatrixTL::csptr matrixTL           = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
-    CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+    data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(s_MATRIXTL_INPUT);
+    CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
 
     if(buffer)
     {
@@ -142,7 +141,7 @@ void SMatrixTLSynchronizer::synchronize()
 ::fwServices::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_MATRIXTL_INPUT, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

@@ -24,10 +24,9 @@
 
 #include "videoTools/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <core/HiResClock.hpp>
 
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
@@ -54,7 +53,7 @@ namespace videoTools
        </service>
    @endcode
  * @subsection Input Input:
- * - \b key1 [::arData::FrameTL]: timeline from which we synchronize images.
+ * - \b key1 [data::FrameTL]: timeline from which we synchronize images.
  * @subsection In-Out In-Out:
  * - \b key2 [data::Image]: frame where to extract a buffer of a timeline.
  */
@@ -110,13 +109,13 @@ private:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
-     * Connect ::arData::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
-     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
+     * Connect data::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
+     * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Frame timeline
-    ::arData::FrameTL::csptr m_frameTL;
+    data::FrameTL::csptr m_frameTL;
 
     /// Image
     data::Image::sptr m_image;

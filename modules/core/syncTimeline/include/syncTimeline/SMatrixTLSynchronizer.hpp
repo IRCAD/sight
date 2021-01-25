@@ -34,7 +34,7 @@
 
 #include <fwServices/IController.hpp>
 
-namespace arData
+namespace sight::data
 {
 class FrameTL;
 class MatrixTL;
@@ -71,7 +71,7 @@ namespace syncTimeline
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [::arData::MatrixTL]: matrix timeline used to extract matrices.
+ * - \b matrixTL [data::MatrixTL]: matrix timeline used to extract matrices.
  * @subsection In-Out In-Out
  * - \b matrices [data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */

@@ -47,7 +47,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
@@ -164,16 +164,16 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(::fwIO::s_DATA_KEY);
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
-        const auto sig = frameTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
-            ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
+        const auto sig = frameTL->signal< data::FrameTL::ObjectPushedSignalType>(
+            data::FrameTL::s_OBJECT_PUSHED_SIG);
         core::com::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
 
         // Get the buffer of the copied timeline
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
         if (buffer)
         {
@@ -222,7 +222,7 @@ void SFrameWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(::fwIO::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -295,7 +295,7 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 ::fwServices::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

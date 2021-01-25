@@ -184,13 +184,13 @@ void SOpenvslam::configuring()
 void SOpenvslam::starting()
 {
     // input parameters
-    m_frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT);
+    m_frameTL = this->getInput< data::FrameTL >(s_TIMELINE_INPUT);
     SLM_ASSERT("The input "+ s_TIMELINE_INPUT +" is not valid.", m_frameTL);
 
-    m_camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    m_camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("The input " + s_CAMERA_INPUT +" is not valid.", m_camera);
 
-    m_cameraMatrixTL = this->getInOut< ::arData::MatrixTL >(s_CAMERA_MATRIXTL_INOUT);
+    m_cameraMatrixTL = this->getInOut< data::MatrixTL >(s_CAMERA_MATRIXTL_INOUT);
     const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
     if (m_cameraMatrixTL)
     {
@@ -202,7 +202,7 @@ void SOpenvslam::starting()
 
     if(m_trackingMode != TrackingMode::MONO)
     {
-        m_frameTL2 = this->getInput< ::arData::FrameTL >(s_TIMELINE2_INPUT);
+        m_frameTL2 = this->getInput< data::FrameTL >(s_TIMELINE2_INPUT);
         SLM_ASSERT("The input "+ s_TIMELINE2_INPUT +" is not valid.", m_frameTL2);
     }
 }
@@ -782,13 +782,13 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
                 matrix[11] *= m_scale;
 
                 const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
-                SPTR(::arData::MatrixTL::BufferType) data = m_cameraMatrixTL->createBuffer(timestamp);
+                SPTR(data::MatrixTL::BufferType) data = m_cameraMatrixTL->createBuffer(timestamp);
                 data->setElement(matrix, 0);
                 m_cameraMatrixTL->pushObject(data);
 
-                ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = m_cameraMatrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+                data::TimeLine::ObjectPushedSignalType::sptr sig;
+                sig = m_cameraMatrixTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                    data::TimeLine::s_OBJECT_PUSHED_SIG );
 
                 sig->asyncEmit(timestamp);
             }

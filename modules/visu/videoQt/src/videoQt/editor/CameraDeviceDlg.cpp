@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwVideoQt/helper/formats.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -129,13 +129,13 @@ CameraDeviceDlg::~CameraDeviceDlg()
 
 //-----------------------------------------------------------------------------
 
-bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
+bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
 {
     int index = m_devicesComboBox->currentIndex();
     if(index >= 0)
     {
-        QCameraInfo camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
-        ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
+        QCameraInfo camInfo              = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
+        data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
         QListWidgetItem* item = m_camSettings->currentItem();
         if(item)
@@ -170,7 +170,7 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
 #ifndef __linux__
         camera->setPixelFormat(format);
 #endif
-        camera->setCameraSource(::arData::Camera::DEVICE);
+        camera->setCameraSource(data::Camera::DEVICE);
         camera->setCameraID(camInfo.deviceName().toStdString());
         //Use our description.
         camera->setDescription(m_devicesComboBox->currentText().toStdString());
@@ -201,7 +201,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         {
             for(const QVideoFrame::PixelFormat& pixFormat : pixFormats)
             {
-                ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
+                data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
                 ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
                 iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(pixFormat);
@@ -226,7 +226,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 std::stringstream stream;
                 stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
                 stream << "\t" << settings.maximumFrameRate() << " fps";
-                stream << "\tFormat:" << ::arData::Camera::getPixelFormatName(format);
+                stream << "\tFormat:" << data::Camera::getPixelFormatName(format);
                 QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
                 item->setData(Qt::UserRole, QVariant::fromValue(settings));
                 m_camSettings->addItem(item);
@@ -239,7 +239,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
         for(const QCameraViewfinderSettings& settings : settingsList )
         {
-            ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
+            data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
             ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
             iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
@@ -256,7 +256,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
             std::stringstream stream;
             stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
             stream << "\t" << settings.maximumFrameRate() << " fps";
-            stream << "\tFormat:" << ::arData::Camera::getPixelFormatName(format);
+            stream << "\tFormat:" << data::Camera::getPixelFormatName(format);
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
             item->setData(Qt::UserRole, QVariant::fromValue(settings));
             m_camSettings->addItem(item);

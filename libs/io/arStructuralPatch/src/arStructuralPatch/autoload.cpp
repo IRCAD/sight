@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#include "arStructuralPatch/arData/Camera/V1ToV2.hpp"
-#include "arStructuralPatch/arData/Camera/V2ToV1.hpp"
-#include "arStructuralPatch/arData/Camera/V2ToV3.hpp"
-#include "arStructuralPatch/arData/Camera/V3ToV2.hpp"
-#include "arStructuralPatch/arData/CameraSeries/V2ToV3.hpp"
-#include "arStructuralPatch/arData/CameraSeries/V3ToV2.hpp"
+#include "arStructuralPatch/data/Camera/V1ToV2.hpp"
+#include "arStructuralPatch/data/Camera/V2ToV1.hpp"
+#include "arStructuralPatch/data/Camera/V2ToV3.hpp"
+#include "arStructuralPatch/data/Camera/V3ToV2.hpp"
+#include "arStructuralPatch/data/CameraSeries/V2ToV3.hpp"
+#include "arStructuralPatch/data/CameraSeries/V3ToV2.hpp"
 
 #include <fwAtomsPatch/StructuralPatchDB.hpp>
 
@@ -38,12 +38,12 @@ struct runner
     runner()
     {
         ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
-        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V1ToV2::New());
-        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V2ToV1::New());
-        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V2ToV3::New());
-        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V3ToV2::New());
-        structuralPatches->registerPatch(::arStructuralPatch::arData::CameraSeries::V2ToV3::New());
-        structuralPatches->registerPatch(::arStructuralPatch::arData::CameraSeries::V3ToV2::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V1ToV2::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V2ToV1::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V2ToV3::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V3ToV2::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::CameraSeries::V2ToV3::New());
+        structuralPatches->registerPatch(::arStructuralPatchdata::CameraSeries::V3ToV2::New());
     }
 
     static runner r;

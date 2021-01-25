@@ -24,8 +24,6 @@
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <arPreferences/preferences.hpp>
 
 #include <core/com/Signal.hxx>
@@ -33,6 +31,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/pathDifference.hpp>
 
+#include <data/CameraSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
@@ -143,7 +142,7 @@ void SCamera::starting()
     ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
+    auto cameraSeries = this->getInOut< data::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
         const data::mt::ObjectWriteLock lock(cameraSeries);
@@ -155,12 +154,12 @@ void SCamera::starting()
 
             for(size_t i = 0; i < m_numCreateCameras; ++i)
             {
-                ::arData::Camera::sptr camera = ::arData::Camera::New();
-                const size_t index = cameraSeries->getNumberOfCameras();
+                data::Camera::sptr camera = data::Camera::New();
+                const size_t index        = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, data::TransformationMatrix3D::New());
-                const auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-                    ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+                const auto sig = cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
+                    data::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);
             }
             SLM_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
@@ -208,7 +207,7 @@ void SCamera::onApply(int _index)
 
 void SCamera::onChooseFile()
 {
-    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
+    std::vector< data::Camera::sptr > cameras = this->getCameras();
 
     // Check preferences
     const std::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
@@ -325,12 +324,12 @@ void SCamera::onChooseFile()
             }
 
             data::mt::ObjectWriteLock lock(camera);
-            camera->setCameraSource(::arData::Camera::FILE);
+            camera->setCameraSource(data::Camera::FILE);
             camera->setVideoFile(videoPath.string());
             lock.unlock();
 
-            const ::arData::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
             this->signal< ConfiguredSignalType >(s_CONFIGURED_FILE_SIG)->asyncEmit();
@@ -343,7 +342,7 @@ void SCamera::onChooseFile()
 
 void SCamera::onChooseStream()
 {
-    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
+    std::vector< data::Camera::sptr > cameras = this->getCameras();
 
     size_t count = 0;
     for(auto& camera : cameras)
@@ -355,12 +354,12 @@ void SCamera::onChooseStream()
         if(!streamSource.empty())
         {
             data::mt::ObjectWriteLock lock(camera);
-            camera->setCameraSource(::arData::Camera::STREAM);
+            camera->setCameraSource(data::Camera::STREAM);
             camera->setStreamUrl(streamSource);
             lock.unlock();
 
-            const ::arData::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
             this->signal< ConfiguredSignalType >(s_CONFIGURED_STREAM_SIG)->asyncEmit();
@@ -373,7 +372,7 @@ void SCamera::onChooseStream()
 
 void SCamera::onChooseDevice()
 {
-    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
+    std::vector< data::Camera::sptr > cameras = this->getCameras();
 
     size_t count = 0;
     for(auto& camera : cameras)
@@ -392,8 +391,8 @@ void SCamera::onChooseDevice()
 
         if(isSelected)
         {
-            const ::arData::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
             this->signal< ConfiguredSignalType >(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
@@ -404,11 +403,11 @@ void SCamera::onChooseDevice()
 
 //------------------------------------------------------------------------------
 
-std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
+std::vector< data::Camera::sptr > SCamera::getCameras() const
 {
-    std::vector< ::arData::Camera::sptr > cameras;
+    std::vector< data::Camera::sptr > cameras;
 
-    auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
+    auto cameraSeries = this->getInOut< data::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
         const data::mt::ObjectReadLock lock(cameraSeries);
@@ -420,7 +419,7 @@ std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
     }
     else
     {
-        const auto camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+        const auto camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
         SLM_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
         cameras.push_back(camera);
     }

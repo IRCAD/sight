@@ -22,14 +22,13 @@
 
 #include "ioCalibration/SCalibrationInfoReader.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-
 #include <calibration3d/helper.hpp>
 
 #include <core/com/Slots.hxx>
 
 #include <cvIO/Image.hpp>
 
+#include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
@@ -132,8 +131,8 @@ void SCalibrationInfoReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ::arData::CalibrationInfo::sptr calibInfo =
-            this->getInOut< ::arData::CalibrationInfo >(::fwIO::s_DATA_KEY);
+        data::CalibrationInfo::sptr calibInfo =
+            this->getInOut< data::CalibrationInfo >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
@@ -213,8 +212,8 @@ void SCalibrationInfoReader::updating()
                 calibInfo->addRecord(img, chessboard);
             }
 
-            auto sig = calibInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
-                           (::arData::CalibrationInfo::s_MODIFIED_SIG);
+            auto sig = calibInfo->signal< data::CalibrationInfo::AddedRecordSignalType >
+                           (data::CalibrationInfo::s_MODIFIED_SIG);
 
             sig->asyncEmit();
         }

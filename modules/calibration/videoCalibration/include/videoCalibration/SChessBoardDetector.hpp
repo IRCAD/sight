@@ -68,7 +68,7 @@ namespace videoCalibration
  * @subsection Input Input:
  * - \b image [data::Image]: images on which we run the detection.
  * @subsection In-Out In-Out:
- * - \b calInfo [::arData::CalibrationInfo]: calibration objects storing the detected images.
+ * - \b calInfo [data::CalibrationInfo]: calibration objects storing the detected images.
  * - \b detection [data::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well

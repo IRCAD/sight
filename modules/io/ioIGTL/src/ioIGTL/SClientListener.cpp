@@ -22,12 +22,11 @@
 
 #include "ioIGTL/SClientListener.hpp"
 
-#include <arData/FrameTL.hpp>
-#include <arData/MatrixTL.hpp>
-
 #include <core/com/Signal.hxx>
 
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/Object.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
@@ -144,7 +143,7 @@ void SClientListener::runClient()
                     data::Object::sptr obj        =
                         this->getInOut< data::Object >(s_OBJECTS_GROUP, indexReceiveObject);
 
-                    const bool isATimeline = obj->isA("::arData::MatrixTL") || obj->isA("::arData::FrameTL");
+                    const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
                     {
                         this->manageTimeline(receiveObject, indexReceiveObject);
@@ -212,8 +211,8 @@ void SClientListener::stopping()
 void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
-    ::arData::MatrixTL::sptr matTL  = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
-    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL>(s_OBJECTS_GROUP, index);
+    data::MatrixTL::sptr matTL                 = this->getInOut< data::MatrixTL>(s_OBJECTS_GROUP, index);
+    data::FrameTL::sptr frameTL                = this->getInOut< data::FrameTL>(s_OBJECTS_GROUP, index);
 
     //MatrixTL
     if(matTL)
@@ -225,7 +224,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
             m_tlInitialized = true;
         }
 
-        SPTR(::arData::MatrixTL::BufferType) matrixBuf;
+        SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
         data::TransformationMatrix3D::TMCoefArray values;
         data::TransformationMatrix3D::sptr t = data::TransformationMatrix3D::dynamicCast(obj);
@@ -239,9 +238,9 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
         matrixBuf->setElement(matrixValues, 0);
         matTL->pushObject(matrixBuf);
-        ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        data::TimeLine::ObjectPushedSignalType::sptr sig;
+        sig = matTL->signal< data::TimeLine::ObjectPushedSignalType >(
+            data::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
     }
     //FrameTL
@@ -255,7 +254,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
             m_tlInitialized = true;
         }
 
-        SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
+        SPTR(data::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
 
         std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
@@ -267,9 +266,9 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
         frameTL->pushObject(buffer);
 
-        ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >
-                  (::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        data::TimeLine::ObjectPushedSignalType::sptr sig;
+        sig = frameTL->signal< data::TimeLine::ObjectPushedSignalType >
+                  (data::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
     }
 }

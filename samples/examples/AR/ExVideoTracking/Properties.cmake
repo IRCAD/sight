@@ -15,7 +15,6 @@ set( REQUIREMENTS
     # Objects declaration
     data
     servicesReg             # fwService
-    arData
 
     # UI declaration/Actions
     gui

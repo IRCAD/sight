@@ -7,7 +7,6 @@ set( DEPENDENCIES
     utestData
     data
     activities
-    arData
 )
 set( REQUIREMENTS
     validators

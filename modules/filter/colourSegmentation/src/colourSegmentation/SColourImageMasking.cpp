@@ -22,14 +22,13 @@
 
 #include "colourSegmentation/SColourImageMasking.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
+#include <data/FrameTL.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
@@ -158,8 +157,8 @@ void SColourImageMasking::stopping()
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
-    connections.push( s_VIDEO_TL_KEY, ::arData::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT );
+    connections.push( s_VIDEO_TL_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_VIDEO_TL_KEY, data::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT );
 
     return connections;
 }
@@ -171,8 +170,8 @@ void SColourImageMasking::updating()
     if(m_masker->isModelLearned())
     {
         auto mask        = this->getInput< data::Image >(s_MASK_KEY);
-        auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
-        auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+        auto videoTL     = this->getInput< data::FrameTL >(s_VIDEO_TL_KEY);
+        auto videoMaskTL = this->getInOut< data::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
         // Sanity checks
         SLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
@@ -188,15 +187,15 @@ void SColourImageMasking::updating()
 
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
         // one
-        auto sig_ = videoTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
-            ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
+        auto sig_ = videoTL->signal< data::FrameTL::ObjectPushedSignalType>(
+            data::FrameTL::s_OBJECT_PUSHED_SIG);
         core::com::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
 
         // Get the timestamp from the latest video frame
         core::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
 
         // Get image from the video timeline
-        CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
+        CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
 
         if(!videoBuffer)
         {
@@ -223,11 +222,11 @@ void SColourImageMasking::updating()
 
         maskCV = (maskCV > 0);
 
-        //convert the ::arData::FrameTL videoTL to an OpenCV image
+        //convert the data::FrameTL videoTL to an OpenCV image
         const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
-        SPTR(::arData::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
+        SPTR(data::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
         std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
 
         ::cv::Mat videoMaskCV = ::cvIO::FrameTL::moveToCv(videoMaskTL, frameBuffOutMask);
@@ -241,8 +240,8 @@ void SColourImageMasking::updating()
         // Push the mask object in the timeline
         videoMaskTL->pushObject(maskBuffer);
 
-        auto sig = videoMaskTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+        auto sig = videoMaskTL->signal< data::TimeLine::ObjectPushedSignalType >(
+            data::TimeLine::s_OBJECT_PUSHED_SIG);
         sig->asyncEmit(currentTimestamp);
     }
 }
@@ -252,10 +251,10 @@ void SColourImageMasking::updating()
 void SColourImageMasking::setBackground()
 {
     auto mask    = this->getInput< data::Image >(s_MASK_KEY);
-    auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
+    auto videoTL = this->getInput< data::FrameTL >(s_VIDEO_TL_KEY);
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
+    CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
         SLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
@@ -263,7 +262,7 @@ void SColourImageMasking::setBackground()
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
-    //convert the ::arData::FrameTL videoTL to an OpenCV image
+    //convert the data::FrameTL videoTL to an OpenCV image
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
     // convert the data::Image mask to an OpenCV image
@@ -294,7 +293,7 @@ void SColourImageMasking::setBackground()
     m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
 
     // Initialize the mask timeline
-    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    auto videoMaskTL = this->getInOut< data::FrameTL >(s_VIDEO_MASK_TL_KEY);
     videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), core::tools::Type::s_UINT8, 4);
 }
 
@@ -302,10 +301,10 @@ void SColourImageMasking::setBackground()
 
 void SColourImageMasking::setForeground()
 {
-    auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
+    auto videoTL = this->getInput< data::FrameTL >(s_VIDEO_TL_KEY);
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
+    CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
         SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
@@ -377,10 +376,10 @@ void SColourImageMasking::setForegroundComponents(int fgComponents)
 
 void SColourImageMasking::clearMaskTL()
 {
-    auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
+    auto videoMaskTL = this->getInOut< data::FrameTL >(s_VIDEO_MASK_TL_KEY);
     videoMaskTL->clearTimeline();
-    auto sigTLCleared = videoMaskTL->signal< ::arData::FrameTL::ObjectClearedSignalType >(
-        ::arData::FrameTL::s_CLEARED_SIG );
+    auto sigTLCleared = videoMaskTL->signal< data::FrameTL::ObjectClearedSignalType >(
+        data::FrameTL::s_CLEARED_SIG );
     sigTLCleared->asyncEmit();
     m_lastVideoTimestamp = 0.;
 }

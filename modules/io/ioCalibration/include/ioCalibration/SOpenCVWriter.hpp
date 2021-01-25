@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 namespace ioCalibration
 {
 /**
- * @brief SOpenCVWriter class exports arData::CameraSeries in xml/yaml files using openCV
+ * @brief SOpenCVWriter class exports data::CameraSeries in xml/yaml files using openCV
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -39,7 +39,7 @@ namespace ioCalibration
  * @endcode
  *
  * @subsection Input Input
- * - \b data [::arData::CameraSeries]: data to save.
+ * - \b data [data::CameraSeries]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}

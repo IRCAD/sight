@@ -22,10 +22,9 @@
 
 #include "ioCalibration/SCalibrationImagesWriter.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-
 #include <cvIO/Image.hpp>
 
+#include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
@@ -118,8 +117,8 @@ void SCalibrationImagesWriter::updating()
 {
     if( !m_fileExtension.empty() && this->hasLocationDefined() )
     {
-        ::arData::CalibrationInfo::csptr calibInfo =
-            this->getInput< ::arData::CalibrationInfo >(::fwIO::s_DATA_KEY);
+        data::CalibrationInfo::csptr calibInfo =
+            this->getInput< data::CalibrationInfo >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
         ::fwGui::Cursor cursor;

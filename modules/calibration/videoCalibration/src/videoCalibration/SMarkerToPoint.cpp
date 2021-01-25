@@ -22,13 +22,12 @@
 
 #include "videoCalibration/SMarkerToPoint.hpp"
 
-#include <arData/MatrixTL.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/MatrixTL.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
@@ -95,13 +94,13 @@ void SMarkerToPoint::stopping()
 
 void SMarkerToPoint::addPoint()
 {
-    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
-    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
+    data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(s_MATRIXTL_INPUT);
+    data::PointList::sptr pl       = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
 
     data::TransformationMatrix3D::sptr matrix3D = data::TransformationMatrix3D::New();
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+    CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
     SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
     const float* values = buffer->getElement(0);

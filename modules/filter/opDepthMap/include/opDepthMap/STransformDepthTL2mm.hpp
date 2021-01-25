@@ -32,7 +32,7 @@ namespace opDepthMap
 /**
  * @brief This service applies a scale on a depth map buffer extracted from a timeline.
  *
- * The scale is given by the calibration (::arData::CameraSeries). The scaled map is pushed in the output timeline with
+ * The scale is given by the calibration (data::CameraSeries). The scaled map is pushed in the output timeline with
  * the same timestamp as the input map.
  *
  * @section Signals Signals
@@ -51,10 +51,10 @@ namespace opDepthMap
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [::arData::CameraSeries]: camera series containing the scale of the depth map.
- * - \b originDepthTL [::arData::FrameTL]: timeline containing the original depth maps.
+ * - \b cameraSeries [data::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b originDepthTL [data::FrameTL]: timeline containing the original depth maps.
  * @subsection In-Out In-Out
- * - \b scaledDepthTL [::arData::FrameTL]: timeline containing the scaled depth maps.
+ * - \b scaledDepthTL [data::FrameTL]: timeline containing the scaled depth maps.
  */
 class OPDEPTHMAP_CLASS_API STransformDepthTL2mm : public ::fwServices::IOperator
 {

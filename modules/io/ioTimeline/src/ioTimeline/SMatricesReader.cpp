@@ -46,7 +46,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL)
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, data::MatrixTL)
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -292,7 +292,7 @@ void SMatricesReader::startReading()
                 }
                 const unsigned int nbOfMatrices = static_cast< unsigned int>((nbOfElements - 1 )/ 16);
 
-                ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL);
+                data::MatrixTL::sptr matrixTL = this->getInOut< data::MatrixTL>(s_MATRIXTL);
                 matrixTL->initPoolSize(nbOfMatrices);
 
                 TimeStampedMatrices currentTsMat;
@@ -399,10 +399,10 @@ void SMatricesReader::stopReading()
     m_tsMatricesCount = 0;
 
     //clear the timeline
-    auto matrixTL = this->getLockedInOut< ::arData::MatrixTL>(s_MATRIXTL);
+    auto matrixTL = this->getLockedInOut< data::MatrixTL>(s_MATRIXTL);
     matrixTL->clearTimeline();
 
-    auto sig = matrixTL->signal< ::arData::TimeLine::ObjectClearedSignalType >(::arData::TimeLine::s_CLEARED_SIG);
+    auto sig = matrixTL->signal< data::TimeLine::ObjectClearedSignalType >(data::TimeLine::s_CLEARED_SIG);
     sig->asyncEmit();
 }
 
@@ -422,8 +422,8 @@ void SMatricesReader::readMatrices()
 {
     if(m_tsMatricesCount < m_tsMatrices.size())
     {
-        const auto tStart = core::HiResClock::getTimeInMilliSec();
-        ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL);
+        const auto tStart             = core::HiResClock::getTimeInMilliSec();
+        data::MatrixTL::sptr matrixTL = this->getInOut< data::MatrixTL>(s_MATRIXTL);
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
 
@@ -439,7 +439,7 @@ void SMatricesReader::readMatrices()
         }
 
         // Push matrix in timeline
-        SPTR(::arData::MatrixTL::BufferType) matrixBuf;
+        SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matrixTL->createBuffer(timestamp);
         matrixTL->pushObject(matrixBuf);
 
@@ -484,9 +484,9 @@ void SMatricesReader::readMatrices()
         }
 
         //Notify
-        ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        data::TimeLine::ObjectPushedSignalType::sptr sig;
+        sig = matrixTL->signal< data::TimeLine::ObjectPushedSignalType >(
+            data::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
 
         m_tsMatricesCount += m_step;

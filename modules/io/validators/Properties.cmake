@@ -6,6 +6,5 @@ set( DEPENDENCIES
     core
     data
     activities
-    arData
 )
 set( REQUIREMENTS )

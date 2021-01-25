@@ -42,7 +42,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -156,16 +156,16 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(::fwIO::s_DATA_KEY);
+        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(::fwIO::s_DATA_KEY);
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
         // Get the buffer of the copied timeline
-        CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
+        CSPTR(data::timeline::Object) object = matrixTL->getClosestObject(timestamp);
         if(object)
         {
-            CSPTR(::arData::MatrixTL::BufferType) buffer =
-                std::dynamic_pointer_cast< const ::arData::MatrixTL::BufferType >(object);
+            CSPTR(data::MatrixTL::BufferType) buffer =
+                std::dynamic_pointer_cast< const data::MatrixTL::BufferType >(object);
             if(buffer)
             {
                 timestamp = object->getTimestamp();
@@ -235,7 +235,7 @@ void SMatrixWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(::fwIO::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

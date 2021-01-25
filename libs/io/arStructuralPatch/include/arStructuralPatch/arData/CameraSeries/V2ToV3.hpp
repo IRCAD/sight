@@ -28,18 +28,18 @@
 
 namespace arStructuralPatch
 {
-namespace arData
+namespace sight::data
 {
 namespace CameraSeries
 {
 
-/// Structural patch to convert a arData::CameraSeries from version '2' to version '3'.
+/// Structural patch to convert a data::CameraSeries from version '2' to version '3'.
 class ARSTRUCTURALPATCH_CLASS_API V2ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 
 public:
 
-    fwCoreClassMacro(V2ToV3, ::arStructuralPatch::arData::CameraSeries::V2ToV3, new V2ToV3)
+    fwCoreClassMacro(V2ToV3, ::arStructuralPatchdata::CameraSeries::V2ToV3, new V2ToV3)
 
     /// Initialiaze members.
     ARSTRUCTURALPATCH_API V2ToV3();
@@ -69,5 +69,5 @@ public:
 };
 
 } // namespace CameraSeries
-} // namespace arData
+} // namespace sight::data
 } // namespace arStructuralPatch

@@ -25,7 +25,7 @@
 #include "videoFilter/config.hpp"
 #include "videoFilter/IVideoFilter.hpp"
 
-#include <arData/FrameTL.hpp>
+#include <data/FrameTL.hpp>
 
 #include <opencv2/core/mat.hpp>
 
@@ -51,12 +51,12 @@ namespace videoFilter
     </service>
    @endcode
  * @subsection Input Input
- * - \b quadFrameTL [::arData::FrameTL]: frame to split in 4.
+ * - \b quadFrameTL [data::FrameTL]: frame to split in 4.
  * @subsection In-Out In-Out
- * - \b frameTL1 [::arData::FrameTL]: first timeline containing a part of the quadFrameTL.
- * - \b frameTL2 [::arData::FrameTL]: second timeline containing a part of the quadFrameTL.
- * - \b frameTL3 [::arData::FrameTL]: third timeline containing a part of the quadFrameTL.
- * - \b frameTL4 [::arData::FrameTL]: fourth timeline containing a part of the quadFrameTL.
+ * - \b frameTL1 [data::FrameTL]: first timeline containing a part of the quadFrameTL.
+ * - \b frameTL2 [data::FrameTL]: second timeline containing a part of the quadFrameTL.
+ * - \b frameTL3 [data::FrameTL]: third timeline containing a part of the quadFrameTL.
+ * - \b frameTL4 [data::FrameTL]: fourth timeline containing a part of the quadFrameTL.
  */
 class VIDEOFILTER_CLASS_API SCropVideoQuad : public ::videoFilter::IVideoFilter
 {
@@ -93,7 +93,7 @@ private:
 
     void pushFrameInTimeline(::cv::Mat& imgIn,
                              const ::cv::Rect& roi,
-                             ::arData::FrameTL::sptr& frameTL,
+                             data::FrameTL::sptr& frameTL,
                              core::HiResClock::HiResClockType timestamp);
 
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;

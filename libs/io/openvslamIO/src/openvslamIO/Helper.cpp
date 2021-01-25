@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace openvslamIO
 
 //-----------------------------------------------------------------------------
 
-openvslam::camera::perspective Helper::fromSight(const arData::Camera::csptr _sightCam)
+openvslam::camera::perspective Helper::fromSight(const data::Camera::csptr _sightCam)
 {
     const auto name = _sightCam->getCameraID();
     const auto dist = _sightCam->getDistortionCoefficient();
@@ -54,9 +54,9 @@ openvslam::camera::perspective Helper::fromSight(const arData::Camera::csptr _si
 
 //-----------------------------------------------------------------------------
 
-arData::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSlamCam)
+data::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSlamCam)
 {
-    ::arData::Camera::sptr cam = ::arData::Camera::New();
+    data::Camera::sptr cam = data::Camera::New();
 
     cam->setCameraID( _oVSlamCam.name_);
     cam->setWidth(_oVSlamCam.cols_);
@@ -84,7 +84,7 @@ arData::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSla
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<openvslam::config> Helper::createMonocularConfig(const arData::Camera::csptr _sightCam,
+std::shared_ptr<openvslam::config> Helper::createMonocularConfig(const data::Camera::csptr _sightCam,
                                                                  const OrbParams& _orbParams,
                                                                  const InitParams& _initParams)
 {

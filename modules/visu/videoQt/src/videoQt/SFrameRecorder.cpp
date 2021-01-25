@@ -41,7 +41,7 @@
 namespace videoQt
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::arData::FrameTL)
+fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -113,9 +113,9 @@ void SFrameRecorder::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording && !m_isPaused)
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(s_FRAMETL_INPUT);
 
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
         SLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
 
         if(buffer)
@@ -152,7 +152,7 @@ void SFrameRecorder::saveFrame(core::HiResClock::HiResClockType timestamp)
 
 void SFrameRecorder::startRecord()
 {
-    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+    data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(s_FRAMETL_INPUT);
 
     if (frameTL->getType() != core::tools::Type::s_UINT8 || frameTL->getNumberOfComponents() != 4)
     {
@@ -161,7 +161,7 @@ void SFrameRecorder::startRecord()
     }
 
     m_connections.disconnect();
-    m_connections.connect(frameTL, ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+    m_connections.connect(frameTL, data::FrameTL::s_OBJECT_PUSHED_SIG,
                           this->getSptr(), s_SAVE_FRAME_SLOT);
     m_isRecording = true;
     m_isPaused    = false;
@@ -185,8 +185,8 @@ void SFrameRecorder::pauseRecord()
     }
     else if (m_isRecording && m_isPaused)
     {
-        m_connections.connect(this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT),
-                              ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+        m_connections.connect(this->getInput< data::FrameTL >(s_FRAMETL_INPUT),
+                              data::FrameTL::s_OBJECT_PUSHED_SIG,
                               this->getSptr(), s_SAVE_FRAME_SLOT);
 
         m_isPaused = false;

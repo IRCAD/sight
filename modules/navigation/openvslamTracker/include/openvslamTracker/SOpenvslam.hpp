@@ -24,10 +24,6 @@
 
 #include "openvslamTracker/config.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-#include <arData/MatrixTL.hpp>
-
 #include <arServices/ITracker.hpp>
 
 #include <core/com/Signal.hpp>
@@ -36,8 +32,11 @@
 #include <core/HiResTimer.hpp>
 #include <core/thread/Timer.hpp>
 
+#include <data/Camera.hpp>
 #include <data/Float.hpp>
+#include <data/FrameTL.hpp>
 #include <data/location/SingleFile.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 
@@ -116,14 +115,14 @@ namespace openvslamTracker
        </service>
    @endcode
  * @subsection Input Input:
- * - \b camera [::arData::Camera](mandatory): camera that will be tracked.
- * - \b timeline [::arData::FrameTL](mandatory): timeline of frames of the video on which openvslam will work.
- * - \b timeline2 [::arData::FrameTL](optional): Only needed if STEREO/DEPTH mode is enabled !
+ * - \b camera [data::Camera](mandatory): camera that will be tracked.
+ * - \b timeline [data::FrameTL](mandatory): timeline of frames of the video on which openvslam will work.
+ * - \b timeline2 [data::FrameTL](optional): Only needed if STEREO/DEPTH mode is enabled !
  * if STEREO: frameTL2 will represent frame from the second camera.
  * if DEPTH: frameTL2 will represent frame from depth sensor.
  *
  * @subsection In-Out In-Out:
- * - \b cameraMatrixTL [::arData::MatrixTL](optional): timeLine of  matrix representing the movement of the 3D
+ * - \b cameraMatrixTL [data::MatrixTL](optional): timeLine of  matrix representing the movement of the 3D
  * camera and thus of the real camera.
  *
  * @subsection Output Output:
@@ -280,16 +279,16 @@ private:
 private:
 
     /// Transformation matrix representing the movement of the 3D camera and thus of the real camera.
-    ::arData::MatrixTL::sptr m_cameraMatrixTL;
+    data::MatrixTL::sptr m_cameraMatrixTL;
 
     /// Timeline of frames of the video on which openvslam will work.
-    ::arData::FrameTL::csptr m_frameTL;
+    data::FrameTL::csptr m_frameTL;
 
     /// Timeline of frames of the second video (STEREO/DEPTH mode), unused in MONO mode.
-    ::arData::FrameTL::csptr m_frameTL2;
+    data::FrameTL::csptr m_frameTL2;
 
     /// Virtual scene camera.
-    ::arData::Camera::csptr m_camera;
+    data::Camera::csptr m_camera;
 
     /// Mesh that represent MapPoints.
     data::Mesh::sptr m_pointCloud;

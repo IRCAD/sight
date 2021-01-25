@@ -24,9 +24,8 @@
 
 #include <activities/validator/registry/macros.hpp>
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 namespace validators
@@ -60,7 +59,7 @@ activities::IValidator::ValidationType StereoCamera::validate(const data::Object
     validation.first  = true;
     validation.second = "";
 
-    ::arData::CameraSeries::csptr cameraSeries = ::arData::CameraSeries::dynamicConstCast(currentData);
+    data::CameraSeries::csptr cameraSeries = data::CameraSeries::dynamicConstCast(currentData);
 
     if (!cameraSeries)
     {
@@ -71,13 +70,13 @@ activities::IValidator::ValidationType StereoCamera::validate(const data::Object
     {
         if (cameraSeries->getNumberOfCameras() == 2)
         {
-            ::arData::Camera::sptr camera0 = cameraSeries->getCamera(0);
+            data::Camera::sptr camera0 = cameraSeries->getCamera(0);
             if (!camera0->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The first CameraSeries should be calibrated.";
             }
-            ::arData::Camera::sptr camera1 = cameraSeries->getCamera(1);
+            data::Camera::sptr camera1 = cameraSeries->getCamera(1);
             if (!camera1->getIsCalibrated())
             {
                 validation.first  = false;

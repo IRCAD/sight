@@ -64,10 +64,10 @@ namespace cvSegmentation
  *
  * @subsection Input Input
  * - \b mask [data::Image] : mask image to perform image segmentation in
- * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
+ * - \b videoTL [data::FrameTL] : Timeline to extract image from a video to perform the learning steps
  *
  * @subsection In-Out In-Out
- * - \b videoMaskTL [::arData::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
+ * - \b videoMaskTL [data::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
  * mask = 0)
  *
  * @subsection Configuration Configuration

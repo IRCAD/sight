@@ -24,9 +24,9 @@
 
 #include "ctrlCamera/config.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/base.hpp>
+
+#include <data/Camera.hpp>
 
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
@@ -69,7 +69,7 @@ namespace ctrlCamera
            </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: Camera to update according to device information.
+ * - \b camera [data::Camera]: Camera to update according to device information.
  * @subsection Configuration Configuration
  * - One of devices or configId tag is needed:
  *  - \b devices: configuration of devices

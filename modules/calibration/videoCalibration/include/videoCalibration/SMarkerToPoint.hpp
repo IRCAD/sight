@@ -54,7 +54,7 @@ namespace videoCalibration
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [::arData::MatrixTL]: timeline for tool matrices.
+ * - \b matrixTL [data::MatrixTL]: timeline for tool matrices.
  * @subsection In-Out In-Out
  * - \b pointList [data::Pointlist]: marker position.
  */

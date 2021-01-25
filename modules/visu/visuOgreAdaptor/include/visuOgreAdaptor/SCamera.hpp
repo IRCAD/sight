@@ -25,12 +25,12 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
+
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
@@ -39,7 +39,7 @@
 #include <string>
 #include <vector>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -65,7 +65,7 @@ namespace visuOgreAdaptor
  * @endcode
  *
  * @subsection Input Input
- * - \b calibration [::arData::Camera]: camera containing calibration information.
+ * - \b calibration [data::Camera]: camera containing calibration information.
  *
  * @subsection InOut InOut
  * - \b transform [data::TransformationMatrix3D]: transform matrix for the camera.
@@ -100,9 +100,9 @@ protected:
      * @return A map of each proposed connection.
      *
      * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
-     * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
-     * Connect ::arData::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
-     * Connect ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
+     * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
+     * Connect data::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
+     * Connect data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -121,11 +121,11 @@ private:
      * @brief Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
      * @param _cam data use to retreive the camera intrinsic parameters.
      */
-    void calibrateMonoCamera(const ::arData::Camera::csptr& _cam);
+    void calibrateMonoCamera(const data::Camera::csptr& _cam);
 
     /// Computes a projection matrix for each camera in the series and set them in the layer.
     /// This matrix is equal to the intrinsic times the extrinsic matrix.
-    void calibrateCameraSeries(const ::arData::CameraSeries::csptr& _cs);
+    void calibrateCameraSeries(const data::CameraSeries::csptr& _cs);
 
     /// Updates Transformation Matrix.
     void updateTF3D();

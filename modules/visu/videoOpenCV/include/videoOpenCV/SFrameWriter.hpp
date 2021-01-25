@@ -24,7 +24,7 @@
 
 #include "videoOpenCV/config.hpp"
 
-#include <arData/FrameTL.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwIO/IWriter.hpp>
 
@@ -55,7 +55,7 @@ namespace videoOpenCV
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::arData::FrameTL]: timeline containing the frame to save.
+ * - \b data [data::FrameTL]: timeline containing the frame to save.
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter

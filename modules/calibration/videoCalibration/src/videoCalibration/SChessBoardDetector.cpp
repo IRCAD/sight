@@ -22,8 +22,6 @@
 
 #include "videoCalibration/SChessBoardDetector.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-
 #include <calibration3d/helper.hpp>
 
 #include <core/com/Signal.hxx>
@@ -31,6 +29,7 @@
 
 #include <cvIO/Image.hpp>
 
+#include <data/CalibrationInfo.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
@@ -167,7 +166,7 @@ void SChessBoardDetector::recordPoints()
     {
         for(size_t i = 0; i < calibGroupSize; ++i)
         {
-            auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALINFO_INOUT, i);
+            auto calInfo = this->getInOut< data::CalibrationInfo >(s_CALINFO_INOUT, i);
             SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
             data::mt::ObjectWriteLock calInfoLock(calInfo);
 
@@ -176,9 +175,9 @@ void SChessBoardDetector::recordPoints()
                 calInfo->addRecord(m_images[i], m_pointLists[i]);
 
                 // Notify
-                ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
-                sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >(
-                    ::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
+                data::CalibrationInfo::AddedRecordSignalType::sptr sig;
+                sig = calInfo->signal< data::CalibrationInfo::AddedRecordSignalType >(
+                    data::CalibrationInfo::s_ADDED_RECORD_SIG);
 
                 sig->asyncEmit();
             }

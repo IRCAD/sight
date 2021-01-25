@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <OGRE/OgreCamera.h>
 
@@ -45,7 +45,7 @@ public:
      */
     static FWRENDEROGRE_API Ogre::Matrix4 computeFrustumShearTransform(const Ogre::Camera& _camera, float _angle);
 
-    static FWRENDEROGRE_API Ogre::Matrix4 computeProjectionMatrix(const ::arData::Camera& _calibration,
+    static FWRENDEROGRE_API Ogre::Matrix4 computeProjectionMatrix(const data::Camera& _calibration,
                                                                   float _width, float _height,
                                                                   float _near,
                                                                   float _far);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwVideoQt/config.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <cstdint>
 #include <map>
@@ -42,7 +42,7 @@ public:
 
     FWVIDEOQT_API static Registry& getInstance();
 
-    FWVIDEOQT_API Player* requestPlayer(const ::arData::Camera::csptr& camera);
+    FWVIDEOQT_API Player* requestPlayer(const data::Camera::csptr& camera);
 
     FWVIDEOQT_API void releasePlayer(Player* player);
 
@@ -56,7 +56,7 @@ private:
 
     struct Key
     {
-        ::arData::Camera::SourceType m_eType;
+        data::Camera::SourceType m_eType;
         std::string m_strID;
 
         //------------------------------------------------------------------------------

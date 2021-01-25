@@ -22,10 +22,6 @@
 
 #include "videoRealSense/SScan.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
@@ -34,6 +30,9 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/Type.hpp>
 
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
+#include <data/FrameTL.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
@@ -123,8 +122,8 @@ SScan::~SScan() noexcept
 
 void SScan::starting()
 {
-    m_depthTimeline = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
-    m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
+    m_depthTimeline = this->getInOut< data::FrameTL>(s_DEPTHTL_INOUT);
+    m_colorTimeline = this->getInOut< data::FrameTL>(s_FRAMETL_INOUT);
 
     m_grabbingStarted = false;
 }
@@ -253,7 +252,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     const size_t colorStreamW = static_cast<size_t>(colorStream.width());
     const size_t colorStreamH = static_cast<size_t>(colorStream.height());
 
-    m_colorTimeline = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
+    m_colorTimeline = this->getInOut< data::FrameTL>(s_FRAMETL_INOUT);
     m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, core::tools::Type::s_UINT8, 4);
     m_colorTimeline->setMaximumSize(50);
 
@@ -264,36 +263,36 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     }
 
     // Get camera information.
-    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
+    data::CameraSeries::sptr cameraSeries = this->getInOut< data::CameraSeries>(s_CAMERA_SERIES_INOUT);
 
     if(cameraSeries)
     {
         data::mt::ObjectWriteLock cameraSeriesLock(cameraSeries);
 
-        ::arData::Camera::sptr colorCamera;
-        ::arData::Camera::sptr depthCamera;
+        data::Camera::sptr colorCamera;
+        data::Camera::sptr depthCamera;
 
         // check if there is camera
         if (cameraSeries->getNumberOfCameras() == 0)
         {
-            depthCamera = ::arData::Camera::New();
-            colorCamera = ::arData::Camera::New();
+            depthCamera = data::Camera::New();
+            colorCamera = data::Camera::New();
 
             cameraSeries->addCamera(depthCamera);
             cameraSeries->addCamera(colorCamera);
-            auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-                ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+            auto sig = cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
+                data::CameraSeries::s_ADDED_CAMERA_SIG);
             sig->asyncEmit(depthCamera);
             sig->asyncEmit(colorCamera);
         }
         else if (cameraSeries->getNumberOfCameras() == 1) // missing one camera
         {
             depthCamera = cameraSeries->getCamera(0);
-            colorCamera = ::arData::Camera::New();
+            colorCamera = data::Camera::New();
             cameraSeries->addCamera(colorCamera);
 
-            auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-                ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+            auto sig = cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
+                data::CameraSeries::s_ADDED_CAMERA_SIG);
             sig->asyncEmit(colorCamera);
         }
         else
@@ -357,8 +356,8 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
             cameraSeries->setExtrinsicMatrix(1, matrix);
 
-            auto sig = cameraSeries->signal< ::arData::CameraSeries::ModifiedSignalType >(
-                ::arData::CameraSeries::s_MODIFIED_SIG);
+            auto sig = cameraSeries->signal< data::CameraSeries::ModifiedSignalType >(
+                data::CameraSeries::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
     }
@@ -406,8 +405,8 @@ void SScan::startCamera()
         return;
     }
 
-    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>(s_CAMERA_SERIES_INOUT);
-    ::arData::Camera::csptr camera;
+    data::CameraSeries::sptr cameraSeries = this->getInOut< data::CameraSeries>(s_CAMERA_SERIES_INOUT);
+    data::Camera::csptr camera;
     if(cameraSeries)
     {
         // Extract the first camera (source should be the same).
@@ -416,20 +415,20 @@ void SScan::startCamera()
     else // No cameraSeries (called by SGrabberProxy for ex.).
     {
         const auto obj = this->getInput< data::Object >(s_CAMERA_INPUT);
-        camera = ::arData::Camera::dynamicConstCast(obj);
+        camera = data::Camera::dynamicConstCast(obj);
     }
 
     SLM_ASSERT("Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
                + "' or '" + s_CAMERA_INPUT + "' is present.", camera );
 
     //const auto camera = cameraSeries->getCamera(0);
-    if (camera->getCameraSource() == ::arData::Camera::FILE)
+    if (camera->getCameraSource() == data::Camera::FILE)
     {
         m_playbackMode     = true;
         m_playbackFileName = camera->getVideoFile().string();
         this->signal<FilePlayedSignalType>(s_FILE_PLAYED_SIG)->asyncEmit();
     }
-    else if(camera->getCameraSource() == ::arData::Camera::STREAM)
+    else if(camera->getCameraSource() == data::Camera::STREAM)
     {
         this->popMessageDialog("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
         return;
@@ -1164,7 +1163,7 @@ void SScan::onCameraImage(const uint8_t* _buffer)
     // Filling timeline's buffer
     const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
 
-    SPTR(::arData::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
+    SPTR(data::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
 
     uint8_t* destColorBuffer = reinterpret_cast< uint8_t* >( colorBuffer->addElement(0) );
 
@@ -1172,9 +1171,9 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 
     // Push buffer to timeline and notify
     m_colorTimeline->pushObject(colorBuffer);
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = m_colorTimeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = m_colorTimeline->signal< data::TimeLine::ObjectPushedSignalType >(
+        data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 
@@ -1185,7 +1184,7 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
     // Filling the depth image buffer in the timeline
     const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
 
-    SPTR(::arData::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
+    SPTR(data::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
 
     const auto width  = m_depthTimeline->getWidth();
     const auto height = m_depthTimeline->getHeight();
@@ -1201,9 +1200,9 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 
     // Push buffer to timeline and notify
     m_depthTimeline->pushObject(depthTL);
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = m_depthTimeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = m_depthTimeline->signal< data::TimeLine::ObjectPushedSignalType >(
+        data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "CameraTest.hpp"
 
-#include "arData/Camera.hpp"
+#include "data/Camera.hpp"
 
 #include "fwRenderOgre/Utils.hpp"
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -99,7 +99,7 @@ void CameraTest::computeProjectionMatrix()
                              0.f,   0.f,    -1.f,   0.f);
 
     // Original camera
-    ::arData::Camera::sptr camera = ::arData::Camera::New();
+    data::Camera::sptr camera = data::Camera::New();
     camera->setCx(cx);
     camera->setCy(cy);
     camera->setFx(fx);
@@ -109,29 +109,29 @@ void CameraTest::computeProjectionMatrix()
 
     {
         // Function of the camera to set, followed by the new value in the expected matrix
-        typedef std::tuple< std::function< void (const arData::Camera::sptr, double) >, double, unsigned int,
+        typedef std::tuple< std::function< void (const data::Camera::sptr, double) >, double, unsigned int,
                             unsigned int, float> tupleType;
         const std::vector<tupleType> permutation{
-            tupleType(&::arData::Camera::setCx, cx, 0, 2, -0.0295966863632202f),
-            tupleType(&::arData::Camera::setCy, cy, 1, 2, 0.0245949625968933f),
-            tupleType(&::arData::Camera::setFx, fx, 0, 0, 1.65686452388763f),
-            tupleType(&::arData::Camera::setFy, fy, 1, 1, 3.01612949371338f),
+            tupleType(&::sight::data::Camera::setCx, cx, 0, 2, -0.0295966863632202f),
+            tupleType(&::sight::data::Camera::setCy, cy, 1, 2, 0.0245949625968933f),
+            tupleType(&::sight::data::Camera::setFx, fx, 0, 0, 1.65686452388763f),
+            tupleType(&::sight::data::Camera::setFy, fy, 1, 1, 3.01612949371338f),
 
-            tupleType(&::arData::Camera::setCx, 0., 0, 2, 1.00104212760925f),
-            tupleType(&::arData::Camera::setCy, 0., 1, 2, -1.00185346603394f),
-            tupleType(&::arData::Camera::setFx, 0., 0, 0, 0.f),
-            tupleType(&::arData::Camera::setFy, 0., 1, 1, 0.f),
+            tupleType(&::sight::data::Camera::setCx, 0., 0, 2, 1.00104212760925f),
+            tupleType(&::sight::data::Camera::setCy, 0., 1, 2, -1.00185346603394f),
+            tupleType(&::sight::data::Camera::setFx, 0., 0, 0, 0.f),
+            tupleType(&::sight::data::Camera::setFy, 0., 1, 1, 0.f),
 
-            tupleType(&::arData::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
-            tupleType(&::arData::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
-            tupleType(&::arData::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f),
-            tupleType(&::arData::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f),
+            tupleType(&::sight::data::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
+            tupleType(&::sight::data::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
+            tupleType(&::sight::data::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f),
+            tupleType(&::sight::data::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f),
 
-            tupleType(&::arData::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f),
-            tupleType(&::arData::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f),
-            tupleType(&::arData::Camera::setFx,
+            tupleType(&::sight::data::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f),
+            tupleType(&::sight::data::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f),
+            tupleType(&::sight::data::Camera::setFx,
                       std::numeric_limits<float>::max(), 0, 0, std::numeric_limits<float>::infinity()),
-            tupleType(&::arData::Camera::setFy,
+            tupleType(&::sight::data::Camera::setFy,
                       std::numeric_limits<float>::max(), 1, 1, std::numeric_limits<float>::infinity()),
         };
 
@@ -156,17 +156,19 @@ void CameraTest::computeProjectionMatrix()
 
     {
         // Function of the camera to set, followed by the new value in the expected matrix
-        typedef std::tuple<std::function< void (const arData::Camera::sptr, size_t) >, size_t, unsigned int,
+        typedef std::tuple<std::function< void (const data::Camera::sptr, size_t) >, size_t, unsigned int,
                            unsigned int, float> tupleType;
         const std::vector<tupleType> permutation{
-            tupleType(&::arData::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
-            tupleType(&::arData::Camera::setHeight, height, 1, 2, 6.30736510970334e+35f),
+            tupleType(&::sight::data::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
+            tupleType(&::sight::data::Camera::setHeight, height, 1, 2, 6.30736510970334e+35f),
 
-            tupleType(&::arData::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
-            tupleType(&::arData::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
+            tupleType(&::sight::data::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
+            tupleType(&::sight::data::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
 
-            tupleType(&::arData::Camera::setWidth, std::numeric_limits<size_t>::max(), 0, 2, -3.68934859483958e+19f),
-            tupleType(&::arData::Camera::setHeight, std::numeric_limits<size_t>::max(), 1, 2, 3.68934859483958e+19f),
+            tupleType(&::sight::data::Camera::setWidth, std::numeric_limits<size_t>::max(), 0, 2,
+                      -3.68934859483958e+19f),
+            tupleType(&::sight::data::Camera::setHeight, std::numeric_limits<size_t>::max(), 1, 2,
+                      3.68934859483958e+19f),
         };
 
         // Apply permutations and check the expected result

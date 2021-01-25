@@ -22,13 +22,12 @@
 
 #include "uiTools/action/STimestampSlotCaller.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
 
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <regex>

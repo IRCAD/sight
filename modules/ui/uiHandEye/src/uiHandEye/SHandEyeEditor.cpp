@@ -22,12 +22,11 @@
 
 #include "uiHandEye/SHandEyeEditor.hpp"
 
-#include <arData/BufferTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/BufferTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
@@ -153,16 +152,16 @@ void SHandEyeEditor::add()
     {
 
         // Get the timelines
-        ::arData::MatrixTL::csptr matrixTL1 = this->getInput< ::arData::MatrixTL>(s_MATRIXTL1_INPUT);
-        ::arData::MatrixTL::csptr matrixTL2 = this->getInput< ::arData::MatrixTL>(s_MATRIXTL2_INPUT);
+        data::MatrixTL::csptr matrixTL1 = this->getInput< data::MatrixTL>(s_MATRIXTL1_INPUT);
+        data::MatrixTL::csptr matrixTL2 = this->getInput< data::MatrixTL>(s_MATRIXTL2_INPUT);
 
         const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
         if (timestamp > m_lastTimestamp)
         {
-            const CSPTR(::arData::MatrixTL::BufferType) buffer1 = matrixTL1->getClosestBuffer(timestamp);
+            const CSPTR(data::MatrixTL::BufferType) buffer1 = matrixTL1->getClosestBuffer(timestamp);
 
-            const CSPTR(::arData::MatrixTL::BufferType) buffer2 = matrixTL2->getClosestBuffer(timestamp);
+            const CSPTR(data::MatrixTL::BufferType) buffer2 = matrixTL2->getClosestBuffer(timestamp);
 
             m_lastTimestamp = timestamp;
 

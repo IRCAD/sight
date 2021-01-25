@@ -56,7 +56,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [::arData::Camera]: ::arData::Camera that handles calibration parameters
+ * - \b camera [data::Camera]: data::Camera that handles calibration parameters
  * - \b transform [data::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:

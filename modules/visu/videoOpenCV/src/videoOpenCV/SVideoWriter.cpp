@@ -42,7 +42,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::arData::FrameTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -135,7 +135,7 @@ void SVideoWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::writeBuffer(int width, int height, CSPTR(::arData::FrameTL::BufferType)buffer)
+void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::BufferType)buffer)
 {
     SLM_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* imageBuffer = &buffer->getElement(0);
@@ -181,11 +181,11 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        auto frameTL = this->getLockedInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(::fwIO::s_DATA_KEY);
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
-            CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+            CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
             if (buffer)
             {
                 const int width  = static_cast<int>( frameTL->getWidth() );
@@ -250,7 +250,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                     for(const auto& oldTimestamp : m_timestamps)
                     {
                         // writes the old frames used to compute the number of fps
-                        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(oldTimestamp);
+                        CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(oldTimestamp);
                         if (buffer)
                         {
                             this->writeBuffer(width, height, buffer);
@@ -277,7 +277,7 @@ void SVideoWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        auto frameTL = this->getLockedInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(::fwIO::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -320,7 +320,7 @@ void SVideoWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
     return connections;
 }
 

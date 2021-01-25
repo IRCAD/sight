@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ Ogre::Matrix4 Camera::computeFrustumShearTransform(const ::Ogre::Camera& _camera
 
 //-----------------------------------------------------------------------------
 
-Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibration, float _width,
+Ogre::Matrix4 Camera::computeProjectionMatrix(const data::Camera& _calibration, float _width,
                                               float _height, float _near, float _far)
 {
     SLM_ASSERT("camera width should be > 0.", _width > 0.0f);

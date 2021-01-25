@@ -34,7 +34,7 @@
 
 #include <fwServices/IController.hpp>
 
-namespace arData
+namespace sight::data
 {
 class FrameTL;
 class MatrixTL;
@@ -102,7 +102,7 @@ namespace videoTools
        </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [::arData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
+ * - \b frameTL [data::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
  * number of \b image keys.
  * - \b matrixTL [::extData::MatrixTL]: defines the matrixTL to synchronize. The number of \b matrixTL keys must match
  * the number of \b matricesX group.
@@ -168,7 +168,7 @@ public:
      * @brief Return proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
      *
-     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
+     * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
     VIDEOTOOLS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -213,9 +213,9 @@ private:
     bool m_imagesInitialized;
 
     /// Contains the input video timelines.
-    std::vector< data::mt::weak_ptr<const ::arData::FrameTL> > m_frameTLs;
+    std::vector< data::mt::weak_ptr<const data::FrameTL> > m_frameTLs;
     /// Contains the input matrix timelines.
-    std::vector< data::mt::weak_ptr<const ::arData::MatrixTL> > m_matrixTLs;
+    std::vector< data::mt::weak_ptr<const data::MatrixTL> > m_matrixTLs;
     /// Contains the output images.
     std::vector< data::mt::weak_ptr< data::Image > > m_images;
     /// registers matrices with associated timeline key

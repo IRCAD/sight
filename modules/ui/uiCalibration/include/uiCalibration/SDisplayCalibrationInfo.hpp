@@ -57,8 +57,8 @@ namespace uiCalibration
      </service>
    @endcode
  * @subsection Input Input
- * - \b calInfo1 [::arData::CalibrationInfo]: calibration information for first camera.
- * - \b calInfo2 [::arData::CalibrationInfo] (optionnal): calibration information for optionnal second camera.
+ * - \b calInfo1 [data::CalibrationInfo]: calibration information for first camera.
+ * - \b calInfo2 [data::CalibrationInfo] (optionnal): calibration information for optionnal second camera.
  *
  * @section Slots Slots
  * - \b displayImage(size_t index) : Launchs the configuration to display the calibration image at the given index on

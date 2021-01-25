@@ -23,10 +23,10 @@
 #pragma once
 #include "registrationCV/config.hpp"
 
-#include <arData/MarkerMap.hpp>
-
 #include <core/HiResClock.hpp>
 #include <core/mt/types.hpp>
+
+#include <data/MarkerMap.hpp>
 
 #include <fwServices/IRegisterer.hpp>
 #include <fwServices/macros.hpp>
@@ -82,12 +82,12 @@ namespace registrationCV
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerTL [::arData::MarkerTL]: timeline for markers.
- * - \b markerMap [::arData::MarkerMap]: markers map list.
- * - \b camera [::arData::Camera]: calibrated cameras.
+ * - \b markerTL [data::MarkerTL]: timeline for markers.
+ * - \b markerMap [data::MarkerMap]: markers map list.
+ * - \b camera [data::Camera]: calibrated cameras.
  * - \b extrinsic [data::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
- * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrixTL [data::MatrixTL]: timeline of 3D transformation matrices.
  * - \b matrix [data::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
  * - \b pointList [data::PointList] (optional): list of points corresponding to the model.
@@ -203,7 +203,7 @@ private:
     Extrinsic m_extrinsic;
 
     /// List of tags associated with each inout matrix
-    std::vector< ::arData::MarkerMap::KeyType> m_matricesTag;
+    std::vector< data::MarkerMap::KeyType> m_matricesTag;
 };
 
 } // namespace registrationCV

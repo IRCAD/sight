@@ -7,7 +7,6 @@ set( DEPENDENCIES
         data
         fwDataIO
         fwServices
-        arData
         fwGui
         fwGuiQt
         fwIO

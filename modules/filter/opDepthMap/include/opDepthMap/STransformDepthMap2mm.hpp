@@ -32,7 +32,7 @@ namespace opDepthMap
 /**
  * @brief This service applies a scale on a depth map image.
  *
- * The scale is given by the calibration (::arData::CameraSeries).
+ * The scale is given by the calibration (data::CameraSeries).
  *
  * @section Signals Signals
  * - \b computed() : emitted when the compute method is done
@@ -47,7 +47,7 @@ namespace opDepthMap
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [::arData::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b cameraSeries [data::CameraSeries]: camera series containing the scale of the depth map.
  * - \b originDepth [data::Image]: original depth map.
  * @subsection In-Out In-Out
  * - \b scaledDepth [data::Image]: scaled depth map.

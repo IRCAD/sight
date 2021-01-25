@@ -22,11 +22,11 @@
 
 #include "videoOpenni/SScan.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -78,13 +78,13 @@ void SScan::configuring()
 
 void SScan::starting()
 {
-    m_depthTL = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
-    m_colorTL = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
-    m_irTL    = this->getInOut< ::arData::FrameTL>(s_IRTL_INOUT);
+    m_depthTL = this->getInOut< data::FrameTL>(s_DEPTHTL_INOUT);
+    m_colorTL = this->getInOut< data::FrameTL>(s_FRAMETL_INOUT);
+    m_irTL    = this->getInOut< data::FrameTL>(s_IRTL_INOUT);
 
-    m_snapshotDepthTL = this->getInOut< ::arData::FrameTL>("snapshotTLDepth");
-    m_snapshotColorTL = this->getInOut< ::arData::FrameTL>("snapshotTLColors");
-    m_snapshotIRTL    = this->getInOut< ::arData::FrameTL>("snapshotTLIR");
+    m_snapshotDepthTL = this->getInOut< data::FrameTL>("snapshotTLDepth");
+    m_snapshotColorTL = this->getInOut< data::FrameTL>("snapshotTLColors");
+    m_snapshotIRTL    = this->getInOut< data::FrameTL>("snapshotTLIR");
 
     m_status = ::openni::OpenNI::initialize();
     if (m_status != ::openni::STATUS_OK)
@@ -430,9 +430,9 @@ void SScan::presentFrame()
             m_depthFrame.release();
             m_depthStream.readFrame(&m_depthFrame);
 
-            ::arData::FrameTL::sptr depthTL = m_capture ? m_snapshotDepthTL : m_depthTL;
+            data::FrameTL::sptr depthTL = m_capture ? m_snapshotDepthTL : m_depthTL;
 
-            SPTR(::arData::FrameTL::BufferType) depthBuffer = depthTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) depthBuffer = depthTL->createBuffer(timestamp);
             uint16_t* destDepthBuffer = reinterpret_cast< uint16_t* >( depthBuffer->addElement(0) );
 
             // Filling depth buffer
@@ -444,8 +444,8 @@ void SScan::presentFrame()
 
             // Push buffer and notify
             depthTL->pushObject(depthBuffer);
-            auto sig = depthTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+            auto sig = depthTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                data::TimeLine::s_OBJECT_PUSHED_SIG );
             sig->asyncEmit(timestamp);
         }
 
@@ -454,9 +454,9 @@ void SScan::presentFrame()
             m_colorFrame.release();
             m_colorStream.readFrame(&m_colorFrame);
 
-            ::arData::FrameTL::sptr colorTL = m_capture ? m_snapshotColorTL : m_colorTL;
+            data::FrameTL::sptr colorTL = m_capture ? m_snapshotColorTL : m_colorTL;
 
-            SPTR(::arData::FrameTL::BufferType) colorBuffer = colorTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) colorBuffer = colorTL->createBuffer(timestamp);
             uint32_t* destColorBuffer = reinterpret_cast< uint32_t* >( colorBuffer->addElement(0) );
 
             // Filling color buffer
@@ -474,8 +474,8 @@ void SScan::presentFrame()
             }
 
             colorTL->pushObject(colorBuffer);
-            auto sig = colorTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+            auto sig = colorTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                data::TimeLine::s_OBJECT_PUSHED_SIG );
             sig->asyncEmit(timestamp);
 
         }
@@ -485,9 +485,9 @@ void SScan::presentFrame()
             m_irFrame.release();
             m_irStream.readFrame(&m_irFrame);
 
-            ::arData::FrameTL::sptr irTL = m_capture ? m_snapshotIRTL : m_irTL;
+            data::FrameTL::sptr irTL = m_capture ? m_snapshotIRTL : m_irTL;
 
-            SPTR(::arData::FrameTL::BufferType) irBuffer = irTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) irBuffer = irTL->createBuffer(timestamp);
             uint16_t* destIRBuffer = reinterpret_cast< uint16_t* >( irBuffer->addElement(0) );
 
             // Filling depth buffer
@@ -499,8 +499,8 @@ void SScan::presentFrame()
 
             // Push buffer and notify
             irTL->pushObject(irBuffer);
-            auto sig = irTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+            auto sig = irTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                data::TimeLine::s_OBJECT_PUSHED_SIG );
             sig->asyncEmit(timestamp);
         }
 

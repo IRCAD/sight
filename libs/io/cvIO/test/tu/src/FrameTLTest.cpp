@@ -37,12 +37,12 @@ namespace ut
 //------------------------------------------------------------------------------
 
 template <typename T>
-static std::pair< ::arData::FrameTL::sptr, SPTR(::arData::FrameTL::BufferType) >
+static std::pair< data::FrameTL::sptr, SPTR(data::FrameTL::BufferType) >
 genFrameTL(size_t _w, size_t _h, std::uint8_t _numChannels)
 {
     const core::tools::Type type = core::tools::Type::create<T>();
 
-    ::arData::FrameTL::sptr frameTL = ::arData::FrameTL::New();
+    data::FrameTL::sptr frameTL = data::FrameTL::New();
     frameTL->initPoolSize(_w, _h, type, _numChannels);
     auto buffer = frameTL->createBuffer(core::HiResClock::getTimeInMilliSec());
 
@@ -52,7 +52,7 @@ genFrameTL(size_t _w, size_t _h, std::uint8_t _numChannels)
 
 template <typename T>
 static void compareImages( const ::cv::Mat& _cvImage,
-                           const ::arData::FrameTL::BufferType::ElementType* _buffer,
+                           const data::FrameTL::BufferType::ElementType* _buffer,
                            size_t _w, size_t _h, std::uint8_t _numChannels)
 {
     std::vector< ::cv::Mat> channels(_numChannels);
@@ -86,8 +86,8 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
 
-    ::arData::FrameTL::sptr frameTL;
-    SPTR(::arData::FrameTL::BufferType) buffer;
+    data::FrameTL::sptr frameTL;
+    SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
     auto eltBuffer = buffer->addElement(0);
@@ -121,8 +121,8 @@ static void testCopyFromCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
     const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, 0, _numChannels);
 
-    ::arData::FrameTL::sptr frameTL;
-    SPTR(::arData::FrameTL::BufferType) buffer;
+    data::FrameTL::sptr frameTL;
+    SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
     auto eltBuffer = buffer->addElement(0);
@@ -142,8 +142,8 @@ static void testCopyToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, 0, _numChannels);
 
-    ::arData::FrameTL::sptr frameTL;
-    SPTR(::arData::FrameTL::BufferType) buffer;
+    data::FrameTL::sptr frameTL;
+    SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
     auto eltBuffer = buffer->addElement(0);

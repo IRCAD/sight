@@ -28,7 +28,7 @@ namespace arStructuralPatch
 {
 namespace ut
 {
-namespace arData
+namespace sight::data
 {
 namespace Camera
 {
@@ -55,6 +55,6 @@ public:
 };
 
 } //namespace Camera
-} //namespace arData
+} //namespace sight::data
 } //namespace ut
 } //namespace arStructuralPatch

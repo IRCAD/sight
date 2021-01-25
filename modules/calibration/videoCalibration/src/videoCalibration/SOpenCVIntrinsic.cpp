@@ -22,9 +22,6 @@
 
 #include "videoCalibration/SOpenCVIntrinsic.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-#include <arData/Camera.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
@@ -33,6 +30,8 @@
 
 #include <cvIO/Matrix.hpp>
 
+#include <data/CalibrationInfo.hpp>
+#include <data/Camera.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
@@ -49,7 +48,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
-fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVIntrinsic, ::arData::Camera)
+fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVIntrinsic, data::Camera)
 
 namespace videoCalibration
 {
@@ -122,9 +121,9 @@ void SOpenCVIntrinsic::swapping()
 
 void SOpenCVIntrinsic::updating()
 {
-    ::arData::CalibrationInfo::csptr calInfo = this->getInput< ::arData::CalibrationInfo>("calibrationInfo");
-    ::arData::Camera::sptr cam               = this->getInOut< ::arData::Camera >("camera");
-    data::Vector::sptr poseCamera = this->getInOut< data::Vector >("poseVector");
+    data::CalibrationInfo::csptr calInfo = this->getInput< data::CalibrationInfo>("calibrationInfo");
+    data::Camera::sptr cam               = this->getInOut< data::Camera >("camera");
+    data::Vector::sptr poseCamera        = this->getInOut< data::Vector >("poseVector");
 
     SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
@@ -206,9 +205,9 @@ void SOpenCVIntrinsic::updating()
 
         cam->setIsCalibrated(true);
 
-        ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
-        sig = cam->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
-            ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
+        data::Camera::IntrinsicCalibratedSignalType::sptr sig;
+        sig = cam->signal< data::Camera::IntrinsicCalibratedSignalType >(
+            data::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
         sig->asyncEmit();
     }

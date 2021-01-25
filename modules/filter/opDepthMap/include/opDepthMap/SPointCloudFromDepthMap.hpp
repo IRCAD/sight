@@ -24,8 +24,7 @@
 
 #include "opDepthMap/config.hpp"
 
-#include <arData/Camera.hpp>
-
+#include <data/Camera.hpp>
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 #include <data/TransformationMatrix3D.hpp>
@@ -59,7 +58,7 @@ namespace opDepthMap
         </service>
  * @endcode
  * @subsection Input Input
- * - \b calibration (mandatory) [::arData::CameraSeries]: calibration rgbd sensor.
+ * - \b calibration (mandatory) [data::CameraSeries]: calibration rgbd sensor.
  * - \b depthMap (mandatory) [data::Image]: Grayscale image containing a depth map.
  * - \b rgbMap   (optional)  [data::Image]: RGB image corresponding to the depth map. If present, the RGB
  *   map must have the same dimensions as the depth map.
@@ -128,7 +127,7 @@ private:
     /**
      * @brief Computes a point cloud from a depth map.
      */
-    void depthMapToPointCloud(const ::arData::Camera::csptr& depthCamera,
+    void depthMapToPointCloud(const data::Camera::csptr& depthCamera,
                               const data::Image::csptr& depthMap,
                               const data::Mesh::sptr& pointCloud);
 
@@ -136,8 +135,8 @@ private:
      * @brief Computes a point cloud with colors from a depth map and a color
      * map.
      */
-    void depthMapToPointCloudRGB(const ::arData::Camera::csptr& depthCamera,
-                                 const ::arData::Camera::csptr& colorCamera,
+    void depthMapToPointCloudRGB(const data::Camera::csptr& depthCamera,
+                                 const data::Camera::csptr& colorCamera,
                                  const data::Image::csptr& depthMap,
                                  const data::Image::csptr& colorMap,
                                  const data::TransformationMatrix3D::csptr& extrinsic,

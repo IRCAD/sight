@@ -22,9 +22,9 @@
 
 #include "uiCalibration/SCameraInformationEditor.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/com/Slots.hxx>
+
+#include <data/Camera.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -39,7 +39,7 @@ namespace uiCalibration
 {
 // -------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, data::Camera)
 
 const core::com::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 
@@ -135,7 +135,7 @@ void SCameraInformationEditor::swapping()
 
 void SCameraInformationEditor::updateInformations()
 {
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >("camera");
+    data::Camera::csptr camera = this->getInput< data::Camera >("camera");
     std::stringstream out;
 
     m_description->setText(QString::fromStdString(camera->getDescription()));
@@ -185,7 +185,7 @@ void SCameraInformationEditor::updateInformations()
     out << "Fy: <font color='#0066CC'>" << camera->getFy() << "</font>";
     m_fy->setText(out.str().c_str());
 
-    const ::arData::Camera::DistArrayType& dist = camera->getDistortionCoefficient();
+    const data::Camera::DistArrayType& dist = camera->getDistortionCoefficient();
 
     out.str("");
 
@@ -250,8 +250,8 @@ void SCameraInformationEditor::clearLabels()
 
     KeyConnectionsMap connections;
 
-    connections.push( "camera", ::arData::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT );
-    connections.push( "camera", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT );
+    connections.push( "camera", data::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT );
+    connections.push( "camera", data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT );
 
     return connections;
 }

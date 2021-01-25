@@ -24,14 +24,13 @@
 
 #include "videoTools/config.hpp"
 
-#include <arData/MatrixTL.hpp>
-
 #include <arServices/ISynchronizer.hpp>
 
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 namespace videoTools
@@ -74,7 +73,7 @@ protected:
      * @endcode
      *
      * @subsection In-Out In-Out
-     * - \b TL [::arData::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
+     * - \b TL [data::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
      *
      */
 

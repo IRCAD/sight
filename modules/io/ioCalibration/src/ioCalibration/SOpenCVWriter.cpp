@@ -22,8 +22,7 @@
 
 #include "ioCalibration/SOpenCVWriter.hpp"
 
-#include <arData/CameraSeries.hpp>
-
+#include <data/CameraSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
@@ -126,7 +125,7 @@ void SOpenCVWriter::stopping()
 void SOpenCVWriter::updating()
 {
 
-    ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >(::fwIO::s_DATA_KEY);
+    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(::fwIO::s_DATA_KEY);
 
     if(!camSeries)
     {
@@ -149,7 +148,7 @@ void SOpenCVWriter::updating()
     data::mt::ObjectReadLock lock(camSeries);
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
-    std::vector< ::arData::Camera::sptr > cameras;
+    std::vector< data::Camera::sptr > cameras;
     std::vector< ::cv::Mat > cameraMatrices;
     std::vector< ::cv::Mat > cameraDistCoefs;
 

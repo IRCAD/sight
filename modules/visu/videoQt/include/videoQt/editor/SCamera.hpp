@@ -24,10 +24,10 @@
 
 #include "videoQt/config.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/tools/Failed.hpp>
+
+#include <data/Camera.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
@@ -80,8 +80,8 @@ namespace editor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: camera data.
- * - \b cameraSeries [::arData::CameraSeries]: camera series thus containing several camera.
+ * - \b camera [data::Camera]: camera data.
+ * - \b cameraSeries [data::CameraSeries]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
  * - \b videoSupport (optional, default="no"): if we can open a video file in addition with cameras.
@@ -140,7 +140,7 @@ private:
     void onChooseDevice();
 
     /// Retrieves camera objects according to the XML configuration.
-    std::vector< ::arData::Camera::sptr > getCameras() const;
+    std::vector< data::Camera::sptr > getCameras() const;
 
     /// Combobox for camera selection.
     QPointer<QComboBox> m_devicesComboBox;

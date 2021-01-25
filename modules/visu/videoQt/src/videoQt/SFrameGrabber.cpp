@@ -24,11 +24,11 @@
 
 #include "fwVideoQt/Registry.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 
 #include <QImage>
 #include <QSize>
@@ -109,18 +109,18 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
+    data::Camera::csptr camera = this->getInput< data::Camera>("camera");
     FW_RAISE_IF("Camera not found", !camera);
-    ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
+    data::Camera::SourceType eSourceType = camera->getCameraSource();
 
     // Make sure the user has selected a valid source
-    if( ::arData::Camera::UNKNOWN != eSourceType )
+    if( data::Camera::UNKNOWN != eSourceType )
     {
         this->stopCamera();
         this->setMirror(false, false);
 
     #ifdef WIN32
-        if( ::arData::Camera::DEVICE == eSourceType )
+        if( data::Camera::DEVICE == eSourceType )
         {
             this->setMirror(false, true);
         }
@@ -185,7 +185,7 @@ void SFrameGrabber::stopCamera()
         m_videoPlayer = nullptr;
 
         // Reset the timeline and send a black frame
-        ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
+        data::FrameTL::sptr timeline = this->getInOut< data::FrameTL >("frameTL");
         this->clearTimeline(timeline);
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
@@ -265,7 +265,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     const int width  = frame.width();
     const int height = frame.height();
 
-    ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
+    data::FrameTL::sptr timeline = this->getInOut< data::FrameTL >("frameTL");
     if(static_cast<unsigned int>(height) != timeline->getHeight() ||
        static_cast<unsigned int>(width) != timeline->getWidth())
     {
@@ -299,7 +299,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     mappedFrame.unmap();
 
     const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
-    SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(data::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
     std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
 
     const unsigned int size = static_cast<unsigned int>(width*height) >> 1;
@@ -316,8 +316,8 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     // push buffer and notify
     timeline->pushObject(buffer);
 
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = timeline->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

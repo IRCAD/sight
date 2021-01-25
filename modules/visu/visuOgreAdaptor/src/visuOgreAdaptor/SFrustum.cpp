@@ -25,10 +25,9 @@
 #include "visuOgreAdaptor/SCamera.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/com/Slots.hxx>
 
+#include <data/Camera.hpp>
 #include <data/Material.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -135,8 +134,8 @@ void SFrustum::starting()
 ::fwServices::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
+    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
@@ -167,7 +166,7 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const auto camera = this->getLockedInput< ::arData::Camera >(s_CAMERA_INPUT);
+    const auto camera = this->getLockedInput< data::Camera >(s_CAMERA_INPUT);
 
     if(camera->getIsCalibrated())
     {

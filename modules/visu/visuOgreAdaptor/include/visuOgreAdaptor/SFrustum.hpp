@@ -36,7 +36,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor displays the frustum of an ::arData::Camera.
+ * @brief This adaptor displays the frustum of an data::Camera.
  *
  * @section Slots Slots
  * - \b updateVisibility(bool): sets whether the frustum is shown or not.
@@ -54,7 +54,7 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [::arData::Camera]:  camera containing calibration information.
+ * - \b camera [data::Camera]:  camera containing calibration information.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer
@@ -92,8 +92,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
-     * Connect ::arData::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
+     * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
+     * Connect data::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -111,10 +111,10 @@ protected:
 
 private:
 
-    /// Sets ::Ogre::Camera from arData::Camera parameters.
+    /// Sets ::Ogre::Camera from data::Camera parameters.
     void setOgreCamFromData();
 
-    /// Contains the Ogre's camera (frustum) representing arData::Camera position and parameters.
+    /// Contains the Ogre's camera (frustum) representing data::Camera position and parameters.
     ::Ogre::Camera* m_ogreCamera { nullptr };
 
     /// Contains the material data.

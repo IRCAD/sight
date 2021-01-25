@@ -34,7 +34,7 @@
 #include <QObject>
 #include <QPointer>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -70,9 +70,9 @@ namespace videoQt
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera used to display video.
+ * - \b camera [data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * - \b frameTL [data::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration:
  * - \b notifyInterval (optional, int): defines the player notify interval in ms, default value 1000.
  */
@@ -141,7 +141,7 @@ private:
         m_verticallyFlip   = verticallyFlip;
     }
 
-    /// FwID of arData::Camera
+    /// FwID of data::Camera
     std::string m_cameraID;
 
     /// state of the loop mode

@@ -47,10 +47,10 @@ namespace videoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo1 [::arData::CalibrationInfo]: Data of the first camera used to compute the calibration.
- * - \b calibrationInfo2 [::arData::CalibrationInfo]: Data of the second camera used to compute the calibration.
+ * - \b calibrationInfo1 [data::CalibrationInfo]: Data of the first camera used to compute the calibration.
+ * - \b calibrationInfo2 [data::CalibrationInfo]: Data of the second camera used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [::arData::CameraSeries]: Output calibration.
+ * - \b camera [data::CameraSeries]: Output calibration.
  *  * @subsection Output Output:
  * - \b matrix [data::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
  * @subsection Configuration Configuration:

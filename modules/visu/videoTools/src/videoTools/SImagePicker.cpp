@@ -22,10 +22,10 @@
 
 #include "videoTools/SImagePicker.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/Camera.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -131,7 +131,7 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
 
     data::Point::sptr point = data::Point::New(currentPoint[0], currentPoint[1], 0.);
 
-    const auto camera = this->getLockedInput< ::arData::Camera >(s_CAMERA_INOUT);
+    const auto camera = this->getLockedInput< data::Camera >(s_CAMERA_INOUT);
 
     data::Point::sptr pixel;
 

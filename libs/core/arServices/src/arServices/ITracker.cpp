@@ -22,12 +22,12 @@
 
 #include "arServices/ITracker.hpp"
 
-#include <arData/BufferTL.hpp>
-
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+
+#include <data/BufferTL.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
     if (m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
     {
-        ::arData::BufferTL::csptr timeline = this->getInput< ::arData::BufferTL >(s_TIMELINE_INPUT);
+        data::BufferTL::csptr timeline = this->getInput< data::BufferTL >(s_TIMELINE_INPUT);
         SLM_WARN_IF("the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
                     !timeline);
         if (timeline)
@@ -112,7 +112,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_TIMELINE_INPUT, ::arData::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push( s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
 
     return connections;
 }

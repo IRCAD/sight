@@ -30,7 +30,7 @@
 
 #include <fwServices/IHasServices.hpp>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -80,10 +80,10 @@ namespace videoTools
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera used to display video.
+ * - \b camera [data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
- * - \b depthTL [::arData::FrameTL] (optional): timeline where to extract the depth frames.
+ * - \b frameTL [data::FrameTL]: timeline where to extract the video frames.
+ * - \b depthTL [data::FrameTL] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection

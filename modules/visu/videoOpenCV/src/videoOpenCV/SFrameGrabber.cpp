@@ -22,9 +22,6 @@
 
 #include "videoOpenCV/SFrameGrabber.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <arPreferences/preferences.hpp>
 
 #include <core/base.hpp>
@@ -33,6 +30,9 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Type.hpp>
+
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -132,9 +132,9 @@ void SFrameGrabber::startCamera()
         this->stopCamera();
     }
 
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >("camera");
+    data::Camera::csptr camera = this->getInput< data::Camera >("camera");
 
-    if (camera->getCameraSource() == ::arData::Camera::FILE)
+    if (camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
 
@@ -159,11 +159,11 @@ void SFrameGrabber::startCamera()
             this->readVideo(file);
         }
     }
-    else if(camera->getCameraSource() == ::arData::Camera::DEVICE)
+    else if(camera->getCameraSource() == data::Camera::DEVICE)
     {
         this->readDevice(camera);
     }
-    else if(camera->getCameraSource() == ::arData::Camera::STREAM)
+    else if(camera->getCameraSource() == data::Camera::STREAM)
     {
         this->readStream(camera);
     }
@@ -218,7 +218,7 @@ void SFrameGrabber::stopCamera()
         const auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
         const auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
@@ -234,7 +234,7 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readVideo(const std::filesystem::path& file)
 {
-    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+    data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
     core::mt::ScopedLock lock(m_mutex);
 
@@ -285,7 +285,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
+void SFrameGrabber::readDevice( const data::Camera::csptr _camera)
 {
     core::mt::ScopedLock lock(m_mutex);
 
@@ -362,7 +362,7 @@ void SFrameGrabber::readDevice( const ::arData::Camera::csptr _camera)
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
+void SFrameGrabber::readStream( const data::Camera::csptr _camera)
 {
     core::mt::ScopedLock lock(m_mutex);
 
@@ -403,7 +403,7 @@ void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+    data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
     core::mt::ScopedLock lock(m_mutex);
 
@@ -550,7 +550,7 @@ void SFrameGrabber::grabVideo()
 
     if (m_videoCapture.isOpened())
     {
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
         const auto timestamp = std::chrono::duration_cast< std::chrono::milliseconds >
                                    (std::chrono::system_clock::now().time_since_epoch()).count();
@@ -606,7 +606,7 @@ void SFrameGrabber::grabVideo()
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
             // Get the buffer of the timeline to fill
-            SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
             std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an OpenCV mat that aliases the buffer created from the output timeline.
@@ -630,7 +630,7 @@ void SFrameGrabber::grabVideo()
             frameTL->pushObject(bufferOut);
 
             const auto sig =
-                frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                frameTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
         }
 
@@ -659,7 +659,7 @@ void SFrameGrabber::grabImage()
     // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
     if (!m_isPaused && m_imageCount < m_imageToRead.size())
     {
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
@@ -689,7 +689,7 @@ void SFrameGrabber::grabImage()
             sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * 30);
 
             // Get the buffer of the timeline to fill
-            SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
             std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
@@ -713,7 +713,7 @@ void SFrameGrabber::grabImage()
             frameTL->pushObject(bufferOut);
 
             const auto sig =
-                frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                frameTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
             const double t1          = core::HiResClock::getTimeInMilliSec();

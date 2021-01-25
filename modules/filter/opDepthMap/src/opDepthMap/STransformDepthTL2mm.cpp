@@ -22,11 +22,11 @@
 
 #include "opDepthMap/STransformDepthTL2mm.hpp"
 
-#include <arData/CameraSeries.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/CameraSeries.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -81,12 +81,12 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::arData::FrameTL::csptr originFrameTL = this->getInput< ::arData::FrameTL >(s_ORIGIN_FRAME_TL_INPUT);
+        data::FrameTL::csptr originFrameTL = this->getInput< data::FrameTL >(s_ORIGIN_FRAME_TL_INPUT);
         SLM_ASSERT("missing '" + s_ORIGIN_FRAME_TL_INPUT + "' timeline", originFrameTL);
-        ::arData::CameraSeries::csptr cameraSeries = this->getInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
+        data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
         SLM_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
-        ::arData::Camera::csptr depthCamera   = cameraSeries->getCamera(0);
-        ::arData::FrameTL::sptr scaledFrameTL = this->getInOut< ::arData::FrameTL >(s_SCALED_FRAME_TL_INOUT);
+        data::Camera::csptr depthCamera   = cameraSeries->getCamera(0);
+        data::FrameTL::sptr scaledFrameTL = this->getInOut< data::FrameTL >(s_SCALED_FRAME_TL_INOUT);
         SLM_ASSERT("missing '" + s_SCALED_FRAME_TL_INOUT + "' timeline", scaledFrameTL);
 
         const double scale = depthCamera->getScale();
@@ -106,7 +106,7 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
             const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
 
-            SPTR(::arData::FrameTL::BufferType) depthBufferOutObj = scaledFrameTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) depthBufferOutObj = scaledFrameTL->createBuffer(timestamp);
 
             std::uint16_t* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
 
@@ -118,8 +118,8 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
             scaledFrameTL->pushObject(depthBufferOutObj);
 
             auto sig =
-                scaledFrameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                scaledFrameTL->signal< data::TimeLine::ObjectPushedSignalType >(
+                    data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
             m_sigComputed->asyncEmit();
         }
@@ -140,7 +140,7 @@ void STransformDepthTL2mm::updating()
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_ORIGIN_FRAME_TL_INPUT, ::arData::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
+    connections.push( s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
 
     return connections;
 }

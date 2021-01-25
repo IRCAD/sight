@@ -33,7 +33,7 @@
 #include <QListWidget>
 #include <QObject>
 
-namespace arData
+namespace sight::data
 {
 class Camera;
 }
@@ -58,7 +58,7 @@ public:
     /// destructor
     VIDEOQT_API ~CameraDeviceDlg();
 
-    VIDEOQT_API bool getSelectedCamera( SPTR(::arData::Camera)& camera);
+    VIDEOQT_API bool getSelectedCamera( SPTR(data::Camera)& camera);
 
 private Q_SLOTS:
 

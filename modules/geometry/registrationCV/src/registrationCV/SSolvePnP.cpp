@@ -22,8 +22,6 @@
 
 #include "registrationCV/SSolvePnP.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <calibration3d/helper.hpp>
 
 #include <core/com/Signal.hxx>
@@ -31,6 +29,7 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/Matrix.hpp>
 
+#include <data/Camera.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
@@ -54,7 +53,7 @@ SSolvePnP::SSolvePnP() noexcept
 
 void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 {
-    const auto camera = this->getLockedInput< ::arData::Camera > (s_CALIBRATION_INPUT);
+    const auto camera = this->getLockedInput< data::Camera > (s_CALIBRATION_INPUT);
 
     if(!camera->getIsCalibrated())
     {

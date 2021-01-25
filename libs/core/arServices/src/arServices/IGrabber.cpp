@@ -22,10 +22,10 @@
 
 #include "arServices/IGrabber.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/FrameTL.hpp>
 
 namespace arServices
 {
@@ -116,14 +116,14 @@ void IGrabber::setStep(int /*step*/, std::string /*key*/)
 
 // ----------------------------------------------------------------------------
 
-void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
+void IGrabber::clearTimeline(data::FrameTL::sptr const& _tl)
 {
     if(_tl->isAllocated())
     {
         // Clear the timeline: send a black frame
         const core::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
 
-        SPTR(::arData::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
+        SPTR(data::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
         auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer, destBuffer + _tl->getWidth() * _tl->getHeight() * _tl->getNumberOfComponents(), 0);
@@ -132,8 +132,8 @@ void IGrabber::clearTimeline(::arData::FrameTL::sptr const& _tl)
         _tl->clearTimeline();
         _tl->pushObject(buffer);
 
-        auto sigTL = _tl->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+        auto sigTL = _tl->signal< data::TimeLine::ObjectPushedSignalType >(
+            data::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
     }
 }

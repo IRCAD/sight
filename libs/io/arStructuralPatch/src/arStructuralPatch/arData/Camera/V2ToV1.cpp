@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "arStructuralPatch/arData/Camera/V2ToV1.hpp"
+#include "arStructuralPatch/data/Camera/V2ToV1.hpp"
 
 #include <atoms/Numeric.hpp>
 #include <atoms/Numeric.hxx>
@@ -30,7 +30,7 @@
 namespace arStructuralPatch
 {
 
-namespace arData
+namespace sight::data
 {
 
 namespace Camera
@@ -39,8 +39,8 @@ namespace Camera
 V2ToV1::V2ToV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "::arData::Camera";
-    m_targetClassname = "::arData::Camera";
+    m_originClassname = "data::Camera";
+    m_targetClassname = "data::Camera";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 
@@ -119,6 +119,6 @@ void V2ToV1::apply(
 
 } // namespace Camera
 
-} // namespace arData
+} // namespace sight::data
 
 } // namespace arStructuralPatch

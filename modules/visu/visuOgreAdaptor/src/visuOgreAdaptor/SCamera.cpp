@@ -116,9 +116,9 @@ void SCamera::starting()
 {
     ::fwServices::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
-    connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     return connections;
 }
@@ -283,8 +283,8 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    const auto cameraSeriesW      = this->getWeakInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
-    const auto cameraCalibrationW = this->getWeakInput< ::arData::Camera >(s_CALIBRATION_INPUT);
+    const auto cameraSeriesW      = this->getWeakInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
+    const auto cameraCalibrationW = this->getWeakInput< data::Camera >(s_CALIBRATION_INPUT);
 
     const auto cameraSeries      = cameraSeriesW.lock();
     const auto cameraCalibration = cameraCalibrationW.lock();
@@ -312,7 +312,7 @@ void SCamera::calibrate()
 
 //------------------------------------------------------------------------------
 
-void SCamera::calibrateMonoCamera(const arData::Camera::csptr& _cam)
+void SCamera::calibrateMonoCamera(const data::Camera::csptr& _cam)
 {
     const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
     const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
@@ -332,7 +332,7 @@ void SCamera::calibrateMonoCamera(const arData::Camera::csptr& _cam)
 
 //------------------------------------------------------------------------------
 
-void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
+void SCamera::calibrateCameraSeries(const data::CameraSeries::csptr& _cs)
 {
     const float width    = static_cast< float >(m_camera->getViewport()->getActualWidth());
     const float height   = static_cast <float >(m_camera->getViewport()->getActualHeight());
@@ -357,7 +357,7 @@ void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
 
         for(size_t i = 0; i < nbCams; ++i)
         {
-            const ::arData::Camera::csptr camera = _cs->getCamera(i);
+            const data::Camera::csptr camera = _cs->getCamera(i);
 
             if(camera->getIsCalibrated())
             {

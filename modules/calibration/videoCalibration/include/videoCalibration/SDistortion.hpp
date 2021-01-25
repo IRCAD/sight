@@ -24,7 +24,7 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 #include <data/Image.hpp>
 
 #include <fwServices/IOperator.hpp>
@@ -66,7 +66,7 @@ namespace videoCalibration
     </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera containing calibration information.
+ * - \b camera [data::Camera]: camera containing calibration information.
  * - \b input [data::Image]: input image to distort.
  * @subsection In-Out In-Out
  * - \b output [data::Image]: output image.

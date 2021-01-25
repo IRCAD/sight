@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "cvIO/config.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -38,7 +38,7 @@ class CVIO_CLASS_API Camera
 public:
 
     /// Copy the intrinsic matrix, the image size and the distortion coefficients from a Sight camera.
-    CVIO_API static std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> copyToCv(const ::arData::Camera::csptr& _src);
+    CVIO_API static std::tuple< ::cv::Mat, ::cv::Size, ::cv::Mat> copyToCv(const data::Camera::csptr& _src);
 };
 
 } // namespace cvIO

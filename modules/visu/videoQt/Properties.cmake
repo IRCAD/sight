@@ -6,7 +6,7 @@ set( DEPENDENCIES
         fwDataTools
         fwGuiQt
         arServices
-        arData
+        data
         arPreferences
         fwVideoQt
 )

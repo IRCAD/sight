@@ -46,9 +46,9 @@ namespace videoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo [::arData::CalibrationInfo]: Data used to compute the calibration.
+ * - \b calibrationInfo [data::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [::arData::Camera]: Output calibration.
+ * - \b camera [data::Camera]: Output calibration.
  * - \b poseVector [data::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
  * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.

@@ -7,7 +7,6 @@ set( DEPENDENCIES
         data
         fwServices
         fwIO
-        arData
         fwGui
         arPreferences
 )

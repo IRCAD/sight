@@ -22,8 +22,6 @@
 
 #include "videoTools/SFrameUpdater.hpp"
 
-#include <arData/timeline/Buffer.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
@@ -31,6 +29,7 @@
 #include <data/Composite.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
+#include <data/timeline/Buffer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -72,9 +71,9 @@ SFrameUpdater::~SFrameUpdater() noexcept
 {
     KeyConnectionsMap connections;
 
-    connections.push( "frameTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG,
+    connections.push( "frameTL", data::TimeLine::s_OBJECT_PUSHED_SIG,
                       ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT );
-    connections.push( "frameTL", ::arData::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
+    connections.push( "frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
 
     return connections;
 }
@@ -85,7 +84,7 @@ void SFrameUpdater::starting()
 {
     m_imageInitialized = false;
 
-    m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
+    m_frameTL = this->getInput< data::FrameTL>("frameTL");
     m_image   = this->getInOut< data::Image>("frame");
 }
 
@@ -179,7 +178,7 @@ void SFrameUpdater::updateImage()
     const auto dumpLock = m_image->lock();
 
     const core::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
-    CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
+    CSPTR(data::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 
     SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
     if(buffer)

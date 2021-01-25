@@ -2,7 +2,6 @@ set( NAME ExTimeLine )
 set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES
-    arData
     data
     fwServices
     core

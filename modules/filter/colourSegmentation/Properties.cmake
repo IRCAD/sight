@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwServices
     fwDataTools
-    arData
+    data
     colourImageMasking
     cvIO
 )

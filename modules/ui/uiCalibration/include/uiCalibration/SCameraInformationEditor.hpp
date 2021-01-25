@@ -48,7 +48,7 @@ namespace uiCalibration
    @endcode
  *
  * @subsection Inputs Inputs
- * - \b camera [::arData::Camera]: camera's information that will be displayed.
+ * - \b camera [data::Camera]: camera's information that will be displayed.
  *
  * @subsection Slots Slots
  * - \b updateInformations(): Updates the informations of the intrinsic calibration.

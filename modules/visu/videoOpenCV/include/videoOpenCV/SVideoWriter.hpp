@@ -24,7 +24,7 @@
 
 #include "videoOpenCV/config.hpp"
 
-#include <arData/FrameTL.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwIO/IWriter.hpp>
 
@@ -48,7 +48,7 @@ namespace videoOpenCV
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [::arData::FrameTL]: timeline containing the frame to save.
+ * - \b data [data::FrameTL]: timeline containing the frame to save.
  */
 class VIDEOOPENCV_CLASS_API SVideoWriter : public ::fwIO::IWriter
 {
@@ -99,7 +99,7 @@ private:
     void saveFrame(core::HiResClock::HiResClockType timestamp);
 
     /// save current buffer with OpenCV video writer (m_writer must be initialized)
-    void writeBuffer(int width, int height, CSPTR(::arData::FrameTL::BufferType) buffer);
+    void writeBuffer(int width, int height, CSPTR(data::FrameTL::BufferType) buffer);
 
     /// SLOT: Start recording
     void startRecord();

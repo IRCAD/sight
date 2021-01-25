@@ -92,7 +92,7 @@ void SOpticalFlow::updating()
         return;
     }
 
-    const auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAME_TIMELINE_INPUT);
+    const auto frameTL = this->getInput< data::FrameTL >(s_FRAME_TIMELINE_INPUT);
     SLM_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
     core::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
 
@@ -101,7 +101,7 @@ void SOpticalFlow::updating()
         m_lastTimestamp = timestamp;
         data::mt::ObjectReadLock lock(frameTL);
 
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(frameTL->getNewerTimestamp());
+        CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(frameTL->getNewerTimestamp());
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
         ::cv::Mat tempImg = ::cvIO::FrameTL::moveToCv(frameTL, frameBuff);
@@ -236,7 +236,7 @@ void SOpticalFlow::stopping()
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_FRAME_TIMELINE_INPUT, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_FRAME_TIMELINE_INPUT, data::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

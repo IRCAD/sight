@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "arData/Camera/V1ToV2Test.hpp"
+#include "data/Camera/V1ToV2Test.hpp"
 
-#include <arStructuralPatch/arData/Camera/V1ToV2.hpp>
+#include <arStructuralPatch/data/Camera/V1ToV2.hpp>
 
 #include <atoms/Base.hpp>
 #include <atoms/Numeric.hpp>
@@ -37,13 +37,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::ut::arData::Camera::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::Camera::V1ToV2Test );
 
 namespace arStructuralPatch
 {
 namespace ut
 {
-namespace arData
+namespace sight::data
 {
 namespace Camera
 {
@@ -71,7 +71,7 @@ void V1ToV2Test::applyPatchTestFile()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
+    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
@@ -92,8 +92,8 @@ void V1ToV2Test::applyPatchTestFile()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
-    ::arStructuralPatch::arData::Camera::V1ToV2::sptr cam1ToCam2Patch;
-    cam1ToCam2Patch = ::arStructuralPatch::arData::Camera::V1ToV2::New();
+    ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;
+    cam1ToCam2Patch = ::arStructuralPatchdata::Camera::V1ToV2::New();
     CPPUNIT_ASSERT_NO_THROW(cam1ToCam2Patch->apply(camObjV1, camObjV2, newVersions));
 
     CPPUNIT_ASSERT(camObjV2);
@@ -120,7 +120,7 @@ void V1ToV2Test::applyPatchTestStream()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
+    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
@@ -141,8 +141,8 @@ void V1ToV2Test::applyPatchTestStream()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
-    ::arStructuralPatch::arData::Camera::V1ToV2::sptr cam1ToCam2Patch;
-    cam1ToCam2Patch = ::arStructuralPatch::arData::Camera::V1ToV2::New();
+    ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;
+    cam1ToCam2Patch = ::arStructuralPatchdata::Camera::V1ToV2::New();
     CPPUNIT_ASSERT_NO_THROW(cam1ToCam2Patch->apply(camObjV1, camObjV2, newVersions));
 
     CPPUNIT_ASSERT(camObjV2);
@@ -169,7 +169,7 @@ void V1ToV2Test::applyPatchTestDevice()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
+    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
@@ -190,8 +190,8 @@ void V1ToV2Test::applyPatchTestDevice()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
-    ::arStructuralPatch::arData::Camera::V1ToV2::sptr cam1ToCam2Patch;
-    cam1ToCam2Patch = ::arStructuralPatch::arData::Camera::V1ToV2::New();
+    ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;
+    cam1ToCam2Patch = ::arStructuralPatchdata::Camera::V1ToV2::New();
     CPPUNIT_ASSERT_NO_THROW(cam1ToCam2Patch->apply(camObjV1, camObjV2, newVersions));
 
     CPPUNIT_ASSERT(camObjV2);
@@ -216,6 +216,6 @@ void V1ToV2Test::applyPatchTestDevice()
 
 //------------------------------------------------------------------------------
 } //namespace Camera
-} //namespace arData
+} //namespace sight::data
 } //namespace ut
 } //namespace arStructuralPatch

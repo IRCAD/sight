@@ -22,7 +22,7 @@
 
 #include "videoCalibration/SDistortion.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
@@ -75,8 +75,8 @@ SDistortion::~SDistortion() noexcept
 fwServices::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
     connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
@@ -134,7 +134,7 @@ void SDistortion::updating()
 
     if (m_isEnabled)
     {
-        ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+        data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
         SLM_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
         if (camera->getIsCalibrated())
         {
@@ -216,7 +216,7 @@ void SDistortion::remap()
         return;
     }
 
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
     if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
     {
@@ -350,7 +350,7 @@ void SDistortion::calibrate()
     m_calibrationMismatch = false;
     m_prevImageSize       = {0, 0, 0};
 
-    auto camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
+    auto camera = this->getInput< data::Camera> (s_CAMERA_INPUT);
     SLM_FATAL_IF("Object 'camera' is not found.", !camera);
 
     ::cv::Mat intrinsics;

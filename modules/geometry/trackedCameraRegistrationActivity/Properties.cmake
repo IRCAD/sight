@@ -6,7 +6,6 @@ set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
     data
-    arData
     ctrlCamp
     gui
     guiQt

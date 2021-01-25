@@ -25,9 +25,8 @@
 #include <activities/IObjectValidator.hpp>
 #include <activities/IValidator.hpp>
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
-
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 // Registers the fixture into the 'registry'
@@ -65,12 +64,12 @@ void StereoCameraTest::testValidator()
 
     activities::IValidator::ValidationType validation;
 
-    ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::New();
+    data::CameraSeries::sptr cameraSeries     = data::CameraSeries::New();
     data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
 
-    ::arData::Camera::sptr camera1 = ::arData::Camera::New();
-    ::arData::Camera::sptr camera2 = ::arData::Camera::New();
-    ::arData::Camera::sptr camera3 = ::arData::Camera::New();
+    data::Camera::sptr camera1 = data::Camera::New();
+    data::Camera::sptr camera2 = data::Camera::New();
+    data::Camera::sptr camera3 = data::Camera::New();
 
     {
         validation = objValidator->validate(cameraSeries);

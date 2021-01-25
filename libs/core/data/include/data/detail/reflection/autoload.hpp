@@ -24,9 +24,15 @@
 
 #include "data/Array.hpp"
 #include "data/Boolean.hpp"
+#include "data/CalibrationInfo.hpp"
+#include "data/Camera.hpp"
+#include "data/CameraSeries.hpp"
 #include "data/Color.hpp"
 #include "data/Composite.hpp"
+#include "data/config.hpp"
 #include "data/detail/reflection/ActivitySeries.hpp"
+#include "data/detail/reflection/Camera.hpp"
+#include "data/detail/reflection/CameraSeries.hpp"
 #include "data/detail/reflection/DicomSeries.hpp"
 #include "data/detail/reflection/Image.hpp"
 #include "data/detail/reflection/ImageSeries.hpp"
@@ -141,6 +147,11 @@ struct runner
         localDeclaresightdataImageSeries();
         localDeclaresightdataModelSeries();
         localDeclaresightdataActivitySeries();
+        localDeclaresightdataCameraSourceType();
+        localDeclaresightdataCameraPixelFormat();
+        localDeclaresightdataCamera();
+        localDeclaresightdataCameraSeries();
+        localDeclaresightdataCalibrationInfo();
     }
 
     static runner r;

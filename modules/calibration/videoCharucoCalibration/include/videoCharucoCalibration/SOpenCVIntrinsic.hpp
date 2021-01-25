@@ -50,9 +50,9 @@ namespace videoCharucoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo [::arData::CalibrationInfo]: Data used to compute the calibration.
+ * - \b calibrationInfo [data::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [::arData::Camera]: Output calibration.
+ * - \b camera [data::Camera]: Output calibration.
  * - \b poseVector [data::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each

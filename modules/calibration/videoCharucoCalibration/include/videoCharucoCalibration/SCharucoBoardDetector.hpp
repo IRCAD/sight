@@ -24,8 +24,7 @@
 
 #include "videoCharucoCalibration/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
@@ -83,9 +82,9 @@ namespace videoCharucoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the charucoBoard.
+ * - \b timeline [data::FrameTL]: timelines containing the images to detect the charucoBoard.
  * @subsection In-Out In-Out:
- * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * - \b calInfo [data::CalibrationInfo]: calibration object where to store the detected images.
  * - \b detection [data::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
@@ -128,9 +127,9 @@ public:
      * @param timestamp time corresponding to the frame to process in the timeline
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
-    data::PointList::sptr detectCharucoBoard(const ::arData::FrameTL::csptr tl,
+    data::PointList::sptr detectCharucoBoard(const data::FrameTL::csptr tl,
                                              const core::HiResClock::HiResClockType timestamp,
-                                             ::arData::FrameTL::sptr tlDetection = nullptr);
+                                             data::FrameTL::sptr tlDetection = nullptr);
 
 protected:
 
@@ -168,7 +167,7 @@ private:
     /**
      * @brief Create an image from frame timeline
      */
-    data::Image::sptr createImage(arData::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
+    data::Image::sptr createImage(data::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when charucoBoard is detected
     CharucoBoardDetectedSignalType::sptr m_sigCharucoBoardDetected;

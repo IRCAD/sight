@@ -94,7 +94,7 @@ void SExtractDeviceInfo::starting()
 
 void SExtractDeviceInfo::updating()
 {
-    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >("camera");
+    data::Camera::sptr camera = this->getInOut< data::Camera >("camera");
     SLM_ASSERT("Camera 'camera' not found.", camera);
 
     std::string device;
@@ -214,9 +214,9 @@ void SExtractDeviceInfo::updating()
 
     SLM_DEBUG("k1: " <<k1 << ", k2: "<< k2 << ", p1: "<< p1 <<  ", p2: " << p2 << ", k3: " << k3);
 
-    ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >
-              ( ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
+    data::Camera::IntrinsicCalibratedSignalType::sptr sig;
+    sig = camera->signal< data::Camera::IntrinsicCalibratedSignalType >
+              ( data::Camera::s_INTRINSIC_CALIBRATED_SIG);
     sig->asyncEmit();
 }
 

@@ -9,7 +9,6 @@ set( DEPENDENCIES
         fwServices
         arServices
         fwGui
-        arData
         cvIO
         openvslamIO
 )

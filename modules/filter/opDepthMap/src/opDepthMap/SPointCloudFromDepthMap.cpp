@@ -22,12 +22,11 @@
 
 #include "opDepthMap/SPointCloudFromDepthMap.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
+#include <data/CameraSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
@@ -84,7 +83,7 @@ void SPointCloudFromDepthMap::configuring()
 
 void SPointCloudFromDepthMap::updating()
 {
-    auto calibration = this->getInput< ::arData::CameraSeries>("calibration");
+    auto calibration = this->getInput< data::CameraSeries>("calibration");
     auto depthMap    = this->getInput< data::Image>("depthMap");
     auto pointCloud  = this->getInOut< data::Mesh >("pointCloud");
     SLM_ASSERT("Missing 'pointCloud' inout", pointCloud);
@@ -94,7 +93,7 @@ void SPointCloudFromDepthMap::updating()
     auto depthCalibration = calibration->getCamera(0);
 
     auto rgbMap = this->getInput< data::Image>("rgbMap");
-    ::arData::Camera::csptr colorCalibration;
+    data::Camera::csptr colorCalibration;
     data::TransformationMatrix3D::csptr extrinsicMatrix;
     if (rgbMap)
     {
@@ -197,7 +196,7 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
 //------------------------------------------------------------------------------
 
 void SPointCloudFromDepthMap::depthMapToPointCloud(
-    const ::arData::Camera::csptr& depthCamera,
+    const data::Camera::csptr& depthCamera,
     const data::Image::csptr& depthMap,
     const data::Mesh::sptr& pointCloud)
 {
@@ -258,8 +257,8 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 //------------------------------------------------------------------------------
 
 void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
-    const ::arData::Camera::csptr& depthCamera,
-    const ::arData::Camera::csptr& colorCamera,
+    const data::Camera::csptr& depthCamera,
+    const data::Camera::csptr& colorCamera,
     const data::Image::csptr& depthMap,
     const data::Image::csptr& colorMap,
     const data::TransformationMatrix3D::csptr& extrinsic,

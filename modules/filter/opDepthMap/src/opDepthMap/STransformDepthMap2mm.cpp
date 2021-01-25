@@ -22,11 +22,10 @@
 
 #include "opDepthMap/STransformDepthMap2mm.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/CameraSeries.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
@@ -81,9 +80,9 @@ void STransformDepthMap2mm::configuring()
 
 void STransformDepthMap2mm::updating()
 {
-    ::arData::CameraSeries::csptr cameraSeries = this->getInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
+    data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
     SLM_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
-    ::arData::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+    data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
 
     const double scale = depthCamera->getScale();
 

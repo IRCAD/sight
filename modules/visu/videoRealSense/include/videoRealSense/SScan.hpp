@@ -24,10 +24,9 @@
 
 #include "videoRealSense/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <arServices/IRGBDGrabber.hpp>
 
+#include <data/FrameTL.hpp>
 #include <data/Mesh.hpp>
 
 #include <librealsense2/rs.hpp>
@@ -115,9 +114,9 @@ namespace videoRealSense
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depthTL [::arData::FrameTL]: Frame timeline of the depth video.
- * - \b frameTL [::arData::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [::arData::CameraSeries]: Camera series that will contain device camera information.
+ * - \b depthTL [data::FrameTL]: Frame timeline of the depth video.
+ * - \b frameTL [data::FrameTL]: Frame timeline of the color video.
+ * - \b cameraSeries [data::CameraSeries]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
  *- \b pointcloud [data::Mesh]: pointcloud computed from depth map. (optional)
@@ -413,8 +412,8 @@ private:
     std::string m_colorKey; ///< Color frame key.
 
     /// Timelines
-    ::arData::FrameTL::sptr m_depthTimeline; ///< Depth timeline.
-    ::arData::FrameTL::sptr m_colorTimeline; ///< Color timeline.
+    data::FrameTL::sptr m_depthTimeline; ///< Depth timeline.
+    data::FrameTL::sptr m_colorTimeline; ///< Color timeline.
 
     /// Grabber thread
     std::thread m_thread;

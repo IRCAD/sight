@@ -6,7 +6,6 @@ set( DEPENDENCIES
         core
         data
         fwServices
-        arData
         fwGui
         arServices
         arPreferences

@@ -8,6 +8,5 @@ set( DEPENDENCIES
     fwMDSemanticPatch
     core
     data
-    arData
 )
 set( REQUIREMENTS  )

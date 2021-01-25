@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwVideoQt/config.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <boost/bimap/bimap.hpp>
 
@@ -37,7 +37,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-typedef ::boost::bimaps::bimap< QVideoFrame::PixelFormat, ::arData::Camera::PixelFormat > PixelFormatTranslatorType;
+typedef ::boost::bimaps::bimap< QVideoFrame::PixelFormat, data::Camera::PixelFormat > PixelFormatTranslatorType;
 extern FWVIDEOQT_API PixelFormatTranslatorType pixelFormatTranslator;
 
 } // helper

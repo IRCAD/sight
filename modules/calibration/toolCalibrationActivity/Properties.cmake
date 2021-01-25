@@ -13,7 +13,6 @@ set( REQUIREMENTS
         videoQt
         visuVTKQt
         visuVTKARAdaptor
-        arData
         data
         servicesReg
         trackingCalibration

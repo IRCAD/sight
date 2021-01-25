@@ -22,14 +22,13 @@
 
 #include "uiCalibration/SCameraSeriesEditor.hpp"
 
-#include <arData/CameraSeries.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Object.hpp>
 
+#include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -44,7 +43,7 @@
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraSeriesEditor, ::arData::CameraSeries)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraSeriesEditor, data::CameraSeries)
 
 const core::com::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
@@ -117,7 +116,7 @@ void SCameraSeriesEditor::swapping()
 
 void SCameraSeriesEditor::updateInformations()
 {
-    ::arData::CameraSeries::csptr cameraSeries = this->getInput< ::arData::CameraSeries >("cameraSeries");
+    data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >("cameraSeries");
 
     //IS CALIBRATED
     data::TransformationMatrix3D::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
@@ -159,9 +158,9 @@ void SCameraSeriesEditor::clearLabels()
 ::fwServices::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "cameraSeries", ::arData::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
-    connections.push( "cameraSeries", ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT  );
-    connections.push( "cameraSeries", ::arData::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push( "cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push( "cameraSeries", data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push( "cameraSeries", data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
     return connections;
 }
 

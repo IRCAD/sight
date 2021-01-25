@@ -52,7 +52,7 @@ namespace uiCalibration
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: camera on which the intrinsic parameters will be modified.
+ * - \b camera [data::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
                                                   public ::fwServices::IService

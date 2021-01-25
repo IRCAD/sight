@@ -24,14 +24,14 @@
 
 #include "videoQt/config.hpp"
 
-#include <arData/FrameTL.hpp>
-
 #include <core/base.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
 #include <core/tools/fwID.hpp>
+
+#include <data/FrameTL.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -67,7 +67,7 @@ namespace videoQt
     </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [ ::arData::FrameTL]: timeline containing the frame to save on disk.
+ * - \b frameTL [ data::FrameTL]: timeline containing the frame to save on disk.
  * @subsection Configuration Configuration
  * - \b path: path to the directory where the frames are saved
  */

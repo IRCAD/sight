@@ -22,12 +22,12 @@
 
 #include "videoPCL/SFrameGrabber.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-
 #include <arPreferences/preferences.hpp>
 
 #include <core/com/Signal.hxx>
+
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -47,7 +47,7 @@ static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::arData::FrameTL)
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -105,9 +105,9 @@ void SFrameGrabber::startCamera()
         this->stopCamera();
     }
 
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >("camera");
+    data::Camera::csptr camera = this->getInput< data::Camera >("camera");
 
-    if (camera->getCameraSource() == ::arData::Camera::FILE)
+    if (camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
         const std::filesystem::path videoDir(::arPreferences::getVideoDir());
@@ -175,7 +175,7 @@ void SFrameGrabber::stopCamera()
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
@@ -191,7 +191,7 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+    data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
     core::mt::ScopedLock lock(m_mutex);
 
@@ -260,7 +260,7 @@ void SFrameGrabber::grabImage()
 
     if (m_imageCount < m_imageToRead.size())
     {
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        auto frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
@@ -292,7 +292,7 @@ void SFrameGrabber::grabImage()
             sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * m_fps);
 
             // Get the buffer of the timeline to fill
-            SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
+            SPTR(data::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
             float* frameBuffOut = reinterpret_cast< float* >( bufferOut->addElement(0));
 
             for(const auto& pt : inputCloud.points)
@@ -306,7 +306,7 @@ void SFrameGrabber::grabImage()
             frameTL->pushObject(bufferOut);
 
             auto sig =
-                frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                frameTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
             m_imageCount++;

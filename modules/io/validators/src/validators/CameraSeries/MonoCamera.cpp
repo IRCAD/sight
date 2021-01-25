@@ -24,8 +24,8 @@
 
 #include <activities/validator/registry/macros.hpp>
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 
 namespace validators
 {
@@ -57,7 +57,7 @@ activities::IValidator::ValidationType MonoCamera::validate(const data::Object::
     validation.first  = true;
     validation.second = "";
 
-    ::arData::CameraSeries::csptr cameraSeries = ::arData::CameraSeries::dynamicConstCast(currentData);
+    data::CameraSeries::csptr cameraSeries = data::CameraSeries::dynamicConstCast(currentData);
 
     if (!cameraSeries)
     {
@@ -68,7 +68,7 @@ activities::IValidator::ValidationType MonoCamera::validate(const data::Object::
     {
         if (cameraSeries->getNumberOfCameras() == 1)
         {
-            ::arData::Camera::sptr camera = cameraSeries->getCamera(0);
+            data::Camera::sptr camera = cameraSeries->getCamera(0);
             if (!camera->getIsCalibrated())
             {
                 validation.first  = false;

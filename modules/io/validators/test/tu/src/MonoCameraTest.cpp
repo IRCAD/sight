@@ -25,8 +25,8 @@
 #include <activities/IObjectValidator.hpp>
 #include <activities/IValidator.hpp>
 
-#include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::validators::ut::MonoCameraTest );
@@ -63,9 +63,9 @@ void MonoCameraTest::testValidator()
 
     activities::IValidator::ValidationType validation;
 
-    ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::New();
-    ::arData::Camera::sptr camera             = ::arData::Camera::New();
-    ::arData::Camera::sptr camera2            = ::arData::Camera::New();
+    data::CameraSeries::sptr cameraSeries = data::CameraSeries::New();
+    data::Camera::sptr camera             = data::Camera::New();
+    data::Camera::sptr camera2            = data::Camera::New();
 
     {
         validation = objValidator->validate(cameraSeries);

@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "arData/Camera/V3ToV2Test.hpp"
+#include "data/Camera/V3ToV2Test.hpp"
 
-#include <arStructuralPatch/arData/Camera/V3ToV2.hpp>
+#include <arStructuralPatch/data/Camera/V3ToV2.hpp>
 
 #include <atoms/Base.hpp>
 #include <atoms/Boolean.hpp>
@@ -38,13 +38,13 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::ut::arData::Camera::V3ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::Camera::V3ToV2Test );
 
 namespace arStructuralPatch
 {
 namespace ut
 {
-namespace arData
+namespace sight::data
 {
 namespace Camera
 {
@@ -71,7 +71,7 @@ void V3ToV2Test::applyPatchTest()
     atoms::Object::sptr camObjV3 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV3, "::arData::Camera");
+    ::fwAtomsPatch::helper::setClassname(camObjV3, "data::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(camObjV3);
@@ -100,7 +100,7 @@ void V3ToV2Test::applyPatchTest()
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV3] = camObjV2;
 
-    auto cam2ToCam1Patch = ::arStructuralPatch::arData::Camera::V3ToV2::New();
+    auto cam2ToCam1Patch = ::arStructuralPatchdata::Camera::V3ToV2::New();
     CPPUNIT_ASSERT_NO_THROW(cam2ToCam1Patch->apply(camObjV3, camObjV2, newVersions));
 
     CPPUNIT_ASSERT(camObjV2);
@@ -127,6 +127,6 @@ void V3ToV2Test::applyPatchTest()
 //------------------------------------------------------------------------------
 
 } //namespace Camera
-} //namespace arData
+} //namespace sight::data
 } //namespace ut
 } //namespace arStructuralPatch

@@ -22,11 +22,6 @@
 
 #include "videoCalibration/SReprojectionError.hpp"
 
-#include <arData/Camera.hpp>
-#include <arData/FrameTL.hpp>
-#include <arData/MarkerTL.hpp>
-#include <arData/MatrixTL.hpp>
-
 #include <calibration3d/helper.hpp>
 
 #include <core/com/Signal.hxx>
@@ -35,7 +30,11 @@
 #include <cvIO/Camera.hpp>
 #include <cvIO/Image.hpp>
 
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/MarkerTL.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
@@ -103,7 +102,7 @@ void SReprojectionError::configuring()
             auto keyCfg = itCfg->second.equal_range("key");
             for (auto itKeyCfg = keyCfg.first; itKeyCfg != keyCfg.second; ++itKeyCfg)
             {
-                const ::arData::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
+                const data::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
                 m_matricesTag.push_back(key);
             }
             break;
@@ -126,7 +125,7 @@ void SReprojectionError::starting()
     //TODO: Add an option to use a chessboard instead of a marker
     // --> configure height, width and square size(in mm)
 
-    auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+    auto camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("Camera is not found", camera);
 
     ::cv::Size imgSize;
@@ -165,10 +164,10 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
     if(timestamp > m_lastTimestamp)
     {
-        auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT);
+        auto markerTL = this->getInput< data::MarkerTL >(s_MARKERTL_INPUT);
         if(markerTL)
         {
-            auto matrixTL                       = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+            auto matrixTL                       = this->getInput< data::MatrixTL >(s_MATRIXTL_INPUT);
             core::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
             if(ts <= 0)
             {
@@ -176,8 +175,8 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
                 return;
             }
 
-            const CSPTR(::arData::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
-            const CSPTR(::arData::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
+            const CSPTR(data::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
+            const CSPTR(data::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
 
             if(matBuff == nullptr || buffer == nullptr)
             {
@@ -232,10 +231,10 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                 if(m_display) //draw reprojected points
                 {
-                    auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
+                    auto frameTL = this->getInOut< data::FrameTL >(s_FRAMETL_INOUT);
                     SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
 
-                    CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
+                    CSPTR(data::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
 
                     if(bufferFrame != nullptr)
                     {
@@ -257,7 +256,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
         }
         else
         {
-            auto markerMap = this->getInput< ::arData::MarkerMap >(s_MARKERMAP_INPUT);
+            auto markerMap = this->getInput< data::MarkerMap >(s_MARKERMAP_INPUT);
 
             // For each matrix
             unsigned int i = 0;
@@ -377,7 +376,7 @@ void SReprojectionError::updating()
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
     connections.push( s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;

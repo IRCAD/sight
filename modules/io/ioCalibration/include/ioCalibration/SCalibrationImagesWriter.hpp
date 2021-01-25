@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace ioCalibration
    @endcode
  *
  * @subsection Input Input
- * - \b data [::arData::CalibrationInfo]: images to write.
+ * - \b data [data::CalibrationInfo]: images to write.
  * @subsection Configuration Configuration
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.

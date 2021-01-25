@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "arData/CameraSeries/V2ToV3Test.hpp"
+#include "data/CameraSeries/V2ToV3Test.hpp"
 
-#include <arStructuralPatch/arData/CameraSeries/V2ToV3.hpp>
+#include <arStructuralPatch/data/CameraSeries/V2ToV3.hpp>
 
 #include <atoms/Object.hpp>
 #include <atoms/Sequence.hpp>
@@ -33,13 +33,13 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::ut::arData::CameraSeries::V2ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::CameraSeries::V2ToV3Test );
 
 namespace arStructuralPatch
 {
 namespace ut
 {
-namespace arData
+namespace sight::data
 {
 namespace CameraSeries
 {
@@ -63,7 +63,7 @@ void V2ToV3Test::applyPatchTest()
     atoms::Object::sptr CameraSeriesV2 = atoms::Object::New();
     atoms::Object::sptr CameraSeriesV3;
 
-    ::fwAtomsPatch::helper::setClassname(CameraSeriesV2, "::arData::CameraSeries");
+    ::fwAtomsPatch::helper::setClassname(CameraSeriesV2, "data::CameraSeries");
     ::fwAtomsPatch::helper::setVersion(CameraSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(CameraSeriesV2);
@@ -88,8 +88,8 @@ void V2ToV3Test::applyPatchTest()
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[CameraSeriesV2] = CameraSeriesV3;
 
-        ::arStructuralPatch::arData::CameraSeries::V2ToV3::sptr v2ToV3Patch;
-        v2ToV3Patch = ::arStructuralPatch::arData::CameraSeries::V2ToV3::New();
+        ::arStructuralPatchdata::CameraSeries::V2ToV3::sptr v2ToV3Patch;
+        v2ToV3Patch = ::arStructuralPatchdata::CameraSeries::V2ToV3::New();
         CPPUNIT_ASSERT_NO_THROW(v2ToV3Patch->apply(CameraSeriesV2, CameraSeriesV3, newVersions));
 
         CPPUNIT_ASSERT(CameraSeriesV3);
@@ -113,6 +113,6 @@ void V2ToV3Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 } //namespace CameraSeries
-} //namespace arData
+} //namespace sight::data
 } //namespace ut
 } //namespace arStructuralPatch

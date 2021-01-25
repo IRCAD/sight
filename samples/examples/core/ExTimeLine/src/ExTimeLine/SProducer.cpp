@@ -116,8 +116,8 @@ void SProducer::updating()
     timeline->pushObject(buffer);
 
     //Notify
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = timeline->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

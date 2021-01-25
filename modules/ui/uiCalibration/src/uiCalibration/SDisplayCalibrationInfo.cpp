@@ -22,13 +22,12 @@
 
 #include "uiCalibration/SDisplayCalibrationInfo.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
+#include <data/CalibrationInfo.hpp>
 #include <data/String.hpp>
 
 #include <fwServices/macros.hpp>
@@ -115,10 +114,10 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
     if( !m_configMgr )
     {
         // Grab images from our composite data
-        ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
+        data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
         SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
-        ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
+        data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
         std::string strConfig = "displayImageConfig";
 

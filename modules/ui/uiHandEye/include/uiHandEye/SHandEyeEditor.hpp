@@ -24,9 +24,8 @@
 
 #include "uiHandEye/config.hpp"
 
-#include <arData/MatrixTL.hpp>
-
 #include <data/Composite.hpp>
+#include <data/MatrixTL.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
@@ -69,9 +68,9 @@ namespace uiHandEye
  *[data::TransformationMatrix3D] when 'addSlot' is called
  *
  * @subsection Input Input
- * - \b matrixTL1 [::arData::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
+ * - \b matrixTL1 [data::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
  *[data::TransformationMatrix3D]
- * - \b matrixTL2 [::arData::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
+ * - \b matrixTL2 [data::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
  *[data::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,

@@ -24,7 +24,7 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <arData/MarkerMap.hpp>
+#include <data/MarkerMap.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -60,7 +60,7 @@ namespace videoCalibration
  *
  * @subsection Input Input
  * - \b tranform [data::TransformationMatrix3D] (mandatory): transform between the chessboard and the camera.
- * - \b camera [::arData::Camera] (mandatory): camera filming the chessboard.
+ * - \b camera [data::Camera] (mandatory): camera filming the chessboard.
  * - \b detectedChessboard [data::PointList] (mandatory): detected chessboard corners.
  *
  * @subsection In-Out In-Out

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "openvslamIO/config.hpp"
 #include "openvslamIO/OpenvslamConfig.hpp"
 
-#include <arData/Camera.hpp>
+#include <data/Camera.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
@@ -43,14 +43,14 @@ public:
      * @param _sightCam pointer to a sight camera.
      * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
-    static ::openvslam::camera::perspective fromSight(const ::arData::Camera::csptr _sightCam);
+    static ::openvslam::camera::perspective fromSight(const data::Camera::csptr _sightCam);
 
     /**
      * @brief converts openvslam  perpective camera to sight camera
      * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
-     * @return an ::arData::Camera::sptr.
+     * @return an data::Camera::sptr.
      */
-    static ::arData::Camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
+    static data::Camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
 
     /**
      * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both
@@ -60,7 +60,7 @@ public:
      * @param _orbParams initialize parameters (optionnal).
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
-    static std::shared_ptr< ::openvslam::config > createMonocularConfig(const ::arData::Camera::csptr _sightCam,
+    static std::shared_ptr< ::openvslam::config > createMonocularConfig(const data::Camera::csptr _sightCam,
                                                                         const ::openvslamIO::OrbParams& _orbParams
                                                                             = ::openvslamIO::OrbParams(),
                                                                         const ::openvslamIO::InitParams& _initParams

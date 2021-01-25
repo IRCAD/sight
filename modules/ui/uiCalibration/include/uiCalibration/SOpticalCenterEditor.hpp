@@ -46,7 +46,7 @@ namespace uiCalibration
      </service>
    @endcode
  * @subsection Input Input
- * - \b camera [::arData::Camera]: camera to edit.
+ * - \b camera [data::Camera]: camera to edit.
  * @subsection In-Out In-Out
  * - \b matrix [data::TransformationMatrix3D]: output matrix holding the delta values.
  *

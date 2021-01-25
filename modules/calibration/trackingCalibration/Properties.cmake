@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwServices
     fwPreferences
     fwMath
-    arData
     eigenTools
     calibration3d
 )

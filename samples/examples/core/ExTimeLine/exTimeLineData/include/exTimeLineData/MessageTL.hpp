@@ -24,10 +24,10 @@
 
 #include "exTimeLineData/config.hpp"
 
-#include <arData/GenericTL.hpp>
-#include <arData/GenericTL.hxx>
-#include <arData/timeline/GenericObject.hpp>
-#include <arData/timeline/GenericObject.hxx>
+#include <data/GenericTL.hpp>
+#include <data/GenericTL.hxx>
+#include <data/timeline/GenericObject.hpp>
+#include <data/timeline/GenericObject.hxx>
 
 namespace exTimeLineData
 {
@@ -49,12 +49,12 @@ struct MsgData
 /**
  * @brief Defines a timeline that stores string messages.
  */
-class EXTIMELINEDATA_CLASS_API MessageTL : public ::arData::GenericTL< MsgData >
+class EXTIMELINEDATA_CLASS_API MessageTL : public data::GenericTL< MsgData >
 {
 
 public:
 
-    fwCoreClassMacro(MessageTL, ::arData::TimeLine, data::factory::New< MessageTL >)
+    fwCoreClassMacro(MessageTL, data::TimeLine, data::factory::New< MessageTL >)
 
     /**
      * @brief Creates the data.

@@ -22,15 +22,14 @@
 
 #include "uiCalibration/SCameraConfigLauncher.hpp"
 
-#include <arData/CalibrationInfo.hpp>
-#include <arData/Camera.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <data/CalibrationInfo.hpp>
+#include <data/Camera.hpp>
 #include <data/Composite.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -91,7 +90,7 @@ void SCameraConfigLauncher::starting()
 {
     this->create();
 
-    m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    m_cameraSeries = this->getInOut< data::CameraSeries >("cameraSeries");
     SLM_ASSERT("Missing cameraSeries.", m_cameraSeries);
 
     m_activitySeries = this->getInOut< data::ActivitySeries >("activitySeries");
@@ -248,11 +247,11 @@ void SCameraConfigLauncher::onImportClicked()
     ::fwServices::OSR::unregisterService(readerService);
 
     auto series       = sdb->getContainer();
-    auto cameraSeries = std::vector< ::arData::CameraSeries::sptr>();
+    auto cameraSeries = std::vector< data::CameraSeries::sptr>();
 
     for (auto& series_ : series)
     {
-        auto cameraSeries_ = ::arData::CameraSeries::dynamicCast(series_);
+        auto cameraSeries_ = data::CameraSeries::dynamicCast(series_);
         if (cameraSeries_ != nullptr)
         {
             cameraSeries.push_back(cameraSeries_);
@@ -269,7 +268,7 @@ void SCameraConfigLauncher::onImportClicked()
     else
     {
         QStringList cameras;
-        std::map< std::string, ::arData::Camera::sptr> map;
+        std::map< std::string, data::Camera::sptr> map;
         for (auto nSeries = 0; nSeries != cameraSeries.size(); ++nSeries)
         {
             auto cameraSeries_ = cameraSeries[nSeries];
@@ -303,8 +302,8 @@ void SCameraConfigLauncher::onImportClicked()
                 const auto camIdx         = m_cameraComboBox->currentIndex();
                 auto camera               = m_cameraSeries->getCamera(camIdx);
                 camera->deepCopy(selectedCamera);
-                camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType>(
-                    ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG)
+                camera->signal< data::Camera::IntrinsicCalibratedSignalType>(
+                    data::Camera::s_INTRINSIC_CALIBRATED_SIG)
                 ->asyncEmit();
             }
         }
@@ -321,11 +320,11 @@ void SCameraConfigLauncher::onRemoveClicked()
         m_cameraComboBox->blockSignals(true);
 
         // Remove camera
-        ::arData::Camera::sptr camera = m_cameraSeries->getCamera(index);
+        data::Camera::sptr camera = m_cameraSeries->getCamera(index);
         m_cameraSeries->removeCamera(camera);
-        ::arData::CameraSeries::RemovedCameraSignalType::sptr sig;
-        sig = m_cameraSeries->signal< ::arData::CameraSeries::RemovedCameraSignalType >(
-            ::arData::CameraSeries::s_REMOVED_CAMERA_SIG);
+        data::CameraSeries::RemovedCameraSignalType::sptr sig;
+        sig = m_cameraSeries->signal< data::CameraSeries::RemovedCameraSignalType >(
+            data::CameraSeries::s_REMOVED_CAMERA_SIG);
         sig->asyncEmit(camera);
 
         // Remove calibrationInfo
@@ -377,12 +376,12 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 {
     ::fwServices::helper::ConfigLauncher::FieldAdaptorType replaceMap;
 
-    ::arData::Camera::sptr camera = m_cameraSeries->getCamera(index);
+    data::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
-    std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
-    data::Composite::sptr data     = m_activitySeries->getData();
-    ::arData::CalibrationInfo::sptr calibInfo =
-        ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
+    std::string calibrationInfoKey        = "calibrationInfo_" + std::to_string(index);
+    data::Composite::sptr data            = m_activitySeries->getData();
+    data::CalibrationInfo::sptr calibInfo =
+        data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
 
     replaceMap["camera"]          = camera->getID();
     replaceMap["calibrationInfo"] = calibInfo->getID();
@@ -398,8 +397,8 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 {
     const size_t cameraIdx = std::max(index, size_t(1));
 
-    ::arData::Camera::sptr camera1 = m_cameraSeries->getCamera(0);
-    ::arData::Camera::sptr camera2 = m_cameraSeries->getCamera(cameraIdx);
+    data::Camera::sptr camera1 = m_cameraSeries->getCamera(0);
+    data::Camera::sptr camera2 = m_cameraSeries->getCamera(cameraIdx);
 
     // Check if the two cameras are calibrated
     if (camera1->getIsCalibrated() && camera2->getIsCalibrated())
@@ -409,21 +408,21 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         std::string calibrationInfo2Key = "calibrationInfoExtr1_" + ::boost::lexical_cast<std::string>(cameraIdx);
 
         data::Composite::sptr data = m_activitySeries->getData();
-        ::arData::CalibrationInfo::sptr calibInfo1;
-        ::arData::CalibrationInfo::sptr calibInfo2;
+        data::CalibrationInfo::sptr calibInfo1;
+        data::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity series if it exists or create it.
         if (data->find(calibrationInfo1Key) == data->end() || data->find(calibrationInfo2Key) == data->end())
         {
-            calibInfo1 = ::arData::CalibrationInfo::New();
-            calibInfo2 = ::arData::CalibrationInfo::New();
+            calibInfo1 = data::CalibrationInfo::New();
+            calibInfo2 = data::CalibrationInfo::New();
 
             data->getContainer()[calibrationInfo1Key] = calibInfo1;
             data->getContainer()[calibrationInfo2Key] = calibInfo2;
         }
         else
         {
-            calibInfo1 = ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo1Key]);
-            calibInfo2 = ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
+            calibInfo1 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo1Key]);
+            calibInfo2 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
         }
 
         ::fwServices::registry::FieldAdaptorType replaceMap;
@@ -451,18 +450,18 @@ void SCameraConfigLauncher::addCamera()
 {
     const size_t nbCam = m_cameraSeries->getNumberOfCameras();
 
-    ::arData::Camera::sptr camera = ::arData::Camera::New();
+    data::Camera::sptr camera = data::Camera::New();
 
     // Add the CalibrationInfo in activitySeries to be saved in activity
-    std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(nbCam);
-    ::arData::CalibrationInfo::sptr calibInfo                       = ::arData::CalibrationInfo::New();
+    std::string calibrationInfoKey        = "calibrationInfo_" + std::to_string(nbCam);
+    data::CalibrationInfo::sptr calibInfo = data::CalibrationInfo::New();
     m_activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
 
     // Add the camera
     m_cameraSeries->addCamera(camera);
-    ::arData::CameraSeries::AddedCameraSignalType::sptr sig;
-    sig = m_cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-        ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+    data::CameraSeries::AddedCameraSignalType::sptr sig;
+    sig = m_cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
+        data::CameraSeries::s_ADDED_CAMERA_SIG);
     sig->asyncEmit(camera);
 
     m_cameraComboBox->blockSignals(true);

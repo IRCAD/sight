@@ -32,7 +32,7 @@
 namespace videoFilter
 {
 
-fwServicesRegisterMacro( ::videoFilter::IVideoFilter, ::videoFilter::SCropVideoQuad, ::arData::FrameTL)
+fwServicesRegisterMacro( ::videoFilter::IVideoFilter, ::videoFilter::SCropVideoQuad, data::FrameTL)
 
 const core::com::Slots::SlotKeyType SCropVideoQuad::s_CROP_FRAME_SLOT = "cropFrame";
 
@@ -84,15 +84,15 @@ void SCropVideoQuad::updating()
 
 void SCropVideoQuad::cropFrame(core::HiResClock::HiResClockType timestamp)
 {
-    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+    data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(s_FRAMETL_INPUT);
 
     core::HiResClock::HiResClockType newerTimestamp = frameTL->getNewerTimestamp();
-    const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(newerTimestamp);
+    const CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(newerTimestamp);
 
-    ::arData::FrameTL::sptr frameTL1 = this->getInOut< ::arData::FrameTL >(s_FRAMETL1_INOUT);
-    ::arData::FrameTL::sptr frameTL2 = this->getInOut< ::arData::FrameTL >(s_FRAMETL2_INOUT);
-    ::arData::FrameTL::sptr frameTL3 = this->getInOut< ::arData::FrameTL >(s_FRAMETL3_INOUT);
-    ::arData::FrameTL::sptr frameTL4 = this->getInOut< ::arData::FrameTL >(s_FRAMETL4_INOUT);
+    data::FrameTL::sptr frameTL1 = this->getInOut< data::FrameTL >(s_FRAMETL1_INOUT);
+    data::FrameTL::sptr frameTL2 = this->getInOut< data::FrameTL >(s_FRAMETL2_INOUT);
+    data::FrameTL::sptr frameTL3 = this->getInOut< data::FrameTL >(s_FRAMETL3_INOUT);
+    data::FrameTL::sptr frameTL4 = this->getInOut< data::FrameTL >(s_FRAMETL4_INOUT);
 
     const size_t width  = frameTL->getWidth();
     const size_t height = frameTL->getHeight();
@@ -140,14 +140,14 @@ void SCropVideoQuad::cropFrame(core::HiResClock::HiResClockType timestamp)
 
 void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
                                          const ::cv::Rect& roi,
-                                         ::arData::FrameTL::sptr& frameTL,
+                                         data::FrameTL::sptr& frameTL,
                                          core::HiResClock::HiResClockType timestamp)
 {
     const size_t width  = frameTL->getWidth();
     const size_t height = frameTL->getHeight();
 
     // Get the buffer of the timeline to fill
-    SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
+    SPTR(data::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
     std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
     // Create an openCV mat that aliases the buffer created from the output timeline
@@ -161,8 +161,8 @@ void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
 
     // push buffer and notify
     frameTL->pushObject(bufferOut);
-    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = frameTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 
@@ -171,7 +171,7 @@ void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
 ::fwServices::IService::KeyConnectionsMap SCropVideoQuad::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_CROP_FRAME_SLOT );
+    connections.push( s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_CROP_FRAME_SLOT );
 
     return connections;
 }
