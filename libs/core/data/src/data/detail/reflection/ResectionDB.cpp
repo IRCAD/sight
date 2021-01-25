@@ -30,9 +30,9 @@ fwCampImplementDataMacro((sight)(data)(ResectionDB))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("safe_resection", &sight::data::ResectionDB::m_safeResection)
-    .property("resections", &sight::data::ResectionDB::m_resections)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("safe_resection", &::sight::data::ResectionDB::m_safeResection)
+    .property("resections", &::sight::data::ResectionDB::m_resections)
     ;
 }

@@ -24,9 +24,9 @@
 
 #include <arStructuralPatch/arData/CameraSeries/V2ToV3.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,30 +60,30 @@ void V2ToV3Test::tearDown()
 
 void V2ToV3Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr CameraSeriesV2 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr CameraSeriesV3;
+    atoms::Object::sptr CameraSeriesV2 = atoms::Object::New();
+    atoms::Object::sptr CameraSeriesV3;
 
     ::fwAtomsPatch::helper::setClassname(CameraSeriesV2, "::arData::CameraSeries");
     ::fwAtomsPatch::helper::setVersion(CameraSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(CameraSeriesV2);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("dicom_reference", ::fwAtoms::Object::sptr());
-    helper.addAttribute("reconstruction_db", ::fwAtoms::Object::sptr());
-    helper.addAttribute("cameras", ::fwAtoms::Object::sptr());
-    helper.addAttribute("extrinsic_matrices", ::fwAtoms::Object::sptr());
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("dicom_reference", atoms::Object::sptr());
+    helper.addAttribute("reconstruction_db", atoms::Object::sptr());
+    helper.addAttribute("cameras", atoms::Object::sptr());
+    helper.addAttribute("extrinsic_matrices", atoms::Object::sptr());
 
     {
-        CameraSeriesV3 = ::fwAtoms::Object::dynamicCast(CameraSeriesV2->clone());
+        CameraSeriesV3 = atoms::Object::dynamicCast(CameraSeriesV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[CameraSeriesV2] = CameraSeriesV3;

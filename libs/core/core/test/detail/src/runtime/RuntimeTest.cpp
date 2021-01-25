@@ -73,21 +73,12 @@ void RuntimeTest::testPosix()
 
     auto nativeLibrary = std::make_unique<dl::Posix>("module_utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
-    auto nativeName = nativeLibrary->getNativeName();
+    const auto name = nativeLibrary->getName();
 
-    CPPUNIT_ASSERT( std::regex_match("libsight_module_utest.so.0.1", nativeName));
-    CPPUNIT_ASSERT( std::regex_match("libsight_module_utest.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("sight_module_utest", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
-    auto path = nativeLibrary->getPath();
+    CPPUNIT_ASSERT_EQUAL( std::string("module_utest"), name);
 
-    std::cout << path.string() << std::endl;
-    // The library picked will be one of these
-    const bool testPath = std::filesystem::path("libsight_module_utest.so.0.1") == path ||
-                          std::filesystem::path("libsight_module_utest.so.0") == path ||
-                          std::filesystem::path("libsight_module_utest.so") == path;
-    CPPUNIT_ASSERT_EQUAL( true, testPath);
+    const auto path = nativeLibrary->getFullPath();
+    CPPUNIT_ASSERT_EQUAL( (location / std::filesystem::path("libsight_module_utest.so")).string(), path.string());
 }
 
 #elif defined(WIN32)
@@ -122,16 +113,16 @@ void RuntimeTest::testRuntime()
     core::runtime::init();
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-
+    const auto moduleStr                    = "::sight::module::utest";
     // Test module utest
-    CPPUNIT_ASSERT(runtime.findModule("module_utest"));
-    auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("module_utest"));
+    CPPUNIT_ASSERT(runtime.findModule(moduleStr));
+    auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnabled());
 
     // Test module utest
-    CPPUNIT_ASSERT(runtime.findModule("module_utest"));
-    auto bundle2 = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("module_utest"));
+    CPPUNIT_ASSERT(runtime.findModule(moduleStr));
+    auto bundle2 = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnabled());
 }

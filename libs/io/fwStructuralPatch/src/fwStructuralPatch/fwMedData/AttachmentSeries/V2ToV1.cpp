@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/data/AttachmentSeries/V2ToV1.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -34,8 +34,8 @@ namespace AttachmentSeries
 V2ToV1::V2ToV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::AttachmentSeries";
-    m_targetClassname = "data::AttachmentSeries";
+    m_originClassname = "::sight::data::AttachmentSeries";
+    m_targetClassname = "::sight::data::AttachmentSeries";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }
@@ -55,8 +55,8 @@ V2ToV1::V2ToV1(const V2ToV1& _cpy) :
 
 // ----------------------------------------------------------------------------
 
-void V2ToV1::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V2ToV1::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);

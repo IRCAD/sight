@@ -34,7 +34,7 @@
 
 #include <utility>
 
-fwDataRegisterMacro( sight::data::Graph );
+fwDataRegisterMacro( ::sight::data::Graph );
 
 namespace sight::data
 {

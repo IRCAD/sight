@@ -31,7 +31,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-fwDataRegisterMacro( sight::data::ModelSeries )
+fwDataRegisterMacro( ::sight::data::ModelSeries )
 
 namespace sight::data
 {

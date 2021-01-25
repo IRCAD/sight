@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/creator/data/Study1.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::data
 
 Study1::Study1()
 {
-    m_classname = "data::Study";
+    m_classname = "::sight::data::Study";
     m_version   = "1";
 }
 
@@ -54,17 +54,17 @@ Study1::Study1( const Study1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Study1::create()
+atoms::Object::sptr Study1::create()
 {
-    ::fwAtoms::Object::sptr study = this->createObjBase();
+    atoms::Object::sptr study = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(study);
 
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("referring_physician_name", ::fwAtoms::String::New(""));
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_age", ::fwAtoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("referring_physician_name", atoms::String::New(""));
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("patient_age", atoms::String::New(""));
 
     return study;
 }

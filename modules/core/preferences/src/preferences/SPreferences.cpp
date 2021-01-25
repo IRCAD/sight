@@ -22,12 +22,12 @@
 
 #include "preferences/SPreferences.hpp"
 
+#include <atoms/conversion/convert.hpp>
+
 #include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/Composite.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
-
-#include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
@@ -94,10 +94,10 @@ void SPreferences::load()
         ::fwAtomsBoostIO::Reader reader;
         try
         {
-            ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, filename ) );
+            atoms::Object::sptr atom = atoms::Object::dynamicCast( reader.read( readArchive, filename ) );
 
-            data::Object::sptr newData = ::fwAtomConversion::convert(atom,
-                                                                     ::fwAtomConversion::AtomVisitor::ChangePolicy());
+            data::Object::sptr newData = atoms::conversion::convert(atom,
+                                                                    atoms::conversion::AtomVisitor::ChangePolicy());
             data->shallowCopy(newData);
         }
         catch(...)
@@ -121,7 +121,7 @@ void SPreferences::save()
     data::reflection::visitor::RecursiveLock recursiveLock(obj);
 
     // Convert data to atom
-    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);
+    atoms::Object::sptr atom = atoms::conversion::convert(obj);
     // Write atom
     ::fwZip::IWriteArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
     ::fwAtomsBoostIO::FormatType format       = ::fwAtomsBoostIO::JSON;

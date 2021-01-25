@@ -24,11 +24,11 @@
 
 #include <fwStructuralPatch/data/Image/V2ToV3.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -69,17 +69,17 @@ void V2ToV3Test::applyPatchTest()
 
     // test gray scale image
     {
-        ::fwAtoms::Object::sptr imgObjV2 = ::fwAtoms::Object::New();
-        ::fwAtoms::Object::sptr imgObjV3;
+        atoms::Object::sptr imgObjV2 = atoms::Object::New();
+        atoms::Object::sptr imgObjV3;
 
-        ::fwAtomsPatch::helper::setClassname(imgObjV2, "data::Image");
+        ::fwAtomsPatch::helper::setClassname(imgObjV2, "::sight::data::Image");
         ::fwAtomsPatch::helper::setVersion(imgObjV2, "2");
 
         ::fwAtomsPatch::helper::Object helper(imgObjV2);
 
-        helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(1));
+        helper.addAttribute("nb_components", atoms::Numeric::New(1));
 
-        imgObjV3 = ::fwAtoms::Object::dynamicCast(imgObjV2->clone());
+        imgObjV3 = atoms::Object::dynamicCast(imgObjV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgObjV2] = imgObjV3;
@@ -88,23 +88,23 @@ void V2ToV3Test::applyPatchTest()
 
         CPPUNIT_ASSERT(imgObjV2);
         CPPUNIT_ASSERT(imgObjV3->getAttribute("pixel_format"));
-        ::fwAtoms::String::sptr format = ::fwAtoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
+        atoms::String::sptr format = atoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
         CPPUNIT_ASSERT(format->getValue() == "GRAY_SCALE");
     }
 
     // test RGB image
     {
-        ::fwAtoms::Object::sptr imgObjV2 = ::fwAtoms::Object::New();
-        ::fwAtoms::Object::sptr imgObjV3;
+        atoms::Object::sptr imgObjV2 = atoms::Object::New();
+        atoms::Object::sptr imgObjV3;
 
-        ::fwAtomsPatch::helper::setClassname(imgObjV2, "data::Image");
+        ::fwAtomsPatch::helper::setClassname(imgObjV2, "::sight::data::Image");
         ::fwAtomsPatch::helper::setVersion(imgObjV2, "2");
 
         ::fwAtomsPatch::helper::Object helper(imgObjV2);
 
-        helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(3));
+        helper.addAttribute("nb_components", atoms::Numeric::New(3));
 
-        imgObjV3 = ::fwAtoms::Object::dynamicCast(imgObjV2->clone());
+        imgObjV3 = atoms::Object::dynamicCast(imgObjV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgObjV2] = imgObjV3;
@@ -113,23 +113,23 @@ void V2ToV3Test::applyPatchTest()
 
         CPPUNIT_ASSERT(imgObjV2);
         CPPUNIT_ASSERT(imgObjV3->getAttribute("pixel_format"));
-        ::fwAtoms::String::sptr format = ::fwAtoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
+        atoms::String::sptr format = atoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
         CPPUNIT_ASSERT(format->getValue() == "RGB");
     }
 
     // test RGBA image
     {
-        ::fwAtoms::Object::sptr imgObjV2 = ::fwAtoms::Object::New();
-        ::fwAtoms::Object::sptr imgObjV3;
+        atoms::Object::sptr imgObjV2 = atoms::Object::New();
+        atoms::Object::sptr imgObjV3;
 
-        ::fwAtomsPatch::helper::setClassname(imgObjV2, "data::Image");
+        ::fwAtomsPatch::helper::setClassname(imgObjV2, "::sight::data::Image");
         ::fwAtomsPatch::helper::setVersion(imgObjV2, "2");
 
         ::fwAtomsPatch::helper::Object helper(imgObjV2);
 
-        helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(4));
+        helper.addAttribute("nb_components", atoms::Numeric::New(4));
 
-        imgObjV3 = ::fwAtoms::Object::dynamicCast(imgObjV2->clone());
+        imgObjV3 = atoms::Object::dynamicCast(imgObjV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgObjV2] = imgObjV3;
@@ -138,23 +138,23 @@ void V2ToV3Test::applyPatchTest()
 
         CPPUNIT_ASSERT(imgObjV2);
         CPPUNIT_ASSERT(imgObjV3->getAttribute("pixel_format"));
-        ::fwAtoms::String::sptr format = ::fwAtoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
+        atoms::String::sptr format = atoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
         CPPUNIT_ASSERT(format->getValue() == "RGBA");
     }
 
     // test UNDEFINED image
     {
-        ::fwAtoms::Object::sptr imgObjV2 = ::fwAtoms::Object::New();
-        ::fwAtoms::Object::sptr imgObjV3;
+        atoms::Object::sptr imgObjV2 = atoms::Object::New();
+        atoms::Object::sptr imgObjV3;
 
-        ::fwAtomsPatch::helper::setClassname(imgObjV2, "data::Image");
+        ::fwAtomsPatch::helper::setClassname(imgObjV2, "::sight::data::Image");
         ::fwAtomsPatch::helper::setVersion(imgObjV2, "2");
 
         ::fwAtomsPatch::helper::Object helper(imgObjV2);
 
-        helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(2));
+        helper.addAttribute("nb_components", atoms::Numeric::New(2));
 
-        imgObjV3 = ::fwAtoms::Object::dynamicCast(imgObjV2->clone());
+        imgObjV3 = atoms::Object::dynamicCast(imgObjV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgObjV2] = imgObjV3;
@@ -163,7 +163,7 @@ void V2ToV3Test::applyPatchTest()
 
         CPPUNIT_ASSERT(imgObjV2);
         CPPUNIT_ASSERT(imgObjV3->getAttribute("pixel_format"));
-        ::fwAtoms::String::sptr format = ::fwAtoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
+        atoms::String::sptr format = atoms::String::dynamicCast(imgObjV3->getAttribute("pixel_format"));
         CPPUNIT_ASSERT(format->getValue() == "UNDEFINED");
     }
 }

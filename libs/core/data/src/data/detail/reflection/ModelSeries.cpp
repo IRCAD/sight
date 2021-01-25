@@ -36,8 +36,8 @@ fwCampImplementDataMacro((sight)(data)(ModelSeries))
     builder
     .tag("object_version", "3")
     .tag("lib_name", "fwMedData")
-    .base< sight::data::Series>()
-    .property("reconstruction_db", &sight::data::ModelSeries::m_reconstructionDB)
-    .property("dicom_reference", &sight::data::ModelSeries::m_dicomReference)
+    .base< ::sight::data::Series>()
+    .property("reconstruction_db", &::sight::data::ModelSeries::m_reconstructionDB)
+    .property("dicom_reference", &::sight::data::ModelSeries::m_dicomReference)
     ;
 }

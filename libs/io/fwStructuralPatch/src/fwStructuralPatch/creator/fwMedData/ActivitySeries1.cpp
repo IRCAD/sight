@@ -22,8 +22,8 @@
 
 #include "fwStructuralPatch/creator/data/ActivitySeries1.hpp"
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::data
 
 ActivitySeries1::ActivitySeries1()
 {
-    m_classname = "data::ActivitySeries";
+    m_classname = "::sight::data::ActivitySeries";
     m_version   = "1";
 }
 
@@ -55,13 +55,13 @@ ActivitySeries1::ActivitySeries1( const ActivitySeries1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr ActivitySeries1::create()
+atoms::Object::sptr ActivitySeries1::create()
 {
-    ::fwAtoms::Object::sptr series = this->Series1::create();
+    atoms::Object::sptr series = this->Series1::create();
     ::fwAtomsPatch::helper::Object helper(series);
 
-    helper.addAttribute("activity_config_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("data", ::fwAtoms::Object::New());
+    helper.addAttribute("activity_config_id", atoms::String::New(""));
+    helper.addAttribute("data", atoms::Object::New());
 
     return series;
 }

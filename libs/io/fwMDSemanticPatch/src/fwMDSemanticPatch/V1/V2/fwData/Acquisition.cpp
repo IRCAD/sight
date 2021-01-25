@@ -22,11 +22,11 @@
 
 #include "fwMDSemanticPatch/V1/V2/data/Acquisition.hpp"
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::data
 Acquisition::Acquisition() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "data::Acquisition";
+    m_originClassname = "::sight::data::Acquisition";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -63,28 +63,28 @@ Acquisition::Acquisition( const Acquisition& cpy ) :
 // ----------------------------------------------------------------------------
 
 void Acquisition::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
 
-    ::fwAtoms::Object::sptr image = current->getAttribute< ::fwAtoms::Object >("image");
-    ::fwAtoms::Map::sptr fields   = image->getAttribute< ::fwAtoms::Map >("fields");
+    atoms::Object::sptr image = current->getAttribute< atoms::Object >("image");
+    atoms::Map::sptr fields   = image->getAttribute< atoms::Map >("fields");
 
-    ::fwAtoms::Map::ConstIteratorType it = fields->find("m_commentId");
+    atoms::Map::ConstIteratorType it = fields->find("m_commentId");
     ::fwAtomsPatch::helper::Object helper(current);
     if ( it != fields->end() )
     {
-        ::fwAtoms::Object::sptr value = ::fwAtoms::Object::dynamicCast( it->second );
-        helper.replaceAttribute("description", ::fwAtoms::String::New(value->getAttribute("value")->getString()));
+        atoms::Object::sptr value = atoms::Object::dynamicCast( it->second );
+        helper.replaceAttribute("description", atoms::String::New(value->getAttribute("value")->getString()));
     }
 
-    ::fwAtoms::String::sptr uid = current->getAttribute< ::fwAtoms::String >("instance_uid");
+    atoms::String::sptr uid = current->getAttribute< atoms::String >("instance_uid");
     if( uid->getValue().empty() )
     {
-        helper.replaceAttribute("instance_uid", ::fwAtoms::String::New( core::tools::UUID::generateUUID() ));
+        helper.replaceAttribute("instance_uid", atoms::String::New( core::tools::UUID::generateUUID() ));
     }
 
 }

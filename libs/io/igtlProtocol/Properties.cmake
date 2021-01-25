@@ -7,8 +7,7 @@ set( DEPENDENCIES
     data
     fwServices
     fwZip
-    fwAtoms
-    fwAtomConversion
+    atoms
     fwAtomsBoostIO
     fwDataTools
 )

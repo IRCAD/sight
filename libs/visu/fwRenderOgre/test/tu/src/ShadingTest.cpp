@@ -333,17 +333,17 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.d = {{ 2.0, 0., 0., 0. }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE1, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Float"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(2.0f, data::Float::dynamicCast(obj)->getValue());
 
         value.f = {{ 2.5f, 0.f, 0.f, 0.f }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT1, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Float"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(2.5f, data::Float::dynamicCast(obj)->getValue());
 
         value.i = {{ 321, 0, 0, 0 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT1, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Integer"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Integer"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(321), data::Integer::dynamicCast(obj)->getValue());
     }
 
@@ -355,7 +355,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.d = {{ 2.0, 4.5, 0., 0. }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -370,7 +370,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.d = {{ -4.1, 1.5, 3.7, 0. }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -386,7 +386,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.d = {{ -1.1, -5.5, -1.7, 4.1 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE4, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -403,7 +403,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.i = {{ -1, 5, 0, 4 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -418,7 +418,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.i = {{ 2, -4, 3, 4 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -434,7 +434,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.i = {{ -1, 5, 9, 1 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT4, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -451,7 +451,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.f = {{ 21.1f, -2.5f, 9.f, 1.f }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -466,7 +466,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.f = {{ 21.1f, 2.5f, -9.f, 1.f }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Array"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Array"), obj->getClassname());
 
         arrayObject = data::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
@@ -482,7 +482,7 @@ void ShadingTest::createObjectFromShaderParameter()
 
         value.f = {{ 0.12f, .5f, 1.f, 8.f }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT4, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Color"), obj->getClassname());
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Color"), obj->getClassname());
 
         data::Color::sptr color = data::Color::dynamicCast(obj);
         CPPUNIT_ASSERT_EQUAL(.12f, color->red());

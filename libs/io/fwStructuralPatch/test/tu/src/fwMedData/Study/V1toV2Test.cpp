@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/Study/V1ToV2.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,23 +60,23 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr StudyV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr StudyV2;
+    atoms::Object::sptr StudyV1 = atoms::Object::New();
+    atoms::Object::sptr StudyV2;
 
-    ::fwAtomsPatch::helper::setClassname(StudyV1, "data::Study");
+    ::fwAtomsPatch::helper::setClassname(StudyV1, "::sight::data::Study");
     ::fwAtomsPatch::helper::setVersion(StudyV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(StudyV1);
 
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("referring_physician_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_age", ::fwAtoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("referring_physician_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("patient_age", atoms::String::New(""));
 
     {
-        StudyV2 = ::fwAtoms::Object::dynamicCast(StudyV1->clone());
+        StudyV2 = atoms::Object::dynamicCast(StudyV1->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[StudyV1] = StudyV2;

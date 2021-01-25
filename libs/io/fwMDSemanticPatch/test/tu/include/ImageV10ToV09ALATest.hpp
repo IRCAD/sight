@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwAtoms/Map.hpp>
+#include <atoms/Map.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -47,7 +47,7 @@ public:
 
     void applyPatchTest();
 
-    void addPoint(::fwAtoms::Map::sptr map, const std::array<double, 3>& pt, const std::string& label);
+    void addPoint(atoms::Map::sptr map, const std::array<double, 3>& pt, const std::string& label);
 };
 
 } //namespace ut

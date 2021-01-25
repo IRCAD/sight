@@ -34,11 +34,11 @@ fwCampImplementDataMacro((sight)(data)(DicomSeries))
     builder
     .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
-    .base< sight::data::Series>()
-    .property("number_of_instances", &sight::data::DicomSeries::m_numberOfInstances)
-    .property("dicom_container", &sight::data::DicomSeries::m_dicomContainer)
-    .property("sop_class_uids", &sight::data::DicomSeries::m_SOPClassUIDs)
-    .property("computed_tag_values", &sight::data::DicomSeries::m_computedTagValues)
-    .property("first_instance_number", &sight::data::DicomSeries::m_firstInstanceNumber)
+    .base< ::sight::data::Series>()
+    .property("number_of_instances", &::sight::data::DicomSeries::m_numberOfInstances)
+    .property("dicom_container", &::sight::data::DicomSeries::m_dicomContainer)
+    .property("sop_class_uids", &::sight::data::DicomSeries::m_SOPClassUIDs)
+    .property("computed_tag_values", &::sight::data::DicomSeries::m_computedTagValues)
+    .property("first_instance_number", &::sight::data::DicomSeries::m_firstInstanceNumber)
     ;
 }

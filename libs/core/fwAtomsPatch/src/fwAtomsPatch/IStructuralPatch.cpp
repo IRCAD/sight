@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ IStructuralPatch::IStructuralPatch( const IStructuralPatch& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void IStructuralPatch::updateVersion(::fwAtoms::Object::sptr current)
+void IStructuralPatch::updateVersion(atoms::Object::sptr current)
 {
     ::fwAtomsPatch::helper::setClassname(current, m_targetClassname);
     ::fwAtomsPatch::helper::setVersion(current, m_targetVersion);
@@ -60,8 +60,8 @@ void IStructuralPatch::updateVersion(::fwAtoms::Object::sptr current)
 
 // ----------------------------------------------------------------------------
 
-void IStructuralPatch::apply(const ::fwAtoms::Object::sptr& previous,
-                             const ::fwAtoms::Object::sptr& current,
+void IStructuralPatch::apply(const atoms::Object::sptr& previous,
+                             const atoms::Object::sptr& current,
                              ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     SLM_ASSERT("The type of the previous object (" << ::fwAtomsPatch::helper::getClassname(

@@ -55,7 +55,7 @@ public:
      *
      * Sets 'instance_uid', 'date', 'time', 'referring_physician_name', 'description' and 'patient_age' attributes.
      */
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

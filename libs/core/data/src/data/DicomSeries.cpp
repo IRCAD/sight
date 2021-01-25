@@ -29,7 +29,7 @@
 
 #include <filesystem>
 
-fwDataRegisterMacro( sight::data::DicomSeries )
+fwDataRegisterMacro( ::sight::data::DicomSeries )
 
 namespace sight::data
 {

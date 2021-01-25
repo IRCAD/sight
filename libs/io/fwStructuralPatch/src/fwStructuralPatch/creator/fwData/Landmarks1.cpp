@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/creator/data/Landmarks1.hpp"
 
-#include <fwAtoms/Map.hpp>
+#include <atoms/Map.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::data
 
 Landmarks1::Landmarks1()
 {
-    m_classname = "data::Landmarks";
+    m_classname = "::sight::data::Landmarks";
     m_version   = "1";
 }
 
@@ -56,12 +56,12 @@ Landmarks1::Landmarks1( const Landmarks1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Landmarks1::create()
+atoms::Object::sptr Landmarks1::create()
 {
-    ::fwAtoms::Object::sptr landmarks = this->createObjBase();
+    atoms::Object::sptr landmarks = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(landmarks);
 
-    helper.addAttribute("landmarks", ::fwAtoms::Map::New());
+    helper.addAttribute("landmarks", atoms::Map::New());
 
     return landmarks;
 }

@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/ActivitySeries/V1ToV2.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,28 +60,28 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr activitySeriesV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr activitySeriesV2;
+    atoms::Object::sptr activitySeriesV1 = atoms::Object::New();
+    atoms::Object::sptr activitySeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(activitySeriesV1, "data::ActivitySeries");
+    ::fwAtomsPatch::helper::setClassname(activitySeriesV1, "::sight::data::ActivitySeries");
     ::fwAtomsPatch::helper::setVersion(activitySeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(activitySeriesV1);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("activity_config_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("data", ::fwAtoms::Object::New());
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("activity_config_id", atoms::String::New(""));
+    helper.addAttribute("data", atoms::Object::New());
 
     {
-        activitySeriesV2 = ::fwAtoms::Object::dynamicCast(activitySeriesV1->clone());
+        activitySeriesV2 = atoms::Object::dynamicCast(activitySeriesV1->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[activitySeriesV1] = activitySeriesV2;

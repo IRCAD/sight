@@ -24,16 +24,16 @@
 
 #include <fwMDSemanticPatch/V10/V09ALA/data/Image.hpp>
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -83,25 +83,25 @@ void ImageV10ToV09ALATest::applyPatchTest()
     pts.push_back(P4);
     pts.push_back(P5);
 
-    ::fwAtoms::Object::sptr image = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr patchedObj;
+    atoms::Object::sptr image = atoms::Object::New();
+    atoms::Object::sptr patchedObj;
 
-    ::fwAtomsPatch::helper::setClassname(image, "data::Image");
+    ::fwAtomsPatch::helper::setClassname(image, "::sight::data::Image");
     ::fwAtomsPatch::helper::setVersion(image, "2");
 
     ::fwAtomsPatch::helper::Object helperImage(image);
 
-    ::fwAtoms::Map::sptr fieldMap = ::fwAtoms::Map::New();
+    atoms::Map::sptr fieldMap = atoms::Map::New();
 
     helperImage.addAttribute("fields", fieldMap);
 
     // create PointList
-    ::fwAtoms::Object::sptr landmarks = ::fwAtoms::Object::New();
-    ::fwAtomsPatch::helper::setClassname(landmarks, "data::Landmarks");
+    atoms::Object::sptr landmarks = atoms::Object::New();
+    ::fwAtomsPatch::helper::setClassname(landmarks, "::sight::data::Landmarks");
     ::fwAtomsPatch::helper::setVersion(landmarks, "1");
     ::fwAtomsPatch::helper::Object helperLandmarks(landmarks);
 
-    ::fwAtoms::Map::sptr map = ::fwAtoms::Map::New();
+    atoms::Map::sptr map = atoms::Map::New();
     helperLandmarks.addAttribute("landmarks", map);
     this->addPoint(map, P1, "point_1");
     this->addPoint(map, P2, "point_2");
@@ -111,7 +111,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
 
     fieldMap->insert("m_landmarksId", landmarks);
 
-    patchedObj = ::fwAtoms::Object::dynamicCast(image->clone());
+    patchedObj = atoms::Object::dynamicCast(image->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[image] = patchedObj;
@@ -121,33 +121,33 @@ void ImageV10ToV09ALATest::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patcher->apply(image, patchedObj, newVersions));
 
     CPPUNIT_ASSERT(patchedObj->getAttribute("fields"));
-    ::fwAtoms::Map::sptr newFieldMap = ::fwAtoms::Map::dynamicCast(patchedObj->getAttribute("fields"));
+    atoms::Map::sptr newFieldMap = atoms::Map::dynamicCast(patchedObj->getAttribute("fields"));
     CPPUNIT_ASSERT(newFieldMap);
 
     CPPUNIT_ASSERT(newFieldMap->find("m_imageLandmarksId") != newFieldMap->end());
-    ::fwAtoms::Object::sptr pl = ::fwAtoms::Object::dynamicCast((*newFieldMap)["m_imageLandmarksId"]);
+    atoms::Object::sptr pl = atoms::Object::dynamicCast((*newFieldMap)["m_imageLandmarksId"]);
     CPPUNIT_ASSERT(pl);
-    CPPUNIT_ASSERT_EQUAL(std::string("data::PointList"), ::fwAtomsPatch::helper::getClassname(pl));
+    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::PointList"), ::fwAtomsPatch::helper::getClassname(pl));
     CPPUNIT_ASSERT(pl->getAttribute("points"));
-    ::fwAtoms::Sequence::sptr plSeq = ::fwAtoms::Sequence::dynamicCast(pl->getAttribute("points"));
+    atoms::Sequence::sptr plSeq = atoms::Sequence::dynamicCast(pl->getAttribute("points"));
     CPPUNIT_ASSERT(plSeq);
     CPPUNIT_ASSERT_EQUAL(size_t(5), plSeq->size());
 
     size_t count = 0;
     for (const auto& elt: plSeq->getValue())
     {
-        ::fwAtoms::Object::sptr point = ::fwAtoms::Object::dynamicCast(elt);
+        atoms::Object::sptr point = atoms::Object::dynamicCast(elt);
         CPPUNIT_ASSERT(point);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Point"), ::fwAtomsPatch::helper::getClassname(point));
-        ::fwAtoms::Sequence::csptr pointCoords = ::fwAtoms::Sequence::dynamicCast(point->getAttribute("coord"));
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Point"), ::fwAtomsPatch::helper::getClassname(point));
+        atoms::Sequence::csptr pointCoords = atoms::Sequence::dynamicCast(point->getAttribute("coord"));
         CPPUNIT_ASSERT_EQUAL(size_t(3), pointCoords->size());
-        ::fwAtoms::Numeric::csptr coordX = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[0]);
+        atoms::Numeric::csptr coordX = atoms::Numeric::dynamicCast(pointCoords->getValue()[0]);
         CPPUNIT_ASSERT(coordX);
         CPPUNIT_ASSERT_EQUAL(pts[count][0], coordX->getValue<double>());
-        ::fwAtoms::Numeric::csptr coordY = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[1]);
+        atoms::Numeric::csptr coordY = atoms::Numeric::dynamicCast(pointCoords->getValue()[1]);
         CPPUNIT_ASSERT(coordY);
         CPPUNIT_ASSERT_EQUAL(pts[count][1], coordY->getValue<double>());
-        ::fwAtoms::Numeric::csptr coordZ = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[2]);
+        atoms::Numeric::csptr coordZ = atoms::Numeric::dynamicCast(pointCoords->getValue()[2]);
         CPPUNIT_ASSERT(coordZ);
         CPPUNIT_ASSERT_EQUAL(pts[count][2], coordZ->getValue<double>());
         ++count;
@@ -156,22 +156,22 @@ void ImageV10ToV09ALATest::applyPatchTest()
 
 //------------------------------------------------------------------------------
 
-void ImageV10ToV09ALATest::addPoint(::fwAtoms::Map::sptr map, const std::array<double, 3>& pt,
+void ImageV10ToV09ALATest::addPoint(atoms::Map::sptr map, const std::array<double, 3>& pt,
                                     const std::string& label)
 {
-    ::fwAtoms::Object::sptr atomGroup = ::fwAtoms::Object::New();
+    atoms::Object::sptr atomGroup = atoms::Object::New();
     atomGroup->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
-    atomGroup->setAttribute("color", ::fwAtoms::String::New("1;1;1;1"));
-    atomGroup->setAttribute("size", ::fwAtoms::Numeric::New(1));
-    atomGroup->setAttribute("shape", ::fwAtoms::String::New("SPHERE"));
-    atomGroup->setAttribute("visibility", ::fwAtoms::Boolean::New(true));
+    atomGroup->setAttribute("color", atoms::String::New("1;1;1;1"));
+    atomGroup->setAttribute("size", atoms::Numeric::New(1));
+    atomGroup->setAttribute("shape", atoms::String::New("SPHERE"));
+    atomGroup->setAttribute("visibility", atoms::Boolean::New(true));
 
-    ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::New();
+    atoms::Sequence::sptr seq = atoms::Sequence::New();
 
     const std::string coords = std::to_string(pt[0]) + ";" + std::to_string(pt[1]) + ";"
                                + std::to_string(pt[2]);
-    seq->push_back(::fwAtoms::String::New(coords));
+    seq->push_back(atoms::String::New(coords));
     atomGroup->setAttribute("points", seq);
     map->insert(label, atomGroup);
 }

@@ -22,10 +22,10 @@
 
 #include "filterUnknownSeries/FilterUnknownActivities.hpp"
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
 
 #include <fwAtomsFilter/functions.hpp>
 #include <fwAtomsFilter/registry/macros.hpp>
@@ -47,24 +47,24 @@ FilterUnknownActivities::~FilterUnknownActivities()
 
 //------------------------------------------------------------------------------
 
-void FilterUnknownActivities::apply(const SPTR(::fwAtoms::Object)& atom)
+void FilterUnknownActivities::apply(const SPTR(atoms::Object)& atom)
 {
 
     SLM_ASSERT("Unable to filter atom : invalid object", atom);
 
-    const std::string expName    = "data::SeriesDB"; // expected classname
+    const std::string expName    = "::sight::data::SeriesDB"; // expected classname
     const std::string& classname = ::fwAtomsPatch::helper::getClassname(atom);
     FW_RAISE_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
                 classname != expName);
 
-    ::fwAtoms::Sequence::sptr series = atom->getAttribute< ::fwAtoms::Sequence >("values");
-    SLM_ASSERT("Failed to retrieve 'values' attribute as ::fwAtoms::Sequence", series);
+    atoms::Sequence::sptr series = atom->getAttribute< atoms::Sequence >("values");
+    SLM_ASSERT("Failed to retrieve 'values' attribute as atoms::Sequence", series);
 
-    ::fwAtoms::Sequence::sptr knownSeries = ::fwAtoms::Sequence::New();
-    for(::fwAtoms::Base::sptr serie :  series->getValue())
+    atoms::Sequence::sptr knownSeries = atoms::Sequence::New();
+    for(atoms::Base::sptr serie :  series->getValue())
     {
-        ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(serie);
-        SLM_ASSERT("Failed to cast sequence element as ::fwAtoms::Object", obj);
+        atoms::Object::sptr obj = atoms::Object::dynamicCast(serie);
+        SLM_ASSERT("Failed to cast sequence element as atoms::Object", obj);
 
         if(::fwAtomsFilter::isSeriesKnown(obj))
         {
@@ -73,7 +73,7 @@ void FilterUnknownActivities::apply(const SPTR(::fwAtoms::Object)& atom)
     }
 
     series->clear();
-    for(::fwAtoms::Base::sptr serie :  knownSeries->getValue())
+    for(atoms::Base::sptr serie :  knownSeries->getValue())
     {
         series->push_back(serie);
     }

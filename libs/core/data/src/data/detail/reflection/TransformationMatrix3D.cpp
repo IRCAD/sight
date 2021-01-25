@@ -30,8 +30,8 @@ fwCampImplementDataMacro((sight)(data)(TransformationMatrix3D))
 {
     builder
     .tag("object_version", "2")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("coefficient", &sight::data::TransformationMatrix3D::m_vCoefficients)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("coefficient", &::sight::data::TransformationMatrix3D::m_vCoefficients)
     ;
 }

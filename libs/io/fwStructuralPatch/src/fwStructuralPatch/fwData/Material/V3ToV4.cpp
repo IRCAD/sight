@@ -22,13 +22,13 @@
 
 #include "fwStructuralPatch/data/Material/V3ToV4.hpp"
 
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -44,8 +44,8 @@ namespace Material
 V3ToV4::V3ToV4() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Material";
-    m_targetClassname = "data::Material";
+    m_originClassname = "::sight::data::Material";
+    m_targetClassname = "::sight::data::Material";
     m_originVersion   = "3";
     m_targetVersion   = "4";
 }
@@ -65,8 +65,8 @@ V3ToV4::V3ToV4( const V3ToV4& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V3ToV4::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -77,19 +77,19 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
     ::fwAtomsPatch::helper::Object helper(current);
 
     // Retrieve and remove lighting attribute, then update shading mode
-    ::fwAtoms::Boolean::sptr lighting = previous->getAttribute< ::fwAtoms::Boolean >("lighting");
-    bool bLighting = lighting->getValue();
+    atoms::Boolean::sptr lighting = previous->getAttribute< atoms::Boolean >("lighting");
+    bool bLighting                = lighting->getValue();
 
     helper.removeAttribute("lighting");
 
     if(!bLighting)
     {
-        helper.replaceAttribute("shading_mode", ::fwAtoms::String::New("AMBIENT"));
+        helper.replaceAttribute("shading_mode", atoms::String::New("AMBIENT"));
     }
 
     // Switch diffuse and ambient
-    ::fwAtoms::Object::sptr ambient = current->getAttribute< ::fwAtoms::Object >("ambient");
-    ::fwAtoms::Object::sptr diffuse = current->getAttribute< ::fwAtoms::Object >("diffuse");
+    atoms::Object::sptr ambient = current->getAttribute< atoms::Object >("ambient");
+    atoms::Object::sptr diffuse = current->getAttribute< atoms::Object >("diffuse");
 
     // Replace diffuse by previous ambient
     helper.replaceAttribute("diffuse", ambient);
@@ -97,14 +97,14 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Set ambient to 0.05f
 
-    ::fwAtoms::Sequence::sptr ambientSeq = diffuse->getAttribute< ::fwAtoms::Sequence >("rgba");
-    ::fwAtoms::Numeric::sptr r           = std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[0]);
+    atoms::Sequence::sptr ambientSeq = diffuse->getAttribute< atoms::Sequence >("rgba");
+    atoms::Numeric::sptr r           = std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[0]);
     r->setFromString(".05");
-    ::fwAtoms::Numeric::sptr g = std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[1]);
+    atoms::Numeric::sptr g = std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[1]);
     g->setFromString(".05");
-    ::fwAtoms::Numeric::sptr b = std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[2]);
+    atoms::Numeric::sptr b = std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[2]);
     b->setFromString(".05");
-    ::fwAtoms::Numeric::sptr a = std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[3]);
+    atoms::Numeric::sptr a = std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[3]);
     a->setFromString("1.");
 }
 

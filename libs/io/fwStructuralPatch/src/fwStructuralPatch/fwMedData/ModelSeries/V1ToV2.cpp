@@ -22,8 +22,8 @@
 
 #include "fwStructuralPatch/data/ModelSeries/V1ToV2.hpp"
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
 
 namespace fwStructuralPatch
 {
@@ -35,8 +35,8 @@ namespace ModelSeries
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::ModelSeries";
-    m_targetClassname = "data::ModelSeries";
+    m_originClassname = "::sight::data::ModelSeries";
+    m_targetClassname = "::sight::data::ModelSeries";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -56,8 +56,8 @@ V1ToV2::V1ToV2( const V1ToV2& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V1ToV2::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -66,7 +66,7 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
     this->updateVersion(current);
 
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("dicom_reference", ::fwAtoms::Object::sptr());
+    helper.addAttribute("dicom_reference", atoms::Object::sptr());
 }
 
 } // namespace ModelSeries

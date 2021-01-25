@@ -33,69 +33,69 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-std::string getClassname( const ::fwAtoms::Object::sptr& obj )
+std::string getClassname( const atoms::Object::sptr& obj )
 {
     return obj->getMetaInfo( ::fwAtomsPatch::s_OBJ_CLASSNAME );
 }
 
 //-----------------------------------------------------------------------------
 
-void setClassname( const ::fwAtoms::Object::sptr& obj, const std::string& newClassname )
+void setClassname( const atoms::Object::sptr& obj, const std::string& newClassname )
 {
     obj->setMetaInfo( ::fwAtomsPatch::s_OBJ_CLASSNAME, newClassname );
 }
 
 //-----------------------------------------------------------------------------
 
-std::string getVersion( const ::fwAtoms::Object::sptr& obj )
+std::string getVersion( const atoms::Object::sptr& obj )
 {
     return obj->getMetaInfo( ::fwAtomsPatch::s_OBJ_VERSION );
 }
 
 //-----------------------------------------------------------------------------
 
-void setVersion( const ::fwAtoms::Object::sptr& obj, const std::string& newVersion )
+void setVersion( const atoms::Object::sptr& obj, const std::string& newVersion )
 {
     obj->setMetaInfo( ::fwAtomsPatch::s_OBJ_VERSION, newVersion );
 }
 
 //-----------------------------------------------------------------------------
 
-void generateID( const ::fwAtoms::Object::sptr& obj )
+void generateID( const atoms::Object::sptr& obj )
 {
     obj->setMetaInfo( fwAtomsPatch::s_OBJ_ID, core::tools::UUID::generateUUID() );
 }
 
 //-----------------------------------------------------------------------------
 
-void cleanFields( const ::fwAtoms::Object::sptr& obj )
+void cleanFields( const atoms::Object::sptr& obj )
 {
-    obj->setAttribute("fields", ::fwAtoms::Map::New());
+    obj->setAttribute("fields", atoms::Map::New());
 }
 
 //-----------------------------------------------------------------------------
 
-void changeUID( const ::fwAtoms::Object::sptr& obj )
+void changeUID( const atoms::Object::sptr& obj )
 {
-    for( const ::fwAtoms::Object::AttributesType::value_type& elem :  obj->getAttributes() )
+    for( const atoms::Object::AttributesType::value_type& elem :  obj->getAttributes() )
     {
         if ( elem.second )
         {
             switch ( elem.second->type() )
             {
-                case ::fwAtoms::Base::SEQUENCE:
+                case atoms::Base::SEQUENCE:
                 {
-                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
+                    changeSeqUID( atoms::Sequence::dynamicCast( elem.second ) );
                     break;
                 }
-                case ::fwAtoms::Base::MAP:
+                case atoms::Base::MAP:
                 {
-                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
+                    changeMapUID( atoms::Map::dynamicCast( elem.second ) );
                     break;
                 }
-                case ::fwAtoms::Base::OBJECT:
+                case atoms::Base::OBJECT:
                 {
-                    changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
+                    changeUID( atoms::Object::dynamicCast( elem.second ) );
                     break;
                 }
                 default:
@@ -109,27 +109,27 @@ void changeUID( const ::fwAtoms::Object::sptr& obj )
 
 //-----------------------------------------------------------------------------
 
-void changeMapUID( const ::fwAtoms::Map::sptr& map )
+void changeMapUID( const atoms::Map::sptr& map )
 {
-    for( ::fwAtoms::Map::ValueType elem :  map->getValue() )
+    for( atoms::Map::ValueType elem :  map->getValue() )
     {
         if ( elem.second )
         {
             switch ( elem.second->type() )
             {
-                case ::fwAtoms::Base::SEQUENCE:
+                case atoms::Base::SEQUENCE:
                 {
-                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
+                    changeSeqUID( atoms::Sequence::dynamicCast( elem.second ) );
                     break;
                 }
-                case ::fwAtoms::Base::MAP:
+                case atoms::Base::MAP:
                 {
-                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
+                    changeMapUID( atoms::Map::dynamicCast( elem.second ) );
                     break;
                 }
-                case ::fwAtoms::Base::OBJECT:
+                case atoms::Base::OBJECT:
                 {
-                    changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
+                    changeUID( atoms::Object::dynamicCast( elem.second ) );
                     break;
                 }
                 default:
@@ -141,27 +141,27 @@ void changeMapUID( const ::fwAtoms::Map::sptr& map )
 
 //-----------------------------------------------------------------------------
 
-void changeSeqUID( const ::fwAtoms::Sequence::sptr& seq )
+void changeSeqUID( const atoms::Sequence::sptr& seq )
 {
-    for( ::fwAtoms::Base::sptr elem :  seq->getValue() )
+    for( atoms::Base::sptr elem :  seq->getValue() )
     {
         if ( elem )
         {
             switch ( elem->type() )
             {
-                case ::fwAtoms::Base::SEQUENCE:
+                case atoms::Base::SEQUENCE:
                 {
-                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem ) );
+                    changeSeqUID( atoms::Sequence::dynamicCast( elem ) );
                     break;
                 }
-                case ::fwAtoms::Base::MAP:
+                case atoms::Base::MAP:
                 {
-                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem ) );
+                    changeMapUID( atoms::Map::dynamicCast( elem ) );
                     break;
                 }
-                case ::fwAtoms::Base::OBJECT:
+                case atoms::Base::OBJECT:
                 {
-                    changeUID( ::fwAtoms::Object::dynamicCast( elem ) );
+                    changeUID( atoms::Object::dynamicCast( elem ) );
                     break;
                 }
                 default:

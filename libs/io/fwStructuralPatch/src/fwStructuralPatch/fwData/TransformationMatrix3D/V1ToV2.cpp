@@ -22,11 +22,11 @@
 
 #include "fwStructuralPatch/data/TransformationMatrix3D/V1ToV2.hpp"
 
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -42,8 +42,8 @@ namespace TransformationMatrix3D
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::TransformationMatrix3D";
-    m_targetClassname = "data::TransformationMatrix3D";
+    m_originClassname = "::sight::data::TransformationMatrix3D";
+    m_targetClassname = "::sight::data::TransformationMatrix3D";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -63,8 +63,8 @@ V1ToV2::V1ToV2( const V1ToV2& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V1ToV2::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -75,8 +75,8 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    ::fwAtoms::Sequence::sptr oldCoefs = previous->getAttribute< ::fwAtoms::Sequence >("coefficient");
-    ::fwAtoms::Sequence::sptr newCoefs = ::fwAtoms::Sequence::New();
+    atoms::Sequence::sptr oldCoefs = previous->getAttribute< atoms::Sequence >("coefficient");
+    atoms::Sequence::sptr newCoefs = atoms::Sequence::New();
 
     for(size_t i = 0; i < 16; ++i)
     {

@@ -22,13 +22,13 @@
 
 #include "fwAtomsFilter/functions.hpp"
 
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
+
 #include <data/registry/detail.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
-
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
@@ -40,7 +40,7 @@ namespace fwAtomsFilter
 
 //------------------------------------------------------------------------------
 
-bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
+bool isSeriesKnown(const SPTR(atoms::Object)& series)
 {
     bool isKnown = false;
 
@@ -56,10 +56,10 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
 
     if(itKey != keys.end())
     {
-        if(classname == "data::ActivitySeries")
+        if(classname == "::sight::data::ActivitySeries")
         {
             // Check if activity config id is known
-            ::fwAtoms::String::sptr asId = series->getAttribute< ::fwAtoms::String >("activity_config_id");
+            atoms::String::sptr asId = series->getAttribute< atoms::String >("activity_config_id");
 
             for(reg::ActivityInfo info :  infos)
             {

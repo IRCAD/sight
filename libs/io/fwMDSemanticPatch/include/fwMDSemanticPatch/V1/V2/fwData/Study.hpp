@@ -56,8 +56,8 @@ public:
      * Sets the 'instance_uid' attribute value to a newly generated UUID.
      */
     FWMDSEMANTICPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
+        const atoms::Object::sptr& previous,
+        const atoms::Object::sptr& current,
         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };

@@ -59,8 +59,8 @@ public:
      * Removes attributes tudy_id, consulting_physician_name, patient_size, patient_weight, patient_body_mass_index.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& _previous,
-        const ::fwAtoms::Object::sptr& _current,
+        const atoms::Object::sptr& _previous,
+        const atoms::Object::sptr& _current,
         ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions) override;
 
 };

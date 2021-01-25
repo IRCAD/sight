@@ -181,7 +181,8 @@ void SShaderParameterEditor::updateGuiInfo()
                 paramSrv->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
             const ObjectClassnameType objType = shaderObj->getClassname();
 
-            if(objType == "data::Boolean" || objType == "data::Float" || objType == "data::Integer")
+            if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
+               objType == "::sight::data::Integer")
             {
                 found = true;
                 break;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,44 +20,45 @@
  *
  ***********************************************************************/
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-
-#include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/conditions/NumericOverflow.hpp"
 
+#include "fwAtomsPatch/infos/log.hpp"
+
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
 
 namespace fwAtomsPatch
 {
 namespace conditions
 {
 
-NumericOverflow::NumericOverflow(::fwAtoms::Base::sptr defaultValue) : Abstract(defaultValue)
+NumericOverflow::NumericOverflow(atoms::Base::sptr defaultValue) :
+    Abstract(defaultValue)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void NumericOverflow::setTreshold(::fwAtoms::Numeric::sptr treshold)
+void NumericOverflow::setTreshold(atoms::Numeric::sptr treshold)
 {
     m_treshold = treshold;
 }
 
 // ----------------------------------------------------------------------------
 
-bool NumericOverflow::test(::fwAtoms::Base::sptr old,
-                           ::fwAtoms::Base::sptr newValue)
+bool NumericOverflow::test(atoms::Base::sptr old,
+                           atoms::Base::sptr newValue)
 {
     return this->test(newValue);
 }
 
 // ----------------------------------------------------------------------------
 
-bool NumericOverflow::test(::fwAtoms::Base::sptr value)
+bool NumericOverflow::test(atoms::Base::sptr value)
 {
     if(value->isNumeric())
     {
-        ::fwAtoms::Numeric::sptr numeric = ::fwAtoms::Numeric::dynamicCast(value);
+        atoms::Numeric::sptr numeric = atoms::Numeric::dynamicCast(value);
         return numeric->getValue<double>() <= m_treshold->getValue<double>();
     }
     else
@@ -69,8 +70,7 @@ bool NumericOverflow::test(::fwAtoms::Base::sptr value)
 
 // ----------------------------------------------------------------------------
 
-
-NumericOverflow::sptr NumericOverflow::New(::fwAtoms::Base::sptr defaultValue)
+NumericOverflow::sptr NumericOverflow::New(atoms::Base::sptr defaultValue)
 {
     NumericOverflow::sptr valueSptr(new NumericOverflow(defaultValue));
     return valueSptr;

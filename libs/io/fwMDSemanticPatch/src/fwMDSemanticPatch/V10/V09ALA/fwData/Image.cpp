@@ -22,15 +22,15 @@
 
 #include "fwMDSemanticPatch/V10/V09ALA/data/Image.hpp"
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
@@ -49,7 +49,7 @@ namespace sight::data
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V10", "V09ALA");
 }
@@ -70,15 +70,15 @@ Image::Image( const Image& cpy ) :
 // ----------------------------------------------------------------------------
 
 void Image::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
     ::fwAtomsPatch::helper::Object helper( current );
 
-    ::fwAtoms::Map::csptr previousFieldMap = ::fwAtoms::Map::dynamicCast(previous->getAttribute("fields"));
+    atoms::Map::csptr previousFieldMap = atoms::Map::dynamicCast(previous->getAttribute("fields"));
     SLM_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_landmarksId");
@@ -87,54 +87,54 @@ void Image::apply(
         // create new Landmarks structure
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
-        ::fwAtoms::Object::sptr currentPL = creators->create( "data::PointList", "1");
+        atoms::Object::sptr currentPL = creators->create( "::sight::data::PointList", "1");
         ::fwAtomsPatch::helper::Object helperPL( currentPL );
 
-        ::fwAtoms::Map::sptr currentFieldMap = ::fwAtoms::Map::dynamicCast(current->getAttribute("fields"));
+        atoms::Map::sptr currentFieldMap = atoms::Map::dynamicCast(current->getAttribute("fields"));
         currentFieldMap->insert("m_imageLandmarksId", currentPL);
 
-        ::fwAtoms::Sequence::sptr plSeq = ::fwAtoms::Sequence::dynamicCast(currentPL->getAttribute("points"));
+        atoms::Sequence::sptr plSeq = atoms::Sequence::dynamicCast(currentPL->getAttribute("points"));
 
         // Convert previous Landmarks
-        ::fwAtoms::Object::sptr previousLandmarks = ::fwAtoms::Object::dynamicCast(iter->second);
+        atoms::Object::sptr previousLandmarks = atoms::Object::dynamicCast(iter->second);
 
-        ::fwAtoms::Map::sptr previousLandmarksMap =
-            ::fwAtoms::Map::dynamicCast(previousLandmarks->getAttribute("landmarks"));
+        atoms::Map::sptr previousLandmarksMap =
+            atoms::Map::dynamicCast(previousLandmarks->getAttribute("landmarks"));
 
         for (const auto& elt : previousLandmarksMap->getValue())
         {
-            ::fwAtoms::Object::csptr atomGroup = ::fwAtoms::Object::dynamicCast(elt.second);
-            ::fwAtoms::Sequence::csptr points  = ::fwAtoms::Sequence::dynamicCast(atomGroup->getAttribute("points"));
+            atoms::Object::csptr atomGroup = atoms::Object::dynamicCast(elt.second);
+            atoms::Sequence::csptr points  = atoms::Sequence::dynamicCast(atomGroup->getAttribute("points"));
 
             size_t count = 0;
             for (const auto& ptObj : points->getValue())
             {
-                ::fwAtoms::String::csptr previousPt = ::fwAtoms::String::dynamicCast(ptObj);
+                atoms::String::csptr previousPt = atoms::String::dynamicCast(ptObj);
                 std::vector<std::string> res;
                 const std::string coords = previousPt->getValue();
                 ::boost::split(res, coords, ::boost::is_any_of(";"));
 
-                ::fwAtoms::Object::sptr point = ::fwAtoms::Object::New();
-                ::fwAtomsPatch::helper::setClassname(point, "data::Point");
+                atoms::Object::sptr point = atoms::Object::New();
+                ::fwAtomsPatch::helper::setClassname(point, "::sight::data::Point");
                 ::fwAtomsPatch::helper::setVersion(point, "1");
                 ::fwAtomsPatch::helper::generateID(point);
 
                 plSeq->push_back(point);
 
                 ::fwAtomsPatch::helper::Object helperPt( point );
-                ::fwAtoms::Sequence::sptr pointCoord = ::fwAtoms::Sequence::New();
+                atoms::Sequence::sptr pointCoord = atoms::Sequence::New();
                 helperPt.addAttribute("coord", pointCoord);
-                pointCoord->push_back(::fwAtoms::Numeric::New(std::stod(res[0])));
-                pointCoord->push_back(::fwAtoms::Numeric::New(std::stod(res[1])));
-                pointCoord->push_back(::fwAtoms::Numeric::New(std::stod(res[2])));
+                pointCoord->push_back(atoms::Numeric::New(std::stod(res[0])));
+                pointCoord->push_back(atoms::Numeric::New(std::stod(res[1])));
+                pointCoord->push_back(atoms::Numeric::New(std::stod(res[2])));
 
                 // set point label
-                ::fwAtoms::Map::sptr pointFieldMap = ::fwAtoms::Map::New();
+                atoms::Map::sptr pointFieldMap = atoms::Map::New();
                 helperPt.addAttribute("fields", pointFieldMap);
 
                 const std::string label = elt.first + "_" + std::to_string(count);
 
-                pointFieldMap->insert("m_labelId", ::fwAtoms::String::New(label));
+                pointFieldMap->insert("m_labelId", atoms::String::New(label));
                 ++count;
             }
         }

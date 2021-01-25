@@ -22,9 +22,9 @@
 
 #include "fwMDSemanticPatch/V1/V2/MedicalWorkspacePatcher.hpp"
 
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
+#include <atoms/Map.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/IPatch.hpp>
@@ -54,10 +54,10 @@ MedicalWorkspacePatcher::~MedicalWorkspacePatcher()
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr MedicalWorkspacePatcher::transformObject(::fwAtoms::Object::sptr object,
-                                                                 const std::string& context,
-                                                                 const std::string& currentVersion,
-                                                                 const std::string& targetVersion)
+atoms::Object::sptr MedicalWorkspacePatcher::transformObject(atoms::Object::sptr object,
+                                                             const std::string& context,
+                                                             const std::string& currentVersion,
+                                                             const std::string& targetVersion)
 {
     this->addCompositeTypes(object);
     return ::fwAtomsPatch::patcher::DefaultPatcher::transformObject(object, context, currentVersion, targetVersion);
@@ -65,20 +65,20 @@ MedicalWorkspacePatcher::~MedicalWorkspacePatcher()
 
 // ----------------------------------------------------------------------------
 
-void MedicalWorkspacePatcher::addCompositeTypes(::fwAtoms::Object::sptr object)
+void MedicalWorkspacePatcher::addCompositeTypes(atoms::Object::sptr object)
 {
-    if( ::fwAtomsPatch::helper::getClassname( object ) == "data::Composite")
+    if( ::fwAtomsPatch::helper::getClassname( object ) == "::sight::data::Composite")
     {
-        ::fwAtoms::Map::sptr values = object->getAttribute< ::fwAtoms::Map >("values");
+        atoms::Map::sptr values = object->getAttribute< atoms::Map >("values");
         if((*values)["patientDB"] && (*values)["planningDB"] && (*values)["processingDB"])
         {
             object->setMetaInfo("compositeType", "MedicalWorkspace");
         }
     }
 
-    for( ::fwAtoms::Object::AttributesType::value_type elem :  object->getAttributes() )
+    for( atoms::Object::AttributesType::value_type elem :  object->getAttributes() )
     {
-        ::fwAtoms::Object::sptr att = ::fwAtoms::Object::dynamicCast(elem.second);
+        atoms::Object::sptr att = atoms::Object::dynamicCast(elem.second);
         if(att)
         {
             this->addCompositeTypes(att);

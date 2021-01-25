@@ -30,9 +30,9 @@ fwCampImplementDataMacro((sight)(data)(Port))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("identifier", &sight::data::Port::m_identifier)
-    .property("type", &sight::data::Port::m_type)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("identifier", &::sight::data::Port::m_identifier)
+    .property("type", &::sight::data::Port::m_type)
     ;
 }

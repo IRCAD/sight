@@ -49,24 +49,24 @@ void visitProperties(const std::string& className, const PropertiesNameType& vec
 
 //------------------------------------------------------------------------------
 
-void compareSimplePropertyValue(data::Object::sptr obj,
+void compareSimplePropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
                                 const std::string& value)
 {
-    data::GenericFieldBase::sptr field;
-    field = data::reflection::getObject< data::GenericFieldBase >(obj, propertyPath);
+    sight::data::GenericFieldBase::sptr field;
+    field = sight::data::reflection::getObject< sight::data::GenericFieldBase >(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, field);
     CPPUNIT_ASSERT_EQUAL( value, field->toString());
 }
 
 //------------------------------------------------------------------------------
 
-void compareObjectPropertyValue(data::Object::sptr obj,
+void compareObjectPropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
-                                data::Object::sptr value)
+                                sight::data::Object::sptr value)
 {
-    data::Object::sptr subObj;
-    subObj = data::reflection::getObject(obj, propertyPath);
+    sight::data::Object::sptr subObj;
+    subObj = sight::data::reflection::getObject(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, subObj);
     CPPUNIT_ASSERT_MESSAGE("Retrieve property "+propertyPath+" not equal with value", value == subObj);
 }

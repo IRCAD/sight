@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( sight::data::Line );
+fwDataRegisterMacro( ::sight::data::Line );
 
 namespace sight::data
 {

@@ -29,9 +29,9 @@
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 #include "fwAtomsPatch/VersionsGraph.hpp"
 
-#include <core/tools/Object.hpp>
+#include <atoms/Object.hpp>
 
-#include <fwAtoms/Object.hpp>
+#include <core/tools/Object.hpp>
 
 #include <string>
 
@@ -80,10 +80,10 @@ public:
     FWATOMSPATCH_API virtual ~IPatcher();
 
     /// Transform the specified object
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-                                                                     const std::string& context,
-                                                                     const std::string& currentVersion,
-                                                                     const std::string& targetVersion) = 0;
+    FWATOMSPATCH_API virtual atoms::Object::sptr transformObject(atoms::Object::sptr object,
+                                                                 const std::string& context,
+                                                                 const std::string& currentVersion,
+                                                                 const std::string& targetVersion) = 0;
 
 };
 

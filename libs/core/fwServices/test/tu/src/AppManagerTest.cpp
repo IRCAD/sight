@@ -557,7 +557,7 @@ void AppManagerTest::managerWithInputsTest()
 
     appMgr->requireInput(INPUT_OBJ1, AppManagerForTest::InputType::OBJECT);
     appMgr->requireInput(INPUT_OBJ2, AppManagerForTest::InputType::OBJECT);
-    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "data::Image");
+    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "::sight::data::Image");
 
     CPPUNIT_ASSERT(!appMgr->checkInputs());
 

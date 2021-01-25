@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/DicomSeries/V1ToV2.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,32 +60,32 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr dicomSeriesV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr dicomSeriesV2;
+    atoms::Object::sptr dicomSeriesV1 = atoms::Object::New();
+    atoms::Object::sptr dicomSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(dicomSeriesV1, "data::DicomSeries");
+    ::fwAtomsPatch::helper::setClassname(dicomSeriesV1, "::sight::data::DicomSeries");
     ::fwAtomsPatch::helper::setVersion(dicomSeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(dicomSeriesV1);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
 
-    helper.addAttribute("number_of_instances", ::fwAtoms::String::New(""));
-    helper.addAttribute("dicom_container", ::fwAtoms::String::New(""));
-    helper.addAttribute("sop_class_uids", ::fwAtoms::String::New(""));
-    helper.addAttribute("computed_tag_values", ::fwAtoms::String::New(""));
-    helper.addAttribute("first_instance_number", ::fwAtoms::String::New(""));
+    helper.addAttribute("number_of_instances", atoms::String::New(""));
+    helper.addAttribute("dicom_container", atoms::String::New(""));
+    helper.addAttribute("sop_class_uids", atoms::String::New(""));
+    helper.addAttribute("computed_tag_values", atoms::String::New(""));
+    helper.addAttribute("first_instance_number", atoms::String::New(""));
 
     {
-        dicomSeriesV2 = ::fwAtoms::Object::dynamicCast(dicomSeriesV1->clone());
+        dicomSeriesV2 = atoms::Object::dynamicCast(dicomSeriesV1->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[dicomSeriesV1] = dicomSeriesV2;

@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/data/Material/V2ToV3.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -38,8 +38,8 @@ namespace Material
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Material";
-    m_targetClassname = "data::Material";
+    m_originClassname = "::sight::data::Material";
+    m_targetClassname = "::sight::data::Material";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 }
@@ -60,8 +60,8 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V2ToV3::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -71,7 +71,7 @@ void V2ToV3::apply(
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("lighting", ::fwAtoms::Boolean::New(true) );
+    helper.addAttribute("lighting", atoms::Boolean::New(true) );
 }
 
 } // namespace Material

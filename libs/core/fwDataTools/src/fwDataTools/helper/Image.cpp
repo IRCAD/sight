@@ -47,7 +47,7 @@ Image::Image( data::Image::sptr image ) :
     m_sliceModified(false)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::Image is no longer supported, the methods have been moved to "
-                      "data::Image", "22.0")
+                      "::sight::data::Image", "22.0")
     if ( image )
     {
         m_lock = image->getDataArray()->getBufferObject()->lock();

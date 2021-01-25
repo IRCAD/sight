@@ -24,10 +24,10 @@
 
 #include <fwStructuralPatch/data/Reconstruction/V1ToV2.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -66,20 +66,20 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr recObjV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr recObjV2;
+    atoms::Object::sptr recObjV1 = atoms::Object::New();
+    atoms::Object::sptr recObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(recObjV1, "data::Reconstruction");
+    ::fwAtomsPatch::helper::setClassname(recObjV1, "::sight::data::Reconstruction");
     ::fwAtomsPatch::helper::setVersion(recObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(recObjV1);
 
-    helper.addAttribute("is_visible", ::fwAtoms::Boolean::New(true));
-    helper.addAttribute("organ_name", ::fwAtoms::String::New("Organ"));
-    helper.addAttribute("structure_type", ::fwAtoms::String::New(""));
-    helper.addAttribute("material", ::fwAtoms::String::New(""));
-    helper.addAttribute("image", ::fwAtoms::String::New(""));
-    helper.addAttribute("mesh", ::fwAtoms::String::New(""));
+    helper.addAttribute("is_visible", atoms::Boolean::New(true));
+    helper.addAttribute("organ_name", atoms::String::New("Organ"));
+    helper.addAttribute("structure_type", atoms::String::New(""));
+    helper.addAttribute("material", atoms::String::New(""));
+    helper.addAttribute("image", atoms::String::New(""));
+    helper.addAttribute("mesh", atoms::String::New(""));
 
     std::vector< std::string> v1Attributs;
 
@@ -99,10 +99,10 @@ void V1ToV2Test::applyPatchTest()
 
     for(std::string attribut :  v1Attributs)
     {
-        helper.addAttribute(attribut, ::fwAtoms::String::New(""));
+        helper.addAttribute(attribut, atoms::String::New(""));
     }
 
-    recObjV2 = ::fwAtoms::Object::dynamicCast(recObjV1->clone());
+    recObjV2 = atoms::Object::dynamicCast(recObjV1->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[recObjV1] = recObjV2;

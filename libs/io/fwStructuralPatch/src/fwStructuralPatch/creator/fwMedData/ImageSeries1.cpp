@@ -22,8 +22,8 @@
 
 #include "fwStructuralPatch/creator/data/ImageSeries1.hpp"
 
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Object.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Object.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
@@ -37,7 +37,7 @@ namespace sight::data
 
 ImageSeries1::ImageSeries1()
 {
-    m_classname = "data::ImageSeries";
+    m_classname = "::sight::data::ImageSeries";
     m_version   = "1";
 }
 
@@ -56,12 +56,12 @@ ImageSeries1::ImageSeries1( const ImageSeries1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr ImageSeries1::create()
+atoms::Object::sptr ImageSeries1::create()
 {
-    ::fwAtoms::Object::sptr imageSeries = this->Series1::create();
+    atoms::Object::sptr imageSeries = this->Series1::create();
     ::fwAtomsPatch::helper::Object helper(imageSeries);
 
-    helper.addAttribute("image", ::fwAtoms::Blob::New());
+    helper.addAttribute("image", atoms::Blob::New());
 
     return imageSeries;
 }

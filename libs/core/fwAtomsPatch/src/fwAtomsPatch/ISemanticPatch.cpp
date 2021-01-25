@@ -25,7 +25,7 @@
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/types.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <atoms/Object.hpp>
 
 namespace fwAtomsPatch
 {
@@ -74,8 +74,8 @@ bool ISemanticPatch::isApplicable(const std::string& context,
 
 // ----------------------------------------------------------------------------
 
-void ISemanticPatch::apply(const ::fwAtoms::Object::sptr& previous,
-                           const ::fwAtoms::Object::sptr& current,
+void ISemanticPatch::apply(const atoms::Object::sptr& previous,
+                           const atoms::Object::sptr& current,
                            ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     SLM_ASSERT("The type of the previous object ("

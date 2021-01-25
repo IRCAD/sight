@@ -239,10 +239,10 @@ Module::ExtensionPointConstIterator Module::extensionPointsEnd() const
 
 //------------------------------------------------------------------------------
 
-void Module::addLibrary( SPTR(dl::Library)library )
+void Module::setLibrary( SPTR(dl::Library)library )
 {
     library->setSearchPath(this->getLibraryLocation());
-    m_libraries.insert(library);
+    m_library = library;
 }
 
 //------------------------------------------------------------------------------
@@ -264,6 +264,13 @@ const std::string Module::getClass() const
 const std::string& Module::getIdentifier() const
 {
     return m_identifier;
+}
+
+//------------------------------------------------------------------------------
+
+const std::string Module::getLibraryName() const
+{
+    return m_library->getName();
 }
 
 //------------------------------------------------------------------------------
@@ -310,29 +317,26 @@ void Module::loadLibraries()
     // References the current module as the loading module.
     m_loadingModule = shared_from_this();
 
-    // Loads all libraries.
-    for(const LibraryContainer::value_type& library : m_libraries)
+    // Loads the library
+    if(m_library->isLoaded() == false)
     {
-        if(library->isLoaded() == false)
+        try
         {
-            try
-            {
-                library->load();
-            }
-            catch( std::exception& e )
-            {
-                std::string message;
+            m_library->load();
+        }
+        catch( std::exception& e )
+        {
+            std::string message;
 
-                message += "Unable to load module ";
-                message += library->getPath().string();
-                message += ". ";
-                message += e.what();
+            message += "Unable to load module ";
+            message += m_library->getName();
+            message += ". ";
+            message += e.what();
 
-                SLM_ERROR(message);
-                m_loadingModule.reset();
+            SLM_ERROR(message);
+            m_loadingModule.reset();
 
-                throw RuntimeException( message );
-            }
+            throw RuntimeException( message );
         }
     }
 

@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/data/Image/V1ToV2.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -38,8 +38,8 @@ namespace Image
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Image";
-    m_targetClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
+    m_targetClassname = "::sight::data::Image";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 
@@ -61,8 +61,8 @@ V1ToV2::V1ToV2( const V1ToV2& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V1ToV2::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -73,9 +73,9 @@ void V1ToV2::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(1));
-    helper.addAttribute("window_center", ::fwAtoms::Numeric::New(50));
-    helper.addAttribute("window_width", ::fwAtoms::Numeric::New(500));
+    helper.addAttribute("nb_components", atoms::Numeric::New(1));
+    helper.addAttribute("window_center", atoms::Numeric::New(50));
+    helper.addAttribute("window_width", atoms::Numeric::New(500));
 }
 
 } // namespace Image

@@ -22,8 +22,8 @@
 
 #include "fwStructuralPatch/data/Mesh/V1ToV3.hpp"
 
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -39,8 +39,8 @@ namespace Mesh
 V1ToV3::V1ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Mesh";
-    m_targetClassname = "data::Mesh";
+    m_originClassname = "::sight::data::Mesh";
+    m_targetClassname = "::sight::data::Mesh";
     m_originVersion   = "1";
     m_targetVersion   = "3";
 }
@@ -60,8 +60,8 @@ V1ToV3::V1ToV3( const V1ToV3& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V1ToV3::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V1ToV3::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -71,9 +71,9 @@ void V1ToV3::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("point_tex_coords", ::fwAtoms::Object::sptr() );
-    helper.addAttribute("cell_tex_coords", ::fwAtoms::Object::sptr() );
-    helper.addAttribute("array_map", ::fwAtoms::Map::New() );
+    helper.addAttribute("point_tex_coords", atoms::Object::sptr() );
+    helper.addAttribute("cell_tex_coords", atoms::Object::sptr() );
+    helper.addAttribute("array_map", atoms::Map::New() );
 }
 
 } // namespace Mesh

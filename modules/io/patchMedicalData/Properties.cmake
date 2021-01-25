@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     fwMDSemanticPatch
     fwStructuralPatch
-    fwAtoms
+    atoms
 )
 set( REQUIREMENTS  )
 

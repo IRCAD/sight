@@ -111,30 +111,30 @@ void ServiceFactoryTest::factoryTest()
 {
     const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Object",
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Object",
                                                                                        "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestServiceImplementation");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestServiceImplementation not found ", it != servicesImpl.end());
     }
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Float",
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Float",
                                                                                        "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvOneData");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestSrvOneData not found ", it != servicesImpl.end());
 
         const auto objects = serviceFactory->getServiceObjects("::fwServices::ut::TestSrvOneData");
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Float"), objects[0]);
     }
     {
-        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Float",
+        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Float",
                                                                                  "::fwServices::ut::TestService");
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestSrvThreeData not found ", it != servicesImpl.end());
 
-        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("data::Integer",
+        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Integer",
                                                                             "::fwServices::ut::TestService");
 
         it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestSrvThreeData");
@@ -142,9 +142,9 @@ void ServiceFactoryTest::factoryTest()
 
         const auto objects = serviceFactory->getServiceObjects("::fwServices::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), objects.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[0]);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Integer"), objects[1]);
-        CPPUNIT_ASSERT_EQUAL(std::string("data::Float"), objects[2]);
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Float"), objects[0]);
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Integer"), objects[1]);
+        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Float"), objects[2]);
     }
 }
 

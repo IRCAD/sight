@@ -25,9 +25,9 @@
 #include "fwAtomsPatch/helper/functions.hpp"
 #include <fwAtomsPatch/types.hpp>
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Map.hpp>
 
-#include <fwAtoms/Map.hpp>
+#include <core/tools/UUID.hpp>
 
 namespace fwAtomsPatch
 {
@@ -66,9 +66,9 @@ const std::string& IStructuralCreator::getObjectClassname() const
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr IStructuralCreator::createObjBase() const
+atoms::Object::sptr IStructuralCreator::createObjBase() const
 {
-    ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::New();
+    atoms::Object::sptr obj = atoms::Object::New();
 
     ::fwAtomsPatch::helper::setClassname(obj, m_classname);
     ::fwAtomsPatch::helper::setVersion(obj, m_version);

@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( sight::data::ROITraits );
+fwDataRegisterMacro( ::sight::data::ROITraits );
 
 namespace sight::data
 {

@@ -22,17 +22,17 @@
 
 #include "fwStructuralPatch/data/Mesh/V3ToV4.hpp"
 
+#include <atoms/Blob.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
+
 #include <core/memory/BufferObject.hpp>
 
 #include <data/Mesh.hpp>
-
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -48,8 +48,8 @@ namespace Mesh
 V3ToV4::V3ToV4() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Mesh";
-    m_targetClassname = "data::Mesh";
+    m_originClassname = "::sight::data::Mesh";
+    m_targetClassname = "::sight::data::Mesh";
     m_originVersion   = "3";
     m_targetVersion   = "4";
 }
@@ -69,8 +69,8 @@ V3ToV4::V3ToV4( const V3ToV4& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V3ToV4::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -85,21 +85,21 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
         = [&](const std::string& _buffer)
           {
               // Retrieves values from previous atoms object.
-              ::fwAtoms::Object::sptr cellData     = previous->getAttribute< ::fwAtoms::Object >(_buffer);
-              ::fwAtoms::Blob::sptr cellDataBuffer = cellData->getAttribute< ::fwAtoms::Blob >("buffer");
-              ::fwAtoms::Sequence::sptr strides    = cellData->getAttribute< ::fwAtoms::Sequence >("strides");
-              ::fwAtoms::String::sptr stride       = ::fwAtoms::String::dynamicCast((*strides)[0]);
-              size_t cellDataElementSize = static_cast< size_t >(stoi(stride->getString()));
+              atoms::Object::sptr cellData     = previous->getAttribute< atoms::Object >(_buffer);
+              atoms::Blob::sptr cellDataBuffer = cellData->getAttribute< atoms::Blob >("buffer");
+              atoms::Sequence::sptr strides    = cellData->getAttribute< atoms::Sequence >("strides");
+              atoms::String::sptr stride       = atoms::String::dynamicCast((*strides)[0]);
+              size_t cellDataElementSize       = static_cast< size_t >(stoi(stride->getString()));
 
               // Retrieves values from current atoms object.
-              ::fwAtoms::Object::sptr currentCellData     = current->getAttribute< ::fwAtoms::Object >(_buffer);
-              ::fwAtoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< ::fwAtoms::Blob >("buffer");
-              ::fwAtoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< ::fwAtoms::Sequence >(
+              atoms::Object::sptr currentCellData     = current->getAttribute< atoms::Object >(_buffer);
+              atoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< atoms::Blob >("buffer");
+              atoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< atoms::Sequence >(
                   "strides");
-              ::fwAtoms::String::sptr currentType = currentCellData->getAttribute< ::fwAtoms::String >("type");
+              atoms::String::sptr currentType = currentCellData->getAttribute< atoms::String >("type");
 
               // Set the new strides to sizeof(std::uint32_t).
-              ::fwAtoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint32_t)));
+              atoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint32_t)));
 
               // Set the new type.
               currentType->setValue("uint32");
@@ -134,10 +134,10 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
     reformatBuffer("cell_data");
     reformatBuffer("cell_data_offsets");
 
-    ::fwAtoms::Object::sptr pointC = previous->getAttribute< ::fwAtoms::Object >("point_colors");
+    atoms::Object::sptr pointC = previous->getAttribute< atoms::Object >("point_colors");
     if(pointC)
     {
-        ::fwAtoms::Blob::sptr pointCBuffer = pointC->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr pointCBuffer = pointC->getAttribute< atoms::Blob >("buffer");
 
         if(pointCBuffer->getBufferObject()->getBuffer())
         {
@@ -145,10 +145,10 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
         }
     }
 
-    ::fwAtoms::Object::sptr pointN = previous->getAttribute< ::fwAtoms::Object >("point_normals");
+    atoms::Object::sptr pointN = previous->getAttribute< atoms::Object >("point_normals");
     if(pointN)
     {
-        ::fwAtoms::Blob::sptr pointNBuffer = pointN->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr pointNBuffer = pointN->getAttribute< atoms::Blob >("buffer");
 
         if(pointNBuffer->getBufferObject()->getBuffer())
         {
@@ -156,10 +156,10 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
         }
     }
 
-    ::fwAtoms::Object::sptr pointT = previous->getAttribute< ::fwAtoms::Object >("point_tex_coords");
+    atoms::Object::sptr pointT = previous->getAttribute< atoms::Object >("point_tex_coords");
     if(pointT)
     {
-        ::fwAtoms::Blob::sptr pointTBuffer = pointT->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr pointTBuffer = pointT->getAttribute< atoms::Blob >("buffer");
 
         if(pointTBuffer->getBufferObject()->getBuffer())
         {
@@ -167,20 +167,20 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
         }
     }
 
-    ::fwAtoms::Object::sptr cellC = previous->getAttribute< ::fwAtoms::Object >("cell_colors");
+    atoms::Object::sptr cellC = previous->getAttribute< atoms::Object >("cell_colors");
     if(cellC)
     {
-        ::fwAtoms::Blob::sptr cellCBuffer = cellC->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr cellCBuffer = cellC->getAttribute< atoms::Blob >("buffer");
 
         if(cellCBuffer->getBufferObject()->getBuffer())
         {
             meshAttributes = meshAttributes | data::Mesh::Attributes::CELL_COLORS;
         }
     }
-    ::fwAtoms::Object::sptr cellN = previous->getAttribute< ::fwAtoms::Object >("cell_normals");
+    atoms::Object::sptr cellN = previous->getAttribute< atoms::Object >("cell_normals");
     if(cellN)
     {
-        ::fwAtoms::Blob::sptr cellNBuffer = cellN->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr cellNBuffer = cellN->getAttribute< atoms::Blob >("buffer");
 
         if(cellNBuffer->getBufferObject()->getBuffer())
         {
@@ -188,10 +188,10 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
         }
     }
 
-    ::fwAtoms::Object::sptr cellT = previous->getAttribute< ::fwAtoms::Object >("cell_tex_coords");
+    atoms::Object::sptr cellT = previous->getAttribute< atoms::Object >("cell_tex_coords");
     if(cellT)
     {
-        ::fwAtoms::Blob::sptr cellTBuffer = cellT->getAttribute< ::fwAtoms::Blob >("buffer");
+        atoms::Blob::sptr cellTBuffer = cellT->getAttribute< atoms::Blob >("buffer");
 
         if(cellTBuffer->getBufferObject()->getBuffer())
         {
@@ -201,7 +201,7 @@ void V3ToV4::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("attributes", ::fwAtoms::Numeric::New<int>(static_cast<int>(meshAttributes)) );
+    helper.addAttribute("attributes", atoms::Numeric::New<int>(static_cast<int>(meshAttributes)) );
 }
 
 } // namespace Mesh

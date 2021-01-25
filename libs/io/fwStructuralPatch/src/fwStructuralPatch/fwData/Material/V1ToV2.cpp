@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/data/Material/V1ToV2.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -38,8 +38,8 @@ namespace Material
 V1ToV2::V1ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Material";
-    m_targetClassname = "data::Material";
+    m_originClassname = "::sight::data::Material";
+    m_targetClassname = "::sight::data::Material";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -60,8 +60,8 @@ V1ToV2::V1ToV2( const V1ToV2& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V1ToV2::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -71,9 +71,9 @@ void V1ToV2::apply(
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("diffuse_texture", ::fwAtoms::Object::sptr() );
-    helper.addAttribute("diffuse_texture_filtering", ::fwAtoms::String::New("LINEAR"));
-    helper.addAttribute("diffuse_texture_wrapping", ::fwAtoms::String::New("REPEAT"));
+    helper.addAttribute("diffuse_texture", atoms::Object::sptr() );
+    helper.addAttribute("diffuse_texture_filtering", atoms::String::New("LINEAR"));
+    helper.addAttribute("diffuse_texture_wrapping", atoms::String::New("REPEAT"));
 }
 
 } // namespace Material

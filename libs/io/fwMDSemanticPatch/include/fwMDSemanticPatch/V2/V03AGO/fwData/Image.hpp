@@ -56,8 +56,8 @@ public:
      * Sets the 'nb_components', 'window_center' and 'window_width' attributes to a newly generated UUID.
      */
     FWMDSEMANTICPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
+        const atoms::Object::sptr& previous,
+        const atoms::Object::sptr& current,
         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };

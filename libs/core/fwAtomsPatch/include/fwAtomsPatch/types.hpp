@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,26 +20,23 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_TYPES_HPP__
-#define __FWATOMSPATCH_TYPES_HPP__
-
-#include <string>
-
-#include <fwAtomConversion/DataVisitor.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
+
+#include <atoms/conversion/DataVisitor.hpp>
+
+#include <string>
 
 namespace fwAtomsPatch
 {
 /// Key used in object meta infos to define an object classname.
-static const std::string s_OBJ_CLASSNAME = ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO;
+static const std::string s_OBJ_CLASSNAME = atoms::conversion::DataVisitor::CLASSNAME_METAINFO;
 
 /// Key used in object meta infos to define an object version.
 static const std::string s_OBJ_VERSION = "object_version";
 
 /// Key used in object meta infos to define an object ID.
-static const std::string s_OBJ_ID = ::fwAtomConversion::DataVisitor::ID_METAINFO;
+static const std::string s_OBJ_ID = atoms::conversion::DataVisitor::ID_METAINFO;
 
 } // namespace fwAtomsPatch
-
-#endif // __FWATOMSPATCH_TYPES_HPP__

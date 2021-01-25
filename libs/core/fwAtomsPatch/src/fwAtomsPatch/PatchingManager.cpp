@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,12 +29,12 @@
 #include "fwAtomsPatch/VersionsGraph.hpp"
 #include "fwAtomsPatch/VersionsManager.hpp"
 
-#include <fwAtoms/Object.hpp>
+#include <atoms/Object.hpp>
 
 namespace fwAtomsPatch
 {
 
-PatchingManager::PatchingManager(::fwAtoms::Object::sptr object) :
+PatchingManager::PatchingManager(atoms::Object::sptr object) :
     m_object(object)
 {
 }
@@ -47,7 +47,7 @@ PatchingManager::~PatchingManager()
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr PatchingManager::transformTo(const std::string& newVersion)
+atoms::Object::sptr PatchingManager::transformTo(const std::string& newVersion)
 {
     const std::string& context        = m_object->getMetaInfo("context");
     const std::string& currentVersion = m_object->getMetaInfo("version_name");

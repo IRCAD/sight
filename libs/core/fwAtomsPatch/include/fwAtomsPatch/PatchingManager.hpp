@@ -27,7 +27,7 @@
 
 #include <core/macros.hpp>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -46,7 +46,7 @@ class FWATOMSPATCH_CLASS_API PatchingManager
 public:
 
     /// Default constructor
-    FWATOMSPATCH_API PatchingManager(SPTR(::fwAtoms::Object)object);
+    FWATOMSPATCH_API PatchingManager(SPTR(atoms::Object)object);
 
     /// Default destructor
     FWATOMSPATCH_API ~PatchingManager();
@@ -58,12 +58,12 @@ public:
      * @throw ::fwAtomsPatch::exceptions::MissingInformation if an information about patching is missing
      * @throw ::fwAtomsPatch::exceptions::ImpossibleConversion if there is no patch available to transform an object
      */
-    FWATOMSPATCH_API SPTR(::fwAtoms::Object) transformTo(const std::string& newVersion);
+    FWATOMSPATCH_API SPTR(atoms::Object) transformTo(const std::string& newVersion);
 
 protected:
 
     /// Object that we want to patch
-    SPTR(::fwAtoms::Object) m_object;
+    SPTR(atoms::Object) m_object;
 };
 
 }

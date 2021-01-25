@@ -27,15 +27,15 @@
 #include "fwAtomsPatch/patcher/IPatcher.hpp"
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 
-#include <core/base.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <core/base.hpp>
 
 #include <string>
 
@@ -63,37 +63,37 @@ public:
     FWATOMSPATCH_API virtual ~DefaultPatcher();
 
     /// Apply the patch to the specified object
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-                                                                     const std::string& context,
-                                                                     const std::string& currentVersion,
-                                                                     const std::string& targetVersion) override;
+    FWATOMSPATCH_API virtual atoms::Object::sptr transformObject(atoms::Object::sptr object,
+                                                                 const std::string& context,
+                                                                 const std::string& currentVersion,
+                                                                 const std::string& targetVersion) override;
 
 protected:
 
     /// Process structural atom object.
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr processStructuralObject(::fwAtoms::Object::sptr current);
+    FWATOMSPATCH_API virtual atoms::Object::sptr processStructuralObject(atoms::Object::sptr current);
 
     /// Process contextual atom object.
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr processContextualObject(::fwAtoms::Object::sptr current);
+    FWATOMSPATCH_API virtual atoms::Object::sptr processContextualObject(atoms::Object::sptr current);
 
     /// Process atom base.
-    FWATOMSPATCH_API virtual ::fwAtoms::Base::sptr processBase(::fwAtoms::Base::sptr base);
+    FWATOMSPATCH_API virtual atoms::Base::sptr processBase(atoms::Base::sptr base);
 
     /// Process atom mapping.
-    FWATOMSPATCH_API virtual ::fwAtoms::Map::sptr processMapping(::fwAtoms::Map::sptr map);
+    FWATOMSPATCH_API virtual atoms::Map::sptr processMapping(atoms::Map::sptr map);
 
     /// Process atom sequence.
-    FWATOMSPATCH_API virtual ::fwAtoms::Sequence::sptr processSequence(::fwAtoms::Sequence::sptr seq);
+    FWATOMSPATCH_API virtual atoms::Sequence::sptr processSequence(atoms::Sequence::sptr seq);
 
     /// Apply structural patch.
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr applyStructuralPatch(::fwAtoms::Object::sptr previous,
-                                                                          ::fwAtoms::Object::sptr current);
+    FWATOMSPATCH_API virtual atoms::Object::sptr applyStructuralPatch(atoms::Object::sptr previous,
+                                                                      atoms::Object::sptr current);
 
     /// Apply contextual patch.
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr applyContextualPatch(::fwAtoms::Object::sptr previous,
-                                                                          ::fwAtoms::Object::sptr current);
+    FWATOMSPATCH_API virtual atoms::Object::sptr applyContextualPatch(atoms::Object::sptr previous,
+                                                                      atoms::Object::sptr current);
     /// Return true if the object is known in the target version
-    FWATOMSPATCH_API bool isKnown(const ::fwAtoms::Base::sptr& base);
+    FWATOMSPATCH_API bool isKnown(const atoms::Base::sptr& base);
 
     /// Type of the pass
     enum PassType { Structural, Contextual };
@@ -101,8 +101,8 @@ protected:
     /**
      * @name Typedefs
      * @{ */
-    typedef std::map<std::string, ::fwAtoms::Object::sptr > CacheType;
-    typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > NewVersionsType;
+    typedef std::map<std::string, atoms::Object::sptr > CacheType;
+    typedef std::map< atoms::Object::sptr, atoms::Object::sptr > NewVersionsType;
     /**  @} */
 
     /// Current type of pass during patching.
@@ -115,7 +115,7 @@ protected:
     NewVersionsType m_newVersions;
 
     /// Current object being patched.
-    ::fwAtoms::Object::sptr m_object;
+    atoms::Object::sptr m_object;
 
     /// Context where the object is patched.
     std::string m_context;

@@ -56,9 +56,14 @@ Native::~Native() noexcept
 
 const std::filesystem::path Native::getFullPath() const
 {
-    std::filesystem::path result;
-
-    result = m_searchPath / this->getPath();
+    const std::string repoName = m_searchPath.filename().string() + "_";
+#if defined(linux) || defined(__linux)
+    const std::filesystem::path result = m_searchPath / ("lib" + repoName + this->getName() + ".so");
+#elif defined(WIN32)
+    const std::filesystem::path result = m_searchPath / (repoName + this->getName() + ".dll");
+#elif defined (__APPLE__)
+    const std::filesystem::path result = m_searchPath / ("lib" + repoName + this->getName() + ".dylib");
+#endif
 
     // Test that the result path exists.
     if(result.empty())
@@ -78,48 +83,9 @@ const std::filesystem::path Native::getFullPath() const
 
 //------------------------------------------------------------------------------
 
-const std::regex Native::getNativeName() const
+const std::string Native::getName() const
 {
-    SLM_ASSERT("module path not initialized", !m_name.empty());
-
-    std::regex nativeName;
-
-#if defined(linux) || defined(__linux)
-    nativeName = std::regex(
-        "libsight_(module_)?" + m_name + "\\.so\\.?[0-9\\.]*" );
-#elif defined(WIN32)
-    nativeName = std::regex(
-        "sight_(module_)?" + m_name + "\\.dll");
-#elif defined (__APPLE__)
-    nativeName = std::regex(
-        "libsight_(module_)?" + m_name + "[0-9\\.]*\\.dylib" );
-#endif
-
-    return nativeName;
-}
-
-//------------------------------------------------------------------------------
-
-const std::filesystem::path Native::getPath() const
-{
-    std::filesystem::path result;
-
-    const std::regex nativeFileRegex( this->getNativeName() );
-
-    // Walk through the module directory, seeking for a matching file.
-    std::filesystem::directory_iterator curDirEntry(m_searchPath);
-    std::filesystem::directory_iterator endDirEntry;
-    for(; curDirEntry != endDirEntry; ++curDirEntry)
-    {
-        std::filesystem::path curEntryPath( *curDirEntry );
-        if( std::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
-        {
-            result = curEntryPath.filename();
-            break;
-        }
-    }
-
-    return result;
+    return m_name;
 }
 
 //------------------------------------------------------------------------------

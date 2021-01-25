@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/creator/data/Equipment1.hpp"
 
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -39,7 +39,7 @@ namespace sight::data
 
 Equipment1::Equipment1()
 {
-    m_classname = "data::Equipment";
+    m_classname = "::sight::data::Equipment";
     m_version   = "1";
 }
 
@@ -58,12 +58,12 @@ Equipment1::Equipment1( const Equipment1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Equipment1::create()
+atoms::Object::sptr Equipment1::create()
 {
-    ::fwAtoms::Object::sptr equipment = this->createObjBase();
+    atoms::Object::sptr equipment = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(equipment);
 
-    helper.addAttribute("institution_name", ::fwAtoms::String::New(""));
+    helper.addAttribute("institution_name", atoms::String::New(""));
 
     return equipment;
 }

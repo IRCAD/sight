@@ -64,7 +64,7 @@ Series::~Series()
 void Series::write()
 {
     data::Series::csptr series = this->getConcreteObject();
-    SLM_ASSERT("data::Series not instanced", series);
+    SLM_ASSERT("::sight::data::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
@@ -80,9 +80,9 @@ void Series::write()
        sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-        SLM_ASSERT("data::ImageSeries not instanced", imageSeries);
+        SLM_ASSERT("::sight::data::ImageSeries not instanced", imageSeries);
         data::Image::sptr image = imageSeries->getImage();
-        SLM_ASSERT("data::Image not instanced", image);
+        SLM_ASSERT("::sight::data::Image not instanced", image);
 
         // Write image
         ::fwGdcmIO::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");

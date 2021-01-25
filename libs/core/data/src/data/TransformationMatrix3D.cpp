@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::TransformationMatrix3D );
+fwDataRegisterMacro( ::sight::data::TransformationMatrix3D );
 
 namespace sight::data
 {

@@ -22,17 +22,17 @@
 
 #include "fwAtomsBoostIO/Writer.hpp"
 
+#include <atoms/Base.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
+
 #include <core/memory/BufferManager.hpp>
 #include <core/tools/UUID.hpp>
-
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
 
 #include <fwZip/IWriteArchive.hpp>
 
@@ -54,7 +54,7 @@ const std::string Writer::s_WRITER_VERSION_KEY = "writer_version";
 struct AtomVisitor
 {
 
-    typedef std::map< ::fwAtoms::Base::sptr, ::boost::property_tree::ptree > PropTreeCacheType;
+    typedef std::map< atoms::Base::sptr, ::boost::property_tree::ptree > PropTreeCacheType;
 
     PropTreeCacheType m_cache;
     ::fwZip::IWriteArchive::sptr m_archive;
@@ -89,7 +89,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Boolean::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Boolean::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -99,7 +99,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Numeric::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Numeric::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -109,7 +109,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::String::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::String::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -119,14 +119,14 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Map::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Map::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree map;
         this->cache(atom, ptpath);
         std::string path         = ptpath + (ptpath.empty() ? "" : ".") + "map";
         unsigned long long count = 0;
-        for(const ::fwAtoms::Map::MapType::value_type& elt : atom->getValue())
+        for(const atoms::Map::MapType::value_type& elt : atom->getValue())
         {
             const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
             ::boost::property_tree::ptree mapChild;
@@ -141,7 +141,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Sequence::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Sequence::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree seq;
@@ -149,7 +149,7 @@ struct AtomVisitor
         std::string path = ptpath + (ptpath.empty() ? "" : ".") + "sequence";
 
         unsigned long long count = 0;
-        for( const ::fwAtoms::Sequence::SequenceType::value_type& elt : atom->getValue())
+        for( const atoms::Sequence::SequenceType::value_type& elt : atom->getValue())
         {
             const std::string nodeName = ::boost::lexical_cast< std::string >(count++);
             seq.add_child(nodeName, this->visit(elt, path + "." + nodeName));
@@ -160,17 +160,17 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Object::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Object::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree object;
         this->cache(atom, ptpath);
         std::string path = ptpath + (ptpath.empty() ? "" : ".") + "object";
 
-        const ::fwAtoms::Object::MetaInfosType& metaInfos = atom->getMetaInfos();
+        const atoms::Object::MetaInfosType& metaInfos = atom->getMetaInfos();
         ::boost::property_tree::ptree metaInfosPt;
         unsigned long long count = 0;
-        for(const ::fwAtoms::Object::MetaInfosType::value_type& info : metaInfos)
+        for(const atoms::Object::MetaInfosType::value_type& info : metaInfos)
         {
             const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
             ::boost::property_tree::ptree item;
@@ -180,9 +180,9 @@ struct AtomVisitor
         }
         object.add_child("meta_infos", metaInfosPt);
 
-        const ::fwAtoms::Object::AttributesType& attributes = atom->getAttributes();
+        const atoms::Object::AttributesType& attributes = atom->getAttributes();
         ::boost::property_tree::ptree attributesPt;
-        for(const ::fwAtoms::Object::AttributesType::value_type& attr : attributes)
+        for(const atoms::Object::AttributesType::value_type& attr : attributes)
         {
             ::boost::property_tree::ptree childAttributes =
                 this->visit(attr.second, path + ".attributes." + attr.first);
@@ -197,7 +197,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Blob::sptr& atom, const std::string& ptpath)
+    ::boost::property_tree::ptree visit(const atoms::Blob::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -244,7 +244,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Base::sptr& atom, std::string ptpath = "")
+    ::boost::property_tree::ptree visit(const atoms::Base::sptr& atom, std::string ptpath = "")
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree ref;
@@ -262,26 +262,26 @@ struct AtomVisitor
 
         switch(atom->type())
         {
-            case ::fwAtoms::Base::BOOLEAN:
-                pt = this->visit(::fwAtoms::Boolean::dynamicCast(atom), ptpath);
+            case atoms::Base::BOOLEAN:
+                pt = this->visit(atoms::Boolean::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::NUMERIC:
-                pt = this->visit(::fwAtoms::Numeric::dynamicCast(atom), ptpath);
+            case atoms::Base::NUMERIC:
+                pt = this->visit(atoms::Numeric::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::STRING:
-                pt = this->visit(::fwAtoms::String::dynamicCast(atom), ptpath);
+            case atoms::Base::STRING:
+                pt = this->visit(atoms::String::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::OBJECT:
-                pt = this->visit(::fwAtoms::Object::dynamicCast(atom), ptpath);
+            case atoms::Base::OBJECT:
+                pt = this->visit(atoms::Object::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::SEQUENCE:
-                pt = this->visit(::fwAtoms::Sequence::dynamicCast(atom), ptpath);
+            case atoms::Base::SEQUENCE:
+                pt = this->visit(atoms::Sequence::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::MAP:
-                pt = this->visit(::fwAtoms::Map::dynamicCast(atom), ptpath);
+            case atoms::Base::MAP:
+                pt = this->visit(atoms::Map::dynamicCast(atom), ptpath);
                 break;
-            case ::fwAtoms::Base::BLOB:
-                pt = this->visit(::fwAtoms::Blob::dynamicCast(atom), ptpath);
+            case atoms::Base::BLOB:
+                pt = this->visit(atoms::Blob::dynamicCast(atom), ptpath);
                 break;
             default:
                 FW_RAISE("Atome type '"<<atom->type()<<"' is not supported");
@@ -306,7 +306,7 @@ std::filesystem::path Writer::write( const ::fwZip::IWriteArchive::sptr _archive
     root = visitor.visit(m_atom);
 
     ::boost::property_tree::ptree versions;
-    versions.put(s_ATOMS_VERSION_KEY, ::fwAtoms::Base::s_VERSION);
+    versions.put(s_ATOMS_VERSION_KEY, atoms::Base::s_VERSION);
     versions.put(s_WRITER_VERSION_KEY, Writer::s_VERSION);
 
     root.add_child("versions", versions);

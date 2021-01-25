@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( sight::data::Point );
+fwDataRegisterMacro( ::sight::data::Point );
 
 namespace sight::data
 {

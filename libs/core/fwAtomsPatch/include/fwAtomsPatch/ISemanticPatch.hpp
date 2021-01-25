@@ -31,7 +31,7 @@
 
 #include <string>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -67,8 +67,8 @@ public:
      *
      * @pre previous and current objects must have the same classname and version.
      */
-    FWATOMSPATCH_API virtual void apply(const SPTR(::fwAtoms::Object)& previous,
-                                        const SPTR(::fwAtoms::Object)& current,
+    FWATOMSPATCH_API virtual void apply(const SPTR(atoms::Object)& previous,
+                                        const SPTR(atoms::Object)& current,
                                         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
     /**

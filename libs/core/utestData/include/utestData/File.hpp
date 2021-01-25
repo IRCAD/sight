@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/test/Exception.hpp"
+#include "utest/Exception.hpp"
 
 #include "utestData/config.hpp"
 

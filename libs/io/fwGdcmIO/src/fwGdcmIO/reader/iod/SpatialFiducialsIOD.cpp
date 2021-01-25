@@ -63,7 +63,7 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
     SLM_ASSERT("ImageSeries should not be null.", imageSeries);
     data::Image::sptr image = imageSeries->getImage();
-    SLM_ASSERT("data::Image not instanced", image);
+    SLM_ASSERT("::sight::data::Image not instanced", image);
 
     // Create GDCM Reader
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );

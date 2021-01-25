@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( sight::data::ReconstructionTraits );
+fwDataRegisterMacro( ::sight::data::ReconstructionTraits );
 
 namespace sight::data
 {

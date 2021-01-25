@@ -56,8 +56,8 @@ public:
      * Converts the "m_landmarksId" field from a data::Landmarks to a data::PointList in "m_imageLandmarksId" .
      */
     FWMDSEMANTICPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
+        const atoms::Object::sptr& previous,
+        const atoms::Object::sptr& current,
         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };

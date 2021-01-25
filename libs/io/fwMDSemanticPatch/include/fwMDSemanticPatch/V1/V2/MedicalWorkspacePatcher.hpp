@@ -26,15 +26,15 @@
 
 #include "fwMDSemanticPatch/config.hpp"
 
-#include <core/base.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <core/base.hpp>
 
 #include <string>
 
@@ -72,15 +72,15 @@ public:
      * Adds meta info 'compositeType' with value 'MedicalWorkspace' if current object has childs designated with keys
      * 'patientDB', 'planningDB' and 'processingDB', and applies patcher 'DefaultPatcher'.
      */
-    FWMDSEMANTICPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-                                                                          const std::string& context,
-                                                                          const std::string& currentVersion,
-                                                                          const std::string& targetVersion) override;
+    FWMDSEMANTICPATCH_API virtual atoms::Object::sptr transformObject(atoms::Object::sptr object,
+                                                                      const std::string& context,
+                                                                      const std::string& currentVersion,
+                                                                      const std::string& targetVersion) override;
 
 protected:
 
     /// Adds a meta info "compositeType" if the object is a composite with a special type.
-    FWMDSEMANTICPATCH_API void addCompositeTypes(::fwAtoms::Object::sptr object);
+    FWMDSEMANTICPATCH_API void addCompositeTypes(atoms::Object::sptr object);
 
 };
 

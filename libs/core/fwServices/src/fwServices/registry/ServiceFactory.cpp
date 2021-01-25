@@ -364,7 +364,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
         for(const auto& oimpl : srvInfo.objectImpl)
         {
             if( srvInfo.serviceType == type &&
-                (oimpl == object || oimpl == "data::Object") )
+                (oimpl == object || oimpl == "::sight::data::Object") )
             {
                 serviceImpl.push_back(srv.first);
                 break;
@@ -379,7 +379,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
 std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const std::string& object,
                                                                          const std::string& type ) const
 {
-    SLM_ASSERT("This case is not managed ", object != "data::Object" );
+    SLM_ASSERT("This case is not managed ", object != "::sight::data::Object" );
 
     std::string serviceImpl = "";
 #ifdef _DEBUG
@@ -406,7 +406,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
                     serviceImpl         = srv.first;
                     break;
                 }
-                else if ( oimpl == "data::Object" )
+                else if ( oimpl == "::sight::data::Object" )
                 {
                     SLM_ASSERT("Method has already found a generic service for the object ("
                                << oimpl << ").",
@@ -475,7 +475,7 @@ bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, co
         isValid = false;
         for(const auto& oimpl : srvInfo.objectImpl)
         {
-            if(oimpl == "data::Object" || oimpl == objectClassName)
+            if(oimpl == "::sight::data::Object" || oimpl == objectClassName)
             {
                 isValid = true;
                 break;
@@ -502,7 +502,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
         {
             for(const auto& oimpl : srvInfo.objectImpl)
             {
-                if(oimpl == "data::Object" || oimpl == object)
+                if(oimpl == "::sight::data::Object" || oimpl == object)
                 {
                     isSupported = true;
                     break;
@@ -536,7 +536,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
             {
                 for(const auto& oimpl : srvInfo.objectImpl)
                 {
-                    if(oimpl == "data::Object" || oimpl == object)
+                    if(oimpl == "::sight::data::Object" || oimpl == object)
                     {
                         isSupported = true;
                         break;

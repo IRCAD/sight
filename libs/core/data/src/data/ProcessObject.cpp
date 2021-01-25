@@ -29,7 +29,7 @@
 
 #include <functional>
 
-fwDataRegisterMacro( sight::data::ProcessObject );
+fwDataRegisterMacro( ::sight::data::ProcessObject );
 
 namespace sight::data
 {

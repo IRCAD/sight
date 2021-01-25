@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( sight::data::Landmarks );
+fwDataRegisterMacro( ::sight::data::Landmarks );
 
 namespace sight::data
 {

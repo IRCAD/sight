@@ -30,7 +30,7 @@ fwCampImplementDataMacro((sight)(data)(Point))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("coord", &sight::data::Point::m_vCoord);
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("coord", &::sight::data::Point::m_vCoord);
 }

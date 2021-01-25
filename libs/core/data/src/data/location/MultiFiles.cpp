@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::location::MultiFiles );
+fwDataRegisterMacro( ::sight::data::location::MultiFiles );
 
 namespace sight::data
 {

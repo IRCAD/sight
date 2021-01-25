@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "arStructuralPatch/arData/CameraSeries/V3ToV2.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 namespace arStructuralPatch
 {
@@ -55,8 +55,8 @@ V3ToV2::V3ToV2(const V3ToV2& _cpy) :
 
 // ----------------------------------------------------------------------------
 
-void V3ToV2::apply( const ::fwAtoms::Object::sptr& _previous,
-                    const ::fwAtoms::Object::sptr& _current,
+void V3ToV2::apply( const atoms::Object::sptr& _previous,
+                    const atoms::Object::sptr& _current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions)
 {
     IStructuralPatch::apply(_previous, _current, _newVersions);

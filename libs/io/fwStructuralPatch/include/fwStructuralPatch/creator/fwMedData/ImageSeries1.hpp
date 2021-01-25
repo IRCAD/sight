@@ -50,7 +50,7 @@ public:
     FWSTRUCTURALPATCH_API ImageSeries1( const ImageSeries1& cpy );
 
     /// Creates the specified object (sets 'image' attribute) and calls creator 'Series1'.
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

@@ -24,6 +24,8 @@
 
 #include "ioAtoms/SReader.hpp"
 
+#include <atoms/conversion/convert.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/tools/System.hpp>
 
@@ -31,8 +33,6 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
-
-#include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
@@ -388,7 +388,7 @@ void SWriter::updating()
     // Mutex data lock
     data::reflection::visitor::RecursiveLock recursiveLock(obj);
 
-    ::fwAtoms::Object::sptr atom;
+    atoms::Object::sptr atom;
     const unsigned int progressBarOffset = 10;
 
     // Convert data to atom : job 1
@@ -397,7 +397,7 @@ void SWriter::updating()
         {
             runningJob.doneWork(progressBarOffset);
 
-            atom = ::fwAtomConversion::convert(data::Object::constCast(obj));
+            atom = atoms::conversion::convert(data::Object::constCast(obj));
             runningJob.done();
         }, m_associatedWorker );
 

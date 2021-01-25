@@ -25,14 +25,14 @@
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwZip/IReadArchive.hpp>
 #include <fwZip/IWriteArchive.hpp>
@@ -59,7 +59,7 @@ public:
     void readWriteZipTest();
     void readWriteDirTest();
 
-    static void cleanSequence(::fwAtoms::Sequence& seq);
+    static void cleanSequence(atoms::Sequence& seq);
 
 protected:
     struct SequenceGenerator
@@ -79,7 +79,7 @@ protected:
         std::string ATTR_NAME_3;
         std::string ATTR_NAME_4;
 
-        ::fwAtoms::Sequence::sptr m_seq;
+        atoms::Sequence::sptr m_seq;
 
         SequenceGenerator()
         {
@@ -98,10 +98,10 @@ protected:
             ATTR_NAME_3 = "m_num";
             ATTR_NAME_4 = "NULL";
 
-            ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::New();
-            ::fwAtoms::Map::sptr map    = ::fwAtoms::Map::New();
-            ::fwAtoms::Blob::sptr blob  = ::fwAtoms::Blob::New();
-            m_seq = ::fwAtoms::Sequence::New();
+            atoms::Object::sptr obj = atoms::Object::New();
+            atoms::Map::sptr map    = atoms::Map::New();
+            atoms::Blob::sptr blob  = atoms::Blob::New();
+            m_seq = atoms::Sequence::New();
 
             core::memory::BufferObject::sptr bo                  = core::memory::BufferObject::New();
             const core::memory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
@@ -116,11 +116,11 @@ protected:
                 buff[i] = static_cast<std::uint8_t>(i%256);
             }
 
-            ::fwAtoms::Boolean::sptr boolFalse = ::fwAtoms::Boolean::New(false);
-            ::fwAtoms::Boolean::sptr boolTrue  = ::fwAtoms::Boolean::New(true);
-            ::fwAtoms::Numeric::sptr num       = ::fwAtoms::Numeric::New(42);
-            ::fwAtoms::Numeric::sptr num2      = ::fwAtoms::Numeric::New(16.64);
-            ::fwAtoms::String::sptr str        = ::fwAtoms::String::New("MyStr");
+            atoms::Boolean::sptr boolFalse = atoms::Boolean::New(false);
+            atoms::Boolean::sptr boolTrue  = atoms::Boolean::New(true);
+            atoms::Numeric::sptr num       = atoms::Numeric::New(42);
+            atoms::Numeric::sptr num2      = atoms::Numeric::New(16.64);
+            atoms::String::sptr str        = atoms::String::New("MyStr");
 
             obj->setMetaInfo(META_KEY_0, META_VALUE_0);
             obj->setMetaInfo(META_KEY_1, META_VALUE_1);
@@ -131,7 +131,7 @@ protected:
             obj->setAttribute(ATTR_NAME_1, map);
             obj->setAttribute(ATTR_NAME_2, str);
             obj->setAttribute(ATTR_NAME_3, num);
-            obj->setAttribute(ATTR_NAME_4, ::fwAtoms::String::sptr());
+            obj->setAttribute(ATTR_NAME_4, atoms::String::sptr());
 
             m_seq->push_back(obj);
             m_seq->push_back(obj);
@@ -141,22 +141,22 @@ protected:
             m_seq->push_back(boolFalse);
             m_seq->push_back(num);
             m_seq->push_back(str);
-            m_seq->push_back(::fwAtoms::String::sptr());
+            m_seq->push_back(atoms::String::sptr());
             m_seq->push_back(num2);
             m_seq->push_back(boolTrue);
 
             // tests the case of a a cache path hiting an object stored in a map
-            ::fwAtoms::Map::sptr map2    = ::fwAtoms::Map::New();
-            ::fwAtoms::Object::sptr obj2 = ::fwAtoms::Object::New();
+            atoms::Map::sptr map2    = atoms::Map::New();
+            atoms::Object::sptr obj2 = atoms::Object::New();
             map2->insert("obj2 ref1", obj2);
             map2->insert("obj2 ref2", obj2);
 
             map->insert("sequence loop key", m_seq);
             map->insert("object one more ref", obj);
             map->insert("map2", map2);
-            map->insert("blob key", ::fwAtoms::Blob::New());
-            map->insert("object key", ::fwAtoms::Object::New());
-            map->insert("sequence key", ::fwAtoms::String::New("map-str"));
+            map->insert("blob key", atoms::Blob::New());
+            map->insert("object key", atoms::Object::New());
+            map->insert("sequence key", atoms::String::New("map-str"));
         }
 
         virtual ~SequenceGenerator()
@@ -166,36 +166,36 @@ protected:
 
         //------------------------------------------------------------------------------
 
-        ::fwAtoms::Sequence::sptr getSequence()
+        atoms::Sequence::sptr getSequence()
         {
             return m_seq;
         }
 
         //------------------------------------------------------------------------------
 
-        void compare(::fwAtoms::Sequence::sptr readSeq) const
+        void compare(atoms::Sequence::sptr readSeq) const
         {
-            ::fwAtoms::Object::sptr obj        = ::fwAtoms::Object::dynamicCast((*m_seq)[0]);
-            ::fwAtoms::Blob::sptr blob         = ::fwAtoms::Blob::dynamicCast((*m_seq)[2]);
-            ::fwAtoms::Boolean::sptr boolFalse = ::fwAtoms::Boolean::dynamicCast((*m_seq)[5]);
-            ::fwAtoms::Numeric::sptr num       = ::fwAtoms::Numeric::dynamicCast((*m_seq)[6]);
-            ::fwAtoms::String::sptr str        = ::fwAtoms::String::dynamicCast((*m_seq)[7]);
-            ::fwAtoms::Numeric::sptr num2      = ::fwAtoms::Numeric::dynamicCast((*m_seq)[9]);
-            ::fwAtoms::Boolean::sptr boolTrue  = ::fwAtoms::Boolean::dynamicCast((*m_seq)[10]);
+            atoms::Object::sptr obj        = atoms::Object::dynamicCast((*m_seq)[0]);
+            atoms::Blob::sptr blob         = atoms::Blob::dynamicCast((*m_seq)[2]);
+            atoms::Boolean::sptr boolFalse = atoms::Boolean::dynamicCast((*m_seq)[5]);
+            atoms::Numeric::sptr num       = atoms::Numeric::dynamicCast((*m_seq)[6]);
+            atoms::String::sptr str        = atoms::String::dynamicCast((*m_seq)[7]);
+            atoms::Numeric::sptr num2      = atoms::Numeric::dynamicCast((*m_seq)[9]);
+            atoms::Boolean::sptr boolTrue  = atoms::Boolean::dynamicCast((*m_seq)[10]);
 
             CPPUNIT_ASSERT_EQUAL(m_seq->size(), readSeq->size());
 
-            ::fwAtoms::Object::sptr readObj0   = ::fwAtoms::Object::dynamicCast((*readSeq)[0]);
-            ::fwAtoms::Object::sptr readObj1   = ::fwAtoms::Object::dynamicCast((*readSeq)[1]);
-            ::fwAtoms::Blob::sptr readBlob     = ::fwAtoms::Blob::dynamicCast((*readSeq)[2]);
-            ::fwAtoms::Map::sptr readMap       = ::fwAtoms::Map::dynamicCast((*readSeq)[3]);
-            ::fwAtoms::Sequence::sptr readSeq2 = ::fwAtoms::Sequence::dynamicCast((*readSeq)[4]);
-            ::fwAtoms::Boolean::sptr readBoolF = ::fwAtoms::Boolean::dynamicCast((*readSeq)[5]);
-            ::fwAtoms::Numeric::sptr readNum   = ::fwAtoms::Numeric::dynamicCast((*readSeq)[6]);
-            ::fwAtoms::String::sptr readStr    = ::fwAtoms::String::dynamicCast((*readSeq)[7]);
-            ::fwAtoms::Base::sptr readNull     = ::fwAtoms::Base::dynamicCast((*readSeq)[8]);
-            ::fwAtoms::Numeric::sptr readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
-            ::fwAtoms::Boolean::sptr readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
+            atoms::Object::sptr readObj0   = atoms::Object::dynamicCast((*readSeq)[0]);
+            atoms::Object::sptr readObj1   = atoms::Object::dynamicCast((*readSeq)[1]);
+            atoms::Blob::sptr readBlob     = atoms::Blob::dynamicCast((*readSeq)[2]);
+            atoms::Map::sptr readMap       = atoms::Map::dynamicCast((*readSeq)[3]);
+            atoms::Sequence::sptr readSeq2 = atoms::Sequence::dynamicCast((*readSeq)[4]);
+            atoms::Boolean::sptr readBoolF = atoms::Boolean::dynamicCast((*readSeq)[5]);
+            atoms::Numeric::sptr readNum   = atoms::Numeric::dynamicCast((*readSeq)[6]);
+            atoms::String::sptr readStr    = atoms::String::dynamicCast((*readSeq)[7]);
+            atoms::Base::sptr readNull     = atoms::Base::dynamicCast((*readSeq)[8]);
+            atoms::Numeric::sptr readNum2  = atoms::Numeric::dynamicCast((*readSeq)[9]);
+            atoms::Boolean::sptr readBoolT = atoms::Boolean::dynamicCast((*readSeq)[10]);
 
             CPPUNIT_ASSERT( readObj0  );
             CPPUNIT_ASSERT( readObj1  );
@@ -240,11 +240,11 @@ protected:
 
             CPPUNIT_ASSERT_EQUAL( obj->getAttributes().size(), readObj0->getAttributes().size() );
 
-            CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(readBlob), readObj0->getAttribute(ATTR_NAME_0) );
-            CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(readMap ), readObj0->getAttribute(ATTR_NAME_1) );
-            CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(readStr ), readObj0->getAttribute(ATTR_NAME_2) );
-            CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(readNum ), readObj0->getAttribute(ATTR_NAME_3) );
-            CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(), readObj0->getAttribute(ATTR_NAME_4) );
+            CPPUNIT_ASSERT_EQUAL( atoms::Base::sptr(readBlob), readObj0->getAttribute(ATTR_NAME_0) );
+            CPPUNIT_ASSERT_EQUAL( atoms::Base::sptr(readMap ), readObj0->getAttribute(ATTR_NAME_1) );
+            CPPUNIT_ASSERT_EQUAL( atoms::Base::sptr(readStr ), readObj0->getAttribute(ATTR_NAME_2) );
+            CPPUNIT_ASSERT_EQUAL( atoms::Base::sptr(readNum ), readObj0->getAttribute(ATTR_NAME_3) );
+            CPPUNIT_ASSERT_EQUAL( atoms::Base::sptr(), readObj0->getAttribute(ATTR_NAME_4) );
 
             CPPUNIT_ASSERT_EQUAL( boolFalse->getValue(), readBoolF->getValue() );
             CPPUNIT_ASSERT_EQUAL( boolTrue->getValue(), readBoolT->getValue() );

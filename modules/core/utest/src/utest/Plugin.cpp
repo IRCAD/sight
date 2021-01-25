@@ -27,7 +27,7 @@
 namespace sight::module::utest
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::module::utest::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::utest::Plugin");
 
 //-----------------------------------------------------------------------------
 

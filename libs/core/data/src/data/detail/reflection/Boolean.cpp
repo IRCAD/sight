@@ -30,8 +30,8 @@ fwCampImplementDataMacro((sight)(data)(Boolean))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object >()
-    .property("value",  (bool sight::data::Boolean::*) &sight::data::Boolean::m_value)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object >()
+    .property("value",  (bool sight::data::Boolean::*) &::sight::data::Boolean::m_value)
     ;
 }

@@ -273,9 +273,9 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
         QHBoxLayout* const treeLayout   = new QHBoxLayout();
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
-        if (req.type == "data::String" || req.type == "data::Boolean"
-            || req.type == "data::Integer" || req.type == "data::Float"
-            || req.type == "data::TransformationMatrix3D")
+        if (req.type == "::sight::data::String" || req.type == "::sight::data::Boolean"
+            || req.type == "::sight::data::Integer" || req.type == "::sight::data::Float"
+            || req.type == "::sight::data::TransformationMatrix3D")
         {
             QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
@@ -722,7 +722,7 @@ void ActivityDataView::importObjectFromSDB()
         SLM_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
-        auto obj      = this->readObject("data::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto obj      = this->readObject("::sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
         auto seriesDB = data::SeriesDB::dynamicCast(obj);
         if (seriesDB)
         {
@@ -1016,7 +1016,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
             data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj)
             {
-                if (obj->isA("data::String"))
+                if (obj->isA("::sight::data::String"))
                 {
                     data::String::sptr str = data::String::dynamicCast(obj);
                     bool isOkClicked       = false;
@@ -1030,7 +1030,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
-                else if (obj->isA("data::Integer"))
+                else if (obj->isA("::sight::data::Integer"))
                 {
                     data::Integer::sptr intObj = data::Integer::dynamicCast(obj);
 
@@ -1044,7 +1044,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("data::Float"))
+                else if (obj->isA("::sight::data::Float"))
                 {
                     data::Float::sptr floatObj = data::Float::dynamicCast(obj);
 
@@ -1058,7 +1058,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("data::Boolean"))
+                else if (obj->isA("::sight::data::Boolean"))
                 {
                     data::Boolean::sptr boolObj        = data::Boolean::dynamicCast(obj);
                     QMessageBox::StandardButton button = QMessageBox::question(
@@ -1066,7 +1066,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                     boolObj->value() = (button == QMessageBox::Yes);
                     _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
-                else if (obj->isA("data::TransformationMatrix3D"))
+                else if (obj->isA("::sight::data::TransformationMatrix3D"))
                 {
                     data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::dynamicCast(obj);
                     std::stringstream str;

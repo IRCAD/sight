@@ -30,11 +30,11 @@ fwCampImplementDataMacro((sight)(data)(ROITraits))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("name", &sight::data::ROITraits::m_identifier)
-    .property("firstname", &sight::data::ROITraits::m_evaluatedExp)
-    .property("node", &sight::data::ROITraits::m_structureTraits)
-    .property("traits", &sight::data::ROITraits::m_maskOpNode)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("name", &::sight::data::ROITraits::m_identifier)
+    .property("firstname", &::sight::data::ROITraits::m_evaluatedExp)
+    .property("node", &::sight::data::ROITraits::m_structureTraits)
+    .property("traits", &::sight::data::ROITraits::m_maskOpNode)
     ;
 }

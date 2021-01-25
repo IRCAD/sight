@@ -24,13 +24,13 @@
 
 #include <arStructuralPatch/arData/Camera/V2ToV1.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -68,33 +68,33 @@ void V2ToV1Test::tearDown()
 
 void V2ToV1Test::applyPatchTestFile()
 {
-    ::fwAtoms::Object::sptr camObjV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr camObjV2;
+    atoms::Object::sptr camObjV1 = atoms::Object::New();
+    atoms::Object::sptr camObjV2;
 
     ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
 
-    helper.addAttribute("is_calibrated", ::fwAtoms::Boolean::New(true));
-    helper.addAttribute("skew", ::fwAtoms::Numeric::New(0));
-    helper.addAttribute("camera_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    ::fwAtoms::Sequence::sptr intrinsicParam = ::fwAtoms::Sequence::New();
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2596.78));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2554.72));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(1020.74));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(500.189));
+    helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
+    helper.addAttribute("skew", atoms::Numeric::New(0));
+    helper.addAttribute("camera_id", atoms::String::New(""));
+    helper.addAttribute("description", atoms::String::New(""));
+    atoms::Sequence::sptr intrinsicParam = atoms::Sequence::New();
+    intrinsicParam->push_back(atoms::Numeric::New(2596.78));
+    intrinsicParam->push_back(atoms::Numeric::New(2554.72));
+    intrinsicParam->push_back(atoms::Numeric::New(1020.74));
+    intrinsicParam->push_back(atoms::Numeric::New(500.189));
     helper.addAttribute("intrinsic", intrinsicParam);
-    helper.addAttribute("width", ::fwAtoms::Numeric::New(1920));
-    helper.addAttribute("height", ::fwAtoms::Numeric::New(1080));
-    helper.addAttribute("camera_source", ::fwAtoms::String::New("FILE"));
-    helper.addAttribute("video_file", ::fwAtoms::String::New("Videos/myVideo.mp4"));
-    helper.addAttribute("stream_url", ::fwAtoms::String::New(""));
-    helper.addAttribute("max_framerate", ::fwAtoms::String::New("33"));
-    helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGBA32"));
+    helper.addAttribute("width", atoms::Numeric::New(1920));
+    helper.addAttribute("height", atoms::Numeric::New(1080));
+    helper.addAttribute("camera_source", atoms::String::New("FILE"));
+    helper.addAttribute("video_file", atoms::String::New("Videos/myVideo.mp4"));
+    helper.addAttribute("stream_url", atoms::String::New(""));
+    helper.addAttribute("max_framerate", atoms::String::New("33"));
+    helper.addAttribute("pixel_format", atoms::String::New("RGBA32"));
 
-    camObjV2 = ::fwAtoms::Object::dynamicCast(camObjV1->clone());
+    camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
@@ -105,7 +105,7 @@ void V2ToV1Test::applyPatchTestFile()
 
     CPPUNIT_ASSERT(camObjV2);
     CPPUNIT_ASSERT(camObjV2->getAttribute("intrinsic"));
-    ::fwAtoms::Sequence::sptr intrinsicParam2 = ::fwAtoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
+    atoms::Sequence::sptr intrinsicParam2 = atoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
     CPPUNIT_ASSERT_EQUAL(size_t(6), intrinsicParam2->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1920"), (*intrinsicParam2)[4]->getString());
     CPPUNIT_ASSERT_EQUAL(std::string("1080"), (*intrinsicParam2)[5]->getString());
@@ -123,33 +123,33 @@ void V2ToV1Test::applyPatchTestFile()
 
 void V2ToV1Test::applyPatchTestStream()
 {
-    ::fwAtoms::Object::sptr camObjV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr camObjV2;
+    atoms::Object::sptr camObjV1 = atoms::Object::New();
+    atoms::Object::sptr camObjV2;
 
     ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
 
-    helper.addAttribute("is_calibrated", ::fwAtoms::Boolean::New(true));
-    helper.addAttribute("skew", ::fwAtoms::Numeric::New(0));
-    helper.addAttribute("camera_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    ::fwAtoms::Sequence::sptr intrinsicParam = ::fwAtoms::Sequence::New();
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2596.78));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2554.72));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(1020.74));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(500.189));
+    helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
+    helper.addAttribute("skew", atoms::Numeric::New(0));
+    helper.addAttribute("camera_id", atoms::String::New(""));
+    helper.addAttribute("description", atoms::String::New(""));
+    atoms::Sequence::sptr intrinsicParam = atoms::Sequence::New();
+    intrinsicParam->push_back(atoms::Numeric::New(2596.78));
+    intrinsicParam->push_back(atoms::Numeric::New(2554.72));
+    intrinsicParam->push_back(atoms::Numeric::New(1020.74));
+    intrinsicParam->push_back(atoms::Numeric::New(500.189));
     helper.addAttribute("intrinsic", intrinsicParam);
-    helper.addAttribute("width", ::fwAtoms::Numeric::New(1920));
-    helper.addAttribute("height", ::fwAtoms::Numeric::New(1080));
-    helper.addAttribute("camera_source", ::fwAtoms::String::New("STREAM"));
-    helper.addAttribute("video_file", ::fwAtoms::String::New(""));
-    helper.addAttribute("stream_url", ::fwAtoms::String::New("rtsp://@127.0.0.1"));
-    helper.addAttribute("max_framerate", ::fwAtoms::String::New("33"));
-    helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGBA32"));
+    helper.addAttribute("width", atoms::Numeric::New(1920));
+    helper.addAttribute("height", atoms::Numeric::New(1080));
+    helper.addAttribute("camera_source", atoms::String::New("STREAM"));
+    helper.addAttribute("video_file", atoms::String::New(""));
+    helper.addAttribute("stream_url", atoms::String::New("rtsp://@127.0.0.1"));
+    helper.addAttribute("max_framerate", atoms::String::New("33"));
+    helper.addAttribute("pixel_format", atoms::String::New("RGBA32"));
 
-    camObjV2 = ::fwAtoms::Object::dynamicCast(camObjV1->clone());
+    camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
@@ -160,7 +160,7 @@ void V2ToV1Test::applyPatchTestStream()
 
     CPPUNIT_ASSERT(camObjV2);
     CPPUNIT_ASSERT(camObjV2->getAttribute("intrinsic"));
-    ::fwAtoms::Sequence::sptr intrinsicParam2 = ::fwAtoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
+    atoms::Sequence::sptr intrinsicParam2 = atoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
     CPPUNIT_ASSERT_EQUAL(size_t(6), intrinsicParam2->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1920"), (*intrinsicParam2)[4]->getString());
     CPPUNIT_ASSERT_EQUAL(std::string("1080"), (*intrinsicParam2)[5]->getString());
@@ -178,33 +178,33 @@ void V2ToV1Test::applyPatchTestStream()
 
 void V2ToV1Test::applyPatchTestDevice()
 {
-    ::fwAtoms::Object::sptr camObjV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr camObjV2;
+    atoms::Object::sptr camObjV1 = atoms::Object::New();
+    atoms::Object::sptr camObjV2;
 
     ::fwAtomsPatch::helper::setClassname(camObjV1, "::arData::Camera");
     ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
 
     ::fwAtomsPatch::helper::Object helper(camObjV1);
 
-    helper.addAttribute("is_calibrated", ::fwAtoms::Boolean::New(true));
-    helper.addAttribute("skew", ::fwAtoms::Numeric::New(0));
-    helper.addAttribute("camera_id", ::fwAtoms::String::New("myCameraID"));
-    helper.addAttribute("description", ::fwAtoms::String::New("my camera description"));
-    ::fwAtoms::Sequence::sptr intrinsicParam = ::fwAtoms::Sequence::New();
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2596.78));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(2554.72));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(1020.74));
-    intrinsicParam->push_back(::fwAtoms::Numeric::New(500.189));
+    helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
+    helper.addAttribute("skew", atoms::Numeric::New(0));
+    helper.addAttribute("camera_id", atoms::String::New("myCameraID"));
+    helper.addAttribute("description", atoms::String::New("my camera description"));
+    atoms::Sequence::sptr intrinsicParam = atoms::Sequence::New();
+    intrinsicParam->push_back(atoms::Numeric::New(2596.78));
+    intrinsicParam->push_back(atoms::Numeric::New(2554.72));
+    intrinsicParam->push_back(atoms::Numeric::New(1020.74));
+    intrinsicParam->push_back(atoms::Numeric::New(500.189));
     helper.addAttribute("intrinsic", intrinsicParam);
-    helper.addAttribute("width", ::fwAtoms::Numeric::New(1920));
-    helper.addAttribute("height", ::fwAtoms::Numeric::New(1080));
-    helper.addAttribute("camera_source", ::fwAtoms::String::New("DEVICE"));
-    helper.addAttribute("video_file", ::fwAtoms::String::New(""));
-    helper.addAttribute("stream_url", ::fwAtoms::String::New(""));
-    helper.addAttribute("max_framerate", ::fwAtoms::String::New("33"));
-    helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGBA32"));
+    helper.addAttribute("width", atoms::Numeric::New(1920));
+    helper.addAttribute("height", atoms::Numeric::New(1080));
+    helper.addAttribute("camera_source", atoms::String::New("DEVICE"));
+    helper.addAttribute("video_file", atoms::String::New(""));
+    helper.addAttribute("stream_url", atoms::String::New(""));
+    helper.addAttribute("max_framerate", atoms::String::New("33"));
+    helper.addAttribute("pixel_format", atoms::String::New("RGBA32"));
 
-    camObjV2 = ::fwAtoms::Object::dynamicCast(camObjV1->clone());
+    camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
@@ -215,7 +215,7 @@ void V2ToV1Test::applyPatchTestDevice()
 
     CPPUNIT_ASSERT(camObjV2);
     CPPUNIT_ASSERT(camObjV2->getAttribute("intrinsic"));
-    ::fwAtoms::Sequence::sptr intrinsicParam2 = ::fwAtoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
+    atoms::Sequence::sptr intrinsicParam2 = atoms::Sequence::dynamicCast(camObjV2->getAttribute("intrinsic"));
     CPPUNIT_ASSERT_EQUAL(size_t(6), intrinsicParam2->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1920"), (*intrinsicParam2)[4]->getString());
     CPPUNIT_ASSERT_EQUAL(std::string("1080"), (*intrinsicParam2)[5]->getString());

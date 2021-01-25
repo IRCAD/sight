@@ -24,11 +24,11 @@
 
 #include <fwStructuralPatch/data/Image/V3ToV2.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -67,18 +67,18 @@ void V3ToV2Test::applyPatchTest()
 {
     auto patch = ::fwStructuralPatchdata::Image::V3ToV2::New();
 
-    ::fwAtoms::Object::sptr imgObjV3 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr imgObjV2;
+    atoms::Object::sptr imgObjV3 = atoms::Object::New();
+    atoms::Object::sptr imgObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(imgObjV3, "data::Image");
+    ::fwAtomsPatch::helper::setClassname(imgObjV3, "::sight::data::Image");
     ::fwAtomsPatch::helper::setVersion(imgObjV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(imgObjV3);
 
-    helper.addAttribute("nb_components", ::fwAtoms::Numeric::New(3));
-    helper.addAttribute("pixel_format", ::fwAtoms::String::New("BGR"));
+    helper.addAttribute("nb_components", atoms::Numeric::New(3));
+    helper.addAttribute("pixel_format", atoms::String::New("BGR"));
 
-    imgObjV2 = ::fwAtoms::Object::dynamicCast(imgObjV3->clone());
+    imgObjV2 = atoms::Object::dynamicCast(imgObjV3->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[imgObjV3] = imgObjV2;

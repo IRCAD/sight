@@ -69,7 +69,7 @@ void SurfaceSegmentation::write()
     const data::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
     const data::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
-    SLM_ASSERT("data::ModelSeries not instanced", srcModelSeries);
+    SLM_ASSERT("::sight::data::ModelSeries not instanced", srcModelSeries);
 
     if(!associatedDicomSeries)
     {

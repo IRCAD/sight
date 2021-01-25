@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/ModelSeries/V2ToV3.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,28 +60,28 @@ void V2ToV3Test::tearDown()
 
 void V2ToV3Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr modelSeriesV2 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr modelSeriesV3;
+    atoms::Object::sptr modelSeriesV2 = atoms::Object::New();
+    atoms::Object::sptr modelSeriesV3;
 
-    ::fwAtomsPatch::helper::setClassname(modelSeriesV2, "data::ModelSeries");
+    ::fwAtomsPatch::helper::setClassname(modelSeriesV2, "::sight::data::ModelSeries");
     ::fwAtomsPatch::helper::setVersion(modelSeriesV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(modelSeriesV2);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("dicom_reference", ::fwAtoms::Object::sptr());
-    helper.addAttribute("reconstruction_db", ::fwAtoms::Object::sptr());
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("dicom_reference", atoms::Object::sptr());
+    helper.addAttribute("reconstruction_db", atoms::Object::sptr());
 
     {
-        modelSeriesV3 = ::fwAtoms::Object::dynamicCast(modelSeriesV2->clone());
+        modelSeriesV3 = atoms::Object::dynamicCast(modelSeriesV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[modelSeriesV2] = modelSeriesV3;

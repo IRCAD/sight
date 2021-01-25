@@ -29,7 +29,7 @@
 
 #include <functional>
 
-fwDataRegisterMacro( sight::data::StructureTraitsDictionary );
+fwDataRegisterMacro( ::sight::data::StructureTraitsDictionary );
 
 namespace sight::data
 {

@@ -27,9 +27,8 @@
 #include "igtlProtocol/DataConverter.hpp"
 #include "igtlProtocol/RawMessage.hpp"
 
-#include <fwAtomConversion/convert.hpp>
-
-#include <fwAtoms/Object.hpp>
+#include <atoms/conversion/convert.hpp>
+#include <atoms/Object.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
@@ -61,7 +60,7 @@ AtomConverter::~AtomConverter()
 {
     typedef ::igtlProtocol::archiver::MemoryWriteArchive MemoryWriteArchiveType;
 
-    ::fwAtomsBoostIO::Writer writer(::fwAtomConversion::convert(data::Object::constCast(src)));
+    ::fwAtomsBoostIO::Writer writer(atoms::conversion::convert(data::Object::constCast(src)));
 
     RawMessage::Pointer msg                   = RawMessage::New(AtomConverter::s_IGTL_TYPE);
     MemoryWriteArchiveType::sptr memoryWriter = std::make_shared<MemoryWriteArchiveType>(msg->getMessage());
@@ -82,8 +81,8 @@ data::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     MemoryReadArchiveType::sptr memoryReader = std::make_shared<MemoryReadArchiveType>(&msg->getMessage()[0],
                                                                                        msg->getMessage().size());
 
-    ::fwAtoms::Base::sptr atomObj = reader.read(memoryReader);
-    data::Object::sptr obj = ::fwAtomConversion::convert(::fwAtoms::Object::dynamicCast(atomObj));
+    atoms::Base::sptr atomObj = reader.read(memoryReader);
+    data::Object::sptr obj    = atoms::conversion::convert(atoms::Object::dynamicCast(atomObj));
 
     return obj;
 }

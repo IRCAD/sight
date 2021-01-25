@@ -24,9 +24,9 @@
 
 #include "fwAtomsPatch/config.hpp"
 
-#include <core/base.hpp>
+#include <atoms/Base.hpp>
 
-#include <fwAtoms/Base.hpp>
+#include <core/base.hpp>
 
 namespace fwAtomsPatch
 {
@@ -43,21 +43,21 @@ public:
     fwCoreAllowSharedFromThis();
 
     /// Default value getter
-    FWATOMSPATCH_API virtual ::fwAtoms::Base::sptr getDefaultValue();
+    FWATOMSPATCH_API virtual atoms::Base::sptr getDefaultValue();
 
     /// Test in replacement value
-    FWATOMSPATCH_API virtual bool test(::fwAtoms::Base::sptr old, ::fwAtoms::Base::sptr newValue);
+    FWATOMSPATCH_API virtual bool test(atoms::Base::sptr old, atoms::Base::sptr newValue);
 
     /// Test with one value (remove/add/rename)
-    FWATOMSPATCH_API virtual bool test(::fwAtoms::Base::sptr old);
+    FWATOMSPATCH_API virtual bool test(atoms::Base::sptr old);
 
 protected:
     Abstract()
     {
     }
-    Abstract(::fwAtoms::Base::sptr defaultValue);
+    Abstract(atoms::Base::sptr defaultValue);
 
-    ::fwAtoms::Base::sptr m_defaultValue;
+    atoms::Base::sptr m_defaultValue;
     std::string m_message;
 
 };

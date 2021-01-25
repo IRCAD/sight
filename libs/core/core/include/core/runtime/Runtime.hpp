@@ -143,6 +143,15 @@ public:
      */
     CORE_API virtual std::shared_ptr< Module > findModule( const std::string& identifier,
                                                            const Version& version = Version() ) const = 0;
+
+    /**
+     * @brief       Retrieves a module given the folder path.
+     *
+     * @param[in]   path      a string containing a module identifier
+     *
+     * @return      a shared pointer to the found module or null if none
+     */
+    CORE_API virtual SPTR( core::runtime::Module ) findModuleByPath( const std::string& path ) const = 0;
     //@}
 
     /**

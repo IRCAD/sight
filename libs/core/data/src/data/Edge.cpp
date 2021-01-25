@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::Edge );
+fwDataRegisterMacro( ::sight::data::Edge );
 
 namespace sight::data
 {

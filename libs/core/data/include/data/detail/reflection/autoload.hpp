@@ -51,7 +51,6 @@
 #include "data/Material.hpp"
 #include "data/Mesh.hpp"
 #include "data/ModelSeries.hpp"
-#include "data/NavigationSeries.hpp"
 #include "data/Patient.hpp"
 #include "data/Plane.hpp"
 #include "data/PlaneList.hpp"
@@ -142,7 +141,6 @@ struct runner
         localDeclaresightdataImageSeries();
         localDeclaresightdataModelSeries();
         localDeclaresightdataActivitySeries();
-        localDeclaresightdataNavigationSeries();
     }
 
     static runner r;

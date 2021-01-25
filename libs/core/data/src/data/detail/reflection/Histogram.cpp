@@ -30,10 +30,10 @@ fwCampImplementDataMacro((sight)(data)(Histogram))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .property("value", &sight::data::Histogram::m_values)
-    .property("bins_width", &sight::data::Histogram::m_binsWidth)
-    .property("min_value", &sight::data::Histogram::m_minValue)
-    .property("max_value", &sight::data::Histogram::m_maxValue)
+    .tag("lib_name", "::sight::data")
+    .property("value", &::sight::data::Histogram::m_values)
+    .property("bins_width", &::sight::data::Histogram::m_binsWidth)
+    .property("min_value", &::sight::data::Histogram::m_minValue)
+    .property("max_value", &::sight::data::Histogram::m_maxValue)
     ;
 }

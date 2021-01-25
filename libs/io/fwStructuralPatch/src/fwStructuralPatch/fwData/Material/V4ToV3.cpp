@@ -22,13 +22,13 @@
 
 #include "fwStructuralPatch/data/Material/V4ToV3.hpp"
 
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -42,8 +42,8 @@ namespace Material
 V4ToV3::V4ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Material";
-    m_targetClassname = "data::Material";
+    m_originClassname = "::sight::data::Material";
+    m_targetClassname = "::sight::data::Material";
     m_originVersion   = "4";
     m_targetVersion   = "3";
 }
@@ -63,8 +63,8 @@ V4ToV3::V4ToV3( const V4ToV3& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V4ToV3::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -76,31 +76,31 @@ void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Retrieve shading_mode and replace AMBIENT mode with PHONG
     // add lighting attribute (false if mode is AMBIENT, else true)
-    ::fwAtoms::String::sptr shadingMode = previous->getAttribute< ::fwAtoms::String >("shading_mode");
-    std::string shading = shadingMode->getValue();
+    atoms::String::sptr shadingMode = previous->getAttribute< atoms::String >("shading_mode");
+    std::string shading             = shadingMode->getValue();
 
     bool lighting = true;
     if (shading == "AMBIENT")
     {
         lighting = false;
-        helper.replaceAttribute("shading_mode", ::fwAtoms::String::New("PHONG"));
+        helper.replaceAttribute("shading_mode", atoms::String::New("PHONG"));
     }
-    helper.addAttribute("lighting", ::fwAtoms::Boolean::New(lighting));
+    helper.addAttribute("lighting", atoms::Boolean::New(lighting));
 
     // Switch diffuse and ambient
-    ::fwAtoms::Object::sptr ambient = current->getAttribute< ::fwAtoms::Object >("ambient");
-    ::fwAtoms::Object::sptr diffuse = current->getAttribute< ::fwAtoms::Object >("diffuse");
+    atoms::Object::sptr ambient = current->getAttribute< atoms::Object >("ambient");
+    atoms::Object::sptr diffuse = current->getAttribute< atoms::Object >("diffuse");
 
     // Replace diffuse by previous ambient
     helper.replaceAttribute("diffuse", ambient);
     helper.replaceAttribute("ambient", diffuse);
 
     // Replace options_mode "CELLS_NORMALS" by "NORMALS"
-    ::fwAtoms::String::sptr optionMode = previous->getAttribute< ::fwAtoms::String >("options_mode");
-    std::string option = optionMode->getValue();
+    atoms::String::sptr optionMode = previous->getAttribute< atoms::String >("options_mode");
+    std::string option             = optionMode->getValue();
     if (option == "CELLS_NORMALS")
     {
-        helper.replaceAttribute("options_mode", ::fwAtoms::String::New("NORMALS"));
+        helper.replaceAttribute("options_mode", atoms::String::New("NORMALS"));
     }
 
 }

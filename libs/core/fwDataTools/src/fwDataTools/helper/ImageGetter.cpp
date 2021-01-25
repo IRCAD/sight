@@ -41,7 +41,7 @@ ImageGetter::ImageGetter( data::Image::csptr ImageGetter ) :
     m_image(ImageGetter)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::ImageGetter is no longer supported, the methods have been moved to "
-                      "data::Image", "22.0")
+                      "::sight::data::Image", "22.0")
     if ( ImageGetter )
     {
         m_lock = ImageGetter->getDataArray()->getBufferObject()->lock();

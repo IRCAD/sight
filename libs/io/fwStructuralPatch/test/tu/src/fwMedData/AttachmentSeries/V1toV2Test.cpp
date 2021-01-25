@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/AttachmentSeries/V1ToV2.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,26 +60,26 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr attachmentSeriesV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr attachmentSeriesV2;
+    atoms::Object::sptr attachmentSeriesV1 = atoms::Object::New();
+    atoms::Object::sptr attachmentSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(attachmentSeriesV1, "data::AttachmentSeries");
+    ::fwAtomsPatch::helper::setClassname(attachmentSeriesV1, "::sight::data::AttachmentSeries");
     ::fwAtomsPatch::helper::setVersion(attachmentSeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(attachmentSeriesV1);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
 
     {
-        attachmentSeriesV2 = ::fwAtoms::Object::dynamicCast(attachmentSeriesV1->clone());
+        attachmentSeriesV2 = atoms::Object::dynamicCast(attachmentSeriesV1->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[attachmentSeriesV1] = attachmentSeriesV2;

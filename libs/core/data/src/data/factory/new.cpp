@@ -44,11 +44,10 @@ data::Object::sptr New( const data::registry::KeyType& classname )
     }
 
     std::smatch match;
-    static const std::regex reg("::([^:.]*)::.*");
-    if( std::regex_match(classname, match, reg ) && match.size() == 2)
+    static const std::regex reg("::(\\w*)::(\\w*)::.*");
+    if( std::regex_match(classname, match, reg ) && match.size() == 3)
     {
-        const std::string libName = match[1].str();
-        const bool loaded         = core::runtime::loadLibrary(libName);
+        const bool loaded = core::runtime::loadLibrary(match[2].str(), match[1].str());
         if(!loaded)
         {
             return nullptr;

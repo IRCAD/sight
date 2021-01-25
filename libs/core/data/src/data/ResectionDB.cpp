@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( sight::data::ResectionDB );
+fwDataRegisterMacro( ::sight::data::ResectionDB );
 
 namespace sight::data
 {

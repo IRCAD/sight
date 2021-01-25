@@ -49,7 +49,7 @@ public:
     FWSTRUCTURALPATCH_API Landmarks1( const Landmarks1& cpy );
 
     /// Create the specified object (sets 'landmarks' attribute).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

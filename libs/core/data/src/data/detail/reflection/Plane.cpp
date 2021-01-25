@@ -30,9 +30,9 @@ fwCampImplementDataMacro((sight)(data)(Plane))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("points", &sight::data::Plane::m_vPoints)
-    .property("intersection", &sight::data::Plane::m_isIntersection)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("points", &::sight::data::Plane::m_vPoints)
+    .property("intersection", &::sight::data::Plane::m_isIntersection)
     ;
 }

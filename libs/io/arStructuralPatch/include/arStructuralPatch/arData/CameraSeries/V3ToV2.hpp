@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ public:
      * performed_procedure_step_description, performed_procedure_comments.
      */
     ARSTRUCTURALPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& _previous,
-        const ::fwAtoms::Object::sptr& _current,
+        const atoms::Object::sptr& _previous,
+        const atoms::Object::sptr& _current,
         ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions) override;
 
 };

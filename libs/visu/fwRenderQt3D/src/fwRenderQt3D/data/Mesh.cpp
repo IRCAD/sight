@@ -107,7 +107,7 @@ void Mesh::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 
 void Mesh::setMesh(data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("data::Mesh pointer does not exist.", _mesh);
+    SLM_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
 
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
@@ -173,7 +173,7 @@ void Mesh::centerCameraOnMesh()
 
 void Mesh::buildBuffers(data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("data::Mesh pointer does not exist.", _mesh);
+    SLM_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
 
     // Returns if _mesh is empty.
     if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)

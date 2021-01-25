@@ -30,9 +30,9 @@ fwCampImplementDataMacro((sight)(data)(ProcessObject))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object >()
-    .property("inputs", &sight::data::ProcessObject::m_inputs)
-    .property("outputs", &sight::data::ProcessObject::m_outputs)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object >()
+    .property("inputs", &::sight::data::ProcessObject::m_inputs)
+    .property("outputs", &::sight::data::ProcessObject::m_outputs)
     ;
 }

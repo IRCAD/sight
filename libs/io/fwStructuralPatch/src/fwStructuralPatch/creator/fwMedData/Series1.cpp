@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/creator/data/Series1.hpp"
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
@@ -38,7 +38,7 @@ namespace sight::data
 
 Series1::Series1()
 {
-    m_classname = "data::Series";
+    m_classname = "::sight::data::Series";
     m_version   = "1";
 }
 
@@ -57,22 +57,22 @@ Series1::Series1( const Series1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Series1::create()
+atoms::Object::sptr Series1::create()
 {
-    ::fwAtoms::Object::sptr series = this->createObjBase();
+    atoms::Object::sptr series = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(series);
 
     ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
-    helper.addAttribute("patient", creators->create( "data::Patient", "1") );
-    helper.addAttribute("study", creators->create( "data::Study", "1") );
-    helper.addAttribute("equipment", creators->create( "data::Equipment", "1") );
+    helper.addAttribute("patient", creators->create( "::sight::data::Patient", "1") );
+    helper.addAttribute("study", creators->create( "::sight::data::Study", "1") );
+    helper.addAttribute("equipment", creators->create( "::sight::data::Equipment", "1") );
 
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
 
     return series;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "arStructuralPatch/arData/Camera/V2ToV1.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 namespace arStructuralPatch
 {
@@ -62,8 +62,8 @@ V2ToV1::V2ToV1( const V2ToV1& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V2ToV1::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -74,14 +74,14 @@ void V2ToV1::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    ::fwAtoms::Sequence::sptr intrinsicParam = ::fwAtoms::Sequence::dynamicCast(previous->getAttribute("intrinsic"));
-    ::fwAtoms::Numeric::sptr width           = ::fwAtoms::Numeric::dynamicCast(previous->getAttribute("width"));
-    ::fwAtoms::Numeric::sptr height          = ::fwAtoms::Numeric::dynamicCast(previous->getAttribute("height"));
-    ::fwAtoms::String::sptr camSource        = ::fwAtoms::String::dynamicCast(previous->getAttribute("camera_source"));
-    ::fwAtoms::String::sptr videoFile        = ::fwAtoms::String::dynamicCast(previous->getAttribute("video_file"));
-    ::fwAtoms::String::sptr streamUrl        = ::fwAtoms::String::dynamicCast(previous->getAttribute("stream_url"));
-    ::fwAtoms::String::sptr cameraID         = ::fwAtoms::String::dynamicCast(previous->getAttribute("camera_id"));
-    ::fwAtoms::String::sptr cameraDesc       = ::fwAtoms::String::dynamicCast(previous->getAttribute("description"));
+    atoms::Sequence::sptr intrinsicParam = atoms::Sequence::dynamicCast(previous->getAttribute("intrinsic"));
+    atoms::Numeric::sptr width           = atoms::Numeric::dynamicCast(previous->getAttribute("width"));
+    atoms::Numeric::sptr height          = atoms::Numeric::dynamicCast(previous->getAttribute("height"));
+    atoms::String::sptr camSource        = atoms::String::dynamicCast(previous->getAttribute("camera_source"));
+    atoms::String::sptr videoFile        = atoms::String::dynamicCast(previous->getAttribute("video_file"));
+    atoms::String::sptr streamUrl        = atoms::String::dynamicCast(previous->getAttribute("stream_url"));
+    atoms::String::sptr cameraID         = atoms::String::dynamicCast(previous->getAttribute("camera_id"));
+    atoms::String::sptr cameraDesc       = atoms::String::dynamicCast(previous->getAttribute("description"));
 
     std::string camID;
     std::string description;
@@ -101,13 +101,13 @@ void V2ToV1::apply(
         description = cameraDesc->getString();
     }
 
-    ::fwAtoms::Sequence::sptr newIntrinsic = ::fwAtoms::Sequence::dynamicCast(intrinsicParam->clone());
+    atoms::Sequence::sptr newIntrinsic = atoms::Sequence::dynamicCast(intrinsicParam->clone());
 
     newIntrinsic->push_back(width->clone());
     newIntrinsic->push_back(height->clone());
 
-    helper.replaceAttribute("camera_id", ::fwAtoms::String::New(camID));
-    helper.replaceAttribute("description", ::fwAtoms::String::New(description));
+    helper.replaceAttribute("camera_id", atoms::String::New(camID));
+    helper.replaceAttribute("description", atoms::String::New(description));
     helper.replaceAttribute("intrinsic", newIntrinsic);
 
     helper.removeAttribute("max_framerate");

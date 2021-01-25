@@ -28,7 +28,7 @@
 
 #include <fwAtomsFilter/IFilter.hpp>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -47,7 +47,7 @@ public:
     ~FilterUnknownActivities();
 
     /// Apply filter onto given atom object.
-    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(::fwAtoms::Object)& atom);
+    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(atoms::Object)& atom);
 };
 
 } // namespace filterUnknownSeries

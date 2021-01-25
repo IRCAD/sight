@@ -25,7 +25,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( sight::data::Study )
+fwDataRegisterMacro( ::sight::data::Study )
 
 namespace sight::data
 {

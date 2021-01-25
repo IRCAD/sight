@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( sight::data::Material );
+fwDataRegisterMacro( ::sight::data::Material );
 
 namespace sight::data
 {

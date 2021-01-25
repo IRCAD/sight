@@ -30,7 +30,7 @@
 #include <filesystem>
 #include <sstream>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Base;
 }
@@ -56,7 +56,7 @@ public:
     /// Defines key to retrieve writer version from file.
     FWATOMSBOOSTIO_API static const std::string s_WRITER_VERSION_KEY;
 
-    Writer(const SPTR(::fwAtoms::Base)& atom) :
+    Writer(const SPTR(atoms::Base)& atom) :
         m_atom(atom)
     {
     }
@@ -74,7 +74,7 @@ public:
 
 protected:
 
-    SPTR(::fwAtoms::Base) m_atom;
+    SPTR(atoms::Base) m_atom;
 
 };
 

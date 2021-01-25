@@ -104,6 +104,15 @@ public:
                                               const Version& version = Version() ) const final;
 
     /**
+     * @brief       Retrieves a module given the folder path.
+     *
+     * @param[in]   path      a string containing a module identifier
+     *
+     * @return      a shared pointer to the found module or null if none
+     */
+    SPTR( core::runtime::Module ) findModuleByPath( const std::string& path ) const final;
+
+    /**
      * @brief   Create an instance of the given executable object type.
      *
      * An attempt is made to retrieve a registered executable factory. If none

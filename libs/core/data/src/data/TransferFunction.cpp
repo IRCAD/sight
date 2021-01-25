@@ -28,7 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Type.hpp>
 
-fwDataRegisterMacro( sight::data::TransferFunction )
+fwDataRegisterMacro( ::sight::data::TransferFunction )
 
 namespace sight::data
 {

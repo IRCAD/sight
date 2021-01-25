@@ -29,7 +29,7 @@
 #include "data/Exception.hpp"
 #include "data/Port.hpp"
 
-fwDataRegisterMacro( sight::data::Node );
+fwDataRegisterMacro( ::sight::data::Node );
 
 namespace sight::data
 {

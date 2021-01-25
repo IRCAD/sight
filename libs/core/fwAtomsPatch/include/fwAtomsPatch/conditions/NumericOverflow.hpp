@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwAtomsPatch/conditions/Abstract.hpp"
 #include "fwAtomsPatch/config.hpp"
 
-#include <fwAtoms/Numeric.hpp>
+#include <atoms/Numeric.hpp>
 
 namespace fwAtomsPatch
 {
@@ -37,28 +37,28 @@ namespace conditions
 class FWATOMSPATCH_CLASS_API NumericOverflow : public Abstract
 {
 public:
-    fwCoreClassMacro(NumericOverflow, Abstract, new NumericOverflow);
+    fwCoreClassMacro(NumericOverflow, Abstract, new NumericOverflow)
     fwCoreAllowSharedFromThis()
 
     /// Numerical test
-    FWATOMSPATCH_API virtual bool test(::fwAtoms::Base::sptr old, ::fwAtoms::Base::sptr newValue) override;
+    FWATOMSPATCH_API virtual bool test(atoms::Base::sptr old, atoms::Base::sptr newValue) override;
 
     /// Numerical test
-    FWATOMSPATCH_API virtual bool test(::fwAtoms::Base::sptr old) override;
+    FWATOMSPATCH_API virtual bool test(atoms::Base::sptr old) override;
 
     /// Set the maximum treshold
-    FWATOMSPATCH_API virtual void setTreshold(::fwAtoms::Numeric::sptr treshold);
+    FWATOMSPATCH_API virtual void setTreshold(atoms::Numeric::sptr treshold);
 
     /// Constructor
-    FWATOMSPATCH_API static NumericOverflow::sptr New(::fwAtoms::Base::sptr defaultValue);
+    FWATOMSPATCH_API static NumericOverflow::sptr New(atoms::Base::sptr defaultValue);
 
 protected:
     NumericOverflow()
     {
     }
-    NumericOverflow(::fwAtoms::Base::sptr defaultValue);
+    NumericOverflow(atoms::Base::sptr defaultValue);
 
-    ::fwAtoms::Numeric::sptr m_treshold;
+    atoms::Numeric::sptr m_treshold;
 };
 
 } // namesapce conditions

@@ -26,7 +26,7 @@
 #include "data/GenericField.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::Float );
+fwDataRegisterMacro( ::sight::data::Float );
 
 namespace sight::data
 {

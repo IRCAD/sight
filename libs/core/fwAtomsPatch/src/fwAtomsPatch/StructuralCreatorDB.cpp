@@ -60,12 +60,12 @@ void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sp
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr StructuralCreatorDB::create(const std::string& classname, const std::string& version)
+atoms::Object::sptr StructuralCreatorDB::create(const std::string& classname, const std::string& version)
 {
     ::fwAtomsPatch::IStructuralCreator::sptr creator = this->getCreator( classname, version );
     SLM_ASSERT( "object creator of type '"<< classname <<"' and version '"<< version <<"' not found", creator );
     fwAtomsPatchInfoLogMacro("Create '" + classname + "|" + version + "'");
-    ::fwAtoms::Object::sptr obj = creator->create();
+    atoms::Object::sptr obj = creator->create();
     return obj;
 }
 

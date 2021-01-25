@@ -50,7 +50,7 @@ public:
     FWSTRUCTURALPATCH_API ModelSeries1( const ModelSeries1& cpy );
 
     /// Creates the specified object (sets 'reconstruction_db' attribute) and calls creator 'Series1'.
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

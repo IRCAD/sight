@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/data/Reconstruction/V2ToV3.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -38,8 +38,8 @@ namespace Reconstruction
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Reconstruction";
-    m_targetClassname = "data::Reconstruction";
+    m_originClassname = "::sight::data::Reconstruction";
+    m_targetClassname = "::sight::data::Reconstruction";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 
@@ -61,8 +61,8 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V2ToV3::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -74,7 +74,7 @@ void V2ToV3::apply(
     ::fwAtomsPatch::helper::Object helper(current);
 
     // Set to -1 to inform that no mask has been computed yet (data::Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
-    helper.addAttribute("volume", ::fwAtoms::Numeric::New<double>(-1.));
+    helper.addAttribute("volume", atoms::Numeric::New<double>(-1.));
 }
 
 } // namespace Reconstruction

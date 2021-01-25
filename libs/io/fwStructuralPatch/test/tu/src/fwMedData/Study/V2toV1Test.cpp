@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/Study/V2ToV1.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,45 +60,45 @@ void V2ToV1Test::tearDown()
 
 void V2ToV1Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr StudyV2 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr StudyV1;
+    atoms::Object::sptr StudyV2 = atoms::Object::New();
+    atoms::Object::sptr StudyV1;
 
-    ::fwAtomsPatch::helper::setClassname(StudyV2, "data::Study");
+    ::fwAtomsPatch::helper::setClassname(StudyV2, "::sight::data::Study");
     ::fwAtomsPatch::helper::setVersion(StudyV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(StudyV2);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
 
-    helper.addAttribute("number", ::fwAtoms::String::New(""));
-    helper.addAttribute("laterality", ::fwAtoms::String::New(""));
-    helper.addAttribute("protocolName", ::fwAtoms::String::New(""));
-    helper.addAttribute("body_part_examined", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_position", ::fwAtoms::String::New(""));
-    helper.addAttribute("anatomical_orientation_type", ::fwAtoms::String::New(""));
-    helper.addAttribute("performded_procedure_step_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_description", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_comments", ::fwAtoms::String::New(""));
-    helper.addAttribute("study_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("consulting_physician_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("patient_size", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_weight", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_body_mass_index", ::fwAtoms::String::New(""));
+    helper.addAttribute("number", atoms::String::New(""));
+    helper.addAttribute("laterality", atoms::String::New(""));
+    helper.addAttribute("protocolName", atoms::String::New(""));
+    helper.addAttribute("body_part_examined", atoms::String::New(""));
+    helper.addAttribute("patient_position", atoms::String::New(""));
+    helper.addAttribute("anatomical_orientation_type", atoms::String::New(""));
+    helper.addAttribute("performded_procedure_step_id", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_description", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_comments", atoms::String::New(""));
+    helper.addAttribute("study_id", atoms::String::New(""));
+    helper.addAttribute("consulting_physician_name", atoms::Sequence::New());
+    helper.addAttribute("patient_size", atoms::String::New(""));
+    helper.addAttribute("patient_weight", atoms::String::New(""));
+    helper.addAttribute("patient_body_mass_index", atoms::String::New(""));
 
     {
-        StudyV1 = ::fwAtoms::Object::dynamicCast(StudyV2->clone());
+        StudyV1 = atoms::Object::dynamicCast(StudyV2->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[StudyV2] = StudyV1;

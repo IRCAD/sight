@@ -22,11 +22,11 @@
 
 #include "fwStructuralPatch/data/Image/V2ToV3.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -40,8 +40,8 @@ namespace Image
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Image";
-    m_targetClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
+    m_targetClassname = "::sight::data::Image";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 
@@ -63,8 +63,8 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V2ToV3::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -75,23 +75,23 @@ void V2ToV3::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    ::fwAtoms::Numeric::sptr components = current->getAttribute< ::fwAtoms::Numeric >("nb_components");
-    size_t nbComponents = components->getValue<size_t>();
+    atoms::Numeric::sptr components = current->getAttribute< atoms::Numeric >("nb_components");
+    size_t nbComponents             = components->getValue<size_t>();
     if (nbComponents == 1)
     {
-        helper.addAttribute("pixel_format", ::fwAtoms::String::New("GRAY_SCALE"));
+        helper.addAttribute("pixel_format", atoms::String::New("GRAY_SCALE"));
     }
     else if (nbComponents == 3)
     {
-        helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGB"));
+        helper.addAttribute("pixel_format", atoms::String::New("RGB"));
     }
     else if (nbComponents == 4)
     {
-        helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGBA"));
+        helper.addAttribute("pixel_format", atoms::String::New("RGBA"));
     }
     else
     {
-        helper.addAttribute("pixel_format", ::fwAtoms::String::New("UNDEFINED"));
+        helper.addAttribute("pixel_format", atoms::String::New("UNDEFINED"));
     }
 
 }

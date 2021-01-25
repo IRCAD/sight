@@ -27,14 +27,9 @@
 #include <core/Exception.hpp>
 #include <core/macros.hpp>
 #include <core/reflection/camp/ExtendedClassVisitor.hpp>
-
 namespace sight::data
 {
 class Object;
-}
-
-namespace sight::data
-{
 namespace reflection
 {
 namespace visitor

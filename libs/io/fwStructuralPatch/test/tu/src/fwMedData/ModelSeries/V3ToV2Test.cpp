@@ -24,9 +24,9 @@
 
 #include <fwStructuralPatch/data/ModelSeries/V3ToV2.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -60,42 +60,42 @@ void V3ToV2Test::tearDown()
 
 void V3ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr modelSeriesV3 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr modelSeriesV2;
+    atoms::Object::sptr modelSeriesV3 = atoms::Object::New();
+    atoms::Object::sptr modelSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(modelSeriesV3, "data::ModelSeries");
+    ::fwAtomsPatch::helper::setClassname(modelSeriesV3, "::sight::data::ModelSeries");
     ::fwAtomsPatch::helper::setVersion(modelSeriesV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(modelSeriesV3);
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
-    helper.addAttribute("date", ::fwAtoms::String::New(""));
-    helper.addAttribute("time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("dicom_reference", ::fwAtoms::Object::sptr());
-    helper.addAttribute("reconstruction_db", ::fwAtoms::Object::sptr());
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("instance_uid", atoms::String::New(""));
+    helper.addAttribute("modality", atoms::String::New(""));
+    helper.addAttribute("date", atoms::String::New(""));
+    helper.addAttribute("time", atoms::String::New(""));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("dicom_reference", atoms::Object::sptr());
+    helper.addAttribute("reconstruction_db", atoms::Object::sptr());
 
-    helper.addAttribute("number", ::fwAtoms::String::New(""));
-    helper.addAttribute("laterality", ::fwAtoms::String::New(""));
-    helper.addAttribute("protocolName", ::fwAtoms::String::New(""));
-    helper.addAttribute("body_part_examined", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_position", ::fwAtoms::String::New(""));
-    helper.addAttribute("anatomical_orientation_type", ::fwAtoms::String::New(""));
-    helper.addAttribute("performded_procedure_step_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_description", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_comments", ::fwAtoms::String::New(""));
+    helper.addAttribute("number", atoms::String::New(""));
+    helper.addAttribute("laterality", atoms::String::New(""));
+    helper.addAttribute("protocolName", atoms::String::New(""));
+    helper.addAttribute("body_part_examined", atoms::String::New(""));
+    helper.addAttribute("patient_position", atoms::String::New(""));
+    helper.addAttribute("anatomical_orientation_type", atoms::String::New(""));
+    helper.addAttribute("performded_procedure_step_id", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_description", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_comments", atoms::String::New(""));
 
     {
-        modelSeriesV2 = ::fwAtoms::Object::dynamicCast(modelSeriesV3->clone());
+        modelSeriesV2 = atoms::Object::dynamicCast(modelSeriesV3->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[modelSeriesV3] = modelSeriesV2;

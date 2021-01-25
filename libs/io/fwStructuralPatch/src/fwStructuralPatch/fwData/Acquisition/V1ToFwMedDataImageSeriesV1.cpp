@@ -22,11 +22,11 @@
 
 #include "fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 
-#include <core/tools/dateAndTime.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <core/tools/dateAndTime.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/infos/Logger.hpp>
@@ -49,8 +49,8 @@ namespace Acquisition
 V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Acquisition";
-    m_targetClassname = "data::ImageSeries";
+    m_originClassname = "::sight::data::Acquisition";
+    m_targetClassname = "::sight::data::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 
@@ -72,8 +72,8 @@ V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImage
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
-                                       const ::fwAtoms::Object::sptr& current,
+void V1ToFwMedDataImageSeriesV1::apply(const atoms::Object::sptr& previous,
+                                       const atoms::Object::sptr& current,
                                        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -114,21 +114,21 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
 
     helper.renameAttribute("uid", "instance_uid");
 
-    helper.addAttribute("modality", ::fwAtoms::String::New(""));
+    helper.addAttribute("modality", atoms::String::New(""));
 
     ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
     // Create Patient
-    helper.addAttribute("patient", creators->create( "data::Patient", "1") );
+    helper.addAttribute("patient", creators->create( "::sight::data::Patient", "1") );
 
     // Create Equipment
-    helper.addAttribute("equipment", creators->create( "data::Equipment", "1") );
+    helper.addAttribute("equipment", creators->create( "::sight::data::Equipment", "1") );
 
     // Create Study
-    helper.addAttribute("study", creators->create( "data::Study", "1") );
+    helper.addAttribute("study", creators->create( "::sight::data::Study", "1") );
 
     // Create performing_physicians_name
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
 
     //===========================================
     // Update time format
@@ -142,8 +142,8 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
     const std::string date = core::tools::getDate(pdate);
     const std::string time = core::tools::getTime(pdate);
 
-    helper.addAttribute("date", ::fwAtoms::String::New(date));
-    helper.addAttribute("time", ::fwAtoms::String::New(time));
+    helper.addAttribute("date", atoms::String::New(date));
+    helper.addAttribute("time", atoms::String::New(time));
 }
 
 } // namespace Acquisition

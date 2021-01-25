@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/creator/data/Patient1.hpp"
 
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::data
 
 Patient1::Patient1()
 {
-    m_classname = "data::Patient";
+    m_classname = "::sight::data::Patient";
     m_version   = "1";
 }
 
@@ -56,15 +56,15 @@ Patient1::Patient1( const Patient1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Patient1::create()
+atoms::Object::sptr Patient1::create()
 {
-    ::fwAtoms::Object::sptr patient = this->createObjBase();
+    atoms::Object::sptr patient = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(patient);
 
-    helper.addAttribute("name", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("birth_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("sex", ::fwAtoms::String::New(""));
+    helper.addAttribute("name", atoms::String::New(""));
+    helper.addAttribute("patient_id", atoms::String::New(""));
+    helper.addAttribute("birth_date", atoms::String::New(""));
+    helper.addAttribute("sex", atoms::String::New(""));
 
     return patient;
 }

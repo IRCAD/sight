@@ -54,7 +54,7 @@ public:
     /**
      * @brief Creates the specified object.
      */
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

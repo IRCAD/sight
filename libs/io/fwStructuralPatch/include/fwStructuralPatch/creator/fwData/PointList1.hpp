@@ -49,7 +49,7 @@ public:
     FWSTRUCTURALPATCH_API PointList1( const PointList1& cpy );
 
     /// Create the specified object (sets 'points' attribute).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

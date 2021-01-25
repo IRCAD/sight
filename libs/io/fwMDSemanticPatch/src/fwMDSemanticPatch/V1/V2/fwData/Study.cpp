@@ -22,11 +22,11 @@
 
 #include "fwMDSemanticPatch/V1/V2/data/Study.hpp"
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::data
 Study::Study() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "data::Study";
+    m_originClassname = "::sight::data::Study";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -63,18 +63,18 @@ Study::Study( const Study& cpy ) :
 // ----------------------------------------------------------------------------
 
 void Study::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
     ::fwAtomsPatch::helper::Object helper( current );
 
-    ::fwAtoms::String::sptr uid = current->getAttribute< ::fwAtoms::String >("instance_uid");
+    atoms::String::sptr uid = current->getAttribute< atoms::String >("instance_uid");
     if( uid->getValue().empty() )
     {
-        helper.replaceAttribute("instance_uid", ::fwAtoms::String::New(core::tools::UUID::generateUUID()));
+        helper.replaceAttribute("instance_uid", atoms::String::New(core::tools::UUID::generateUUID()));
     }
 }
 

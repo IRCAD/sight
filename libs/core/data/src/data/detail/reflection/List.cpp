@@ -30,7 +30,7 @@ fwCampImplementDataMacro((sight)(data)(List))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .property("values", &sight::data::List::m_container)
+    .tag("lib_name", "::sight::data")
+    .property("values", &::sight::data::List::m_container)
     ;
 }

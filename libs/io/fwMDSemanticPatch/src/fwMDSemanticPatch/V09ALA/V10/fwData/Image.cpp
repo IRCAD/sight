@@ -22,15 +22,15 @@
 
 #include "fwMDSemanticPatch/V09ALA/V10/data/Image.hpp"
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Map.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
@@ -47,7 +47,7 @@ namespace sight::data
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V09ALA", "V10");
 }
@@ -68,15 +68,15 @@ Image::Image( const Image& cpy ) :
 // ----------------------------------------------------------------------------
 
 void Image::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
     ::fwAtomsPatch::helper::Object helper( current );
 
-    ::fwAtoms::Map::csptr previousFieldMap = ::fwAtoms::Map::dynamicCast(previous->getAttribute("fields"));
+    atoms::Map::csptr previousFieldMap = atoms::Map::dynamicCast(previous->getAttribute("fields"));
     SLM_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_imageLandmarksId");
@@ -85,40 +85,41 @@ void Image::apply(
         // create new Landmarks structure
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
-        ::fwAtoms::Object::sptr currentLandmarks = creators->create( "data::Landmarks", "1");
+        atoms::Object::sptr currentLandmarks = creators->create( "::sight::data::Landmarks", "1");
         ::fwAtomsPatch::helper::Object helperLandmarks( currentLandmarks );
 
-        ::fwAtoms::Map::sptr currentFieldMap = ::fwAtoms::Map::dynamicCast(current->getAttribute("fields"));
+        atoms::Map::sptr currentFieldMap = atoms::Map::dynamicCast(current->getAttribute("fields"));
         currentFieldMap->insert("m_landmarksId", currentLandmarks);
 
-        ::fwAtoms::Map::sptr landmarksMap = ::fwAtoms::Map::dynamicCast(currentLandmarks->getAttribute("landmarks"));
+        atoms::Map::sptr landmarksMap = atoms::Map::dynamicCast(currentLandmarks->getAttribute("landmarks"));
 
         // Convert previous PointList
-        ::fwAtoms::Object::sptr previousPL = ::fwAtoms::Object::dynamicCast(iter->second);
+        atoms::Object::sptr previousPL = atoms::Object::dynamicCast(iter->second);
 
-        ::fwAtoms::Sequence::sptr previousPLSeq = ::fwAtoms::Sequence::dynamicCast(previousPL->getAttribute("points"));
+        atoms::Sequence::sptr previousPLSeq = atoms::Sequence::dynamicCast(previousPL->getAttribute("points"));
 
         size_t count = 0;
         for (const auto& obj : previousPLSeq->getValue())
         {
             // get point coordinates
-            ::fwAtoms::Object::csptr point         = ::fwAtoms::Object::dynamicCast(obj);
-            ::fwAtoms::Sequence::csptr pointCoords = ::fwAtoms::Sequence::dynamicCast(point->getAttribute("coord"));
-            ::fwAtoms::Numeric::csptr coordX       = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[0]);
-            ::fwAtoms::Numeric::csptr coordY       = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[1]);
-            ::fwAtoms::Numeric::csptr coordZ       = ::fwAtoms::Numeric::dynamicCast(pointCoords->getValue()[2]);
-            const std::string coords = coordX->getString() + ";" + coordY->getString() + ";" + coordZ->getString();
+            atoms::Object::csptr point         = atoms::Object::dynamicCast(obj);
+            atoms::Sequence::csptr pointCoords = atoms::Sequence::dynamicCast(point->getAttribute("coord"));
+            atoms::Numeric::csptr coordX       = atoms::Numeric::dynamicCast(pointCoords->getValue()[0]);
+            atoms::Numeric::csptr coordY       = atoms::Numeric::dynamicCast(pointCoords->getValue()[1]);
+            atoms::Numeric::csptr coordZ       = atoms::Numeric::dynamicCast(pointCoords->getValue()[2]);
+            const std::string coords           = coordX->getString() + ";" + coordY->getString() + ";" +
+                                                 coordZ->getString();
 
             // get point label
-            ::fwAtoms::Map::csptr pointFieldMap = ::fwAtoms::Map::dynamicCast(point->getAttribute("fields"));
+            atoms::Map::csptr pointFieldMap = atoms::Map::dynamicCast(point->getAttribute("fields"));
 
             std::string label;
             const auto& it = pointFieldMap->find("m_labelId");
             if (it != pointFieldMap->end())
             {
-                ::fwAtoms::Object::csptr labelObj = ::fwAtoms::Object::dynamicCast(it->second);
-                ::fwAtoms::String::csptr labelStr = ::fwAtoms::String::dynamicCast(labelObj->getAttribute("value"));
-                label                             = labelStr->getValue();
+                atoms::Object::csptr labelObj = atoms::Object::dynamicCast(it->second);
+                atoms::String::csptr labelStr = atoms::String::dynamicCast(labelObj->getAttribute("value"));
+                label = labelStr->getValue();
             }
             if (label.empty())
             {
@@ -126,17 +127,17 @@ void Image::apply(
             }
 
             // create one landmark group per point
-            ::fwAtoms::Object::sptr atomGroup = ::fwAtoms::Object::New();
+            atoms::Object::sptr atomGroup = atoms::Object::New();
             atomGroup->setMetaInfo("ID_METAINFO", core::tools::UUID::generateUUID());
 
-            atomGroup->setAttribute("color", ::fwAtoms::String::New("1;1;1;1"));
-            atomGroup->setAttribute("size", ::fwAtoms::Numeric::New(1));
-            atomGroup->setAttribute("shape", ::fwAtoms::String::New("SPHERE"));
-            atomGroup->setAttribute("visibility", ::fwAtoms::Boolean::New(true));
+            atomGroup->setAttribute("color", atoms::String::New("1;1;1;1"));
+            atomGroup->setAttribute("size", atoms::Numeric::New(1));
+            atomGroup->setAttribute("shape", atoms::String::New("SPHERE"));
+            atomGroup->setAttribute("visibility", atoms::Boolean::New(true));
 
-            ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::New();
+            atoms::Sequence::sptr seq = atoms::Sequence::New();
 
-            seq->push_back(::fwAtoms::String::New(coords));
+            seq->push_back(atoms::String::New(coords));
             atomGroup->setAttribute("points", seq);
             landmarksMap->insert(label, atomGroup);
         }

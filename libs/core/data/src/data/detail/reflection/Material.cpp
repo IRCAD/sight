@@ -30,16 +30,16 @@ fwCampImplementDataMacro((sight)(data)(Material))
 {
     builder
     .tag("object_version", "4")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("shading_mode", &sight::data::Material::m_shadingMode)
-    .property("representation_mode", &sight::data::Material::m_representationMode)
-    .property("options_mode", &sight::data::Material::m_optionsMode)
-    .property("ambient", &sight::data::Material::m_ambient)
-    .property("diffuse", &sight::data::Material::m_diffuse)
-    .property("diffuse_texture", &sight::data::Material::m_diffuseTexture)
-    .property("diffuse_texture_filtering", &sight::data::Material::m_diffuseTextureFiltering)
-    .property("diffuse_texture_wrapping", &sight::data::Material::m_diffuseTextureWrapping)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("shading_mode", &::sight::data::Material::m_shadingMode)
+    .property("representation_mode", &::sight::data::Material::m_representationMode)
+    .property("options_mode", &::sight::data::Material::m_optionsMode)
+    .property("ambient", &::sight::data::Material::m_ambient)
+    .property("diffuse", &::sight::data::Material::m_diffuse)
+    .property("diffuse_texture", &::sight::data::Material::m_diffuseTexture)
+    .property("diffuse_texture_filtering", &::sight::data::Material::m_diffuseTextureFiltering)
+    .property("diffuse_texture_wrapping", &::sight::data::Material::m_diffuseTextureWrapping)
     ;
 }
 

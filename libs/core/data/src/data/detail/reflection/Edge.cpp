@@ -30,10 +30,10 @@ fwCampImplementDataMacro((sight)(data)(Edge))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("nature", &sight::data::Edge::m_nature)
-    .property("to_identifier", &sight::data::Edge::m_toPortIdentifier)
-    .property("from_identifier", &sight::data::Edge::m_fromPortIdentifier)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("nature", &::sight::data::Edge::m_nature)
+    .property("to_identifier", &::sight::data::Edge::m_toPortIdentifier)
+    .property("from_identifier", &::sight::data::Edge::m_fromPortIdentifier)
     ;
 }

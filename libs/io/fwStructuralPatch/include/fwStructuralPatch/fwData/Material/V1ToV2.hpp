@@ -56,8 +56,8 @@ public:
      * Set defaults values for new attributes.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
+        const atoms::Object::sptr& previous,
+        const atoms::Object::sptr& current,
         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };

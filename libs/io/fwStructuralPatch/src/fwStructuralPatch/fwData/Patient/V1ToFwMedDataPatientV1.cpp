@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp"
 
-#include <core/tools/dateAndTime.hpp>
+#include <atoms/String.hpp>
 
-#include <fwAtoms/String.hpp>
+#include <core/tools/dateAndTime.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -43,8 +43,8 @@ namespace Patient
 V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Patient";
-    m_targetClassname = "data::Patient";
+    m_originClassname = "::sight::data::Patient";
+    m_targetClassname = "::sight::data::Patient";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }
@@ -65,8 +65,8 @@ V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1(
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
-                                   const ::fwAtoms::Object::sptr& current,
+void V1ToFwMedDataPatientV1::apply(const atoms::Object::sptr& previous,
+                                   const atoms::Object::sptr& current,
                                    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -96,15 +96,15 @@ void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
     std::string newName = previous->getAttribute("name")->getString()
                           + nameSeperation
                           + previous->getAttribute("firstname")->getString();
-    helper.replaceAttribute( "name", ::fwAtoms::String::New(newName) );
+    helper.replaceAttribute( "name", atoms::String::New(newName) );
 
     // Update Birthdate
     ::boost::posix_time::ptime bithdate =
         ::boost::posix_time::time_from_string(previous->getAttribute("birthdate")->getString());
-    helper.replaceAttribute("birth_date", ::fwAtoms::String::New(core::tools::getDate(bithdate)));
+    helper.replaceAttribute("birth_date", atoms::String::New(core::tools::getDate(bithdate)));
 
     // Update Sex
-    helper.replaceAttribute("sex", ::fwAtoms::String::New(
+    helper.replaceAttribute("sex", atoms::String::New(
                                 !(previous->getAttribute("is_male")->getString().compare("true")) ? "M" : "F"));
 }
 

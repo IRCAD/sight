@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( sight::data::PlaneList );
+fwDataRegisterMacro( ::sight::data::PlaneList );
 
 namespace sight::data
 {

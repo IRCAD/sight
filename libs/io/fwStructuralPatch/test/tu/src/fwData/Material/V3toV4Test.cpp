@@ -24,13 +24,13 @@
 
 #include <fwStructuralPatch/data/Material/V3ToV4.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -67,44 +67,44 @@ void V3ToV4Test::tearDown()
 
 void V3ToV4Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr matObjV3 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr matObjV4;
+    atoms::Object::sptr matObjV3 = atoms::Object::New();
+    atoms::Object::sptr matObjV4;
 
-    ::fwAtomsPatch::helper::setClassname(matObjV3, "data::Material");
+    ::fwAtomsPatch::helper::setClassname(matObjV3, "::sight::data::Material");
     ::fwAtomsPatch::helper::setVersion(matObjV3, "3");
 
     ::fwAtomsPatch::helper::Object helper(matObjV3);
 
-    ::fwAtoms::Sequence::sptr ambientSeq = ::fwAtoms::Sequence::New();
-    ambientSeq->push_back(::fwAtoms::Numeric::New(1.f));
-    ambientSeq->push_back(::fwAtoms::Numeric::New(0.5f));
-    ambientSeq->push_back(::fwAtoms::Numeric::New(0.6f));
-    ambientSeq->push_back(::fwAtoms::Numeric::New(0.12f));
-    ::fwAtoms::Object::sptr ambient = ::fwAtoms::Object::New();
+    atoms::Sequence::sptr ambientSeq = atoms::Sequence::New();
+    ambientSeq->push_back(atoms::Numeric::New(1.f));
+    ambientSeq->push_back(atoms::Numeric::New(0.5f));
+    ambientSeq->push_back(atoms::Numeric::New(0.6f));
+    ambientSeq->push_back(atoms::Numeric::New(0.12f));
+    atoms::Object::sptr ambient = atoms::Object::New();
     ambient->setAttribute("rgba", ambientSeq);
 
-    ::fwAtoms::Sequence::sptr diffuseSeq = ::fwAtoms::Sequence::New();
-    diffuseSeq->push_back(::fwAtoms::Numeric::New(0.33f));
-    diffuseSeq->push_back(::fwAtoms::Numeric::New(0.32f));
-    diffuseSeq->push_back(::fwAtoms::Numeric::New(0.2f));
-    diffuseSeq->push_back(::fwAtoms::Numeric::New(0.125f));
-    ::fwAtoms::Object::sptr diffuse = ::fwAtoms::Object::New();
+    atoms::Sequence::sptr diffuseSeq = atoms::Sequence::New();
+    diffuseSeq->push_back(atoms::Numeric::New(0.33f));
+    diffuseSeq->push_back(atoms::Numeric::New(0.32f));
+    diffuseSeq->push_back(atoms::Numeric::New(0.2f));
+    diffuseSeq->push_back(atoms::Numeric::New(0.125f));
+    atoms::Object::sptr diffuse = atoms::Object::New();
     diffuse->setAttribute("rgba", diffuseSeq);
 
-    helper.addAttribute("shading_mode", ::fwAtoms::String::New("PHONG"));
-    helper.addAttribute("representation_mode", ::fwAtoms::String::New("SURFACE"));
-    helper.addAttribute("options_mode", ::fwAtoms::String::New("STANDARD"));
+    helper.addAttribute("shading_mode", atoms::String::New("PHONG"));
+    helper.addAttribute("representation_mode", atoms::String::New("SURFACE"));
+    helper.addAttribute("options_mode", atoms::String::New("STANDARD"));
     helper.addAttribute("ambient", ambient);
     helper.addAttribute("diffuse", diffuse);
-    helper.addAttribute("diffuse_texture", ::fwAtoms::Object::sptr());
-    helper.addAttribute("diffuse_texture_filtering", ::fwAtoms::String::New("NEAREST"));
-    helper.addAttribute("diffuse_texture_wrapping", ::fwAtoms::String::New("CLAMP"));
-    helper.addAttribute("lighting", ::fwAtoms::Boolean::New(false));
+    helper.addAttribute("diffuse_texture", atoms::Object::sptr());
+    helper.addAttribute("diffuse_texture_filtering", atoms::String::New("NEAREST"));
+    helper.addAttribute("diffuse_texture_wrapping", atoms::String::New("CLAMP"));
+    helper.addAttribute("lighting", atoms::Boolean::New(false));
 
     // 1. Check that if lighting is false, then shading_mode is set to AMBIENT
     // 2. Check that diffuse is replaced by previous ambient and ambient is 0.05f
     {
-        matObjV4 = ::fwAtoms::Object::dynamicCast(matObjV3->clone());
+        matObjV4 = atoms::Object::dynamicCast(matObjV3->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[matObjV3] = matObjV4;
@@ -115,43 +115,43 @@ void V3ToV4Test::applyPatchTest()
 
         CPPUNIT_ASSERT(matObjV4);
         CPPUNIT_ASSERT(!matObjV4->getAttribute("lighting"));
-        ::fwAtoms::String::sptr shading = ::fwAtoms::String::dynamicCast(matObjV4->getAttribute("shading_mode"));
+        atoms::String::sptr shading = atoms::String::dynamicCast(matObjV4->getAttribute("shading_mode"));
         CPPUNIT_ASSERT(shading->getValue() == "AMBIENT");
 
-        ::fwAtoms::Object::sptr ambientV4 = ::fwAtoms::Object::dynamicCast(matObjV4->getAttribute("ambient"));
+        atoms::Object::sptr ambientV4 = atoms::Object::dynamicCast(matObjV4->getAttribute("ambient"));
         CPPUNIT_ASSERT(ambientV4);
-        ::fwAtoms::Sequence::sptr ambientSeqV4 = ::fwAtoms::Sequence::dynamicCast(ambientV4->getAttribute("rgba"));
+        atoms::Sequence::sptr ambientSeqV4 = atoms::Sequence::dynamicCast(ambientV4->getAttribute("rgba"));
         CPPUNIT_ASSERT(ambientSeqV4);
 
-        ::fwAtoms::Object::sptr diffuseV4 = ::fwAtoms::Object::dynamicCast(matObjV4->getAttribute("diffuse"));
+        atoms::Object::sptr diffuseV4 = atoms::Object::dynamicCast(matObjV4->getAttribute("diffuse"));
         CPPUNIT_ASSERT(diffuseV4);
-        ::fwAtoms::Sequence::sptr diffuseSeqV4 = ::fwAtoms::Sequence::dynamicCast(diffuseV4->getAttribute("rgba"));
+        atoms::Sequence::sptr diffuseSeqV4 = atoms::Sequence::dynamicCast(diffuseV4->getAttribute("rgba"));
         CPPUNIT_ASSERT(diffuseSeqV4);
 
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[0])->getValue<float>(),
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*diffuseSeqV4)[0])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[1])->getValue<float>(),
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*diffuseSeqV4)[1])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[2])->getValue<float>(),
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*diffuseSeqV4)[2])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeq)[3])->getValue<float>(),
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*diffuseSeqV4)[3])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[0])->getValue<float>(),
+                             std::dynamic_pointer_cast< atoms::Numeric >((*diffuseSeqV4)[0])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[1])->getValue<float>(),
+                             std::dynamic_pointer_cast< atoms::Numeric >((*diffuseSeqV4)[1])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[2])->getValue<float>(),
+                             std::dynamic_pointer_cast< atoms::Numeric >((*diffuseSeqV4)[2])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeq)[3])->getValue<float>(),
+                             std::dynamic_pointer_cast< atoms::Numeric >((*diffuseSeqV4)[3])->getValue<float>());
 
         CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeqV4)[0])->getValue<float>());
+                             std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeqV4)[0])->getValue<float>());
         CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeqV4)[1])->getValue<float>());
+                             std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeqV4)[1])->getValue<float>());
         CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeqV4)[2])->getValue<float>());
+                             std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeqV4)[2])->getValue<float>());
         CPPUNIT_ASSERT_EQUAL(1.f,
-                             std::dynamic_pointer_cast< ::fwAtoms::Numeric >((*ambientSeqV4)[3])->getValue<float>());
+                             std::dynamic_pointer_cast< atoms::Numeric >((*ambientSeqV4)[3])->getValue<float>());
     }
 
     // Check that if lighting is true, then shading_mode is not modifed
     {
-        helper.replaceAttribute("lighting", ::fwAtoms::Boolean::New(true));
+        helper.replaceAttribute("lighting", atoms::Boolean::New(true));
 
-        matObjV4 = ::fwAtoms::Object::dynamicCast(matObjV3->clone());
+        matObjV4 = atoms::Object::dynamicCast(matObjV3->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[matObjV3] = matObjV4;
@@ -162,7 +162,7 @@ void V3ToV4Test::applyPatchTest()
 
         CPPUNIT_ASSERT(matObjV4);
         CPPUNIT_ASSERT(!matObjV4->getAttribute("lighting"));
-        ::fwAtoms::String::sptr shading = ::fwAtoms::String::dynamicCast(matObjV4->getAttribute("shading_mode"));
+        atoms::String::sptr shading = atoms::String::dynamicCast(matObjV4->getAttribute("shading_mode"));
         CPPUNIT_ASSERT(shading->getValue() == "PHONG");
     }
 

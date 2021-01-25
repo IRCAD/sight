@@ -7,6 +7,6 @@ set( DEPENDENCIES
     utestData 
     arStructuralPatch
     fwAtomsPatch
-    fwAtoms
+    atoms
 )
 set( REQUIREMENTS  )

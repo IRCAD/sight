@@ -26,7 +26,7 @@
 #include "data/location/Folder.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::location::SingleFile );
+fwDataRegisterMacro( ::sight::data::location::SingleFile );
 
 namespace sight::data
 {

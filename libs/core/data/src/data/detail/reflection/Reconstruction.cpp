@@ -30,14 +30,14 @@ fwCampImplementDataMacro((sight)(data)(Reconstruction))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("is_visible", &sight::data::Reconstruction::m_bIsVisible)
-    .property("organ_name", &sight::data::Reconstruction::m_sOrganName)
-    .property("structure_type", &sight::data::Reconstruction::m_sStructureType)
-    .property("material", &sight::data::Reconstruction::m_material)
-    .property("image", &sight::data::Reconstruction::m_image)
-    .property("mesh", &sight::data::Reconstruction::m_mesh)
-    .property("volume", &sight::data::Reconstruction::m_computedMaskVolume)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("is_visible", &::sight::data::Reconstruction::m_bIsVisible)
+    .property("organ_name", &::sight::data::Reconstruction::m_sOrganName)
+    .property("structure_type", &::sight::data::Reconstruction::m_sStructureType)
+    .property("material", &::sight::data::Reconstruction::m_material)
+    .property("image", &::sight::data::Reconstruction::m_image)
+    .property("mesh", &::sight::data::Reconstruction::m_mesh)
+    .property("volume", &::sight::data::Reconstruction::m_computedMaskVolume)
     ;
 }

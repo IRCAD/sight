@@ -90,9 +90,9 @@ public:
      *
      * @see     getFullPath
      */
-    const std::filesystem::path getPath() const
+    const std::filesystem::path getName() const
     {
-        return m_implementor->getPath();
+        return m_implementor->getName();
     }
 
     /**

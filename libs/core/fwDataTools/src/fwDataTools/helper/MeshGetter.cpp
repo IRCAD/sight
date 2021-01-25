@@ -38,7 +38,7 @@ MeshGetter::MeshGetter( data::Mesh::csptr mesh ) :
     m_mesh(mesh)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::MeshGetter is no longer supported, the methods have been moved to "
-                      "data::Mesh", "22.0")
+                      "::sight::data::Mesh", "22.0")
 
     typedef ::fwDataTools::helper::ArrayGetter ArrayGetter;
     SLM_ASSERT("Mesh ptr is null.", mesh);

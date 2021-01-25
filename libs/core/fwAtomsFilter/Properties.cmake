@@ -5,9 +5,9 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwAtoms
+    atoms
     fwAtomsPatch
     fwActivities
 )
 set( REQUIREMENTS  )
-set( USE_PCH_FROM_TARGET fwAtomConversion )
+set( USE_PCH_FROM_TARGET )

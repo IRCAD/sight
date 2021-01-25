@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -36,6 +36,6 @@ namespace fwAtomsFilter
 /**
  * @brief Returns true if given atom matches a defined data::Series implementations.
  * */
-FWATOMSFILTER_API bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series);
+FWATOMSFILTER_API bool isSeriesKnown(const SPTR(atoms::Object)& series);
 
 } // namespace fwAtomsFilter

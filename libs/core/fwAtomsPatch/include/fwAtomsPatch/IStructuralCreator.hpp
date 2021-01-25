@@ -24,9 +24,9 @@
 
 #include "fwAtomsPatch/config.hpp"
 
-#include <core/base.hpp>
+#include <atoms/Object.hpp>
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
 #include <string>
 
@@ -54,7 +54,7 @@ public:
     FWATOMSPATCH_API virtual ~IStructuralCreator();
 
     /// Creates the specified object
-    FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr create() = 0;
+    FWATOMSPATCH_API virtual atoms::Object::sptr create() = 0;
 
     /// Returns the version of the object
     FWATOMSPATCH_API virtual const std::string& getObjectVersion() const;
@@ -65,7 +65,7 @@ public:
 protected:
 
     /// Create the object base : create meta infos : classname, version and id
-    FWATOMSPATCH_API ::fwAtoms::Object::sptr createObjBase() const;
+    FWATOMSPATCH_API atoms::Object::sptr createObjBase() const;
 
     /// Object classname
     std::string m_classname;

@@ -55,7 +55,7 @@ void IsTypeOfTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void IsTypeOfTest::methode1()
+void IsTypeOfTest::checkType()
 {
     data::Composite::sptr dataComposite               = data::Composite::New();
     data::Boolean::sptr dataBoolean                   = data::Boolean::New();
@@ -64,54 +64,54 @@ void IsTypeOfTest::methode1()
     data::Image::sptr dataImage                       = data::Image::New();
     data::TransferFunction::sptr dataTransferFunction = data::TransferFunction::New();
 
-    data::Composite::isTypeOf( "data::Object" );
-    data::Boolean::isTypeOf( "data::Object" );
-    data::Float::isTypeOf( "data::Object" );
-    data::Integer::isTypeOf( "data::Object" );
-    data::Image::isTypeOf( "data::Object" );
-    data::TransferFunction::isTypeOf( "data::Object" );
+    data::Composite::isTypeOf( "::sight::data::Object" );
+    data::Boolean::isTypeOf( "::sight::data::Object" );
+    data::Float::isTypeOf( "::sight::data::Object" );
+    data::Integer::isTypeOf( "::sight::data::Object" );
+    data::Image::isTypeOf( "::sight::data::Object" );
+    data::TransferFunction::isTypeOf( "::sight::data::Object" );
 
-    data::Composite::isTypeOf( "data::Composite"         );
-    data::Boolean::isTypeOf( "data::Boolean"           );
-    data::Float::isTypeOf( "data::Float"             );
-    data::Integer::isTypeOf( "data::Integer"           );
-    data::Image::isTypeOf( "data::Image"             );
-    data::TransferFunction::isTypeOf( "data::TransferFunction"  );
+    data::Composite::isTypeOf( "::sight::data::Composite"         );
+    data::Boolean::isTypeOf( "::sight::data::Boolean"           );
+    data::Float::isTypeOf( "::sight::data::Float"             );
+    data::Integer::isTypeOf( "::sight::data::Integer"           );
+    data::Image::isTypeOf( "::sight::data::Image"             );
+    data::TransferFunction::isTypeOf( "::sight::data::TransferFunction"  );
 
-    CPPUNIT_ASSERT( dataComposite->isA("data::Object") );
-    CPPUNIT_ASSERT( dataBoolean->isA("data::Object") );
-    CPPUNIT_ASSERT( dataFloat->isA("data::Object") );
-    CPPUNIT_ASSERT( dataInteger->isA("data::Object") );
-    CPPUNIT_ASSERT( dataImage->isA("data::Object") );
-    CPPUNIT_ASSERT( dataTransferFunction->isA("data::Object") );
+    CPPUNIT_ASSERT( dataComposite->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( dataBoolean->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( dataFloat->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( dataInteger->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( dataImage->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( dataTransferFunction->isA("::sight::data::Object") );
 
-    CPPUNIT_ASSERT( dataComposite->isA("data::Composite") );
-    CPPUNIT_ASSERT( dataBoolean->isA("data::Boolean") );
-    CPPUNIT_ASSERT( dataFloat->isA("data::Float") );
-    CPPUNIT_ASSERT( dataInteger->isA("data::Integer") );
-    CPPUNIT_ASSERT( dataImage->isA("data::Image") );
-    CPPUNIT_ASSERT( dataTransferFunction->isA("data::TransferFunction") );
+    CPPUNIT_ASSERT( dataComposite->isA("::sight::data::Composite") );
+    CPPUNIT_ASSERT( dataBoolean->isA("::sight::data::Boolean") );
+    CPPUNIT_ASSERT( dataFloat->isA("::sight::data::Float") );
+    CPPUNIT_ASSERT( dataInteger->isA("::sight::data::Integer") );
+    CPPUNIT_ASSERT( dataImage->isA("::sight::data::Image") );
+    CPPUNIT_ASSERT( dataTransferFunction->isA("::sight::data::TransferFunction") );
 
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataComposite)->isA("data::Object") );
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataBoolean)->isA("data::Object") );
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataFloat)->isA("data::Object") );
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataInteger)->isA("data::Object") );
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataImage)->isA("data::Object") );
-    CPPUNIT_ASSERT( data::Object::dynamicCast(dataTransferFunction)->isA("data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataComposite)->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataBoolean)->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataFloat)->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataInteger)->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataImage)->isA("::sight::data::Object") );
+    CPPUNIT_ASSERT( data::Object::dynamicCast(dataTransferFunction)->isA("::sight::data::Object") );
 
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataComposite         )->isA( "data::Composite"         ) );
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataBoolean           )->isA( "data::Boolean"           ) );
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataFloat             )->isA( "data::Float"             ) );
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataInteger           )->isA( "data::Integer"           ) );
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataImage             )->isA( "data::Image"             ) );
-    CPPUNIT_ASSERT( data::Object::dynamicCast( dataTransferFunction  )->isA( "data::TransferFunction"  ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataComposite         )->isA( "::sight::data::Composite"         ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataBoolean           )->isA( "::sight::data::Boolean"           ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataFloat             )->isA( "::sight::data::Float"             ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataInteger           )->isA( "::sight::data::Integer"           ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataImage             )->isA( "::sight::data::Image"             ) );
+    CPPUNIT_ASSERT( data::Object::dynamicCast( dataTransferFunction  )->isA( "::sight::data::TransferFunction"  ) );
 
-    CPPUNIT_ASSERT( !dataComposite->isA("data::Image") );
-    CPPUNIT_ASSERT( !dataBoolean->isA("data::Image") );
-    CPPUNIT_ASSERT( !dataFloat->isA("data::Image") );
-    CPPUNIT_ASSERT( !dataInteger->isA("data::Image") );
-    CPPUNIT_ASSERT( !dataImage->isA("data::Boolean") );
-    CPPUNIT_ASSERT( !dataTransferFunction->isA("data::Image") );
+    CPPUNIT_ASSERT( !dataComposite->isA("::sight::data::Image") );
+    CPPUNIT_ASSERT( !dataBoolean->isA("::sight::data::Image") );
+    CPPUNIT_ASSERT( !dataFloat->isA("::sight::data::Image") );
+    CPPUNIT_ASSERT( !dataInteger->isA("::sight::data::Image") );
+    CPPUNIT_ASSERT( !dataImage->isA("::sight::data::Boolean") );
+    CPPUNIT_ASSERT( !dataTransferFunction->isA("::sight::data::Image") );
 }
 
 } //namespace ut

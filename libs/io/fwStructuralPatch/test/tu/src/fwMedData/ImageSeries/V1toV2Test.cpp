@@ -24,10 +24,10 @@
 
 #include <fwStructuralPatch/data/ImageSeries/V1ToV2.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -64,29 +64,29 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr imgSeriesV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr imgSeriesV2;
+    atoms::Object::sptr imgSeriesV1 = atoms::Object::New();
+    atoms::Object::sptr imgSeriesV2;
 
-    ::fwAtomsPatch::helper::setClassname(imgSeriesV1, "data::ImageSeries");
+    ::fwAtomsPatch::helper::setClassname(imgSeriesV1, "::sight::data::ImageSeries");
     ::fwAtomsPatch::helper::setVersion(imgSeriesV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(imgSeriesV1);
 
-    helper.addAttribute("image", ::fwAtoms::Object::sptr());
+    helper.addAttribute("image", atoms::Object::sptr());
 
-    helper.addAttribute("patient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("study", ::fwAtoms::Object::sptr());
-    helper.addAttribute("equipment", ::fwAtoms::Object::sptr());
-    helper.addAttribute("instance_uid", ::fwAtoms::String::New("UID"));
-    helper.addAttribute("modality", ::fwAtoms::String::New("OT"));
-    helper.addAttribute("date", ::fwAtoms::String::New("0"));
-    helper.addAttribute("time", ::fwAtoms::String::New("0"));
-    helper.addAttribute("performing_physicians_name", ::fwAtoms::Sequence::New());
-    helper.addAttribute("description", ::fwAtoms::String::New("Description"));
+    helper.addAttribute("patient", atoms::Object::sptr());
+    helper.addAttribute("study", atoms::Object::sptr());
+    helper.addAttribute("equipment", atoms::Object::sptr());
+    helper.addAttribute("instance_uid", atoms::String::New("UID"));
+    helper.addAttribute("modality", atoms::String::New("OT"));
+    helper.addAttribute("date", atoms::String::New("0"));
+    helper.addAttribute("time", atoms::String::New("0"));
+    helper.addAttribute("performing_physicians_name", atoms::Sequence::New());
+    helper.addAttribute("description", atoms::String::New("Description"));
 
     // Check ImageSeries V2 has a new attribute "dicom_reference"
     {
-        imgSeriesV2 = ::fwAtoms::Object::dynamicCast(imgSeriesV1->clone());
+        imgSeriesV2 = atoms::Object::dynamicCast(imgSeriesV1->clone());
 
         ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
         newVersions[imgSeriesV1] = imgSeriesV2;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,8 @@
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 #include "fwAtomsPatch/VersionsManager.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
 
 namespace fwAtomsPatch
 {
@@ -57,10 +57,10 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr DefaultPatcher::transformObject(::fwAtoms::Object::sptr object,
-                                                        const std::string& context,
-                                                        const std::string& currentVersion,
-                                                        const std::string& targetVersion)
+atoms::Object::sptr DefaultPatcher::transformObject(atoms::Object::sptr object,
+                                                    const std::string& context,
+                                                    const std::string& currentVersion,
+                                                    const std::string& targetVersion)
 {
     m_object         = object;
     m_context        = context;
@@ -84,8 +84,8 @@ DefaultPatcher::~DefaultPatcher()
     // Contextual
     fwAtomsPatchInfoLogMacro("Begin contextual pass");
     m_cache.clear();
-    m_pass                      = Contextual;
-    ::fwAtoms::Object::sptr obj = this->processContextualObject(m_object);
+    m_pass = Contextual;
+    atoms::Object::sptr obj = this->processContextualObject(m_object);
     fwAtomsPatchInfoLogMacro("End contextual pass");
 
     return obj;
@@ -93,14 +93,14 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr DefaultPatcher::processStructuralObject(::fwAtoms::Object::sptr current)
+atoms::Object::sptr DefaultPatcher::processStructuralObject(atoms::Object::sptr current)
 {
     CacheType::const_iterator cIt = m_cache.find(current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID ));
 
     // If the object has not been processed yet.
     if(cIt == m_cache.end())
     {
-        ::fwAtoms::Object::sptr newAtomObject = ::fwAtoms::Object::New();
+        atoms::Object::sptr newAtomObject = atoms::Object::New();
 
         // Cache update
         m_cache[current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID )] = newAtomObject;
@@ -114,9 +114,9 @@ DefaultPatcher::~DefaultPatcher()
         newAtomObject->setMetaInfos(current->getMetaInfos());
 
         // Fetch all attributes and affect them in the new object.
-        for( ::fwAtoms::Object::AttributesType::value_type elem :  current->getAttributes() )
+        for( atoms::Object::AttributesType::value_type elem :  current->getAttributes() )
         {
-            ::fwAtoms::Base::sptr obj = this->processBase(elem.second);
+            atoms::Base::sptr obj = this->processBase(elem.second);
             if(this->isKnown(obj))
             {
                 newAtomObject->setAttribute(elem.first, obj);
@@ -134,7 +134,7 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr DefaultPatcher::processContextualObject(::fwAtoms::Object::sptr current)
+atoms::Object::sptr DefaultPatcher::processContextualObject(atoms::Object::sptr current)
 {
     CacheType::const_iterator cIt = m_cache.find(current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID ));
 
@@ -145,14 +145,14 @@ DefaultPatcher::~DefaultPatcher()
         m_cache[current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID )] = m_newVersions[current];
 
         // Fetch all attributes and affect them in the new object.
-        for( ::fwAtoms::Object::AttributesType::value_type elem :  current->getAttributes() )
+        for( atoms::Object::AttributesType::value_type elem :  current->getAttributes() )
         {
             if ( elem.second )
             {
                 if(elem.second->isObject())
                 {
-                    ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(elem.second);
-                    m_newVersions[obj]          = this->processContextualObject(obj);
+                    atoms::Object::sptr obj = atoms::Object::dynamicCast(elem.second);
+                    m_newVersions[obj] = this->processContextualObject(obj);
                 }
                 else
                 {
@@ -172,9 +172,9 @@ DefaultPatcher::~DefaultPatcher()
 
 //  ----------------------------------------------------------------------------
 
-::fwAtoms::Base::sptr DefaultPatcher::processBase(::fwAtoms::Base::sptr base)
+atoms::Base::sptr DefaultPatcher::processBase(atoms::Base::sptr base)
 {
-    ::fwAtoms::Base::sptr newBase;
+    atoms::Base::sptr newBase;
 
     if ( !base )
     {
@@ -183,7 +183,7 @@ DefaultPatcher::~DefaultPatcher()
 
     if(base->isObject())
     {
-        ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(base);
+        atoms::Object::sptr obj = atoms::Object::dynamicCast(base);
         if(m_pass == Structural)
         {
             newBase = this->processStructuralObject(obj);
@@ -195,30 +195,30 @@ DefaultPatcher::~DefaultPatcher()
     }
     else if(base->isSequence())
     {
-        ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::dynamicCast(base);
-        newBase                       = this->processSequence(seq);
+        atoms::Sequence::sptr seq = atoms::Sequence::dynamicCast(base);
+        newBase = this->processSequence(seq);
     }
     else if(base->isMapping())
     {
-        ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast(base);
-        newBase                  = this->processMapping(map);
+        atoms::Map::sptr map = atoms::Map::dynamicCast(base);
+        newBase = this->processMapping(map);
     }
     else if(base->isString())
     {
-        newBase = ::fwAtoms::String::New(base->getString());
+        newBase = atoms::String::New(base->getString());
     }
     else if(base->isNumeric())
     {
-        newBase = ::fwAtoms::Numeric::New(base->getString());
+        newBase = atoms::Numeric::New(base->getString());
     }
     else if(base->isBoolean())
     {
-        newBase = ::fwAtoms::Boolean::New(base->getString());
+        newBase = atoms::Boolean::New(base->getString());
     }
     else if(base->isBlob())
     {
-        ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::dynamicCast(base);
-        newBase                    = ::fwAtoms::Blob::New(blob->getBufferObject());
+        atoms::Blob::sptr blob = atoms::Blob::dynamicCast(base);
+        newBase = atoms::Blob::New(blob->getBufferObject());
     }
 
     return newBase;
@@ -226,20 +226,20 @@ DefaultPatcher::~DefaultPatcher()
 
 //  ----------------------------------------------------------------------------
 
-::fwAtoms::Map::sptr DefaultPatcher::processMapping(::fwAtoms::Map::sptr map)
+atoms::Map::sptr DefaultPatcher::processMapping(atoms::Map::sptr map)
 {
-    ::fwAtoms::Map::sptr newMap = ::fwAtoms::Map::New();
+    atoms::Map::sptr newMap = atoms::Map::New();
 
     // Fetch all attributes and affect them in the new object
     std::string key;
-    ::fwAtoms::Base::sptr value;
+    atoms::Base::sptr value;
 
-    for( ::fwAtoms::Map::MapType::value_type elem :  map->getValue() )
+    for( atoms::Map::MapType::value_type elem :  map->getValue() )
     {
         key   = elem.first;
         value = elem.second;
 
-        ::fwAtoms::Base::sptr obj = this->processBase(value);
+        atoms::Base::sptr obj = this->processBase(value);
         if (this->isKnown(obj))
         {
             newMap->insert( key,  obj);
@@ -251,14 +251,14 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Sequence::sptr DefaultPatcher::processSequence(::fwAtoms::Sequence::sptr seq)
+atoms::Sequence::sptr DefaultPatcher::processSequence(atoms::Sequence::sptr seq)
 {
-    ::fwAtoms::Sequence::sptr newSeq = ::fwAtoms::Sequence::New();
+    atoms::Sequence::sptr newSeq = atoms::Sequence::New();
 
     // Fetch all attributes and affect them in the new object
-    for( ::fwAtoms::Base::sptr elem :  seq->getValue() )
+    for( atoms::Base::sptr elem :  seq->getValue() )
     {
-        ::fwAtoms::Base::sptr obj = this->processBase(elem);
+        atoms::Base::sptr obj = this->processBase(elem);
         if (this->isKnown(obj))
         {
             newSeq->push_back(obj);
@@ -270,8 +270,8 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr DefaultPatcher::applyStructuralPatch(
-    ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
+atoms::Object::sptr DefaultPatcher::applyStructuralPatch(
+    atoms::Object::sptr previous, atoms::Object::sptr current)
 {
     if(previous)
     {
@@ -318,8 +318,8 @@ DefaultPatcher::~DefaultPatcher()
 
 //----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr DefaultPatcher::applyContextualPatch(
-    ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
+atoms::Object::sptr DefaultPatcher::applyContextualPatch(
+    atoms::Object::sptr previous, atoms::Object::sptr current)
 {
     if(previous)
     {
@@ -352,12 +352,12 @@ DefaultPatcher::~DefaultPatcher()
 
 //  ----------------------------------------------------------------------------
 
-bool DefaultPatcher::isKnown(const ::fwAtoms::Base::sptr& base)
+bool DefaultPatcher::isKnown(const atoms::Base::sptr& base)
 {
     bool isKnown                             = false;
     VersionsGraph::NodeType target           = m_versionsGraph->getNode(m_targetVersion);
     VersionDescriptor::VersionsType versions = target.getVersions();
-    ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(base);
+    atoms::Object::sptr obj                  = atoms::Object::dynamicCast(base);
 
     if (!obj)
     {

@@ -22,7 +22,7 @@
 
 #include "creator/data/ImageSeries1Test.hpp"
 
-#include "fwAtoms/String.hpp"
+#include "atoms/String.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
@@ -64,14 +64,15 @@ void ImageSeries1Test::createTest()
 
     CPPUNIT_ASSERT(imageSeriesCreator);
     const std::string& classname = imageSeriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::ImageSeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ImageSeries") == classname );
     const std::string& objectVersion = imageSeriesCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
-    ::fwAtoms::Object::sptr imageSeries = imageSeriesCreator->create();
+    atoms::Object::sptr imageSeries = imageSeriesCreator->create();
 
     const std::string& imageSeriesClassname = ::fwAtomsPatch::helper::getClassname(imageSeries);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::ImageSeries") == imageSeriesClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal",
+                           std::string("::sight::data::ImageSeries") == imageSeriesClassname );
     const std::string& imageSeriesObjectVersion = ::fwAtomsPatch::helper::getVersion(imageSeries);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == imageSeriesObjectVersion );
 
@@ -86,7 +87,7 @@ void ImageSeries1Test::copyTest()
     ImageSeries1 imageSeriesCreator;
 
     const std::string& classname = imageSeriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::ImageSeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ImageSeries") == classname );
     const std::string& objectVersion = imageSeriesCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -95,7 +96,7 @@ void ImageSeries1Test::copyTest()
     CPPUNIT_ASSERT(imageSeriesCreator2);
     const std::string& classnameImageSeriesCreator2 = imageSeriesCreator2->getObjectClassname();
     CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string(
-                               "data::ImageSeries") == classnameImageSeriesCreator2 );
+                               "::sight::data::ImageSeries") == classnameImageSeriesCreator2 );
 
     const std::string& objectVersionImageSeriesCreator2 = imageSeriesCreator2->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionImageSeriesCreator2 );

@@ -32,7 +32,7 @@ Array::Array(const data::Array::sptr& array ) :
     m_array(array)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
-                      "data::Array", "22.0");
+                      "::sight::data::Array", "22.0");
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }

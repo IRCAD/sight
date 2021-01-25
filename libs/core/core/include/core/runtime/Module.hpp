@@ -59,6 +59,13 @@ public:
     CORE_API virtual const std::string& getIdentifier() const = 0;
 
     /**
+     * @brief   Retrieves the library name if it exists.
+     *
+     * @return  a path representing the module location, can be empty if no library is set
+     */
+    CORE_API virtual const std::string getLibraryName() const = 0;
+
+    /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location

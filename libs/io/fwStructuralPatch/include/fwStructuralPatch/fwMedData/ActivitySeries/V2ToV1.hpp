@@ -62,8 +62,8 @@ public:
      * performed_procedure_step_description, performed_procedure_comments.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
-        const ::fwAtoms::Object::sptr& _previous,
-        const ::fwAtoms::Object::sptr& _current,
+        const atoms::Object::sptr& _previous,
+        const atoms::Object::sptr& _current,
         ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions) override;
 
 };

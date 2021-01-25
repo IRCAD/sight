@@ -180,10 +180,8 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     SLM_ASSERT("Path should be relative", path.is_relative());
     const std::string moduleIdentifierAndVersion = path.begin()->string();
 
-    // TEMP_FB: Change _ into - when version refactor is made
     auto itVersionDelimiter = moduleIdentifierAndVersion.find(detail::Module::s_VERSION_DELIMITER);
-    auto moduleIdentifier   = moduleIdentifierAndVersion.substr(0, itVersionDelimiter);
-    auto moduleVersion      = moduleIdentifierAndVersion.substr(itVersionDelimiter + 1);
+    auto moduleFolder       = moduleIdentifierAndVersion.substr(0, itVersionDelimiter);
 
     // Strip the module name
     std::filesystem::path pathWithoutModule;
@@ -194,20 +192,19 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
     try
     {
-        Runtime* rntm = Runtime::getDefault();
-        Version version(moduleVersion);
-        std::shared_ptr<Module> module = rntm->findModule( moduleIdentifier, version );
+        Runtime* rntm                  = Runtime::getDefault();
+        std::shared_ptr<Module> module = rntm->findModuleByPath( moduleFolder );
 
         if(module == nullptr)
         {
-            SLM_ERROR("Could not find module '" + moduleIdentifier + "' with version '" + version.string() + "'");
+            SLM_ERROR("Could not find module '" + moduleFolder);
             return std::filesystem::path();
         }
         return getModuleResourcePath(module, pathWithoutModule );
     }
     catch(...)
     {
-        SLM_ERROR("Error looking for module '" + moduleIdentifier + "' with version '" + moduleVersion + "'");
+        SLM_ERROR("Error looking for module '" + moduleFolder);
         return std::filesystem::path();
     }
 }
@@ -328,7 +325,7 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
 
 //------------------------------------------------------------------------------
 
-bool loadLibrary(const std::string& identifier)
+bool loadLibrary(const std::string& identifier, const std::string& dirName)
 {
     static std::map<std::string, std::shared_ptr<detail::dl::Library> > s_LIBRARIES;
 
@@ -340,7 +337,13 @@ bool loadLibrary(const std::string& identifier)
 
     auto library                       = std::make_shared<detail::dl::Library>(identifier);
     const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
-    library->setSearchPath(rntm.getWorkingPath() / MODULE_LIB_PREFIX);
+
+    auto searchPath = rntm.getWorkingPath() / MODULE_LIB_PREFIX;
+    if(dirName.empty())
+    {
+        searchPath = searchPath.parent_path() / dirName;
+    }
+    library->setSearchPath(searchPath);
 
     try
     {

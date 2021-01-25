@@ -31,17 +31,17 @@ fwCampImplementDataMacro((sight)(data)(Image))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("size", &sight::data::Image::m_size)
-    .property("type", &sight::data::Image::m_type)
-    .property("spacing", &sight::data::Image::m_spacing)
-    .property("origin", &sight::data::Image::m_origin)
-    .property("array", &sight::data::Image::m_dataArray)
-    .property("nb_components", &sight::data::Image::m_numberOfComponents)
-    .property("window_center", &sight::data::Image::m_windowCenter)
-    .property("window_width", &sight::data::Image::m_windowWidth)
-    .property("pixel_format", &sight::data::Image::m_pixelFormat)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("size", &::sight::data::Image::m_size)
+    .property("type", &::sight::data::Image::m_type)
+    .property("spacing", &::sight::data::Image::m_spacing)
+    .property("origin", &::sight::data::Image::m_origin)
+    .property("array", &::sight::data::Image::m_dataArray)
+    .property("nb_components", &::sight::data::Image::m_numberOfComponents)
+    .property("window_center", &::sight::data::Image::m_windowCenter)
+    .property("window_width", &::sight::data::Image::m_windowWidth)
+    .property("pixel_format", &::sight::data::Image::m_pixelFormat)
     ;
 }
 

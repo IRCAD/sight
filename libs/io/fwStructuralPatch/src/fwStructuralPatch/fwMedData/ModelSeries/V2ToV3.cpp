@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/data/ModelSeries/V2ToV3.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -34,8 +34,8 @@ namespace ModelSeries
 V2ToV3::V2ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::ModelSeries";
-    m_targetClassname = "data::ModelSeries";
+    m_originClassname = "::sight::data::ModelSeries";
+    m_targetClassname = "::sight::data::ModelSeries";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 }
@@ -55,8 +55,8 @@ V2ToV3::V2ToV3(const V2ToV3& _cpy) :
 
 // ----------------------------------------------------------------------------
 
-void V2ToV3::apply( const ::fwAtoms::Object::sptr& _previous,
-                    const ::fwAtoms::Object::sptr& _current,
+void V2ToV3::apply( const atoms::Object::sptr& _previous,
+                    const atoms::Object::sptr& _current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions)
 {
     IStructuralPatch::apply(_previous, _current, _newVersions);
@@ -67,19 +67,19 @@ void V2ToV3::apply( const ::fwAtoms::Object::sptr& _previous,
     ::fwAtomsPatch::helper::Object helper(_current);
     // We add Series attributes since the patcher can't retrieve the mother class of ModelSeries.
     // The patcher can't call mother class patch.
-    helper.addAttribute("number", ::fwAtoms::String::New(""));
-    helper.addAttribute("laterality", ::fwAtoms::String::New(""));
-    helper.addAttribute("protocolName", ::fwAtoms::String::New(""));
-    helper.addAttribute("body_part_examined", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_position", ::fwAtoms::String::New(""));
-    helper.addAttribute("anatomical_orientation_type", ::fwAtoms::String::New(""));
-    helper.addAttribute("performded_procedure_step_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_start_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_date", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_end_time", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_step_description", ::fwAtoms::String::New(""));
-    helper.addAttribute("performed_procedure_comments", ::fwAtoms::String::New(""));
+    helper.addAttribute("number", atoms::String::New(""));
+    helper.addAttribute("laterality", atoms::String::New(""));
+    helper.addAttribute("protocolName", atoms::String::New(""));
+    helper.addAttribute("body_part_examined", atoms::String::New(""));
+    helper.addAttribute("patient_position", atoms::String::New(""));
+    helper.addAttribute("anatomical_orientation_type", atoms::String::New(""));
+    helper.addAttribute("performded_procedure_step_id", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_start_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_date", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_end_time", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_step_description", atoms::String::New(""));
+    helper.addAttribute("performed_procedure_comments", atoms::String::New(""));
 }
 
 } // namespace ModelSeries

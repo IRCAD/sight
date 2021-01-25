@@ -113,7 +113,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Configuration on core::tools::Object which uid is objectUUID
     ::fwServices::IService::ConfigType objCfg;
     objCfg.add("<xmlattr>.uid", "objectUUID");
-    objCfg.add("<xmlattr>.type", "data::Image");
+    objCfg.add("<xmlattr>.type", "::sight::data::Image");
     config.add_child("object", objCfg);
 
     // Object's service A

@@ -74,17 +74,17 @@ public:
 
     virtual std::string apply(data::Object::sptr _obj)
     {
-        if(_obj->isA("data::String"))
+        if(_obj->isA("::sight::data::String"))
         {
             data::String::sptr fwValue = data::String::dynamicCast(_obj);
             return fwValue->getValue();
         }
-        else if(_obj->isA("data::Integer"))
+        else if(_obj->isA("::sight::data::Integer"))
         {
             data::Integer::sptr fwValue = data::Integer::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
         }
-        else if(_obj->isA("data::Float"))
+        else if(_obj->isA("::sight::data::Float"))
         {
             data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
@@ -108,7 +108,7 @@ public:
 
     virtual std::string apply(data::Object::sptr _obj)
     {
-        if(_obj->isA("data::Integer"))
+        if(_obj->isA("::sight::data::Integer"))
         {
             data::Integer::sptr fwIntValue = data::Integer::dynamicCast(_obj);
 
@@ -121,7 +121,7 @@ public:
             }
             return "Unknown";
         }
-        else if(_obj->isA("data::Float"))
+        else if(_obj->isA("::sight::data::Float"))
         {
             data::Float::sptr fwValue = data::Float::dynamicCast(_obj);
             if(fwValue->getValue() > 0)

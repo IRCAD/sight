@@ -24,10 +24,10 @@
 
 #include <fwStructuralPatch/data/Material/V1ToV2.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -66,21 +66,21 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr matObjV1 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr matObjV2;
+    atoms::Object::sptr matObjV1 = atoms::Object::New();
+    atoms::Object::sptr matObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(matObjV1, "data::Material");
+    ::fwAtomsPatch::helper::setClassname(matObjV1, "::sight::data::Material");
     ::fwAtomsPatch::helper::setVersion(matObjV1, "1");
 
     ::fwAtomsPatch::helper::Object helper(matObjV1);
 
-    helper.addAttribute("shading_mode", ::fwAtoms::String::New("PHONG"));
-    helper.addAttribute("representation_mode", ::fwAtoms::String::New("SURFACE"));
-    helper.addAttribute("options_mode", ::fwAtoms::String::New("STANDARD"));
-    helper.addAttribute("ambient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("diffuse", ::fwAtoms::Object::sptr());
+    helper.addAttribute("shading_mode", atoms::String::New("PHONG"));
+    helper.addAttribute("representation_mode", atoms::String::New("SURFACE"));
+    helper.addAttribute("options_mode", atoms::String::New("STANDARD"));
+    helper.addAttribute("ambient", atoms::Object::sptr());
+    helper.addAttribute("diffuse", atoms::Object::sptr());
 
-    matObjV2 = ::fwAtoms::Object::dynamicCast(matObjV1->clone());
+    matObjV2 = atoms::Object::dynamicCast(matObjV1->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[matObjV1] = matObjV2;
@@ -90,7 +90,7 @@ void V1ToV2Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(mat1ToMat2Patch->apply(matObjV1, matObjV2, newVersions));
 
     CPPUNIT_ASSERT(matObjV2);
-    CPPUNIT_ASSERT(matObjV2->getAttribute("diffuse_texture") == ::fwAtoms::Object::sptr());
+    CPPUNIT_ASSERT(matObjV2->getAttribute("diffuse_texture") == atoms::Object::sptr());
     CPPUNIT_ASSERT(matObjV2->getAttribute("diffuse_texture_filtering"));
     CPPUNIT_ASSERT(matObjV2->getAttribute("diffuse_texture_wrapping"));
 }

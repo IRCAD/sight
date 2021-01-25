@@ -33,7 +33,7 @@
 namespace sight::data
 {
 
-fwDataRegisterMacro( sight::data::Array );
+fwDataRegisterMacro( ::sight::data::Array );
 
 //------------------------------------------------------------------------------
 

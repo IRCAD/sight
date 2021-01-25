@@ -187,6 +187,7 @@ data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepC
         if (cacheItem == cache.end())
         {
             obj = data::factory::New(source->getClassname());
+            SLM_ASSERT("Could not create object of type : " + source->getClassname(), obj);
             cache.insert( DeepCopyCacheType::value_type(source, obj) );
             obj->cachedDeepCopy(source, cache);
         }

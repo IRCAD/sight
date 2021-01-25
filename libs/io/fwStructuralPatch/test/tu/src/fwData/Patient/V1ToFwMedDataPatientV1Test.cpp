@@ -24,11 +24,11 @@
 
 #include <fwStructuralPatch/data/Patient/V1ToFwMedDataPatientV1.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -65,23 +65,23 @@ void V1ToFwMedDataPatientV1Test::tearDown()
 
 void V1ToFwMedDataPatientV1Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr originObj = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr targetObj;
+    atoms::Object::sptr originObj = atoms::Object::New();
+    atoms::Object::sptr targetObj;
 
-    ::fwAtomsPatch::helper::setClassname(originObj, "data::Patient");
+    ::fwAtomsPatch::helper::setClassname(originObj, "::sight::data::Patient");
     ::fwAtomsPatch::helper::setVersion(originObj, "1");
 
     ::fwAtomsPatch::helper::Object helper(originObj);
 
-    helper.addAttribute("name", ::fwAtoms::String::New("name"));
-    helper.addAttribute("firstname", ::fwAtoms::String::New("firstname"));
-    helper.addAttribute("id_dicom", ::fwAtoms::String::New("46539"));
-    helper.addAttribute("birthdate", ::fwAtoms::String::New("2013-Jun-13 10:10:10"));
-    helper.addAttribute("is_male", ::fwAtoms::Boolean::New(false));
-    helper.addAttribute("db_id", ::fwAtoms::String::New("4529"));
-    helper.addAttribute("studies", ::fwAtoms::Sequence::New());
+    helper.addAttribute("name", atoms::String::New("name"));
+    helper.addAttribute("firstname", atoms::String::New("firstname"));
+    helper.addAttribute("id_dicom", atoms::String::New("46539"));
+    helper.addAttribute("birthdate", atoms::String::New("2013-Jun-13 10:10:10"));
+    helper.addAttribute("is_male", atoms::Boolean::New(false));
+    helper.addAttribute("db_id", atoms::String::New("4529"));
+    helper.addAttribute("studies", atoms::Sequence::New());
 
-    targetObj = ::fwAtoms::Object::dynamicCast(originObj->clone());
+    targetObj = atoms::Object::dynamicCast(originObj->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[originObj] = targetObj;
@@ -91,7 +91,7 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(originObj, targetObj, newVersions));
 
     CPPUNIT_ASSERT(targetObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("data::Patient"), ::fwAtomsPatch::helper::getClassname(targetObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Patient"), ::fwAtomsPatch::helper::getClassname(targetObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), ::fwAtomsPatch::helper::getVersion(targetObj));
 
     CPPUNIT_ASSERT(!targetObj->getAttribute("firstname"));
@@ -106,16 +106,16 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     CPPUNIT_ASSERT(targetObj->getAttribute("birth_date"));
     CPPUNIT_ASSERT(targetObj->getAttribute("sex"));
 
-    ::fwAtoms::String::sptr name = targetObj->getAttribute< ::fwAtoms::String >("name");
+    atoms::String::sptr name = targetObj->getAttribute< atoms::String >("name");
     CPPUNIT_ASSERT_EQUAL(std::string("name^firstname"), name->getString());
 
-    ::fwAtoms::String::sptr patientId = targetObj->getAttribute< ::fwAtoms::String >("patient_id");
+    atoms::String::sptr patientId = targetObj->getAttribute< atoms::String >("patient_id");
     CPPUNIT_ASSERT_EQUAL(std::string("46539"), patientId->getString());
 
-    ::fwAtoms::String::sptr birthdate = targetObj->getAttribute< ::fwAtoms::String >("birth_date");
+    atoms::String::sptr birthdate = targetObj->getAttribute< atoms::String >("birth_date");
     CPPUNIT_ASSERT_EQUAL(std::string("20130613"), birthdate->getString());
 
-    ::fwAtoms::String::sptr sex = targetObj->getAttribute< ::fwAtoms::String >("sex");
+    atoms::String::sptr sex = targetObj->getAttribute< atoms::String >("sex");
     CPPUNIT_ASSERT_EQUAL(std::string("F"), sex->getString());
 }
 

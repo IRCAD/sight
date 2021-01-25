@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,11 @@ typedef std::vector<std::string> PropertiesNameType;
 
 void visitProperties(const std::string& className, const PropertiesNameType& vecProp);
 
-void compareSimplePropertyValue(data::Object::sptr obj,
+void compareSimplePropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
                                 const std::string& value);
 
-void compareObjectPropertyValue(data::Object::sptr obj,
+void compareObjectPropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
-                                data::Object::sptr value);
-}
+                                sight::data::Object::sptr value);
+} // namespace DataCampHelper

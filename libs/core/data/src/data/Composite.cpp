@@ -30,7 +30,7 @@
 
 #include <algorithm>
 
-fwDataRegisterMacro( sight::data::Composite );
+fwDataRegisterMacro( ::sight::data::Composite );
 
 namespace sight::data
 {

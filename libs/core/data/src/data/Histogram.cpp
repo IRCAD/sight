@@ -26,7 +26,7 @@
 #include "data/Image.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( sight::data::Histogram );
+fwDataRegisterMacro( ::sight::data::Histogram );
 
 namespace sight::data
 {

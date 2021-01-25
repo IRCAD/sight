@@ -252,6 +252,23 @@ Runtime::findModule( const std::string& identifier, const Version& version ) con
 
 //------------------------------------------------------------------------------
 
+std::shared_ptr< core::runtime::Module >
+Runtime::findModuleByPath( const std::string& path ) const
+{
+    std::shared_ptr<Module> resModule;
+    for(const std::shared_ptr<Module>& module : m_modules)
+    {
+        if(module->getLibraryName() == path )
+        {
+            resModule = module;
+            break;
+        }
+    }
+    return resModule;
+}
+
+//------------------------------------------------------------------------------
+
 std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identifier, const Version& version ) const
 {
     std::shared_ptr<Module> resModule;

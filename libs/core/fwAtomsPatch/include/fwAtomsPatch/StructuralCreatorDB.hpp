@@ -31,7 +31,7 @@
 #include <string>
 #include <utility>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -77,7 +77,7 @@ public:
      * @note This method is thread safe.
      */
 
-    FWATOMSPATCH_API SPTR(::fwAtoms::Object) create(const std::string& classname, const std::string& version);
+    FWATOMSPATCH_API SPTR(atoms::Object) create(const std::string& classname, const std::string& version);
 
     /// Returns the number of creators.
     FWATOMSPATCH_API size_t size() const;

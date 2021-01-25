@@ -22,12 +22,12 @@
 
 #include "fwMDSemanticPatch/V2/V03AGO/data/Image.hpp"
 
-#include <core/tools/UUID.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
+#include <core/tools/UUID.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::data
 Image::Image() :
     ::fwAtomsPatch::ISemanticPatch()
 {
-    m_originClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V2", "V03AGO");
 }
@@ -64,16 +64,16 @@ Image::Image( const Image& cpy ) :
 // ----------------------------------------------------------------------------
 
 void Image::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
     ::fwAtomsPatch::helper::Object helper( current );
 
-    ::fwAtoms::Object::sptr array        = ::fwAtoms::Object::dynamicCast(previous->getAttribute("array"));
-    ::fwAtoms::Numeric::sptr nbComponent = ::fwAtoms::Numeric::dynamicCast(array->getAttribute("nb_of_components"));
+    atoms::Object::sptr array        = atoms::Object::dynamicCast(previous->getAttribute("array"));
+    atoms::Numeric::sptr nbComponent = atoms::Numeric::dynamicCast(array->getAttribute("nb_of_components"));
 
     helper.replaceAttribute("nb_components", nbComponent->clone());
 }

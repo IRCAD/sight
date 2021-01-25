@@ -144,7 +144,7 @@ void ImageReader::read()
 
     core::tools::Dispatcher< core::tools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
-    SLM_ASSERT("data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
+    SLM_ASSERT("::sight::data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
     SLM_ASSERT("Image has an unspecified type",

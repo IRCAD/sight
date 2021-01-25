@@ -25,9 +25,9 @@
 #include "fwAtomsPatch/config.hpp"
 #include <fwAtomsPatch/helper/Object.hpp>
 
-#include <core/base.hpp>
+#include <atoms/Object.hpp>
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
 #include <map>
 #include <string>
@@ -48,7 +48,7 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > NewVersionsType;
+    typedef std::map< atoms::Object::sptr, atoms::Object::sptr > NewVersionsType;
     /**  @} */
 
     /// Constructor. Does nothing.
@@ -61,8 +61,8 @@ public:
     FWATOMSPATCH_API virtual ~IPatch();
 
     /// Applies the patch to the specified object
-    FWATOMSPATCH_API virtual void apply(const ::fwAtoms::Object::sptr& previous,
-                                        const ::fwAtoms::Object::sptr& current,
+    FWATOMSPATCH_API virtual void apply(const atoms::Object::sptr& previous,
+                                        const atoms::Object::sptr& current,
                                         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) = 0;
 
     /// Returns the origin classname of the object

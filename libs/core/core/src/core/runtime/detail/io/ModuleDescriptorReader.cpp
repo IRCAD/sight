@@ -440,7 +440,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
         if(xmlStrcmp(curChild->name, (const xmlChar*) LIBRARY.c_str()) == 0)
         {
             std::shared_ptr<dl::Library> library(processLibrary(curChild));
-            module->addLibrary(library);
+            module->setLibrary(library);
             continue;
         }
 

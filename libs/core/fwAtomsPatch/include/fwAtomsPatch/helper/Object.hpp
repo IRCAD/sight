@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_HELPER_OBJECT_HPP__
-#define __FWATOMSPATCH_HELPER_OBJECT_HPP__
-
-#include <fwAtoms/Object.hpp>
+#pragma once
 
 #include "fwAtomsPatch/conditions/Abstract.hpp"
 #include "fwAtomsPatch/config.hpp"
+
+#include <atoms/Object.hpp>
 
 namespace fwAtomsPatch
 {
@@ -36,7 +35,6 @@ namespace helper
 namespace conditions = ::fwAtomsPatch::conditions;
 
 /**
- * @class Object
  * @brief Object helper
  */
 class FWATOMSPATCH_CLASS_API Object
@@ -44,19 +42,19 @@ class FWATOMSPATCH_CLASS_API Object
 public:
 
     /// Constructor
-    FWATOMSPATCH_API Object(::fwAtoms::Object::sptr metaObject );
+    FWATOMSPATCH_API Object(atoms::Object::sptr metaObject );
 
     /// Destructor
     FWATOMSPATCH_API ~Object();
 
     /// Adds a new attribute in the current object
     FWATOMSPATCH_API void addAttribute(const std::string& name,
-                                       ::fwAtoms::Base::sptr value,
+                                       atoms::Base::sptr value,
                                        conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Adds or replaces an attribute in the current object
     FWATOMSPATCH_API void addOrReplaceAttribute(const std::string& name,
-                                                ::fwAtoms::Base::sptr value,
+                                                atoms::Base::sptr value,
                                                 conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Removes an attribute
@@ -65,7 +63,7 @@ public:
 
     /// Replaces an attribute
     FWATOMSPATCH_API void replaceAttribute(const std::string& name,
-                                           ::fwAtoms::Base::sptr newValue,
+                                           atoms::Base::sptr newValue,
                                            conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Renames an attribute.
@@ -74,15 +72,13 @@ public:
                                           );
 
     /// Atom::Object getter
-    FWATOMSPATCH_API ::fwAtoms::Object::sptr getObject() const;
+    FWATOMSPATCH_API atoms::Object::sptr getObject() const;
 
 private:
 
     /// Object
-    ::fwAtoms::Object::sptr m_object;
+    atoms::Object::sptr m_object;
 };
 
 } //helper
 } //fwAtomHelper
-
-#endif /* __FWATOMSPATCH_HELPER_OBJECT_HPP__ */

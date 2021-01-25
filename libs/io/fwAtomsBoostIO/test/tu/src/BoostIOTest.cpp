@@ -137,7 +137,7 @@ void BoostIOTest::writeProcess(SequenceGenerator& gen,
                                const std::filesystem::path& rootFilename,
                                ::fwAtomsBoostIO::FormatType format )
 {
-    ::fwAtoms::Sequence::sptr seq = gen.getSequence();
+    atoms::Sequence::sptr seq = gen.getSequence();
     ::fwAtomsBoostIO::Writer(seq).write(writeArchive, rootFilename, format);
 }
 
@@ -148,10 +148,10 @@ void BoostIOTest::readProcess(SequenceGenerator& gen,
                               const std::filesystem::path& rootFilename,
                               const ::fwAtomsBoostIO::FormatType& formatType)
 {
-    ::fwAtoms::Sequence::sptr readSeq;
+    atoms::Sequence::sptr readSeq;
     {
-        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename,
-                                                                                   formatType));
+        readSeq = atoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename,
+                                                                               formatType));
     }
     gen.compare(readSeq);
     this->cleanSequence(*readSeq);
@@ -159,10 +159,10 @@ void BoostIOTest::readProcess(SequenceGenerator& gen,
 
 //------------------------------------------------------------------------------
 
-void BoostIOTest::cleanSequence(::fwAtoms::Sequence& seq)
+void BoostIOTest::cleanSequence(atoms::Sequence& seq)
 {
     // Break the reference cycles in the atom sequence
-    auto blob = std::dynamic_pointer_cast< ::fwAtoms::Blob>(seq[2]);
+    auto blob = std::dynamic_pointer_cast< atoms::Blob>(seq[2]);
     FW_RAISE_IF("That's not a blob!", !blob);
     auto bo = blob->getBufferObject();
     if(bo)
@@ -170,7 +170,7 @@ void BoostIOTest::cleanSequence(::fwAtoms::Sequence& seq)
         bo->destroy();
     }
     blob->setBufferObject(nullptr);
-    auto map = std::dynamic_pointer_cast< ::fwAtoms::Map>(seq[3]);
+    auto map = std::dynamic_pointer_cast< atoms::Map>(seq[3]);
     FW_RAISE_IF("That's not a map!", !map);
     map->clear();
     seq.clear();

@@ -53,7 +53,7 @@ void visitProperties(const std::string& className, const PropertiesNameType& vec
 
 //------------------------------------------------------------------------------
 
-void compareSimplePropertyValue(data::Object::sptr obj,
+void compareSimplePropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
                                 const std::string& value)
 {
@@ -65,9 +65,9 @@ void compareSimplePropertyValue(data::Object::sptr obj,
 
 //------------------------------------------------------------------------------
 
-void compareObjectPropertyValue(data::Object::sptr obj,
+void compareObjectPropertyValue(sight::data::Object::sptr obj,
                                 const std::string& propertyPath,
-                                data::Object::sptr value)
+                                sight::data::Object::sptr value)
 {
     data::Object::sptr subObj;
     subObj = data::reflection::getObject(obj, propertyPath);

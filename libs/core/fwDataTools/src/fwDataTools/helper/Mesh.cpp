@@ -38,7 +38,7 @@ Mesh::Mesh( data::Mesh::sptr mesh ) :
     m_mesh(mesh)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::Mesh is no longer supported, the methods have been moved to "
-                      "data::Mesh", "22.0")
+                      "::sight::data::Mesh", "22.0")
     SLM_ASSERT("Mesh ptr is null.", mesh);
     this->updateLock();
 }

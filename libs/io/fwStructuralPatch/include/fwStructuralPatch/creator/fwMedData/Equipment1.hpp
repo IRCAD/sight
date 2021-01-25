@@ -49,7 +49,7 @@ public:
     FWSTRUCTURALPATCH_API Equipment1( const Equipment1& cpy );
 
     /// Create the specified object (sets 'institution_name' attribute).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

@@ -22,7 +22,7 @@
 
 #include "creator/data/Patient1Test.hpp"
 
-#include "fwAtoms/String.hpp"
+#include "atoms/String.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
@@ -64,14 +64,14 @@ void Patient1Test::createTest()
 
     CPPUNIT_ASSERT(patientCreator);
     const std::string& classname = patientCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Patient") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == classname );
     const std::string& objectVersion = patientCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
-    ::fwAtoms::Object::sptr patient = patientCreator->create();
+    atoms::Object::sptr patient = patientCreator->create();
 
     const std::string& patientClassname = ::fwAtomsPatch::helper::getClassname(patient);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Patient") == patientClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == patientClassname );
     const std::string& patientObjectVersion = ::fwAtomsPatch::helper::getVersion(patient);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == patientObjectVersion );
 
@@ -90,7 +90,7 @@ void Patient1Test::copyTest()
     Patient1 patientCreator;
 
     const std::string& classname = patientCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Patient") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == classname );
     const std::string& objectVersion = patientCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
@@ -98,7 +98,8 @@ void Patient1Test::copyTest()
 
     CPPUNIT_ASSERT(patientCreator2);
     const std::string& classnamePatientCreator2 = patientCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("data::Patient") == classnamePatientCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal",
+                           std::string("::sight::data::Patient") == classnamePatientCreator2 );
 
     const std::string& objectVersionPatientCreator2 = patientCreator2->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionPatientCreator2 );

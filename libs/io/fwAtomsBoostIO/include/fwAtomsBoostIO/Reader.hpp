@@ -29,7 +29,7 @@
 
 #include <filesystem>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Base;
 }
@@ -46,13 +46,13 @@ class FWATOMSBOOSTIO_CLASS_API Reader
 
 public:
 
-    FWATOMSBOOSTIO_API SPTR(::fwAtoms::Base) read( const SPTR(::fwZip::IReadArchive)& archive,
-                                                   const std::filesystem::path& rootFilename = "root.json",
-                                                   FormatType format                         = JSON ) const;
+    FWATOMSBOOSTIO_API SPTR(atoms::Base) read( const SPTR(::fwZip::IReadArchive)& archive,
+                                               const std::filesystem::path& rootFilename = "root.json",
+                                               FormatType format                         = JSON ) const;
 
 protected:
 
-    SPTR(::fwAtoms::Base) m_atom;
+    SPTR(atoms::Base) m_atom;
 
 };
 

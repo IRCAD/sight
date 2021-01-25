@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/data/Image/V3ToV2.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -38,8 +38,8 @@ namespace Image
 V3ToV2::V3ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Image";
-    m_targetClassname = "data::Image";
+    m_originClassname = "::sight::data::Image";
+    m_targetClassname = "::sight::data::Image";
     m_originVersion   = "3";
     m_targetVersion   = "2";
 
@@ -61,8 +61,8 @@ V3ToV2::V3ToV2( const V3ToV2& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V3ToV2::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);

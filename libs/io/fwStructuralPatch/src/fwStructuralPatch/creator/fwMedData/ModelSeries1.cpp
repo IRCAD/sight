@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/creator/data/ModelSeries1.hpp"
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
@@ -38,7 +38,7 @@ namespace sight::data
 
 ModelSeries1::ModelSeries1()
 {
-    m_classname = "data::ModelSeries";
+    m_classname = "::sight::data::ModelSeries";
     m_version   = "1";
 }
 
@@ -57,12 +57,12 @@ ModelSeries1::ModelSeries1( const ModelSeries1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr ModelSeries1::create()
+atoms::Object::sptr ModelSeries1::create()
 {
-    ::fwAtoms::Object::sptr modelSeries = this->Series1::create();
+    atoms::Object::sptr modelSeries = this->Series1::create();
     ::fwAtomsPatch::helper::Object helper(modelSeries);
 
-    helper.addAttribute("reconstruction_db", ::fwAtoms::Sequence::New());
+    helper.addAttribute("reconstruction_db", atoms::Sequence::New());
 
     return modelSeries;
 }

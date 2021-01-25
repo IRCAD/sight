@@ -22,13 +22,13 @@
 
 #include "fwStructuralPatch/data/Mesh/V4ToV3.hpp"
 
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Blob.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/Sequence.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
@@ -44,8 +44,8 @@ namespace Mesh
 V4ToV3::V4ToV3() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Mesh";
-    m_targetClassname = "data::Mesh";
+    m_originClassname = "::sight::data::Mesh";
+    m_targetClassname = "::sight::data::Mesh";
     m_originVersion   = "4";
     m_targetVersion   = "3";
 }
@@ -65,8 +65,8 @@ V4ToV3::V4ToV3( const V4ToV3& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V4ToV3::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -78,21 +78,21 @@ void V4ToV3::apply( const ::fwAtoms::Object::sptr& previous,
         = [&](const std::string& _buffer)
           {
               // Retrieves values from previous atoms object.
-              ::fwAtoms::Object::sptr cellData     = previous->getAttribute< ::fwAtoms::Object >(_buffer);
-              ::fwAtoms::Blob::sptr cellDataBuffer = cellData->getAttribute< ::fwAtoms::Blob >("buffer");
-              ::fwAtoms::Sequence::sptr strides    = cellData->getAttribute< ::fwAtoms::Sequence >("strides");
-              ::fwAtoms::String::sptr stride       = ::fwAtoms::String::dynamicCast((*strides)[0]);
-              size_t cellDataElementSize = static_cast< size_t >(stoi(stride->getString()));
+              atoms::Object::sptr cellData     = previous->getAttribute< atoms::Object >(_buffer);
+              atoms::Blob::sptr cellDataBuffer = cellData->getAttribute< atoms::Blob >("buffer");
+              atoms::Sequence::sptr strides    = cellData->getAttribute< atoms::Sequence >("strides");
+              atoms::String::sptr stride       = atoms::String::dynamicCast((*strides)[0]);
+              size_t cellDataElementSize       = static_cast< size_t >(stoi(stride->getString()));
 
               // Retrieves values from current atoms object.
-              ::fwAtoms::Object::sptr currentCellData     = current->getAttribute< ::fwAtoms::Object >(_buffer);
-              ::fwAtoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< ::fwAtoms::Blob >("buffer");
-              ::fwAtoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< ::fwAtoms::Sequence >(
+              atoms::Object::sptr currentCellData     = current->getAttribute< atoms::Object >(_buffer);
+              atoms::Blob::sptr currentCellDataBuffer = currentCellData->getAttribute< atoms::Blob >("buffer");
+              atoms::Sequence::sptr currentStrides    = currentCellData->getAttribute< atoms::Sequence >(
                   "strides");
-              ::fwAtoms::String::sptr currentType = currentCellData->getAttribute< ::fwAtoms::String >("type");
+              atoms::String::sptr currentType = currentCellData->getAttribute< atoms::String >("type");
 
               // Set the new strides to sizeof(std::uint32_t).
-              ::fwAtoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint64_t)));
+              atoms::String::dynamicCast((*currentStrides)[0])->setValue(std::to_string(sizeof(std::uint64_t)));
 
               // Set the new type.
               currentType->setValue("uint64");

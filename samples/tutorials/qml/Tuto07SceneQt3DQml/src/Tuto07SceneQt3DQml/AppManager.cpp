@@ -95,7 +95,7 @@ void AppManager::onOpenModel()
     const auto meshReader = ::fwServices::add("::uiIO::editor::SIOSelector");
     ::fwServices::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
-    meshReaderConfig.put("type.<xmlattr>.class", "data::Mesh");
+    meshReaderConfig.put("type.<xmlattr>.class", "::sight::data::Mesh");
     meshReader->setConfiguration(meshReaderConfig);
     meshReader->configure();
     meshReader->start();

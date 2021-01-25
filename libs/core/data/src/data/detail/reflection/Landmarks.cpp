@@ -28,9 +28,9 @@
 
 fwCampImplementDataMacro((sight)(data)(Landmarks))
 {
-    builder.base< sight::data::Object>()
+    builder.base< ::sight::data::Object>()
     .tag("object_version", "1")
-    .tag("lib_name", "fwData");
+    .tag("lib_name", "::sight::data");
     // property 'landmarks' is not introspected because it contains a struct that is not managed by camp
-    //.property("landmarks", &sight::data::Landmarks::m_landmarks);
+    //.property("landmarks", &::sight::data::Landmarks::m_landmarks);
 }

@@ -33,7 +33,7 @@ fwCampImplementDataMacro((sight)(data)(Equipment))
     builder
     .tag("object_version", "1")
     .tag("lib_name", "fwMedData")
-    .base< sight::data::Object>()
-    .property("institution_name", &sight::data::Equipment::m_institutionName)
+    .base< ::sight::data::Object>()
+    .property("institution_name", &::sight::data::Equipment::m_institutionName)
     ;
 }

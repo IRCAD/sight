@@ -30,10 +30,10 @@ fwCampImplementDataMacro((sight)(data)(Tag))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwData")
-    .base< sight::data::Object>()
-    .property("point_list", &sight::data::Tag::m_pointList)
-    .property("type", &sight::data::Tag::m_sType)
-    .property("size", &sight::data::Tag::m_size)
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("point_list", &::sight::data::Tag::m_pointList)
+    .property("type", &::sight::data::Tag::m_sType)
+    .property("size", &::sight::data::Tag::m_size)
     ;
 }

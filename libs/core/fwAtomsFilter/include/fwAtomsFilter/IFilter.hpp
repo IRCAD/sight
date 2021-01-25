@@ -26,14 +26,14 @@
 #include "fwAtomsFilter/factory/new.hpp"
 #include "fwAtomsFilter/registry/detail.hpp"
 
-#include <core/base.hpp>
+#include <atoms/Object.hpp>
 
-#include <fwAtoms/Object.hpp>
+#include <core/base.hpp>
 
 #include <map>
 #include <string>
 
-namespace fwAtoms
+namespace sight::atoms
 {
 class Object;
 }
@@ -77,7 +77,7 @@ public:
     FWATOMSFILTER_API virtual ~IFilter();
 
     /// Applies the filter onto the specified object
-    FWATOMSFILTER_API virtual void apply(const SPTR(::fwAtoms::Object)& object) = 0;
+    FWATOMSFILTER_API virtual void apply(const SPTR(atoms::Object)& object) = 0;
 
 };
 

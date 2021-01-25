@@ -57,8 +57,8 @@ public:
      * Removes attributes 'hospital', 'modality', 'acquisition_zone', 'ris_id', 'db_id' and 'acquisitions', renames
      * 'uid' to 'instance_uid', adds 'referring_physicians_name' and 'patient_age'.
      */
-    FWSTRUCTURALPATCH_API virtual void apply(const ::fwAtoms::Object::sptr& previous,
-                                             const ::fwAtoms::Object::sptr& current,
+    FWSTRUCTURALPATCH_API virtual void apply(const atoms::Object::sptr& previous,
+                                             const atoms::Object::sptr& current,
                                              ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };

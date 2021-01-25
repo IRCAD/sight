@@ -97,13 +97,11 @@ struct Native
     const std::filesystem::path getFullPath() const;
 
     /**
-     * @brief   Retrieves the file path of the native library.
-     *
-     * @note  This path is relative to the owning module's path.
+     * @brief   Retrieves the file name of the native library.
      *
      * @return  a string containing the native module file path
      */
-    const std::filesystem::path getPath() const;
+    const std::string getName() const;
 
     /**
      * @brief       Set the initial path from which the library will be loaded.
@@ -111,12 +109,6 @@ struct Native
      * @param[in]   path  search path
      */
     void setSearchPath( const std::filesystem::path& path ) noexcept;
-
-    /**
-     * @brief  Retrieves the pattern of the dynamic library file name given the host OS
-     * @return the std::regex
-     */
-    const std::regex getNativeName() const;
 
     private:
         /**

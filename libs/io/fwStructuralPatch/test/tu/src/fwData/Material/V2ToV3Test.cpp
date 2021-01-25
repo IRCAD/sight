@@ -24,10 +24,10 @@
 
 #include <fwStructuralPatch/data/Material/V2ToV3.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -64,24 +64,24 @@ void V2ToV3Test::tearDown()
 
 void V2ToV3Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr matObjV2 = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr matObjV3;
+    atoms::Object::sptr matObjV2 = atoms::Object::New();
+    atoms::Object::sptr matObjV3;
 
-    ::fwAtomsPatch::helper::setClassname(matObjV2, "data::Material");
+    ::fwAtomsPatch::helper::setClassname(matObjV2, "::sight::data::Material");
     ::fwAtomsPatch::helper::setVersion(matObjV2, "2");
 
     ::fwAtomsPatch::helper::Object helper(matObjV2);
 
-    helper.addAttribute("shading_mode", ::fwAtoms::String::New("PHONG"));
-    helper.addAttribute("representation_mode", ::fwAtoms::String::New("SURFACE"));
-    helper.addAttribute("options_mode", ::fwAtoms::String::New("STANDARD"));
-    helper.addAttribute("ambient", ::fwAtoms::Object::sptr());
-    helper.addAttribute("diffuse", ::fwAtoms::Object::sptr());
-    helper.addAttribute("diffuse_texture", ::fwAtoms::Object::sptr());
-    helper.addAttribute("diffuse_texture_filtering", ::fwAtoms::String::New("NEAREST"));
-    helper.addAttribute("diffuse_texture_wrapping", ::fwAtoms::String::New("CLAMP"));
+    helper.addAttribute("shading_mode", atoms::String::New("PHONG"));
+    helper.addAttribute("representation_mode", atoms::String::New("SURFACE"));
+    helper.addAttribute("options_mode", atoms::String::New("STANDARD"));
+    helper.addAttribute("ambient", atoms::Object::sptr());
+    helper.addAttribute("diffuse", atoms::Object::sptr());
+    helper.addAttribute("diffuse_texture", atoms::Object::sptr());
+    helper.addAttribute("diffuse_texture_filtering", atoms::String::New("NEAREST"));
+    helper.addAttribute("diffuse_texture_wrapping", atoms::String::New("CLAMP"));
 
-    matObjV3 = ::fwAtoms::Object::dynamicCast(matObjV2->clone());
+    matObjV3 = atoms::Object::dynamicCast(matObjV2->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[matObjV2] = matObjV3;
@@ -92,7 +92,7 @@ void V2ToV3Test::applyPatchTest()
 
     CPPUNIT_ASSERT(matObjV3);
     CPPUNIT_ASSERT(matObjV3->getAttribute("lighting"));
-    ::fwAtoms::Boolean::sptr lighting = ::fwAtoms::Boolean::dynamicCast(matObjV3->getAttribute("lighting"));
+    atoms::Boolean::sptr lighting = atoms::Boolean::dynamicCast(matObjV3->getAttribute("lighting"));
     CPPUNIT_ASSERT(lighting->getValue() == true);
 }
 

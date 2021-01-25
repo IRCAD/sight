@@ -63,12 +63,6 @@ public:
     typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point
                                                                                     // container constant iterator type.
 
-    typedef std::set< SPTR(dl::Library) >     LibraryContainer;               ///< Defines the dynamic library container
-                                                                              // type.
-    typedef LibraryContainer::const_iterator LibraryConstIterator;             ///< Defines the dynamic library
-                                                                               // container
-                                                                               // constant iterator type.
-
     ///< Defines the extension container constant iterator type.
     typedef ExtensionContainer::const_iterator ExtensionConstIterator;
     //@}
@@ -107,6 +101,13 @@ public:
      * @return  a string containing the module identifier
      */
     const std::string& getIdentifier() const final;
+
+    /**
+     * @brief   Retrieves the library name if it exists.
+     *
+     * @return  a path representing the module location, can be empty if no library is set
+     */
+    const std::string getLibraryName() const final;
 
     /**
      * @brief   Retrieves the module location.
@@ -169,11 +170,11 @@ public:
      */
     //@{
     /**
-     * @brief       Adds the specified library to the module.
+     * @brief       Sets the specified library to the module.
      *
      * @param[in]   library a shared pointer to the library to add
      */
-    void addLibrary( SPTR( dl::Library ) library );
+    void setLibrary( SPTR( dl::Library ) library );
     //@}
 
     /**
@@ -397,8 +398,8 @@ private:
                                                                              // type.
     typedef std::map< std::string, std::string >    ParameterContainer;     ///< defines the parameter container type
 
-    static SPTR( Module )           m_loadingModule;        ///< a pointer to the module that is currently loading its
-                                                            // dynamic libraries
+    static SPTR( Module ) m_loadingModule;              ///< a pointer to the module that is currently loading its
+                                                        // dynamic libraries
 
     std::filesystem::path m_libraryLocation;            ///< the path to the module libraries
     const std::filesystem::path m_resourcesLocation;    ///< the path to the module resources
@@ -408,9 +409,9 @@ private:
     ExtensionContainer m_extensions;                    ///< all extensions
     ExtensionPointContainer m_extensionPoints;          ///< all extension points
     ExecutableFactoryContainer m_executableFactories;   ///< all executable factories
-    LibraryContainer m_libraries;                       ///< all libaries that are part of the module
     RequirementContainer m_requirements;                ///< all requirements of the module
-    SPTR( IPlugin )                 m_plugin;           ///< a shared pointer to the plugin instance
+    SPTR( IPlugin )  m_plugin;                          ///< a shared pointer to the plugin instance
+    SPTR( dl::Library ) m_library;                      ///< library that is part of the module
     ParameterContainer m_parameters;                    ///< all parameters
 
     bool m_enabled { false };                           ///< a boolean telling if the module is enabled or not

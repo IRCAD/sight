@@ -26,7 +26,7 @@
 #include <data/Image.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( sight::data::ImageSeries )
+fwDataRegisterMacro( ::sight::data::ImageSeries )
 
 namespace sight::data
 {

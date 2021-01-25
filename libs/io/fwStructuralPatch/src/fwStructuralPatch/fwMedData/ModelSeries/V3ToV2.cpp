@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/data/ModelSeries/V3ToV2.hpp"
 
-#include <fwAtoms/String.hpp>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -34,8 +34,8 @@ namespace ModelSeries
 V3ToV2::V3ToV2() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::ModelSeries";
-    m_targetClassname = "data::ModelSeries";
+    m_originClassname = "::sight::data::ModelSeries";
+    m_targetClassname = "::sight::data::ModelSeries";
     m_originVersion   = "3";
     m_targetVersion   = "2";
 }
@@ -55,8 +55,8 @@ V3ToV2::V3ToV2(const V3ToV2& _cpy) :
 
 // ----------------------------------------------------------------------------
 
-void V3ToV2::apply( const ::fwAtoms::Object::sptr& _previous,
-                    const ::fwAtoms::Object::sptr& _current,
+void V3ToV2::apply( const atoms::Object::sptr& _previous,
+                    const atoms::Object::sptr& _current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions)
 {
     IStructuralPatch::apply(_previous, _current, _newVersions);

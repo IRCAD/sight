@@ -22,7 +22,7 @@
 
 #include "fwStructuralPatch/creator/data/PointList1.hpp"
 
-#include <fwAtoms/Sequence.hpp>
+#include <atoms/Sequence.hpp>
 
 #include <fwAtomsPatch/helper/Object.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::data
 
 PointList1::PointList1()
 {
-    m_classname = "data::PointList";
+    m_classname = "::sight::data::PointList";
     m_version   = "1";
 }
 
@@ -56,12 +56,12 @@ PointList1::PointList1( const PointList1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr PointList1::create()
+atoms::Object::sptr PointList1::create()
 {
-    ::fwAtoms::Object::sptr pl = this->createObjBase();
+    atoms::Object::sptr pl = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(pl);
 
-    helper.addAttribute("points", ::fwAtoms::Sequence::New());
+    helper.addAttribute("points", atoms::Sequence::New());
 
     return pl;
 }

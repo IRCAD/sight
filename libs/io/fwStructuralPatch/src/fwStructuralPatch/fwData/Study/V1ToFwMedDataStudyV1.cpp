@@ -22,9 +22,9 @@
 
 #include "fwStructuralPatch/data/Study/V1ToFwMedDataStudyV1.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+#include <atoms/String.hpp>
 
 namespace fwStructuralPatch
 {
@@ -38,8 +38,8 @@ namespace Study
 V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::Study";
-    m_targetClassname = "data::Study";
+    m_originClassname = "::sight::data::Study";
+    m_targetClassname = "::sight::data::Study";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }
@@ -59,8 +59,8 @@ V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1( const V1ToFwMedDataStudyV1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataStudyV1::apply(const ::fwAtoms::Object::sptr& previous,
-                                 const ::fwAtoms::Object::sptr& current,
+void V1ToFwMedDataStudyV1::apply(const atoms::Object::sptr& previous,
+                                 const atoms::Object::sptr& current,
                                  ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -80,8 +80,8 @@ void V1ToFwMedDataStudyV1::apply(const ::fwAtoms::Object::sptr& previous,
 
     helper.renameAttribute("uid", "instance_uid");
 
-    helper.addAttribute("referring_physician_name", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_age", ::fwAtoms::String::New(""));
+    helper.addAttribute("referring_physician_name", atoms::String::New(""));
+    helper.addAttribute("patient_age", atoms::String::New(""));
 }
 
 } // namespace Study

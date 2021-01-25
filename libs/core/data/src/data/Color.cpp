@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( sight::data::Color );
+fwDataRegisterMacro( ::sight::data::Color );
 
 namespace sight::data
 {

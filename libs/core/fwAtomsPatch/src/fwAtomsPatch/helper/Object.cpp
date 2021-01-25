@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,16 +20,18 @@
  *
  ***********************************************************************/
 
-#include "fwAtomsPatch/infos/log.hpp"
-#include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
+
+#include "fwAtomsPatch/helper/functions.hpp"
+#include "fwAtomsPatch/infos/log.hpp"
 
 namespace fwAtomsPatch
 {
 namespace helper
 {
 
-Object::Object(::fwAtoms::Object::sptr metaObject) : m_object(metaObject)
+Object::Object(atoms::Object::sptr metaObject) :
+    m_object(metaObject)
 {
 }
 
@@ -42,7 +44,7 @@ Object::~Object()
 // ----------------------------------------------------------------------------
 
 void Object::addAttribute(const std::string& name,
-                          ::fwAtoms::Base::sptr value,
+                          atoms::Base::sptr value,
                           conditions::Abstract::sptr condition)
 {
     if(m_object->getAttributes().find(name) == m_object->getAttributes().end())
@@ -64,7 +66,7 @@ void Object::addAttribute(const std::string& name,
 // ----------------------------------------------------------------------------
 
 void Object::addOrReplaceAttribute(const std::string& name,
-                                   ::fwAtoms::Base::sptr value,
+                                   atoms::Base::sptr value,
                                    conditions::Abstract::sptr condition)
 {
     if(m_object->getAttributes().find(name) != m_object->getAttributes().end())
@@ -89,7 +91,7 @@ void Object::addOrReplaceAttribute(const std::string& name,
 void Object::removeAttribute(const std::string& name,
                              conditions::Abstract::sptr condition)
 {
-    ::fwAtoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
+    atoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
 
     if(it != m_object->getAttributes().end())
     {
@@ -110,10 +112,10 @@ void Object::removeAttribute(const std::string& name,
 // ----------------------------------------------------------------------------
 
 void Object::replaceAttribute(const std::string& name,
-                              ::fwAtoms::Base::sptr newValue,
+                              atoms::Base::sptr newValue,
                               conditions::Abstract::sptr condition)
 {
-    ::fwAtoms::Object::AttributesType::const_iterator cIt = m_object->getAttributes().find(name);
+    atoms::Object::AttributesType::const_iterator cIt = m_object->getAttributes().find(name);
 
     if(cIt != m_object->getAttributes().end())
     {
@@ -144,13 +146,13 @@ void Object::replaceAttribute(const std::string& name,
 void Object::renameAttribute(const std::string& name, const std::string& newName,
                              conditions::Abstract::sptr condition)
 {
-    ::fwAtoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
+    atoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
 
     if(it != m_object->getAttributes().end())
     {
         if(condition->test(it->second))
         {
-            ::fwAtoms::Base::sptr base = m_object->getAttribute(name);
+            atoms::Base::sptr base = m_object->getAttribute(name);
             fwAtomsPatchEraseAttributeLogMacro("'"
                                                + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
                                                + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
@@ -169,7 +171,7 @@ void Object::renameAttribute(const std::string& name, const std::string& newName
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Object::getObject() const
+atoms::Object::sptr Object::getObject() const
 {
     return m_object;
 }

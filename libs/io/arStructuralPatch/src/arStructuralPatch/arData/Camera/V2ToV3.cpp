@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "arStructuralPatch/arData/Camera/V2ToV3.hpp"
 
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
 
 namespace arStructuralPatch
 {
@@ -60,8 +60,8 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 // ----------------------------------------------------------------------------
 
 void V2ToV3::apply(
-    const ::fwAtoms::Object::sptr& previous,
-    const ::fwAtoms::Object::sptr& current,
+    const atoms::Object::sptr& previous,
+    const atoms::Object::sptr& current,
     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
@@ -72,7 +72,7 @@ void V2ToV3::apply(
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
 
-    helper.addAttribute("scale", ::fwAtoms::Numeric::New(1.0));
+    helper.addAttribute("scale", atoms::Numeric::New(1.0));
 }
 
 } // namespace Camera

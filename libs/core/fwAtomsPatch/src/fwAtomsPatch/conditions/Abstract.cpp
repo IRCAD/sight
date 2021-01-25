@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,6 @@
  *
  ***********************************************************************/
 
-
 #include "fwAtomsPatch/conditions/Abstract.hpp"
 
 namespace fwAtomsPatch
@@ -28,28 +27,28 @@ namespace fwAtomsPatch
 namespace conditions
 {
 
-Abstract::Abstract(::fwAtoms::Base::sptr defaultValue)
-    : m_defaultValue(defaultValue)
+Abstract::Abstract(atoms::Base::sptr defaultValue) :
+    m_defaultValue(defaultValue)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-::fwAtoms::Base::sptr Abstract::getDefaultValue()
+atoms::Base::sptr Abstract::getDefaultValue()
 {
     return m_defaultValue;
 }
 
 // ----------------------------------------------------------------------------
 
-bool Abstract::test(::fwAtoms::Base::sptr old, ::fwAtoms::Base::sptr newValue)
+bool Abstract::test(atoms::Base::sptr old, atoms::Base::sptr newValue)
 {
     return true;
 }
 
 // ----------------------------------------------------------------------------
 
-bool Abstract::test(::fwAtoms::Base::sptr value)
+bool Abstract::test(atoms::Base::sptr value)
 {
     return true;
 }
@@ -57,5 +56,3 @@ bool Abstract::test(::fwAtoms::Base::sptr value)
 } //conditions
 
 } //fwAtomsPatch
-
-

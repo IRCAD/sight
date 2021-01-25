@@ -51,7 +51,7 @@ public:
     FWSTRUCTURALPATCH_API Patient1( const Patient1& cpy );
 
     /// Creates the specified object (sets 'name', 'patient_id', 'birth_date' and 'sex' attributes).
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

@@ -33,7 +33,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-fwDataRegisterMacro( sight::data::Reconstruction );
+fwDataRegisterMacro( ::sight::data::Reconstruction );
 namespace sight::data
 {
 

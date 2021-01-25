@@ -7,9 +7,8 @@ set( DEPENDENCIES
     data
     fwServices
     fwAtomsBoostIO
-    fwAtomConversion
     fwZip
-    fwAtoms
+    atoms
     fwPreferences
 )
 set( REQUIREMENTS  )

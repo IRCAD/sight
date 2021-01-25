@@ -22,14 +22,14 @@
 
 #include "ioAtoms/SReader.hpp"
 
+#include <atoms/conversion/convert.hpp>
+
 #include <core/com/Signal.hxx>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
-
-#include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
@@ -234,7 +234,7 @@ void SReader::updating()
                 extension = "." + m_customExts[extension];
             }
 
-            ::fwAtoms::Object::sptr atom;
+            atoms::Object::sptr atom;
 
             const unsigned int progressBarOffset = 10;
 
@@ -286,7 +286,7 @@ void SReader::updating()
                     }
 
                     ::fwAtomsBoostIO::Reader reader;
-                    atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
+                    atom = atoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
 
                     FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
 
@@ -342,15 +342,15 @@ void SReader::updating()
                     }
                     if("Strict" == m_uuidPolicy)
                     {
-                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::StrictPolicy());
+                        newData = atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::StrictPolicy());
                     }
                     else if("Reuse" == m_uuidPolicy)
                     {
-                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy());
+                        newData = atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::ReusePolicy());
                     }
                     else
                     {
-                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy());
+                        newData = atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::ChangePolicy());
                     }
 
                     runningJob.done();

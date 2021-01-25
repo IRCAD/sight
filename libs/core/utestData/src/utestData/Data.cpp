@@ -22,7 +22,7 @@
 
 #include "utestData/Data.hpp"
 
-#include "core/test/Exception.hpp"
+#include "utest/Exception.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -43,7 +43,7 @@ std::filesystem::path Data::dir()
         std::stringstream msg;
         msg << "The '" << s_TEST_DATA_DIR_ENV_VAR
             << "' environment variable is not set.";
-        throw utestData::Exception(msg.str());
+        throw utest::Exception(msg.str());
     }
 
     std::filesystem::path datadir(val);
@@ -53,7 +53,7 @@ std::filesystem::path Data::dir()
         std::stringstream msg;
         msg << "The path'" << datadir
             << "' doesn't seem to exist.";
-        throw utestData::Exception(msg.str());
+        throw utest::Exception(msg.str());
     }
 
     return datadir;

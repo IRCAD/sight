@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <fwAtoms/Sequence.hpp>
+#include <atoms/Sequence.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -47,7 +47,7 @@ public:
 
     void applyPatchTest();
 
-    void addPoint(::fwAtoms::Sequence::sptr seq, const std::array<double, 3>& pt, const std::string& label);
+    void addPoint(atoms::Sequence::sptr seq, const std::array<double, 3>& pt, const std::string& label);
 };
 
 } //namespace ut

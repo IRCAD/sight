@@ -22,8 +22,8 @@
 
 #include "fwStructuralPatch/data/ModelSeries/V2ToV1.hpp"
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
 
 namespace fwStructuralPatch
 {
@@ -35,8 +35,8 @@ namespace ModelSeries
 V2ToV1::V2ToV1() :
     ::fwAtomsPatch::IStructuralPatch()
 {
-    m_originClassname = "data::ModelSeries";
-    m_targetClassname = "data::ModelSeries";
+    m_originClassname = "::sight::data::ModelSeries";
+    m_targetClassname = "::sight::data::ModelSeries";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }
@@ -56,8 +56,8 @@ V2ToV1::V2ToV1( const V2ToV1& cpy ) :
 
 // ----------------------------------------------------------------------------
 
-void V2ToV1::apply( const ::fwAtoms::Object::sptr& previous,
-                    const ::fwAtoms::Object::sptr& current,
+void V2ToV1::apply( const atoms::Object::sptr& previous,
+                    const atoms::Object::sptr& current,
                     ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);

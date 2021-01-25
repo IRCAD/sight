@@ -1335,7 +1335,7 @@ core::runtime::ConfigurationElement::sptr AppConfigTest::buildConfig()
     // Object
     std::shared_ptr< core::runtime::EConfigurationElement > cfg( new core::runtime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "image");
-    cfg->setAttributeValue( "type", "data::Image");
+    cfg->setAttributeValue( "type", "::sight::data::Image");
 
     // Service
     std::shared_ptr< core::runtime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");

@@ -55,7 +55,7 @@ public:
      *
      * Calls creators for 'patient', 'study' and 'equipment' attributes and sets remaining attributes.
      */
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
+    FWSTRUCTURALPATCH_API virtual atoms::Object::sptr create() override;
 
 };
 

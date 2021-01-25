@@ -24,11 +24,11 @@
 
 #include <fwStructuralPatch/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp>
 
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/Object.hxx>
-#include <fwAtoms/String.hpp>
+#include <atoms/Base.hpp>
+#include <atoms/Boolean.hpp>
+#include <atoms/Object.hpp>
+#include <atoms/Object.hxx>
+#include <atoms/String.hpp>
 
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
@@ -65,46 +65,46 @@ void V1ToFwMedDataImageSeriesV1Test::tearDown()
 
 void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
 {
-    ::fwAtoms::Object::sptr acqObj = ::fwAtoms::Object::New();
-    ::fwAtoms::Object::sptr isObj;
+    atoms::Object::sptr acqObj = atoms::Object::New();
+    atoms::Object::sptr isObj;
 
-    ::fwAtomsPatch::helper::setClassname(acqObj, "data::Acquisition");
+    ::fwAtomsPatch::helper::setClassname(acqObj, "::sight::data::Acquisition");
     ::fwAtomsPatch::helper::setVersion(acqObj, "1");
 
     ::fwAtomsPatch::helper::Object helper(acqObj);
 
-    helper.addAttribute("bits_per_pixel", ::fwAtoms::String::New(""));
-    helper.addAttribute("slice_thickness", ::fwAtoms::String::New(""));
-    helper.addAttribute("axe", ::fwAtoms::String::New(""));
-    helper.addAttribute("unsigned_flag", ::fwAtoms::String::New(""));
-    helper.addAttribute("acquisition_index", ::fwAtoms::String::New(""));
-    helper.addAttribute("image_type", ::fwAtoms::String::New(""));
-    helper.addAttribute("image_format", ::fwAtoms::String::New(""));
-    helper.addAttribute("creation_date", ::fwAtoms::String::New("2013-Jun-12 14:49:12"));
-    helper.addAttribute("is_main", ::fwAtoms::String::New(""));
-    helper.addAttribute("is_normal_dir", ::fwAtoms::String::New(""));
-    helper.addAttribute("uid", ::fwAtoms::String::New(""));
-    helper.addAttribute("db_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("labo_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("net_id", ::fwAtoms::String::New(""));
-    helper.addAttribute("date_send_to_labo", ::fwAtoms::String::New(""));
-    helper.addAttribute("date_receive_from_labo", ::fwAtoms::String::New(""));
-    helper.addAttribute("date_send_to_dbt", ::fwAtoms::String::New(""));
-    helper.addAttribute("date_disponibility", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_size", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_weight", ::fwAtoms::String::New(""));
-    helper.addAttribute("radiations", ::fwAtoms::String::New(""));
-    helper.addAttribute("medical_printer", ::fwAtoms::String::New(""));
-    helper.addAttribute("medical_printer_corp", ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_position", ::fwAtoms::String::New(""));
-    helper.addAttribute("description", ::fwAtoms::String::New(""));
-    helper.addAttribute("dicom_file_list", ::fwAtoms::String::New(""));
-    helper.addAttribute("path_to_files", ::fwAtoms::String::New(""));
-    helper.addAttribute("image", ::fwAtoms::Object::New());
-    helper.addAttribute("struct_anat", ::fwAtoms::Object::sptr());
-    helper.addAttribute("reconstructions", ::fwAtoms::Sequence::New());
+    helper.addAttribute("bits_per_pixel", atoms::String::New(""));
+    helper.addAttribute("slice_thickness", atoms::String::New(""));
+    helper.addAttribute("axe", atoms::String::New(""));
+    helper.addAttribute("unsigned_flag", atoms::String::New(""));
+    helper.addAttribute("acquisition_index", atoms::String::New(""));
+    helper.addAttribute("image_type", atoms::String::New(""));
+    helper.addAttribute("image_format", atoms::String::New(""));
+    helper.addAttribute("creation_date", atoms::String::New("2013-Jun-12 14:49:12"));
+    helper.addAttribute("is_main", atoms::String::New(""));
+    helper.addAttribute("is_normal_dir", atoms::String::New(""));
+    helper.addAttribute("uid", atoms::String::New(""));
+    helper.addAttribute("db_id", atoms::String::New(""));
+    helper.addAttribute("labo_id", atoms::String::New(""));
+    helper.addAttribute("net_id", atoms::String::New(""));
+    helper.addAttribute("date_send_to_labo", atoms::String::New(""));
+    helper.addAttribute("date_receive_from_labo", atoms::String::New(""));
+    helper.addAttribute("date_send_to_dbt", atoms::String::New(""));
+    helper.addAttribute("date_disponibility", atoms::String::New(""));
+    helper.addAttribute("patient_size", atoms::String::New(""));
+    helper.addAttribute("patient_weight", atoms::String::New(""));
+    helper.addAttribute("radiations", atoms::String::New(""));
+    helper.addAttribute("medical_printer", atoms::String::New(""));
+    helper.addAttribute("medical_printer_corp", atoms::String::New(""));
+    helper.addAttribute("patient_position", atoms::String::New(""));
+    helper.addAttribute("description", atoms::String::New(""));
+    helper.addAttribute("dicom_file_list", atoms::String::New(""));
+    helper.addAttribute("path_to_files", atoms::String::New(""));
+    helper.addAttribute("image", atoms::Object::New());
+    helper.addAttribute("struct_anat", atoms::Object::sptr());
+    helper.addAttribute("reconstructions", atoms::Sequence::New());
 
-    isObj = ::fwAtoms::Object::dynamicCast(acqObj->clone());
+    isObj = atoms::Object::dynamicCast(acqObj->clone());
 
     ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
     newVersions[acqObj] = isObj;
@@ -114,7 +114,7 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(acqObj, isObj, newVersions));
 
     CPPUNIT_ASSERT(isObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("data::ImageSeries"), ::fwAtomsPatch::helper::getClassname(isObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::ImageSeries"), ::fwAtomsPatch::helper::getClassname(isObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), ::fwAtomsPatch::helper::getVersion(isObj));
 
     CPPUNIT_ASSERT(!isObj->getAttribute("bits_per_pixel"));
@@ -154,9 +154,9 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     CPPUNIT_ASSERT(isObj->getAttribute("date"));
     CPPUNIT_ASSERT(isObj->getAttribute("time"));
 
-    ::fwAtoms::String::sptr date = isObj->getAttribute< ::fwAtoms::String >("date");
+    atoms::String::sptr date = isObj->getAttribute< atoms::String >("date");
     CPPUNIT_ASSERT_EQUAL(std::string("20130612"), date->getString());
-    ::fwAtoms::String::sptr time = isObj->getAttribute< ::fwAtoms::String >("time");
+    atoms::String::sptr time = isObj->getAttribute< atoms::String >("time");
     CPPUNIT_ASSERT_EQUAL(std::string("144912"), time->getString());
 }
 
