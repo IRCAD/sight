@@ -28,7 +28,7 @@
 #include <core/Exception.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -63,7 +63,7 @@ void ZipTest::commentTest()
     const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
-    const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path sourceFile  = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
     const std::filesystem::path archiveFile = "makao.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",
@@ -89,7 +89,7 @@ void ZipTest::cryptTest()
     const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
-    const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path sourceFile  = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
     const std::filesystem::path archiveFile = "makao.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",
@@ -132,7 +132,7 @@ void ZipTest::badPasswordCryptTest()
     const std::filesystem::path dirPath = core::tools::System::getTemporaryFolder() / "fwZipTest";
     std::filesystem::create_directories( dirPath );
     const std::filesystem::path path        = dirPath / "jambon.zip";
-    const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path sourceFile  = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
     const std::filesystem::path archiveFile = "makao.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",

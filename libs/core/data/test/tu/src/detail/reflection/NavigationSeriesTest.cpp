@@ -30,7 +30,7 @@
 #include <data/Study.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::detail::reflection::ut::NavigationSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::NavigationSeriesTest );
 
 namespace sight::data
 {

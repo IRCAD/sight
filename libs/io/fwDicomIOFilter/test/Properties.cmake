@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwDicomIOFilter
     core
-    fwTest
+    utestData
     fwMath
     data
     fwGdcmIO

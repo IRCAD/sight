@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwPacsIO
     core
-    fwTest
+    utestData
     data
     fwDcmtkIO
     )

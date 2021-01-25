@@ -30,7 +30,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <algorithm>
 #include <array>
@@ -188,7 +188,7 @@ void ImageDiffTest::undoRedoTest()
 
     data::Image::sptr image = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, FORMAT);
+    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, FORMAT);
 
     const auto dumpLock = image->lock();
 

@@ -27,7 +27,7 @@
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::IntegerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::IntegerTest );
 
 namespace sight::data
 {

@@ -35,7 +35,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Vector.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <cstdint>
 
@@ -75,8 +75,8 @@ void ImagePropertiesTest::propertiesTest()
     {
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-        ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
 
         data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);
@@ -99,11 +99,11 @@ void ImagePropertiesTest::propertiesTest()
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
 
-        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
 
-        ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
-                                                  img1->getOrigin2(), img1->getType(),
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
+                                                   img1->getOrigin2(), img1->getType(),
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);

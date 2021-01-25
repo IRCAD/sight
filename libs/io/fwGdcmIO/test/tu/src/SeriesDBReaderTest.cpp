@@ -46,9 +46,9 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/DicomReaderTest.hpp>
-#include <fwTest/Slow.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/DicomReaderTest.hpp>
+#include <utestData/Slow.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -104,7 +104,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
 void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& seriesDB)
 {
     const double delta                    = 0.001;
-    const std::filesystem::path dicomPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB";
+    const std::filesystem::path dicomPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const std::filesystem::path metaPath  = dicomPath / "META";
 
     for(data::SeriesDB::iterator sIt = seriesDB->begin(); sIt != seriesDB->end(); ++sIt)
@@ -225,7 +225,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
 void SeriesDBReaderTest::setUp()
 {
     // Set up context before running a test.
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -246,7 +246,7 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::readJMSSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -258,7 +258,7 @@ void SeriesDBReaderTest::readJMSSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -270,7 +270,7 @@ void SeriesDBReaderTest::readCTSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -282,7 +282,7 @@ void SeriesDBReaderTest::readMRSeriesDBTest()
 
 void SeriesDBReaderTest::readOTSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -294,7 +294,7 @@ void SeriesDBReaderTest::readOTSeriesDBTest()
 
 void SeriesDBReaderTest::readSEGSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -306,7 +306,7 @@ void SeriesDBReaderTest::readSEGSeriesDBTest()
 
 void SeriesDBReaderTest::readSFSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -318,7 +318,7 @@ void SeriesDBReaderTest::readSFSeriesDBTest()
 
 void SeriesDBReaderTest::readSRSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -330,7 +330,7 @@ void SeriesDBReaderTest::readSRSeriesDBTest()
 
 void SeriesDBReaderTest::read3DSRSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -342,7 +342,7 @@ void SeriesDBReaderTest::read3DSRSeriesDBTest()
 
 void SeriesDBReaderTest::readDisabledSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -354,7 +354,7 @@ void SeriesDBReaderTest::readDisabledSeriesDBTest()
 
 void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -366,7 +366,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDirDBTest()
 
 void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -378,7 +378,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeriesDBTest()
 
 void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -390,7 +390,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeriesDBTest()
 
 void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -402,7 +402,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeriesDBTest()
 
 void SeriesDBReaderTest::readCTSeriesDBIssue01Test()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -416,7 +416,7 @@ void SeriesDBReaderTest::readJMSSeries()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -432,7 +432,7 @@ void SeriesDBReaderTest::readJMSSeries()
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
+    CPPUNIT_ASSERT( utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
 
     // Read image in lazy mode
     const auto dumpLock = series->getImage()->lock();
@@ -446,7 +446,7 @@ void SeriesDBReaderTest::readCTSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -510,7 +510,7 @@ void SeriesDBReaderTest::readMRSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -577,7 +577,7 @@ void SeriesDBReaderTest::readOTSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "42-OT-BARRE-MONO2-8-colon";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -643,7 +643,7 @@ void SeriesDBReaderTest::readSEGSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SEG";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -693,7 +693,7 @@ void SeriesDBReaderTest::readSFSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SF";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -745,7 +745,7 @@ void SeriesDBReaderTest::readSRSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SR";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -813,7 +813,7 @@ void SeriesDBReaderTest::read3DSRSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_3DSR";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -880,7 +880,7 @@ void SeriesDBReaderTest::readDisabledSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -909,7 +909,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "82-MR-SAGITTAL-KNEE-DICOMDIR";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -935,7 +935,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "83-CT-MultipleRescale";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -981,7 +981,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "84-CT-Surview";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -1006,7 +1006,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "85-MR-TemporalPosition";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -1031,7 +1031,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "86-CT-Skull";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));

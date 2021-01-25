@@ -35,8 +35,8 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/generator/SeriesDB.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/helper/compare.hpp>
 
 #include <boost/functional/hash.hpp>
 
@@ -130,7 +130,7 @@ core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainer
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
 
     const std::vector< std::string > allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -286,7 +286,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
 
     const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
 

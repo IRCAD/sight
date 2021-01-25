@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwNetworkIO
     core
-    fwTest
+    utestData
     data
     fwQt
     )

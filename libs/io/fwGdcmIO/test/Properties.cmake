@@ -5,7 +5,7 @@ set( DEPENDENCIES
     fwGdcmIO
     core
     data
-    fwTest
+    utestData
     fwDataTools
     fwZip
     fwLog

@@ -41,8 +41,8 @@
 
 #include <fwDataTools/Mesh.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Mesh.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -188,7 +188,7 @@ void MeshTest::testSyntheticMesh()
 {
     {
         const data::Mesh::sptr mesh1 = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
         ::fwDataTools::Mesh::shakePoint(mesh1);
         mesh1->adjustAllocatedMemory();
 
@@ -203,7 +203,7 @@ void MeshTest::testSyntheticMesh()
     }
     {
         const data::Mesh::sptr mesh1 = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
         ::fwDataTools::Mesh::shakePoint(mesh1);
         ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
         ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -227,7 +227,7 @@ void MeshTest::testSyntheticMesh()
 void MeshTest::testExportImportSyntheticMesh()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -494,7 +494,7 @@ void MeshTest::testGridUpdateNormals()
 
 void MeshTest::testReadVtkFile()
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/vtk/sphere.vtk"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/mesh/vtk/sphere.vtk"));
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
@@ -516,7 +516,7 @@ void MeshTest::testReadVtkFile()
 
 void MeshTest::testReadVtpFile()
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/vtp/sphere.vtp"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/mesh/vtp/sphere.vtp"));
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
@@ -537,7 +537,7 @@ void MeshTest::testReadVtpFile()
 
 void MeshTest::testReadObjFile()
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/obj/sphere.obj"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/mesh/obj/sphere.obj"));
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
@@ -558,7 +558,7 @@ void MeshTest::testReadObjFile()
 
 void MeshTest::testReadPlyFile()
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/ply/sphere.ply"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/mesh/ply/sphere.ply"));
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
@@ -579,7 +579,7 @@ void MeshTest::testReadPlyFile()
 
 void MeshTest::testReadStlFile()
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/stl/sphere.stl"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/mesh/stl/sphere.stl"));
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
 
@@ -601,7 +601,7 @@ void MeshTest::testReadStlFile()
 void MeshTest::testWriteVtkFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -625,7 +625,7 @@ void MeshTest::testWriteVtkFile()
 void MeshTest::testWriteVtpFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -649,7 +649,7 @@ void MeshTest::testWriteVtpFile()
 void MeshTest::testWriteObjFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -673,7 +673,7 @@ void MeshTest::testWriteObjFile()
 void MeshTest::testWritePlyFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
@@ -697,7 +697,7 @@ void MeshTest::testWritePlyFile()
 void MeshTest::testWriteStlFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    utestData::generator::Mesh::generateTriangleMesh(mesh1);
     ::fwDataTools::Mesh::shakePoint(mesh1);
     ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
     ::fwDataTools::Mesh::colorizeMeshCells(mesh1);

@@ -1,6 +1,6 @@
 set( NAME fwRenderQt3DTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES data fwRenderQt3D fwTest)
+set( DEPENDENCIES data fwRenderQt3D utestData)
 set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )

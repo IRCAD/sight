@@ -30,7 +30,7 @@
 #include <camp/class.hpp>
 #include <camp/userobject.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::reflection::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::reflection::ut::ObjectTest );
 
 namespace sight::data
 {

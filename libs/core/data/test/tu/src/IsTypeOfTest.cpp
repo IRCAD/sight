@@ -32,7 +32,7 @@
 #include <utility>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::IsTypeOfTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::IsTypeOfTest );
 
 namespace sight::data
 {

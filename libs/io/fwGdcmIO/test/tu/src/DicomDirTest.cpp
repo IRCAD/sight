@@ -28,8 +28,8 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/Slow.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/Slow.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
@@ -46,7 +46,7 @@ namespace ut
 void DicomDirTest::setUp()
 {
     // Set up context before running a test.
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -67,11 +67,11 @@ void DicomDirTest::tearDown()
 
 void DicomDirTest::readDicomDir()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
-    const std::filesystem::path path = ::fwTest::Data::dir() /
+    const std::filesystem::path path = utestData::Data::dir() /
                                        "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 

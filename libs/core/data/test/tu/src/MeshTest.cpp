@@ -26,7 +26,7 @@
 #include <data/ObjectLock.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::MeshTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::MeshTest );
 
 namespace sight::data
 {

@@ -28,9 +28,9 @@
 
 #include <fwDcmtkIO/helper/DicomSearch.hpp>
 
-#include <fwTest/Data.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <utestData/Data.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -125,7 +125,7 @@ void SeriesEnquirerTest::pushSeries()
 
     // Retrieve DICOM instances
     const std::filesystem::path path =
-        ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
+        utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + path.string() + "' does not exist",

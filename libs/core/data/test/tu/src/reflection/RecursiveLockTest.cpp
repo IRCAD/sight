@@ -26,9 +26,9 @@
 #include <data/Image.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::reflection::ut::RecursiveLockTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::reflection::ut::RecursiveLockTest );
 
 namespace sight::data
 {
@@ -57,7 +57,7 @@ void RecursiveLockTest::lockTest()
 {
     {
         data::Image::sptr image = data::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+        utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
         core::memory::BufferObject::sptr bo = image->getBufferObject();
 
         {
@@ -73,9 +73,9 @@ void RecursiveLockTest::lockTest()
 
     {
         data::Image::sptr img1 = data::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
+        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
         data::Image::sptr img2 = data::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
+        utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
         data::Composite::sptr composite = data::Composite::New();
         composite->getContainer()["img1"] = img1;
         composite->getContainer()["img2"] = img2;

@@ -26,7 +26,7 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -445,7 +445,7 @@ void helperTest::generateCharucoDict()
 
 void helperTest::chessboardDetectionTest()
 {
-    const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
+    const auto calibDataDir = utestData::Data::dir() / "sight" / "calibration";
     {
         const ::cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
@@ -624,7 +624,7 @@ void helperTest::chessboardDetectionTest()
 
 void helperTest::chessboardDetectionScaleTest()
 {
-    const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
+    const auto calibDataDir = utestData::Data::dir() / "sight" / "calibration";
 
     const ::cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 

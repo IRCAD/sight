@@ -24,7 +24,7 @@
 
 #include <fwCommand/ImageDiffCommand.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCommand::ut::ImageDiffCommandTest );
@@ -58,7 +58,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     data::Image::sptr image = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
     const auto dumpLock = image->lock();
 
@@ -127,7 +127,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     data::Image::sptr image = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
     const auto dumpLock = image->lock();
 

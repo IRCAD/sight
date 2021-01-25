@@ -29,7 +29,7 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::ResamplerTest);
 
@@ -65,8 +65,8 @@ void ResamplerTest::identityTest()
 
     data::Image::sptr imageIn = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::randomizeImage(imageIn);
 
     data::Image::sptr imageOut = data::Image::New();
 
@@ -113,7 +113,7 @@ void ResamplerTest::translateTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     std::uint8_t value = 255;
 
@@ -178,7 +178,7 @@ void ResamplerTest::rotateTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     const float value = 1.f;
 

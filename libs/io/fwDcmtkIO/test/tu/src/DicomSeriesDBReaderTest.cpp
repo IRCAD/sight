@@ -27,7 +27,7 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDcmtkIO::ut::DicomSeriesDBReaderTest );
 
@@ -56,7 +56,7 @@ void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));

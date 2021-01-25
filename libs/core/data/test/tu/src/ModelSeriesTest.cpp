@@ -27,10 +27,10 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwTest/generator/Mesh.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ModelSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ModelSeriesTest );
 
 namespace sight::data
 {
@@ -66,11 +66,11 @@ void ModelSeriesTest::modelTest()
 
     data::Mesh::sptr mesh1 = data::Mesh::New();
     CPPUNIT_ASSERT(mesh1);
-    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+    utestData::generator::Mesh::generateQuadMesh(mesh1);
 
     data::Mesh::sptr mesh2 = data::Mesh::New();
     CPPUNIT_ASSERT(mesh2);
-    ::fwTest::generator::Mesh::generateQuadMesh(mesh2);
+    utestData::generator::Mesh::generateQuadMesh(mesh2);
 
     rec1->setMesh(mesh1);
     rec2->setMesh(mesh2);
@@ -93,7 +93,7 @@ void ModelSeriesTest::deepCopyTest()
 
     data::Reconstruction::sptr rec1 = data::Reconstruction::New();
     data::Mesh::sptr mesh1          = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+    utestData::generator::Mesh::generateQuadMesh(mesh1);
 
     rec1->setMesh(mesh1);
     ModelSeries::ReconstructionVectorType recs;
@@ -118,7 +118,7 @@ void ModelSeriesTest::shallowCopyTest()
 
     data::Reconstruction::sptr rec1 = data::Reconstruction::New();
     data::Mesh::sptr mesh1          = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+    utestData::generator::Mesh::generateQuadMesh(mesh1);
     rec1->setMesh(mesh1);
     ModelSeries::ReconstructionVectorType recs;
     recs.push_back(rec1);

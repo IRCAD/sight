@@ -26,7 +26,7 @@
 #include <data/PointList.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::PointListTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::PointListTest );
 
 namespace sight::data
 {

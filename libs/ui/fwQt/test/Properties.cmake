@@ -3,7 +3,7 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     core
-    fwTest
+    utestData
     fwGuiQt
     fwQt
     fwServices

@@ -26,7 +26,7 @@
 #include <data/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ArrayTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ArrayTest );
 
 namespace sight::data
 {

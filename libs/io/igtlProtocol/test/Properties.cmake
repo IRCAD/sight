@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES 
     core
     data
-    fwTest
+    utestData
     igtlProtocol
 )
 set( REQUIREMENTS  )

@@ -42,7 +42,7 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <cstdint>
 
@@ -193,7 +193,7 @@ void DefaultActivityTest::parametersTest()
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     data::Image::sptr img               = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
     data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
@@ -262,11 +262,11 @@ void DefaultActivityTest::objectTest()
     data::Image::sptr img1 = data::Image::New();
     data::Image::sptr img2 = data::Image::New();
     data::Image::sptr img3 = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
-                                              img1->getOrigin2(), img1->getType(),
-                                              data::Image::PixelFormat::GRAY_SCALE);
-    ::fwTest::generator::Image::generateRandomImage(img3, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
+                                               img1->getOrigin2(), img1->getType(),
+                                               data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateRandomImage(img3, core::tools::Type::create<std::uint8_t>());
 
     data::Vector::sptr vector = data::Vector::New();
     vector->getContainer().push_back(img1);
@@ -329,7 +329,7 @@ void DefaultActivityTest::validatorTest()
     data::Composite::sptr modelCompo     = data::Composite::New();
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img, core::tools::Type::create<std::uint8_t>());
     imageSeries->setImage(img);
 
     {
@@ -448,11 +448,11 @@ void DefaultActivityTest::bigActivityTest()
     data::Image::sptr img1 = data::Image::New();
     data::Image::sptr img2 = data::Image::New();
     data::Image::sptr img3 = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateImage(img3, img2->getSize2(), img2->getSpacing2(),
-                                              img2->getOrigin2(), img2->getType(),
-                                              data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
+    utestData::generator::Image::generateImage(img3, img2->getSize2(), img2->getSpacing2(),
+                                               img2->getOrigin2(), img2->getType(),
+                                               data::Image::PixelFormat::GRAY_SCALE);
     imageSeries1->setImage(img1);
     imageSeries2->setImage(img2);
     imageSeries3->setImage(img3);

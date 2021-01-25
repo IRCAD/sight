@@ -26,7 +26,7 @@
 #include <data/StructureTraits.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ROITraitsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ROITraitsTest );
 
 namespace sight::data
 {

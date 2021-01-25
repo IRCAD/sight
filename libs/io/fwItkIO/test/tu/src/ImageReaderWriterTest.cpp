@@ -30,8 +30,8 @@
 #include <core/base.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
@@ -64,7 +64,7 @@ void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
 
@@ -110,7 +110,7 @@ void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nb
     for (int nb = 0; nb < nbTest; ++nb)
     {
         data::Image::sptr image = data::Image::New();
-        ::fwTest::generator::Image::generateRandomImage(image, type);
+        utestData::generator::Image::generateRandomImage(image, type);
         this->checkSaveLoadInr(image);
     }
 }
@@ -140,12 +140,12 @@ void ImageReaderWriterTest::checkSaveLoadInr( data::Image::sptr image )
 
     ::fwItkIO::ut::helper::roundSpacing(image2);
 
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
     exclude.insert("window_width");
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------

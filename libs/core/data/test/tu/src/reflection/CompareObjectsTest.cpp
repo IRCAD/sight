@@ -32,10 +32,10 @@
 #include <core/Exception.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/generator/SeriesDB.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::reflection::ut::CompareObjectsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::reflection::ut::CompareObjectsTest );
 
 namespace sight::data
 {
@@ -64,7 +64,7 @@ void CompareObjectsTest::compareImageTest()
 {
     core::tools::Type type = core::tools::Type::create< float >();
     data::Image::sptr img  = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, type);
+    utestData::generator::Image::generateRandomImage(img, type);
 
     data::Image::sptr imgComp = data::Object::copy(img);
 
@@ -94,7 +94,7 @@ void CompareObjectsTest::compareImageTest()
 void CompareObjectsTest::compareReconstructionTest()
 {
     data::Reconstruction::sptr rec = data::Reconstruction::New();
-    ::fwTest::generator::SeriesDB::generateReconstruction(rec);
+    utestData::generator::SeriesDB::generateReconstruction(rec);
 
     data::Reconstruction::sptr recComp = data::Object::copy< data::Reconstruction >(rec);
 
@@ -125,8 +125,8 @@ void CompareObjectsTest::compareBufferTest()
     core::tools::Type typeComp = core::tools::Type::create< double >();
 
     {
-        ::fwTest::generator::Image::generateRandomImage(imgRef, typeRef);
-        ::fwTest::generator::Image::generateRandomImage(imgComp, typeComp);
+        utestData::generator::Image::generateRandomImage(imgRef, typeRef);
+        utestData::generator::Image::generateRandomImage(imgComp, typeComp);
 
         visitor::CompareObjects visitor;
         visitor.compare(imgRef, imgComp);

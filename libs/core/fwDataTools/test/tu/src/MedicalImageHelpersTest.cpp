@@ -27,7 +27,7 @@
 #include <data/Array.hpp>
 #include <data/Image.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <cstdint>
 
@@ -71,8 +71,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const data::Image::Size size       = {125, 110, 45};
         const data::Image::Spacing spacing = { 1., 1., 1.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
@@ -106,8 +106,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const data::Image::Size size       = {42, 34, 75};
         const data::Image::Spacing spacing = { 1., 1., 1.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
@@ -145,8 +145,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
         const data::Image::Size size       = {156, 208, 0};
         const data::Image::Spacing spacing = { 1., 1., 0.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 

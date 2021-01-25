@@ -31,7 +31,7 @@
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::DicomSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::DicomSeriesTest );
 
 namespace sight::data
 {

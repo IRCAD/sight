@@ -60,7 +60,7 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::CopyTest);
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::CopyTest);
 
 namespace sight::data
 {

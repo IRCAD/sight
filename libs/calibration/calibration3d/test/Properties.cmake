@@ -4,7 +4,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
      core
      fwDataTools
-     fwTest
+     utestData
      calibration3d
 )
 set( REQUIREMENTS  )

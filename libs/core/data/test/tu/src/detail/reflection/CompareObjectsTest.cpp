@@ -31,9 +31,9 @@
 #include <core/Exception.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwTest/generator/SeriesDB.hpp>
+#include <utestData/generator/SeriesDB.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::detail::reflection::ut::CompareObjectsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::CompareObjectsTest );
 
 namespace sight::data
 {
@@ -62,7 +62,7 @@ void CompareObjectsTest::tearDown()
 
 void CompareObjectsTest::compareSeriesDBTest()
 {
-    data::SeriesDB::sptr seriesDBRef  = ::fwTest::generator::SeriesDB::createSeriesDB(1, 1, 1);
+    data::SeriesDB::sptr seriesDBRef  = utestData::generator::SeriesDB::createSeriesDB(1, 1, 1);
     data::SeriesDB::sptr seriesDBComp = data::Object::copy< data::SeriesDB >(seriesDBRef);
 
     {

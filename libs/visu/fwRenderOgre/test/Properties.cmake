@@ -1,6 +1,6 @@
 set( NAME fwRenderOgreTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES core fwTest data fwRenderOgre)
+set( DEPENDENCIES core utestData data fwRenderOgre)
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON )

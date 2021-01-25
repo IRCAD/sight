@@ -39,7 +39,7 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -85,8 +85,8 @@ void SeriesDBReaderTest::tearDown()
 
 void SeriesDBReaderTest::testSeriesDBReader()
 {
-    const std::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
-    const std::filesystem::path meshFile  = ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk";
+    const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path meshFile  = utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            std::filesystem::exists(imageFile));
@@ -168,7 +168,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
 void SeriesDBReaderTest::testMergeSeriesDBReader()
 {
-    const std::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            std::filesystem::exists(imageFile));

@@ -25,7 +25,7 @@
 #include <data/Equipment.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::EquipmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::EquipmentTest );
 
 namespace sight::data
 {

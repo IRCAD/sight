@@ -34,7 +34,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::GraphTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::GraphTest );
 
 namespace sight::data
 {

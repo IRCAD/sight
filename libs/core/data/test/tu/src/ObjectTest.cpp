@@ -25,7 +25,7 @@
 #include <data/Float.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ObjectTest );
 
 namespace sight::data
 {

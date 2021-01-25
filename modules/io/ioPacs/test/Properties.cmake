@@ -5,7 +5,7 @@ set( DEPENDENCIES
     core
     fwServices
     fwPacsIO
-    fwTest
+    utestData
 )
 set( REQUIREMENTS
     data

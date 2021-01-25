@@ -25,7 +25,7 @@
 #include <data/Boolean.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::BooleanTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::BooleanTest );
 
 namespace sight::data
 {

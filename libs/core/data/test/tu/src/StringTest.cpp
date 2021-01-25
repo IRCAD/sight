@@ -25,7 +25,7 @@
 #include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::StringTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::StringTest );
 
 namespace sight::data
 {

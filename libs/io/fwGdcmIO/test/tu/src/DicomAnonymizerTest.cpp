@@ -39,10 +39,10 @@
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
-#include <fwTest/Slow.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/Slow.hpp>
 
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
@@ -63,7 +63,7 @@ namespace ut
 void DicomAnonymizerTest::setUp()
 {
     // Set up context before running a test.
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -84,13 +84,13 @@ void DicomAnonymizerTest::tearDown()
 
 void DicomAnonymizerTest::anonymizeImageSeriesTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
-    ::fwTest::generator::Image::initRand();
+    utestData::generator::Image::initRand();
     data::ImageSeries::sptr imgSeries;
-    imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
+    imgSeries = utestData::generator::SeriesDB::createImageSeries();
 
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
     std::filesystem::create_directories( path );
@@ -145,10 +145,10 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
 
 void DicomAnonymizerTest::anonymizeDICOMTest()
 {
-    if(!::fwTest::Slow::ignoreSlowTests())
+    if(!utestData::Slow::ignoreSlowTests())
     {
         //TODO Do we have to test more images ?
-        this->testDICOMFolder(::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
+        this->testDICOMFolder(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
     }
 }
 

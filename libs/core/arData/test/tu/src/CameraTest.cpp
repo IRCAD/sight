@@ -26,7 +26,7 @@
 
 #include <core/tools/NumericRoundCast.hxx>
 
-#include <fwTest/helper/compare.hpp>
+#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CameraTest );
@@ -215,7 +215,7 @@ void CameraTest::deepCopyTest()
     ::arData::Camera::sptr camera = initCamera();
     ::arData::Camera::sptr camera2;
     camera2 = data::Object::copy(camera);
-    CPPUNIT_ASSERT(::fwTest::helper::compare(camera, camera2));
+    CPPUNIT_ASSERT(utestData::helper::compare(camera, camera2));
 }
 
 } //namespace ut

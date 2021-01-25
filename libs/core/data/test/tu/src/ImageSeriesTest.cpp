@@ -24,10 +24,10 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ImageSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ImageSeriesTest );
 
 namespace sight::data
 {
@@ -57,7 +57,7 @@ void ImageSeriesTest::imageTest()
     CPPUNIT_ASSERT(m_series);
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type("float"));
+    utestData::generator::Image::generateRandomImage(img, core::tools::Type("float"));
     CPPUNIT_ASSERT(img);
 
     m_series->setImage(img);

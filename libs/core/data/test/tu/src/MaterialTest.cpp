@@ -32,7 +32,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::MaterialTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::MaterialTest );
 
 namespace sight::data
 {

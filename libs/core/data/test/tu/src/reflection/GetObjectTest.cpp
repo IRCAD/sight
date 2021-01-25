@@ -33,9 +33,9 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::reflection::ut::GetObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::reflection::ut::GetObjectTest );
 
 namespace sight::data
 {
@@ -64,9 +64,9 @@ void GetObjectTest::getTest()
 {
     // Visit 1
     data::Image::sptr img1 = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create("int16"));
     data::Image::sptr img2 = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
+    utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create("uint8"));
     data::Composite::sptr composite = data::Composite::New();
     composite->getContainer()["img1"] = img1;
     composite->getContainer()["img2"] = img2;
@@ -98,7 +98,7 @@ void GetObjectTest::invalidPathTest()
     data::Float::sptr floatValue = data::Float::New(1.234f);
     data::Vector::sptr vector    = data::Vector::New();
     data::Image::sptr img        = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(img, core::tools::Type::create("int16"));
 
     auto& internalVector = vector->getContainer();
     internalVector.push_back(intValue);

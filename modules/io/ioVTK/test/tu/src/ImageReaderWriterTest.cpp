@@ -35,9 +35,9 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -115,7 +115,7 @@ core::runtime::EConfigurationElement::sptr getIOConfiguration(const std::filesys
 void ImageReaderWriterTest::testVtkImageReader()
 {
 
-    const std::filesystem::path file = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path file = utestData::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
@@ -167,7 +167,7 @@ void ImageReaderWriterTest::testVtkImageReader()
 
 void ImageReaderWriterTest::testVtiImageReader()
 {
-    const std::filesystem::path file = ::fwTest::Data::dir() /"sight/image/vti/BostonTeapot.vti";
+    const std::filesystem::path file = utestData::Data::dir() /"sight/image/vti/BostonTeapot.vti";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
@@ -221,7 +221,7 @@ void ImageReaderWriterTest::testVtiImageReader()
 void ImageReaderWriterTest::testMhdImageReader()
 {
 
-    const std::filesystem::path file = ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd";
+    const std::filesystem::path file = utestData::Data::dir() / "sight/image/mhd/BostonTeapot.mhd";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));
@@ -316,8 +316,8 @@ void ImageReaderWriterTest::testBitmapImageWriter()
     const data::Image::Origin originExpected   = {0., 0., 0.};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              data::Image::RGB);
+    utestData::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                               data::Image::RGB);
 
     // Test all teh available extensions
     std::vector<std::string> extensions;
@@ -381,9 +381,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
     const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              data::Image::RGBA);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                               data::Image::RGBA);
+    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vtk";
@@ -434,7 +434,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
     core::tools::Type type  = core::tools::Type::s_FLOAT;
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, type);
+    utestData::generator::Image::generateRandomImage(image, type);
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     imageSeries->setImage(image);
@@ -448,11 +448,11 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     data::Image::sptr newImage = data::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), newImage);
 
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
     exclude.insert("window_width");
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, newImage, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, newImage, exclude));
 }
 
 //------------------------------------------------------------------------------
@@ -466,9 +466,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
     const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                               data::Image::GRAY_SCALE);
+    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vti";
@@ -522,9 +522,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
     const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              data::Image::RGB);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                               data::Image::RGB);
+    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder()/ "temporaryFile.mhd";
@@ -578,9 +578,9 @@ void ImageReaderWriterTest::testImageWriterExtension()
     const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
-                                              data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                               data::Image::GRAY_SCALE);
+    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder()/ "temporaryFile.xxx";

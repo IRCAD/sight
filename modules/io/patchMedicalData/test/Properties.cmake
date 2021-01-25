@@ -3,7 +3,7 @@ set( NAME patchMedicalDataTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwTest
+    utestData
     core
     data
     fwServices

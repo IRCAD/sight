@@ -36,9 +36,9 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
@@ -95,7 +95,7 @@ void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
     imageSeries->setImage(image);
@@ -123,7 +123,7 @@ void IoItkTest::testImageWriterJPG()
 {
     // Create Image
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // Create path
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageJPG";
@@ -155,7 +155,7 @@ double tolerance(double num)
 void IoItkTest::testSaveLoadInr()
 {
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
@@ -191,11 +191,11 @@ void IoItkTest::testSaveLoadInr()
     image2->setSpacing2(spacing);
 
     // check Image
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
     exclude.insert("window_width");
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void IoItkTest::ImageSeriesInrTest()
 {
     data::Image::sptr image             = data::Image::New();
     data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     imageSeries->setImage(image);
 
@@ -242,11 +242,11 @@ void IoItkTest::ImageSeriesInrTest()
     image2->setSpacing2(spacing);
 
     // check Image
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
     exclude.insert("window_width");
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------
@@ -257,8 +257,8 @@ void IoItkTest::SeriesDBInrTest()
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const std::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
-    const std::filesystem::path skinFile  = ::fwTest::Data::dir() / "sight/image/inr/skin.inr.gz";
+    const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/inr/image.inr.gz";
+    const std::filesystem::path skinFile  = utestData::Data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
                            std::filesystem::exists(imageFile));

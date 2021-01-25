@@ -37,9 +37,9 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwTest/generator/SeriesDB.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <utestData/generator/SeriesDB.hpp>
 
 #include <filesystem>
 
@@ -166,7 +166,7 @@ void atomTest(const std::filesystem::path& filePath)
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
-    data::SeriesDB::sptr seriesDB   = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
+    data::SeriesDB::sptr seriesDB   = utestData::generator::SeriesDB::createSeriesDB(2, 2, 2);
     data::Composite::sptr workspace = data::Composite::New();
     workspace->getContainer()["processingDB"] = data::Composite::New();
     workspace->getContainer()["planningDB"]   = data::Composite::New();

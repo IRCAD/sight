@@ -25,7 +25,7 @@
 #include <data/TransformationMatrix3D.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::TransformationMatrix3DTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::TransformationMatrix3DTest );
 
 namespace sight::data
 {

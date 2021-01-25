@@ -29,7 +29,7 @@
 
 #include <fwDataTools/Mesh.hpp>
 
-#include <fwTest/generator/Mesh.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 #include <fstream>
 #include <iomanip>
@@ -65,7 +65,7 @@ void MeshTrianTest::testSimpleMesh()
 
     data::Mesh::sptr mesh  = data::Mesh::New();
     data::Mesh::sptr mesh2 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    utestData::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
 
     mesh->adjustAllocatedMemory();
@@ -95,7 +95,7 @@ void MeshTrianTest::testMeshWithCellNormals()
 
     data::Mesh::sptr mesh  = data::Mesh::New();
     data::Mesh::sptr mesh2 = data::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    utestData::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
     ::fwDataTools::Mesh::generateCellNormals(mesh);
 

@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwDcmtkIO
     core
-    fwTest
+    utestData
     data
     )
 set( REQUIREMENTS )

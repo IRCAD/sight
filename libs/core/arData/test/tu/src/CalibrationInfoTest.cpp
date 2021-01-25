@@ -32,8 +32,8 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CalibrationInfoTest );
@@ -48,7 +48,7 @@ namespace ut
 void CalibrationInfoTest::setUp()
 {
     // Set up context before running a test.
-    ::fwTest::generator::Image::initRand();
+    utestData::generator::Image::initRand();
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void CalibrationInfoTest::calibrationInfoTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 
@@ -115,7 +115,7 @@ void CalibrationInfoTest::shallowCopyTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 
@@ -143,7 +143,7 @@ void CalibrationInfoTest::deepCopyTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 
@@ -178,8 +178,8 @@ void CalibrationInfoTest::deepCopyTest()
         CPPUNIT_ASSERT(*iterImg1 != *iterImg2);
         CPPUNIT_ASSERT(*iterPl1 != *iterPl2);
 
-        CPPUNIT_ASSERT(::fwTest::helper::compare(*iterImg1, *iterImg2));
-        CPPUNIT_ASSERT(::fwTest::helper::compare(*iterPl1, *iterPl2));
+        CPPUNIT_ASSERT(utestData::helper::compare(*iterImg1, *iterImg2));
+        CPPUNIT_ASSERT(utestData::helper::compare(*iterPl1, *iterPl2));
 
         ++iterPl1;
         ++iterPl2;

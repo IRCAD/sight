@@ -26,7 +26,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <sstream>
 
@@ -69,17 +69,17 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
     data::Image::sptr roi   = data::Image::New();
 
     // generate a random image
-    ::fwTest::generator::Image::generateRandomImage(image, imageType);
+    utestData::generator::Image::generateRandomImage(image, imageType);
     const data::Image::Size size       = image->getSize2();
     const data::Image::Spacing spacing = image->getSpacing2();
     const data::Image::Origin origin   = image->getOrigin2();
-    ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType,
-                                              data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateImage(roi, size, spacing, origin, roiType,
+                                               data::Image::PixelFormat::GRAY_SCALE);
 
     imageRef = data::Object::copy(image);
 
     // fill roi with random values
-    ::fwTest::generator::Image::randomizeImage(roi);
+    utestData::generator::Image::randomizeImage(roi);
 
     const auto dumpLock = roi->lock();
     auto begin          = roi->begin();

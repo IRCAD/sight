@@ -2,7 +2,7 @@ set( NAME openvslamIOTest )
 set( VERSION )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwTest
+    utestData
     openvslamIO
 )
 set( REQUIREMENTS )

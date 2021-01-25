@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwLog
     core
-    fwTest
+    utestData
     )
 set( REQUIREMENTS )
 

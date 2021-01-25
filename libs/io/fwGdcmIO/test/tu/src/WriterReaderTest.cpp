@@ -45,11 +45,11 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/Object.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Slow.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/generator/Object.hpp>
+#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/helper/compare.hpp>
+#include <utestData/Slow.hpp>
 
 #include <filesystem>
 
@@ -82,7 +82,7 @@ void roundSpacing(data::Image::sptr image)
 void WriterReaderTest::setUp()
 {
     // Set up context before running a test.
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -103,13 +103,13 @@ void WriterReaderTest::tearDown()
 
 void WriterReaderTest::writeReadImageSeriesTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
-    ::fwTest::generator::Image::initRand();
+    utestData::generator::Image::initRand();
     data::ImageSeries::sptr imgSeries;
-    imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
+    imgSeries = utestData::generator::SeriesDB::createImageSeries();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
@@ -139,17 +139,17 @@ void WriterReaderTest::writeReadImageSeriesTest()
     roundSpacing(image);
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
-//    CPPUNIT_ASSERT(::fwTest::helper::compare(imgSeries, sdb->getContainer().front()));
+//    CPPUNIT_ASSERT(utestData::helper::compare(imgSeries, sdb->getContainer().front()));
 }
 //------------------------------------------------------------------------------
 
 void WriterReaderTest::writeReadSeriesDBTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
-    ::fwTest::generator::Image::initRand();
+    utestData::generator::Image::initRand();
     data::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 
@@ -173,7 +173,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     std::filesystem::remove_all( PATH );
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
-//    CPPUNIT_ASSERT(::fwTest::helper::compare(seriesDB, sdb));
+//    CPPUNIT_ASSERT(utestData::helper::compare(seriesDB, sdb));
 }
 
 //------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 {
     //create SeriesDB
     data::SeriesDB::sptr sdb            = data::SeriesDB::New();
-    data::ImageSeries::sptr imgSeries   = ::fwTest::generator::SeriesDB::createImageSeries();
-    data::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(1);
+    data::ImageSeries::sptr imgSeries   = utestData::generator::SeriesDB::createImageSeries();
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(1);
 
     sdb->getContainer().push_back(imgSeries);
     sdb->getContainer().push_back(modelSeries);
@@ -239,7 +239,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 
     // gdcm only manage ambient color in reconstruction
     data::Material::sptr material = data::Material::New();
-    data::Color::sptr color       = ::fwTest::generator::Object::randomizeColor();
+    data::Color::sptr color       = utestData::generator::Object::randomizeColor();
     material->setDiffuse(color);
     rec->setMaterial(material);
     rec->setImage(data::Image::sptr()); // not managed

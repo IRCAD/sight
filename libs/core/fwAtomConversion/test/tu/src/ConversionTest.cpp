@@ -59,8 +59,8 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 
-#include <fwTest/generator/Object.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
+#include <utestData/generator/Object.hpp>
+#include <utestData/generator/SeriesDB.hpp>
 
 #include <functional>
 
@@ -337,7 +337,7 @@ void ConversionTest::tfConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
 
-    data::TransferFunction::sptr tf = ::fwTest::generator::Object::createTFColor(15, 120, 50);
+    data::TransferFunction::sptr tf = utestData::generator::Object::createTFColor(15, 120, 50);
 
     // Create Atom
     atom = ::fwAtomConversion::convert( tf );
@@ -354,7 +354,7 @@ void ConversionTest::seriesDBConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
 
-    data::SeriesDB::sptr sdb = ::fwTest::generator::SeriesDB::createSeriesDB(2, 3, 1);
+    data::SeriesDB::sptr sdb = utestData::generator::SeriesDB::createSeriesDB(2, 3, 1);
 
     // Create Atom
     atom = ::fwAtomConversion::convert( sdb );

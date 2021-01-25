@@ -31,8 +31,8 @@
 
 #include <data/Image.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Image.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -66,7 +66,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
 
     // save image in inr
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
@@ -82,7 +82,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
-    std::filesystem::path pathInr = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
+    std::filesystem::path pathInr = utestData::Data::dir() / "sight/image/inr/image.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + pathInr.string() + "' does not exist",
                            std::filesystem::exists(pathInr));

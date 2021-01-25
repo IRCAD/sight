@@ -39,8 +39,8 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/generator/Image.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <filesystem>
 
@@ -124,7 +124,7 @@ std::vector< data::Series::sptr > getOtherSeries( const data::SeriesDB::sptr& sd
 
 void PatchTest::patchMedicalDataTest()
 {
-    const std::filesystem::path file = ::fwTest::Data::dir() /"sight/patch/md_1.jsonz";
+    const std::filesystem::path file = utestData::Data::dir() /"sight/patch/md_1.jsonz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
                            std::filesystem::exists(file));

@@ -26,7 +26,7 @@
 #include <data/Integer.hpp>
 #include <data/ProcessObject.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ProcessObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ProcessObjectTest );
 
 namespace sight::data
 {

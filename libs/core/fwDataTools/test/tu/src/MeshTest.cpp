@@ -29,7 +29,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwTest/generator/Mesh.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -72,7 +72,7 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t A = 63;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::POINT_COLORS);
@@ -102,7 +102,7 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t A = 124;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::POINT_COLORS);
@@ -165,7 +165,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 3;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
@@ -195,7 +195,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t A = 63;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
@@ -224,7 +224,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 3;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
@@ -270,7 +270,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t A = 55;
 
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
                      mesh->getCellDataSize(), data::Mesh::Attributes::CELL_COLORS);
@@ -315,7 +315,7 @@ void MeshTest::transformTest()
 {
     data::Mesh::sptr mesh = data::Mesh::New();
     const auto lock       = mesh->lock();
-    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    utestData::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::generatePointNormals(mesh);
     ::fwDataTools::Mesh::generateCellNormals(mesh);
 
@@ -385,7 +385,7 @@ void MeshTest::isClosedTest()
 {
     {
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+        utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
@@ -394,7 +394,7 @@ void MeshTest::isClosedTest()
 
     {
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateQuadMesh(mesh);
+        utestData::generator::Mesh::generateQuadMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
@@ -403,7 +403,7 @@ void MeshTest::isClosedTest()
 
     {
         data::Mesh::sptr mesh = data::Mesh::New();
-        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
+        utestData::generator::Mesh::generateTriangleQuadMesh(mesh);
 
         const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 

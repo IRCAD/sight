@@ -39,9 +39,9 @@
 #include <data/String.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/Mesh.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/generator/Mesh.hpp>
+#include <utestData/helper/compare.hpp>
 
 #include <igtlImageMessage.h>
 #include <igtlPointMessage.h>
@@ -80,7 +80,7 @@ void DataConverterTest::meshConverterTest()
     DataConverter::sptr converter = DataConverter::getInstance();
     data::Mesh::sptr mesh         = data::Mesh::New();
     const auto lock               = mesh->lock();
-    ::fwTest::generator::Mesh::generateMesh(mesh);
+    utestData::generator::Mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
 
@@ -164,7 +164,7 @@ void DataConverterTest::imageConverterTest()
     data::Image::sptr image2      = data::Image::New();
 
     core::tools::Type type = core::tools::Type::create< std::int32_t >();
-    ::fwTest::generator::Image::generateRandomImage(image, type);
+    utestData::generator::Image::generateRandomImage(image, type);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(image);
 
@@ -176,7 +176,7 @@ void DataConverterTest::imageConverterTest()
 
     CPPUNIT_ASSERT_MESSAGE("Image is null", image2);
 
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("array.isOwner");
     exclude.insert("window_center");
     exclude.insert("window_width");
@@ -195,7 +195,7 @@ void DataConverterTest::imageConverterTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[1], image2->getOrigin2()[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[2], image2->getOrigin2()[2], epsilon);
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
 }
 

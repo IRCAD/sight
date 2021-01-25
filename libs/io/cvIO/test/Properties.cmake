@@ -2,7 +2,7 @@ set( NAME cvIOTest )
 set( VERSION )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwTest
+    utestData
     cvIO
 )
 set( REQUIREMENTS )

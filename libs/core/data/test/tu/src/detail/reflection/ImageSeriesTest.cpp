@@ -32,10 +32,10 @@
 #include <data/Reconstruction.hpp>
 #include <data/Study.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::detail::reflection::ut::ImageSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::ImageSeriesTest );
 
 namespace sight::data
 {
@@ -136,7 +136,7 @@ void ImageSeriesTest::propertiesTest()
                                                                   { "acquisition_time" }, };
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(img, core::tools::Type::create("uint8"));
+    utestData::generator::Image::generateRandomImage(img, core::tools::Type::create("uint8"));
     data::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
 

@@ -28,7 +28,7 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -61,7 +61,7 @@ void SOPClassUIDSplitterTest::simpleApplication()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SEG";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <fwDcmtkIO/helper/DicomDir.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
@@ -54,7 +54,7 @@ void DicomDirTest::tearDown()
 
 void DicomDirTest::readDicomDir()
 {
-    const std::filesystem::path path = ::fwTest::Data::dir() /
+    const std::filesystem::path path = utestData::Data::dir() /
                                        "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 

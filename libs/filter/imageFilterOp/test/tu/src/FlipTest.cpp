@@ -28,7 +28,7 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(::imageFilterOp::ut::FlipTest);
 
@@ -51,8 +51,8 @@ void FlipTest::flipAlongXAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    ::fwTest::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    utestData::generator::Image::randomizeImage(imageIn);
 
     const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -88,8 +88,8 @@ void FlipTest::flipAlongYAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    ::fwTest::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    utestData::generator::Image::randomizeImage(imageIn);
 
     const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -125,8 +125,8 @@ void FlipTest::flipAlongZAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    ::fwTest::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    utestData::generator::Image::randomizeImage(imageIn);
 
     const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -163,8 +163,8 @@ void FlipTest::flipAlongMultipleAxesTest()
         data::Image::sptr imageIn  = data::Image::New();
         data::Image::sptr imageOut = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-        ::fwTest::generator::Image::randomizeImage(imageIn);
+        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+        utestData::generator::Image::randomizeImage(imageIn);
 
         const auto inDumpLock = imageIn->lock();
         ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -197,8 +197,8 @@ void FlipTest::flipAlongMultipleAxesTest()
         data::Image::sptr imageIn  = data::Image::New();
         data::Image::sptr imageOut = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-        ::fwTest::generator::Image::randomizeImage(imageIn);
+        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+        utestData::generator::Image::randomizeImage(imageIn);
 
         const auto inDumpLock = imageIn->lock();
         ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -235,8 +235,8 @@ void FlipTest::flipEmptyImageTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    ::fwTest::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    utestData::generator::Image::randomizeImage(imageIn);
 
     const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);

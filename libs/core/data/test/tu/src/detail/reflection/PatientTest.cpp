@@ -27,7 +27,7 @@
 #include <data/Patient.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::detail::reflection::ut::PatientTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::PatientTest );
 
 namespace sight::data
 {

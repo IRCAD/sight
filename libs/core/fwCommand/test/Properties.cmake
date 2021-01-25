@@ -3,7 +3,7 @@ set( NAME fwCommandTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
-    fwTest 
+    utestData 
     core
     fwCommand
 )

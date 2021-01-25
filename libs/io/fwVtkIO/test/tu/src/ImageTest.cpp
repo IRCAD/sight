@@ -34,9 +34,9 @@
 
 #include <data/Image.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/File.hpp>
-#include <fwTest/generator/Image.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/File.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -98,8 +98,8 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
     const data::Image::Origin origin   = {-45.6, 25.97, -53.9};
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type(
-                                                  imgtype), data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type(
+                                                   imgtype), data::Image::PixelFormat::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
 
@@ -137,7 +137,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
                                          std::filesystem::path(filename));
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type(imagetype));
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type(imagetype));
 
     typename W::sptr writer = W::New();
     writer->setObject(image);
@@ -175,7 +175,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
 
 void imageFromVTKTest(const std::string& imagename, const std::string& type)
 {
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() /
+    const std::filesystem::path imagePath( utestData::Data::dir() /
                                            std::filesystem::path(imagename) );
 
     CPPUNIT_ASSERT(std::filesystem::exists(imagePath));
@@ -219,7 +219,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
 void testVtkReader(std::string imagetype)
 {
-    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
+    const std::filesystem::path testFile(utestData::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));
@@ -355,8 +355,8 @@ void fromToTest(data::Image::PixelFormat format)
     const core::tools::Type type       = core::tools::Type::create<TYPE>();
 
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, format);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, size, spacing, origin, type, format);
+    utestData::generator::Image::randomizeImage(image);
 
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage(image, vtkImage);
@@ -420,7 +420,7 @@ void ImageTest::fromToVtkTest()
 
 void ImageTest::mhdReaderTest()
 {
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
@@ -449,8 +449,8 @@ void ImageTest::mhdReaderTest()
 
 void ImageTest::mhdWriterTest()
 {
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
-    const std::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path zRawPath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
@@ -475,8 +475,8 @@ void ImageTest::mhdWriterTest()
     CPPUNIT_ASSERT( std::filesystem::exists(testFile) );
     CPPUNIT_ASSERT( std::filesystem::exists(testZRawFile) );
 
-    CPPUNIT_ASSERT( ::fwTest::File::contentEquals(imagePath, testFile) );
-    CPPUNIT_ASSERT( ::fwTest::File::contentEquals(zRawPath, testZRawFile) );
+    CPPUNIT_ASSERT( utestData::File::contentEquals(imagePath, testFile) );
+    CPPUNIT_ASSERT( utestData::File::contentEquals(zRawPath, testZRawFile) );
 
     std::filesystem::remove(testFile);
     std::filesystem::remove(testZRawFile);
@@ -498,7 +498,7 @@ void ImageTest::mhdWriterTest()
 
 void ImageTest::vtiReaderTest()
 {
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
@@ -543,7 +543,7 @@ void ImageTest::vtiWriterTest()
 
 void ImageTest::vtkReaderTest()
 {
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/vtk/img.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));

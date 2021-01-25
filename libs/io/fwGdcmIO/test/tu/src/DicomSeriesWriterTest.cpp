@@ -32,13 +32,13 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Slow.hpp>
-
 #include <fwZip/ReadZipArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
+
+#include <utestData/Data.hpp>
+#include <utestData/helper/compare.hpp>
+#include <utestData/Slow.hpp>
 
 #include <filesystem>
 
@@ -54,7 +54,7 @@ namespace ut
 
 void DicomSeriesWriterTest::setUp()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
         return;
@@ -66,7 +66,7 @@ void DicomSeriesWriterTest::setUp()
 
     // Set up context before running a test.
     data::SeriesDB::sptr srcSeriesDB    = data::SeriesDB::New();
-    const std::filesystem::path srcPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
+    const std::filesystem::path srcPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
                            std::filesystem::exists(srcPath));
@@ -93,7 +93,7 @@ void DicomSeriesWriterTest::tearDown()
 
 void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, bool anonymized)
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -121,13 +121,13 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
     }
 
     CPPUNIT_ASSERT_MESSAGE("Series not equal",
-                           ::fwTest::helper::compare(m_srcDicomSeries, destDicomSeries, excludeSet, excludeSetPrefix));
+                           utestData::helper::compare(m_srcDicomSeries, destDicomSeries, excludeSet, excludeSetPrefix));
 }
 
 // TODO: This test is disabled as DicomSeries doesn't store Binaries anymore.
 void DicomSeriesWriterTest::writeReadTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -150,7 +150,7 @@ void DicomSeriesWriterTest::writeReadTest()
 
 void DicomSeriesWriterTest::writeReadAnonymiseTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }
@@ -179,7 +179,7 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
 
 void DicomSeriesWriterTest::writeReadDirArchiveTest()
 {
-    if(::fwTest::Slow::ignoreSlowTests())
+    if(utestData::Slow::ignoreSlowTests())
     {
         return;
     }

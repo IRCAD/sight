@@ -35,8 +35,8 @@
 #include <data/mt/locked_ptr.hpp>
 #include <data/mt/weak_ptr.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/Mesh.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -243,7 +243,7 @@ void LockTest::testDumpLock()
 {
     data::Image::sptr image = data::Image::New();
 
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_UINT8);
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_UINT8);
 
     // Add the service
     ::fwServices::IService::sptr lockedService = ::fwServices::add("::fwServices::ut::LockedService");

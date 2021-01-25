@@ -30,8 +30,8 @@
 
 #include <data/Object.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
+#include <utestData/generator/Image.hpp>
+#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageConversionTest );
@@ -62,7 +62,7 @@ void ImageConversionTest::testConversion()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     typedef itk::Image< std::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
@@ -74,16 +74,16 @@ void ImageConversionTest::testConversion()
     ::fwItkIO::ut::helper::roundSpacing(image);
     ::fwItkIO::ut::helper::roundSpacing(image2);
 
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("array.isOwner");
     exclude.insert("window_center");
     exclude.insert("window_width");
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
     data::Image::sptr image3    = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
 }
 
 //------------------------------------------------------------------------------
@@ -117,8 +117,8 @@ void ImageConversionTest::testConversion2D()
     data::Image::Origin origin   = {( rand()%200 - 100) / 3., (rand()%200 - 100) / 3., 0.};
     core::tools::Type type       = core::tools::Type::s_INT16;
 
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);
+    utestData::generator::Image::randomizeImage(image);
 
     typedef itk::Image< std::int16_t, 2 > ImageType;
 
@@ -131,16 +131,16 @@ void ImageConversionTest::testConversion2D()
     ::fwItkIO::ut::helper::roundSpacing(image);
     ::fwItkIO::ut::helper::roundSpacing(image2);
 
-    ::fwTest::helper::ExcludeSetType exclude;
+    utestData::helper::ExcludeSetType exclude;
     exclude.insert("array.isOwner");
     exclude.insert("window_center");
     exclude.insert("window_width");
 
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
     data::Image::sptr image3    = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
+    CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
 }
 
 //------------------------------------------------------------------------------

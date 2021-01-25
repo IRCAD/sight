@@ -34,8 +34,8 @@
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 
-#include <fwTest/Data.hpp>
-#include <fwTest/DicomReaderTest.hpp>
+#include <utestData/Data.hpp>
+#include <utestData/DicomReaderTest.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -90,7 +90,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
 void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& seriesDB)
 {
     const double delta                    = 0.001;
-    const std::filesystem::path dicomPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB";
+    const std::filesystem::path dicomPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const std::filesystem::path metaPath  = dicomPath / "META";
 
     for(data::SeriesDB::iterator sIt = seriesDB->begin(); sIt != seriesDB->end(); ++sIt)
@@ -348,7 +348,7 @@ void SeriesDBReaderTest::readJMSSeries()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -364,7 +364,7 @@ void SeriesDBReaderTest::readJMSSeries()
     data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(seriesDB->front());
 
     // Check trimmed values
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
+    CPPUNIT_ASSERT( utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
 
     // Read image in lazy mode
     const auto lock = series->getImage()->lock();
@@ -377,7 +377,7 @@ void SeriesDBReaderTest::readCTSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -441,7 +441,7 @@ void SeriesDBReaderTest::readMRSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -505,7 +505,7 @@ void SeriesDBReaderTest::readOTSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "42-OT-BARRE-MONO2-8-colon";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -570,7 +570,7 @@ void SeriesDBReaderTest::readUnsupportedSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "71-CT-DICOM_SEG";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));
@@ -591,7 +591,7 @@ void SeriesDBReaderTest::readDisabledSeries()
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
                            std::filesystem::exists(path));

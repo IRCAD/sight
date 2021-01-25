@@ -35,7 +35,7 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -67,8 +67,8 @@ void SeriesDBTest::testImportSeriesDB()
 {
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
-    const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path meshPath( utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
@@ -142,8 +142,8 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
-    const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path meshPath( utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
     CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));

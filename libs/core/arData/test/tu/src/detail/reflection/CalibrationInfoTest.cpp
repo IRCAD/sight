@@ -29,7 +29,7 @@
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::detail::reflection::ut::CalibrationInfoTest );
@@ -66,7 +66,7 @@ void CalibrationInfoTest::propertiesTest()
     ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::New();
 
     data::Image::sptr img = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage( img, core::tools::Type::s_INT16);
 
     data::PointList::sptr pl = data::PointList::New();
 

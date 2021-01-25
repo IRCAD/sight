@@ -27,7 +27,7 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwTest/Data.hpp>
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -100,7 +100,7 @@ void DirTest::putFileTest()
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
     const std::filesystem::path testDir  = "test";
-    const std::filesystem::path testFile = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path testFile = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
                            std::filesystem::exists(testFile));

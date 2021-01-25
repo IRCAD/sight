@@ -28,7 +28,7 @@
 #include <core/memory/stream/in/Raw.hpp>
 #include <core/tools/System.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <exception>
 #include <iostream>
@@ -37,7 +37,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::ut::ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ImageTest );
 
 namespace sight::data
 {
@@ -877,8 +877,8 @@ void ImageTest::imageDeepCopy()
 
         {
             const auto imgDumpLock = img->lock();
-            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
-            ::fwTest::generator::Image::randomizeImage(img);
+            utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            utestData::generator::Image::randomizeImage(img);
         }
 
         const data::Image::sptr imgCopy = data::Image::New();
@@ -903,8 +903,8 @@ void ImageTest::imageDeepCopy()
 
         {
             const auto imgDumpLock = img->lock();
-            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
-            ::fwTest::generator::Image::randomizeImage(img);
+            utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            utestData::generator::Image::randomizeImage(img);
         }
 
         const data::Image::sptr imgCopy = data::Image::New();
@@ -921,7 +921,7 @@ void ImageTest::imageDeepCopy()
 void ImageTest::setISStreamTest()
 {
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     const auto dumpLock              = image->lock();
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "ImageTest.raw";
@@ -954,7 +954,7 @@ void ImageTest::setISStreamTest()
 void ImageTest::emptyIteratorTest()
 {
     data::Image::sptr image = data::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     const auto dumpLock = image->lock();
 
