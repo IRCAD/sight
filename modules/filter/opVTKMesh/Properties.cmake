@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES 
     data
     fwGui
-    fwServices
+    services
     fwVtkIO
     core
 )

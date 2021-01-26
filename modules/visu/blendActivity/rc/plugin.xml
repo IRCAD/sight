@@ -1,6 +1,6 @@
 <plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="guiQt" />
     <requirement id="scene2D" />
 

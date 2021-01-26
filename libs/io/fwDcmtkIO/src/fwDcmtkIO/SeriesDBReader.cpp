@@ -123,7 +123,7 @@ void SeriesDBReader::read()
 //------------------------------------------------------------------------------
 
 void SeriesDBReader::readFromDicomSeriesDB(data::SeriesDB::csptr dicomSeriesDB,
-                                           ::fwServices::IService::sptr notifier)
+                                           services::IService::sptr notifier)
 {
     // Read series
     for(const data::Series::csptr& series : dicomSeriesDB->getContainer())
@@ -480,7 +480,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 //------------------------------------------------------------------------------
 
 void SeriesDBReader::convertDicomSeries(data::DicomSeries::csptr dicomSeries,
-                                        ::fwServices::IService::sptr notifier)
+                                        services::IService::sptr notifier)
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
     data::tools::helper::SeriesDB seriesDBHelper(seriesDB);

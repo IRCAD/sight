@@ -11,11 +11,11 @@ are already displayed and where they are displayed on screen.
 -->
 <plugin id="ExNotifications" version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="guiQt" />
     <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>ExNotifications_AppCfg</id>
         <config>
 

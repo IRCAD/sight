@@ -4,7 +4,7 @@ set(TYPE MODULE)
 set(DEPENDENCIES
     core
     data
-    fwServices
+    services
 )
 
 set(WARNINGS_AS_ERRORS ON)

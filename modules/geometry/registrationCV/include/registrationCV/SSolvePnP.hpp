@@ -24,7 +24,7 @@
 
 #include "registrationCV/config.hpp"
 
-#include <fwServices/IRegisterer.hpp>
+#include <services/IRegisterer.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -61,11 +61,11 @@ namespace registrationCV
  * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
  *      object pose is computed otherwise.(default: "false").
  */
-class REGISTRATIONCV_CLASS_API SSolvePnP : public ::fwServices::IRegisterer
+class REGISTRATIONCV_CLASS_API SSolvePnP : public services::IRegisterer
 {
 public:
 
-    fwCoreServiceMacro(SSolvePnP, ::fwServices::IRegisterer)
+    fwCoreServiceMacro(SSolvePnP, services::IRegisterer)
 
     /// Constructor.
     REGISTRATIONCV_API SSolvePnP() noexcept;

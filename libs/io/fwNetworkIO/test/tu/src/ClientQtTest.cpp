@@ -28,7 +28,7 @@
 
 #include <fwQt/WorkerQt.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -119,7 +119,7 @@ void ClientQtTest::tearDown()
     m_worker->getFuture().wait();
     m_worker.reset();
 
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 

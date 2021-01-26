@@ -6,7 +6,7 @@ set( DEPENDENCIES
     utestData
     core
     data
-    fwServices
+    services
     arMDSemanticPatch
 )
-set( REQUIREMENTS data servicesReg ioAtoms patchMedicalData arPatchMedicalData)
+set( REQUIREMENTS data module_services ioAtoms patchMedicalData arPatchMedicalData)

@@ -36,7 +36,7 @@
 
 #include <fwQt/WorkerQt.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <QQuickStyle>
 #include <QSharedPointer>
@@ -76,7 +76,7 @@ void Plugin::start()
     m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     QQuickStyle::setStyle("Material");
 
-    ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
+    services::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
@@ -113,7 +113,7 @@ int Plugin::run() noexcept
     core::runtime::profile::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();
 
     return result;

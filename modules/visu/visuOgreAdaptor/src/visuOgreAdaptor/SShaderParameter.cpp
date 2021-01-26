@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwServices/macros.hpp>
-
 #include <fwRenderOgre/ogre.hpp>
+
+#include <services/macros.hpp>
 
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
@@ -70,7 +70,8 @@ void SShaderParameter::starting()
     this->initialize();
 
     // Retrieves the associated material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName, ::fwRenderOgre::RESOURCE_GROUP);
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName,
+                                                                                     ::fwRenderOgre::RESOURCE_GROUP);
     this->setMaterial(material);
 }
 

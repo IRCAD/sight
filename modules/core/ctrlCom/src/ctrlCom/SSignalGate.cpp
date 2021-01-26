@@ -63,7 +63,7 @@ void SSignalGate::configuring()
 
 void SSignalGate::starting()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     const std::regex re("(.*)/(.*)");
     std::smatch match;

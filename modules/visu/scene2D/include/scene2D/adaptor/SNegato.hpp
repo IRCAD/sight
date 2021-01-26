@@ -93,7 +93,7 @@ public:
      * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    SCENE2D_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

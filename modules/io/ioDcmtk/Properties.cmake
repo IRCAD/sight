@@ -7,10 +7,10 @@ set( DEPENDENCIES
     fwGui
     core
     data
-    fwServices
+    services
     fwIO
     )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     )

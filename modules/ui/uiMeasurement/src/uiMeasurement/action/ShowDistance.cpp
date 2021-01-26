@@ -33,7 +33,7 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <exception>
 
@@ -42,11 +42,11 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, data::Image )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ void ShowDistance::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
+::services::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );

@@ -97,7 +97,7 @@ protected:
     FWRENDEROGRE_API void setMaterial(const ::Ogre::MaterialPtr& material);
 
     /// Connect the input parameter modified signal to this service update slot.
-    FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    FWRENDEROGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

@@ -71,11 +71,11 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
-                                                               const ::fwServices::IService::csptr& _paramSrv,
-                                                               core::com::helper::SigSlotConnection& _connections)
+services::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
+                                                             const services::IService::csptr& _paramSrv,
+                                                             core::com::helper::SigSlotConnection& _connections)
 {
-    ::fwServices::IService::ConfigType paramConfig;
+    services::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
     const data::Object::csptr shaderObj =

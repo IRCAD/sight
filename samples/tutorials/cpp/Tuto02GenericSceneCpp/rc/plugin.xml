@@ -4,7 +4,7 @@
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
     <library name="Tuto02GenericSceneCpp" />
     

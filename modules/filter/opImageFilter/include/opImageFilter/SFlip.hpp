@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opImageFilter
 {
@@ -53,11 +53,11 @@ namespace opImageFilter
  * @subsection Output Output:
  * - \b target [data::Image]: New flipped image.
  */
-class OPIMAGEFILTER_CLASS_API SFlip : public ::fwServices::IOperator
+class OPIMAGEFILTER_CLASS_API SFlip : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SFlip, ::fwServices::IOperator)
+    fwCoreServiceMacro(SFlip, services::IOperator)
 
     OPIMAGEFILTER_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     OPIMAGEFILTER_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;

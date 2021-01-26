@@ -82,7 +82,7 @@ protected:
      *
      * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates m_transformNode from the data::TransformationMatrix3D.
     VISUOGREADAPTOR_API void updating() override;

@@ -28,7 +28,7 @@
 #include <fwRenderOgre/helper/Technique.hpp>
 #include <fwRenderOgre/ogre.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
@@ -77,9 +77,9 @@ struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Lis
 
 };
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_DEPTH_INOUT        = "depth";
-static const ::fwServices::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
+static const services::IService::KeyType s_IMAGE_INOUT        = "image";
+static const services::IService::KeyType s_DEPTH_INOUT        = "depth";
+static const services::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
 
 static std::unique_ptr< FragmentsInfoMaterialListener > s_MATERIAL_LISTENER = nullptr;
 

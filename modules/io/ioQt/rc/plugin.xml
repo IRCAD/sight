@@ -1,9 +1,9 @@
 <plugin id="ioQt" class="::ioQt::Plugin" version="@PROJECT_VERSION@" >
     <library name="ioQt" />
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioQt::SPdfWriter</service>
         <object>::sight::data::Object</object>

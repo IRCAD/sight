@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include <fwRenderQt3D/SRender.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 /// Register SRender service in Services registry.
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderQt3D::SRender )

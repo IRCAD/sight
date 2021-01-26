@@ -46,7 +46,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -111,7 +111,7 @@ void SCreateActivity::configuring()
 
     if(cfg.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType& configFilter = cfg.get_child("filter");
+        const services::IService::ConfigType& configFilter = cfg.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");

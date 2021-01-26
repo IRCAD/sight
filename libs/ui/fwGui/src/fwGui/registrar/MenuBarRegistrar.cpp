@@ -26,8 +26,8 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <utility>
 
@@ -116,13 +116,13 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
         {
             SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
                        core::tools::fwID::exist(sid.first ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
+            services::IService::sptr service = services::get( sid.first );
             service->start();
         }
         else
         {
             bool service_exists = core::tools::fwID::exist(sid.first );
-            if (!service_exists || ::fwServices::get( sid.first )->isStopped())
+            if (!service_exists || services::get( sid.first )->isStopped())
             {
                 ::fwGui::GuiRegistry::actionServiceStopping(sid.first);
             }
@@ -140,7 +140,7 @@ void MenuBarRegistrar::unmanage()
         {
             SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
                        core::tools::fwID::exist(sid.first ) );
-            ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
+            services::IService::sptr service = services::get( sid.first );
             service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);

@@ -24,7 +24,7 @@
 
 #include "fwPreferences/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwPreferences
 {
@@ -33,11 +33,11 @@ namespace fwPreferences
  * @brief Preferences service API.
  * This class represents the base interface for preferences services.
  */
-class FWPREFERENCES_CLASS_API IPreferences : public fwServices::IService
+class FWPREFERENCES_CLASS_API IPreferences : public services::IService
 {
 
 public:
-    fwCoreServiceMacro(IPreferences, ::fwServices::IService)
+    fwCoreServiceMacro(IPreferences, services::IService)
 
     /// Constructor
     IPreferences() noexcept

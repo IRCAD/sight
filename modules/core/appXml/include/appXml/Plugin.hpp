@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <services/AppConfigManager.hpp>
 
 namespace appXml
 {
@@ -56,7 +56,7 @@ public:
 private:
     std::string m_configurationName;
     std::string m_parametersName;
-    ::fwServices::AppConfigManager::sptr m_appConfigMng;
+    services::AppConfigManager::sptr m_appConfigMng;
 };
 
 } // namespace appXml

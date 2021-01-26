@@ -31,8 +31,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -48,13 +48,13 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::Represe
 
 //------------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
 RepresentationEditor::RepresentationEditor() noexcept
 {
-    this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
+    this->registerObject(s_RECONSTRUCTION_INOUT, services::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -399,7 +399,7 @@ void RepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

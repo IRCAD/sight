@@ -1,6 +1,6 @@
 <plugin id="imageConfig" version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
     <xi:include href="configurations/TransferFunctionWithNegatoEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

@@ -35,14 +35,14 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <vtkLandmarkTransform.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::fwServices::IRegisterer, ::basicRegistration::SPointListRegistration )
+fwServicesRegisterMacro( ::sight::services::IRegisterer, ::basicRegistration::SPointListRegistration )
 
 namespace basicRegistration
 {

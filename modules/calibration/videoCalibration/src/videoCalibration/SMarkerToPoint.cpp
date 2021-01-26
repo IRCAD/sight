@@ -33,18 +33,18 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 namespace videoCalibration
 {
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SMarkerToPoint, data::PointList)
+fwServicesRegisterMacro( ::sight::services::IController, ::videoCalibration::SMarkerToPoint, data::PointList)
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
 
-const ::fwServices::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
-const ::fwServices::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
+const services::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
+const services::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
 
 // ----------------------------------------------------------------------------
 

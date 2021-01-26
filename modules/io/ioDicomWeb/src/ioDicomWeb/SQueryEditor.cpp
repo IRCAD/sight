@@ -33,7 +33,7 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -63,7 +63,7 @@ SQueryEditor::~SQueryEditor() noexcept
 
 void SQueryEditor::configuring()
 {
-    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    services::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

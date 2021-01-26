@@ -33,7 +33,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <filesystem>
 
@@ -71,11 +71,11 @@ namespace videoQt
  * @subsection Configuration Configuration
  * - \b path: path to the directory where the frames are saved
  */
-class VIDEOQT_CLASS_API SFrameRecorder : public ::fwServices::IController
+class VIDEOQT_CLASS_API SFrameRecorder : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SFrameRecorder, ::fwServices::IController)
+    fwCoreServiceMacro(SFrameRecorder, services::IController)
 
     /// Contructor. Do nothing.
     VIDEOQT_API SFrameRecorder() noexcept;

@@ -109,7 +109,7 @@ protected:
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the attached texture.
     VISUOGREADAPTOR_API void updating() override;

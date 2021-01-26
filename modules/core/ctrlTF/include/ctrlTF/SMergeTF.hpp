@@ -28,7 +28,7 @@
 #include <data/Point.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ctrlTF
 {
@@ -54,12 +54,12 @@ namespace ctrlTF
  * @subsection In-Out In-Out
  * - \b tf [data::TransferFunction]: the merged TF.
  */
-class CTRLTF_CLASS_API SMergeTF final : public ::fwServices::IController
+class CTRLTF_CLASS_API SMergeTF final : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(::ctrlTF::SMergeTF, ::fwServices::IController)
+    fwCoreServiceMacro(::ctrlTF::SMergeTF, services::IController)
 
     /// Creates the service.
     CTRLTF_API SMergeTF() noexcept;

@@ -26,7 +26,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -42,7 +42,7 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

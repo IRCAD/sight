@@ -25,7 +25,7 @@
 #include "fwIO/config.hpp"
 #include "fwIO/ioTypes.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <filesystem>
 
@@ -48,11 +48,11 @@ namespace fwIO
  * @li To write the object use update() method
  * @li Finally we must call stop() before deleting the service
  */
-class FWIO_CLASS_API IWriter : public ::fwServices::IService
+class FWIO_CLASS_API IWriter : public services::IService
 {
 
 public:
-    fwCoreServiceMacro(IWriter, ::fwServices::IService)
+    fwCoreServiceMacro(IWriter, services::IService)
 
     /**
      * @name Slots API

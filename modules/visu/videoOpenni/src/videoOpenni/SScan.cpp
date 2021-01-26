@@ -30,7 +30,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace videoOpenni
 {
@@ -42,7 +42,7 @@ namespace videoOpenni
 
 const core::com::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
 
-const ::fwServices::IService::KeyType SScan::s_IRTL_INOUT = "irTL";
+const services::IService::KeyType SScan::s_IRTL_INOUT = "irTL";
 
 // -----------------------------------------------------------------------------
 

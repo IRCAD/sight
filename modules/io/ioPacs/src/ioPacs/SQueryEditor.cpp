@@ -32,7 +32,7 @@
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/ofstd/ofstring.h>
@@ -53,9 +53,9 @@ static const std::string s_ICON_PATH_CONFIG   = "icon";
 static const std::string s_ICON_WIDTH_CONFIG  = "width";
 static const std::string s_ICON_HEIGHT_CONFIG = "height";
 
-static const ::fwServices::IService::KeyType s_PACS_INPUT = "pacsConfig";
+static const services::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
-static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
@@ -268,8 +268,8 @@ void SQueryEditor::executeQueryAsync()
     }
     else
     {
-        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
-            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
+            services::IService::s_INFO_NOTIFIED_SIG);
         notif->asyncEmit("Already querying");
         return;
     }
@@ -298,8 +298,8 @@ void SQueryEditor::executeQuery()
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't connect to the PACS");
         m_isQuerying = false;
         return;
@@ -521,8 +521,8 @@ void SQueryEditor::executeQuery()
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't execture query");
     }
 

@@ -1,6 +1,6 @@
 <profile name="preferencesTest" version="0.1">
 
-    <activate id="servicesReg" version="0.1" />
+    <activate id="::sight::modules::services" version="0.1" />
 
     <activate id="preferences" version="0.1" />
 

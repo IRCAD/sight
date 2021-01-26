@@ -24,7 +24,7 @@
 
 #include "opVTKMesh/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <string>
 
@@ -53,12 +53,12 @@ namespace opVTKMesh
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
  */
-class OPVTKMESH_CLASS_API SVTKMesher : public ::fwServices::IOperator
+class OPVTKMESH_CLASS_API SVTKMesher : public services::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SVTKMesher, ::fwServices::IOperator)
+    fwCoreServiceMacro(SVTKMesher, services::IOperator)
 
     OPVTKMESH_API SVTKMesher() noexcept;
 

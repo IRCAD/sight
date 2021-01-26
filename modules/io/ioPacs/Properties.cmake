@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwPacsIO
     data
     fwDataTools
-    fwServices
+    services
     fwIO
     fwPreferences
     )

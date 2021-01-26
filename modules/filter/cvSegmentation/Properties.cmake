@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     fwMath
-    fwServices
+    services
     fwDataTools
     colourImageMasking
     cvIO

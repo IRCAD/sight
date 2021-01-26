@@ -35,7 +35,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_OBJECT_INPUT = "object";
+static const services::IService::KeyType s_OBJECT_INPUT = "object";
 
 static const core::com::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
 
@@ -124,7 +124,7 @@ void SText::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
+::services::IService::KeyConnectionsMap SText::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_OBJECT_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -25,8 +25,8 @@
 #include "fwRenderQt/registry/Adaptor.hpp"
 #include "fwRenderQt/Scene2DGraphicsView.hpp"
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QGraphicsItemGroup>
 

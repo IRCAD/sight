@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ioNetwork
 {
@@ -36,11 +36,11 @@ namespace ioNetwork
  * @brief Abstract class for network listeners if you want create a new network listener you must be inherit
  * @deprecated please use the interface ::igtlIO::INetworkListener.
  */
-class IONETWORK_DEPRECATED_CLASS_API INetworkListener : public ::fwServices::IController
+class IONETWORK_DEPRECATED_CLASS_API INetworkListener : public services::IController
 {
 
 public:
-    fwCoreServiceMacro(INetworkListener, ::fwServices::IController)
+    fwCoreServiceMacro(INetworkListener, services::IController)
 
     /**
      * @brief Service connected signal is emitted when listener is connected

@@ -37,8 +37,8 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QWidget>
 
@@ -153,10 +153,10 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
         ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = ::fwServices::add( "::guiQt::editor::SParameters", m_editorInfo.uuid );
+        auto editorService = services::add( "::guiQt::editor::SParameters", m_editorInfo.uuid );
         m_editorInfo.service = editorService;
 
-        ::fwServices::IService::ConfigType editorConfig;
+        services::IService::ConfigType editorConfig;
 
         // Get all ShaderParameter subservices from the corresponding Material adaptor
         for (const auto& wAdaptor : adaptors)
@@ -189,7 +189,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
 void SCompositorParameterEditor::clear()
 {
-    ::fwServices::IService::sptr objService = m_editorInfo.service.lock();
+    services::IService::sptr objService = m_editorInfo.service.lock();
 
     if(objService)
     {
@@ -197,7 +197,7 @@ void SCompositorParameterEditor::clear()
 
         ::fwGui::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        ::fwServices::OSR::unregisterService(objService);
+        services::OSR::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();

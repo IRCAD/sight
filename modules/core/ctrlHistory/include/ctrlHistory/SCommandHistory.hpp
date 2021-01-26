@@ -29,8 +29,8 @@
 #include <fwCommand/ICommand.hpp>
 #include <fwCommand/UndoRedoManager.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlHistory
 {
@@ -63,11 +63,11 @@ namespace ctrlHistory
  * - \b maxMemory (optional) : The maximum amount of memory (in bytes) used available to store commands.
  * Unlimited by default.
  */
-class CTRLHISTORY_CLASS_API SCommandHistory : public ::fwServices::IService
+class CTRLHISTORY_CLASS_API SCommandHistory : public services::IService
 {
 public:
 
-    fwCoreServiceMacro(SCommandHistory, ::fwServices::IService)
+    fwCoreServiceMacro(SCommandHistory, services::IService)
 
     /// Constructor.
     CTRLHISTORY_API SCommandHistory();

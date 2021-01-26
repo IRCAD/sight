@@ -26,7 +26,7 @@
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <filesystem>
 
@@ -67,13 +67,13 @@ namespace ioPacs
  * - \b retrieveMethod (mandatory, GET/MOVE): Retrieve method protocol.
  * - \b preferenceKey (mandatory, string): Key used to store all these values in preferences.
  */
-class IOPACS_CLASS_API SPacsConfigurationInitializer : public ::fwServices::IController
+class IOPACS_CLASS_API SPacsConfigurationInitializer : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationInitializer,  ::fwServices::IController)
+    fwCoreServiceMacro(SPacsConfigurationInitializer,  services::IController)
 
     /// Creates the service.
     IOPACS_API SPacsConfigurationInitializer() noexcept;
@@ -96,7 +96,7 @@ protected:
      * Connect ::fwPacsIOdata::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
      *::ioPacs::SPacsConfigurationInitializer::s_UPDATE_SLOT.
      */
-    IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
+    IOPACS_API services::IService::KeyConnectionsMap getAutoConnections() const override final;
 
     /// Stores the PACS configuration into preferences.
     IOPACS_API void updating() override;

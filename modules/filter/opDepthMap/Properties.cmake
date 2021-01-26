@@ -5,7 +5,7 @@ set( DEPENDENCIES
     core
     data
     fwDataTools
-    fwServices
+    services
     depthMapOp
 )
 set( REQUIREMENTS

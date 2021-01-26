@@ -27,9 +27,10 @@
 #include <data/Array.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SReadArray, data::Array )
+fwServicesRegisterMacro( ::sight::services::IController, ::Tuto05MultithreadConsoleCpp::SReadArray,
+                         ::sight::data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {

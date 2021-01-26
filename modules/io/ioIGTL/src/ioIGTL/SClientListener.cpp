@@ -34,14 +34,14 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <functional>
 #include <string>
 
 fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::SClientListener)
 
-const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
+const services::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 namespace ioIGTL
 {
@@ -63,7 +63,7 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     const ConfigType configInOut = config.get_child("inout");
 
@@ -73,8 +73,8 @@ void SClientListener::configuring()
     const auto keyCfg = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName                   = attr.get("deviceName", "Sight");
+        const services::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName               = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
         m_client.addAuthorizedDevice(deviceName);
     }

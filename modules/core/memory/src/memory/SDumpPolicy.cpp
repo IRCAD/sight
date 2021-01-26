@@ -26,14 +26,14 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/IPolicy.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <vector>
 
 namespace memory
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, data::Object )
+fwServicesRegisterMacro( ::sight::services::IController, ::memory::SDumpPolicy, ::sight::data::Object )
 
 SDumpPolicy::SDumpPolicy()
 {

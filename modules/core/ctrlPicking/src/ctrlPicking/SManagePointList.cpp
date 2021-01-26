@@ -36,7 +36,7 @@
 #include <fwDataTools/helper/PointList.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>

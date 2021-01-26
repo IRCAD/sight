@@ -106,7 +106,7 @@ protected:
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
      * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     VISUOGREADAPTOR_API void updating() override;

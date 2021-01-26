@@ -24,7 +24,7 @@
 
 #include "opDepthMap/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opDepthMap
 {
@@ -56,10 +56,10 @@ namespace opDepthMap
  * @subsection In-Out In-Out
  * - \b scaledDepthTL [data::FrameTL]: timeline containing the scaled depth maps.
  */
-class OPDEPTHMAP_CLASS_API STransformDepthTL2mm : public ::fwServices::IOperator
+class OPDEPTHMAP_CLASS_API STransformDepthTL2mm : public services::IOperator
 {
 public:
-    fwCoreServiceMacro(STransformDepthTL2mm, ::fwServices::IOperator)
+    fwCoreServiceMacro(STransformDepthTL2mm, services::IOperator)
 
     /**
      * @brief STransformDepthTL2mm constructor.
@@ -86,7 +86,7 @@ protected:
     OPDEPTHMAP_API virtual void updating() override;
 
     /// Defines the auto-connection between the depth timeline and the 'compute' slot
-    OPDEPTHMAP_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    OPDEPTHMAP_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
     /// Apply the scale on the depth map

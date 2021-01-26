@@ -27,7 +27,7 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsItemGroup>
 

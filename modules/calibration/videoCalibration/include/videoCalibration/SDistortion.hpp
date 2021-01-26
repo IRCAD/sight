@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #ifdef OPENCV_CUDA_SUPPORT
 #include <opencv2/cudawarping.hpp>
@@ -75,11 +75,11 @@ namespace videoCalibration
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class VIDEOCALIBRATION_CLASS_API SDistortion : public ::fwServices::IOperator
+class VIDEOCALIBRATION_CLASS_API SDistortion : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SDistortion, ::fwServices::IOperator)
+    fwCoreServiceMacro(SDistortion, services::IOperator)
 
     /**
      * @name Slots API
@@ -99,7 +99,7 @@ public:
      * @brief Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      * and data::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    VIDEOCALIBRATION_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIDEOCALIBRATION_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

@@ -2,12 +2,12 @@
 
     <requirement id="preferences" />
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto10LaunchBasicConfig_AppCfg</id>
         <config>
 

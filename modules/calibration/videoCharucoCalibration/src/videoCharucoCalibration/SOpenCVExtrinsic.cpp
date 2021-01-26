@@ -45,8 +45,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>

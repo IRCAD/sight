@@ -37,8 +37,8 @@
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/macros.hpp>
+#include <services/helper/Config.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreNode.h>
@@ -49,7 +49,7 @@
 
 #include <stack>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, data::Composite )
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::sight::data::Composite )
 
 namespace fwRenderOgre
 {
@@ -60,7 +60,7 @@ const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
+static const services::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 
 //-----------------------------------------------------------------------------
 
@@ -405,7 +405,7 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
 //-----------------------------------------------------------------------------
 
 Layer::ViewportConfigType
-SRender::configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg)
+SRender::configureLayerViewport(const services::IService::ConfigType& _cfg)
 {
     Layer::ViewportConfigType cfgType { 0.f, 0.f, 1.f, 1.f };
     const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");

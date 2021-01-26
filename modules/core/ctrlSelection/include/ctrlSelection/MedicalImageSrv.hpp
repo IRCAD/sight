@@ -24,8 +24,8 @@
 
 #include "ctrlSelection/config.hpp"
 
-#include <fwServices/IController.hpp>
-#include <fwServices/IService.hpp>
+#include <services/IController.hpp>
+#include <services/IService.hpp>
 
 namespace ctrlSelection
 {
@@ -43,12 +43,12 @@ namespace ctrlSelection
  * @subsection In-Out In-Out
  * - \b image [data::Image]: image to be converted into a medical image.
  */
-class CTRLSELECTION_CLASS_API MedicalImageSrv : public ::fwServices::IController
+class CTRLSELECTION_CLASS_API MedicalImageSrv : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(MedicalImageSrv, ::fwServices::IController)
+    fwCoreServiceMacro(MedicalImageSrv, services::IController)
 
     CTRLSELECTION_API MedicalImageSrv() noexcept;
 

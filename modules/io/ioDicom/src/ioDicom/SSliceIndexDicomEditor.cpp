@@ -43,8 +43,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -58,7 +58,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, data::DicomSeries )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::sight::data::DicomSeries )
 
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
@@ -148,14 +148,14 @@ void SSliceIndexDicomEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+    services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
 
     ::fwIO::IReader::sptr dicomReader;
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioDicom::SSliceIndexDicomEditor.", dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
-                                       ::fwServices::IService::AccessType::INOUT, dicomReader);
+    services::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                   services::IService::AccessType::INOUT, dicomReader);
 
     if(m_readerConfig)
     {
@@ -194,7 +194,7 @@ void SSliceIndexDicomEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_dicomReader.lock());
+        services::OSR::unregisterService(m_dicomReader.lock());
     }
 
     // Disconnect the signals

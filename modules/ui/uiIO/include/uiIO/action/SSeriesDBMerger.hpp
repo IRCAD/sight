@@ -62,7 +62,7 @@ namespace action
  * - \b seriesDBImporterConfig : the id of a configuration for SIOSelector
  * for example
  * @code{.xml}
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>seriesDBImporterConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelector config to import SeriesDB</desc>

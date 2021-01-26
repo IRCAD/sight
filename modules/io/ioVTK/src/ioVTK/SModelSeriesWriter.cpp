@@ -43,20 +43,20 @@
 
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshWriter.hpp>
 #include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
 
+#include <services/macros.hpp>
+
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, data::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -171,7 +171,7 @@ void SModelSeriesWriter::stopping()
 void SModelSeriesWriter::configuring()
 {
     ::fwIO::IWriter::configuring();
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     auto ext = config.get<std::string>("extension", "");
 

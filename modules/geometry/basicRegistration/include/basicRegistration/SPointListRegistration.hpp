@@ -26,7 +26,7 @@
 
 #include <core/com/Slot.hpp>
 
-#include <fwServices/IRegisterer.hpp>
+#include <services/IRegisterer.hpp>
 
 namespace basicRegistration
 {
@@ -59,12 +59,12 @@ namespace basicRegistration
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IRegisterer
+class BASICREGISTRATION_CLASS_API SPointListRegistration : public services::IRegisterer
 {
 
 public:
 
-    fwCoreServiceMacro(SPointListRegistration, ::fwServices::IRegisterer)
+    fwCoreServiceMacro(SPointListRegistration, services::IRegisterer)
 
     /**
      * @name Slots API

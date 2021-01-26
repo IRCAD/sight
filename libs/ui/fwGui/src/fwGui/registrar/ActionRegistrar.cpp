@@ -26,7 +26,7 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <utility>
 

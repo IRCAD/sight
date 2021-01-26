@@ -35,8 +35,8 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -50,7 +50,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, data::Composite )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -293,8 +293,8 @@ void SLightSelector::refreshLayers()
 {
     m_layersBox->clear();
 
-    ::fwServices::registry::ObjectService::ServiceVectorType renderers =
-        ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+    services::registry::ObjectService::ServiceVectorType renderers =
+        services::OSR::getServices("::fwRenderOgre::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(auto srv : renderers)
@@ -355,7 +355,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
-        ::fwServices::IService::ConfigType config;
+        services::IService::ConfigType config;
         config.add("config.<xmlattr>.name", this->getID() + "_light");
         config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
         lightAdaptor->setConfiguration(config);
@@ -367,8 +367,8 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 
-        ::fwServices::registry::ObjectService::ServiceVectorType materialServices =
-            ::fwServices::OSR::getServices("::visuOgreAdaptor::SMaterial");
+        services::registry::ObjectService::ServiceVectorType materialServices =
+            services::OSR::getServices("::visuOgreAdaptor::SMaterial");
 
         for(auto srv : materialServices)
         {

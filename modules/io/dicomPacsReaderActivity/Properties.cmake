@@ -15,7 +15,7 @@ set( REQUIREMENTS
     ioGdcm
     ioPacs
     media
-    servicesReg
+    module_services
     uiMedDataQt
     visuVTK
     visuVTKAdaptor

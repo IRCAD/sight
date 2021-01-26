@@ -30,7 +30,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace fwGui
 {

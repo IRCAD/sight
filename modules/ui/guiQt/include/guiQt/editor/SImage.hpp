@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
     /**

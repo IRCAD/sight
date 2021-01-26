@@ -24,8 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/AppConfigParameters.hpp>
+#include <services/registry/AppConfig.hpp>
+#include <services/registry/AppConfigParameters.hpp>
 
 namespace appXml
 {
@@ -65,17 +65,17 @@ void Plugin::initialize()
     SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
     SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
-    m_appConfigMng = ::fwServices::AppConfigManager::New();
+    m_appConfigMng = services::AppConfigManager::New();
 
     if( m_parametersName.empty() )
     {
-        const ::fwServices::registry::FieldAdaptorType fields;
+        const services::registry::FieldAdaptorType fields;
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
     else
     {
-        const ::fwServices::registry::FieldAdaptorType& fields =
-            ::fwServices::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
+        const services::registry::FieldAdaptorType& fields =
+            services::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
 

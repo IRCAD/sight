@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwGuiQt
-    fwServices
+    services
     fwIO
 )
 set( REQUIREMENTS 

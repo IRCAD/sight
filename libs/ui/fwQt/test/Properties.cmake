@@ -6,6 +6,6 @@ set( DEPENDENCIES
     utestData
     fwGuiQt
     fwQt
-    fwServices
+    services
 )
 set( REQUIREMENTS  )

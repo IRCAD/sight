@@ -26,7 +26,7 @@
 
 #include <data/String.hpp>
 
-#include <fwServices/AppManager.hpp>
+#include <services/AppManager.hpp>
 
 #include <QObject>
 
@@ -37,7 +37,7 @@ namespace Tuto05EditorQml
  * @brief   This class is started when the module is loaded.
  */
 class TUTO05EDITORQML_CLASS_API AppManager : public QObject,
-                                             public ::fwServices::AppManager
+                                             public services::AppManager
 {
 
 Q_OBJECT;

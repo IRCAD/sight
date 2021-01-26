@@ -30,12 +30,12 @@
 
 #include <data/Camera.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace uiCalibration
 {
 
-static const ::fwServices::IService::KeyType s_CAMERA_INOUT = "camera";
+static const services::IService::KeyType s_CAMERA_INOUT = "camera";
 
 // -------------------------------------------------------------------------
 

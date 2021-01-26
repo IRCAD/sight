@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/ProgressDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -34,7 +34,7 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string& title, const std::string& message)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IProgressDialog::REGISTRY_KEY);
@@ -51,7 +51,7 @@ ProgressDialog::ProgressDialog(const std::string& title, const std::string& mess
 
 ProgressDialog::~ProgressDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( [&]
             {
                 m_implementation.reset();
             } ).wait();
@@ -61,7 +61,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::setTitle(const std::string& title)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -75,7 +75,7 @@ void ProgressDialog::setTitle(const std::string& title)
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -89,7 +89,7 @@ void ProgressDialog::setMessage(const std::string& msg)
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -103,7 +103,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -124,7 +124,7 @@ void ProgressDialog::cancelPressed()
 
 void ProgressDialog::hideCancelButton()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->hideCancelButton();

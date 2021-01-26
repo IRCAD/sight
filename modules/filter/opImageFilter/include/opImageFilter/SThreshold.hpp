@@ -24,7 +24,7 @@
 
 #include "opImageFilter/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opImageFilter
 {
@@ -57,12 +57,12 @@ namespace opImageFilter
  * (Pixels with value lower than this value will be set to 0,
  * otherwise it will be set to the maximum value of the pixel type of the image.).
  */
-class OPIMAGEFILTER_CLASS_API SThreshold : public ::fwServices::IOperator
+class OPIMAGEFILTER_CLASS_API SThreshold : public services::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SThreshold, ::fwServices::IOperator)
+    fwCoreServiceMacro(SThreshold, services::IOperator)
 
     OPIMAGEFILTER_API SThreshold() noexcept;
 

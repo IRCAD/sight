@@ -28,7 +28,7 @@
 
 #include <fwDataTools/PickingInfo.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ctrlPicking
 {
@@ -63,13 +63,13 @@ namespace ctrlPicking
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class CTRLPICKING_CLASS_API SManagePointList : public ::fwServices::IController
+class CTRLPICKING_CLASS_API SManagePointList : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SManagePointList, ::fwServices::IController)
+    fwCoreServiceMacro(SManagePointList, services::IController)
 
     /// Initialize slots.
     CTRLPICKING_API SManagePointList() noexcept;

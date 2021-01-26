@@ -26,7 +26,7 @@
 
 #include <fwRenderOgre/IParameter.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace uiVisuOgre
 {
@@ -45,9 +45,9 @@ public:
      * @param[in] _paramSrv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    UIVISUOGRE_API static ::fwServices::IService::ConfigType
+    UIVISUOGRE_API static services::IService::ConfigType
     createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
-                 const ::fwServices::IService::csptr& _paramSrv,
+                 const services::IService::csptr& _paramSrv,
                  core::com::helper::SigSlotConnection& _connections);
 };
 

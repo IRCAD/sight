@@ -32,7 +32,7 @@
 
 #include <fwGui/view/IActivityView.hpp>
 
-#include <fwServices/IAppConfigManager.hpp>
+#include <services/IAppConfigManager.hpp>
 
 namespace guiQt
 {
@@ -122,7 +122,7 @@ private:
     void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// Helper to launch activity configuration
-    ::fwServices::IAppConfigManager::sptr m_configManager;
+    services::IAppConfigManager::sptr m_configManager;
 
     /// WID used to register the activity container
     std::string m_wid;

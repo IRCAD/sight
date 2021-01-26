@@ -33,7 +33,7 @@
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreNode.h>
 

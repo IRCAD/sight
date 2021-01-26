@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwQml
     fwQt
     fwGuiQml
-    fwServices
+    services
 )
 set( REQUIREMENTS
     gui

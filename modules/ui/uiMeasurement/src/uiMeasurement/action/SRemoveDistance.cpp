@@ -45,7 +45,7 @@ namespace action
 
 static const core::com::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 

@@ -31,8 +31,8 @@
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreMath.h>
@@ -45,9 +45,9 @@ namespace visuOgreAdaptor
 static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
 static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
-static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
-static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
-static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+static const services::IService::KeyType s_TRANSFORM_INOUT      = "transform";
+static const services::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
+static const services::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
 static const std::string s_NAME_CONFIG         = "name";
 static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
@@ -196,9 +196,9 @@ void SLight::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
+::services::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );

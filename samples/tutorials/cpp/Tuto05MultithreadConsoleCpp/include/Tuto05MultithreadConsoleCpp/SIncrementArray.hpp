@@ -24,7 +24,7 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace thread
 {
@@ -50,13 +50,13 @@ namespace Tuto05MultithreadConsoleCpp
  * @subsection In-Out In-Out:
  * - \b array [data::Array]: array which values should be incremented.
  */
-class TUTO05MULTITHREADCONSOLECPP_CLASS_API SIncrementArray final : public ::fwServices::IController
+class TUTO05MULTITHREADCONSOLECPP_CLASS_API SIncrementArray final : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SIncrementArray, ::fwServices::IController)
+    fwCoreServiceMacro(SIncrementArray, services::IController)
 
     /// Initializes the slot.
     TUTO05MULTITHREADCONSOLECPP_API SIncrementArray() noexcept;

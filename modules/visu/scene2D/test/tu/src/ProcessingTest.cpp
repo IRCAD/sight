@@ -27,11 +27,11 @@
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
 
-#include <fwServices/IController.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/IController.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -63,7 +63,7 @@ void ProcessingTest::tearDown()
 
 void ProcessingTest::histogramTest()
 {
-    ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+    services::registry::ActiveWorkers::sptr activeWorkers = services::registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
     typedef signed short ImageType;
@@ -107,7 +107,7 @@ void ProcessingTest::histogramTest()
         ++count;
     }
 
-    auto srv = ::fwServices::add< ::fwServices::IController >(implementation, "");
+    auto srv = services::add< services::IController >(implementation, "");
     CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
     core::runtime::EConfigurationElement::sptr binsWidthCfg = core::runtime::EConfigurationElement::New("binsWidth");
@@ -120,7 +120,7 @@ void ProcessingTest::histogramTest()
     srv->configure();
     srv->start().wait();
     srv->stop().wait();
-    ::fwServices::OSR::unregisterService(srv);
+    services::OSR::unregisterService(srv);
 
     data::Histogram::fwHistogramValues values = histogram->getValues();
     CPPUNIT_ASSERT_EQUAL((size_t) 40-10+1, values.size());

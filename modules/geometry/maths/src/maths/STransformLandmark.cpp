@@ -32,15 +32,15 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace maths
 {
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INOUT              = "landmark";
-const ::fwServices::IService::KeyType s_TRANSFORM_INPUT             = "matrix";
+const services::IService::KeyType s_LANDMARK_INOUT                  = "landmark";
+const services::IService::KeyType s_TRANSFORM_INPUT                 = "matrix";
 static const core::com::Signals::SignalKeyType LANDMARK_UPDATED_SIG = "landmarkUpdated";
 
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
@@ -49,7 +49,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IService, ::maths::STransformLandmark )
+fwServicesRegisterMacro( ::sight::services::IService, ::maths::STransformLandmark )
 
 // -----------------------------------------------------------------------------
 
@@ -126,9 +126,9 @@ void STransformLandmark::updating()
 
 // -----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

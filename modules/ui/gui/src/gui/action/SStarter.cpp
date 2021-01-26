@@ -26,8 +26,8 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <boost/range/adaptor/reversed.hpp>
 
@@ -61,14 +61,14 @@ void SStarter::starting()
 
 void SStarter::stopping()
 {
-    std::vector< ::fwServices::IService::SharedFutureType > futures;
+    std::vector< services::IService::SharedFutureType > futures;
 
     for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
     {
         bool srv_exists = core::tools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
         {
-            ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first );
+            services::IService::sptr service = services::get( serviceUid.first );
             if (service->isStarted())
             {
                 futures.push_back(service->stop());
@@ -126,7 +126,7 @@ void SStarter::updating()
         {
             ::fwGui::LockAction lock(this->getSptr());
 
-            ::fwServices::IService::sptr service = ::fwServices::get( uid );
+            services::IService::sptr service = services::get( uid );
             SLM_ASSERT("service not found", service);
             switch ( action )
             {

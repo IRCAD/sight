@@ -37,7 +37,7 @@
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 #include <QHBoxLayout>
 
@@ -48,10 +48,10 @@ static const std::string s_DELAY_CONFIG        = "delay";
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
-static const ::fwServices::IService::KeyType s_DICOMSERIES_INOUT = "series";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT       = "image";
+static const services::IService::KeyType s_DICOMSERIES_INOUT = "series";
+static const services::IService::KeyType s_IMAGE_INOUT       = "image";
 
-static const ::fwServices::IService::KeyType s_PACS_INPUT = "pacsConfig";
+static const services::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
 //------------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ void SSliceIndexDicomEditor::starting()
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
-            ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+            services::registry::ServiceConfig::getDefault()->getServiceConfig(
                 m_readerConfig, "::fwIO::IReader");
 
         SLM_ASSERT("No service configuration " << m_readerConfig << " for ::fwIO::IReader", readerConfig);
@@ -145,9 +145,9 @@ void SSliceIndexDicomEditor::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
@@ -254,8 +254,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to connect to PACS");
     }
 
@@ -295,8 +295,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-                ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+                services::IService::s_FAILURE_NOTIFIED_SIG);
             notif->asyncEmit("No instance found");
         }
 
@@ -304,8 +304,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to execute query");
     }
 
@@ -330,8 +330,8 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
-            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
+            services::IService::s_INFO_NOTIFIED_SIG);
         notif->asyncEmit("Unable to read the modality '" + modality + "'");
         return;
     }
@@ -389,8 +389,8 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     else
     {
         SLM_ERROR("Unable to read the image");
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to read the image");
     }
 }

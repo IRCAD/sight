@@ -36,9 +36,9 @@
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -59,7 +59,7 @@ void PatchTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
+    services::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void PatchTest::setUp()
 void PatchTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ SPTR(T) read(const core::runtime::EConfigurationElement::sptr& srvCfg, const std
 
     typename T::sptr readObj = T::New();
 
-    ::fwServices::IService::sptr readerSrv = ::fwServices::add( reader );
+    services::IService::sptr readerSrv = services::add( reader );
     CPPUNIT_ASSERT(readerSrv);
     readerSrv->registerInOut(readObj, "data");
     readerSrv->setConfiguration(srvCfg);
@@ -86,7 +86,7 @@ SPTR(T) read(const core::runtime::EConfigurationElement::sptr& srvCfg, const std
     readerSrv->start().wait();
     readerSrv->update().wait();
     readerSrv->stop().wait();
-    ::fwServices::OSR::unregisterService( readerSrv );
+    services::OSR::unregisterService( readerSrv );
 
     return readObj;
 }

@@ -5,7 +5,7 @@
     <requirement id="preferences" />
     <requirement id="visuOgre" />
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="scene2D" />
     <requirement id="patchMedicalData" />
     <requirement id="ioPacs" />
@@ -14,7 +14,7 @@
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::ServiceConfig" >
+    <extension implements="::sight::services::registry::ServiceConfig" >
         <id>OgreViewer_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
@@ -23,7 +23,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig" >
+    <extension implements="::sight::services::registry::ServiceConfig" >
         <id>OgreViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -31,7 +31,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig" >
+    <extension implements="::sight::services::registry::ServiceConfig" >
         <id>OgreViewer_gdcm_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
@@ -39,7 +39,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>OgreViewer_AppCfg</id>
         <config>
 
@@ -436,7 +436,7 @@
 
             <!-- ************************ Configuration launchers ********************************* -->
 
-            <service uid="ogreGenericSceneCfg" type="::fwServices::SConfigController" >
+            <service uid="ogreGenericSceneCfg" type="::sight::services::SConfigController" >
                 <appConfig id="OgreViewer_GenericScene_AppCfg" />
                 <parameter replace="WID_PARENT" by="ogreSceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
@@ -461,14 +461,14 @@
                 <inout key="landmarks" uid="landmarks" />
             </service>
 
-            <service uid="organManagerCfg"  type="::fwServices::SConfigController" >
+            <service uid="organManagerCfg"  type="::sight::services::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
                 <inout key="organManagerModelSeries" uid="modelSeries" />
             </service>
 
-            <service uid="extrudedMeshesManagerCfg"  type="::fwServices::SConfigController" >
+            <service uid="extrudedMeshesManagerCfg"  type="::sight::services::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />

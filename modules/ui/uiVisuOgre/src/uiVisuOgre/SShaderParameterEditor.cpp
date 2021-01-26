@@ -35,15 +35,15 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QWidget>
 
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, data::Reconstruction)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -121,7 +121,7 @@ void SShaderParameterEditor::clear()
 {
     m_editorInfo.connections.disconnect();
 
-    ::fwServices::IService::sptr objService = m_editorInfo.service.lock();
+    services::IService::sptr objService = m_editorInfo.service.lock();
 
     if(objService)
     {
@@ -129,7 +129,7 @@ void SShaderParameterEditor::clear()
 
         ::fwGui::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        ::fwServices::OSR::unregisterService(objService);
+        services::OSR::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -144,7 +144,7 @@ void SShaderParameterEditor::updateGuiInfo()
     /// Getting all Material adaptors
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
-    ::fwServices::registry::ObjectService::ServiceVectorType srvVec = ::fwServices::OSR::getServices(
+    services::registry::ObjectService::ServiceVectorType srvVec = services::OSR::getServices(
         "::visuOgreAdaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
@@ -208,10 +208,10 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = ::fwServices::add("::guiQt::editor::SParameters", m_editorInfo.uuid );
+    auto editorService = services::add("::guiQt::editor::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
-    ::fwServices::IService::ConfigType editorConfig;
+    services::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
     for (auto wAdaptor : matService->getRegisteredServices())

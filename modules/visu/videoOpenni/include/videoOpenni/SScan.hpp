@@ -87,7 +87,7 @@ public:
      * @name Data API
      * @{
      */
-    VIDEOOPENNI_API static const ::fwServices::IService::KeyType s_IRTL_INOUT;
+    VIDEOOPENNI_API static const services::IService::KeyType s_IRTL_INOUT;
     /** @} */
 
     /**

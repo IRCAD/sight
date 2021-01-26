@@ -27,8 +27,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <utility>
 
@@ -54,9 +54,9 @@ struct SetFromConfig
     }
 };
 
-static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
+static const services::IService::KeyType s_CONFIG_INOUT = "config";
 
-fwServicesRegisterMacro(::fwServices::IController, ::ioPacs::SPacsConfigurationInitializer)
+fwServicesRegisterMacro( ::sight::services::IController, ::ioPacs::SPacsConfigurationInitializer)
 
 //------------------------------------------------------------------------------
 
@@ -148,9 +148,9 @@ void SPacsConfigurationInitializer::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
 
     connections.push(s_CONFIG_INOUT, ::fwPacsIOdata::PacsConfiguration::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

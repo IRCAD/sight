@@ -5,7 +5,7 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     fwQml
-    fwServices
+    services
     fwRenderQt3D
 )
 set( REQUIREMENTS
@@ -13,7 +13,7 @@ set( REQUIREMENTS
     data
     ioVTK
     uiIO
-    servicesReg
+    module_services
     fwlauncher
     visuQt3DAdaptor
 )

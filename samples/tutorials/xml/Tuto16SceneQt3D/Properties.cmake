@@ -11,7 +11,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

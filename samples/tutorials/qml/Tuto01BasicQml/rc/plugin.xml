@@ -1,6 +1,6 @@
 <plugin id="Tuto01BasicQml" class="::Tuto01BasicQml::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
     <library name="Tuto01BasicQml" />
 

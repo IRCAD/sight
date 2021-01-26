@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     activities
     visuVTK
     ctrlPicking

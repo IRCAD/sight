@@ -19,7 +19,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
@@ -31,7 +31,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
          <id>DicomReaderConfig</id>
          <desc>DICOM Reader Config</desc>
          <config>

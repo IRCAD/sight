@@ -52,10 +52,10 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
+
+#include <services/macros.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 
@@ -64,7 +64,7 @@
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, data::Object )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

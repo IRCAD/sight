@@ -1,12 +1,12 @@
 <plugin id="ExVideoFiltering" version="@PROJECT_VERSION@" >
 
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
     <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>ExVideoFiltering_AppCfg</id>
         <config>
 

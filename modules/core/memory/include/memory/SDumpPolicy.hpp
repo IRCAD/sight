@@ -27,17 +27,17 @@
 #include <core/memory/IPolicy.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace memory
 {
 
-class MEMORY_CLASS_API SDumpPolicy : public ::fwServices::IController
+class MEMORY_CLASS_API SDumpPolicy : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SDumpPolicy, ::fwServices::IController)
+    fwCoreServiceMacro(SDumpPolicy, services::IController)
 
     MEMORY_API SDumpPolicy();
 

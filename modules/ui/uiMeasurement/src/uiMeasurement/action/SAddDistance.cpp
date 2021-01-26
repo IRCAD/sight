@@ -38,7 +38,7 @@ namespace uiMeasurement
 namespace action
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 

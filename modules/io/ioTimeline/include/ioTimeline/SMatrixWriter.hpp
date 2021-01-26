@@ -74,7 +74,7 @@ public:
     IOTIMELINE_API virtual ~SMatrixWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    IOTIMELINE_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    IOTIMELINE_API virtual services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Display a location dialog allowing to select the video file to save

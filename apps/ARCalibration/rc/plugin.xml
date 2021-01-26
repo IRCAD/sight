@@ -1,6 +1,6 @@
 <plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />
@@ -24,7 +24,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfigParameters">
+    <extension implements="::sight::services::registry::AppConfigParameters">
         <id>ARCalibration_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ARCalibration @PROJECT_VERSION@" />

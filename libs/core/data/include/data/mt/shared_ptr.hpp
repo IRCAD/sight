@@ -24,7 +24,7 @@
 
 #include <memory>
 
-namespace fwServices
+namespace sight::services
 {
 namespace registry
 {
@@ -115,8 +115,8 @@ public:
 protected:
 
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    friend class ::fwServices::IService;
-    friend class ::fwServices::registry::ObjectService;
+    friend class services::IService;
+    friend class services::registry::ObjectService;
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()

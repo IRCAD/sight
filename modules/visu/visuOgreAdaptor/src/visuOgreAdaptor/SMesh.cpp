@@ -33,9 +33,9 @@
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -182,9 +182,9 @@ void SMesh::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
     connections.push(s_MESH_INOUT, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
     connections.push(s_MESH_INOUT, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);

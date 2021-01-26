@@ -25,7 +25,7 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -36,7 +36,7 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SScaleValues::SScaleValues() noexcept :
     m_min(0.f),
@@ -417,7 +417,7 @@ void SScaleValues::stopping()
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SScaleValues::getAutoConnections() const
+::services::IService::KeyConnectionsMap SScaleValues::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

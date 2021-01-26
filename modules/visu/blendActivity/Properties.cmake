@@ -18,6 +18,6 @@ set( REQUIREMENTS
     uiMedDataQt
     media
     qtSceneConfig
-    servicesReg
+    module_services
  )
 

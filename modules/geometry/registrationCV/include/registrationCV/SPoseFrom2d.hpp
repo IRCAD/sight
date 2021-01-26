@@ -28,8 +28,8 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <fwServices/IRegisterer.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IRegisterer.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -94,10 +94,10 @@ namespace registrationCV
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class REGISTRATIONCV_CLASS_API SPoseFrom2d : public ::fwServices::IRegisterer
+class REGISTRATIONCV_CLASS_API SPoseFrom2d : public services::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SPoseFrom2d, ::fwServices::IRegisterer)
+    fwCoreServiceMacro(SPoseFrom2d, services::IRegisterer)
 
     typedef std::vector<std::string> VectKeyType;
 
@@ -112,7 +112,7 @@ public:
     REGISTRATIONCV_API virtual ~SPoseFrom2d() noexcept;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

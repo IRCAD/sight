@@ -35,17 +35,17 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
+
+#include <services/macros.hpp>
 
 #include <filesystem>
 
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, data::Composite )
+fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
 

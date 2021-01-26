@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -36,12 +36,12 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu items.
  */
-class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IActionSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IActionSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IActionSrv, services::IService)
     fwCoreAllowSharedFromThis();
 
     /**

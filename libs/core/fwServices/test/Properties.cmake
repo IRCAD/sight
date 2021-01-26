@@ -1,6 +1,0 @@
-set( NAME fwServicesTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utestData data fwServices )
-set( REQUIREMENTS data servicesReg )
-set( WARNINGS_AS_ERRORS ON )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ctrlSelection/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace ctrlSelection
 {
@@ -33,12 +33,12 @@ namespace ctrlSelection
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  */
 
-class CTRLSELECTION_CLASS_API IWrapperSrv : public ::fwServices::IService
+class CTRLSELECTION_CLASS_API IWrapperSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IWrapperSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IWrapperSrv, services::IService)
 
     ///@brief IWrapperSrv constructor. Do nothing.
     CTRLSELECTION_API IWrapperSrv();

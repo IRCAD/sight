@@ -28,7 +28,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QIntValidator>

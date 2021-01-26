@@ -10,11 +10,11 @@ set( DEPENDENCIES
     fwNetworkIO
     data
     fwDataTools
-    fwServices
+    services
     fwIO
     fwPreferences
     )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

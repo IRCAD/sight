@@ -31,9 +31,9 @@
 #include <data/Reconstruction.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
 #include <utestData/helper/compare.hpp>
@@ -77,7 +77,7 @@ void runModelSeriesSrv(
     const SPTR(core::runtime::EConfigurationElement)& cfg,
     const SPTR(data::Object)& obj)
 {
-    ::fwServices::IService::sptr srv = ::fwServices::add(impl);
+    services::IService::sptr srv = services::add(impl);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
@@ -95,7 +95,7 @@ void runModelSeriesSrv(
     CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->update().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
-    ::fwServices::OSR::unregisterService( srv );
+    services::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------

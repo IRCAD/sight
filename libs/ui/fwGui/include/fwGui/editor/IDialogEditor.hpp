@@ -27,7 +27,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -37,12 +37,12 @@ namespace editor
 /**
  * @brief Defines the service interface managing the editor service which create their own container.
  */
-class FWGUI_CLASS_API IDialogEditor : public ::fwServices::IService
+class FWGUI_CLASS_API IDialogEditor : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IDialogEditor, ::fwServices::IService)
+    fwCoreServiceMacro(IDialogEditor, services::IService)
 
 protected:
 

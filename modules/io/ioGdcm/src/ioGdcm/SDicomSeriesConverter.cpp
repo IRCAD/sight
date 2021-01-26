@@ -37,7 +37,7 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioGdcm
 {

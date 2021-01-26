@@ -38,18 +38,18 @@
 
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshWriter.hpp>
 #include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
 
+#include <services/macros.hpp>
+
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, data::Mesh )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

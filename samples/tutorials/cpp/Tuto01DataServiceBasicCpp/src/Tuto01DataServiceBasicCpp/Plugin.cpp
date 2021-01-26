@@ -25,8 +25,8 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace Tuto01DataServiceBasicCpp
 {
@@ -53,9 +53,9 @@ void Plugin::initialize()
     m_image = data::Image::New();
 
     // UI declaration
-    m_frameSrv = ::fwServices::add("::gui::frame::SDefaultFrame");
+    m_frameSrv = services::add("::gui::frame::SDefaultFrame");
     {
-        ::fwServices::IService::ConfigType config;
+        services::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto01DataServiceBasicCpp");
         config.put("gui.frame.icon", "Tuto01DataServiceBasicCpp-0.2/tuto.ico");
         config.put("gui.frame.minSize.<xmlattr>.width", "800");
@@ -66,16 +66,16 @@ void Plugin::initialize()
     }
 
     // Services
-    m_readerSrv = ::fwServices::add("::ioVTK::SImageReader");
+    m_readerSrv = services::add("::ioVTK::SImageReader");
     {
         m_readerSrv->registerInOut(m_image, "data");
-        ::fwServices::IService::ConfigType config;
+        services::IService::ConfigType config;
         config.put("file", "../../data/patient1.vtk");
         m_readerSrv->setConfiguration(config);
         m_readerSrv->configure();
     }
 
-    m_renderSrv = ::fwServices::add("::visuBasic::SImage");
+    m_renderSrv = services::add("::visuBasic::SImage");
     {
         m_renderSrv->registerInput(m_image, "image");
         m_renderSrv->setID("imageRendereSrv");
@@ -108,9 +108,9 @@ void Plugin::uninitialize()
     m_frameSrv->stop();
 
     // unregister the services
-    ::fwServices::OSR::unregisterService( m_readerSrv );
-    ::fwServices::OSR::unregisterService( m_frameSrv );
-    ::fwServices::OSR::unregisterService( m_renderSrv );
+    services::OSR::unregisterService( m_readerSrv );
+    services::OSR::unregisterService( m_frameSrv );
+    services::OSR::unregisterService( m_renderSrv );
     m_image.reset();
 }
 

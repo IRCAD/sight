@@ -39,7 +39,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -96,13 +96,13 @@ void SCreateActivity::stopping()
 void SCreateActivity::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
-    typedef ::fwServices::IService::ConfigType ConfigType;
+    typedef services::IService::ConfigType ConfigType;
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
+    const services::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType& configFilter = srvconfig.get_child("filter");
+        const services::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");

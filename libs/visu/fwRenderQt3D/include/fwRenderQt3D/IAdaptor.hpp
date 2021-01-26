@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwRenderQt3D/config.hpp"
 #include "fwRenderQt3D/SRender.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwRenderQt3D
 {
@@ -37,12 +37,12 @@ namespace fwRenderQt3D
  * - \b updateVisibility(bool): shows or hides the mesh.
  * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
  */
-class FWRENDERQT3D_CLASS_API IAdaptor : public ::fwServices::IService
+class FWRENDERQT3D_CLASS_API IAdaptor : public services::IService
 {
 
 public:
 
-    fwCoreClassMacro(IAdaptor, ::fwServices::IService)
+    fwCoreClassMacro(IAdaptor, services::IService)
 
     /// Gets the render service using this adaptor.
     FWRENDERQT3D_API SRender::sptr getRenderService() const;

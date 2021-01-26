@@ -24,7 +24,7 @@
 
 #include "uiTools/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <glm/vec3.hpp>
 
@@ -61,13 +61,13 @@ namespace uiTools
  * - \b label (optional): (std::string) name of the landmark group
  * - \b width (optional): (int) width of the background image in pixels. The image should have the same width and height
  */
-class UITOOLS_CLASS_API STargeting final : public ::fwServices::IService
+class UITOOLS_CLASS_API STargeting final : public services::IService
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STargeting, ::fwServices::IService)
+    fwCoreServiceMacro(STargeting, services::IService)
 
     /// Initializes member variables and slots.
     UITOOLS_API STargeting() noexcept;

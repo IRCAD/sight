@@ -1,0 +1,84 @@
+<plugin id="::sight::modules::services" class="::sight::modules::services::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="module_services" />
+
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="::sight::services::registry::AppConfig" schema="appConfig.xsd"/>
+
+    <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
+    <extension-point id="::sight::services::registry::AppConfigParameters" schema="appConfigParameters.xsd"/>
+
+    <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
+    <extension-point id="::sight::services::registry::ServiceFactory" schema="serviceFactory.xsd"/>
+
+    <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
+    <extension-point id="::sight::services::registry::ServiceConfig"  schema="serviceConfig.xsd"/>
+
+    <!-- SPECIFIC SERVICES -->
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::Color</service>
+        <object>::sight::data::Color</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::Composite</service>
+        <object>::sight::data::Composite</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::TransformationMatrix3D</service>
+        <object>::sight::data::TransformationMatrix3D</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::Object</service>
+        <object>::sight::data::Object</object>
+    </extension>
+
+     <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::List</service>
+        <object>::sight::data::List</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::BooleanParser</service>
+        <object>::sight::data::Boolean</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::FloatParser</service>
+        <object>::sight::data::Float</object>
+    </extension>
+
+     <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::IntegerParser</service>
+        <object>::sight::data::Integer</object>
+    </extension>
+
+     <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::StringParser</service>
+        <object>::sight::data::String</object>
+    </extension>
+
+     <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IXMLParser</type>
+        <service>::sight::services::parser::TransferFunction</service>
+        <object>::sight::data::TransferFunction</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IController</type>
+        <service>::sight::services::SConfigController</service>
+    </extension>
+
+</plugin>

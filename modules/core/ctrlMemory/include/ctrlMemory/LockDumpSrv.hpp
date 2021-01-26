@@ -26,7 +26,7 @@
 
 #include <data/ObjectLock.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ctrlMemory
 {
@@ -44,12 +44,12 @@ namespace ctrlMemory
  * @subsection In-Out In-Out
  * - \b target [data::Object]: object to dump lock.
  */
-class CTRLMEMORY_CLASS_API LockDumpSrv : public ::fwServices::IController
+class CTRLMEMORY_CLASS_API LockDumpSrv : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(LockDumpSrv, ::fwServices::IController)
+    fwCoreServiceMacro(LockDumpSrv, services::IController)
 
     /// Constructor. Does nothing
     CTRLMEMORY_API LockDumpSrv() noexcept;

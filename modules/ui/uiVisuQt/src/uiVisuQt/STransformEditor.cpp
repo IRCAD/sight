@@ -32,7 +32,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -50,11 +50,11 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::sight::data::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
+const services::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ void STransformEditor::configuring()
 
     this->initialize();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     const std::string rotation = config.get< std::string >("rotation.<xmlattr>.enabled", "yes");
 
@@ -231,7 +231,7 @@ void STransformEditor::updating()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

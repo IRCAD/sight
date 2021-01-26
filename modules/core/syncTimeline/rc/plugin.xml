@@ -2,7 +2,7 @@
 
     <library name="syncTimeline" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::arServices::ISynchronizer</type>
         <service>::syncTimeline::SMatrixTLSynchronizer</service>
         <object>::sight::data::MatrixTL</object>

@@ -201,7 +201,7 @@ protected:
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the light position and orientation.
     VISUOGREADAPTOR_API void updating() override;

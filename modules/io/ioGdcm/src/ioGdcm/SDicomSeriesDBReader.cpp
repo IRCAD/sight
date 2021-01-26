@@ -41,7 +41,7 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <string>
 #include <vector>
@@ -49,7 +49,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, data::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

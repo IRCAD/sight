@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "style/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <QString>
 
@@ -67,11 +67,11 @@ namespace style
         <service uid="..." type="::style::SStyleSelector" />
    @endcode
  */
-class STYLE_CLASS_API SStyleSelector : public ::fwServices::IController
+class STYLE_CLASS_API SStyleSelector : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SStyleSelector, ::fwServices::IController)
+    fwCoreServiceMacro(SStyleSelector, services::IController)
 
     /// Constructor, initializes slots.
     STYLE_API SStyleSelector() noexcept;
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 

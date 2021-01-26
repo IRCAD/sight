@@ -41,8 +41,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -55,10 +55,10 @@ namespace videoCalibration
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
-static const ::fwServices::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
-static const ::fwServices::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
-static const ::fwServices::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
-static const ::fwServices::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
+static const services::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
+static const services::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
+static const services::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
+static const services::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
 
 // ----------------------------------------------------------------------------
 

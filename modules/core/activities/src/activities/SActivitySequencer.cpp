@@ -36,7 +36,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -45,7 +45,7 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, activities::SActivitySequencer )
+fwServicesRegisterMacro( ::sight::services::IController, activities::SActivitySequencer )
 
 //------------------------------------------------------------------------------
 
@@ -59,8 +59,8 @@ const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
 const core::com::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
 const core::com::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
 
-const ::fwServices::IService::KeyType s_SERIESDB_INOUT  = "seriesDB";
-const ::fwServices::IService::KeyType s_OVERRIDES_INPUT = "requirementOverrides";
+const services::IService::KeyType s_SERIESDB_INOUT  = "seriesDB";
+const services::IService::KeyType s_OVERRIDES_INPUT = "requirementOverrides";
 
 //------------------------------------------------------------------------------
 
@@ -87,8 +87,8 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    const ::fwServices::IService::ConfigType config = this->getConfigTree();
-    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type& v,  config.equal_range("activity") )
+    const services::IService::ConfigType config = this->getConfigTree();
+    BOOST_FOREACH( const services::IService::ConfigType::value_type& v,  config.equal_range("activity") )
     {
         m_activityIds.push_back(v.second.get<std::string>(""));
     }
@@ -215,7 +215,7 @@ bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activi
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );

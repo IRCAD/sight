@@ -29,7 +29,7 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwServices/AppManager.hpp>
+#include <services/AppManager.hpp>
 
 #include <QQuickItem>
 
@@ -59,8 +59,8 @@ void Plugin::start()
     qmlRegisterType< AppManager >("tutosceneqt3d", 1, 0, "AppManager");
 
     // Declares an app manager used only to allow fwRenderQt3D features as QML types.
-    auto appManager = std::unique_ptr< ::fwServices::AppManager >(
-        new ::fwServices::AppManager );
+    auto appManager = std::unique_ptr< services::AppManager >(
+        new services::AppManager );
     appManager->create();
 
     // Adds services to the app manager. Those services are only used to register QML types.

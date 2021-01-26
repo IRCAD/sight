@@ -5,9 +5,9 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    fwServices
+    services
 )
 set( REQUIREMENTS
-    servicesReg
+    module_services
 )
 

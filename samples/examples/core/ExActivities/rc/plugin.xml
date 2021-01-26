@@ -1,7 +1,7 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="preferences" />
     <requirement id="activities" />
 
@@ -69,7 +69,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig" >
+    <extension implements="::sight::services::registry::ServiceConfig" >
         <id>ExActivities_Sequencer_SrvCfg</id>
         <service>::uiActivitiesQt::editor::SActivitySequencer</service>
         <desc>Configuration for sequencer</desc>
@@ -86,7 +86,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig" >
+    <extension implements="::sight::services::registry::ServiceConfig" >
         <id>ExActivities_Wizard_SrvCfg</id>
         <service>::uiMedDataQt::editor::SActivityWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
@@ -100,7 +100,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfigParameters" >
+    <extension implements="::sight::services::registry::AppConfigParameters" >
         <id>ExActivities_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="Ex Activities @PROJECT_VERSION@" />

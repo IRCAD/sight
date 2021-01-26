@@ -37,9 +37,9 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <openvslamIO/Helper.hpp>
+
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -85,13 +85,13 @@ static const core::com::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "
 
 static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
-static const ::fwServices::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
-static const ::fwServices::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
-static const ::fwServices::IService::KeyType s_TIMELINE2_INPUT       = "timeline2";
-static const ::fwServices::IService::KeyType s_CAMERA_INPUT          = "camera";
-static const ::fwServices::IService::KeyType s_SCALE_INPUT           = "scale";
+static const services::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
+static const services::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
+static const services::IService::KeyType s_TIMELINE2_INPUT       = "timeline2";
+static const services::IService::KeyType s_CAMERA_INPUT          = "camera";
+static const services::IService::KeyType s_SCALE_INPUT           = "scale";
 
-static const ::fwServices::IService::KeyType s_POINTCLOUD_OUTPUT = "pointCloud";
+static const services::IService::KeyType s_POINTCLOUD_OUTPUT = "pointCloud";
 
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";

@@ -7,11 +7,11 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGui
-    fwServices
+    services
     fwJobs
     activities
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

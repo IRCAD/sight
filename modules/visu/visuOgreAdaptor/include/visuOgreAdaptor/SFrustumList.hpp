@@ -97,7 +97,7 @@ protected:
      *
      * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
     VISUOGREADAPTOR_API void updating() override;

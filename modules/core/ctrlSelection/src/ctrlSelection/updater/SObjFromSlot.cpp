@@ -25,7 +25,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlSelection
 {
@@ -40,7 +40,8 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SObjFromSlot, data::Composite )
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SObjFromSlot,
+                         ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
 

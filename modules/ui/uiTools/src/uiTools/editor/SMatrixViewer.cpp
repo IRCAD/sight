@@ -26,7 +26,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -41,7 +41,7 @@ namespace uiTools
 namespace editor
 {
 
-static const ::fwServices::IService::KeyType s_MATRIX_INPUT = "matrix";
+static const services::IService::KeyType s_MATRIX_INPUT = "matrix";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SMatrixViewer)
 
@@ -143,7 +143,7 @@ void SMatrixViewer::clearLabels()
 
 // ------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIX_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

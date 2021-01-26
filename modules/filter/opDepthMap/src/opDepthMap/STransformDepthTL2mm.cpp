@@ -28,18 +28,18 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace opDepthMap
 {
 
 static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
 
-static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
-static const ::fwServices::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
-static const ::fwServices::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
+static const services::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
+static const services::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
+static const services::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::STransformDepthTL2mm)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opDepthMap::STransformDepthTL2mm)
 
 //------------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ void STransformDepthTL2mm::updating()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -5,6 +5,6 @@ set( DEPENDENCIES
     core
     data
     fwGui
-    fwServices
+    services
     itkRegistrationOp
 )

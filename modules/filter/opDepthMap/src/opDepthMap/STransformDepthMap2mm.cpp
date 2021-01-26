@@ -33,16 +33,16 @@
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/ArrayGetter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace opDepthMap
 {
 
-static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-static const ::fwServices::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
-static const ::fwServices::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
+static const services::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+static const services::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
+static const services::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::STransformDepthMap2mm)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opDepthMap::STransformDepthMap2mm)
 
 //------------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@ set( DEPENDENCIES
         core
         data
         fwDataIO
-        fwServices
+        services
         fwGui
         fwGuiQt
         fwIO

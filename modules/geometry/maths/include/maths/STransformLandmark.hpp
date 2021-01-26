@@ -26,7 +26,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace maths
 {
@@ -61,13 +61,13 @@ namespace maths
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
  */
-class MATHS_CLASS_API STransformLandmark final : public ::fwServices::IService
+class MATHS_CLASS_API STransformLandmark final : public services::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro( STransformLandmark, ::fwServices::IService)
+    fwCoreServiceMacro( STransformLandmark, services::IService)
 
     /// Initializes signals.
     MATHS_API STransformLandmark() noexcept;

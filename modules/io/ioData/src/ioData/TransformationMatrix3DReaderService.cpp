@@ -35,7 +35,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -46,7 +46,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::TransformationMatrix3DReaderService,
+fwServicesRegisterMacro( ::fwIO::IReader, ::io::sight::data::TransformationMatrix3DReaderService,
                          data::TransformationMatrix3D )
 
 //------------------------------------------------------------------------------

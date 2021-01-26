@@ -40,7 +40,7 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/op/Add.hpp>
+#include <services/op/Add.hpp>
 
 #include <QBoxLayout>
 
@@ -60,11 +60,11 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-static const ::fwServices::IService::KeyType s_CURRENT_TF_POOL_INPUT = "currentTFPool";
+static const services::IService::KeyType s_CURRENT_TF_POOL_INPUT = "currentTFPool";
 
-static const ::fwServices::IService::KeyType s_TF_POOLS_INOUT = "tfPools";
+static const services::IService::KeyType s_TF_POOLS_INOUT = "tfPools";
 
-static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
+static const services::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
 
 static const std::string s_CONTEXT_TF = "TF_POOL";
 static const std::string s_VERSION_TF = "V1";
@@ -239,7 +239,7 @@ void SMultipleTF::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TF_POOLS_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
@@ -334,7 +334,7 @@ void SMultipleTF::initializePools()
         {
             // Creates the TF atoms reader.
             const data::TransferFunction::sptr tf = data::TransferFunction::New();
-            const ::fwIO::IReader::sptr tfReader  = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            const ::fwIO::IReader::sptr tfReader  = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
             tfReader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
@@ -354,7 +354,7 @@ void SMultipleTF::initializePools()
                         const std::filesystem::path file = *it;
 
                         // Add a new composite for each TF path.
-                        ::fwServices::IService::ConfigType config;
+                        services::IService::ConfigType config;
                         config.add("file", file.string());
 
                         tfReader->setConfiguration(config);
@@ -399,11 +399,11 @@ void SMultipleTF::initializePools()
             }
 
             // Delete the reader.
-            ::fwServices::OSR::unregisterService(tfReader);
+            services::OSR::unregisterService(tfReader);
 
             // Creates the multiple TF atoms reader.
             data::Composite::sptr tfPool            = data::Composite::New();
-            const ::fwIO::IReader::sptr mulTFReader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            const ::fwIO::IReader::sptr mulTFReader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
             mulTFReader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
 
             // Parse all path contained in m_path and read multiple TF.
@@ -421,7 +421,7 @@ void SMultipleTF::initializePools()
                     {
                         const std::filesystem::path file = *it;
 
-                        ::fwServices::IService::ConfigType config;
+                        services::IService::ConfigType config;
                         config.add("archive.<xmlattr>.backend", "json");
                         config.add("archive.extension", ".tfp");
                         config.add("extensions.extension", ".tfp");
@@ -452,7 +452,7 @@ void SMultipleTF::initializePools()
             }
 
             // Delete the reader.
-            ::fwServices::OSR::unregisterService(mulTFReader);
+            services::OSR::unregisterService(mulTFReader);
         }
 
         // Sends signals.
@@ -781,11 +781,11 @@ void SMultipleTF::importPool()
 {
     const data::Composite::sptr tfPool = data::Composite::New();
 
-    const ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    const ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
     reader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
 
-    ::fwServices::IService::ConfigType config;
+    services::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tfp");
     config.add("extensions.extension", ".tfp");
@@ -795,7 +795,7 @@ void SMultipleTF::importPool()
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    ::fwServices::OSR::unregisterService(reader);
+    services::OSR::unregisterService(reader);
 
     // Check the loaded composite.
     if(tfPool->size() >= 1)
@@ -830,10 +830,10 @@ void SMultipleTF::importPool()
 
 void SMultipleTF::exportPool()
 {
-    const ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    const ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
     writer->registerInput(m_currentTFPool, ::fwIO::s_DATA_KEY);
 
-    ::fwServices::IService::ConfigType config;
+    services::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
     config.add("patcher.<xmlattr>.version", s_VERSION_TF);
     config.add("archive.<xmlattr>.backend", "json");
@@ -846,7 +846,7 @@ void SMultipleTF::exportPool()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    ::fwServices::OSR::unregisterService(writer);
+    services::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------

@@ -24,8 +24,8 @@
 
 #include <data/Mesh.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace Tuto07SceneQt3DQml
 {
@@ -92,8 +92,8 @@ void AppManager::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 void AppManager::onOpenModel()
 {
     // Reads a mesh.
-    const auto meshReader = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ::fwServices::IService::ConfigType meshReaderConfig;
+    const auto meshReader = services::add("::uiIO::editor::SIOSelector");
+    services::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
     meshReaderConfig.put("type.<xmlattr>.class", "::sight::data::Mesh");
     meshReader->setConfiguration(meshReaderConfig);
@@ -112,7 +112,7 @@ void AppManager::onOpenModel()
     }
 
     meshReader->stop();
-    ::fwServices::OSR::unregisterService(meshReader);
+    services::OSR::unregisterService(meshReader);
 }
 
 //------------------------------------------------------------------------------

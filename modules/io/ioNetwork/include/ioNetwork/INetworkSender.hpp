@@ -26,7 +26,7 @@
 
 #include <data/Object.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ioNetwork
 {
@@ -36,12 +36,12 @@ namespace ioNetwork
  * You need to inherit from this class if you want implement a new network sender
  * @deprecated please use the interface ::igtlIO::INetworkSender.
  */
-class IONETWORK_DEPRECATED_CLASS_API INetworkSender : public ::fwServices::IController
+class IONETWORK_DEPRECATED_CLASS_API INetworkSender : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(INetworkSender, ::fwServices::IController)
+    fwCoreServiceMacro(INetworkSender, services::IController)
 
     /**
      * @brief Service connected signal is emitted when the server is started

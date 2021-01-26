@@ -46,14 +46,14 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, data::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

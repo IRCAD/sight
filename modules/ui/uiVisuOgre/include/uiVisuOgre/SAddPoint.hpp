@@ -28,7 +28,7 @@
 
 #include <fwDataTools/PickingInfo.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace uiVisuOgre
 {
@@ -50,11 +50,11 @@ namespace uiVisuOgre
  * @subsection In-Out In-Out:
  * - \b pointList [data::PointList]: target points list.
  */
-class UIVISUOGRE_CLASS_API SAddPoint : public ::fwServices::IController
+class UIVISUOGRE_CLASS_API SAddPoint : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SAddPoint, ::fwServices::IController)
+    fwCoreServiceMacro(SAddPoint, services::IController)
 
     /**
      * @name Slots API

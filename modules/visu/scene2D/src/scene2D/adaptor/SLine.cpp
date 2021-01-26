@@ -24,7 +24,7 @@
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsItemGroup>
 

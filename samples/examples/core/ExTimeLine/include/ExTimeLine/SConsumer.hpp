@@ -24,7 +24,7 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace thread
 {
@@ -57,12 +57,12 @@ namespace ExTimeLine
  * - \b id : id of the receiver.
  * - \b period (optional): time between two messages display, in milliseconds.
  */
-class EXTIMELINE_CLASS_API SConsumer : public ::fwServices::IService
+class EXTIMELINE_CLASS_API SConsumer : public services::IService
 {
 public:
     EXTIMELINE_API static const core::com::Slots::SlotKeyType s_CONSUME_SLOT;
 
-    fwCoreServiceMacro(SConsumer, ::fwServices::IService)
+    fwCoreServiceMacro(SConsumer, services::IService)
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API virtual ~SConsumer() noexcept;

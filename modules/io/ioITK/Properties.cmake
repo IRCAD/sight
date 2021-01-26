@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     fwGui
     fwItkIO
-    fwServices
+    services
     fwIO
 )
 set( REQUIREMENTS  )

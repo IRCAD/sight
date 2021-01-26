@@ -14,7 +14,7 @@ set( REQUIREMENTS
         visuVTKQt
         visuVTKARAdaptor
         data
-        servicesReg
+        module_services
         trackingCalibration
         videoCalibration
         ioIGTL

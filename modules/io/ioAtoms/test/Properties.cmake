@@ -6,13 +6,13 @@ set( DEPENDENCIES
     core
     utestData
     data
-    fwServices
+    services
     fwGui
     fwIO
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     gui
     ioAtoms
 )

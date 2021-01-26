@@ -30,7 +30,7 @@
 
 #include <fwGui/container/fwContainer.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace Qt3DExtras
 {
@@ -88,13 +88,13 @@ public:
     FWRENDERQT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3dView) = 0;
 
     /// Set the render service using the IRenderWindowInteractor
-    virtual void setRenderService(::fwServices::IService::sptr srv)
+    virtual void setRenderService(services::IService::sptr srv)
     {
         m_renderService = srv;
     }
 
 protected:
-    ::fwServices::IService::wptr m_renderService;
+    services::IService::wptr m_renderService;
 };
 
 } // namespace fwRenderQt3D

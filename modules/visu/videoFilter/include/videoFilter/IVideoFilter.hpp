@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "videoFilter/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace videoFilter
 {
@@ -33,12 +33,12 @@ namespace videoFilter
  *          Must be implemented for services that filter videos.
  *
  */
-class VIDEOFILTER_CLASS_API IVideoFilter : public ::fwServices::IService
+class VIDEOFILTER_CLASS_API IVideoFilter : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IVideoFilter, ::fwServices::IService)
+    fwCoreServiceMacro(IVideoFilter, services::IService)
 
     /**
      * @brief Constructor.

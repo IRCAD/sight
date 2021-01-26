@@ -23,7 +23,7 @@
 #pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/Image.hpp>

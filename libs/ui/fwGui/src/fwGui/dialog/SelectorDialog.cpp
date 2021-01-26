@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/SelectorDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -44,7 +44,7 @@ SelectorDialog::SelectorDialog(const std::string& title, const std::string& mess
                                std::vector< std::string > _selections)
 {
     create();
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
             {
                 m_implementation->setTitle(title);
                 m_implementation->setMessage( message );
@@ -63,7 +63,7 @@ SelectorDialog::SelectorDialog()
 
 void SelectorDialog::create()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
@@ -74,7 +74,7 @@ void SelectorDialog::create()
 
 void SelectorDialog::setTitle(std::string title)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_implementation->setTitle(title);
             })).wait();
@@ -86,7 +86,7 @@ std::string SelectorDialog::show()
 {
     std::function< std::string() > f         = std::bind(&ISelectorDialog::show, m_implementation);
     std::shared_future< std::string > future =
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
     future.wait();
     return future.get();
 }
@@ -95,7 +95,7 @@ std::string SelectorDialog::show()
 
 void SelectorDialog::setSelections(std::vector< std::string > _selections)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setSelections( _selections );
             })).wait();
@@ -105,7 +105,7 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 void SelectorDialog::setMessage(const std::string& msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setMessage( msg );
             })).wait();
@@ -116,7 +116,7 @@ void SelectorDialog::setMessage(const std::string& msg)
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->addCustomButton( label, clickedFn );
             })).wait();

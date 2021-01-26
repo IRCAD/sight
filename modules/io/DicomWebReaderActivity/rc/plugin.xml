@@ -20,7 +20,7 @@
         </appConfig>
         </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>DicomWebReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>

@@ -88,19 +88,19 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 
     /**
-     * @brief Starting method. This method is called by start() from base service ( ::fwServices::IService )
+     * @brief Starting method. This method is called by start() from base service ( services::IService )
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
     IODATA_API virtual void starting( ) override;
 
     /**
-     * @brief Stopping method. This method is called by stop() from base service ( ::fwServices::IService )
+     * @brief Stopping method. This method is called by stop() from base service ( services::IService )
      *
      * The stopping method is empty for this service.
      */
@@ -112,7 +112,7 @@ protected:
     IODATA_API virtual void configuring() override;
 
     /**
-     * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
+     * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
      * The transformation matrix is read with the reader ::fwDataIO::reader::TransformationMatrix3DReader.

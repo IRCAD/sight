@@ -26,18 +26,18 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ioIGTL
 {
 /// Interface providing behavior of network listeners, if you want create a new network listener you must be inherit.
-class IOIGTL_CLASS_API INetworkListener : public ::fwServices::IController
+class IOIGTL_CLASS_API INetworkListener : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(INetworkListener, ::fwServices::IController)
+    fwCoreServiceMacro(INetworkListener, services::IController)
 
     /// Initializes signals.
     IOIGTL_API INetworkListener();

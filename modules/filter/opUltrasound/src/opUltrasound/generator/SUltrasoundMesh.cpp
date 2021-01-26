@@ -30,7 +30,7 @@
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/VectorFunctions.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/math/constants/constants.hpp>
 
@@ -57,7 +57,7 @@ static const std::string s_WIDTH_CONFIG        = "width";
 static const std::string s_ANGLE_CONFIG        = "angle";
 static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
-static const ::fwServices::IService::KeyType s_MESH_INOUT = "mesh";
+static const services::IService::KeyType s_MESH_INOUT = "mesh";
 
 fwServicesRegisterMacro(::arServices::ISimulator, ::opUltrasound::generator::SUltrasoundMesh)
 

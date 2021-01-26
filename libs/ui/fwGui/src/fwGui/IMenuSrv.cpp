@@ -29,9 +29,9 @@
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -96,7 +96,7 @@ void IMenuSrv::create()
     SLM_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->createLayout(menu);
         })).wait();
@@ -110,7 +110,7 @@ void IMenuSrv::create()
 void IMenuSrv::destroy()
 {
     m_registrar->unmanage();
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -125,14 +125,14 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, false);
             })).wait();
     }
     else
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, false);
             })).wait();
@@ -148,17 +148,17 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, true);
             })).wait();
     }
     else
     {
-        const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
-        const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+        const services::IService::csptr service    = services::get( actionSrvSID );
+        const ::fwGui::IActionSrv::csptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
 
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
                 const bool isInverted = actionSrv->isInverted();
@@ -176,10 +176,10 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const services::IService::csptr service    = services::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {
             const bool isInverted = actionSrv->isInverted();
             m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
@@ -193,7 +193,7 @@ void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
         })).wait();
@@ -206,7 +206,7 @@ void IMenuSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetVisible(menuItem, isVisible);
         })).wait();

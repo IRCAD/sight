@@ -36,7 +36,7 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -46,9 +46,9 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, data::MatrixTL)
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::sight::data::MatrixTL)
 
-static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
+static const services::IService::KeyType s_MATRIXTL = "matrixTL";
 
 static const core::com::Slots::SlotKeyType s_START_READING = "startReading";
 static const core::com::Slots::SlotKeyType s_STOP_READING  = "stopReading";
@@ -104,7 +104,7 @@ void SMatricesReader::configuring()
 {
     ::fwIO::IReader::configuring();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
     SLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);

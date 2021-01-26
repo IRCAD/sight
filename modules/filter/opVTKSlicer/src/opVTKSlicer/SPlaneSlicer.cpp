@@ -32,24 +32,24 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/vtk.hpp>
+
+#include <services/macros.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageReslice.h>
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKSlicer::SPlaneSlicer )
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opVTKSlicer::SPlaneSlicer )
 
 namespace opVTKSlicer
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN  = "image";
-static const ::fwServices::IService::KeyType s_EXTENT_IN = "imageExtent";
-static const ::fwServices::IService::KeyType s_AXES_IN   = "axes";
-static const ::fwServices::IService::KeyType s_SLICE_OUT = "slice";
+static const services::IService::KeyType s_IMAGE_IN  = "image";
+static const services::IService::KeyType s_EXTENT_IN = "imageExtent";
+static const services::IService::KeyType s_AXES_IN   = "axes";
+static const services::IService::KeyType s_SLICE_OUT = "slice";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
@@ -152,7 +152,7 @@ void SPlaneSlicer::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

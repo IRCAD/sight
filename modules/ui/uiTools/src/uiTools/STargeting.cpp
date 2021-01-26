@@ -31,7 +31,7 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -44,16 +44,16 @@ namespace uiTools
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INPUT    = "landmark";
-const ::fwServices::IService::KeyType s_MATRIX_INPUT      = "matrix";
-const ::fwServices::IService::KeyType s_POINTLIST_INOUT   = "pointList";
+const services::IService::KeyType s_LANDMARK_INPUT        = "landmark";
+const services::IService::KeyType s_MATRIX_INPUT          = "matrix";
+const services::IService::KeyType s_POINTLIST_INOUT       = "pointList";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
 const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
 const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IService, ::uiTools::STargeting )
+fwServicesRegisterMacro( ::sight::services::IService, ::uiTools::STargeting )
 
 // -----------------------------------------------------------------------------
 
@@ -214,10 +214,10 @@ void STargeting::updating()
 
 // -----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STargeting::getAutoConnections() const
+::services::IService::KeyConnectionsMap STargeting::getAutoConnections() const
 {
 
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

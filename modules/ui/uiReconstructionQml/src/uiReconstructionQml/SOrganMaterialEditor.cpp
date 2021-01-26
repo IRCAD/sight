@@ -28,7 +28,7 @@
 namespace uiReconstructionQml
 {
 
-static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ void SOrganMaterialEditor::materialNotification()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

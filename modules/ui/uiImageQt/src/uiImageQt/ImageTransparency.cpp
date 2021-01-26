@@ -36,8 +36,8 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -46,9 +46,9 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, data::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::sight::data::Image )
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 ImageTransparency::ImageTransparency() noexcept
 {
@@ -235,7 +235,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
+::services::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

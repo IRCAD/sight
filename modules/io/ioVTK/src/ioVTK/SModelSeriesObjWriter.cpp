@@ -38,16 +38,16 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/ModelSeriesObjWriter.hpp>
+
+#include <services/macros.hpp>
 
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesObjWriter, data::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesObjWriter, ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

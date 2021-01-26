@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     utestData
     data
-    fwServices
+    services
     fwGui
 )
 set( REQUIREMENTS ioVTK )

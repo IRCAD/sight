@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwRender
-    fwServices
+    services
 )
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON )

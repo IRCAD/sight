@@ -5,7 +5,7 @@ set( DEPENDENCIES
     core
     data
     fwDataTools
-    fwServices
+    services
     fwMath
     arServices
     cvIO
@@ -13,5 +13,5 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

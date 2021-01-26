@@ -29,7 +29,7 @@
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/VectorFunctions.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -76,13 +76,13 @@ namespace cvSegmentation
  * - \b debug (optional, default=no) : Debug mode.
  * - \b convex (optional, default=yes) : Convex shape of extracted image.
  */
-class CVSEGMENTATION_CLASS_API SUltrasoundImage final : public ::fwServices::IOperator
+class CVSEGMENTATION_CLASS_API SUltrasoundImage final : public services::IOperator
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundImage, ::fwServices::IOperator)
+    fwCoreServiceMacro(SUltrasoundImage, services::IOperator)
 
     typedef core::com::Signal< void (int, std::string) > IntegerChangedSignalType;
 
@@ -113,7 +113,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
+    services::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Does nothing.
     void starting() final;

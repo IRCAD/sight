@@ -25,7 +25,7 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace console
 {
@@ -44,7 +44,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     m_worker = core::thread::Worker::New();
-    ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_worker);
+    services::registry::ActiveWorkers::setDefaultWorker(m_worker);
 
     core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
@@ -69,7 +69,7 @@ int Plugin::run() noexcept
     core::runtime::profile::getCurrentProfile()->cleanup();
     const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_worker.reset();
 
     return result;

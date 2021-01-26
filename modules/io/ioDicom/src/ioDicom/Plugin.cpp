@@ -26,7 +26,7 @@
 
 #include <fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioDicom
 {

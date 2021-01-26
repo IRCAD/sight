@@ -32,7 +32,7 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QAction>
 #include <QApplication>
@@ -46,12 +46,12 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT   = "viewport";
-static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const services::IService::KeyType s_VIEWPORT_INPUT   = "viewport";
+static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT = "tfPool";
+static const services::IService::KeyType s_TF_POOL_INOUT = "tfPool";
 
-static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
+static const services::IService::KeyType s_TF_OUTPUT = "tf";
 
 static const std::string s_POLYGON_COLOR_CONFIG  = "lineColor";
 static const std::string s_POINT_COLOR_CONFIG    = "pointColor";
@@ -162,7 +162,7 @@ void SMultipleTF::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);

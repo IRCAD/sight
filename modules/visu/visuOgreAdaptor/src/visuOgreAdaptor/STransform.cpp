@@ -25,12 +25,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace visuOgreAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 static const std::string s_PARENT_CONFIG = "parent";
 
@@ -48,9 +48,9 @@ STransform::~STransform() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransform::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransform::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

@@ -32,9 +32,9 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/op/Get.hpp>
 
 namespace preferences
 {
@@ -49,8 +49,8 @@ void Plugin::start()
 {
     m_preferences = data::Composite::New();
 
-    ::fwServices::IService::sptr prefSrv;
-    prefSrv = ::fwServices::add("::preferences::SPreferences", s_PREF_SERVICE_UID);
+    services::IService::sptr prefSrv;
+    prefSrv = services::add("::preferences::SPreferences", s_PREF_SERVICE_UID);
     prefSrv->registerInOut(m_preferences, fwPreferences::s_PREFERENCES_KEY);
 
     try
@@ -81,9 +81,9 @@ void Plugin::stop() noexcept
 {
     if(core::tools::fwID::exist(s_PREF_SERVICE_UID))
     {
-        ::fwServices::IService::sptr prefSrv = ::fwServices::get(s_PREF_SERVICE_UID);
+        services::IService::sptr prefSrv = services::get(s_PREF_SERVICE_UID);
         prefSrv->stop();
-        ::fwServices::OSR::unregisterService(prefSrv);
+        services::OSR::unregisterService(prefSrv);
     }
     m_preferences.reset();
 }

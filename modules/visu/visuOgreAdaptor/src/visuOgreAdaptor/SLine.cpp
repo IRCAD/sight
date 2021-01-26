@@ -31,7 +31,7 @@
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/ogre.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreAxisAlignedBox.h>
 #include <OgreVector3.h>

@@ -35,7 +35,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -44,13 +44,13 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, data::Vector)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::sight::data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
-const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
+const services::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 SImagesSelector::SImagesSelector() noexcept :

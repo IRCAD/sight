@@ -13,7 +13,7 @@ set( REQUIREMENTS
     ctrlCamp
     ctrlMemory
     ctrlSelection
-    servicesReg
+    module_services
     uiImageQt
     uiIO
     uiMedDataQt

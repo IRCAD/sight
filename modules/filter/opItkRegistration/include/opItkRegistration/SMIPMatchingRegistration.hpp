@@ -24,7 +24,7 @@
 
 #include "opItkRegistration/config.hpp"
 
-#include <fwServices/IRegisterer.hpp>
+#include <services/IRegisterer.hpp>
 
 namespace opItkRegistration
 {
@@ -58,10 +58,10 @@ namespace opItkRegistration
  * - \b transform [data::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
-class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public ::fwServices::IRegisterer
+class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public services::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SMIPMatchingRegistration, ::fwServices::IRegisterer)
+    fwCoreServiceMacro(SMIPMatchingRegistration, services::IRegisterer)
 
     /**
      * @brief Constructor

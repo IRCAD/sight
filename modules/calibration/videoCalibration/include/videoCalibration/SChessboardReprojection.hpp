@@ -26,7 +26,7 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -79,10 +79,10 @@ namespace videoCalibration
  * - \b distortReprojection (optional, default="true"): whether the 'videoImage' is undistorted, in which case the
  *                                                      reprojected points should not be distorted.
  */
-class VIDEOCALIBRATION_CLASS_API SChessboardReprojection : public ::fwServices::IService
+class VIDEOCALIBRATION_CLASS_API SChessboardReprojection : public services::IService
 {
 public:
-    fwCoreServiceMacro(SChessboardReprojection, fwServices::IService)
+    fwCoreServiceMacro(SChessboardReprojection, services::IService)
 
     ///Constructor
     VIDEOCALIBRATION_API SChessboardReprojection();
@@ -106,7 +106,7 @@ protected:
     VIDEOCALIBRATION_API virtual void stopping() final;
 
     /// Connects camera, transform and detected points modification to the update slot.
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
+    virtual services::IService::KeyConnectionsMap getAutoConnections() const final;
 
 private:
 

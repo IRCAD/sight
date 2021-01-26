@@ -24,7 +24,7 @@
 
 #include "guiQt/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <QShortcut>
 
@@ -48,12 +48,12 @@ namespace guiQt
  * - \b activated(): This signal is emitted when the shortcut is received.
  */
 class GUIQT_CLASS_API SSignalShortcut : public QObject,
-                                        public ::fwServices::IService
+                                        public services::IService
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SSignalShortcut, ::fwServices::IService)
+    fwCoreServiceMacro(SSignalShortcut, services::IService)
 
     /// Signal emitted when the shortcut is received.
     typedef core::com::Signal< void () > ActivatedShortcutSignalType;
@@ -66,7 +66,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 

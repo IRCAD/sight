@@ -30,14 +30,14 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, data::Mesh )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
 
-static const ::fwServices::IService::KeyType s_MESH_INOUT = "mesh";
+static const services::IService::KeyType s_MESH_INOUT = "mesh";
 
 static const std::string s_FUNCTOR_CONFIG = "functor";
 

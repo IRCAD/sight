@@ -30,7 +30,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace maths
 {
@@ -61,12 +61,12 @@ namespace maths
  * - \b output [data::TransformationMatrix3D]: Output matrix.
  *
  */
-class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController
+class MATHS_CLASS_API SSwitchMatrices : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SSwitchMatrices, ::fwServices::IController)
+    fwCoreServiceMacro(SSwitchMatrices, services::IController)
 
     /**
      * @brief Constructor.

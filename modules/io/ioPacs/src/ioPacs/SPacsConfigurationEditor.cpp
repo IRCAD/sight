@@ -33,7 +33,7 @@
 
 #include <fwPacsIO/exceptions/Base.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -45,9 +45,9 @@ namespace ioPacs
 
 static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
 
-static const ::fwServices::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
+static const services::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
-static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
+static const services::IService::KeyType s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
 
@@ -255,15 +255,15 @@ void SPacsConfigurationEditor::pingPACS()
 
             if(success)
             {
-                const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
-                    ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+                const auto notif = this->signal< services::IService::SuccessNotifiedSignalType >(
+                    services::IService::s_SUCCESS_NOTIFIED_SIG);
                 notif->asyncEmit("Ping succeeded!");
                 SLM_INFO("Ping succeeded")
             }
             else
             {
-                const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-                    ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+                const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+                    services::IService::s_FAILURE_NOTIFIED_SIG);
                 notif->asyncEmit("Ping failed!");
                 SLM_INFO("Ping failed")
             }

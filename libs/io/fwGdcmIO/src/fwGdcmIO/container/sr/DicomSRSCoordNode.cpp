@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace fwGdcmIO
 {

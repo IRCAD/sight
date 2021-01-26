@@ -32,7 +32,7 @@
 #include <core/HiResClock.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace sight::data
 {
@@ -124,7 +124,7 @@ class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISync
 {
 public:
 
-    fwCoreServiceMacro(SFrameMatrixSynchronizer, fwServices::IController)
+    fwCoreServiceMacro(SFrameMatrixSynchronizer, services::IController)
 
     /**
      * @name Signal API
@@ -170,7 +170,7 @@ public:
      *
      * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
-    VIDEOTOOLS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIDEOTOOLS_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

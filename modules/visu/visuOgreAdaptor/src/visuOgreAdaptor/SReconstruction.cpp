@@ -29,8 +29,8 @@
 
 #include <fwRenderOgre/Material.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -93,9 +93,9 @@ void SReconstruction::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
+::services::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
     connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
     return connections;
@@ -112,7 +112,7 @@ void SReconstruction::updating()
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = ::fwServices::OSR::getRegistered("mesh", ::fwServices::IService::AccessType::INOUT, meshAdaptor);
+        auto mesh = services::OSR::getRegistered("mesh", services::IService::AccessType::INOUT, meshAdaptor);
         if(mesh != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction

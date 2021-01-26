@@ -26,7 +26,7 @@
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>

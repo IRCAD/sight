@@ -43,25 +43,25 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessboardReprojection)
+fwServicesRegisterMacro( ::sight::services::IController, ::videoCalibration::SChessboardReprojection)
 
 namespace videoCalibration
 {
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
-static const ::fwServices::IService::KeyType s_TRANSFORM_INPUT           = "transform";
-static const ::fwServices::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
-static const ::fwServices::IService::KeyType s_CAMERA_INPUT              = "camera";
+static const services::IService::KeyType s_TRANSFORM_INPUT           = "transform";
+static const services::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
+static const services::IService::KeyType s_CAMERA_INPUT              = "camera";
 
-static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_INOUT = "videoImage";
+static const services::IService::KeyType s_VIDEO_IMAGE_INOUT = "videoImage";
 
-static const ::fwServices::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
+static const services::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
 
 static const core::com::Slots::SlotKeyType s_TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
@@ -315,7 +315,7 @@ void SChessboardReprojection::updateChessboardSize()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
+::services::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -28,8 +28,8 @@
 #include <fwGui/GuiRegistry.hpp>
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 namespace gui
 {
@@ -81,7 +81,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         std::string wid = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        ::fwServices::IService::sptr service = ::fwServices::get( uid );
+        services::IService::sptr service = services::get( uid );
         SLM_ASSERT("service not found", service);
         ::fwGui::IGuiContainerSrv::sptr container = ::fwGui::IGuiContainerSrv::dynamicCast(service);
         SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", container);
@@ -95,7 +95,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         bool isEnable   = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        ::fwServices::IService::sptr service = ::fwServices::get( uid );
+        services::IService::sptr service = services::get( uid );
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
         {
@@ -138,7 +138,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        ::fwServices::IService::sptr service = ::fwServices::get( uid );
+        services::IService::sptr service = services::get( uid );
 
         ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
         SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", containerSrv);

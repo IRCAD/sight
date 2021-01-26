@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
         core
         data
-        fwServices
+        services
         fwIO
         fwGui
         arPreferences

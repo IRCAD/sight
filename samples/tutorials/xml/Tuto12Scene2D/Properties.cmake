@@ -9,7 +9,7 @@ set( REQUIREMENTS
     guiQt                   # Start the module, load qt implementation of gui
 
     # Objects declaration
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

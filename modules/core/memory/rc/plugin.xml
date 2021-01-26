@@ -3,8 +3,8 @@
     <library name="memory"/>
 
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IController</type>
         <service>::memory::SDumpPolicy</service>
         <object>::sight::data::Object</object>
     </extension>

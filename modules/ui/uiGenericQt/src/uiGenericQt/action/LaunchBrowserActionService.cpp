@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QCoreApplication>
 #include <QDesktopServices>
@@ -40,7 +40,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

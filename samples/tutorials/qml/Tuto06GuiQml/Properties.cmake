@@ -4,12 +4,12 @@ set( TYPE APP ) # Type APP represent "Application"
 set( START ON)
 set( DEPENDENCIES
     data
-    fwServices
+    services
     fwQml
 )
 set( REQUIREMENTS # The modules used by this application
     data
-    servicesReg
+    module_services
     gui
     guiQt
     )

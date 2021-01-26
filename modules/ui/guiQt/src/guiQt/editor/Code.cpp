@@ -32,7 +32,7 @@
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
 #include <fwGuiQt/highlighter/PythonHighlighter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 
@@ -42,14 +42,14 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, data::String )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::sight::data::String )
 
 //------------------------------------------------------------------------------
 
 const std::string Code::s_PYTHON = "Python";
 const std::string Code::s_CPP = "Cpp";
 
-static const ::fwServices::IService::KeyType s_STRING_INOUT = "string";
+static const services::IService::KeyType s_STRING_INOUT = "string";
 
 //------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ void Code::onModifyValue()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap Code::getAutoConnections() const
+::services::IService::KeyConnectionsMap Code::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_STRING_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

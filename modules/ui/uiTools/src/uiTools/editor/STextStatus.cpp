@@ -28,7 +28,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -40,7 +40,7 @@ namespace uiTools
 namespace editor
 {
 
-static const ::fwServices::IService::KeyType s_STRING_INPUT = "string";
+static const services::IService::KeyType s_STRING_INPUT = "string";
 
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
@@ -125,9 +125,9 @@ void STextStatus::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+::services::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

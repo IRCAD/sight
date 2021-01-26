@@ -2,7 +2,7 @@
     <library name="ioDcmtk" />
 
     
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioDcmtk::SSeriesDBReader</service>
         <object>::sight::data::SeriesDB</object>

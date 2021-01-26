@@ -27,20 +27,20 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Type.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace videoFilter
 {
 
-fwServicesRegisterMacro( ::videoFilter::IVideoFilter, ::videoFilter::SCropVideoQuad, data::FrameTL)
+fwServicesRegisterMacro( ::videoFilter::IVideoFilter, ::videoFilter::SCropVideoQuad, ::sight::data::FrameTL)
 
 const core::com::Slots::SlotKeyType SCropVideoQuad::s_CROP_FRAME_SLOT = "cropFrame";
 
-const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "quadFrameTL";
-const ::fwServices::IService::KeyType s_FRAMETL1_INOUT = "frameTL1";
-const ::fwServices::IService::KeyType s_FRAMETL2_INOUT = "frameTL2";
-const ::fwServices::IService::KeyType s_FRAMETL3_INOUT = "frameTL3";
-const ::fwServices::IService::KeyType s_FRAMETL4_INOUT = "frameTL4";
+const services::IService::KeyType s_FRAMETL_INPUT  = "quadFrameTL";
+const services::IService::KeyType s_FRAMETL1_INOUT = "frameTL1";
+const services::IService::KeyType s_FRAMETL2_INOUT = "frameTL2";
+const services::IService::KeyType s_FRAMETL3_INOUT = "frameTL3";
+const services::IService::KeyType s_FRAMETL4_INOUT = "frameTL4";
 
 //-----------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ void SCropVideoQuad::pushFrameInTimeline(::cv::Mat& imgIn,
 
 //----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SCropVideoQuad::getAutoConnections() const
+::services::IService::KeyConnectionsMap SCropVideoQuad::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_CROP_FRAME_SLOT );

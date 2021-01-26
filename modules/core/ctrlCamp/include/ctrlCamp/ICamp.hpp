@@ -26,18 +26,18 @@
 
 #include <core/base.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace ctrlCamp
 {
 /**
  * @brief This interface defines service API. It can be considered as a default type for services using fwCamp.
  */
-class CTRLCAMP_CLASS_API ICamp : public ::fwServices::IService
+class CTRLCAMP_CLASS_API ICamp : public services::IService
 {
 public:
 
-    fwCoreServiceMacro(ICamp, ::fwServices::IService)
+    fwCoreServiceMacro(ICamp, services::IService)
 
     /// Constructor
     CTRLCAMP_API ICamp();

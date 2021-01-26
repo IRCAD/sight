@@ -34,7 +34,7 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwJobs
 {
@@ -82,8 +82,8 @@ public:
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
     FWGDCMIO_API void readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                            const ::fwServices::IService::sptr& notifier
-                                                = ::fwServices::IService::sptr());
+                                            const services::IService::sptr& notifier
+                                                = services::IService::sptr());
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -164,7 +164,7 @@ private:
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(const ::fwServices::IService::sptr& notifier = ::fwServices::IService::sptr());
+    void convertDicomSeries(const services::IService::sptr& notifier = services::IService::sptr());
 
     /**
      * @brief Function used to sort DicomSeries

@@ -39,16 +39,16 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/SeriesDBReader.hpp>
+
+#include <services/macros.hpp>
 
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, data::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

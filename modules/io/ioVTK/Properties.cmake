@@ -7,12 +7,12 @@ set( DEPENDENCIES
     data
     fwDataIO
     fwGui
-    fwServices
+    services
     fwVtkIO
     fwJobs
     fwIO
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

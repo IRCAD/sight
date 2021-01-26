@@ -55,7 +55,7 @@
     </extension>
 
     <!-- App config used to export the selected series. -->
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::sight::services::registry::AppConfig">
         <id>ExportSelection</id>
         <parameters>
             <param name="selection" />
@@ -75,7 +75,7 @@
     </extension>
 
     <!-- App config used to export a Model to a Dicom Segmentation Surface. -->
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::sight::services::registry::AppConfig">
         <id>ExportDicomSelection</id>
         <parameters>
             <param name="model" />
@@ -96,7 +96,7 @@
     </extension>
 
     <!-- Service config used to read SeriesDB without using ioAtoms. -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBReaderIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
@@ -109,7 +109,7 @@
     </extension>
 
     <!-- Service config used to read seriesDB using ioAtoms. -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBAtomsReaderIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader.</desc>
@@ -122,7 +122,7 @@
     </extension>
 
     <!-- Service config used to write a seriesDB using ioAtoms. -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBAtomsWriterIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>Atoms seriesDB writer.</desc>
@@ -135,7 +135,7 @@
     </extension>
 
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>FullSDBReaderIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
@@ -148,7 +148,7 @@
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
@@ -157,7 +157,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>ActivityMDAtomsConfig</id>
         <desc>Reader/Writer for atoms representing an activity project</desc>
         <config>
@@ -171,7 +171,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>ActivityReaderConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>Activity reader</desc>
@@ -183,7 +183,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>ActivityWriterConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
         <desc>Activity writer</desc>
@@ -196,7 +196,7 @@
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer to read landmarks -->
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>

@@ -28,9 +28,9 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/AppConfig.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace gui
 {
@@ -118,7 +118,7 @@ void SPushField::updateObjects()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPushField::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );

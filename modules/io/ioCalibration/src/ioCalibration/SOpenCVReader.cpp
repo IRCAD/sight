@@ -34,7 +34,7 @@
 
 #include <fwIO/ioTypes.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 

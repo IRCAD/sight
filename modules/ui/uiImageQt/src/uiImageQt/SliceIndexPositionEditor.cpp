@@ -42,7 +42,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -56,7 +56,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, data::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::sight::data::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -68,7 +68,7 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -308,7 +308,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

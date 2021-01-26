@@ -1,35 +1,35 @@
 <plugin id="ioData" class="::ioData::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioData" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioData::STrianMeshReader</service>
         <object>::sight::data::Mesh</object>
         <desc>Trian file reader</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioData::TransformationMatrix3DReaderService</service>
         <object>::sight::data::TransformationMatrix3D</object>
         <desc>TransformationMatrix3D Reader</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioData::TransformationMatrix3DWriterService</service>
         <object>::sight::data::TransformationMatrix3D</object>
         <desc>TransformationMatrix3D Writer</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioData::MeshWriterService</service>
         <object>::sight::data::Mesh</object>
         <desc>Trian file writer</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioData::SAttachmentSeriesReader</service>
         <object>::sight::data::SeriesDB</object>

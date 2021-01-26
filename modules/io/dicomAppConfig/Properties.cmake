@@ -11,7 +11,7 @@ set( REQUIREMENTS
     guiQt
     ioDicom
     ioGdcm
-    servicesReg
+    module_services
     visuVTK
     visuVTKAdaptor
     visuVTKQt

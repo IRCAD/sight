@@ -32,8 +32,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
@@ -49,7 +49,7 @@ namespace editor
 const core::com::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
 const core::com::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, data::Vector )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::sight::data::Vector )
 
 //-----------------------------------------------------------------------------
 
@@ -100,8 +100,8 @@ void SShowVectorSize::configuring()
 {
     this->initialize();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
-    m_textToShow                              = QString::fromStdString(config.get< std::string >("text", ""));
+    services::IService::ConfigType config = this->getConfigTree();
+    m_textToShow = QString::fromStdString(config.get< std::string >("text", ""));
 
 }
 
@@ -144,7 +144,7 @@ void SShowVectorSize::removeObjects(data::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
+::services::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("vector", data::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );

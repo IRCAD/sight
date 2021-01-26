@@ -30,9 +30,9 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/String.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/Proxy.hpp>
+#include <services/macros.hpp>
+#include <services/registry/AppConfig.hpp>
+#include <services/registry/Proxy.hpp>
 
 #include <sstream>
 
@@ -41,7 +41,7 @@ namespace uiCalibration
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, data::Object)
+fwServicesRegisterMacro( ::sight::services::IController, ::uiCalibration::SDisplayCalibrationInfo, data::Object)
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
@@ -78,7 +78,7 @@ void SDisplayCalibrationInfo::stopping()
 {
     if (m_configMgr)
     {
-        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
@@ -122,7 +122,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::string strConfig = "displayImageConfig";
 
         // Prepare configuration
-        ::fwServices::registry::FieldAdaptorType replaceMap;
+        services::registry::FieldAdaptorType replaceMap;
 
         data::Image::sptr img1 = calInfo1->getImage(idx);
         replaceMap["imageId1"] = img1->getID();
@@ -143,15 +143,15 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+            services::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
-        m_configMgr = ::fwServices::IAppConfigManager::New();
-        m_configMgr->::fwServices::IAppConfigManager::setConfig( config );
+        m_configMgr = services::IAppConfigManager::New();
+        m_configMgr->::services::IAppConfigManager::setConfig( config );
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
-        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
         proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
     }
 }

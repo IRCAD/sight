@@ -37,7 +37,7 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
@@ -106,9 +106,9 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap IParameter::getAutoConnections() const
+services::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

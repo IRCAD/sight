@@ -31,7 +31,7 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace opImageFilter
 {
@@ -70,14 +70,14 @@ void SThreshold::stopping()
 
 void SThreshold::configuring()
 {
-    const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
+    const services::IService::ConfigType& srvConfig = this->getConfigTree();
 
     SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
-    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("config");
+    const services::IService::ConfigType& config = srvConfig.get_child("config");
 
     SLM_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
-    const ::fwServices::IService::ConfigType& thresholdCfg = config.get_child("threshold");
+    const services::IService::ConfigType& thresholdCfg = config.get_child("threshold");
     m_threshold = thresholdCfg.get_value<double>();
 }
 

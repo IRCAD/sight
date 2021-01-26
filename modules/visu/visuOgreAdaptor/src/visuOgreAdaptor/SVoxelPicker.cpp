@@ -106,9 +106,9 @@ void SVoxelPicker::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SVoxelPicker::getAutoConnections() const
+::services::IService::KeyConnectionsMap SVoxelPicker::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
 
     return connections;

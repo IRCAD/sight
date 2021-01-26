@@ -36,18 +36,18 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QPainter>
 #include <QPixmap>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, data::Object )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::sight::data::Object )
 
 namespace ioQt
 {
 
-const ::fwServices::IService::KeyType s_IMAGE_INPUT     = "image";
-const ::fwServices::IService::KeyType s_CONTAINER_INPUT = "container";
+const services::IService::KeyType s_IMAGE_INPUT     = "image";
+const services::IService::KeyType s_CONTAINER_INPUT = "container";
 
 //-----------------------------------------------------------------------------
 

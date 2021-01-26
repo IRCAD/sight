@@ -12,7 +12,7 @@ set( REQUIREMENTS
     arPatchMedicalData      # Patch old atoms data
 
     # Objects declaration
-    servicesReg             # fwService
+    module_services             # fwService
     data
 
     # UI declaration/Actions

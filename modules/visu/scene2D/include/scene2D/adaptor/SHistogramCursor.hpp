@@ -74,7 +74,7 @@ public:
     SCENE2D_API SHistogramCursor() noexcept;
     SCENE2D_API virtual ~SHistogramCursor() noexcept;
 
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    SCENE2D_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     SCENE2D_API void configuring() override;

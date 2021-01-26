@@ -24,7 +24,7 @@
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -36,7 +36,7 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SAxis::SAxis() noexcept :
     m_interval(1.f),
@@ -274,7 +274,7 @@ void SAxis::processInteraction( ::fwRenderQtdata::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SAxis::getAutoConnections() const
+::services::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

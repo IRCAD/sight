@@ -12,6 +12,6 @@ set( REQUIREMENTS
     ctrlSelection
     media
     uiImageQt
-    servicesReg
+    module_services
     data
 )

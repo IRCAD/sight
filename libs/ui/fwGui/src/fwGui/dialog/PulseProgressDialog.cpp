@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/PulseProgressDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -37,8 +37,8 @@ PulseProgressDialog::PulseProgressDialog(
     ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
-                                                                                  [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
+                                                                              [&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
@@ -82,7 +82,7 @@ void PulseProgressDialog::show()
 {
     if (m_implementation)
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
             std::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else

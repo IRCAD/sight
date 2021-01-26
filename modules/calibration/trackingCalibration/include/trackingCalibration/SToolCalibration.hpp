@@ -24,7 +24,7 @@
 
 #include "trackingCalibration/config.hpp"
 
-#include <fwServices/IRegisterer.hpp>
+#include <services/IRegisterer.hpp>
 
 namespace trackingCalibration
 {
@@ -49,11 +49,11 @@ namespace trackingCalibration
  * is moved
  *
  */
-class TRACKINGCALIBRATION_CLASS_API SToolCalibration : public ::fwServices::IRegisterer
+class TRACKINGCALIBRATION_CLASS_API SToolCalibration : public services::IRegisterer
 {
 
 public:
-    fwCoreServiceMacro(SToolCalibration, ::fwServices::IRegisterer)
+    fwCoreServiceMacro(SToolCalibration, services::IRegisterer)
 
     /**
      * @brief Constructor.

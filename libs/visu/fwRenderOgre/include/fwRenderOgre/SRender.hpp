@@ -39,8 +39,8 @@
 
 #include <fwRender/IRender.hpp>
 
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/helper/Config.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -257,7 +257,7 @@ private:
     void configureLayer(const ConfigType& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static Layer::ViewportConfigType configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg);
+    static Layer::ViewportConfigType configureLayerViewport(const services::IService::ConfigType& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
@@ -312,7 +312,7 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
+    auto servicesVector = services::OSR::getServices("::fwRenderOgre::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
     for(auto& sceneAdaptor : servicesVector)

@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES   
     core
     data
-    fwServices
+    services
     fwZip
     atoms
     fwAtomsBoostIO

@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioNetwork
 {

@@ -29,10 +29,10 @@
 
 #include <fwRender/IRender.hpp>
 
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/helper/Config.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QColor>
 #include <QPointer>

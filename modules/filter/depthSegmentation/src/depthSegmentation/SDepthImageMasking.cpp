@@ -30,7 +30,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -40,12 +40,12 @@ namespace depthSegmentation
 static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
 
-static const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
-static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
-static const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
-static const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+static const services::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
+static const services::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
+static const services::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
+static const services::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::depthSegmentation::SDepthImageMasking)
 
 // ------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ void SDepthImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
+::services::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

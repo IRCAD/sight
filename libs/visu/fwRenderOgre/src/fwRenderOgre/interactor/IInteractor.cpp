@@ -29,7 +29,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace fwRenderOgre
 {

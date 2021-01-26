@@ -39,12 +39,12 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, data::Image )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 

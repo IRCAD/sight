@@ -5,8 +5,8 @@ set( DEPENDENCIES
     data
     fwDataTools
     core
-    fwServices
+    services
     fwGui
 )
-set( REQUIREMENTS data servicesReg)
+set( REQUIREMENTS data module_services)
 

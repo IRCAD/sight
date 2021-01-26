@@ -24,7 +24,7 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -42,13 +42,13 @@ namespace Tuto05MultithreadConsoleCpp
  * @subsection In-Out In-Out:
  * - \b array [data::Array]: array which values should be initialized.
  */
-class TUTO05MULTITHREADCONSOLECPP_CLASS_API SReadArray final : public ::fwServices::IController
+class TUTO05MULTITHREADCONSOLECPP_CLASS_API SReadArray final : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SReadArray, ::fwServices::IController)
+    fwCoreServiceMacro(SReadArray, services::IController)
 
     /// Creates the service.
     TUTO05MULTITHREADCONSOLECPP_API SReadArray() noexcept;

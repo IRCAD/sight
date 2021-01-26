@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>Register</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -272,7 +272,7 @@
             </registry>
         </service>
 
-        <service uid="tfWidget" type="::fwServices::SConfigController">
+        <service uid="tfWidget" type="::sight::services::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${referenceImageUid}"/>
             <inout key="histogram" uid="Histogram"/>
@@ -298,7 +298,7 @@
             <inout key="image" uid="${targetImageUid}" />
         </service>
 
-        <service uid="manualRegistration" type="::fwServices::SConfigController" >
+        <service uid="manualRegistration" type="::sight::services::SConfigController" >
             <appConfig id="ManualRegistrationView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
@@ -308,7 +308,7 @@
             <parameter replace="WID_PARENT" by="manualScene" />
         </service>
 
-        <service uid="landmarkRegistration" type="::fwServices::SConfigController" >
+        <service uid="landmarkRegistration" type="::sight::services::SConfigController" >
             <appConfig id="LandmarkRegistration" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />

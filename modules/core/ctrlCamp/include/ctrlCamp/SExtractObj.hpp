@@ -27,8 +27,8 @@
 
 #include <core/base.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlCamp
 {

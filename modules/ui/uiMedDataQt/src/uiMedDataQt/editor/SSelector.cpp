@@ -43,7 +43,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QVBoxLayout>
 
@@ -55,7 +55,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, data::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ static const std::string s_ICON_CONFIG              = "icon";
 static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
 static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
 
-static const ::fwServices::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
-static const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
+static const services::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+static const services::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 
@@ -272,7 +272,7 @@ void SSelector::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+::services::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);

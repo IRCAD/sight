@@ -13,11 +13,11 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwJobs
-    fwServices
+    services
     fwZip
     fwIO
 )
 set( REQUIREMENTS
-    servicesReg
+    module_services
 )
 

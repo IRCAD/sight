@@ -42,12 +42,12 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, data::Vector )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

@@ -22,7 +22,7 @@
 
 #include "fwRenderOgre/ILight.hpp"
 
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <string>
 
@@ -61,7 +61,7 @@ void ILight::destroyLightAdaptor(ILight::sptr _lightAdaptor)
     if(_lightAdaptor)
     {
         _lightAdaptor->stop();
-        ::fwServices::OSR::unregisterService(_lightAdaptor);
+        services::OSR::unregisterService(_lightAdaptor);
     }
 }
 

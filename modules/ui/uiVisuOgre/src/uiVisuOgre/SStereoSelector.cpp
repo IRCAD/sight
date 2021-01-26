@@ -30,8 +30,8 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, data::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
 
@@ -135,8 +135,8 @@ void SStereoSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    ::fwServices::registry::ObjectService::ServiceVectorType renderers =
-        ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+    services::registry::ObjectService::ServiceVectorType renderers =
+        services::OSR::getServices("::fwRenderOgre::SRender");
 
     for(auto srv : renderers)
     {

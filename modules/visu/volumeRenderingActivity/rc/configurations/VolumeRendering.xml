@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>VolumeRendering</id>
     <parameters>
         <!-- activity parameters -->
@@ -166,7 +166,7 @@
         </service>
 
         <!-- Services working on TF -->
-        <service uid="tfEditor" type="::fwServices::SConfigController">
+        <service uid="tfEditor" type="::sight::services::SConfigController">
             <appConfig id="TransferFunctionWithNegatoEditor" />
             <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />

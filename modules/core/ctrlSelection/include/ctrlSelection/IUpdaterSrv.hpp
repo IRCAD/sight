@@ -26,7 +26,7 @@
 
 #include <data/Composite.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <tuple>
 
@@ -37,12 +37,12 @@ namespace ctrlSelection
  * @brief   An updater is use to register/unregister object in the OSR when it receives specific signals (declared in
  * configuration).
  */
-class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
+class CTRLSELECTION_CLASS_API IUpdaterSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IUpdaterSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IUpdaterSrv, services::IService)
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     CTRLSELECTION_API IUpdaterSrv();

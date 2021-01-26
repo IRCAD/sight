@@ -89,7 +89,7 @@ namespace ioGdcm
    @endcode
  *
  * @code{.xml}
-    <extension implements="::fwServices::registry::ServiceConfig">
+    <extension implements="::sight::services::registry::ServiceConfig">
         <id>MyFilterSelectorConfig</id>
         <service>::ioDicom::SFilterSelectorDialog</service>
         <desc>"Open" action's filter selector config</desc>

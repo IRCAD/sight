@@ -5,11 +5,11 @@ set( DEPENDENCIES
     core
     utestData
     data
-    fwServices
+    services
     fwPreferences
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     preferences
 )

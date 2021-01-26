@@ -27,7 +27,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {

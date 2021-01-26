@@ -96,7 +96,7 @@ private:
     {
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
-        ::fwServices::IService::wptr service;
+        services::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };
 

@@ -29,11 +29,12 @@
 #include <data/Array.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto05MultithreadConsoleCpp::SIncrementArray, data::Array )
+fwServicesRegisterMacro( ::sight::services::IController, ::Tuto05MultithreadConsoleCpp::SIncrementArray,
+                         ::sight::data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {

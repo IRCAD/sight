@@ -28,8 +28,8 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/ServiceFactory.hpp>
 
 namespace ExTimeLine
 {
@@ -50,8 +50,8 @@ void Plugin::start()
 {
 
     m_worker = core::thread::Worker::New();
-    ::fwServices::registry::ActiveWorkers::getDefault()
-    ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
+    services::registry::ActiveWorkers::getDefault()
+    ->addWorker(services::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
 
     core::runtime::Runtime* const rntm                 = core::runtime::Runtime::getDefault();
     std::shared_ptr< core::runtime::Module >    module = rntm->findModule( "ExTimeLine" );

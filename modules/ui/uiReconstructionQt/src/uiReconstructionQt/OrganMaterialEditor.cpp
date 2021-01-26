@@ -32,9 +32,9 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <QColor>
 #include <QColorDialog>
@@ -52,13 +52,13 @@ namespace uiReconstructionQt
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
                          data::Reconstruction )
 
-static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
     FW_DEPRECATED("::uiReconstructionQt::OrganMaterialEditor", "::uiReconstructionQt::SOrganMaterialEditor", "21.0");
 
-    this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
+    this->registerObject(s_RECONSTRUCTION_INOUT, services::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ void OrganMaterialEditor::materialNotification( )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

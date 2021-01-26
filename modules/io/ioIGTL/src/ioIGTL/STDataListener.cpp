@@ -33,7 +33,7 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
 

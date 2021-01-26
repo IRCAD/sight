@@ -38,8 +38,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -508,9 +508,9 @@ void DumpEditor::starting()
     core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if (buffManager)
     {
-        m_updateSlot                                        = core::com::newSlot( &DumpEditor::onUpdate, this );
-        ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
-        m_updateSlot->setWorker( workers->getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ));
+        m_updateSlot = core::com::newSlot( &DumpEditor::onUpdate, this );
+        services::registry::ActiveWorkers::sptr workers = services::registry::ActiveWorkers::getDefault();
+        m_updateSlot->setWorker( workers->getWorker( services::registry::ActiveWorkers::s_DEFAULT_WORKER ));
         m_connection = buffManager->getUpdatedSignal()->connect( m_updateSlot );
     }
 

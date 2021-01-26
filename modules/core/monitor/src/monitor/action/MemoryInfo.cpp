@@ -27,7 +27,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <iostream>
 
@@ -36,7 +36,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

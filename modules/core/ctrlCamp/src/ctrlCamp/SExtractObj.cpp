@@ -27,7 +27,7 @@
 #include <data/reflection/exception/ObjectNotFound.hpp>
 #include <data/reflection/getObject.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace ctrlCamp
 {

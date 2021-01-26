@@ -45,10 +45,10 @@
 
 #include <fwIO/ioTypes.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/IService.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -758,12 +758,12 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
                                                 const std::string& _ioSelectorSrvConfig)
 {
     data::Object::sptr obj;
-    ::fwServices::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
+    services::IService::sptr ioSelectorSrv;
+    ioSelectorSrv = services::add("::uiIO::editor::SIOSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
-                                                                                  "::uiIO::editor::SIOSelector");
+    ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
+                                                                              "::uiIO::editor::SIOSelector");
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
@@ -778,7 +778,7 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
         ioSelectorSrv->update();
         obj = ioSelectorSrv->getOutput< data::Object >(::fwIO::s_DATA_KEY);
         ioSelectorSrv->stop();
-        ::fwServices::OSR::unregisterService( ioSelectorSrv );
+        services::OSR::unregisterService( ioSelectorSrv );
     }
     catch(std::exception& e)
     {
@@ -791,7 +791,7 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
         {
             ioSelectorSrv->stop();
         }
-        ::fwServices::OSR::unregisterService( ioSelectorSrv );
+        services::OSR::unregisterService( ioSelectorSrv );
     }
     return obj;
 }

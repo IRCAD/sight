@@ -49,9 +49,9 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/BitmapImageReader.hpp>
+
+#include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -60,7 +60,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, data::ImageSeries )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::sight::data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

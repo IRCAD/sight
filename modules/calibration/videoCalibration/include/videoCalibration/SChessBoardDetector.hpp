@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace videoCalibration
 {
@@ -74,10 +74,10 @@ namespace videoCalibration
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
  */
-class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
+class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public services::IController
 {
 public:
-    fwCoreServiceMacro(SChessBoardDetector, ::fwServices::IController)
+    fwCoreServiceMacro(SChessBoardDetector, services::IController)
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;

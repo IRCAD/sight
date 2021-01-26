@@ -1,15 +1,15 @@
 <plugin id="uiVisu" class="::uiVisu::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiVisu"/>
     
-    <requirement id="servicesReg"/>
+    <requirement id="::sight::modules::services"/>
     
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiVisu::action::CrossTypeAction</service>
         <object>::sight::data::Image</object>
     </extension>
     
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiVisu::action::SSnapshot</service>
         <object>::sight::data::Object</object>

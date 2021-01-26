@@ -15,7 +15,7 @@ set( REQUIREMENTS
     ioDicom
     ioGdcm
     media
-    servicesReg
+    module_services
     uiGenericQt
     uiIO
     uiMedDataQt

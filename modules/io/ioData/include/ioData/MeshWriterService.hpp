@@ -39,7 +39,7 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , data::Mesh )
+ * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::sight::data::Mesh )
  */
 /**
  * @brief This service writes a data::Mesh (with only triangular cells) on filesystem in format .trian.
@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 
@@ -136,7 +136,7 @@ protected:
     IODATA_API virtual void configuring() override;
 
     /**
-     * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
+     * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
      * The mesh is written with the writer ::fwDataIO::writer::MeshWriter.

@@ -51,10 +51,10 @@ const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeSt
 // Private slot
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
-const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
-const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "input";
-const ::fwServices::IService::KeyType s_IMAGE_INOUT  = "output";
-const ::fwServices::IService::KeyType s_MAP_INOUT    = "map";
+const services::IService::KeyType s_CAMERA_INPUT = "camera";
+const services::IService::KeyType s_IMAGE_INPUT  = "input";
+const services::IService::KeyType s_IMAGE_INOUT  = "output";
+const services::IService::KeyType s_MAP_INOUT    = "map";
 
 //------------------------------------------------------------------------------
 SDistortion::SDistortion() noexcept :
@@ -72,9 +72,9 @@ SDistortion::~SDistortion() noexcept
 
 // ----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
+services::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
     connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

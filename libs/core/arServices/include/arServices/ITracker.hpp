@@ -26,7 +26,7 @@
 
 #include <core/HiResClock.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace arServices
 {
@@ -51,22 +51,22 @@ namespace arServices
  * - \b dropObj(optional, default=true) : defines if the tracker should drop few objects from the timeline (and always
  *   get the last one) or not.
  */
-class ARSERVICES_CLASS_API ITracker : public ::fwServices::IService
+class ARSERVICES_CLASS_API ITracker : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(ITracker, ::fwServices::IService)
+    fwCoreServiceMacro(ITracker, services::IService)
 
     ARSERVICES_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
     ARSERVICES_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
     ARSERVICES_API static const core::com::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAME_INOUT;
+    ARSERVICES_API static const services::IService::KeyType s_TIMELINE_INPUT;
+    ARSERVICES_API static const services::IService::KeyType s_FRAME_INOUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    ARSERVICES_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    ARSERVICES_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Return true if the tracking is started.
     bool isTracking() const

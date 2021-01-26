@@ -28,7 +28,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace colourSegmentation
 {
@@ -38,7 +38,7 @@ namespace colourSegmentation
  * image using an Expectation Maximization algorithm
  * @deprecated: will be removed in sight 22.0
  *
- * @see ::fwServices::IOperator
+ * @see services::IOperator
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
@@ -83,10 +83,10 @@ namespace colourSegmentation
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
+class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public services::IOperator
 {
 public:
-    fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator)
+    fwCoreServiceMacro(SColourImageMasking, services::IOperator)
 
     /**
      * @name Slots API
@@ -109,7 +109,7 @@ public:
     COLOURSEGMENTATION_API virtual ~SColourImageMasking() noexcept;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

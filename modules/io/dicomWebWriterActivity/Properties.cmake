@@ -15,7 +15,7 @@ set( REQUIREMENTS
     ioDicomWeb
     ioPacs
     media
-    servicesReg
+    module_services
     uiIO
     uiMedDataQt
     visuVTK

@@ -28,7 +28,7 @@
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwRender
 {

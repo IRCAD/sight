@@ -35,8 +35,8 @@
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -106,9 +106,9 @@ void SModelSeries::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
+::services::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);

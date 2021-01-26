@@ -14,7 +14,7 @@ set( REQUIREMENTS
     visuOgreQt              # Enable Ogre to render things in Qt window.
 
     # Objects declaration
-    servicesReg
+    module_services
     data
     ioPacs
 

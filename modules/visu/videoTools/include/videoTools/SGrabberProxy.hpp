@@ -28,7 +28,7 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <fwServices/IHasServices.hpp>
+#include <services/IHasServices.hpp>
 
 namespace sight::data
 {
@@ -98,7 +98,7 @@ namespace videoTools
  *      - \b title (optional) : title of the grabber selector window.
  */
 class VIDEOTOOLS_CLASS_API SGrabberProxy :  public ::arServices::IGrabber,
-                                            public ::fwServices::IHasServices
+                                            public services::IHasServices
 {
 public:
 

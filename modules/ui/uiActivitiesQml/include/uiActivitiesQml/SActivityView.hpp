@@ -77,7 +77,7 @@ namespace uiActivitiesQml
  *
  * @subsection Cpp C++ Configuration
  * @code{.cpp}
-    ::fwServices::IService::ConfigType parameterViewConfig;
+    services::IService::ConfigType parameterViewConfig;
     parameterViewConfig.add("<xmlattr>.replace", "nameToReplace");
     parameterViewConfig.add("<xmlattr>.by", this->getInputID("value"));
     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);

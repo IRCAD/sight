@@ -2,16 +2,16 @@
 
     <library name="ioAtoms" />
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>
         <service>::ioAtoms::SReader</service>
         <object>::sight::data::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioAtoms::SWriter</service>
         <object>::sight::data::Object</object>

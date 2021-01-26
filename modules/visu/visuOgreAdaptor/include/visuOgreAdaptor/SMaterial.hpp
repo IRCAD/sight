@@ -165,7 +165,7 @@ protected:
      * Connect data::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
      * Connect data::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates fixed function pipeline parameters.
     VISUOGREADAPTOR_API void updating() override;

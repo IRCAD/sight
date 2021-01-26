@@ -4,12 +4,12 @@ set( TYPE APP )
 set( START ON)
 set( DEPENDENCIES
     data
-    fwServices
+    services
     fwQml
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     guiQml
     fwlauncher
 )

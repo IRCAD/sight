@@ -27,7 +27,7 @@
 #include <fwGui/Application.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace gui
 {

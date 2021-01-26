@@ -27,8 +27,8 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <fwServices/IHasServices.hpp>
-#include <fwServices/IService.hpp>
+#include <services/IHasServices.hpp>
+#include <services/IService.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 
@@ -58,8 +58,8 @@ namespace fwRenderOgre
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class FWRENDEROGRE_CLASS_API IAdaptor :
-    public ::fwServices::IService,
-    public ::fwServices::IHasServices
+    public services::IService,
+    public services::IHasServices
 {
 
 friend class SRender;
@@ -67,7 +67,7 @@ friend class SRender;
 public:
 
     /// Generates default methods.
-    fwCoreClassMacro(IAdaptor, ::fwServices::IService)
+    fwCoreClassMacro(IAdaptor, services::IService)
 
     /// Sets the layer ID.
     FWRENDEROGRE_API void setLayerID(const std::string& _id);

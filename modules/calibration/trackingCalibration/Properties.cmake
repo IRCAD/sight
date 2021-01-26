@@ -6,7 +6,7 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGuiQt
-    fwServices
+    services
     fwPreferences
     fwMath
     eigenTools

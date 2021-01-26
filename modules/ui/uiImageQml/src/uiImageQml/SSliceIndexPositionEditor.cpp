@@ -47,7 +47,7 @@ const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -219,7 +219,7 @@ void SSliceIndexPositionEditor::onSliceType( int _type )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

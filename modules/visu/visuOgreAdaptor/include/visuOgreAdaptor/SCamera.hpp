@@ -104,7 +104,7 @@ protected:
      * Connect data::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Sets the camera's transform.
     VISUOGREADAPTOR_API void updating() override;

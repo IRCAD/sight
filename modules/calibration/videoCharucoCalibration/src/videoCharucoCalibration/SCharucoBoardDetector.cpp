@@ -39,8 +39,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -60,9 +60,9 @@ const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DE
 const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG
     = "charucoBoardNotDetected";
 
-static const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
-static const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
-static const ::fwServices::IService::KeyType s_DETECTION_INOUT   = "detection";
+static const services::IService::KeyType s_TIMELINE_INPUT    = "timeline";
+static const services::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
+static const services::IService::KeyType s_DETECTION_INOUT   = "detection";
 
 // ----------------------------------------------------------------------------
 

@@ -37,20 +37,20 @@
 
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/ObjMeshReader.hpp>
 #include <fwVtkIO/PlyMeshReader.hpp>
 #include <fwVtkIO/StlMeshReader.hpp>
 #include <fwVtkIO/VtpMeshReader.hpp>
 
+#include <services/macros.hpp>
+
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, data::Mesh )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

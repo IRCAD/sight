@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
@@ -74,13 +74,13 @@ namespace maths
  *    - \b unit: unit of the distance computed by this service
  *    - \b precision: precision of the displayed distance
  */
-class MATHS_CLASS_API SPointToLandmarkDistance final : public ::fwServices::IService
+class MATHS_CLASS_API SPointToLandmarkDistance final : public services::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkDistance, ::fwServices::IService)
+    fwCoreServiceMacro(SPointToLandmarkDistance, services::IService)
 
     /// Initializes signals and slots.
     MATHS_API SPointToLandmarkDistance() noexcept;

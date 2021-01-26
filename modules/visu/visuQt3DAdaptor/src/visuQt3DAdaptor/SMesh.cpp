@@ -33,7 +33,7 @@
 #include <fwRenderQt3D/core/GenericScene.hpp>
 #include <fwRenderQt3D/data/Material.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QQmlEngine>
 
@@ -101,7 +101,7 @@ void SMesh::starting()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = ::fwServices::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
+        auto mtlAdaptors = services::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuQt3DAdaptor::SMaterial::sptr srv)
@@ -129,9 +129,9 @@ void SMesh::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
     return connections;
@@ -158,7 +158,7 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = ::fwServices::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
+        auto mtlAdaptors = services::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuQt3DAdaptor::SMaterial::sptr& srv)

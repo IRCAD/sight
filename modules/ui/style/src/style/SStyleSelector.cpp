@@ -28,7 +28,7 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <filesystem>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::style::SStyleSelector )
+fwServicesRegisterMacro( ::sight::services::IController, ::style::SStyleSelector )
 
 namespace style
 {

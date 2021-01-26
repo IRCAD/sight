@@ -125,7 +125,7 @@ protected:
      * Connect data::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      * Connect data::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Requests rendering of the scene.
     VISUOGREADAPTOR_API void updating() override;

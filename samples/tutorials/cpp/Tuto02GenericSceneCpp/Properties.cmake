@@ -4,7 +4,7 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     data
-    fwServices
+    services
 )
 set( REQUIREMENTS
     preferences             # Start the module, load file location or window preferences
@@ -13,7 +13,7 @@ set( REQUIREMENTS
     visuOgreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

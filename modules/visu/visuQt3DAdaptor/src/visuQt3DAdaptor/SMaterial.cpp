@@ -24,13 +24,13 @@
 
 #include <data/Material.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/op/Get.hpp>
 
 #include <QQmlEngine>
 
-fwServicesRegisterMacro( ::fwRenderQt3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, data::Material )
+fwServicesRegisterMacro( ::fwRenderQt3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, ::sight::data::Material )
 
 //-----------------------------------------------------------------------------
 
@@ -85,9 +85,9 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push( s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }

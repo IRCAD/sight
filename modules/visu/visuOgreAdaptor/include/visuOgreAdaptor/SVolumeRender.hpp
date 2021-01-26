@@ -152,7 +152,7 @@ protected:
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
      * Connect data::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
     VISUOGREADAPTOR_API void updating() override;

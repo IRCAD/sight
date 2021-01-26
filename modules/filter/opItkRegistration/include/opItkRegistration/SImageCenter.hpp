@@ -24,7 +24,7 @@
 
 #include "opItkRegistration/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opItkRegistration
 {
@@ -51,11 +51,11 @@ namespace opItkRegistration
  * from world origin(0,0,0) to the image center (in mm).
  *
  */
-class OPITKREGISTRATION_CLASS_API SImageCenter : public ::fwServices::IOperator
+class OPITKREGISTRATION_CLASS_API SImageCenter : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SImageCenter, ::fwServices::IOperator)
+    fwCoreServiceMacro(SImageCenter, services::IOperator)
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SImageCenter();

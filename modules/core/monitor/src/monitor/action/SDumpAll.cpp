@@ -28,14 +28,14 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace monitor
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

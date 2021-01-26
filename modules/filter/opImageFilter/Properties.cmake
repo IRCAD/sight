@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     fwDataTools
-    fwServices
+    services
     imageFilterOp
 )
 set( REQUIREMENTS )

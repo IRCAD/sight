@@ -29,9 +29,9 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::maths::SSwitchMatrices, data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::sight::services::IController, ::maths::SSwitchMatrices, data::TransformationMatrix3D)
 
 namespace maths
 {
@@ -39,8 +39,8 @@ namespace maths
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchToMatrix";
 
-const ::fwServices::IService::KeyType s_MATRIX_OUTPUT = "output";
-const ::fwServices::IService::KeyType s_MATRIX_INPUT  = "matrix";
+const services::IService::KeyType s_MATRIX_OUTPUT = "output";
+const services::IService::KeyType s_MATRIX_INPUT  = "matrix";
 
 // ----------------------------------------------------------------------------
 
@@ -72,9 +72,9 @@ void SSwitchMatrices::stopping()
 
 // ----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
+services::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

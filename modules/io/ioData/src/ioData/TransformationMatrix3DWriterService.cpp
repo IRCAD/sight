@@ -34,7 +34,7 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -45,7 +45,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::TransformationMatrix3DWriterService,
+fwServicesRegisterMacro( ::fwIO::IWriter, ::io::sight::data::TransformationMatrix3DWriterService,
                          data::TransformationMatrix3D )
 
 //-----------------------------------------------------------------------------

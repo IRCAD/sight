@@ -38,7 +38,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 // Services tools
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include "basicRegistration/SImagesSubstract.hpp"
 

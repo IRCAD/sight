@@ -38,7 +38,7 @@
 #include <fwDataTools/helper/Field.hpp>
 #include <fwDataTools/helper/Vector.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlSelection
 {
@@ -51,11 +51,11 @@ const core::com::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove"
 const core::com::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
 const core::com::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
 
-const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
-const ::fwServices::IService::KeyType s_VECTOR_INOUT       = "vector";
-const ::fwServices::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
-const ::fwServices::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
-const ::fwServices::IService::KeyType s_OBJECT_INOUT       = "object";
+const services::IService::KeyType s_COMPOSITE_INOUT    = "composite";
+const services::IService::KeyType s_VECTOR_INOUT       = "vector";
+const services::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
+const services::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
+const services::IService::KeyType s_OBJECT_INOUT       = "object";
 
 //-----------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ SManage::~SManage() noexcept
 
 void SManage::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_compositeKey = config.get("compositeKey", "");
     m_fieldName    = config.get("field", "");

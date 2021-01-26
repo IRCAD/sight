@@ -27,7 +27,7 @@
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsItem>
 

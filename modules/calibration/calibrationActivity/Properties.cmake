@@ -14,7 +14,7 @@ set( REQUIREMENTS
     activities
 
     # Objects declaration
-    servicesReg             # fwService
+    module_services             # fwService
     data
 
     # UI declaration/Actions

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/NotificationDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -52,7 +52,7 @@ void NotificationDialog::showNotificationDialog( const std::string& _message,
 
 NotificationDialog::NotificationDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(INotificationDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::INotificationDialog::dynamicCast(guiObj);
@@ -64,7 +64,7 @@ NotificationDialog::NotificationDialog()
 NotificationDialog::NotificationDialog(
     const std::string& _message, INotificationDialog::Type _type, INotificationDialog::Position _pos)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(INotificationDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::INotificationDialog::dynamicCast(guiObj);
@@ -91,7 +91,7 @@ void NotificationDialog::show()
     if(m_implementation)
     {
         std::function<void()> func = std::bind(&INotificationDialog::show, m_implementation);
-        std::shared_future<void> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
+        std::shared_future<void> f = services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
 }
@@ -100,7 +100,7 @@ void NotificationDialog::show()
 
 void NotificationDialog::setMessage(const std::string& _msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -113,7 +113,7 @@ void NotificationDialog::setMessage(const std::string& _msg)
 
 void NotificationDialog::setType(INotificationDialog::Type _type)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -127,7 +127,7 @@ void NotificationDialog::setType(INotificationDialog::Type _type)
 void NotificationDialog::setPosition(INotificationDialog::Position _position)
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -141,7 +141,7 @@ void NotificationDialog::setPosition(INotificationDialog::Position _position)
 
 void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -154,7 +154,7 @@ void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 
 void NotificationDialog::setIndex(unsigned int _index)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -167,7 +167,7 @@ void NotificationDialog::setIndex(unsigned int _index)
 
 void NotificationDialog::setDuration(int _durationInMs)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -182,7 +182,7 @@ bool NotificationDialog::isVisible() const
 {
 
     bool visible = false;
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -197,7 +197,7 @@ bool NotificationDialog::isVisible() const
 
 void NotificationDialog::close() const
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -210,7 +210,7 @@ void NotificationDialog::close() const
 
 void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {

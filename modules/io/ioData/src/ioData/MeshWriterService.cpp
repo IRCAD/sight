@@ -31,11 +31,11 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <filesystem>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, data::Mesh )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::sight::data::Mesh )
 
 namespace ioData
 {

@@ -25,7 +25,7 @@
 #include <fwRenderQt/data/Viewport.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportUpdater)
 
@@ -34,7 +34,7 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SViewportUpdater::SViewportUpdater() noexcept
 {
@@ -97,7 +97,7 @@ void SViewportUpdater::processInteraction( ::fwRenderQtdata::Event& )
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
+::services::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

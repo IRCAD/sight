@@ -84,7 +84,7 @@ protected:
      *
      * Connect SHistogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    SCENE2D_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;

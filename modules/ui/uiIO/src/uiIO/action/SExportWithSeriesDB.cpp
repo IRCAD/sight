@@ -35,21 +35,21 @@
 
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 namespace uiIO
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
-static const ::fwServices::IService::KeyType s_SERIES_INOUT = "series";
+static const services::IService::KeyType s_SERIES_INOUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -104,15 +104,15 @@ void SExportWithSeriesDB::updating( )
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                                  "::uiIO::editor::SIOSelector");
+    ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+                                                                              "::uiIO::editor::SIOSelector");
     SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
                << " for ::uiIO::editor::SIOSelector", ioCfg);
 
     // Init and execute the service
-    ::fwServices::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = ::fwServices::add( "::uiIO::editor::SIOSelector");
+    services::IService::sptr ioSelectorSrv;
+    ioSelectorSrv = services::add( "::uiIO::editor::SIOSelector");
     ioSelectorSrv->registerInOut(localSeriesDB, ::fwIO::s_DATA_KEY);
 
     ioSelectorSrv->setWorker(m_associatedWorker);
@@ -128,7 +128,7 @@ void SExportWithSeriesDB::updating( )
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
-    ::fwServices::OSR::unregisterService( ioSelectorSrv );
+    services::OSR::unregisterService( ioSelectorSrv );
 }
 
 //------------------------------------------------------------------------------

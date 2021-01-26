@@ -28,8 +28,8 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -251,12 +251,12 @@ std::filesystem::path getPreferencesFile()
 ::fwPreferences::IPreferences::sptr getPreferencesSrv()
 {
     ::fwPreferences::IPreferences::sptr srv;
-    const auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
+    const auto preferencesServicesList = services::OSR::getServices("::fwPreferences::IPreferences");
 
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
-        srv                                      = ::fwPreferences::IPreferences::dynamicCast(prefService);
+        services::IService::sptr prefService = *preferencesServicesList.begin();
+        srv = ::fwPreferences::IPreferences::dynamicCast(prefService);
     }
     SLM_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
 

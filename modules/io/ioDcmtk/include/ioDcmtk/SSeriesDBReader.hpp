@@ -85,7 +85,7 @@ protected:
        @endcode
      * On the other hand, you can specify a service configuration using the FilterSelectorSrvConfig element:
      * @code{.xml}
-        <extension implements="::fwServices::registry::ServiceConfig">
+        <extension implements="::sight::services::registry::ServiceConfig">
             <id>FilterSelectorConfig</id>
             <service>::ioDicom::SFilterSelectorDialog</service>
             <desc>"Open" action's filter selector config</desc>

@@ -33,10 +33,10 @@
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
+
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGdcmIO
 {
@@ -167,7 +167,7 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                                                     ::fwServices::registry::ActiveWorkers::getDefaultWorker());
+                                                     services::registry::ActiveWorkers::getDefaultWorker());
 
         m_aggregator->addCancelHook([&](::fwJobs::IJob& subJob)
                 {

@@ -38,10 +38,10 @@
 namespace registrationCV
 {
 
-const ::fwServices::IService::KeyType s_CALIBRATION_INPUT = "calibration";
-const ::fwServices::IService::KeyType s_POINTLIST2D_INPUT = "pointList2d";
-const ::fwServices::IService::KeyType s_POINTLIST3D_INPUT = "pointList3d";
-const ::fwServices::IService::KeyType s_MATRIX_INOUT      = "matrix";
+const services::IService::KeyType s_CALIBRATION_INPUT = "calibration";
+const services::IService::KeyType s_POINTLIST2D_INPUT = "pointList2d";
+const services::IService::KeyType s_POINTLIST3D_INPUT = "pointList3d";
+const services::IService::KeyType s_MATRIX_INOUT      = "matrix";
 
 //-----------------------------------------------------------------------------
 

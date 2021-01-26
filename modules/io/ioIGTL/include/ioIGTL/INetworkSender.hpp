@@ -26,19 +26,19 @@
 
 #include <data/Object.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ioIGTL
 {
 
 /// Interface providing behavior of network senders, if you want create a new network sender you must be inherit.
-class IOIGTL_CLASS_API INetworkSender : public ::fwServices::IController
+class IOIGTL_CLASS_API INetworkSender : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(INetworkSender, ::fwServices::IController)
+    fwCoreServiceMacro(INetworkSender, services::IController)
 
     /// Initializes signals.
     IOIGTL_API INetworkSender();

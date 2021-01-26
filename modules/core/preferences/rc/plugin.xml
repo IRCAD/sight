@@ -2,7 +2,7 @@
 
     <library name="preferences"/>
     
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwPreferences::IPreferences</type>
         <service>::preferences::SPreferences</service>
         <object>::sight::data::Composite</object>

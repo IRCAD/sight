@@ -37,13 +37,13 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, data::Mesh )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::sight::data::Mesh )
 
 namespace ioData
 {

@@ -25,7 +25,7 @@
 #include "fwIO/config.hpp"
 #include "fwIO/ioTypes.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <filesystem>
 
@@ -47,11 +47,11 @@ namespace fwIO
  * @li Finally we must call stop() before deleting the service
  * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ?
  */
-class FWIO_CLASS_API IReader : public ::fwServices::IService
+class FWIO_CLASS_API IReader : public services::IService
 {
 
 public:
-    fwCoreServiceMacro(IReader, ::fwServices::IService)
+    fwCoreServiceMacro(IReader, services::IService)
 
     /**
      * @name Slots API

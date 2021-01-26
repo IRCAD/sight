@@ -38,7 +38,7 @@
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/ogre.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -60,9 +60,9 @@ static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setInt
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
-static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
-static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
+static const services::IService::KeyType s_IMAGE_INOUT           = "image";
+static const services::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
+static const services::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG      = "autoresetcamera";
 static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
@@ -106,9 +106,9 @@ SVolumeRender::~SVolumeRender() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
+::services::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
 
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );

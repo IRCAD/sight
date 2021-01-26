@@ -32,7 +32,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwServices/helper/ConfigLauncher.hpp>
+#include <services/helper/ConfigLauncher.hpp>
 
 namespace gui
 {
@@ -59,7 +59,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::fwServices::SConfigController" >
+        <service type="::sight::services::SConfigController" >
             <appConfig id="IdOfConfig" />
             <inout key="object" uid="..." />
             <parameter replace="channel" by="changeValueChannel"  />
@@ -143,7 +143,7 @@ protected:
      * @}
      */
 
-    ::fwServices::helper::ConfigLauncher::uptr m_configLauncher;
+    services::helper::ConfigLauncher::uptr m_configLauncher;
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 

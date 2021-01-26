@@ -41,14 +41,14 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <string>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, data::ModelSeries )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::sight::data::ModelSeries )
 
 //------------------------------------------------------------------------------
 

@@ -26,7 +26,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/op/Add.hpp>
+#include <services/op/Add.hpp>
 
 namespace visuBasic
 {
@@ -78,36 +78,36 @@ void SImage::starting()
     auto image = this->getLockedInput< data::Object>(s_IMAGE_INPUT);
 
     // create and register the render service
-    ::fwServices::IService::ConfigType renderConfig;
+    services::IService::ConfigType renderConfig;
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 
-    ::fwServices::IService::ConfigType interactorCfg;
+    services::IService::ConfigType interactorCfg;
     interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
-    ::fwServices::IService::ConfigType negatoCfg;
+    services::IService::ConfigType negatoCfg;
     negatoCfg.put("<xmlattr>.uid", this->getID() + "negato3DAdaptor");
 
     renderConfig.add_child("scene.adaptor", interactorCfg);
     renderConfig.add_child("scene.adaptor", negatoCfg);
 
-    m_renderSrv = ::fwServices::add("::fwRenderOgre::SRender");
+    m_renderSrv = services::add("::fwRenderOgre::SRender");
     m_renderSrv->setConfiguration(renderConfig);
     m_renderSrv->setID(genericSceneId);
 
     m_renderSrv->configure();
 
-    ::fwServices::IService::ConfigType interactorConfig;
+    services::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = ::fwServices::add("::visuOgreAdaptor::STrackballCamera");
+    m_interactorSrv = services::add("::visuOgreAdaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    ::fwServices::IService::ConfigType negatoConfig;
+    services::IService::ConfigType negatoConfig;
     negatoConfig.put("config.<xmlattr>.layer", "default");
     negatoConfig.put("config.<xmlattr>.interactive", "true");
-    m_negatoSrv = ::fwServices::add("::visuOgreAdaptor::SNegato3D");
+    m_negatoSrv = services::add("::visuOgreAdaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
     m_negatoSrv->registerInOut( std::const_pointer_cast< data::Object >(image->getConstSptr()), "image", true );
     m_negatoSrv->setID(this->getID() + "negato3DAdaptor");
@@ -120,7 +120,7 @@ void SImage::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SImage::getAutoConnections() const
+::services::IService::KeyConnectionsMap SImage::getAutoConnections() const
 {
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
@@ -146,9 +146,9 @@ void SImage::stopping()
 
     ::fwGui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    ::fwServices::OSR::unregisterService( m_negatoSrv );
-    ::fwServices::OSR::unregisterService( m_interactorSrv );
-    ::fwServices::OSR::unregisterService( m_renderSrv );
+    services::OSR::unregisterService( m_negatoSrv );
+    services::OSR::unregisterService( m_interactorSrv );
+    services::OSR::unregisterService( m_renderSrv );
 
     m_negatoSrv.reset();
     m_interactorSrv.reset();

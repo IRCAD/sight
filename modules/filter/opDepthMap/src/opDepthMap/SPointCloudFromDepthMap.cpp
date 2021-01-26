@@ -34,21 +34,21 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/glm.hpp>
 
 namespace opDepthMap
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::SPointCloudFromDepthMap)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opDepthMap::SPointCloudFromDepthMap)
 
 const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
 //------------------------------------------------------------------------------
 
 SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept :
-    ::fwServices::IOperator()
+    services::IOperator()
 {
     newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }

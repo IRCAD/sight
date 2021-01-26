@@ -37,7 +37,7 @@
 
 #include <fwGui/dialog/InputDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace uiMedDataQt
 {
@@ -46,7 +46,7 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, data::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -69,7 +69,7 @@ SExportSeries::~SExportSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
+::services::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );

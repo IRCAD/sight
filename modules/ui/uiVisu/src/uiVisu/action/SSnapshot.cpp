@@ -32,7 +32,7 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace uiVisu
 {
@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept
 {

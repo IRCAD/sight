@@ -33,7 +33,7 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -42,7 +42,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, data::MatrixTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -232,9 +232,9 @@ void SMatrixWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(::fwIO::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }

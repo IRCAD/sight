@@ -30,16 +30,16 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <Eigen/Core>
 
 namespace trackingCalibration
 {
 
-static const ::fwServices::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
-static const ::fwServices::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
-static const ::fwServices::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
+static const services::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
+static const services::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
+static const services::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
 
 // -----------------------------------------------------------------------------
 

@@ -28,8 +28,8 @@
 
 #include <data/Camera.hpp>
 
-#include <fwServices/IController.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IController.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlCamera
 {
@@ -75,11 +75,11 @@ namespace ctrlCamera
  *  - \b devices: configuration of devices
  *  - \b configId: id of a ServiceConfig containing devices configuration.
  */
-class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public ::fwServices::IController
+class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SExtractDeviceInfo, ::fwServices::IController)
+    fwCoreServiceMacro(SExtractDeviceInfo, services::IController)
 
     /// Constructor
     CTRLCAMERA_API SExtractDeviceInfo();

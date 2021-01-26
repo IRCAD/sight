@@ -44,8 +44,8 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -70,10 +70,10 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const services::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
 
-static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
+static const services::IService::KeyType s_TF_OUTPUT = "tf";
 
 static const std::string s_CONTEXT_TF = "TF";
 static const std::string s_VERSION_TF = "V1";
@@ -240,7 +240,7 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
@@ -469,11 +469,11 @@ void STransferFunction::renameTF()
 void STransferFunction::importTF()
 {
     const data::TransferFunction::sptr tf = data::TransferFunction::New();
-    const ::fwIO::IReader::sptr reader    = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    const ::fwIO::IReader::sptr reader    = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
-    ::fwServices::IService::ConfigType config;
+    services::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tf");
 
@@ -482,7 +482,7 @@ void STransferFunction::importTF()
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    ::fwServices::OSR::unregisterService(reader);
+    services::OSR::unregisterService(reader);
 
     if(!tf->getName().empty())
     {
@@ -507,11 +507,11 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    const ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
 
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
-    ::fwServices::IService::ConfigType config;
+    services::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
     config.add("patcher.<xmlattr>.version", s_VERSION_TF);
     config.add("archive.<xmlattr>.backend", "json");
@@ -524,7 +524,7 @@ void STransferFunction::exportTF()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    ::fwServices::OSR::unregisterService(writer);
+    services::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------
@@ -565,7 +565,7 @@ void STransferFunction::initTransferFunctions()
             }
 
             const data::TransferFunction::sptr tf = data::TransferFunction::New();
-            const ::fwIO::IReader::sptr reader    = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            const ::fwIO::IReader::sptr reader    = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
             reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
@@ -596,7 +596,7 @@ void STransferFunction::initTransferFunctions()
                 }
                 tf->initTF();
             }
-            ::fwServices::OSR::unregisterService(reader);
+            services::OSR::unregisterService(reader);
         }
 
         compositeHelper.notify();

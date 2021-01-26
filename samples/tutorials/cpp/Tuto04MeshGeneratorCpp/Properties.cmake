@@ -6,7 +6,7 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGui
-    fwServices
+    services
     )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
@@ -19,7 +19,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

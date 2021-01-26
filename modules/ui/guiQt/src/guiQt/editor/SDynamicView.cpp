@@ -40,8 +40,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <services/macros.hpp>
+#include <services/registry/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -234,10 +234,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap[ "WID_PARENT" ] = info.wid;
-    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
+    std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
+    services::IAppConfigManager::sptr helper = services::IAppConfigManager::New();
 
     try
     {

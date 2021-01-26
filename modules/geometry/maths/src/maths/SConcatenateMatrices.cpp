@@ -31,12 +31,12 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::sight::services::IController, ::maths::SConcatenateMatrices, data::TransformationMatrix3D)
 
-static const ::fwServices::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
-static const ::fwServices::IService::KeyType s_OUTPUT = "output";
+static const services::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
+static const services::IService::KeyType s_OUTPUT = "output";
 
 namespace maths
 {
@@ -123,7 +123,7 @@ void SConcatenateMatrices::updating()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
+::services::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

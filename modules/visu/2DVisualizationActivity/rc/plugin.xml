@@ -1,11 +1,11 @@
 <plugin id="2DVisualizationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="visuVTKQt" />
     <requirement id="guiQt" />
 
     <requirement id="activities" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
     <xi:include href="configurations/2DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

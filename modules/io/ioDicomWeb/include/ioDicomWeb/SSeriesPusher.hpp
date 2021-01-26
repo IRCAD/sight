@@ -29,7 +29,7 @@
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <vector>
 
@@ -58,11 +58,11 @@ namespace ioDicomWeb
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.
  */
-class IODICOMWEB_CLASS_API SSeriesPusher : public ::fwServices::IController
+class IODICOMWEB_CLASS_API SSeriesPusher : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController )
+    fwCoreServiceMacro(SSeriesPusher,  services::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

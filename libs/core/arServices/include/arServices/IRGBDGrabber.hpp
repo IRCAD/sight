@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,13 +36,13 @@ class ARSERVICES_CLASS_API IRGBDGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceMacro(IRGBDGrabber, ::arServices::IGrabber);
+    fwCoreServiceMacro(IRGBDGrabber, ::arServices::IGrabber)
 
     /**
      * @name Data API
      * @{
      */
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_DEPTHTL_INOUT;
+    ARSERVICES_API static const services::IService::KeyType s_DEPTHTL_INOUT;
     /** @} */
 
     /// Constructor.

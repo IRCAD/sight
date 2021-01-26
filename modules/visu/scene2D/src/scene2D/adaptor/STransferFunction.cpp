@@ -31,7 +31,7 @@
 #include <fwRenderQt/data/Viewport.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QColorDialog>
 #include <QGraphicsItemGroup>
@@ -45,8 +45,8 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_TF_INOUT       = "tf";
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const services::IService::KeyType s_TF_INOUT       = "tf";
+static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 static const std::string s_POLYGON_COLOR_CONFIG = "lineColor";
 static const std::string s_POINT_COLOR_CONFIG   = "pointColor";
@@ -104,7 +104,7 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+::services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_VIEWPORT_INPUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);

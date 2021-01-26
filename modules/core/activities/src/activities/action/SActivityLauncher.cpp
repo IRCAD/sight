@@ -45,10 +45,10 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwServices/IAppConfigManager.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <services/IAppConfigManager.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/AppConfig.hpp>
 
 #include <core/tools/UUID.hpp>
 
@@ -75,7 +75,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, activities::action::SActivityLauncher, data::Vector )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, activities::action::SActivityLauncher, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ const core::com::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_
 const core::com::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
 const core::com::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
-static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
+static const services::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -130,7 +130,7 @@ void SActivityLauncher::configuring()
 {
 #ifdef KEEP_OLD_SERVICE
     this->::fwGui::IActionSrv::initialize();
-    typedef ::fwServices::IService::ConfigType ConfigType;
+    typedef services::IService::ConfigType ConfigType;
 
     m_parameters.clear();
     if(this->getConfigTree().count("config") > 0)
@@ -138,8 +138,8 @@ void SActivityLauncher::configuring()
         SLM_ASSERT("There must be one (and only one) <config/> element.",
                    this->getConfigTree().count("config") == 1 );
 
-        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
-        const ::fwServices::IService::ConfigType& config   = srvconfig.get_child("config");
+        const services::IService::ConfigType srvconfig = this->getConfigTree();
+        const services::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
         SLM_ASSERT("SActivityLauncher mode must be either 'immediate' or 'message'",
@@ -147,7 +147,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("parameters") == 1 )
         {
-            const ::fwServices::IService::ConfigType& configParameters = config.get_child("parameters");
+            const services::IService::ConfigType& configParameters = config.get_child("parameters");
             BOOST_FOREACH( const ConfigType::value_type& v,  configParameters.equal_range("parameter") )
             {
                 ParametersType::value_type parameter( v.second );
@@ -158,7 +158,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("filter") == 1 )
         {
-            const ::fwServices::IService::ConfigType& configFilter = config.get_child("filter");
+            const services::IService::ConfigType& configFilter = config.get_child("filter");
             SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
@@ -176,11 +176,11 @@ void SActivityLauncher::configuring()
         if(config.count("quickLaunch") == 1 )
         {
             m_quickLaunch.clear();
-            const ::fwServices::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
+            const services::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
             BOOST_FOREACH( const ConfigType::value_type& v,  configQuickLaunch.equal_range("association") )
             {
-                const ::fwServices::IService::ConfigType& association = v.second;
-                const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
+                const services::IService::ConfigType& association = v.second;
+                const services::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
                 SLM_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
                 SLM_FATAL_IF( "The attribute \"id\" is missing", xmlattr.count("id") != 1 );
@@ -459,9 +459,9 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
         std::string viewConfigID                                     = msg.getAppConfigID();
         activities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
         replaceMap["GENERIC_UID"] =
-            ::fwServices::registry::AppConfig::getUniqueIdentifier();
+            services::registry::AppConfig::getUniqueIdentifier();
 
-        ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
+        services::IAppConfigManager::sptr helper = services::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );
         helper->launch();
         helper->stopAndDestroy();
@@ -654,7 +654,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
+::services::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -26,7 +26,7 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ctrlCom
 {
@@ -50,11 +50,11 @@ namespace ctrlCom
  * @subsection Configuration Configuration
  *  - \b signal: list of signals to wait for
  */
-class CTRLCOM_CLASS_API SSignalGate : public ::fwServices::IController
+class CTRLCOM_CLASS_API SSignalGate : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SSignalGate, ::fwServices::IController)
+    fwCoreServiceMacro(SSignalGate, services::IController)
 
     /**
      * @name Signals API

@@ -95,7 +95,7 @@ protected:
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      * Connect data::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the frustum.
     VISUOGREADAPTOR_API void stopping() override;

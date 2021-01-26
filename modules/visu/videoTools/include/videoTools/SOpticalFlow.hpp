@@ -24,7 +24,7 @@
 
 #include "videoTools/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -62,10 +62,10 @@ namespace videoTools
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
  */
-class VIDEOTOOLS_CLASS_API SOpticalFlow : public ::fwServices::IController
+class VIDEOTOOLS_CLASS_API SOpticalFlow : public services::IController
 {
 public:
-    fwCoreServiceMacro(SOpticalFlow, ::fwServices::IController)
+    fwCoreServiceMacro(SOpticalFlow, services::IController)
 
     typedef core::com::Signal<void ()> MotionSignalType;
     typedef core::com::Signal<void ()> NoMotionSignalType;
@@ -77,7 +77,7 @@ public:
     VIDEOTOOLS_CLASS_API ~SOpticalFlow() noexcept override;
 
     /// Connects ::arData:FrameTL::s_OBJECT_PUSHED_SIG to s_UPDATE_SLOT
-    VIDEOTOOLS_CLASS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIDEOTOOLS_CLASS_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

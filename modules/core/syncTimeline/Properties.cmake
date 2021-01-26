@@ -8,6 +8,6 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwMath
-    fwServices
+    services
 )
 set( REQUIREMENTS  )

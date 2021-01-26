@@ -12,7 +12,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     visuOgre
-    servicesReg
+    module_services
 )
 set( WARNINGS_AS_ERRORS ON )
 

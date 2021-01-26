@@ -31,8 +31,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <services/macros.hpp>
+#include <services/registry/AppConfig.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -102,7 +102,7 @@ void SActivityView::starting()
 
     parentContainer->setLayout(layout);
 
-    m_configManager = ::fwServices::IAppConfigManager::New();
+    m_configManager = services::IAppConfigManager::New();
 
     if (!m_mainActivityId.empty())
     {
@@ -155,7 +155,7 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"]       = activitySeries->getID();
         replaceMap[ "WID_PARENT" ] = m_wid;
-        std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
+        std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
         try
         {

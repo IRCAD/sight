@@ -27,7 +27,7 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace arPreferences
 {

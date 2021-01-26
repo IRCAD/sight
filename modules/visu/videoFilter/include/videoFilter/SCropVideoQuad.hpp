@@ -96,6 +96,6 @@ private:
                              data::FrameTL::sptr& frameTL,
                              core::HiResClock::HiResClockType timestamp);
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 };
 } //namespace videoFilter

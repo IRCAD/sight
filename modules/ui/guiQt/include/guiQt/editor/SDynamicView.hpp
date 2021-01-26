@@ -39,7 +39,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IAppConfigManager.hpp>
+#include <services/IAppConfigManager.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -164,7 +164,7 @@ private:
     struct SDynamicViewInfo
     {
         ::fwGuiQt::container::QtContainer::sptr container;
-        ::fwServices::IAppConfigManager::sptr helper;
+        services::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
         bool closable;

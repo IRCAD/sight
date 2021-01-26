@@ -35,8 +35,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <QIcon>
 #include <QVBoxLayout>
@@ -50,7 +50,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, data::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::sight::data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 

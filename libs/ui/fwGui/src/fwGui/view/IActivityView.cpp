@@ -38,7 +38,7 @@
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace fwGui
 {

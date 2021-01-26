@@ -10,12 +10,12 @@ set( DEPENDENCIES
     fwGuiQt
     fwJobs
     fwLog
-    fwServices
+    services
     fwIO
     data
     fwDataTools
     )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

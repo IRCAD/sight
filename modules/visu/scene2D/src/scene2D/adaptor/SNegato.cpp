@@ -40,7 +40,7 @@
 
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QBitmap>
 #include <QGraphicsItemGroup>
@@ -53,8 +53,8 @@ namespace scene2D
 {
 namespace adaptor
 {
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_TF_INOUT    = "tf";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
@@ -574,7 +574,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQtdata::Coord&, ::fwRenderQt
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SNegato::getAutoConnections() const
+::services::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

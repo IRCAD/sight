@@ -31,9 +31,9 @@
 #include <data/Object.hpp>
 #include <data/timeline/Buffer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, data::Composite )
+fwServicesRegisterMacro( ::sight::services::IController, ::videoTools::SFrameUpdater, ::sight::data::Composite )
 
 namespace videoTools
 {
@@ -67,7 +67,7 @@ SFrameUpdater::~SFrameUpdater() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
+::services::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

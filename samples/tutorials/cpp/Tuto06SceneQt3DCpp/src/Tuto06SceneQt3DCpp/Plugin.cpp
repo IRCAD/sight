@@ -53,7 +53,7 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    m_appManager = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
+    m_appManager = std::unique_ptr< services::AppManager >(new services::AppManager);
     m_appManager->create();
 
     /* **************************************************************************************
@@ -76,7 +76,7 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     // Creates the frame configuration.
-    ::fwServices::IService::ConfigType frameConfig;
+    services::IService::ConfigType frameConfig;
     frameConfig.put("gui.frame.name", "Tuto06SceneQt3DCpp");
     frameConfig.put("gui.frame.icon", "Tuto06SceneQt3DCpp-0.2/tuto.ico");
     frameConfig.put("gui.menuBar", "");
@@ -85,17 +85,17 @@ void Plugin::initialize()
     frameSrv->configure(frameConfig);
 
     // Creates the menuBar configuration.
-    ::fwServices::IService::ConfigType menuBarConfig;
+    services::IService::ConfigType menuBarConfig;
     menuBarConfig.put("gui.layout.menu.<xmlattr>.name", "File");
     menuBarConfig.put("registry.menu.<xmlattr>.sid", "menuFile");
     menuBar->configure(menuBarConfig);
 
     // Creates the menu configuration.
-    ::fwServices::IService::ConfigType menuConfig;
-    ::fwServices::IService::ConfigType menuItem1;
+    services::IService::ConfigType menuConfig;
+    services::IService::ConfigType menuItem1;
     menuItem1.put("<xmlattr>.name", "Open mesh");
     menuItem1.put("<xmlattr>.shortcut", "Ctrl+O");
-    ::fwServices::IService::ConfigType menuItem2;
+    services::IService::ConfigType menuItem2;
     menuItem2.put("<xmlattr>.name", "Quit");
     menuItem2.put("<xmlattr>.shortcut", "Ctrl+Q");
     menuItem2.put("<xmlattr>.specialAction", "QUIT");
@@ -104,25 +104,25 @@ void Plugin::initialize()
     menuConfig.add("gui.layout", "separator");
     menuConfig.add_child("gui.layout.menuItem", menuItem2);
 
-    ::fwServices::IService::ConfigType menuItem1Reg;
+    services::IService::ConfigType menuItem1Reg;
     menuItem1Reg.put("<xmlattr>.sid", "actionOpenMesh");
-    ::fwServices::IService::ConfigType menuItem2Reg;
+    services::IService::ConfigType menuItem2Reg;
     menuItem2Reg.put("<xmlattr>.sid", "actionQuit");
     menuConfig.add_child("registry.menuItem", menuItem1Reg);
     menuConfig.add_child("registry.menuItem", menuItem2Reg);
     menu->configure(menuConfig);
 
     // Defines main view configuration.
-    ::fwServices::IService::ConfigType mainViewConfig;
-    ::fwServices::IService::ConfigType mainViewLayoutConfig;
+    services::IService::ConfigType mainViewConfig;
+    services::IService::ConfigType mainViewLayoutConfig;
     mainViewLayoutConfig.put("<xmlattr>.type", "::fwGui::CardinalLayoutManager");
-    ::fwServices::IService::ConfigType mainView1;
+    services::IService::ConfigType mainView1;
     mainView1.put("<xmlattr>.align", "center");
     mainView1.put("<xmlattr>.minWidth", "1080");
     mainView1.put("<xmlattr>.minHeight", "720");
     mainViewLayoutConfig.add_child("view", mainView1);
     mainViewConfig.add_child("gui.layout", mainViewLayoutConfig);
-    ::fwServices::IService::ConfigType mainView1Reg;
+    services::IService::ConfigType mainView1Reg;
     mainView1Reg.put("<xmlattr>.sid", "genericScene");
     mainViewConfig.add_child("registry.view", mainView1Reg);
     mainView->configure(mainViewConfig);
@@ -132,7 +132,7 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     // Opens a mesh.
-    ::fwServices::IService::ConfigType actionOpenMeshConfig;
+    services::IService::ConfigType actionOpenMeshConfig;
     actionOpenMeshConfig.add("start.<xmlattr>.uid", "meshReader");
     actionOpenMesh->configure(actionOpenMeshConfig);
 
@@ -143,7 +143,7 @@ void Plugin::initialize()
     *              readers configuration
     ****************************************************************************************/
 
-    ::fwServices::IService::ConfigType meshReaderConfig;
+    services::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
     meshReaderSrv->configure(meshReaderConfig);
 
@@ -152,17 +152,17 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     // Configures render service.
-    ::fwServices::IService::ConfigType renderConfig;
-    ::fwServices::IService::ConfigType backgroundConfig;
+    services::IService::ConfigType renderConfig;
+    services::IService::ConfigType backgroundConfig;
     backgroundConfig.put("<xmlattr>.color", "#2d2d2d");
     renderConfig.add_child("scene.background", backgroundConfig);
-    ::fwServices::IService::ConfigType adpt1Config;
+    services::IService::ConfigType adpt1Config;
     adpt1Config.put("<xmlattr>.uid", "meshAdaptor");
     renderConfig.add_child("scene.adaptor", adpt1Config);
     renderSrv->configure(renderConfig);
 
     // Configures mesh adaptor.
-    ::fwServices::IService::ConfigType meshAdaptorConfig;
+    services::IService::ConfigType meshAdaptorConfig;
     meshAdaptorConfig.add("config.<xmlattr>.autoresetcamera", "true");
     meshAdaptorConfig.add("config.<xmlattr>.visible", "true");
     meshAdaptor->configure(meshAdaptorConfig);

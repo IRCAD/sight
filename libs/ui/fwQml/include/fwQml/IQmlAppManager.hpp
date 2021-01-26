@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "fwQml/config.hpp"
 
-#include <fwServices/AppManager.hpp>
-#include <fwServices/IService.hpp>
+#include <services/AppManager.hpp>
+#include <services/IService.hpp>
 
 #include <QObject>
 #include <QVariant>
@@ -63,7 +63,7 @@ namespace fwQml
  * do it in the order you want).
  */
 class FWQML_CLASS_QT_API IQmlAppManager : public QObject,
-                                          public ::fwServices::AppManager
+                                          public services::AppManager
 {
 Q_OBJECT
 public:
@@ -101,7 +101,7 @@ public Q_SLOTS:
             srv->configure(config);
 
             // add proxy connections
-            ::fwServices::helper::ProxyConnections connection(this->getInputID("myChannel"));
+            services::helper::ProxyConnections connection(this->getInputID("myChannel"));
             connection.addSlotConnection(srv->getID(), "mySlot");
             this->addProxyConnection(connection);
 

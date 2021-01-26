@@ -30,8 +30,8 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, data::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::sight::data::Composite)
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
@@ -173,8 +173,8 @@ void SCompositorSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    ::fwServices::registry::ObjectService::ServiceVectorType renderers =
-        ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+    services::registry::ObjectService::ServiceVectorType renderers =
+        services::OSR::getServices("::fwRenderOgre::SRender");
 
     for(auto srv : renderers)
     {

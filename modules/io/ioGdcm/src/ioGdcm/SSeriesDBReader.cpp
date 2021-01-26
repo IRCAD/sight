@@ -47,14 +47,14 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, data::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -118,7 +118,7 @@ void SSeriesDBReader::openLocationDialog()
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
-        filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+        filterSelectorConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterConfig, "::ioDicom::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
@@ -126,16 +126,16 @@ void SSeriesDBReader::openLocationDialog()
                    << " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
-        ::fwServices::IService::sptr filterSelectorSrv;
+        services::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv = services::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
         filterSelectorSrv->stop();
-        ::fwServices::OSR::unregisterService( filterSelectorSrv );
+        services::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
 
@@ -153,7 +153,7 @@ void SSeriesDBReader::configuring()
 {
     ::fwIO::IReader::configuring();
 
-    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const services::IService::ConfigType config = this->getConfigTree();
 
     // Use filter selector
     m_filterConfig = config.get<std::string>("filterConfig", "");
@@ -191,8 +191,8 @@ void SSeriesDBReader::configuring()
         const auto sopClassRange           = sopClassSelectionConfig.equal_range("SOPClass");
         for(auto sopClassIter = sopClassRange.first; sopClassIter != sopClassRange.second; ++sopClassIter)
         {
-            const ::fwServices::IService::ConfigType& sopClassConfig = sopClassIter->second;
-            const ::fwServices::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
+            const services::IService::ConfigType& sopClassConfig = sopClassIter->second;
+            const services::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
 
             SLM_ASSERT("Missing attribute 'uid' in element '<SOPClass>'", sopClassAttr.count("uid") == 1);
             m_supportedSOPClassSelection.push_back(sopClassAttr.get<std::string>("uid"));

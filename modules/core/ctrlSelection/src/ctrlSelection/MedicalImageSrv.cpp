@@ -29,7 +29,7 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlSelection
 {
@@ -38,7 +38,7 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, data::Image )
+fwServicesRegisterMacro( ::sight::services::IController, ::ctrlSelection::MedicalImageSrv, ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -121,7 +121,7 @@ void MedicalImageSrv::info( std::ostream& )
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
+::services::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("image", data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

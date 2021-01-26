@@ -2,7 +2,7 @@
 
     <library name="visuOgreQt" />
 
-    <requirement id="servicesReg"/>
+    <requirement id="::sight::modules::services"/>
     <requirement id="visuOgre" />
 
 </plugin>

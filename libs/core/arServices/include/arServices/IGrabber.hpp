@@ -24,7 +24,7 @@
 
 #include "arServices/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace sight::data
 {
@@ -56,12 +56,12 @@ namespace arServices
  * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
  * overridden.
  */
-class ARSERVICES_CLASS_API IGrabber : public fwServices::IService
+class ARSERVICES_CLASS_API IGrabber : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IGrabber, fwServices::IService)
+    fwCoreServiceMacro(IGrabber, services::IService)
 
     /**
      * @name Slots API
@@ -106,8 +106,8 @@ public:
      * @name Data API
      * @{
      */
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_CAMERA_INPUT;
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAMETL_INOUT;
+    ARSERVICES_API static const services::IService::KeyType s_CAMERA_INPUT;
+    ARSERVICES_API static const services::IService::KeyType s_FRAMETL_INOUT;
     /** @} */
     /**
      * @brief Constructor.

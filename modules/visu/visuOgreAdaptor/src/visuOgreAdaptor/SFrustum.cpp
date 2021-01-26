@@ -33,7 +33,7 @@
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -131,9 +131,9 @@ void SFrustum::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
+::services::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
 

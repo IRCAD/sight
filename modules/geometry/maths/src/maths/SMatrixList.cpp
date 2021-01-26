@@ -26,7 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <iomanip>
 
@@ -38,13 +38,13 @@ static const core::com::Signals::SignalKeyType s_MATRIX_REMOVED_SIG = "matrixRem
 static const core::com::Slots::SlotKeyType s_SELECT_MATRIX_SLOT = "selectMatrix";
 static const core::com::Slots::SlotKeyType s_REMOVE_MATRIX_SLOT = "removeMatrix";
 
-const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
-const ::fwServices::IService::KeyType s_VECTOR_INOUT   = "vector";
-const ::fwServices::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
+const services::IService::KeyType s_MATRICES_INOUT = "matrices";
+const services::IService::KeyType s_VECTOR_INOUT   = "vector";
+const services::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IService, ::maths::SMatrixList )
+fwServicesRegisterMacro( ::sight::services::IService, ::maths::SMatrixList )
 
 //-----------------------------------------------------------------------------
 

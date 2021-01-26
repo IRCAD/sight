@@ -3,13 +3,13 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     core
-    fwServices
+    services
     fwPacsIO
     utestData
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     gui
     ioPacs
 )

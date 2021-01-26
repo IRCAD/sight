@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
-    servicesReg
+    module_services
     data
     gui
     uiTF

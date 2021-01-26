@@ -25,7 +25,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 using core::runtime::ConfigurationElementContainer;
 

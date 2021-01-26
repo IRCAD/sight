@@ -300,8 +300,8 @@ void SShapeExtruder::deleteLastMesh()
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send notification
-        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
-            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
+            services::IService::s_INFO_NOTIFIED_SIG);
         notif->asyncEmit("Last extrusion deleted.");
 
         // Send the signal.
@@ -311,8 +311,8 @@ void SShapeExtruder::deleteLastMesh()
     }
     else
     {
-        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
-            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
+            services::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("No extrusion to delete.");
     }
 }

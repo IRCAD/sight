@@ -32,7 +32,7 @@
 
 #include <fwRender/IRender.hpp>
 
-#include <fwServices/helper/Config.hpp>
+#include <services/helper/Config.hpp>
 
 #include <QGraphicsScene>
 #include <QGraphicsView>

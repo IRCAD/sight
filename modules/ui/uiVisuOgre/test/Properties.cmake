@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES core utestData fwRenderOgre)
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     gui
     uiIO
     uiVisuOgre

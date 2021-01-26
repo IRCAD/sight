@@ -40,7 +40,7 @@
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDirectory.h>
@@ -273,7 +273,7 @@ void SeriesDB::readDicom()
 //------------------------------------------------------------------------------
 
 void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                     const ::fwServices::IService::sptr& notifier)
+                                     const services::IService::sptr& notifier)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -333,7 +333,7 @@ bool SeriesDB::isDicomDirAvailable()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
+void SeriesDB::convertDicomSeries(const services::IService::sptr& notifier)
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
 

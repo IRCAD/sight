@@ -28,9 +28,9 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/helper/Config.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QColor>
 #include <QQmlEngine>

@@ -28,7 +28,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace cvSegmentation
 {
@@ -37,7 +37,7 @@ namespace cvSegmentation
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
  * image using an Expectation Maximization algorithm.
  *
- * @see ::fwServices::IOperator
+ * @see services::IOperator
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
@@ -81,12 +81,12 @@ namespace cvSegmentation
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class CVSEGMENTATION_CLASS_API SColourImageMasking final : public ::fwServices::IOperator
+class CVSEGMENTATION_CLASS_API SColourImageMasking final : public services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator)
+    fwCoreServiceMacro(SColourImageMasking, services::IOperator)
 
     /// Initializes the slots and member variables.
     CVSEGMENTATION_API SColourImageMasking() noexcept;
@@ -95,7 +95,7 @@ public:
     CVSEGMENTATION_API ~SColourImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

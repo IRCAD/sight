@@ -35,9 +35,9 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -105,7 +105,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
+    services::IService::sptr srv = services::add( "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
@@ -115,7 +115,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     srv->start();
     srv->update();
     srv->stop();
-    ::fwServices::OSR::unregisterService(srv);
+    services::OSR::unregisterService(srv);
 
     // Data expected
     const data::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
@@ -182,7 +182,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     data::SeriesDB::sptr seriesDB       = data::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
-    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioVTK::SSeriesDBReader" );
+    services::IService::sptr srv = services::add( "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
@@ -192,7 +192,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     srv->start().wait();
     srv->update().wait();
     srv->stop().wait();
-    ::fwServices::OSR::unregisterService(srv);
+    services::OSR::unregisterService(srv);
 
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 }

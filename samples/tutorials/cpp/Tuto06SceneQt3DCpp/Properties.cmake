@@ -4,7 +4,7 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     data
-    fwServices
+    services
 )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
@@ -15,7 +15,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

@@ -32,7 +32,7 @@
 
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <set>
 

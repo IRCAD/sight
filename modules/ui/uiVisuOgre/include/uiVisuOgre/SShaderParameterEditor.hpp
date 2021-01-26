@@ -33,7 +33,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <QVBoxLayout>
 
@@ -104,7 +104,7 @@ private:
     {
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
-        ::fwServices::IService::wptr service;
+        services::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };
 

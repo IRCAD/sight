@@ -31,7 +31,7 @@
 namespace uiReconstructionQml
 {
 
-static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ void SRepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

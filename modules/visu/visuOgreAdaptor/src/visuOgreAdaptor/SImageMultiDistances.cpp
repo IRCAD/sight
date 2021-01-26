@@ -36,7 +36,7 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreEntity.h>
 #include <OgreNode.h>
@@ -45,7 +45,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
 static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
 static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
@@ -236,7 +236,7 @@ void SImageMultiDistances::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+::services::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);

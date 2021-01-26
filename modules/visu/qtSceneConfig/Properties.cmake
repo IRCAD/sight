@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     gui
     guiQt
     uiTF

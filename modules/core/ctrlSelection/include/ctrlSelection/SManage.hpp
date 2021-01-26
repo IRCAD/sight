@@ -26,7 +26,7 @@
 
 #include <data/Object.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace ctrlSelection
 {
@@ -103,12 +103,12 @@ namespace ctrlSelection
  * - \b compositeKey (optional, only if target object in a Composite) : key of the object in the composite
  * - \b field (optional, only if target object in a data::Object) : name of the field
  */
-class CTRLSELECTION_CLASS_API SManage : public ::fwServices::IController
+class CTRLSELECTION_CLASS_API SManage : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SManage, ::fwServices::IController)
+    fwCoreServiceMacro(SManage, services::IController)
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SManage() noexcept;

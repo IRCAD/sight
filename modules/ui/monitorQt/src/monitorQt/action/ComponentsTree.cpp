@@ -27,7 +27,7 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -37,7 +37,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

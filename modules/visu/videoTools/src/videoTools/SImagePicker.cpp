@@ -27,20 +27,20 @@
 
 #include <data/Camera.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace videoTools
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SImagePicker, data::PointList)
+fwServicesRegisterMacro( ::sight::services::IController, ::videoTools::SImagePicker, ::sight::data::PointList)
 
 //-----------------------------------------------------------------------------
 
 const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-const ::fwServices::IService::KeyType s_POINTLIST_INOUT       = "pointList";
-const ::fwServices::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
-const ::fwServices::IService::KeyType s_CAMERA_INOUT          = "camera";
+const services::IService::KeyType s_POINTLIST_INOUT       = "pointList";
+const services::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
+const services::IService::KeyType s_CAMERA_INOUT          = "camera";
 
 SImagePicker::SImagePicker() noexcept
 {

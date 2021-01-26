@@ -32,7 +32,7 @@ namespace ioNetwork
 const core::com::Signals::SignalKeyType INetworkSender::s_CONNECTED_SIGNAL    = "connected";
 const core::com::Signals::SignalKeyType INetworkSender::s_DISCONNECTED_SIGNAL = "disconnected";
 
-const ::fwServices::IService::KeyType s_OBJECTS_INOUT = "objects";
+const services::IService::KeyType s_OBJECTS_INOUT = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -79,9 +79,9 @@ void INetworkSender::swapping()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
+::services::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_OBJECTS_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

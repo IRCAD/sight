@@ -22,16 +22,16 @@
 
 #include "ctrlMemory/LockDumpSrv.hpp"
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ctrlMemory
 {
 
-static const ::fwServices::IService::KeyType s_TARGET_INOUT = "target";
+static const services::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlMemory::LockDumpSrv, data::Object )
+fwServicesRegisterMacro( ::sight::services::IController, ::ctrlMemory::LockDumpSrv, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

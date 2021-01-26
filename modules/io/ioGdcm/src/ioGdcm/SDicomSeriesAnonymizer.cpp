@@ -37,14 +37,14 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <vector>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioGdcm::SDicomSeriesAnonymizer)
+fwServicesRegisterMacro( ::sight::services::IController, ::ioGdcm::SDicomSeriesAnonymizer)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

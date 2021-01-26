@@ -36,14 +36,14 @@
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <dcmtk/dcmdata/dcistrmb.h>
 
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, data::Object )
+fwServicesRegisterMacro( ::sight::services::IController, ::ioPacs::SSeriesPusher, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

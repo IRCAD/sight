@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/InputDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -40,7 +40,7 @@ std::string InputDialog::showInputDialog(const std::string& title, const std::st
 
 InputDialog::InputDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IInputDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IInputDialog::dynamicCast(guiObj);
@@ -51,7 +51,7 @@ InputDialog::InputDialog()
 
 InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string& text)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IInputDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IInputDialog::dynamicCast(guiObj);
@@ -71,7 +71,7 @@ InputDialog::~InputDialog()
 
 void InputDialog::setTitle( const std::string& title )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setTitle(title);
             })).wait();
@@ -81,7 +81,7 @@ void InputDialog::setTitle( const std::string& title )
 
 void InputDialog::setMessage( const std::string& msg )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_implementation->setMessage(msg);
             })).wait();
@@ -91,7 +91,7 @@ void InputDialog::setMessage( const std::string& msg )
 
 void InputDialog::setInput(const std::string& text)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setInput(text);
             })).wait();
@@ -103,7 +103,7 @@ std::string InputDialog::getInput()
 {
     std::function< std::string() > func = std::bind(&IInputDialog::getInput, m_implementation);
     std::shared_future< std::string > f =
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
     f.wait();
     return f.get();
 }

@@ -41,19 +41,19 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
+
+#include <services/macros.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, data::Image )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

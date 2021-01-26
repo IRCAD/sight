@@ -32,7 +32,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QDialog>
 #include <QHBoxLayout>
@@ -48,11 +48,11 @@ const core::com::Slots::SlotKeyType SHandEyeEditor::s_REMOVE_SLOT        = "remo
 const core::com::Slots::SlotKeyType SHandEyeEditor::s_RESET_SLOT         = "reset";
 const core::com::Slots::SlotKeyType SHandEyeEditor::s_GET_SELECTION_SLOT = "getSelection";
 
-static const ::fwServices::IService::KeyType s_MATRIXVECTOR1_INOUT = "matrixVector1";
-static const ::fwServices::IService::KeyType s_MATRIXVECTOR2_INOUT = "matrixVector2";
+static const services::IService::KeyType s_MATRIXVECTOR1_INOUT = "matrixVector1";
+static const services::IService::KeyType s_MATRIXVECTOR2_INOUT = "matrixVector2";
 
-static const ::fwServices::IService::KeyType s_MATRIXTL1_INPUT = "matrixTL1";
-static const ::fwServices::IService::KeyType s_MATRIXTL2_INPUT = "matrixTL2";
+static const services::IService::KeyType s_MATRIXTL1_INPUT = "matrixTL1";
+static const services::IService::KeyType s_MATRIXTL2_INPUT = "matrixTL2";
 
 // ----------------------------------------------------------------------------
 

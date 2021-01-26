@@ -51,9 +51,9 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -163,14 +163,14 @@ void SSliceIndexDicomPullerEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+    services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
 
     ::fwIO::IReader::sptr dicomReader;
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioDicomWeb::SSliceIndexDicomPullerEditor.", dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
-                                       ::fwServices::IService::AccessType::INOUT, dicomReader);
+    services::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                   services::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);
@@ -216,7 +216,7 @@ void SSliceIndexDicomPullerEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_dicomReader.lock());
+        services::OSR::unregisterService(m_dicomReader.lock());
     }
 
     this->destroy();
@@ -356,7 +356,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    services::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

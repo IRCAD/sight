@@ -35,7 +35,7 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -47,7 +47,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, data::FrameTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
@@ -88,7 +88,7 @@ void SFrameWriter::configuring()
 {
     ::fwIO::IWriter::configuring();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_format = config.get<std::string>("format", ".tiff");
 
@@ -292,9 +292,9 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
+::services::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }

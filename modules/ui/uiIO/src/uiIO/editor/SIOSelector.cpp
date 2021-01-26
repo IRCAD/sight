@@ -39,10 +39,10 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ServiceConfig.hpp>
+#include <services/registry/ServiceFactory.hpp>
 
 #include <sstream>
 #include <string>
@@ -55,7 +55,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, data::Object )
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
@@ -178,7 +178,7 @@ void SIOSelector::updating()
         }
         createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
-            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+            services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
                 classname, "::fwIO::IReader");
     }
     else // m_mode == WRITER_MODE
@@ -186,7 +186,7 @@ void SIOSelector::updating()
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
 
         availableExtensionsId =
-            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+            services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
                 obj->getClassname(), "::fwIO::IWriter");
     }
 
@@ -208,12 +208,12 @@ void SIOSelector::updating()
         {
             // Add this service
             std::string infoUser =
-                ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+                services::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
 
             std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
             if ( iter != m_serviceToConfig.end() )
             {
-                infoUser = ::fwServices::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
+                infoUser = services::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
             }
 
             if (infoUser != "")
@@ -287,10 +287,10 @@ void SIOSelector::updating()
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg              = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                srvCfg              = services::registry::ServiceConfig::getDefault()->getServiceConfig(
                     m_serviceToConfig[extensionId], extensionId );
                 SLM_ASSERT(
-                    "No service configuration of type ::fwServices::registry::ServiceConfig was found",
+                    "No service configuration of type services::registry::ServiceConfig was found",
                     srvCfg );
             }
 
@@ -303,7 +303,7 @@ void SIOSelector::updating()
                     SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
-                ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >( extensionId );
+                ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >( extensionId );
                 reader->registerInOut(obj, ::fwIO::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
@@ -330,7 +330,7 @@ void SIOSelector::updating()
                     cursor.setDefaultCursor();
 
                     reader->stop();
-                    ::fwServices::OSR::unregisterService(reader);
+                    services::OSR::unregisterService(reader);
 
                     if (createOutput && !reader->hasFailed())
                     {
@@ -355,10 +355,10 @@ void SIOSelector::updating()
             else
             {
                 // When all writers make use of getObject(), we can use the following code instead:
-                //      ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >( extensionId );
+                //      ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >( extensionId );
                 //      writer->registerInput(this->getObject(), ::fwIO::s_DATA_KEY);
 
-                auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+                auto factory = services::registry::ServiceFactory::getDefault();
                 ::fwIO::IWriter::sptr writer =
                     ::fwIO::IWriter::dynamicCast(factory->create( "::fwIO::IWriter", extensionId));
                 writer->registerInput(obj, ::fwIO::s_DATA_KEY);
@@ -388,7 +388,7 @@ void SIOSelector::updating()
                     cursor.setDefaultCursor();
 
                     writer->stop();
-                    ::fwServices::OSR::unregisterService(writer);
+                    services::OSR::unregisterService(writer);
                 }
                 catch (std::exception& e)
                 {

@@ -27,7 +27,7 @@
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"
 #include "fwGui/registrar/MenuBarRegistrar.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -35,12 +35,12 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu bar.
  */
-class FWGUI_CLASS_API IMenuBarSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IMenuBarSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IMenuBarSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IMenuBarSrv, services::IService)
 
     /// Method called when a menu service is stopping
     FWGUI_API void menuServiceStopping(std::string menuSrvSID);

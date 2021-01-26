@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,17 +24,17 @@
 
 #include "arServices/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace arServices
 {
 /**
  * @brief   ICalibration is an interface API for calibration services.
  */
-class ARSERVICES_CLASS_API ICalibration : public fwServices::IService
+class ARSERVICES_CLASS_API ICalibration : public services::IService
 {
 public:
-    fwCoreServiceMacro(ICalibration, fwServices::IService);
+    fwCoreServiceMacro(ICalibration, services::IService)
 
     /// Constructor.
     ARSERVICES_API ICalibration() noexcept;

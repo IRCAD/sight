@@ -28,7 +28,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/op/Add.hpp>
+#include <services/op/Add.hpp>
 
 namespace visuBasic
 {
@@ -90,37 +90,37 @@ void SMesh::starting()
 
     // create and register the render service
     // create the frame configuration
-    ::fwServices::IService::ConfigType renderConfig;
+    services::IService::ConfigType renderConfig;
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 
-    ::fwServices::IService::ConfigType interactorCfg;
+    services::IService::ConfigType interactorCfg;
     interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
-    ::fwServices::IService::ConfigType negatoCfg;
+    services::IService::ConfigType negatoCfg;
     negatoCfg.put("<xmlattr>.uid", this->getID() + "meshAdaptor");
-    ::fwServices::IService::ConfigType cameraCfg;
+    services::IService::ConfigType cameraCfg;
     cameraCfg.put("<xmlattr>.uid", this->getID() + "cameraAdaptor");
 
     renderConfig.add_child("scene.adaptor", interactorCfg);
     renderConfig.add_child("scene.adaptor", negatoCfg);
     renderConfig.add_child("scene.adaptor", cameraCfg);
 
-    m_renderSrv = ::fwServices::add("::fwRenderOgre::SRender");
+    m_renderSrv = services::add("::fwRenderOgre::SRender");
     m_renderSrv->setConfiguration(renderConfig);
     m_renderSrv->setID(genericSceneId);
     m_renderSrv->configure();
 
-    ::fwServices::IService::ConfigType interactorConfig;
+    services::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = ::fwServices::add("::visuOgreAdaptor::STrackballCamera");
+    m_interactorSrv = services::add("::visuOgreAdaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    ::fwServices::IService::ConfigType meshConfig;
+    services::IService::ConfigType meshConfig;
     meshConfig.put("config.<xmlattr>.layer", "default");
-    m_meshSrv = ::fwServices::add("::visuOgreAdaptor::SMesh");
+    m_meshSrv = services::add("::visuOgreAdaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
     m_meshSrv->registerInOut(std::const_pointer_cast< data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
@@ -130,9 +130,9 @@ void SMesh::starting()
     m_connections.connect(m_cameraTransform, data::Object::s_MODIFIED_SIG,
                           this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
 
-    ::fwServices::IService::ConfigType cameraConfig;
+    services::IService::ConfigType cameraConfig;
     cameraConfig.put("config.<xmlattr>.layer", "default");
-    m_cameraSrv = ::fwServices::add("::visuOgreAdaptor::SCamera");
+    m_cameraSrv = services::add("::visuOgreAdaptor::SCamera");
     m_cameraSrv->setConfiguration(cameraConfig);
     m_cameraSrv->registerInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
@@ -146,7 +146,7 @@ void SMesh::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
@@ -173,10 +173,10 @@ void SMesh::stopping()
 
     ::fwGui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    ::fwServices::OSR::unregisterService(m_cameraSrv);
-    ::fwServices::OSR::unregisterService(m_meshSrv);
-    ::fwServices::OSR::unregisterService(m_interactorSrv);
-    ::fwServices::OSR::unregisterService(m_renderSrv);
+    services::OSR::unregisterService(m_cameraSrv);
+    services::OSR::unregisterService(m_meshSrv);
+    services::OSR::unregisterService(m_interactorSrv);
+    services::OSR::unregisterService(m_renderSrv);
 
     m_cameraSrv.reset();
     m_meshSrv.reset();

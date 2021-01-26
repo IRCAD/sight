@@ -29,7 +29,7 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -50,9 +50,9 @@ namespace visuOgreAdaptor
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT = "updatePL";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
-static const ::fwServices::IService::KeyType s_PL_INPUT    = "pointList";
+static const services::IService::KeyType s_IMAGE_INPUT = "image";
+static const services::IService::KeyType s_TF_INPUT    = "tf";
+static const services::IService::KeyType s_PL_INPUT    = "pointList";
 
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
@@ -126,7 +126,7 @@ void SVideo::starting()
 
         m_pointListAdaptor->registerInput(m_pointList, s_PL_INPUT, true);
 
-        ::fwServices::IService::ConfigType config;
+        services::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", this->getLayerID());
         config.add("config.<xmlattr>.autoresetcamera", "no");
         if(!m_materialTemplateName.empty())
@@ -183,9 +183,9 @@ void SVideo::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
+::services::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

@@ -5,7 +5,7 @@ set( START ON )
 set( DEPENDENCIES
     data
     fwDataTools
-    fwServices
+    services
 )
 set( REQUIREMENTS
     ctrlCamp
@@ -14,7 +14,7 @@ set( REQUIREMENTS
     guiQt
     ioData
     ioVTK
-    servicesReg
+    module_services
     opVTKMesh
     uiIO
     uiImageQt

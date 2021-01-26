@@ -7,11 +7,11 @@ set( DEPENDENCIES
     core
     data
     fwGui
-    fwServices
+    services
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )
 
 if(NOT ${ENABLE_QML_APPLICATION})

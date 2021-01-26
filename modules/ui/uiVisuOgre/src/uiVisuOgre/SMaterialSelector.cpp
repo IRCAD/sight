@@ -34,7 +34,7 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -51,11 +51,11 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, data::Reconstruction)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::sight::data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
-static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 

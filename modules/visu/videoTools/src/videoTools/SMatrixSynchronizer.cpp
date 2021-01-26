@@ -37,7 +37,7 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
                         data::TransformationMatrix3D)

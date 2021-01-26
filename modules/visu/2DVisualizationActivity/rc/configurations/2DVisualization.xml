@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>2DVisualization</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -76,7 +76,7 @@
             </registry>
         </service>
 
-        <service uid="cfgNegato1" type="::fwServices::SConfigController">
+        <service uid="cfgNegato1" type="::sight::services::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -86,7 +86,7 @@
             <parameter replace="orientation" by="axial" />
         </service>
 
-        <service uid="cfgNegato2" type="::fwServices::SConfigController">
+        <service uid="cfgNegato2" type="::sight::services::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -96,7 +96,7 @@
             <parameter replace="orientation" by="frontal" />
         </service>
 
-        <service uid="cfgNegato3" type="::fwServices::SConfigController">
+        <service uid="cfgNegato3" type="::sight::services::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />

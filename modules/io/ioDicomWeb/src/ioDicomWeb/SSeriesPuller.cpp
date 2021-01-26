@@ -41,9 +41,9 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <services/registry/ObjectService.hpp>
+#include <services/registry/ServiceConfig.hpp>
+#include <services/registry/ServiceFactory.hpp>
 
 #include <filesystem>
 
@@ -80,7 +80,7 @@ void SSeriesPuller::configuring()
     // Dicom Reader Config
     std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
 
-    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    services::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {
@@ -110,19 +110,19 @@ void SSeriesPuller::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-    m_dicomReader                                           =
+    services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
+    m_dicomReader =
         ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioDicomWeb::SSeriesPuller.",
                m_dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
-                                       ::fwServices::IService::AccessType::INOUT, m_dicomReader);
+    services::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                   services::IService::AccessType::INOUT, m_dicomReader);
 
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr readerConfig =
-            ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+            services::registry::ServiceConfig::getDefault()->getServiceConfig(
                 m_dicomReaderSrvConfig, "::fwIO::IReader");
 
         SLM_ASSERT("Sorry, there is no service configuration "
@@ -142,7 +142,7 @@ void SSeriesPuller::stopping()
 {
     // Stop reader service
     m_dicomReader->stop();
-    ::fwServices::OSR::unregisterService(m_dicomReader);
+    services::OSR::unregisterService(m_dicomReader);
 }
 
 //------------------------------------------------------------------------------

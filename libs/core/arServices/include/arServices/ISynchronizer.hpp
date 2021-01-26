@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,19 @@
 
 #include "arServices/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace arServices
 {
 /**
  * @brief   ISynchronizer service synchronize objects from timelines
  */
-class ARSERVICES_CLASS_API ISynchronizer : public fwServices::IService
+class ARSERVICES_CLASS_API ISynchronizer : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(ISynchronizer, fwServices::IService);
+    fwCoreServiceMacro(ISynchronizer, services::IService)
 
     /**
      * @brief Constructor.

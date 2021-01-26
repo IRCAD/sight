@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <fwGui/dialog/NotificationDialog.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace guiQt
 {
@@ -72,11 +72,11 @@ namespace guiQt
  * - \b parent (optional): UID of the gui Container where the notifications will be displayed (default the whole app),
  * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
  */
-class GUIQT_CLASS_API SNotifier final : public ::fwServices::IController
+class GUIQT_CLASS_API SNotifier final : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SNotifier, ::fwServices::IController)
+    fwCoreServiceMacro(SNotifier, services::IController)
 
     /// Constructor, initializes position map & slots.
     GUIQT_API SNotifier() noexcept;
@@ -86,7 +86,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 

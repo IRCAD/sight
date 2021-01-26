@@ -29,7 +29,7 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 

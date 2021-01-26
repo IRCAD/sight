@@ -24,7 +24,7 @@
 
 #include "maths/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace maths
 {
@@ -52,12 +52,12 @@ namespace maths
  * - \b scale [data::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
-class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator
+class MATHS_CLASS_API SDecomposeMatrix : public services::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SDecomposeMatrix, ::fwServices::IOperator)
+    fwCoreServiceMacro(SDecomposeMatrix, services::IOperator)
 
     /**
      * @brief Constructor.

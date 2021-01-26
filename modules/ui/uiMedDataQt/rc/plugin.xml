@@ -1,57 +1,57 @@
 <plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@PROJECT_VERSION@">
     <library name="uiMedDataQt" />
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSelector</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSeries</service>
         <object>::sight::data::Vector</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IController</type>
         <service>::uiMedDataQt::SSeriesViewer</service>
         <object>::sight::data::Vector</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMedDataQt::action::SExportSeries</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiMedDataQt::action::SInitNewSeries</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SModelSeriesList</service>
         <object>::sight::data::ModelSeries</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SOrganTransformation</service>
         <object>::sight::data::ModelSeries</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SActivityWizard</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::sight::services::registry::AppConfig">
         <id>ActivityCreatorConfig</id>
         <parameters>
             <param name="GENERIC_UID" />

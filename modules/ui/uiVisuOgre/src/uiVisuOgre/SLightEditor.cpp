@@ -32,7 +32,7 @@
 
 #include <fwRenderOgre/helper/Scene.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QColorDialog>
 #include <QHBoxLayout>
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, data::Composite )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
 

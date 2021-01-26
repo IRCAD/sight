@@ -46,7 +46,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -69,11 +69,11 @@ const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_CREATED_SIG 
 const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
 const core::com::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
 
-static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, data::SeriesDB )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

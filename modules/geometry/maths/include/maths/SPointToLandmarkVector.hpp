@@ -26,7 +26,7 @@
 
 #include <data/Landmarks.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace maths
 {
@@ -71,13 +71,13 @@ namespace maths
  * - \b sameAxialSliceLabel: (optional) (std::string, default="Same axial slice") label to prefix the message sent in
  * the sameSlice signal.
  */
-class MATHS_CLASS_API SPointToLandmarkVector final : public ::fwServices::IService
+class MATHS_CLASS_API SPointToLandmarkVector final : public services::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkVector, ::fwServices::IService)
+    fwCoreServiceMacro(SPointToLandmarkVector, services::IService)
 
     /// Initializes signals.
     MATHS_API SPointToLandmarkVector() noexcept;

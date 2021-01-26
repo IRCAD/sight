@@ -31,8 +31,8 @@
 
 #include <fwPacsIO/SeriesRetriever.hpp>
 
-#include <fwServices/IController.hpp>
-#include <fwServices/IHasServices.hpp>
+#include <services/IController.hpp>
+#include <services/IHasServices.hpp>
 
 #include <vector>
 
@@ -69,14 +69,14 @@ namespace ioPacs
  * - \b dicomReaderConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
 class IOPACS_CLASS_API SSeriesPuller final :
-    public ::fwServices::IController,
-    public ::fwServices::IHasServices
+    public services::IController,
+    public services::IHasServices
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController)
+    fwCoreServiceMacro(SSeriesPuller,  services::IController)
 
     /// Creates the service and slots.
     IOPACS_API SSeriesPuller() noexcept;

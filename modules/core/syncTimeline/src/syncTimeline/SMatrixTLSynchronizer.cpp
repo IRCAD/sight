@@ -31,7 +31,7 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <functional>
 #include <sstream>
@@ -45,8 +45,8 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSy
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
-static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
+static const services::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+static const services::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ void SMatrixTLSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );

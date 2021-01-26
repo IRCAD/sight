@@ -6,9 +6,9 @@ set( DEPENDENCIES
     core
     data
     fwGui
-    fwServices
+    services
 )
 set( REQUIREMENTS
-    servicesReg
+    module_services
 )
 

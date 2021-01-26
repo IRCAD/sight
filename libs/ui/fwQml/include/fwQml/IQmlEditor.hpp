@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwQml/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <QObject>
 
@@ -40,13 +40,13 @@ namespace fwQml
    @endcode
  */
 class FWQML_CLASS_QT_API IQmlEditor : public QObject,
-                                      public ::fwServices::IService
+                                      public services::IService
 {
 
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(IQmlEditor, ::fwServices::IService)
+    fwCoreServiceMacro(IQmlEditor, services::IService)
 
     /// Constructor. Do nothing.
     FWQML_QT_API IQmlEditor() noexcept;

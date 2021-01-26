@@ -8,7 +8,7 @@ set( DEPENDENCIES
     data 
     
     
-    fwServices 
+    services 
     
 )
 set( REQUIREMENTS  )

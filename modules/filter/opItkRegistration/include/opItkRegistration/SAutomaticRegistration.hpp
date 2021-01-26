@@ -24,10 +24,10 @@
 
 #include "opItkRegistration/config.hpp"
 
-#include <fwServices/IOperator.hpp>
-
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 #include <itkRegistrationOp/Metric.hpp>
+
+#include <services/IOperator.hpp>
 
 namespace opItkRegistration
 {
@@ -74,11 +74,11 @@ namespace opItkRegistration
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::IOperator
+class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SAutomaticRegistration, ::fwServices::IOperator)
+    fwCoreServiceMacro(SAutomaticRegistration, services::IOperator)
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SAutomaticRegistration();

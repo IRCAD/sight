@@ -128,7 +128,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 void RenderWindowInteractorManager::connectToContainer()
 {
     // Connect widget window render to render service start adaptors
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
+    services::IService::sptr renderService = m_renderService.lock();
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     if( !ogreRenderService )
@@ -195,7 +195,7 @@ float RenderWindowInteractorManager::getLogicalDotsPerInch() const
 
 void RenderWindowInteractorManager::onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info)
 {
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
+    services::IService::sptr renderService = m_renderService.lock();
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     for(auto layerMap : ogreRenderService->getLayers())
@@ -210,7 +210,7 @@ void RenderWindowInteractorManager::onInteracted(::fwRenderOgre::IRenderWindowIn
 
 void RenderWindowInteractorManager::onCameraClippingComputation()
 {
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
+    services::IService::sptr renderService = m_renderService.lock();
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
@@ -265,7 +265,7 @@ void RenderWindowInteractorManager::disableFullscreen()
 
     if(container->layout()->isEmpty())
     {
-        ::fwServices::IService::sptr renderService      = m_renderService.lock();
+        services::IService::sptr renderService = m_renderService.lock();
         ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
         auto toggleSlot = ogreRenderService->slot(::fwRenderOgre::SRender::s_DISABLE_FULLSCREEN);

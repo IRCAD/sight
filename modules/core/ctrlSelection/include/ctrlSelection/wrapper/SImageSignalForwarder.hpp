@@ -28,7 +28,7 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace ctrlSelection
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 namespace arServices
 {
 
-const ::fwServices::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
+const services::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
 
 // ----------------------------------------------------------------------------
 

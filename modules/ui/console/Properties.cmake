@@ -5,6 +5,6 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     fwGui
-    fwServices
+    services
 )
 set( REQUIREMENTS  )

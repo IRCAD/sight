@@ -22,13 +22,14 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace servicesReg (registration service) allows to load all the service managment registry.
+ * @brief The namespace sight::modules::services (registration service) allows to load all the service managment
+ * registry.
  *
  * It is required for all applications.
  */
 #pragma once
 
-namespace servicesReg
+namespace sight::modules::services
 {
 
 }

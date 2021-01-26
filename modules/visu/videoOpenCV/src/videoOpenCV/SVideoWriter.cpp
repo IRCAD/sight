@@ -33,7 +33,7 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -42,7 +42,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, data::FrameTL)
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -317,9 +317,9 @@ void SVideoWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
+::services::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
     return connections;
 }

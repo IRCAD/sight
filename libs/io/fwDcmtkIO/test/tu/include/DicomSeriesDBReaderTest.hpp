@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKIO_UT_DICOMSERIESDBREADERTEST_HPP__
-#define __FWDCMTKIO_UT_DICOMSERIESDBREADERTEST_HPP__
+#pragma once
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -49,6 +48,3 @@ public:
 
 } // namespace ut
 } // namespace fwDcmtkIO
-
-#endif // __FWDCMTKIO_UT_DICOMSERIESDBREADERTEST_HPP__
-

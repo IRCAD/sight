@@ -35,8 +35,8 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <QDoubleValidator>
 #include <QHBoxLayout>
@@ -50,7 +50,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, data::Composite )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::sight::data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 

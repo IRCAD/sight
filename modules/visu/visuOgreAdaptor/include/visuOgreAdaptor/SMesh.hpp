@@ -209,7 +209,7 @@ protected:
      * Connect data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
      * Connect data::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
     VISUOGREADAPTOR_API void stopping() override;

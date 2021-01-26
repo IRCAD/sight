@@ -32,9 +32,9 @@
 #include <data/Float.hpp>
 #include <data/Image.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -44,7 +44,7 @@ namespace uiVisu
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, data::Image )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 

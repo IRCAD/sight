@@ -39,7 +39,7 @@
 #include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -223,9 +223,9 @@ void SNegato3D::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+::services::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );

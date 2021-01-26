@@ -6,10 +6,10 @@ set( DEPENDENCIES
         data
         fwDataTools
         core
-        fwServices
+        services
         fwMath
         )
-set( REQUIREMENTS data servicesReg)
+set( REQUIREMENTS data module_services)
 set( CONAN_DEPS
         ${CONAN_VTK}
         )

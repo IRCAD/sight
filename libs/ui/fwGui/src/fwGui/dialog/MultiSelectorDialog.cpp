@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/MultiSelectorDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -32,8 +32,8 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
-                                                                                    [this]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
+                                                                                [this]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
@@ -44,7 +44,7 @@ MultiSelectorDialog::MultiSelectorDialog()
 
 void MultiSelectorDialog::setTitle(std::string title)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setTitle(title);
@@ -57,7 +57,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
     std::function< R() > func = std::bind( &IMultiSelectorDialog::show, m_implementation);
-    std::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
+    std::shared_future< R > f = services::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
 
     f.wait();
     return f.get();
@@ -67,7 +67,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::setSelections(Selections _selections)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setSelections( _selections );
@@ -78,7 +78,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 void MultiSelectorDialog::setMessage(const std::string& msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setMessage( msg );

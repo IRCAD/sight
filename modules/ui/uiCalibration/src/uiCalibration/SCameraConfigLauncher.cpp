@@ -42,9 +42,9 @@
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -53,7 +53,7 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, data::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::sight::data::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
@@ -70,15 +70,15 @@ SCameraConfigLauncher::~SCameraConfigLauncher() noexcept
 void SCameraConfigLauncher::configuring()
 {
     this->initialize();
-    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    services::IService::ConfigType configuration = this->getConfigTree();
 
     SLM_ASSERT("There must be one (and only one) <config/> element.",
                configuration.count("config") == 1 );
-    const ::fwServices::IService::ConfigType& srvconfig = configuration;
-    const ::fwServices::IService::ConfigType& config    = srvconfig.get_child("config");
+    const services::IService::ConfigType& srvconfig = configuration;
+    const services::IService::ConfigType& config    = srvconfig.get_child("config");
 
-    const ::fwServices::IService::ConfigType& intrinsic = config.get_child("intrinsic");
-    const ::fwServices::IService::ConfigType& extrinsic = config.get_child("extrinsic");
+    const services::IService::ConfigType& intrinsic = config.get_child("intrinsic");
+    const services::IService::ConfigType& extrinsic = config.get_child("extrinsic");
 
     m_intrinsicLauncher.parseConfig(intrinsic, this->getSptr());
     m_extrinsicLauncher.parseConfig(extrinsic,  this->getSptr());
@@ -221,8 +221,8 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto sdb = data::SeriesDB::New();
-    ::fwServices::IService::sptr readerService = ::fwServices::add("::ioAtoms::SReader");
+    auto sdb                               = data::SeriesDB::New();
+    services::IService::sptr readerService = services::add("::ioAtoms::SReader");
     readerService->registerInOut(sdb, ::fwIO::s_DATA_KEY);
 
     try
@@ -244,7 +244,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         throw;
     }
-    ::fwServices::OSR::unregisterService(readerService);
+    services::OSR::unregisterService(readerService);
 
     auto series       = sdb->getContainer();
     auto cameraSeries = std::vector< data::CameraSeries::sptr>();
@@ -374,7 +374,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 {
-    ::fwServices::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+    services::helper::ConfigLauncher::FieldAdaptorType replaceMap;
 
     data::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
@@ -425,7 +425,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
             calibInfo2 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
         }
 
-        ::fwServices::registry::FieldAdaptorType replaceMap;
+        services::registry::FieldAdaptorType replaceMap;
 
         replaceMap["camera1"]          = camera1->getID();
         replaceMap["camera2"]          = camera2->getID();

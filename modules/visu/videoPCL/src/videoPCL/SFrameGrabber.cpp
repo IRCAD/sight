@@ -31,7 +31,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -43,11 +43,11 @@
 namespace videoPCL
 {
 
-static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
+static const services::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, data::FrameTL)
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
 

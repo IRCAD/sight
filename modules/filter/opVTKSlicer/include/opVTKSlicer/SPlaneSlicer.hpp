@@ -26,7 +26,7 @@
 
 #include <fwDataTools/helper/MedicalImage.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
@@ -69,12 +69,12 @@ namespace opVTKSlicer
  *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
-class OPVTKSLICER_CLASS_API SPlaneSlicer : public ::fwServices::IOperator
+class OPVTKSLICER_CLASS_API SPlaneSlicer : public services::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SPlaneSlicer, ::fwServices::IOperator)
+    fwCoreServiceMacro(SPlaneSlicer, services::IOperator)
 
     /// Constructor.
     OPVTKSLICER_API SPlaneSlicer() noexcept;

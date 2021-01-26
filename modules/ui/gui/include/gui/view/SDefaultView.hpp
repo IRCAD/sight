@@ -52,7 +52,7 @@ public:
 protected:
 
     /**
-     * @name Service methods ( override from ::fwServices::IService )
+     * @name Service methods ( override from services::IService )
      * @{
      */
 

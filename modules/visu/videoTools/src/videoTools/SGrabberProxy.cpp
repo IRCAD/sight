@@ -32,9 +32,9 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
@@ -54,7 +54,7 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, data::FrameTL)
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::sight::data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -166,8 +166,8 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto srvFactory       = ::fwServices::registry::ServiceFactory::getDefault();
-            const auto srvConfigFactory = ::fwServices::registry::ServiceConfig::getDefault();
+            const auto srvFactory       = services::registry::ServiceFactory::getDefault();
+            const auto srvConfigFactory = services::registry::ServiceConfig::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
             auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
@@ -223,7 +223,7 @@ void SGrabberProxy::startCamera()
                     auto inoutsCfg = config.equal_range("inout");
                     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
                     {
-                        ::fwServices::IService::ConfigType parameterCfg;
+                        services::IService::ConfigType parameterCfg;
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
@@ -299,7 +299,7 @@ void SGrabberProxy::startCamera()
                 std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
 
-                const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
+                const auto& srvConfigRegistry = services::registry::ServiceConfig::getDefault();
                 for(const auto& extension : availableExtensionsSelector)
                 {
                     // We need to test first if extension have specific configurations to include/exclude.
@@ -438,7 +438,7 @@ void SGrabberProxy::startCamera()
 
                 if(!m_grabberConfig.empty())
                 {
-                    const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
+                    const auto& srvConfigRegistry = services::registry::ServiceConfig::getDefault();
 
                     core::runtime::ConfigurationElement::csptr srvCfg =
                         srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);

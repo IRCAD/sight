@@ -28,8 +28,8 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ServiceFactory.hpp>
 
 #include <iostream>
 
@@ -38,7 +38,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::fwMetrics, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::fwMetrics, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ void fwMetrics::updating()
     stream << std::endl;
 
     stream << "IService: ";
-    stream << ::fwServices::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
+    stream << services::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
 
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");

@@ -30,7 +30,7 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <functional>
 
@@ -39,7 +39,7 @@ fwServicesRegisterMacro(::ioIGTL::INetworkSender, ::ioIGTL::SServerSender)
 namespace ioIGTL
 {
 
-const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
+const services::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ SServerSender::~SServerSender()
 
 void SServerSender::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_portConfig = config.get("port", "4242");
 
@@ -70,8 +70,8 @@ void SServerSender::configuring()
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName                   = attr.get("deviceName", "Sight");
+        const services::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName               = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
     }
 }

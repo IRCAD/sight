@@ -30,7 +30,7 @@
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
@@ -106,9 +106,9 @@ void SFrustumList::starting()
 
 //-----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
+services::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
     return connections;
 }

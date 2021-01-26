@@ -41,7 +41,7 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
-fwServicesRegisterMacro(::fwServices::IRegisterer, ::registrationCV::SPoseFrom2d)
+fwServicesRegisterMacro( ::sight::services::IRegisterer, ::registrationCV::SPoseFrom2d)
 
 //-----------------------------------------------------------------------------
 
@@ -50,13 +50,13 @@ namespace registrationCV
 
 //-----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
-const ::fwServices::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
-const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
-const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
-const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
-const ::fwServices::IService::KeyType s_MATRIX_INOUT    = "matrix";
-const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
+const services::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const services::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
+const services::IService::KeyType s_CAMERA_INPUT    = "camera";
+const services::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
+const services::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
+const services::IService::KeyType s_MATRIX_INOUT    = "matrix";
+const services::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 
@@ -78,8 +78,8 @@ SPoseFrom2d::~SPoseFrom2d() noexcept
 
 void SPoseFrom2d::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
-    m_patternWidth                            = config.get<double>("patternWidth", m_patternWidth);
+    services::IService::ConfigType config = this->getConfigTree();
+    m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
     auto inoutCfg = config.equal_range("inout");
@@ -459,7 +459,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

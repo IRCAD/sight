@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>calibrationEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -137,7 +137,7 @@
 
         <!-- ************************ Configuration launchers ********************************* -->
 
-        <service uid="camera0LauncherCfg" type="::fwServices::SConfigController">
+        <service uid="camera0LauncherCfg" type="::sight::services::SConfigController">
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera0" />
             <parameter replace="WID_PARENT" uid="camera0View" />
@@ -149,7 +149,7 @@
             <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
         </service>
 
-        <service uid="camera1LauncherCfg" type="::fwServices::SConfigController">
+        <service uid="camera1LauncherCfg" type="::sight::services::SConfigController">
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera1" />
             <parameter replace="WID_PARENT" uid="camera1View" />

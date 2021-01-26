@@ -41,7 +41,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -61,10 +61,10 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, data::Image)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::sight::data::Image)
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INOUT = "tf";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_TF_INOUT = "tf";
 
 static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
 static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
@@ -516,7 +516,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
+::services::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

@@ -27,7 +27,7 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opImageFilter
 {
@@ -63,12 +63,12 @@ namespace opImageFilter
  * @subsection In-Out In-Out
  * - \b extrudedImage [data::Image]: extruded image.
  */
-class OPIMAGEFILTER_CLASS_API SImageExtruder final : public ::fwServices::IOperator
+class OPIMAGEFILTER_CLASS_API SImageExtruder final : public services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImageExtruder, ::fwServices::IOperator)
+    fwCoreServiceMacro(SImageExtruder, services::IOperator)
 
     /// Initializes the slot.
     OPIMAGEFILTER_API SImageExtruder();

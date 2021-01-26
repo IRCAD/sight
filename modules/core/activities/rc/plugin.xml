@@ -2,28 +2,28 @@
 
     <library name="activities" />
 
-    <requirement id="servicesReg"/>
+    <requirement id="::sight::modules::services"/>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::activities::action::SActivityLauncher</service>
         <object>::sight::data::Vector</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::activities::action::SCreateActivity</service>
         <object>::sight::data::Vector</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IController</type>
         <service>::activities::SSeriesSignal</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::IController</type>
         <service>::activities::SActivitySequencer</service>
     </extension>
 

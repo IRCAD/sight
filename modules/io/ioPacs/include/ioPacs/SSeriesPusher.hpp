@@ -30,7 +30,7 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <vector>
 
@@ -62,11 +62,11 @@ namespace ioPacs
  * - \b pacsConfig [::fwPacsIOdata::PacsConfiguration]: PACS configuration data.
  * - \b selectedSeries [data::Vector]: List of DICOM series to push to the PACS.
  */
-class IOPACS_CLASS_API SSeriesPusher : public ::fwServices::IController
+class IOPACS_CLASS_API SSeriesPusher : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController )
+    fwCoreServiceMacro(SSeriesPusher,  services::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

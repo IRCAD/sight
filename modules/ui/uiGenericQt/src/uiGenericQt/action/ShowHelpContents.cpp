@@ -27,7 +27,7 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

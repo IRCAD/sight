@@ -26,11 +26,11 @@
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/AppConfigManager.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/AppConfig.hpp>
+#include <services/registry/ObjectService.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioPacs::ut::IoPacsTest );
@@ -62,7 +62,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     ::fwPacsIOdata::PacsConfiguration::sptr pacsConfiguration = ::fwPacsIOdata::PacsConfiguration::New();
 
     // Create service
-    ::fwServices::IService::sptr srv = ::fwServices::add( "::ioPacs::SPacsConfigurationInitializer" );
+    services::IService::sptr srv = services::add( "::ioPacs::SPacsConfigurationInitializer" );
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
@@ -84,7 +84,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     srv->start();
     srv->update();
     srv->stop();
-    ::fwServices::OSR::unregisterService( srv );
+    services::OSR::unregisterService( srv );
 
     unsigned short pacsApplicationPort = 11112u;
     unsigned short moveApplicationPort = 11110u;

@@ -29,7 +29,7 @@
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <filesystem>
 
@@ -49,12 +49,12 @@ namespace ioPacs
     <service uid="progressBarController" type="::ioPacs::SProgressBarController" />
    @endcode
  */
-class IOPACS_CLASS_API SProgressBarController : public ::fwServices::IController
+class IOPACS_CLASS_API SProgressBarController : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SProgressBarController,  ::fwServices::IController)
+    fwCoreServiceMacro(SProgressBarController,  services::IController)
 
     /// Initializes slots.
     IOPACS_API SProgressBarController() noexcept;

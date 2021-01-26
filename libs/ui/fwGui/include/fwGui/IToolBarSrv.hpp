@@ -26,7 +26,7 @@
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 #include "fwGui/registrar/ToolBarRegistrar.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -34,12 +34,12 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the toolBar.
  */
-class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IToolBarSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IToolBarSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IToolBarSrv, services::IService)
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);

@@ -39,9 +39,9 @@
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/op/Get.hpp>
 
 #include <string>
 
@@ -186,9 +186,9 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+::services::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
@@ -267,7 +267,7 @@ void SMaterial::createShaderParameterAdaptors()
             // Naming convention for shader parameters
             srv->setRenderService(this->getRenderService());
 
-            ::fwServices::IService::ConfigType config;
+            services::IService::ConfigType config;
             config.add("config.<xmlattr>.layer", m_layerID);
             config.add("config.<xmlattr>.parameter", constantName);
             config.add("config.<xmlattr>.shaderType", shaderTypeStr);

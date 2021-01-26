@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>3DVisualization</id>
     <parameters>
 
@@ -131,7 +131,7 @@
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         </service>
 
-        <service uid="cfgNegato1" type="::fwServices::SConfigController">
+        <service uid="cfgNegato1" type="::sight::services::SConfigController">
             <appConfig id="3DNegatoWithAcq" />
             <inout key="imageComposite" uid="${imageComposite}" />
             <inout key="modelSeries" uid="${modelSeries}" />
@@ -170,7 +170,7 @@
             <inout key="target" uid="optionalInputImage" />
         </service>
 
-        <service uid="cfgNegato2" type="::fwServices::SConfigController" >
+        <service uid="cfgNegato2" type="::sight::services::SConfigController" >
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -181,7 +181,7 @@
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
 
-        <service uid="cfgNegato3" type="::fwServices::SConfigController">
+        <service uid="cfgNegato3" type="::sight::services::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
             <inout key="landmarks" uid="${landmarks}" />

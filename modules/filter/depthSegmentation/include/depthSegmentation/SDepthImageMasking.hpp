@@ -24,7 +24,7 @@
 
 #include "depthSegmentation/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -35,7 +35,7 @@ namespace depthSegmentation
  * @brief   Service that learns a background depth image in a mask to perform a depth difference and output a foregroud
  * image.
  *
- * @see ::fwServices::IOperator
+ * @see services::IOperator
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to learn the background depth image.
@@ -64,10 +64,10 @@ namespace depthSegmentation
  * - \b foregroundImage [data::Image] : Image containing the foreground pixels and background pixels are
  * transparent.
  */
-class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOperator
+class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public services::IOperator
 {
 public:
-    fwCoreServiceMacro(SDepthImageMasking, ::fwServices::IOperator)
+    fwCoreServiceMacro(SDepthImageMasking, services::IOperator)
 
     /// Initializes slots
     DEPTHSEGMENTATION_CLASS_API SDepthImageMasking() noexcept;
@@ -76,7 +76,7 @@ public:
     DEPTHSEGMENTATION_CLASS_API virtual ~SDepthImageMasking() noexcept;
 
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

@@ -44,9 +44,9 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <boost/format.hpp>
 
@@ -148,7 +148,7 @@ static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
 static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
-static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ SModelSeriesList::SModelSeriesList() noexcept
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
 
-    this->registerObject("modelSeries", ::fwServices::IService::AccessType::INOUT, true);
+    this->registerObject("modelSeries", services::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -279,7 +279,7 @@ void SModelSeriesList::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+::services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

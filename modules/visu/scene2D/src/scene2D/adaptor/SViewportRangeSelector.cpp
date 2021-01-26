@@ -29,7 +29,7 @@
 #include <fwRenderQt/data/Viewport.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsRectItem>
 
@@ -38,7 +38,7 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
+static const services::IService::KeyType s_VIEWPORT_INOUT = "viewport";
 
 static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
@@ -84,7 +84,7 @@ void SViewportRangeSelector::configuring()
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
+::services::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INOUT, ::fwRenderQtdata::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

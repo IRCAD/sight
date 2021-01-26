@@ -39,7 +39,7 @@
 namespace ctrlHistory
 {
 
-fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, data::Object)
+fwServicesRegisterMacro( ::sight::services::IService, ::ctrlHistory::SCommandHistory, data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
@@ -72,7 +72,7 @@ SCommandHistory::~SCommandHistory()
 
 void SCommandHistory::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     auto maxCommands = config.get_optional< size_t >("maxCommands");
     auto maxMemory   = config.get_optional< size_t >("maxMemory");

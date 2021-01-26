@@ -31,7 +31,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 #ifdef ANDROID
 #include <sys/system_properties.h>
@@ -40,7 +40,7 @@
 namespace ctrlCamera
 {
 
-fwServicesRegisterMacro(::fwServices::IController, ::ctrlCamera::SExtractDeviceInfo, data::Object)
+fwServicesRegisterMacro( ::sight::services::IController, ::ctrlCamera::SExtractDeviceInfo, data::Object)
 
 //-----------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ void SExtractDeviceInfo::configuring()
     if(configCfg)
     {
 
-        deviceConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+        deviceConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
             configCfg->getValue(),
             "::ctrlCamera::SExtractDeviceInfo");
     }

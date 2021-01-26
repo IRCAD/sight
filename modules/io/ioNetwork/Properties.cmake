@@ -4,6 +4,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwServices
+    services
 )
 set( REQUIREMENTS  )

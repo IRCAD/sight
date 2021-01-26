@@ -41,7 +41,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <librealsense2/rs_advanced_mode.hpp>
 
@@ -53,9 +53,9 @@ namespace fwClock = core::HiResClock;
 namespace videoRealSense
 {
 
-const ::fwServices::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
-const ::fwServices::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
-const ::fwServices::IService::KeyType s_DISTANCE_OUTPUT     = "distance";
+const services::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
+const services::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
+const services::IService::KeyType s_DISTANCE_OUTPUT     = "distance";
 
 static const std::string s_FPS           = "fps";
 static const std::string s_COLOR_FRAME_H = "colorH";

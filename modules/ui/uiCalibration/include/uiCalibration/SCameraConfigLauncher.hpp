@@ -29,7 +29,7 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#include <fwServices/helper/ConfigLauncher.hpp>
+#include <services/helper/ConfigLauncher.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -131,8 +131,8 @@ private:
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 
-    ::fwServices::helper::ConfigLauncher m_intrinsicLauncher;
-    ::fwServices::helper::ConfigLauncher m_extrinsicLauncher;
+    services::helper::ConfigLauncher m_intrinsicLauncher;
+    services::helper::ConfigLauncher m_extrinsicLauncher;
 
     data::CameraSeries::sptr m_cameraSeries;
     data::ActivitySeries::sptr m_activitySeries;

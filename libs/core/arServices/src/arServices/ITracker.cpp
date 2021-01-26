@@ -40,8 +40,8 @@ const core::com::Slots::SlotKeyType ITracker::s_TRACK_SLOT          = "track";
 const core::com::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracking";
 const core::com::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTracking";
 
-const ::fwServices::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
-const ::fwServices::IService::KeyType ITracker::s_FRAME_INOUT    = "frame";
+const services::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
+const services::IService::KeyType ITracker::s_FRAME_INOUT    = "frame";
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ ITracker::~ITracker()
 
 void ITracker::configuring()
 {
-    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const services::IService::ConfigType config = this->getConfigTree();
     if (config.count("dropObj"))
     {
         const std::string dropStr = config.get< std::string >("dropObj");
@@ -108,7 +108,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap ITracker::getAutoConnections() const
+::services::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

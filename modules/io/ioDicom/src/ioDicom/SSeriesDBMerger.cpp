@@ -27,12 +27,12 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, data::Vector )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

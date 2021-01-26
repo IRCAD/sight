@@ -38,7 +38,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -59,8 +59,8 @@ namespace editor
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
 
-static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT = "composite";
+static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const services::IService::KeyType s_COMPOSITE_INOUT = "composite";
 
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
@@ -395,7 +395,7 @@ void SOrganTransformation::addMeshTransform()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
+::services::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);

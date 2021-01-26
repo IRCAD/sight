@@ -32,7 +32,7 @@
 
 #include <fwGui/container/fwContainer.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -196,13 +196,13 @@ public:
     FWRENDEROGRE_API virtual void setFullscreen(bool _fullscreen, int _screenNumber);
 
     /// Set the render service using the IOgreRenderWindowInteractor
-    virtual void setRenderService(::fwServices::IService::sptr srv)
+    virtual void setRenderService(services::IService::sptr srv)
     {
         m_renderService = srv;
     }
 
 protected:
-    ::fwServices::IService::wptr m_renderService;
+    services::IService::wptr m_renderService;
 };
 
 } // namespace fwRenderOgre

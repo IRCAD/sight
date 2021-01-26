@@ -40,14 +40,14 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ServiceConfig.hpp>
 
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, data::SeriesDB )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -93,23 +93,23 @@ void SSeriesDBReader::openLocationDialog()
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
-        filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+        filterSelectorConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterSelectorSrvConfig, "::ioDicom::SFilterSelectorDialog");
         SLM_ASSERT("There is no service configuration "
                    + m_filterSelectorSrvConfig
                    + " for ::ioDicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
-        ::fwServices::IService::sptr filterSelectorSrv;
+        services::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv = services::add("::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
         filterSelectorSrv->stop();
-        ::fwServices::OSR::unregisterService( filterSelectorSrv );
+        services::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
 

@@ -30,7 +30,7 @@
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <filesystem>
 
@@ -69,11 +69,11 @@ namespace ioDicomWeb
  * @note : hostname and port of this service are from the preference settings.
  */
 
-class IODICOMWEB_CLASS_API SSeriesPuller : public ::fwServices::IController
+class IODICOMWEB_CLASS_API SSeriesPuller : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPuller,  ::fwServices::IController )
+    fwCoreServiceMacro(SSeriesPuller,  services::IController )
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;

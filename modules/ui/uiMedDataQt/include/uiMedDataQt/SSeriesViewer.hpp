@@ -24,8 +24,8 @@
 
 #include "uiMedDataQt/config.hpp"
 
-#include <fwServices/IAppConfigManager.hpp>
-#include <fwServices/IController.hpp>
+#include <services/IAppConfigManager.hpp>
+#include <services/IController.hpp>
 
 #include <map>
 
@@ -66,11 +66,11 @@ namespace uiMedDataQt
  *     - \b by: specific value to replace for the parameter
  * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
-class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
+class UIMEDDATAQT_CLASS_API SSeriesViewer : public services::IController
 {
 
 public:
-    fwCoreServiceMacro(SSeriesViewer, ::fwServices::IController)
+    fwCoreServiceMacro(SSeriesViewer, services::IController)
 
     /// Constructor
     UIMEDDATAQT_API SSeriesViewer();
@@ -130,7 +130,7 @@ private:
     typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
 
     /// Config manager
-    ::fwServices::IAppConfigManager::sptr m_configTemplateManager;
+    services::IAppConfigManager::sptr m_configTemplateManager;
 
     /// Stores the wid of the view where the config will install its windows.
     std::string m_parentView;

@@ -31,14 +31,14 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace maths
 {
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IService, ::maths::SPointToLandmarkDistance )
+fwServicesRegisterMacro( ::sight::services::IService, ::maths::SPointToLandmarkDistance )
 
 static const core::com::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";

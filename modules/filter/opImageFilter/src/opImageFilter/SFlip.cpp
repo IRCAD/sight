@@ -33,8 +33,8 @@
 namespace opImageFilter
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN  = "source";
-static const ::fwServices::IService::KeyType s_IMAGE_OUT = "target";
+static const services::IService::KeyType s_IMAGE_IN  = "source";
+static const services::IService::KeyType s_IMAGE_OUT = "target";
 
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
@@ -129,9 +129,9 @@ void SFlip::flipAxisZ()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SFlip::getAutoConnections() const
+::services::IService::KeyConnectionsMap SFlip::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 

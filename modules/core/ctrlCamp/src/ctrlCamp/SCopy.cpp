@@ -37,9 +37,9 @@ namespace ctrlCamp
 
 fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, data::Object)
 
-const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
-const ::fwServices::IService::KeyType s_TARGET_INOUT  = "target";
-const ::fwServices::IService::KeyType s_TARGET_OUTPUT = "target";
+const services::IService::KeyType s_SOURCE_INPUT = "source";
+const services::IService::KeyType s_TARGET_INOUT  = "target";
+const services::IService::KeyType s_TARGET_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
 

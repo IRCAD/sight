@@ -33,10 +33,10 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
+
+#include <services/macros.hpp>
 
 #include <functional>
 #include <numeric>
@@ -44,11 +44,11 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IRegisterer,
-                        ::opItkRegistration::SMIPMatchingRegistration)
+fwServicesRegisterMacro( ::sight::services::IRegisterer,
+                         ::opItkRegistration::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
-    ::fwServices::IRegisterer()
+    services::IRegisterer()
 {
 }
 

@@ -13,7 +13,7 @@ set( REQUIREMENTS
     data
     uiVisu
     uiVisuQt
-    servicesReg
+    module_services
     visuVTKQt
     visuVTKAdaptor
     uiIO

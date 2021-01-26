@@ -12,7 +12,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     styleQml
     data
-    servicesReg
+    module_services
     ioAtoms
     ioActivity
 )

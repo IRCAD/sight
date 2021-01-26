@@ -88,8 +88,8 @@ void SStereoToggler::updating()
 {
     if(this->confirmAction())
     {
-        ::fwServices::registry::ObjectService::ServiceVectorType renderers =
-            ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+        services::registry::ObjectService::ServiceVectorType renderers =
+            services::OSR::getServices("::fwRenderOgre::SRender");
 
         const bool enableStereo = this->getIsActive() && this->getIsExecutable();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;

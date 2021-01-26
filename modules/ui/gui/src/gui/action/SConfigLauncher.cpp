@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/Proxy.hpp>
+#include <services/macros.hpp>
+#include <services/registry/Proxy.hpp>
 
 namespace gui
 {
@@ -47,7 +47,7 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 SConfigLauncher::SConfigLauncher() noexcept
 {
-    m_configLauncher = std::make_unique< ::fwServices::helper::ConfigLauncher>();
+    m_configLauncher = std::make_unique< services::helper::ConfigLauncher>();
 
     m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
 
@@ -96,9 +96,9 @@ void SConfigLauncher::setIsActive(bool isActive)
         // Check if the config is already running, this avoids to start a running config.
         if(!m_configLauncher->configIsRunning())
         {
-            ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+            services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
             proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
-            ::fwServices::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+            services::helper::ConfigLauncher::FieldAdaptorType replaceMap;
             replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
             m_configLauncher->startConfig(this->getSptr(), replaceMap);
             m_sigLaunched->asyncEmit();
@@ -123,7 +123,7 @@ void SConfigLauncher::stopConfig()
     if (m_configLauncher->configIsRunning())
     {
         m_configLauncher->stopConfig();
-        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         this->setIsActive(false);
     }

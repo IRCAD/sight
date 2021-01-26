@@ -56,9 +56,9 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT =
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
-const ::fwServices::IService::KeyType s_CAMERA_INPUT           = "camera";
-const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
-const ::fwServices::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
+const services::IService::KeyType s_CAMERA_INPUT           = "camera";
+const services::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
+const services::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
 
 //-----------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ SArucoTracker::~SArucoTracker() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
+::services::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

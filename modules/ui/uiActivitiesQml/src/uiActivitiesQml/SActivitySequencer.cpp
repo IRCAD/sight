@@ -29,14 +29,14 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace uiActivitiesQml
 {
 
 fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivitySequencer )
 
-const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
@@ -199,7 +199,7 @@ void SActivitySequencer::previous()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );

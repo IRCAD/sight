@@ -128,7 +128,7 @@ protected:
      * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the generated mesh.
     VISUOGREADAPTOR_API void updating() override;

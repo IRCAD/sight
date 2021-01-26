@@ -27,9 +27,9 @@
 
 #include <fwGui/GuiRegistry.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::guiQt::SNotifier )
+fwServicesRegisterMacro( ::sight::services::IController, ::guiQt::SNotifier )
 
 namespace guiQt
 {

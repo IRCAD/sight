@@ -31,8 +31,8 @@
 
 #include <fwQt/WorkerQt.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <QFile>
 #include <QResource>
@@ -71,7 +71,7 @@ void Plugin::start()
 
     m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
-    ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
+    services::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 
     m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
 
@@ -106,7 +106,7 @@ int Plugin::run() noexcept
     core::runtime::profile::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();
 
     return result;

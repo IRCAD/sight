@@ -36,7 +36,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -48,7 +48,7 @@
 namespace videoOpenCV
 {
 
-static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
+static const services::IService::KeyType s_FRAMETL = "frameTL";
 
 static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
@@ -98,7 +98,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
 

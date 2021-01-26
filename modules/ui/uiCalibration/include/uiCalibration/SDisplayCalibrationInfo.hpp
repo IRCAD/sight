@@ -28,8 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/IController.hpp>
+#include <services/AppConfigManager.hpp>
+#include <services/IController.hpp>
 
 namespace uiCalibration
 {
@@ -65,12 +65,12 @@ namespace uiCalibration
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
-class UICALIBRATION_CLASS_API SDisplayCalibrationInfo : public ::fwServices::IController
+class UICALIBRATION_CLASS_API SDisplayCalibrationInfo : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SDisplayCalibrationInfo, ::fwServices::IController)
+    fwCoreServiceMacro(SDisplayCalibrationInfo, services::IController)
 
     /// Constructor. Does nothing.
     UICALIBRATION_API SDisplayCalibrationInfo() noexcept;
@@ -108,7 +108,7 @@ private:
      */
 
     /// AppConfig manager, used to launch the config
-    ::fwServices::IAppConfigManager::sptr m_configMgr;
+    services::IAppConfigManager::sptr m_configMgr;
 
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };

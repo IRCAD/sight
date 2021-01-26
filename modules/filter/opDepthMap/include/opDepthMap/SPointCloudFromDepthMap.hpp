@@ -29,7 +29,7 @@
 #include <data/Mesh.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -68,10 +68,10 @@ namespace opDepthMap
  *
  * @subsection Configuration Configuration
  */
-class OPDEPTHMAP_CLASS_API SPointCloudFromDepthMap : public ::fwServices::IOperator
+class OPDEPTHMAP_CLASS_API SPointCloudFromDepthMap : public services::IOperator
 {
 public:
-    fwCoreServiceMacro(SPointCloudFromDepthMap, ::fwServices::IOperator)
+    fwCoreServiceMacro(SPointCloudFromDepthMap, services::IOperator)
 
     /**
      * @brief SPointCloudFromDepthMap constructor.

@@ -28,7 +28,7 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QFont>
 #include <QGraphicsEllipseItem>
@@ -40,9 +40,9 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_POINT_INPUT     = "point";
-static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
+static const services::IService::KeyType s_POINT_INPUT     = "point";
+static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const services::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 
 SHistogramCursor::SHistogramCursor() noexcept :
     m_color(Qt::red),
@@ -180,7 +180,7 @@ void SHistogramCursor::processInteraction( ::fwRenderQtdata::Event& _event )
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SHistogramCursor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SHistogramCursor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

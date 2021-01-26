@@ -37,12 +37,12 @@
 
 #include <fwItkIO/ImageWriter.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, data::Image )
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 

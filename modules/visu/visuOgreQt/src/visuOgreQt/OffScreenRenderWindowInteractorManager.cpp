@@ -195,7 +195,7 @@ void OffScreenRenderWindowInteractorManager::render()
         return;
     }
 
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
+    services::IService::sptr renderService = m_renderService.lock();
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
     ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
 

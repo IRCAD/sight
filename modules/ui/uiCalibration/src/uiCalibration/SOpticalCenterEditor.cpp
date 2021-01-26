@@ -29,7 +29,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -39,10 +39,10 @@
 namespace uiCalibration
 {
 
-static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
-static const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
+static const services::IService::KeyType s_CAMERA_INPUT = "camera";
+static const services::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, data::Camera)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::sight::data::Camera)
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -164,7 +164,7 @@ void SOpticalCenterEditor::updating()
 
 //------------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

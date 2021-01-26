@@ -30,7 +30,7 @@
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
@@ -44,9 +44,9 @@ namespace visuOgreAdaptor
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
 
-static const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
-static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT     = "transform";
+static const services::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
+static const services::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+static const services::IService::KeyType s_TRANSFORM_INOUT     = "transform";
 
 //-----------------------------------------------------------------------------
 
@@ -112,9 +112,9 @@ void SCamera::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
+::services::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);

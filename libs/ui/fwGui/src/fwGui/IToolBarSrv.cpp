@@ -29,9 +29,9 @@
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -99,7 +99,7 @@ void IToolBarSrv::create()
     SLM_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->createLayout(toolBar);
         })).wait();
@@ -115,7 +115,7 @@ void IToolBarSrv::destroy()
 {
     m_registrar->unmanage();
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -130,14 +130,14 @@ void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, false);
             })).wait();
     }
     else
     {
-        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, false);
             })).wait();
@@ -151,10 +151,10 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const services::IService::csptr service    = services::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
             const bool isInverted = actionSrv->isInverted();
@@ -171,10 +171,10 @@ void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const services::IService::csptr service    = services::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             const bool isInverted = actionSrv->isInverted();
             m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
@@ -188,7 +188,7 @@ void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isEx
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
         })).wait();
@@ -201,7 +201,7 @@ void IToolBarSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisib
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetVisible(menuItem, isVisible);
         })).wait();

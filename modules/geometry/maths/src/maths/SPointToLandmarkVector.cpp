@@ -30,7 +30,7 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/glm.hpp>
 
@@ -39,17 +39,17 @@ namespace maths
 
 // -----------------------------------------------------------------------------
 
-const ::fwServices::IService::KeyType s_LANDMARK_INPUT                = "landmark";
-const ::fwServices::IService::KeyType s_TRANSFORM_INOUT               = "transform";
-const ::fwServices::IService::KeyType s_TRANSLATION_INOUT             = "translationMatrix";
-const ::fwServices::IService::KeyType s_COMPUTED_LANDMARK_INOUT       = "computedLandmark";
+const services::IService::KeyType s_LANDMARK_INPUT                    = "landmark";
+const services::IService::KeyType s_TRANSFORM_INOUT                   = "transform";
+const services::IService::KeyType s_TRANSLATION_INOUT                 = "translationMatrix";
+const services::IService::KeyType s_COMPUTED_LANDMARK_INOUT           = "computedLandmark";
 static const core::com::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
 static const core::com::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
 static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IService, ::maths::SPointToLandmarkVector )
+fwServicesRegisterMacro( ::sight::services::IService, ::maths::SPointToLandmarkVector )
 
 // -----------------------------------------------------------------------------
 
@@ -168,10 +168,10 @@ void SPointToLandmarkVector::updating()
 
 // -----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
 
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
     return connections;
 }

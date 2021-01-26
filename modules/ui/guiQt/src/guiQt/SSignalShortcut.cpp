@@ -31,8 +31,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Get.hpp>
 
 #include <QKeySequence>
 #include <QWidget>
@@ -44,7 +44,7 @@ namespace guiQt
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::fwServices::IService, ::guiQt::SSignalShortcut )
+fwServicesRegisterMacro( ::sight::services::IService, ::guiQt::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ void SSignalShortcut::starting()
 
         if(sidExists)
         {
-            ::fwServices::IService::sptr service         = ::fwServices::get( m_sid );
+            services::IService::sptr service = services::get( m_sid );
             ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
             fwc                                          = containerSrv->getContainer();
         }

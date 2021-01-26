@@ -6,11 +6,11 @@ set( DEPENDENCIES
     utestData
     core
     data
-    fwServices
+    services
 )
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
     gui
     guiQt
 )

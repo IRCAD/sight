@@ -8,7 +8,7 @@ set( REQUIREMENTS
         2DVisualizationActivity
         qtSceneConfig
         data
-        servicesReg
+        module_services
         gui
         guiQt
         ctrlSelection

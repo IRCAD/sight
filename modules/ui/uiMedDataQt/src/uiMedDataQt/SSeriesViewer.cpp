@@ -29,17 +29,17 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <services/macros.hpp>
+#include <services/registry/AppConfig.hpp>
 
 namespace uiMedDataQt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, data::Vector)
+fwServicesRegisterMacro( ::sight::services::IController, ::uiMedDataQt::SSeriesViewer, ::sight::data::Vector)
 
-static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
+static const services::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ void SSeriesViewer::updating()
 
             std::map< std::string, std::string > replaceMap;
             // Generate generic UID
-            std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
+            std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier( this->getID() );
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
@@ -125,7 +125,7 @@ void SSeriesViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = ::fwServices::IAppConfigManager::New();
+            m_configTemplateManager = services::IAppConfigManager::New();
             m_configTemplateManager->setConfig( configId, replaceMap );
 
             // Launch config
@@ -189,7 +189,7 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

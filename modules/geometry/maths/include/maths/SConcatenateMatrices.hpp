@@ -29,7 +29,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace maths
 {
@@ -59,12 +59,12 @@ namespace maths
  * - \b output [data::TransformationMatrix3D]: Output matrix.
  */
 
-class MATHS_CLASS_API SConcatenateMatrices : public ::fwServices::IController
+class MATHS_CLASS_API SConcatenateMatrices : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SConcatenateMatrices, ::fwServices::IController)
+    fwCoreServiceMacro(SConcatenateMatrices, services::IController)
 
     /**
      * @brief Constructor.

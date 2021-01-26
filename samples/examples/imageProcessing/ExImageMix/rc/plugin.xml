@@ -1,12 +1,12 @@
 <plugin id="ExImageMix" version="@PROJECT_VERSION@" >
 
     <requirement id="guiQt" />
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>ExImageMix_AppCfg</id>
         <config>
 

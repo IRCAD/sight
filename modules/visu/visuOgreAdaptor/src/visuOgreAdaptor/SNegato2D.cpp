@@ -33,7 +33,7 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OgreSceneNode.h>
 #include <OgreTextureManager.h>
@@ -48,8 +48,8 @@ const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
+static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const services::IService::KeyType s_TF_INOUT    = "tf";
 
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
 static const std::string s_FILTERING_CONFIG   = "filtering";
@@ -348,9 +348,9 @@ void SNegato2D::updateTF()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
+::services::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );

@@ -33,7 +33,7 @@
 
 #include <fwDataTools/PickingInfo.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace videoTools
 {
@@ -80,11 +80,11 @@ namespace videoTools
  *   |            |
  *    ------------
  **/
-class VIDEOTOOLS_CLASS_API SImagePicker : public ::fwServices::IController
+class VIDEOTOOLS_CLASS_API SImagePicker : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SImagePicker, ::fwServices::IController)
+    fwCoreServiceMacro(SImagePicker, services::IController)
 
     /// Creates the video reference map..
     VIDEOTOOLS_API SImagePicker() noexcept;

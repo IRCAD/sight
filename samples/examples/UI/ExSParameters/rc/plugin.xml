@@ -6,11 +6,11 @@ This example shows the possibilities of SParameters:
 -->
 <plugin id="ExSParameters" version="@PROJECT_VERSION@" >
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="preferences" />
     <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>ExSParameters_AppCfg</id>
         <config>
 

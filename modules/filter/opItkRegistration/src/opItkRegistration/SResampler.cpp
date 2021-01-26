@@ -28,20 +28,20 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <itkRegistrationOp/Resampler.hpp>
+
+#include <services/macros.hpp>
 
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SResampler, data::Image)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SResampler, data::Image)
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN = "imageIn";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "imageOut";
+static const services::IService::KeyType s_IMAGE_IN = "imageIn";
+static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
-static const ::fwServices::IService::KeyType s_TARGET_IN    = "target";
-static const ::fwServices::IService::KeyType s_TRANSFORM_IN = "transform";
+static const services::IService::KeyType s_TARGET_IN    = "target";
+static const services::IService::KeyType s_TRANSFORM_IN = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -118,9 +118,9 @@ void SResampler::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SResampler::getAutoConnections() const
+::services::IService::KeyConnectionsMap SResampler::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_TRANSFORM_IN, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

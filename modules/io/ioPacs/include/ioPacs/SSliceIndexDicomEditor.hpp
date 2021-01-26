@@ -34,7 +34,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <fwServices/IHasServices.hpp>
+#include <services/IHasServices.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -73,7 +73,7 @@ namespace ioPacs
 class IOPACS_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
     public ::fwGui::editor::IEditor,
-    public ::fwServices::IHasServices
+    public services::IHasServices
 {
 
 Q_OBJECT;
@@ -103,7 +103,7 @@ protected:
      *
      * Connect data::DicomSeries::s_MODIFIED_SIG of s_DICOMSERIES_INOUT to s_UPDATE_SLOT
      */
-    IOPACS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    IOPACS_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates slider informations and retrieve the image.
     IOPACS_API void updating() override;

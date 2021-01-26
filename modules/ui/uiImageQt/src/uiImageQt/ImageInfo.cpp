@@ -36,8 +36,8 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -46,11 +46,11 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, data::Image )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+static const services::IService::KeyType s_IMAGE_INPUT = "image";
 
 ImageInfo::ImageInfo() noexcept
 {
@@ -170,7 +170,7 @@ void ImageInfo::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
+::services::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

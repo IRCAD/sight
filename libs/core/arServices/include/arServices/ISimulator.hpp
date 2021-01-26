@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "arServices/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace arServices
 {
@@ -33,12 +33,12 @@ namespace arServices
  * @brief   This interface defines simulator service API.
  *          Must be implemented for services that simulate.
  */
-class ARSERVICES_CLASS_API ISimulator : public ::fwServices::IService
+class ARSERVICES_CLASS_API ISimulator : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(ISimulator, ::fwServices::IService);
+    fwCoreServiceMacro(ISimulator, services::IService)
 
 protected:
 

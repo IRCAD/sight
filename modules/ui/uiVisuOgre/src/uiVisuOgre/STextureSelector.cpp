@@ -35,8 +35,8 @@
 
 #include <fwIO/ioTypes.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -47,7 +47,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, data::Reconstruction)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -136,14 +136,14 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = ::fwServices::add< ::fwGui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    auto srv = services::add< ::fwGui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
     srv->registerInOut(image, ::fwIO::s_DATA_KEY);
 
     srv->configure();
     srv->start();
     srv->update();
     srv->stop();
-    ::fwServices::OSR::unregisterService( srv );
+    services::OSR::unregisterService( srv );
 
     // If we didn't have to create a new texture, we can notify the associated image
     if(existingTexture)

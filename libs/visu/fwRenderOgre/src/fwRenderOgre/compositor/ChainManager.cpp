@@ -30,8 +30,8 @@
 #include "fwRenderOgre/SRender.hpp"
 #include <fwRenderOgre/ogre.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/op/Add.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositionPass.h>
@@ -251,7 +251,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
                             shaderParamService->setRenderService(_renderService);
 
-                            ::fwServices::IService::ConfigType config;
+                            services::IService::ConfigType config;
                             config.add("config.<xmlattr>.layer", _layerId);
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);

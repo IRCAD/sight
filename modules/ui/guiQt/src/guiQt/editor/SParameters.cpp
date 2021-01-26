@@ -30,7 +30,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
@@ -135,8 +135,8 @@ void SParameters::starting()
 
     QGridLayout* layout = new QGridLayout();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
-    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
+    services::IService::ConfigType config               = this->getConfigTree();
+    const services::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     int row = 0;
 
@@ -145,7 +145,7 @@ void SParameters::starting()
     // Create widgets
     BOOST_FOREACH( const auto& param, parametersCfg.equal_range("param") )
     {
-        const ::fwServices::IService::ConfigType& cfg = param.second;
+        const services::IService::ConfigType& cfg = param.second;
 
         const std::string name         = cfg.get< std::string >("<xmlattr>.name");
         const std::string key          = cfg.get< std::string >("<xmlattr>.key");
@@ -262,7 +262,7 @@ void SParameters::starting()
 
     BOOST_FOREACH( const auto& param, parametersCfg.equal_range("param") )
     {
-        const ::fwServices::IService::ConfigType& cfg = param.second;
+        const services::IService::ConfigType& cfg = param.second;
 
         const std::string key          = cfg.get< std::string >("<xmlattr>.key");
         const std::string depends      = cfg.get< std::string >("<xmlattr>.depends", "");
@@ -337,13 +337,13 @@ void SParameters::updating()
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* widget  = qtContainer->getQtContainer();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
-    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
+    services::IService::ConfigType config               = this->getConfigTree();
+    const services::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     // emit signal for each widget
     BOOST_FOREACH( const auto& param, parametersCfg.equal_range("param") )
     {
-        const ::fwServices::IService::ConfigType& cfg = param.second;
+        const services::IService::ConfigType& cfg = param.second;
 
         const std::string key  = cfg.get< std::string >("<xmlattr>.key");
         const std::string type = cfg.get< std::string >("<xmlattr>.type");

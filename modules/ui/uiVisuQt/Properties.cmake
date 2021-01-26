@@ -9,6 +9,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwMath
-    fwServices
+    services
 )
 set( REQUIREMENTS )

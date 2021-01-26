@@ -25,7 +25,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace fwIO
 {

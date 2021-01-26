@@ -30,7 +30,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <regex>
 
@@ -39,9 +39,9 @@ namespace gui
 namespace action
 {
 
-static const ::fwServices::IService::KeyType s_SLOT_KEY        = "slot";
-static const ::fwServices::IService::KeyType s_SLOTS_KEY       = "slots";
-static const ::fwServices::IService::KeyType s_SYNCED_CALL_KEY = "sync";
+static const services::IService::KeyType s_SLOT_KEY        = "slot";
+static const services::IService::KeyType s_SLOTS_KEY       = "slots";
+static const services::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller )
 

@@ -30,8 +30,8 @@
 
 #include <fwDataTools/helper/Vector.hpp>
 
-#include <fwServices/IController.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IController.hpp>
+#include <services/macros.hpp>
 
 #include <QImage>
 #include <QString>
@@ -41,7 +41,7 @@
 namespace videoQt
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, data::FrameTL)
+fwServicesRegisterMacro( ::sight::services::IController, ::videoQt::SFrameRecorder, ::sight::data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ const core::com::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "start
 const core::com::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
 const core::com::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
 
-static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
+static const services::IService::KeyType s_FRAMETL_INPUT = "frameTL";
 
 //-----------------------------------------------------------------------------
 

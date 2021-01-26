@@ -31,8 +31,8 @@
 
 #include <fwQml/IQmlAppManager.hpp>
 
-#include <fwServices/AppManager.hpp>
-#include <fwServices/IService.hpp>
+#include <services/AppManager.hpp>
+#include <services/IService.hpp>
 
 #include <QObject>
 #include <QVariant>
@@ -87,12 +87,12 @@ public Q_SLOTS:
 
 private:
 
-    ::fwServices::IService::sptr m_activitySequencer;
+    services::IService::sptr m_activitySequencer;
 
     data::SeriesDB::sptr m_seriesDB;
 
-    ::fwServices::IService::ConfigType m_activityViewConfig;
-    ::fwServices::IService::ConfigType m_sequencerConfig;
+    services::IService::ConfigType m_activityViewConfig;
+    services::IService::ConfigType m_sequencerConfig;
 };
 
 } //namespace uiActivitiesQml

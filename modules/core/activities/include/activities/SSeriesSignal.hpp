@@ -32,7 +32,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace activities
 {
@@ -73,12 +73,12 @@ namespace activities
  *    - \b mode: 'include' or 'exclude'. Defines if the series is notified (include) or not (exclude).
  *    - \b id: id of the activity
  */
-class ACTIVITIES_CLASS_API SSeriesSignal : public ::fwServices::IController
+class ACTIVITIES_CLASS_API SSeriesSignal : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SSeriesSignal, ::fwServices::IController)
+    fwCoreServiceMacro(SSeriesSignal, services::IController)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SSeriesSignal() noexcept;

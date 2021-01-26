@@ -36,7 +36,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -48,7 +48,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, data::Vector )
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

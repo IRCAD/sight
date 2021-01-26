@@ -27,8 +27,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/IService.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace fwGui
 {

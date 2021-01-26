@@ -28,7 +28,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <vector>
 

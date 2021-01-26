@@ -3,20 +3,20 @@
     <library name="uiIO" />
 
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::editor::IDialogEditor</type>
         <service>::uiIO::editor::SIOSelector</service>
         <object>::sight::data::Object</object>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiIO::action::SSeriesDBMerger</service>
         <object>::sight::data::SeriesDB</object>
         <desc>Merge SeriesDB</desc>
     </extension>
     
-    <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiIO::action::SExportWithSeriesDB</service>
         <object>::sight::data::Object</object>

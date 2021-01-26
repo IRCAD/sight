@@ -9,8 +9,8 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGui
-    fwServices
+    services
     fwPreferences
     cvIO
 )
-set( REQUIREMENTS data servicesReg )
+set( REQUIREMENTS data module_services )

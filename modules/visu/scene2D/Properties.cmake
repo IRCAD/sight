@@ -10,7 +10,7 @@ set( DEPENDENCIES
     fwGuiQt
     fwRender
     fwRenderQt
-    fwServices
+    services
     fwGui
 )
 set( REQUIREMENTS )

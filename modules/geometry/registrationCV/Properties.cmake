@@ -7,11 +7,11 @@ set( DEPENDENCIES
     core
     data
     fwMath
-    fwServices
+    services
     cvIO
 )
 
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )

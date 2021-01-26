@@ -24,7 +24,7 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include "fwServices/IHasServices.hpp"
+#include "services/IHasServices.hpp"
 
 #include <data/Composite.hpp>
 
@@ -46,7 +46,7 @@ namespace compositor
  * @brief   Manage the compositors in a layer view.
  */
 class FWRENDEROGRE_CLASS_API ChainManager : ::boost::noncopyable,
-                                            public ::fwServices::IHasServices
+                                            public services::IHasServices
 {
 public:
     typedef std::unique_ptr < ChainManager > uptr;

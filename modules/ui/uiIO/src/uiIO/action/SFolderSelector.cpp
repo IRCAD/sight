@@ -28,14 +28,14 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace uiIO
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SFolderSelector, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SFolderSelector, ::sight::data::Object )
 
 const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
 

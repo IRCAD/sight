@@ -32,7 +32,7 @@
 
 #include <data/Composite.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace sight::data
 {
@@ -116,7 +116,7 @@ protected:
     /// Synchronize
     SYNCTIMELINE_API void synchronize();
 
-    SYNCTIMELINE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    SYNCTIMELINE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

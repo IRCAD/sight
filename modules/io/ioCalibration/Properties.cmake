@@ -5,11 +5,11 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwServices
+    services
     fwGui
     fwPreferences
     fwIO
     cvIO
     calibration3d
 )
-set( REQUIREMENTS data servicesReg )
+set( REQUIREMENTS data module_services )

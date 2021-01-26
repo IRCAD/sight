@@ -30,7 +30,7 @@
 #include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 
@@ -153,7 +153,7 @@ protected:
     /// Depending on the configuration this connects:
     /// - the input timeline to the tracking() slot
     /// - the input frame modifications to the update() slot
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.

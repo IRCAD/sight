@@ -38,9 +38,9 @@
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
+#include <services/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreTechnique.h>
@@ -53,8 +53,8 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
-static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
+static const services::IService::KeyType s_POINTLIST_INPUT = "pointList";
+static const services::IService::KeyType s_MESH_INPUT      = "mesh";
 
 static const std::string s_COLOR_CONFIG             = "color";
 static const std::string s_VISIBLE_CONFIG           = "visible";
@@ -201,9 +201,9 @@ void SPointList::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+::services::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
     connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
     connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );

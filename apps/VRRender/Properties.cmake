@@ -4,7 +4,7 @@ set( VERSION 0.9 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    servicesReg
+    module_services
     data
 
     gui

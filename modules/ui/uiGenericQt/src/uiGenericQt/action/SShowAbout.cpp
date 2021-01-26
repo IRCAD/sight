@@ -36,7 +36,7 @@
 
 #include <filesystem>
 #include <core/base.hpp>
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 #include <core/runtime/operations.hpp>
 
 #include "uiGenericQt/action/SShowAbout.hpp"
@@ -46,7 +46,7 @@ namespace uiGenericQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

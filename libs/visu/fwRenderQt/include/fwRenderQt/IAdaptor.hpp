@@ -27,7 +27,7 @@
 #include "fwRenderQt/data/Event.hpp"
 #include "fwRenderQt/SRender.hpp"
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwRenderQt
 {
@@ -35,7 +35,7 @@ namespace fwRenderQt
 /**
  * @brief Root class for all scene2d adaptors.
  */
-class FWRENDERQT_CLASS_API IAdaptor : public ::fwServices::IService
+class FWRENDERQT_CLASS_API IAdaptor : public services::IService
 {
 
 public:
@@ -52,7 +52,7 @@ public:
     /// <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceMacro(IAdaptor, ::fwServices::IService)
+    fwCoreServiceMacro(IAdaptor, services::IService)
 
     /// Set the zValue.
     FWRENDERQT_API void setZValue(float _zValue);

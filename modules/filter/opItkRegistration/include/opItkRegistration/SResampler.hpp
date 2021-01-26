@@ -24,7 +24,7 @@
 
 #include "opItkRegistration/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opItkRegistration
 {
@@ -52,11 +52,11 @@ namespace opItkRegistration
  * @subsection In-Out In-Out
  * - \b imageOut [data::Image]: New resampled image.
  */
-class OPITKREGISTRATION_CLASS_API SResampler : public ::fwServices::IOperator
+class OPITKREGISTRATION_CLASS_API SResampler : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SResampler, ::fwServices::IOperator)
+    fwCoreServiceMacro(SResampler, services::IOperator)
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SResampler();

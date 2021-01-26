@@ -38,7 +38,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <sstream>
 #include <string>
@@ -48,9 +48,9 @@ namespace ioDicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, data::String )
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::sight::data::String )
 
-static const ::fwServices::IService::KeyType s_FILTER_INOUT = "filter";
+static const services::IService::KeyType s_FILTER_INOUT = "filter";
 
 //------------------------------------------------------------------------------
 

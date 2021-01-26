@@ -32,7 +32,7 @@
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -145,9 +145,9 @@ void SLandmarks::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+::services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
 
     connections.push(s_TRANSFORM_CONFIG, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

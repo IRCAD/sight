@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/MessageDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -53,7 +53,7 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(
 
 MessageDialog::MessageDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -65,7 +65,7 @@ MessageDialog::MessageDialog()
 MessageDialog::MessageDialog(
     const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -89,7 +89,7 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle( const std::string& title )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -102,7 +102,7 @@ void MessageDialog::setTitle( const std::string& title )
 
 void MessageDialog::setMessage( const std::string& msg )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -115,7 +115,7 @@ void MessageDialog::setMessage( const std::string& msg )
 
 void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -128,7 +128,7 @@ void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 
 void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -141,7 +141,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 
 void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -154,7 +154,7 @@ void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons b
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -172,7 +172,7 @@ void MessageDialog::addCustomButton(const std::string& label, std::function<void
         typedef ::fwGui::dialog::IMessageDialog::Buttons R;
 
         std::function<R()> func = std::bind(&IMessageDialog::show, m_implementation);
-        std::shared_future<R> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+        std::shared_future<R> f = services::registry::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
         f.wait();
 
         return f.get();

@@ -45,8 +45,8 @@
 
 #include <fwPacsIO/exceptions/Base.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -66,11 +66,11 @@ static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG_CONFIG = "dicomReaderConfig";
 static const std::string s_DELAY_CONFIG         = "delay";
 
-static const ::fwServices::IService::KeyType s_PACS_INPUT = "pacsConfig";
+static const services::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
-static const ::fwServices::IService::KeyType s_DICOMSERIES_INOUT = "series";
+static const services::IService::KeyType s_DICOMSERIES_INOUT = "series";
 
-static const ::fwServices::IService::KeyType s_IMAGE_OUTPUT = "image";
+static const services::IService::KeyType s_IMAGE_OUTPUT = "image";
 
 const core::com::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
@@ -167,14 +167,14 @@ void SSliceIndexDicomPullerEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+    services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
 
     ::fwIO::IReader::sptr dicomReader;
     dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioPacs::SSliceIndexDicomPullerEditor.", dicomReader);
-    ::fwServices::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
-                                       ::fwServices::IService::AccessType::INOUT, dicomReader);
+    services::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+                                   services::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);
@@ -218,7 +218,7 @@ void SSliceIndexDicomPullerEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_dicomReader.lock());
+        services::OSR::unregisterService(m_dicomReader.lock());
     }
 
     // Disconnect the signals

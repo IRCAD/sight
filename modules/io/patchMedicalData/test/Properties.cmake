@@ -6,7 +6,7 @@ set( DEPENDENCIES
     utestData
     core
     data
-    fwServices
+    services
     fwMDSemanticPatch
 )
-set( REQUIREMENTS data servicesReg ioAtoms gui guiQt patchMedicalData )
+set( REQUIREMENTS data module_services ioAtoms gui guiQt patchMedicalData )

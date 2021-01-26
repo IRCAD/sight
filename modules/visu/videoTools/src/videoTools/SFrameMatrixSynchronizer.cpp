@@ -35,7 +35,7 @@
 
 #include <fwMath/Compare.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -52,10 +52,10 @@ const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
-const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
-const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
-const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
+const services::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
+const services::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+const services::IService::KeyType s_IMAGE_INOUT    = "image";
+const services::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
 const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
@@ -91,7 +91,7 @@ SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
+::services::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );

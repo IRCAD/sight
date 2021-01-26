@@ -48,8 +48,8 @@ const core::com::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previ
 const core::com::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
 const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
 
-const ::fwServices::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
-const ::fwServices::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
+const services::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
+const services::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
 
 // ----------------------------------------------------------------------------
 

@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -118,12 +118,12 @@ class ISlideViewBuilder;
  *
  *
  */
-class FWGUI_CLASS_API IGuiContainerSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IGuiContainerSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IGuiContainerSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IGuiContainerSrv, services::IService)
 
     FWGUI_API SPTR(::fwGui::container::fwContainer) getContainer();
 

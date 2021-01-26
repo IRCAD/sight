@@ -28,7 +28,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -39,7 +39,7 @@ namespace uiCalibration
 {
 // -------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, data::Camera)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::sight::data::Camera)
 
 const core::com::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 
@@ -245,7 +245,7 @@ void SCameraInformationEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
 {
 
     KeyConnectionsMap connections;

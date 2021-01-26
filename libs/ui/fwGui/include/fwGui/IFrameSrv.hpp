@@ -32,7 +32,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace fwGui
 {
@@ -82,12 +82,12 @@ namespace fwGui
  * - The menuBar section isn't mandatory.
 
  */
-class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
+class FWGUI_CLASS_API IFrameSrv : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IFrameSrv, ::fwServices::IService)
+    fwCoreServiceMacro(IFrameSrv, services::IService)
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();

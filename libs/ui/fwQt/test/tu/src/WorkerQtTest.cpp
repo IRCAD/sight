@@ -31,7 +31,7 @@
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/config.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -125,7 +125,7 @@ void WorkerQtTest::tearDown()
 {
     // Clean up after the test run.
     m_worker.reset();
-    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    services::registry::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 

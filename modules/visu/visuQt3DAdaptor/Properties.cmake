@@ -6,7 +6,7 @@ set( PRIORITY 2)
 set( DEPENDENCIES
     data
     fwRenderQt3D
-    fwServices
+    services
 )
 set( REQUIREMENTS  )
 

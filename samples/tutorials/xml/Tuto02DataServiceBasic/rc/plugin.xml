@@ -2,10 +2,10 @@
 
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="guiQt" />
 
-    <extension implements="::fwServices::registry::AppConfig" >
+    <extension implements="::sight::services::registry::AppConfig" >
         <id>TutoDataServiceBasic_AppCfg</id>
         <config>
 

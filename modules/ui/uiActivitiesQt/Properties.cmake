@@ -8,12 +8,12 @@ set( DEPENDENCIES
     data
     fwGui
     fwGuiQt
-    fwServices
+    services
 )
 set( REQUIREMENTS
     guiQt
     data
-    servicesReg
+    module_services
 )
 set( PLUGINS
     QtQml

@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>LandmarkRegistration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -134,7 +134,7 @@
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="blendEditor" type="::fwServices::SConfigController" >
+        <service uid="blendEditor" type="::sight::services::SConfigController" >
             <appConfig id="BlendEditor" />
             <parameter replace="WID_PARENT" by="blendEditor" />
             <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>

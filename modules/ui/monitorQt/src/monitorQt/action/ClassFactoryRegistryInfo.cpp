@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ServiceFactory.hpp>
 
 #include <QHBoxLayout>
 
@@ -34,7 +34,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, data::Object )
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ void ClassFactoryRegistryInfo::updating( )
     m_tree->clearSelection();
     m_tree->clear();
 
-    typedef ::fwServices::registry::ServiceFactory ServiceRegistry;
+    typedef services::registry::ServiceFactory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
     for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )

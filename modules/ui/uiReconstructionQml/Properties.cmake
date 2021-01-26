@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     fwGui
     fwQml
-    fwServices
+    services
 )
 set( REQUIREMENTS styleQml )
 set( PLUGINS

@@ -10,11 +10,11 @@ set( DEPENDENCIES
     fwGui
     fwLog
     fwJobs
-    fwServices
+    services
     fwIO
     )
 set( REQUIREMENTS
     data
     ioDicom
-    servicesReg
+    module_services
     )

@@ -24,7 +24,7 @@
 
 #include "opDepthMap/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 namespace opDepthMap
 {
@@ -52,10 +52,10 @@ namespace opDepthMap
  * @subsection In-Out In-Out
  * - \b scaledDepth [data::Image]: scaled depth map.
  */
-class OPDEPTHMAP_CLASS_API STransformDepthMap2mm : public ::fwServices::IOperator
+class OPDEPTHMAP_CLASS_API STransformDepthMap2mm : public services::IOperator
 {
 public:
-    fwCoreServiceMacro(STransformDepthMap2mm, ::fwServices::IOperator)
+    fwCoreServiceMacro(STransformDepthMap2mm, services::IOperator)
 
     /**
      * @brief STransformDepthMap2mm constructor.

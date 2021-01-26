@@ -32,7 +32,7 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
@@ -104,9 +104,9 @@ void STexture::starting()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
+::services::IService::KeyConnectionsMap STexture::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_TEXTURE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_TEXTURE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;

@@ -22,7 +22,7 @@
 
 #include "fwGui/dialog/LocationDialog.hpp"
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -33,13 +33,13 @@ namespace dialog
 LocationDialog::LocationDialog()
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
-                                                                                    [&]
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
+                                                                                [&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
                 m_implementation                    = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
             })
-                                                                                ).wait();
+                                                                            ).wait();
 }
 
 //------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ data::location::ILocation::sptr LocationDialog::show()
     typedef SPTR (data::location::ILocation) R;
 
     std::function< R() > func = std::bind(&ILocationDialog::show, m_implementation);
-    std::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
+    std::shared_future< R > f = services::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
 
     f.wait();
     return f.get();

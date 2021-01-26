@@ -1,6 +1,6 @@
 <profile name="ImageReaderWriterTest" version="0.1">
 
-    <activate id="servicesReg" version="0.1" />
+    <activate id="::sight::modules::services" version="0.1" />
     <activate id="ioVTK" version="0.1" />
 
     <start id="ioVTK" />

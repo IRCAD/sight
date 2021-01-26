@@ -55,14 +55,14 @@ void IAdaptor::initialize()
     // Retrieve the render service attached to the adaptor.
     if(m_renderService.expired())
     {
-        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderQt3D::SRender");
+        auto servicesVector = services::OSR::getServices("::fwRenderQt3D::SRender");
 
         auto& registry       = ::fwRenderQt3D::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];
 
         auto result =
             std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [renderServiceId](const ::fwServices::IService::sptr& srv)
+                         [renderServiceId](const services::IService::sptr& srv)
             {
                 return srv->getID() == renderServiceId;
             });

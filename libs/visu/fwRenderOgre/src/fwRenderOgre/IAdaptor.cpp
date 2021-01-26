@@ -27,9 +27,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/helper/Config.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 namespace fwRenderOgre
 {
@@ -63,7 +63,7 @@ IAdaptor::~IAdaptor() noexcept
 void IAdaptor::info(std::ostream& _sstream )
 {
     _sstream << "IAdaptor : ";
-    this->fwServices::IService::info( _sstream );
+    this->services::IService::info( _sstream );
 }
 
 //------------------------------------------------------------------------------
@@ -81,14 +81,14 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+        auto servicesVector = services::OSR::getServices("::fwRenderOgre::SRender");
 
         auto& registry       = ::fwRenderOgre::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];
 
         auto result =
             std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [renderServiceId](const ::fwServices::IService::sptr& srv)
+                         [renderServiceId](const services::IService::sptr& srv)
             {
                 return srv->getID() == renderServiceId;
             });
@@ -149,8 +149,8 @@ void IAdaptor::requestRender()
 {
     /*
        auto renderService = this->getRenderService();
-       if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
-          renderService->getStatus() == ::fwServices::IService::SWAPPING) &&
+       if ( (renderService->getStatus() == services::IService::STARTED ||
+          renderService->getStatus() == services::IService::SWAPPING) &&
          renderService->getRenderMode() == ::fwRenderOgre::SRender::RenderMode::AUTO )
        {
         this->getRenderService()->requestRender();

@@ -30,7 +30,7 @@
 #include <data/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace videoTools
 {
@@ -57,11 +57,11 @@ namespace videoTools
  * @subsection In-Out In-Out:
  * - \b key2 [data::Image]: frame where to extract a buffer of a timeline.
  */
-class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
+class VIDEOTOOLS_CLASS_API SFrameUpdater : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SFrameUpdater, ::fwServices::IController)
+    fwCoreServiceMacro(SFrameUpdater, services::IController)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 
@@ -112,7 +112,7 @@ private:
      * Connect data::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
      * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Frame timeline
     data::FrameTL::csptr m_frameTL;

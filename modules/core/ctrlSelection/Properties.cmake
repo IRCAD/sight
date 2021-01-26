@@ -6,6 +6,6 @@ set( DEPENDENCIES
     core
     data
     fwDataTools
-    fwServices
+    services
 )
 set( REQUIREMENTS )

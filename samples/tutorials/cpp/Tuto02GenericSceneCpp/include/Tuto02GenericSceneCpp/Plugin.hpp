@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <fwServices/AppManager.hpp>
+#include <services/AppManager.hpp>
 
 namespace Tuto02GenericSceneCpp
 {
@@ -54,7 +54,7 @@ public:
 
 private:
 
-    std::unique_ptr< ::fwServices::AppManager > m_appManager;
+    std::unique_ptr< services::AppManager > m_appManager;
 
 };
 

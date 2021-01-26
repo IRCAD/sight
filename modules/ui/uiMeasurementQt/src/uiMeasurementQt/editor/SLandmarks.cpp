@@ -38,7 +38,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -55,9 +55,9 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const char* s_GROUP_PROPERTY_NAME                       = "group";
-static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
+static const services::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
+static const char* s_GROUP_PROPERTY_NAME                   = "group";
+static const int s_GROUP_NAME_ROLE                         = ::Qt::UserRole + 1;
 
 static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
@@ -109,7 +109,7 @@ void SLandmarks::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const services::IService::ConfigType config = this->getConfigTree();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     SLM_FATAL_IF(
@@ -207,7 +207,7 @@ void SLandmarks::starting()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+::services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

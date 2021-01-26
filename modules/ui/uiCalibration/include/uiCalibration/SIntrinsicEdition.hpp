@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 #include <QObject>
 
@@ -55,13 +55,13 @@ namespace uiCalibration
  * - \b camera [data::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
-                                                  public ::fwServices::IService
+                                                  public services::IService
 {
 
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SIntrinsicEdition, ::fwServices::IService)
+    fwCoreServiceMacro(SIntrinsicEdition, services::IService)
 
     /**
      * @brief Constructor.

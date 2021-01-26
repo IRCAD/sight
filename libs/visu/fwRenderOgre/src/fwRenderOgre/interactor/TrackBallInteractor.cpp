@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
@@ -158,7 +158,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
                 {
                     // We use a timer on the main thread instead of a separate thread.
                     // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                    const auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
+                    const auto worker = services::registry::ActiveWorkers::getDefault()->getDefaultWorker();
                     m_timer = worker->createTimer();
 
                     m_timer->setFunction([this, layer]()

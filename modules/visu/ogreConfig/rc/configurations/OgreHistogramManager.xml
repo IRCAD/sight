@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::sight::services::registry::AppConfig">
     <id>OgreHistogramManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -38,7 +38,7 @@
         <!-- *********************************** End layouts declaration *********************************** -->
 
         <!-- *********************************** Begin services declarations *********************************** -->
-        <service uid="TFWidget" type="::fwServices::SConfigController">
+        <service uid="TFWidget" type="::sight::services::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${IMAGE}"/>
             <inout key="histogram" uid="histogram"/>

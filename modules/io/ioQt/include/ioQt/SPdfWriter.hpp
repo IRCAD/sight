@@ -89,7 +89,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override from services::IService )
      * @{
      */
 
@@ -109,7 +109,7 @@ protected:
     IOQT_API virtual void stopping() override;
 
     /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
+     * @brief Configure service. This method is called by configure() from base service ( services::IService )
      *
      * Gets the images or containers from their IDs.
      *

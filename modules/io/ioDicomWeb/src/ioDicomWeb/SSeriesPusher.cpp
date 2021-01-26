@@ -39,14 +39,14 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 namespace ioDicomWeb
 {
 
 //------------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_SERIES_IN = "selectedSeries";
+static const services::IService::KeyType s_SERIES_IN = "selectedSeries";
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ SSeriesPusher::~SSeriesPusher() noexcept
 
 void SSeriesPusher::configuring()
 {
-    ::fwServices::IService::ConfigType configuration = this->getConfigTree();
+    services::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

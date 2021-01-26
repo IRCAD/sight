@@ -7,7 +7,7 @@ set( REQUIREMENTS           # The modules used by this application
     appXml                  # XML configurations
     guiQt                   # Start the module, load qt implementation of gui
 
-    servicesReg             # fwService
+    module_services             # fwService
 
     # UI declaration/Actions
     gui

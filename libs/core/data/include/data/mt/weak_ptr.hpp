@@ -24,7 +24,7 @@
 
 #include <memory>
 
-namespace fwServices
+namespace sight::services
 {
 namespace registry
 {
@@ -120,8 +120,8 @@ public:
 private:
 
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    friend class ::fwServices::IService;
-    friend class ::fwServices::registry::ObjectService;
+    friend class services::IService;
+    friend class services::registry::ObjectService;
     friend class activities::IActivityLauncher;
 
     /// Convenience getter for weak_ptr

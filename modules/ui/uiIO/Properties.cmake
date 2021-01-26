@@ -8,12 +8,12 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     fwJobs
-    fwServices
+    services
     fwIO
 )
 
 set( REQUIREMENTS
     data
-    servicesReg
+    module_services
 )
 

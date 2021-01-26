@@ -32,7 +32,7 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace sight::data
 {
@@ -88,7 +88,7 @@ public:
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
     FWDCMTKIO_API void readFromDicomSeriesDB(CSPTR(data::SeriesDB) dicomSeriesDB,
-                                             ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+                                             services::IService::sptr notifier = services::IService::sptr());
 
     /// Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
     FWDCMTKIO_API void readDicomSeries();
@@ -179,7 +179,7 @@ private:
      * @param[in] notifier Service used to notify the modification
      */
     void convertDicomSeries(CSPTR(data::DicomSeries) dicomSeries,
-                            ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+                            services::IService::sptr notifier = services::IService::sptr());
 
     ///Patient Map
     PatientMapType m_patientMap;

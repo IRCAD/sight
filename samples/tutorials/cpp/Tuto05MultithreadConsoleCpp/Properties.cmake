@@ -3,7 +3,7 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES   
     data
-    fwServices
+    services
 )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
@@ -11,7 +11,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    servicesReg             # fwService
+    module_services             # fwService
 
     # The module console is used to run a console application with a main loop
     # Typically it can be used for server command line applications

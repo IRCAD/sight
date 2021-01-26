@@ -36,7 +36,7 @@
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -1095,10 +1095,10 @@ void Layer::restartAdaptors()
     adaptors.erase(std::remove_if(adaptors.begin(), adaptors.end(), notInLayer), adaptors.end());
 
     // Search for all adaptors created as subservices by other adaptors.
-    std::vector< ::fwServices::IService::wptr > subAdaptors;
+    std::vector< services::IService::wptr > subAdaptors;
     for(auto& adapt : adaptors)
     {
-        SPTR( ::fwServices::IHasServices ) hasServices = std::dynamic_pointer_cast< ::fwServices::IHasServices >(adapt);
+        SPTR( services::IHasServices ) hasServices = std::dynamic_pointer_cast< services::IHasServices >(adapt);
         if(hasServices != nullptr)
         {
             const auto& subServices = hasServices->getRegisteredServices();
@@ -1138,13 +1138,13 @@ void Layer::restartAdaptors()
 
 //-------------------------------------------------------------------------------------
 
-::fwServices::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
+::services::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
 {
     if(m_compositorChainManager)
     {
         return m_compositorChainManager->getRegisteredServices();
     }
-    return ::fwServices::IHasServices::ServiceVector();
+    return services::IHasServices::ServiceVector();
 }
 
 //-------------------------------------------------------------------------------------

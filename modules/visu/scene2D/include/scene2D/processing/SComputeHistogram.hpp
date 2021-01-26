@@ -27,7 +27,7 @@
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace scene2D
 {
@@ -57,12 +57,12 @@ namespace processing
  * @subsection Configuration Configuration:
  * - \b binsWidth (mandatory): desired bins width used to classified pixel.
  */
-class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
+class SCENE2D_CLASS_API SComputeHistogram : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SComputeHistogram, ::fwServices::IController)
+    fwCoreServiceMacro(SComputeHistogram, services::IController)
 
     /// Constructor. Does nothing.
     SCENE2D_API SComputeHistogram() noexcept;

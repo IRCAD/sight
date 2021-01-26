@@ -29,7 +29,7 @@
 
 #include <data/ActivitySeries.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace activities
 {
@@ -83,13 +83,13 @@ namespace activities
  *
  * @todo listen the current activity data to notify when the next activity can be created
  */
-class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController,
+class ACTIVITIES_CLASS_API SActivitySequencer : public services::IController,
                                                 public activities::IActivitySequencer
 {
 
 public:
 
-    fwCoreServiceMacro(SActivitySequencer, ::fwServices::IController)
+    fwCoreServiceMacro(SActivitySequencer, services::IController)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivitySequencer() noexcept;

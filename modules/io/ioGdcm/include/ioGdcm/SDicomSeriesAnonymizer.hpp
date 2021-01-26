@@ -24,7 +24,7 @@
 
 #include "ioGdcm/config.hpp"
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 namespace fwJobs
 {
@@ -57,13 +57,13 @@ namespace ioGdcm
  * - \b seriesDB [data::SeriesDB]: SeriesDB where the dicom series comes from.
  * - \b selectedSeries [data::Vector]: List of DICOM series to be anonymized.
  */
-class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
+class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public services::IController
 {
 
 public:
     typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesAnonymizer,  ::fwServices::IController)
+    fwCoreServiceMacro(SDicomSeriesAnonymizer,  services::IController)
 
     /// Constructor
     IOGDCM_API SDicomSeriesAnonymizer() noexcept;

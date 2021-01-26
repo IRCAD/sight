@@ -26,7 +26,7 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

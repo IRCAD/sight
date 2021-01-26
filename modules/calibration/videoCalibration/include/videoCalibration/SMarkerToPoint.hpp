@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <string>
 #include <vector>
@@ -58,14 +58,14 @@ namespace videoCalibration
  * @subsection In-Out In-Out
  * - \b pointList [data::Pointlist]: marker position.
  */
-class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IController
+class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public services::IController
 {
 public:
-    fwCoreServiceMacro(SMarkerToPoint, ::fwServices::IController)
+    fwCoreServiceMacro(SMarkerToPoint, services::IController)
 
     /// Data xml keys
-    static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT;
-    static const ::fwServices::IService::KeyType s_POINTLIST_INOUT;
+    static const services::IService::KeyType s_MATRIXTL_INPUT;
+    static const services::IService::KeyType s_POINTLIST_INOUT;
 
     /**
      * @name Slots API

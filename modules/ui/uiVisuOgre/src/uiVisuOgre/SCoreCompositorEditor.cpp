@@ -28,8 +28,8 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <services/macros.hpp>
+#include <services/registry/ObjectService.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -50,7 +50,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEditor, data::Composite)
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEditor, ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
 
@@ -186,8 +186,8 @@ void SCoreCompositorEditor::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    ::fwServices::registry::ObjectService::ServiceVectorType renderers =
-        ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+    services::registry::ObjectService::ServiceVectorType renderers =
+        services::OSR::getServices("::fwRenderOgre::SRender");
 
     bool is3DLayer = false;
     for(auto srv : renderers)

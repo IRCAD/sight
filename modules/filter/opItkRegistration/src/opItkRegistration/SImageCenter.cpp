@@ -33,17 +33,17 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+
+#include <services/macros.hpp>
 
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SImageCenter)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SImageCenter)
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN = "image";
-static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const services::IService::KeyType s_IMAGE_IN = "image";
+static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -141,9 +141,9 @@ void SImageCenter::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
+::services::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
+    services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

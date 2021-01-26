@@ -78,7 +78,8 @@ void RuntimeTest::testPosix()
     CPPUNIT_ASSERT_EQUAL( std::string("module_utest"), name);
 
     const auto path = nativeLibrary->getFullPath();
-    CPPUNIT_ASSERT_EQUAL( (location / std::filesystem::path("libsight_module_utest.so")).string(), path.string());
+    CPPUNIT_ASSERT_EQUAL(  (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX /
+                            std::filesystem::path("libsight_module_utest.so")).string(), path.string() );
 }
 
 #elif defined(WIN32)
@@ -113,7 +114,7 @@ void RuntimeTest::testRuntime()
     core::runtime::init();
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-    const auto moduleStr                    = "::sight::module::utest";
+    const auto moduleStr                    = "::sight::modules::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
     auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));

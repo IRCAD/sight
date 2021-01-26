@@ -32,10 +32,10 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
+
+#include <services/macros.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>
@@ -49,7 +49,7 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKMesh::SVTKMesher )
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opVTKMesh::SVTKMesher )
 
 static const std::string s_IMAGE_INPUT = "imageSeries";
 static const std::string s_MODEL_OUTPUT = "modelSeries";
@@ -59,8 +59,8 @@ static const std::string s_MODEL_OUTPUT = "modelSeries";
 SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
-    this->registerObject(s_IMAGE_INPUT, ::fwServices::IService::AccessType::INPUT, false);
-    this->registerObject(s_MODEL_OUTPUT, ::fwServices::IService::AccessType::OUTPUT, false, true);
+    this->registerObject(s_IMAGE_INPUT, services::IService::AccessType::INPUT, false);
+    this->registerObject(s_MODEL_OUTPUT, services::IService::AccessType::OUTPUT, false, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,14 +85,14 @@ void SVTKMesher::stopping()
 
 void SVTKMesher::configuring()
 {
-    const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
+    const services::IService::ConfigType& srvConfig = this->getConfigTree();
 
     SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
-    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("config");
+    const services::IService::ConfigType& config = srvConfig.get_child("config");
 
     SLM_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
-    const ::fwServices::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
+    const services::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
     m_reduction = reductionCfg.get_value<unsigned int>();
 }
 

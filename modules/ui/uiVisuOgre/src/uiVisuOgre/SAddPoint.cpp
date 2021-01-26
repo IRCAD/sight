@@ -29,7 +29,7 @@
 
 #include <fwDataTools/helper/PointList.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <glm/geometric.hpp>
 
@@ -41,7 +41,7 @@ const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoint
 
 const std::string s_POINTLIST_KEY = "pointList";
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, data::PointList)
+fwServicesRegisterMacro( ::sight::services::IController, ::uiVisuOgre::SAddPoint, ::sight::data::PointList)
 
 //------------------------------------------------------------------------------
 

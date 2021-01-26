@@ -41,8 +41,8 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <services/macros.hpp>
+#include <services/op/Add.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -56,9 +56,9 @@
 namespace uiTF
 {
 
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
-static const ::fwServices::IService::KeyType s_TF_OUTPUT        = "tf";
-static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const services::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+static const services::IService::KeyType s_TF_OUTPUT        = "tf";
+static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
@@ -411,7 +411,7 @@ void TransferFunctionEditor::importTF()
     ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
     data::TransferFunction::sptr tf = data::TransferFunction::New();
-    ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
 
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
@@ -419,7 +419,7 @@ void TransferFunctionEditor::importTF()
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    ::fwServices::OSR::unregisterService(reader);
+    services::OSR::unregisterService(reader);
 
     if (!tf->getName().empty())
     {
@@ -440,7 +440,7 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
 
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
@@ -448,7 +448,7 @@ void TransferFunctionEditor::exportTF()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    ::fwServices::OSR::unregisterService(writer);
+    services::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------
@@ -489,7 +489,7 @@ void TransferFunctionEditor::initTransferFunctions()
         }
 
         data::TransferFunction::sptr tf = data::TransferFunction::New();
-        ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+        ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
         reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
@@ -517,7 +517,7 @@ void TransferFunctionEditor::initTransferFunctions()
             }
             tf->initTF();
         }
-        ::fwServices::OSR::unregisterService(reader);
+        services::OSR::unregisterService(reader);
     }
     compositeHelper.notify();
 
@@ -608,7 +608,7 @@ void TransferFunctionEditor::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
+::services::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);

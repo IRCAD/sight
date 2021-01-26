@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig" >
+<extension implements="::sight::services::registry::AppConfig" >
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -67,7 +67,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="negato1Srv" type="::fwServices::SConfigController" >
+        <service uid="negato1Srv" type="::sight::services::SConfigController" >
             <appConfig id="2DNegato" />
             <inout key="image" uid="inputImage" />
             <inout key="landmarks" uid="landmarks1" />
@@ -75,7 +75,7 @@
             <parameter replace="patient_name" by="Source Image" />
         </service>
 
-        <service uid="negato2Srv" type="::fwServices::SConfigController" >
+        <service uid="negato2Srv" type="::sight::services::SConfigController" >
             <appConfig id="2DNegato" />
             <inout key="image" uid="outputImage" />
             <inout key="landmarks" uid="landmarks2" />

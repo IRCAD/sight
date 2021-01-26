@@ -1,6 +1,6 @@
 <plugin id="VRRender" version="@PROJECT_VERSION@">
 
-    <requirement id="servicesReg" />
+    <requirement id="::sight::modules::services" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="filterUnknownSeries" />
@@ -10,7 +10,7 @@
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::AppConfigParameters">
+    <extension implements="::sight::services::registry::AppConfigParameters">
         <id>VRRenderAppBase</id>
         <parameters>
             <param name="appName" value="VRRender 0.9.7" />

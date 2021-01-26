@@ -26,7 +26,7 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <fwServices/IController.hpp>
+#include <services/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -82,10 +82,10 @@ namespace videoCalibration
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class VIDEOCALIBRATION_CLASS_API SReprojectionError : public ::fwServices::IController
+class VIDEOCALIBRATION_CLASS_API SReprojectionError : public services::IController
 {
 public:
-    fwCoreServiceMacro(SReprojectionError, fwServices::IController)
+    fwCoreServiceMacro(SReprojectionError, services::IController)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;
@@ -102,7 +102,7 @@ public:
     VIDEOCALIBRATION_API ~SReprojectionError();
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomTools
     fwLog
-    fwServices
+    services
     fwZip
     )
 set( REQUIREMENTS )

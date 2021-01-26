@@ -78,7 +78,7 @@ class OPULTRASOUND_CLASS_API SUltrasoundMesh final : public ::arServices::ISimul
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundMesh, ::fwServices::IService)
+    fwCoreServiceMacro(SUltrasoundMesh, services::IService)
 
     /// Create slots.
     OPULTRASOUND_API SUltrasoundMesh() noexcept;

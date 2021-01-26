@@ -10,7 +10,7 @@ set( DEPENDENCIES
     fwJobs
     fwMath
     data
-    fwServices
+    services
     fwZip
     )
 set( REQUIREMENTS )

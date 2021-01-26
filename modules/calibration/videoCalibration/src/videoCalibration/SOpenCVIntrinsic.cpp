@@ -42,8 +42,8 @@
 
 #include <fwPreferences/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <services/IService.hpp>
+#include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>

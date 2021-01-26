@@ -27,7 +27,7 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwServices/IService.hpp>
+#include <services/IService.hpp>
 
 namespace maths
 {
@@ -79,13 +79,13 @@ namespace maths
  * @subsection Output Output:
  * - \b vector [data::Vector]: vector containing matrices
  */
-class MATHS_CLASS_API SMatrixList final : public ::fwServices::IService
+class MATHS_CLASS_API SMatrixList final : public services::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast,...
-    fwCoreServiceMacro(SMatrixList, ::fwServices::IService)
+    fwCoreServiceMacro(SMatrixList, services::IService)
 
     /// Initializes signals.
     MATHS_API SMatrixList() noexcept;

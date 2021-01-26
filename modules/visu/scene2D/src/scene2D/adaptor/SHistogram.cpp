@@ -28,7 +28,7 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -40,8 +40,8 @@ namespace scene2D
 
 namespace adaptor
 {
-static const ::fwServices::IService::KeyType s_POINT_INOUT     = "point";
-static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const services::IService::KeyType s_POINT_INOUT     = "point";
+static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float SHistogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
 
@@ -221,7 +221,7 @@ void SHistogram::processInteraction( ::fwRenderQtdata::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
+::services::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

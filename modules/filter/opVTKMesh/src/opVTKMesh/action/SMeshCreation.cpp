@@ -30,10 +30,10 @@
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
+
+#include <services/macros.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>

@@ -43,13 +43,13 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwVtkIO/BitmapImageReader.hpp>
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
+
+#include <services/macros.hpp>
+#include <services/registry/ActiveWorkers.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -64,7 +64,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of data::Image
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, data::Image )
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

@@ -25,8 +25,8 @@
 #include <core/com/Slot.hxx>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/Proxy.hpp>
+#include <services/registry/ActiveWorkers.hpp>
+#include <services/registry/Proxy.hpp>
 
 namespace Tuto03MesherWithGenericSceneCpp
 {
@@ -64,7 +64,7 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    m_appManager = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager );
+    m_appManager = std::unique_ptr< services::AppManager >(new services::AppManager );
     m_appManager->create();
 
     /* **************************************************************************************
@@ -125,7 +125,7 @@ void Plugin::initialize()
     *              GUI configuration
     ****************************************************************************************/
     // create the frame configuration
-    ::fwServices::IService::ConfigType frameConfig;
+    services::IService::ConfigType frameConfig;
     frameConfig.put("gui.frame.name", "Tuto03MesherWithGenericSceneCpp");
     frameConfig.put("gui.frame.icon", "Tuto03MesherWithGenericSceneCpp-0.2/tuto.ico");
     frameConfig.put("gui.menuBar", "");
@@ -134,30 +134,30 @@ void Plugin::initialize()
     frameSrv->configure(frameConfig);
 
     // create the menuBar configuration
-    ::fwServices::IService::ConfigType menuBarConfig;
-    ::fwServices::IService::ConfigType menuBarMenu1Config;
+    services::IService::ConfigType menuBarConfig;
+    services::IService::ConfigType menuBarMenu1Config;
     menuBarMenu1Config.put("<xmlattr>.name", "File");
     menuBarConfig.add_child("gui.layout.menu", menuBarMenu1Config);
-    ::fwServices::IService::ConfigType menuBarMenu2Config;
+    services::IService::ConfigType menuBarMenu2Config;
     menuBarMenu2Config.put("<xmlattr>.name", "Mesher");
     menuBarConfig.add_child("gui.layout.menu", menuBarMenu2Config);
-    ::fwServices::IService::ConfigType menuBarMenu1ConfigReg;
+    services::IService::ConfigType menuBarMenu1ConfigReg;
     menuBarMenu1ConfigReg.put("<xmlattr>.sid", "menuFile");
     menuBarConfig.add_child("registry.menu", menuBarMenu1ConfigReg);
-    ::fwServices::IService::ConfigType menuBarMenu2ConfigReg;
+    services::IService::ConfigType menuBarMenu2ConfigReg;
     menuBarMenu2ConfigReg.put("<xmlattr>.sid", "menuMesher");
     menuBarConfig.add_child("registry.menu", menuBarMenu2ConfigReg);
     menuBar->configure(menuBarConfig);
 
     // menu File
-    ::fwServices::IService::ConfigType menuFileConfig;
-    ::fwServices::IService::ConfigType menuFileItem1;
+    services::IService::ConfigType menuFileConfig;
+    services::IService::ConfigType menuFileItem1;
     menuFileItem1.put("<xmlattr>.name", "Open image");
     menuFileItem1.put("<xmlattr>.shortcut", "Ctrl+O");
-    ::fwServices::IService::ConfigType menuFileItem2;
+    services::IService::ConfigType menuFileItem2;
     menuFileItem2.put("<xmlattr>.name", "Save meshes");
     menuFileItem2.put("<xmlattr>.shortcut", "Ctrl+S");
-    ::fwServices::IService::ConfigType menuFileItem3;
+    services::IService::ConfigType menuFileItem3;
     menuFileItem3.put("<xmlattr>.name", "Quit");
     menuFileItem3.put("<xmlattr>.shortcut", "Ctrl+Q");
     menuFileItem3.put("<xmlattr>.specialAction", "QUIT");
@@ -166,11 +166,11 @@ void Plugin::initialize()
     menuFileConfig.add("gui.layout", "separator");
     menuFileConfig.add_child("gui.layout.menuItem", menuFileItem3);
 
-    ::fwServices::IService::ConfigType menuFileItem1Reg;
+    services::IService::ConfigType menuFileItem1Reg;
     menuFileItem1Reg.put("<xmlattr>.sid", "actionOpenImage");
-    ::fwServices::IService::ConfigType menuFileItem2Reg;
+    services::IService::ConfigType menuFileItem2Reg;
     menuFileItem2Reg.put("<xmlattr>.sid", "actionSaveModelSeries");
-    ::fwServices::IService::ConfigType menuFileItem3Reg;
+    services::IService::ConfigType menuFileItem3Reg;
     menuFileItem3Reg.put("<xmlattr>.sid", "actionQuit");
     menuFileConfig.add_child("registry.menuItem", menuFileItem1Reg);
     menuFileConfig.add_child("registry.menuItem", menuFileItem2Reg);
@@ -178,110 +178,110 @@ void Plugin::initialize()
     menuFile->configure(menuFileConfig);
 
     // menu mesher
-    ::fwServices::IService::ConfigType menuMesherConfig;
-    ::fwServices::IService::ConfigType menuMesherItem1;
+    services::IService::ConfigType menuMesherConfig;
+    services::IService::ConfigType menuMesherItem1;
     menuMesherItem1.put("<xmlattr>.name", "Create Mesh 50");
-    ::fwServices::IService::ConfigType menuMesherItem2;
+    services::IService::ConfigType menuMesherItem2;
     menuMesherItem2.put("<xmlattr>.name", "Create Mesh 80");
     menuMesherConfig.add_child("gui.layout.menuItem", menuMesherItem1);
     menuMesherConfig.add_child("gui.layout.menuItem", menuMesherItem2);
 
-    ::fwServices::IService::ConfigType menuMesherItem1Reg;
+    services::IService::ConfigType menuMesherItem1Reg;
     menuMesherItem1Reg.put("<xmlattr>.sid", "actionCreateMesh50");
-    ::fwServices::IService::ConfigType menuMesherItem2Reg;
+    services::IService::ConfigType menuMesherItem2Reg;
     menuMesherItem2Reg.put("<xmlattr>.sid", "actionCreateMesh80");
     menuMesherConfig.add_child("registry.menuItem", menuMesherItem1Reg);
     menuMesherConfig.add_child("registry.menuItem", menuMesherItem2Reg);
     menuMesher->configure(menuMesherConfig);
 
     // mainview
-    ::fwServices::IService::ConfigType mainViewConfig;
-    ::fwServices::IService::ConfigType mainViewLayoutConfig;
+    services::IService::ConfigType mainViewConfig;
+    services::IService::ConfigType mainViewLayoutConfig;
     mainViewLayoutConfig.put("<xmlattr>.type", "::fwGui::CardinalLayoutManager");
-    ::fwServices::IService::ConfigType mainView1Config;
+    services::IService::ConfigType mainView1Config;
     mainView1Config.put("<xmlattr>.align", "center");
-    ::fwServices::IService::ConfigType mainView2Config;
+    services::IService::ConfigType mainView2Config;
     mainView2Config.put("<xmlattr>.align", "right");
     mainView2Config.put("<xmlattr>.minWidth", "300");
-    ::fwServices::IService::ConfigType mainView3Config;
+    services::IService::ConfigType mainView3Config;
     mainView3Config.put("<xmlattr>.align", "bottom");
     mainView3Config.put("<xmlattr>.minHeight", "30");
     mainViewLayoutConfig.add_child("view", mainView1Config);
     mainViewLayoutConfig.add_child("view", mainView2Config);
     mainViewLayoutConfig.add_child("view", mainView3Config);
     mainViewConfig.add_child("gui.layout", mainViewLayoutConfig);
-    ::fwServices::IService::ConfigType mainView1ConfigReg;
+    services::IService::ConfigType mainView1ConfigReg;
     mainView1ConfigReg.put("<xmlattr>.sid", "genericScene");
     mainViewConfig.add_child("registry.view", mainView1ConfigReg);
-    ::fwServices::IService::ConfigType mainView2ConfigReg;
+    services::IService::ConfigType mainView2ConfigReg;
     mainView2ConfigReg.put("<xmlattr>.sid", "multiViewOrgans");
     mainViewConfig.add_child("registry.view", mainView2ConfigReg);
-    ::fwServices::IService::ConfigType mainView3ConfigReg;
+    services::IService::ConfigType mainView3ConfigReg;
     mainView3ConfigReg.put("<xmlattr>.sid", "scenesceneEditorsView");
     mainViewConfig.add_child("registry.view", mainView3ConfigReg);
     mainView->configure(mainViewConfig);
 
     // multiViewOrgans
-    ::fwServices::IService::ConfigType multiViewOrgansConfig;
-    ::fwServices::IService::ConfigType multiViewOrgansLayoutConfig;
+    services::IService::ConfigType multiViewOrgansConfig;
+    services::IService::ConfigType multiViewOrgansLayoutConfig;
     multiViewOrgansLayoutConfig.put("<xmlattr>.type", "::fwGui::ToolboxLayoutManager");
-    ::fwServices::IService::ConfigType multiViewOrgans1Config;
+    services::IService::ConfigType multiViewOrgans1Config;
     multiViewOrgans1Config.put("<xmlattr>.caption", "Organs");
     multiViewOrgans1Config.put("<xmlattr>.expanded", true);
-    ::fwServices::IService::ConfigType multiViewOrgans2Config;
+    services::IService::ConfigType multiViewOrgans2Config;
     multiViewOrgans2Config.put("<xmlattr>.caption", "Material");
     multiViewOrgans2Config.put("<xmlattr>.expanded", true);
-    ::fwServices::IService::ConfigType multiViewOrgans3Config;
+    services::IService::ConfigType multiViewOrgans3Config;
     multiViewOrgans3Config.put("<xmlattr>.caption", "Representation");
     multiViewOrgansLayoutConfig.add_child("view", multiViewOrgans1Config);
     multiViewOrgansLayoutConfig.add_child("view", multiViewOrgans2Config);
     multiViewOrgansLayoutConfig.add_child("view", multiViewOrgans3Config);
     multiViewOrgansConfig.add_child("gui.layout", multiViewOrgansLayoutConfig);
-    ::fwServices::IService::ConfigType multiViewOrgans1ConfigReg;
+    services::IService::ConfigType multiViewOrgans1ConfigReg;
     multiViewOrgans1ConfigReg.put("<xmlattr>.sid", "listOrganEditor");
     multiViewOrgansConfig.add_child("registry.view", multiViewOrgans1ConfigReg);
-    ::fwServices::IService::ConfigType multiViewOrgans2ConfigReg;
+    services::IService::ConfigType multiViewOrgans2ConfigReg;
     multiViewOrgans2ConfigReg.put("<xmlattr>.sid", "organMaterialEditor");
     multiViewOrgansConfig.add_child("registry.view", multiViewOrgans2ConfigReg);
-    ::fwServices::IService::ConfigType multiViewOrgans3ConfigReg;
+    services::IService::ConfigType multiViewOrgans3ConfigReg;
     multiViewOrgans3ConfigReg.put("<xmlattr>.sid", "representationEditor");
     multiViewOrgansConfig.add_child("registry.view", multiViewOrgans3ConfigReg);
     multiViewOrgans->configure(multiViewOrgansConfig);
 
     // sceneEditorsView
-    ::fwServices::IService::ConfigType sceneEditorsViewConfig;
-    ::fwServices::IService::ConfigType sceneEditorsViewLayoutConfig;
+    services::IService::ConfigType sceneEditorsViewConfig;
+    services::IService::ConfigType sceneEditorsViewLayoutConfig;
     sceneEditorsViewLayoutConfig.put("<xmlattr>.type", "::fwGui::LineLayoutManager");
-    ::fwServices::IService::ConfigType editorsOrientation;
+    services::IService::ConfigType editorsOrientation;
     editorsOrientation.put("<xmlattr>.value", "horizontal");
     sceneEditorsViewLayoutConfig.add_child("orientation", editorsOrientation);
-    ::fwServices::IService::ConfigType sceneEditorsView1;
+    services::IService::ConfigType sceneEditorsView1;
     sceneEditorsView1.put("<xmlattr>.proportion", "0");
     sceneEditorsView1.put("<xmlattr>.minWidth", "30");
     sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView1);
-    ::fwServices::IService::ConfigType sceneEditorsView2;
+    services::IService::ConfigType sceneEditorsView2;
     sceneEditorsView2.put("<xmlattr>.proportion", "0");
     sceneEditorsView2.put("<xmlattr>.minWidth", "50");
     sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView2);
-    ::fwServices::IService::ConfigType sceneEditorsView3;
+    services::IService::ConfigType sceneEditorsView3;
     sceneEditorsView3.put("<xmlattr>.proportion", "1");
     sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView3);
-    ::fwServices::IService::ConfigType sceneEditorsView4;
+    services::IService::ConfigType sceneEditorsView4;
     sceneEditorsView4.put("<xmlattr>.proportion", "0");
     sceneEditorsView4.put("<xmlattr>.minWidth", "30");
     sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView4);
     menuFileConfig.add_child("gui.layout", sceneEditorsViewLayoutConfig);
     sceneEditorsViewConfig.add_child("gui.layout", sceneEditorsViewLayoutConfig);
-    ::fwServices::IService::ConfigType sceneEditorsView1Reg;
+    services::IService::ConfigType sceneEditorsView1Reg;
     sceneEditorsView1Reg.put("<xmlattr>.sid", "sliceListEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView1Reg);
-    ::fwServices::IService::ConfigType sceneEditorsView2Reg;
+    services::IService::ConfigType sceneEditorsView2Reg;
     sceneEditorsView2Reg.put("<xmlattr>.sid", "showScanEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView2Reg);
-    ::fwServices::IService::ConfigType sceneEditorsView3Reg;
+    services::IService::ConfigType sceneEditorsView3Reg;
     sceneEditorsView3Reg.put("<xmlattr>.sid", "sliderIndexEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView3Reg);
-    ::fwServices::IService::ConfigType sceneEditorsView4Reg;
+    services::IService::ConfigType sceneEditorsView4Reg;
     sceneEditorsView4Reg.put("<xmlattr>.sid", "snapshotEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView4Reg);
     sceneEditorsView->configure(sceneEditorsViewConfig);
@@ -290,20 +290,20 @@ void Plugin::initialize()
     *              actions configuration
     ****************************************************************************************/
 
-    ::fwServices::IService::ConfigType actionOpenImageConfig;
+    services::IService::ConfigType actionOpenImageConfig;
     actionOpenImageConfig.add("start.<xmlattr>.uid", "imageSeriesReader");
     actionOpenImage->configure(actionOpenImageConfig);
 
-    ::fwServices::IService::ConfigType actionSaveModelSeriesConfig;
+    services::IService::ConfigType actionSaveModelSeriesConfig;
     actionSaveModelSeriesConfig.add("start.<xmlattr>.uid", "meshReader");
     actionSaveModelSeries->configure(actionSaveModelSeriesConfig);
 
-    ::fwServices::IService::ConfigType actionCreateMesh50Config;
+    services::IService::ConfigType actionCreateMesh50Config;
     actionCreateMesh50Config.add("state.<xmlattr>.executable", false);
     actionCreateMesh50Config.add("start.<xmlattr>.uid", "mesher50");
     actionCreateMesh50->configure(actionCreateMesh50Config);
 
-    ::fwServices::IService::ConfigType actionCreateMesh80Config;
+    services::IService::ConfigType actionCreateMesh80Config;
     actionCreateMesh80Config.add("state.<xmlattr>.executable", false);
     actionCreateMesh80Config.add("start.<xmlattr>.uid", "mesher80");
     actionCreateMesh80->configure(actionCreateMesh80Config);
@@ -314,12 +314,12 @@ void Plugin::initialize()
     *              readers/writers configuration
     ****************************************************************************************/
 
-    ::fwServices::IService::ConfigType imageSeriesReaderConfig;
+    services::IService::ConfigType imageSeriesReaderConfig;
     imageSeriesReaderConfig.put("type.<xmlattr>.mode", "reader");
     imageSeriesReaderConfig.put("type.<xmlattr>.class", "::sight::data::ImageSeries");
     imageSeriesReader->configure(imageSeriesReaderConfig);
 
-    ::fwServices::IService::ConfigType modelSeriesWriterConfig;
+    services::IService::ConfigType modelSeriesWriterConfig;
     modelSeriesWriterConfig.put("type.<xmlattr>.mode", "writer");
     modelSeriesWriter->configure(modelSeriesWriterConfig);
 
@@ -327,7 +327,7 @@ void Plugin::initialize()
     *              extractor configuration
     ****************************************************************************************/
 
-    ::fwServices::IService::ConfigType extractImageConfig;
+    services::IService::ConfigType extractImageConfig;
     extractImageConfig.put("inout.extract.<xmlattr>.from", "@image");
     extractImage->configure(extractImageConfig);
 
@@ -335,20 +335,20 @@ void Plugin::initialize()
     *              editors configuration
     ****************************************************************************************/
 
-    ::fwServices::IService::ConfigType sliceListEditorConfig;
+    services::IService::ConfigType sliceListEditorConfig;
     sliceListEditorConfig.add("toolTip", "Manage slice visibility");
     sliceListEditorConfig.add("selected", "3");
-    ::fwServices::IService::ConfigType sliceListEditorItem1Config;
+    services::IService::ConfigType sliceListEditorItem1Config;
     sliceListEditorItem1Config.put("<xmlattr>.text", "One slice");
     sliceListEditorItem1Config.put("<xmlattr>.value", "1");
     sliceListEditorConfig.add_child("items.item", sliceListEditorItem1Config);
-    ::fwServices::IService::ConfigType sliceListEditorItem2Config;
+    services::IService::ConfigType sliceListEditorItem2Config;
     sliceListEditorItem2Config.put("<xmlattr>.text", "Three slices");
     sliceListEditorItem2Config.put("<xmlattr>.value", "3");
     sliceListEditorConfig.add_child("items.item", sliceListEditorItem2Config);
     sliceListEditor->configure(sliceListEditorConfig);
 
-    ::fwServices::IService::ConfigType showScanEditorConfig;
+    services::IService::ConfigType showScanEditorConfig;
     showScanEditorConfig.add("config.checkable", true);
     showScanEditorConfig.add("config.icon", "media-0.1/icons/sliceHide.png");
     showScanEditorConfig.add("config.icon2", "media-0.1/icons/sliceShow.png");
@@ -357,11 +357,11 @@ void Plugin::initialize()
     showScanEditorConfig.add("config.checked", true);
     showScanEditor->configure(showScanEditorConfig);
 
-    ::fwServices::IService::ConfigType sliderIndexEditorConfig;
+    services::IService::ConfigType sliderIndexEditorConfig;
     sliderIndexEditorConfig.put("sliceIndex", "axial");
     sliderIndexEditor->configure(sliderIndexEditorConfig);
 
-    ::fwServices::IService::ConfigType listOrganEditorConfig;
+    services::IService::ConfigType listOrganEditorConfig;
     listOrganEditorConfig.add("columns.organ_name", "@organ_name");
     listOrganEditor->configure(listOrganEditorConfig);
 
@@ -374,24 +374,24 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     // create and register the render service
-    ::fwServices::IService::ConfigType renderConfig;
-    ::fwServices::IService::ConfigType pickerConfig;
+    services::IService::ConfigType renderConfig;
+    services::IService::ConfigType pickerConfig;
     pickerConfig.add("<xmlattr>.id", "picker");
     pickerConfig.add("<xmlattr>.vtkclass", "fwVtkCellPicker");
     renderConfig.add_child("scene.picker", pickerConfig);
     renderConfig.add("scene.renderer.<xmlattr>.id", "default");
-    ::fwServices::IService::ConfigType adpt1Config;
+    services::IService::ConfigType adpt1Config;
     adpt1Config.put("<xmlattr>.uid", "modelSeriesAdaptor");
     renderConfig.add_child("scene.adaptor", adpt1Config);
-    ::fwServices::IService::ConfigType adpt2Config;
+    services::IService::ConfigType adpt2Config;
     adpt2Config.put("<xmlattr>.uid", "imageAdaptor");
     renderConfig.add_child("scene.adaptor", adpt2Config);
-    ::fwServices::IService::ConfigType adpt3Config;
+    services::IService::ConfigType adpt3Config;
     adpt3Config.put("<xmlattr>.uid", "snapshotAdaptor");
     renderConfig.add_child("scene.adaptor", adpt3Config);
     renderSrv->configure(renderConfig);
 
-    ::fwServices::IService::ConfigType imageAdaptorConfig;
+    services::IService::ConfigType imageAdaptorConfig;
     imageAdaptorConfig.add("config.<xmlattr>.renderer", "default");
     imageAdaptorConfig.add("config.<xmlattr>.picker", "picker");
     imageAdaptorConfig.add("config.<xmlattr>.mode", "3d");
@@ -399,12 +399,12 @@ void Plugin::initialize()
     imageAdaptorConfig.add("config.<xmlattr>.sliceIndex", "axial");
     imageAdaptor->configure(imageAdaptorConfig);
 
-    ::fwServices::IService::ConfigType modelSeriesAdaptorConfig;
+    services::IService::ConfigType modelSeriesAdaptorConfig;
     modelSeriesAdaptorConfig.add("config.<xmlattr>.renderer", "default");
     modelSeriesAdaptorConfig.add("config.<xmlattr>.picker", "");
     modelSeriesAdaptor->configure(modelSeriesAdaptorConfig);
 
-    ::fwServices::IService::ConfigType snapshotAdaptorConfig;
+    services::IService::ConfigType snapshotAdaptorConfig;
     snapshotAdaptorConfig.add("config.<xmlattr>.renderer", "default");
     snapshotAdaptor->configure(snapshotAdaptorConfig);
 
@@ -433,10 +433,10 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     auto worker         = core::thread::Worker::New();
-    auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
+    auto workerRegistry = services::registry::ActiveWorkers::getDefault();
     workerRegistry->addWorker("Tuto09", worker);
 
-    auto proxy = ::fwServices::registry::Proxy::getDefault();
+    auto proxy = services::registry::Proxy::getDefault();
 
     std::function<void(data::Object::sptr)>  recSelectedFct =
         [ = ] (data::Object::sptr rec)
@@ -456,43 +456,43 @@ void Plugin::initialize()
     m_slotEmptySelection->setWorker(worker);
     proxy->connect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    ::fwServices::helper::ProxyConnections jobCnt;
+    services::helper::ProxyConnections jobCnt;
     jobCnt.addSignalConnection(imageSeriesReader->getID(), "jobCreated");
     jobCnt.addSignalConnection(modelSeriesWriter->getID(), "jobCreated");
     jobCnt.addSlotConnection(progressBar->getID(), "showJob");
     m_appManager->addProxyConnection(jobCnt);
 
-    ::fwServices::helper::ProxyConnections showScanCnt;
+    services::helper::ProxyConnections showScanCnt;
     showScanCnt.addSignalConnection(showScanEditor->getID(), "toggled");
     showScanCnt.addSlotConnection(sliceListEditor->getID(), "setEnabled");
     showScanCnt.addSlotConnection(imageAdaptor->getID(), "showSlice");
     m_appManager->addProxyConnection(showScanCnt);
 
-    ::fwServices::helper::ProxyConnections snapCnt;
+    services::helper::ProxyConnections snapCnt;
     snapCnt.addSignalConnection(snapshotEditor->getID(), "snapped");
     snapCnt.addSlotConnection(snapshotAdaptor->getID(), "snap");
     m_appManager->addProxyConnection(snapCnt);
 
-    ::fwServices::helper::ProxyConnections sliceListCnt;
+    services::helper::ProxyConnections sliceListCnt;
     sliceListCnt.addSignalConnection(sliceListEditor->getID(), "selected");
     sliceListCnt.addSlotConnection(imageAdaptor->getID(), "updateSliceMode");
     m_appManager->addProxyConnection(sliceListCnt);
 
-    ::fwServices::helper::ProxyConnections recSelectedCnt(s_REC_SELECTED_CHANNEL);
+    services::helper::ProxyConnections recSelectedCnt(s_REC_SELECTED_CHANNEL);
     recSelectedCnt.addSignalConnection(listOrganEditor->getID(),  "reconstructionSelected");
     m_appManager->addProxyConnection(recSelectedCnt);
-    ::fwServices::helper::ProxyConnections emptySelectionCnt(s_EMPTY_SELECTION_CHANNEL);
+    services::helper::ProxyConnections emptySelectionCnt(s_EMPTY_SELECTION_CHANNEL);
     emptySelectionCnt.addSignalConnection(listOrganEditor->getID(),  "emptiedSelection");
     m_appManager->addProxyConnection(emptySelectionCnt);
 
-    ::fwServices::helper::ProxyConnections mesherOnCnt;
+    services::helper::ProxyConnections mesherOnCnt;
     mesherOnCnt.addSignalConnection(mesher50->getID(), "started");
     mesherOnCnt.addSignalConnection(mesher80->getID(), "started");
     mesherOnCnt.addSlotConnection(actionCreateMesh50->getID(), "setExecutable");
     mesherOnCnt.addSlotConnection(actionCreateMesh80->getID(), "setExecutable");
     m_appManager->addProxyConnection(mesherOnCnt);
 
-    ::fwServices::helper::ProxyConnections mesherOffCnt;
+    services::helper::ProxyConnections mesherOffCnt;
     mesherOffCnt.addSignalConnection(mesher50->getID(), "stopped");
     mesherOffCnt.addSignalConnection(mesher80->getID(), "stopped");
     mesherOffCnt.addSlotConnection(actionCreateMesh50->getID(), "setInexecutable");
@@ -516,12 +516,12 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-    auto proxy = ::fwServices::registry::Proxy::getDefault();
+    auto proxy = services::registry::Proxy::getDefault();
 
     proxy->disconnect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
     proxy->disconnect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
+    auto workerRegistry = services::registry::ActiveWorkers::getDefault();
     auto worker         = workerRegistry->getWorker("Tuto09");
     worker->stop();
 
