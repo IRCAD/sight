@@ -22,34 +22,34 @@
 
 #pragma once
 
-#include "arServices/config.hpp"
-#include <arServices/IGrabber.hpp>
+#include "services/config.hpp"
+#include <services/IGrabber.hpp>
 
-namespace arServices
+namespace sight::services
 {
 /**
  * @brief   This interface defines the RGBD grabber service API.
  *          Must be implemented for services that grabs RGBD camera frames.
  */
-class ARSERVICES_CLASS_API IRGBDGrabber : public ::arServices::IGrabber
+class SERVICES_CLASS_API IRGBDGrabber : public services::IGrabber
 {
 
 public:
 
-    fwCoreServiceMacro(IRGBDGrabber, ::arServices::IGrabber)
+    fwCoreServiceMacro(IRGBDGrabber, services::IGrabber)
 
     /**
      * @name Data API
      * @{
      */
-    ARSERVICES_API static const services::IService::KeyType s_DEPTHTL_INOUT;
+    SERVICES_API static const services::IService::KeyType s_DEPTHTL_INOUT;
     /** @} */
 
     /// Constructor.
-    ARSERVICES_API IRGBDGrabber() noexcept;
+    SERVICES_API IRGBDGrabber() noexcept;
 
     /// Destructor.
-    ARSERVICES_API virtual ~IRGBDGrabber() noexcept;
+    SERVICES_API virtual ~IRGBDGrabber() noexcept;
 };
 
-} //namespace arServices
+} //namespace sight::services

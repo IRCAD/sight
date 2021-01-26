@@ -53,7 +53,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro(::arServices::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, data::Camera)
+fwServicesRegisterMacro(services::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, data::Camera)
 
 namespace videoCharucoCalibration
 {

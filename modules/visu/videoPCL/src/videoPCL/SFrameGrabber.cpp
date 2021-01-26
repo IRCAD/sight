@@ -47,7 +47,7 @@ static const services::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::sight::data::FrameTL)
+fwServicesRegisterMacro( services::IGrabber, ::videoPCL::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -178,8 +178,8 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
+            services::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);

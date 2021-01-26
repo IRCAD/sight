@@ -7,7 +7,6 @@ set( DEPENDENCIES
         data
         services
         fwGui
-        arServices
         arPreferences
 )
 set( REQUIREMENTS )

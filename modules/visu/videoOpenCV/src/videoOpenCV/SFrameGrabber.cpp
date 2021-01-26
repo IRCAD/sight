@@ -221,8 +221,8 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        const auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        const auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
+            services::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);
@@ -269,8 +269,8 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStartedSignalType >(
+            services::IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
     else
@@ -346,8 +346,8 @@ void SFrameGrabber::readDevice( const data::Camera::csptr _camera)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStartedSignalType >(
+            services::IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
     else
@@ -536,8 +536,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             m_timer->setDuration(duration);
             m_timer->start();
         }
-        auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStartedSignalType >(
+            services::IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
 }

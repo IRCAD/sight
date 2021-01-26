@@ -24,13 +24,13 @@
 
 #include "videoOpenCV/config.hpp"
 
-#include <arServices/IGrabber.hpp>
-
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/mt/types.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/tools/Failed.hpp>
+
+#include <services/IGrabber.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -102,12 +102,12 @@ namespace videoOpenCV
  * It will have not effects if reading a video or if a timestamp can be deduced from images filenames
  * (ex. img_642752427.jpg).
  */
-class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
+class VIDEOOPENCV_CLASS_API SFrameGrabber : public services::IGrabber
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber)
+    fwCoreServiceMacro(SFrameGrabber, services::IGrabber)
 
     /// Constructor. Do nothing.
     VIDEOOPENCV_API SFrameGrabber() noexcept;

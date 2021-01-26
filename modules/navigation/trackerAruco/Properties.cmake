@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwDataTools
     services
     fwMath
-    arServices
     cvIO
 
 )

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,34 +20,26 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "services/IRGBDGrabber.hpp"
 
-#include "arServices/config.hpp"
-
-#include <services/IService.hpp>
-
-namespace arServices
-{
-/**
- * @brief   ISynchronizer service synchronize objects from timelines
- */
-class ARSERVICES_CLASS_API ISynchronizer : public services::IService
+namespace sight::services
 {
 
-public:
+const services::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
 
-    fwCoreServiceMacro(ISynchronizer, services::IService)
+// ----------------------------------------------------------------------------
 
-    /**
-     * @brief Constructor.
-     */
-    ARSERVICES_API ISynchronizer() noexcept;
+IRGBDGrabber::IRGBDGrabber() noexcept
+{
+}
 
-    /**
-     * @brief Destructor.
-     */
-    ARSERVICES_API virtual ~ISynchronizer() noexcept;
+// ----------------------------------------------------------------------------
 
-};
+IRGBDGrabber::~IRGBDGrabber() noexcept
+{
 
-} //namespace arServices
+}
+
+// ----------------------------------------------------------------------------
+
+}  // namespace sight::services

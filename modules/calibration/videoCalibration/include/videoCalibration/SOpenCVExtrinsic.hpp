@@ -24,7 +24,7 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <arServices/ICalibration.hpp>
+#include <services/ICalibration.hpp>
 
 namespace videoCalibration
 {
@@ -58,10 +58,10 @@ namespace videoCalibration
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
+class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public services::ICalibration
 {
 public:
-    fwCoreServiceMacro(SOpenCVExtrinsic, ::arServices::ICalibration)
+    fwCoreServiceMacro(SOpenCVExtrinsic, services::ICalibration)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;

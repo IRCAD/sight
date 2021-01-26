@@ -24,11 +24,11 @@
 
 #include "videoOpenni/config.hpp"
 
-#include <arServices/IRGBDGrabber.hpp>
-
 #include <core/thread/Worker.hpp>
 
 #include <data/FrameTL.hpp>
+
+#include <services/IRGBDGrabber.hpp>
 
 #include <OpenNI.h>
 
@@ -71,11 +71,11 @@ namespace videoOpenni
  * - \b snapshotTLColors [data::FrameTL]: Frame timeline used to store snaphots of the depth stream.
  * - \b snapshotTLIR [data::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
  */
-class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IRGBDGrabber
+class VIDEOOPENNI_CLASS_API SScan : public services::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber)
+    fwCoreServiceMacro(SScan, services::IRGBDGrabber)
 
     /// Constructor. Creates/Connects slots and creates a worker for the frame grabber slot.
     VIDEOOPENNI_API SScan() noexcept;

@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "arServices/IGrabber.hpp"
+#include "services/IGrabber.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
 #include <data/FrameTL.hpp>
 
-namespace arServices
+namespace sight::services
 {
 
 const core::com::Signals::SignalKeyType IGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
@@ -147,4 +147,4 @@ void IGrabber::setStartState(bool state)
 
 // ----------------------------------------------------------------------------
 
-}  // namespace arServices
+}  // namespace sight::services

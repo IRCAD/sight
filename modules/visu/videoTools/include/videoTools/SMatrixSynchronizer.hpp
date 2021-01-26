@@ -24,8 +24,6 @@
 
 #include "videoTools/config.hpp"
 
-#include <arServices/ISynchronizer.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
@@ -33,17 +31,19 @@
 #include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
+#include <services/ISynchronizer.hpp>
+
 namespace videoTools
 {
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
  */
-class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public ::arServices::ISynchronizer
+class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public services::ISynchronizer
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixSynchronizer, ::arServices::ISynchronizer)
+    fwCoreServiceMacro(SMatrixSynchronizer, services::ISynchronizer)
 
     /**
      * @brief Constructor.
@@ -66,7 +66,7 @@ protected:
      * @brief This method is used to configure the service.
      *
      * @code{.xml}
-       <service impl="::videoTools::SMatrixSynchronizer" type="::arServices::ISynchronizer">
+       <service impl="::videoTools::SMatrixSynchronizer" type="::services::ISynchronizer">
             <inout>Matrix</inout>
             <in>MatrixTL</in>
        </service>

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,23 @@
  *
  ***********************************************************************/
 
-#include "arServices/IRGBDGrabber.hpp"
+#include "services/ISimulator.hpp"
 
-namespace arServices
+namespace sight::services
 {
 
-const services::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
+//-----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
-
-IRGBDGrabber::IRGBDGrabber() noexcept
+ISimulator::ISimulator()
 {
 }
 
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-IRGBDGrabber::~IRGBDGrabber() noexcept
+ISimulator::~ISimulator()
 {
-
 }
 
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-}  // namespace arServices
+}

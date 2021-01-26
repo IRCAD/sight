@@ -22,32 +22,31 @@
 
 #pragma once
 
-#include "arServices/config.hpp"
-
+#include "services/config.hpp"
 #include <services/IService.hpp>
 
-namespace arServices
+namespace sight::services
 {
-
 /**
- * @brief   This interface defines simulator service API.
- *          Must be implemented for services that simulate.
+ * @brief   ISynchronizer service synchronize objects from timelines
  */
-class ARSERVICES_CLASS_API ISimulator : public services::IService
+class SERVICES_CLASS_API ISynchronizer : public services::IService
 {
 
 public:
 
-    fwCoreServiceMacro(ISimulator, services::IService)
+    fwCoreServiceMacro(ISynchronizer, services::IService)
 
-protected:
+    /**
+     * @brief Constructor.
+     */
+    SERVICES_API ISynchronizer() noexcept;
 
-    /// ISimulator constructor. Do nothing.
-    ARSERVICES_API ISimulator();
-
-    /// ISimulator destructor. Do nothing.
-    ARSERVICES_API virtual ~ISimulator();
+    /**
+     * @brief Destructor.
+     */
+    SERVICES_API virtual ~ISynchronizer() noexcept;
 
 };
 
-}
+} //namespace sight::services

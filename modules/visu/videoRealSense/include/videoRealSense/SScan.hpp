@@ -24,10 +24,10 @@
 
 #include "videoRealSense/config.hpp"
 
-#include <arServices/IRGBDGrabber.hpp>
-
 #include <data/FrameTL.hpp>
 #include <data/Mesh.hpp>
+
+#include <services/IRGBDGrabber.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -176,11 +176,11 @@ namespace videoRealSense
  * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
-class VIDEOREALSENSE_CLASS_API SScan : public ::arServices::IRGBDGrabber
+class VIDEOREALSENSE_CLASS_API SScan : public services::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber)
+    fwCoreServiceMacro(SScan, services::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal< void (double) > DistanceComputedSignalType;

@@ -22,13 +22,12 @@
 
 #pragma once
 
-#include "arServices/config.hpp"
+#include "services/config.hpp"
+#include <services/IService.hpp>
 
 #include <core/HiResClock.hpp>
 
-#include <services/IService.hpp>
-
-namespace arServices
+namespace sight::services
 {
 
 /**
@@ -51,22 +50,22 @@ namespace arServices
  * - \b dropObj(optional, default=true) : defines if the tracker should drop few objects from the timeline (and always
  *   get the last one) or not.
  */
-class ARSERVICES_CLASS_API ITracker : public services::IService
+class SERVICES_CLASS_API ITracker : public services::IService
 {
 
 public:
 
     fwCoreServiceMacro(ITracker, services::IService)
 
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
-    ARSERVICES_API static const services::IService::KeyType s_TIMELINE_INPUT;
-    ARSERVICES_API static const services::IService::KeyType s_FRAME_INOUT;
+    SERVICES_API static const services::IService::KeyType s_TIMELINE_INPUT;
+    SERVICES_API static const services::IService::KeyType s_FRAME_INOUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    ARSERVICES_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    SERVICES_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Return true if the tracking is started.
     bool isTracking() const
@@ -89,12 +88,12 @@ public:
 protected:
 
     ///@brief ITracker constructor. Do nothing.
-    ARSERVICES_API ITracker();
+    SERVICES_API ITracker();
 
     ///@brief ITracker destructor. Do nothing.
-    ARSERVICES_API virtual ~ITracker();
+    SERVICES_API virtual ~ITracker();
 
-    ARSERVICES_API virtual void configuring() override;
+    SERVICES_API virtual void configuring() override;
 
     /**
      * @brief This method calls tracking.
@@ -102,19 +101,19 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    ARSERVICES_API virtual void track(core::HiResClock::HiResClockType timestamp);
+    SERVICES_API virtual void track(core::HiResClock::HiResClockType timestamp);
 
     /// start the tracking
-    ARSERVICES_API virtual void startTracking();
+    SERVICES_API virtual void startTracking();
 
     /// stop the tracking
-    ARSERVICES_API virtual void stopTracking();
+    SERVICES_API virtual void stopTracking();
 
     /**
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    ARSERVICES_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) = 0;
+    SERVICES_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) = 0;
 
     /// timestamp of the last tracking
     core::HiResClock::HiResClockType m_lastTimestamp;

@@ -6,7 +6,6 @@ set( DEPENDENCIES
         data
         fwDataTools
         fwGui
-        arServices
         services
 )
 set( REQUIREMENTS )

@@ -9,7 +9,6 @@ set( DEPENDENCIES
         fwGui
         fwMath
         services
-        arServices
         cvIO
 )
 set( REQUIREMENTS )

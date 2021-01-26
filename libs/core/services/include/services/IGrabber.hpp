@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "arServices/config.hpp"
-
+#include "services/config.hpp"
 #include <services/IService.hpp>
 
 namespace sight::data
@@ -31,7 +30,7 @@ namespace sight::data
 class FrameTL;
 }
 
-namespace arServices
+namespace sight::services
 {
 /**
  * @brief   This interface defines grabber service API.
@@ -56,7 +55,7 @@ namespace arServices
  * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
  * overridden.
  */
-class ARSERVICES_CLASS_API IGrabber : public services::IService
+class SERVICES_CLASS_API IGrabber : public services::IService
 {
 
 public:
@@ -67,17 +66,17 @@ public:
      * @name Slots API
      * @{
      */
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_START_CAMERA_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_PLAY_PAUSE_CAMERA_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_PRESENT_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
-    ARSERVICES_API static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_START_CAMERA_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_PLAY_PAUSE_CAMERA_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_PRESENT_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
+    SERVICES_API static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT;
     ///@}
 
     /**
@@ -85,19 +84,19 @@ public:
      * @{
      */
 
-    ARSERVICES_API static const core::com::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
+    SERVICES_API static const core::com::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
     typedef core::com::Signal<void (int64_t)> PositionModifiedSignalType;
 
-    ARSERVICES_API static const core::com::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
+    SERVICES_API static const core::com::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
     typedef core::com::Signal<void (int64_t)> DurationModifiedSignalType;
 
-    ARSERVICES_API static const core::com::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
+    SERVICES_API static const core::com::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
     typedef core::com::Signal<void ()> FramePresentedSignalType;
 
-    ARSERVICES_API static const core::com::Signals::SignalKeyType s_CAMERA_STARTED_SIG;
+    SERVICES_API static const core::com::Signals::SignalKeyType s_CAMERA_STARTED_SIG;
     typedef core::com::Signal<void ()> CameraStartedSignalType;
 
-    ARSERVICES_API static const core::com::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
+    SERVICES_API static const core::com::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
     typedef core::com::Signal<void ()> CameraStoppedSignalType;
 
     /** @} */
@@ -106,70 +105,70 @@ public:
      * @name Data API
      * @{
      */
-    ARSERVICES_API static const services::IService::KeyType s_CAMERA_INPUT;
-    ARSERVICES_API static const services::IService::KeyType s_FRAMETL_INOUT;
+    SERVICES_API static const services::IService::KeyType s_CAMERA_INPUT;
+    SERVICES_API static const services::IService::KeyType s_FRAMETL_INOUT;
     /** @} */
     /**
      * @brief Constructor.
      */
-    ARSERVICES_API IGrabber() noexcept;
+    SERVICES_API IGrabber() noexcept;
 
     /**
      * @brief Destructor.
      */
-    ARSERVICES_API virtual ~IGrabber() noexcept;
+    SERVICES_API virtual ~IGrabber() noexcept;
 
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void startCamera() = 0;
+    SERVICES_API virtual void startCamera() = 0;
 
     /**
      * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void stopCamera() = 0;
+    SERVICES_API virtual void stopCamera() = 0;
 
     /**
      * @brief API for pausing a camera. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void pauseCamera() = 0;
+    SERVICES_API virtual void pauseCamera() = 0;
 
     /**
      * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
      */
-    ARSERVICES_API virtual void toggleLoopMode() = 0;
+    SERVICES_API virtual void toggleLoopMode() = 0;
 
     /**
      * @brief API for setting a new position in the video. Needs to be reimplemented in child classes
      */
-    ARSERVICES_API virtual void setPosition(int64_t position) = 0;
+    SERVICES_API virtual void setPosition(int64_t position) = 0;
 
     /**
      * @brief API to get the previous image in frame by frame mode.
      */
-    ARSERVICES_API virtual void previousImage();
+    SERVICES_API virtual void previousImage();
 
     /**
      * @brief API to get the next image in frame by frame mode.
      */
-    ARSERVICES_API virtual void nextImage();
+    SERVICES_API virtual void nextImage();
 
     /**
      * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
      */
-    ARSERVICES_API virtual void setStep(int step, std::string key);
+    SERVICES_API virtual void setStep(int step, std::string key);
 
 protected:
     /**
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    ARSERVICES_API static void clearTimeline(SPTR(data::FrameTL) const&);
+    SERVICES_API static void clearTimeline(SPTR(data::FrameTL) const&);
 
     /**
      * @brief sets the current start state of the grabber.
      */
-    ARSERVICES_API void setStartState(bool state);
+    SERVICES_API void setStartState(bool state);
 
 private:
 
@@ -177,11 +176,11 @@ private:
      * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used when play
      * or pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
      */
-    ARSERVICES_API void playPauseCamera();
+    SERVICES_API void playPauseCamera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
     bool m_isStarted{false};
 
 };
 
-} //namespace arServices
+} //namespace sight::services

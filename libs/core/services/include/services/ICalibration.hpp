@@ -22,25 +22,24 @@
 
 #pragma once
 
-#include "arServices/config.hpp"
-
+#include "services/config.hpp"
 #include <services/IService.hpp>
 
-namespace arServices
+namespace sight::services
 {
 /**
  * @brief   ICalibration is an interface API for calibration services.
  */
-class ARSERVICES_CLASS_API ICalibration : public services::IService
+class SERVICES_CLASS_API ICalibration : public services::IService
 {
 public:
     fwCoreServiceMacro(ICalibration, services::IService)
 
     /// Constructor.
-    ARSERVICES_API ICalibration() noexcept;
+    SERVICES_API ICalibration() noexcept;
 
     /// Destructor.
-    ARSERVICES_API virtual ~ICalibration() noexcept;
+    SERVICES_API virtual ~ICalibration() noexcept;
 };
 
-} // namespace arServices
+} // namespace sight::services

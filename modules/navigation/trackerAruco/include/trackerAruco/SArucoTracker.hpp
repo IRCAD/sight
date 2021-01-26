@@ -24,12 +24,11 @@
 
 #include "trackerAruco/config.hpp"
 
-#include <arServices/ITracker.hpp>
-
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
 
+#include <services/ITracker.hpp>
 #include <services/macros.hpp>
 
 #include <opencv2/aruco.hpp>
@@ -40,7 +39,7 @@ namespace trackerAruco
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see ::arServices::ITracker
+ * @see services::ITracker
  *
  * @section Signals Signals
  * - \b detectionDone(core::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
@@ -109,11 +108,11 @@ namespace trackerAruco
  *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
  *  not.
  */
-class TRACKERARUCO_CLASS_API SArucoTracker : public ::arServices::ITracker
+class TRACKERARUCO_CLASS_API SArucoTracker : public services::ITracker
 {
 public:
 
-    fwCoreServiceMacro(SArucoTracker, arServices::ITracker)
+    fwCoreServiceMacro(SArucoTracker, services::ITracker)
 
     typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
     typedef core::com::Signal< void (bool) > MarkerDetectedSignalType;

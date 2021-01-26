@@ -24,11 +24,11 @@
 
 #include "videoPCL/config.hpp"
 
-#include <arServices/IGrabber.hpp>
-
 #include <core/mt/types.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/tools/Failed.hpp>
+
+#include <services/IGrabber.hpp>
 
 #include <filesystem>
 
@@ -74,12 +74,12 @@ namespace videoPCL
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class VIDEOPCL_CLASS_API SFrameGrabber : public ::arServices::IGrabber
+class VIDEOPCL_CLASS_API SFrameGrabber : public services::IGrabber
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber)
+    fwCoreServiceMacro(SFrameGrabber, services::IGrabber)
 
     /// Constructor. Do nothing.
     VIDEOPCL_API SFrameGrabber() noexcept;

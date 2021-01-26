@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,25 @@
  *
  ***********************************************************************/
 
-#include "arServices/ICalibration.hpp"
+#include "services/ISynchronizer.hpp"
 
-namespace arServices
+namespace sight::services
 {
 
 // ----------------------------------------------------------------------------
 
-ICalibration::ICalibration() noexcept
+ISynchronizer::ISynchronizer() noexcept
 {
+
 }
 
 // ----------------------------------------------------------------------------
 
-ICalibration::~ICalibration() noexcept
+ISynchronizer::~ISynchronizer() noexcept
 {
+
 }
 
 // ----------------------------------------------------------------------------
 
-} // namespace videoCalibration
+}  // namespace sight::services

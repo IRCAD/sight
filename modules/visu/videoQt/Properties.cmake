@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
         fwDataTools
         fwGuiQt
-        arServices
+        services
         data
         arPreferences
         fwVideoQt

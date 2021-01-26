@@ -24,11 +24,11 @@
 
 #include "opUltrasound/config.hpp"
 
-#include <arServices/ISimulator.hpp>
-
 #include <core/macros.hpp>
 
 #include <data/Mesh.hpp>
+
+#include <services/ISimulator.hpp>
 
 #include <boost/multi_array.hpp>
 
@@ -72,7 +72,7 @@ namespace generator
  * - \b angle (optional, default=60) : angle of the US beam.
  * - \b deltaDepth (optional, default=50) : delta depth of the US plane.
  */
-class OPULTRASOUND_CLASS_API SUltrasoundMesh final : public ::arServices::ISimulator
+class OPULTRASOUND_CLASS_API SUltrasoundMesh final : public services::ISimulator
 {
 
 public:

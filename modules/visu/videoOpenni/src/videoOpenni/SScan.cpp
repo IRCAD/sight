@@ -37,7 +37,7 @@ namespace videoOpenni
 
 // -----------------------------------------------------------------------------
 
-// Despite this grabber inherits from ::arServices::IRGBDGrabber, we register it as ::arServices::IGrabber since it
+// Despite this grabber inherits from services::IRGBDGrabber, we register it as services::IGrabber since it
 // is compatible with this interface. Indeed it is capable to output only the color frame.
 
 const core::com::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
@@ -297,8 +297,8 @@ void SScan::startCamera()
 
     m_slotPresentFrame->asyncRun();
 
-    auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-        ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+    auto sig = this->signal< services::IGrabber::CameraStartedSignalType >(
+        services::IGrabber::s_CAMERA_STARTED_SIG);
     sig->asyncEmit();
 }
 
@@ -331,8 +331,8 @@ void SScan::stopCamera()
     {
         this->clearTimeline(m_irTL);
     }
-    auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-        ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+    auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
+        services::IGrabber::s_CAMERA_STOPPED_SIG);
     sig->asyncEmit();
 
     m_pause = false;

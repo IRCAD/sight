@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "arServices/ITracker.hpp"
+#include "services/ITracker.hpp"
 
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
@@ -31,7 +31,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace arServices
+namespace sight::services
 {
 
 //-----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap ITracker::getAutoConnections() const
+services::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
@@ -133,4 +133,4 @@ void ITracker::stopTracking()
 
 //-----------------------------------------------------------------------------
 
-} // namespace arServices
+} // namespace sight::services

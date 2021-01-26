@@ -24,7 +24,7 @@
 
 #include "videoCharucoCalibration/config.hpp"
 
-#include <arServices/ICalibration.hpp>
+#include <services/ICalibration.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -68,10 +68,10 @@ namespace videoCharucoCalibration
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm (others charuco preferences are not used here).
  */
-class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::arServices::ICalibration
+class VIDEOCHARUCOCALIBRATION_CLASS_API SOpenCVExtrinsic : public services::ICalibration
 {
 public:
-    fwCoreServiceMacro(SOpenCVExtrinsic, ::arServices::ICalibration)
+    fwCoreServiceMacro(SOpenCVExtrinsic, services::ICalibration)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;

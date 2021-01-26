@@ -24,11 +24,11 @@
 
 #include "videoQt/config.hpp"
 
-#include <arServices/IGrabber.hpp>
-
 #include <core/thread/Worker.hpp>
 
 #include <fwVideoQt/Player.hpp>
+
+#include <services/IGrabber.hpp>
 
 #include <QImage>
 #include <QObject>
@@ -77,12 +77,12 @@ namespace videoQt
  * - \b notifyInterval (optional, int): defines the player notify interval in ms, default value 1000.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
-                                        public ::arServices::IGrabber
+                                        public services::IGrabber
 {
 Q_OBJECT;
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber)
+    fwCoreServiceMacro(SFrameGrabber, services::IGrabber)
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() noexcept;

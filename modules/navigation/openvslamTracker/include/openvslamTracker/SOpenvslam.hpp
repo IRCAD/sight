@@ -24,8 +24,6 @@
 
 #include "openvslamTracker/config.hpp"
 
-#include <arServices/ITracker.hpp>
-
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
@@ -41,6 +39,8 @@
 #include <data/PointList.hpp>
 
 #include <openvslamIO/OpenvslamConfig.hpp>
+
+#include <services/ITracker.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -135,12 +135,12 @@ namespace openvslamTracker
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class OPENVSLAMTRACKER_CLASS_API SOpenvslam : public ::arServices::ITracker
+class OPENVSLAMTRACKER_CLASS_API SOpenvslam : public services::ITracker
 {
 
 public:
 
-    fwCoreServiceMacro(SOpenvslam, ::arServices::ITracker)
+    fwCoreServiceMacro(SOpenvslam, services::ITracker)
 
     /// Constructor. Initializes signals and slots.
     OPENVSLAMTRACKER_API SOpenvslam() noexcept;

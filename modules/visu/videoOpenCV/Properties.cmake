@@ -8,7 +8,6 @@ set( DEPENDENCIES
         services
         fwIO
         fwGui
-        arServices
         arPreferences
 )
 set( REQUIREMENTS )

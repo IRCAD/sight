@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,33 @@
  *
  ***********************************************************************/
 
-#include "arServices/ISimulator.hpp"
+#pragma once
 
-namespace arServices
+#include "services/config.hpp"
+#include <services/IService.hpp>
+
+namespace sight::services
 {
 
-//-----------------------------------------------------------------------------
-
-ISimulator::ISimulator()
+/**
+ * @brief   This interface defines simulator service API.
+ *          Must be implemented for services that simulate.
+ */
+class SERVICES_CLASS_API ISimulator : public services::IService
 {
-}
 
-//-----------------------------------------------------------------------------
+public:
 
-ISimulator::~ISimulator()
-{
-}
+    fwCoreServiceMacro(ISimulator, services::IService)
 
-//-----------------------------------------------------------------------------
+protected:
+
+    /// ISimulator constructor. Do nothing.
+    SERVICES_API ISimulator();
+
+    /// ISimulator destructor. Do nothing.
+    SERVICES_API virtual ~ISimulator();
+
+};
 
 }

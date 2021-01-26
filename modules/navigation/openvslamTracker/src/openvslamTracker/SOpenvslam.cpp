@@ -55,7 +55,7 @@
 namespace openvslamTracker
 {
 
-fwServicesRegisterMacro( ::arServices::ITracker, ::openvslamTracker::SOpenvslam)
+fwServicesRegisterMacro( services::ITracker, ::openvslamTracker::SOpenvslam)
 
 static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
@@ -152,7 +152,7 @@ SOpenvslam::~SOpenvslam() noexcept
 
 void SOpenvslam::configuring()
 {
-    this->::arServices::ITracker::configuring();
+    this->::services::ITracker::configuring();
     const ConfigType cfg = this->getConfigTree();
 
     m_downSampleWidth = cfg.get< size_t >(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);

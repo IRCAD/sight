@@ -40,7 +40,7 @@
 #include <algorithm>
 #include <functional>
 
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer)
+fwServicesRegisterMacro(services::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer)
 
 namespace videoTools
 {

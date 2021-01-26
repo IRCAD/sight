@@ -7,7 +7,6 @@ set( DEPENDENCIES
         data
         fwDataTools
         services
-        arServices
         fwGui
         cvIO
         openvslamIO

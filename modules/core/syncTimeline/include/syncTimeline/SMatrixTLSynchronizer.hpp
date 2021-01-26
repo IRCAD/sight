@@ -24,8 +24,6 @@
 
 #include "syncTimeline/config.hpp"
 
-#include <arServices/ISynchronizer.hpp>
-
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
 #include <core/thread/Timer.hpp>
@@ -33,6 +31,7 @@
 #include <data/Composite.hpp>
 
 #include <services/IController.hpp>
+#include <services/ISynchronizer.hpp>
 
 namespace sight::data
 {
@@ -75,12 +74,12 @@ namespace syncTimeline
  * @subsection In-Out In-Out
  * - \b matrices [data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
-class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public ::arServices::ISynchronizer
+class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public services::ISynchronizer
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixTLSynchronizer, ::arServices::ISynchronizer)
+    fwCoreServiceMacro(SMatrixTLSynchronizer, services::ISynchronizer)
 
     typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
     typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;

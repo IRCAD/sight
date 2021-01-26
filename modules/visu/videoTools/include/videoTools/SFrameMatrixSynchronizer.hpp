@@ -24,8 +24,6 @@
 
 #include "videoTools/config.hpp"
 
-#include <arServices/ISynchronizer.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -33,6 +31,7 @@
 #include <core/thread/Timer.hpp>
 
 #include <services/IController.hpp>
+#include <services/ISynchronizer.hpp>
 
 namespace sight::data
 {
@@ -120,7 +119,7 @@ namespace videoTools
  * - \b tolerance defines the maximum distance between two frames (default: 500).
  *  If a timeline exceeds this tolerance it will not be synchronized.
  */
-class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
+class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public services::ISynchronizer
 {
 public:
 

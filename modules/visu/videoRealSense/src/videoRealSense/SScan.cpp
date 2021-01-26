@@ -559,8 +559,8 @@ void SScan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-        ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+    auto sigStarted = this->signal< services::IGrabber::CameraStartedSignalType >(
+        services::IGrabber::s_CAMERA_STARTED_SIG);
     sigStarted->asyncEmit();
 }
 
@@ -595,8 +595,8 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
+            services::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
 }

@@ -137,8 +137,8 @@ void SFrameGrabber::startCamera()
             m_videoPlayer->setNotifyInterval(m_notifyInterval);
             m_videoPlayer->play();
 
-            auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
-                ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+            auto sig = this->signal< services::IGrabber::CameraStartedSignalType >(
+                services::IGrabber::s_CAMERA_STARTED_SIG);
             sig->asyncEmit();
 
             this->setStartState(true);
@@ -188,8 +188,8 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr timeline = this->getInOut< data::FrameTL >("frameTL");
         this->clearTimeline(timeline);
 
-        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
+            services::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);
